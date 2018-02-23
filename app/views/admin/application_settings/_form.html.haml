@@ -203,7 +203,7 @@
             Password authentication enabled for Git over HTTP(S)
             .help-block
               When disabled, a Personal Access Token
-              - if Gitlab::LDAP::Config.enabled?
+              - if Gitlab::Auth::LDAP::Config.enabled?
                 or LDAP password
               must be used to authenticate.
     - if omniauth_enabled? && button_based_providers.any?
