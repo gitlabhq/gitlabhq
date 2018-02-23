@@ -1,11 +1,11 @@
 
 import Vue from 'vue';
-import { __ } from '../../../../locale';
-import Flash from '../../../../flash';
-import PipelinesMediator from '../../../../pipelines/pipeline_details_mediatior';
-import pipelineGraph from '../../../../pipelines/components/graph/graph_component.vue';
-import pipelineHeader from '../../../../pipelines/components/header_component.vue';
-import eventHub from '../../../../pipelines/event_hub';
+import { __ } from '~/locale';
+import Flash from '~/flash';
+import PipelinesMediator from '~/pipelines/pipeline_details_mediator';
+import pipelineGraph from '~/pipelines/components/graph/graph_component.vue';
+import pipelineHeader from '~/pipelines/components/header_component.vue';
+import eventHub from '~/pipelines/event_hub';
 import initPipelines from '../init_pipelines';
 
 document.addEventListener('DOMContentLoaded', () => {

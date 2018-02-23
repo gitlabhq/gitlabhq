@@ -14,10 +14,10 @@ import CycleAnalyticsStore from './cycle_analytics_store';
 
 Vue.use(Translate);
 
-$(() => {
+document.addEventListener('DOMContentLoaded', () => {
   const OVERVIEW_DIALOG_COOKIE = 'cycle_analytics_help_dismissed';
 
-  gl.cycleAnalyticsApp = new Vue({
+  const cycleAnalyticsApp = new Vue({
     el: '#cycle-analytics',
     name: 'CycleAnalytics',
     components: {
