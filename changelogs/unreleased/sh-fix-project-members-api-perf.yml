@@ -1,6 +1,0 @@
----
-title: Remove N+1 queries with /projects/:project_id/{access_requests,members} API
-  endpoints
-merge_request:
-author:
-type: performance

@@ -1,13 +1,13 @@
 ---
 redirect_from: 'https://docs.gitlab.com/ee/articles/artifactory_and_gitlab/index.html'
+author: Fabio Busatto
+author_gitlab: bikebilly
+level: intermediary
+article_type: tutorial
+date: 2017-08-15
 ---
 
 # How to deploy Maven projects to Artifactory with GitLab CI/CD
-
-> **[Article Type](../../../development/writing_documentation.md#types-of-technical-articles):** tutorial ||
-> **Level:** intermediary ||
-> **Author:** [Fabio Busatto](https://gitlab.com/bikebilly) ||
-> **Publication date:** 2017-08-15
 
 ## Introduction
 

@@ -1,5 +1,9 @@
 class LabelsFinder < UnionFinder
+  prepend FinderWithCrossProjectAccess
+  include FinderMethods
   include Gitlab::Utils::StrongMemoize
+
+  requires_cross_project_access unless: -> { project? }
 
   def initialize(current_user, params = {})
     @current_user = current_user

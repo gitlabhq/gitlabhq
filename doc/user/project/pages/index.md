@@ -37,10 +37,10 @@ to secure them.
 
 Read the following tutorials to know more about:
 
-- [Static websites and GitLab Pages domains](getting_started_part_one.md)
-- [Forking projects and creating new ones from scratch, URLs and baseurls](getting_started_part_two.md)
-- [Custom domains and subdomains, DNS records, SSL/TLS certificates](getting_started_part_three.md)
-- [How to create your own `.gitlab-ci.yml` for your site](getting_started_part_four.md)
+- [Static websites and GitLab Pages domains](getting_started_part_one.md): Understand what is a static website, and how GitLab Pages default domains work
+- [Projects for GitLab Pages and URL structure](getting_started_part_two.md): Forking projects and creating new ones from scratch, understanding URLs structure and baseurls
+- [GitLab Pages custom domains and SSL/TLS Certificates](getting_started_part_three.md): How to add custom domains and subdomains to your website, configure DNS records, and SSL/TLS certificates
+- [Creating and Tweaking GitLab CI/CD for GitLab Pages](getting_started_part_four.md): Understand how to create your own `.gitlab-ci.yml` for your site
 - [Technical aspects, custom 404 pages, limitations](introduction.md)
 - [Hosting on GitLab.com with GitLab Pages](https://about.gitlab.com/2016/04/07/gitlab-pages-setup/) (outdated)
 

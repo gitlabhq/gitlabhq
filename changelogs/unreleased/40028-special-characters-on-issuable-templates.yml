@@ -1,5 +1,0 @@
----
-title: Handle special characters on API request of issuable templates
-merge_request: 15323
-author: Takuya Noguchi
-type: fixed

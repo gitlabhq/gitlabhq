@@ -118,6 +118,19 @@ describe Gitlab::ContributionsCalendar do
       expect(calendar.events_by_date(today)).to contain_exactly(e1)
       expect(calendar(contributor).events_by_date(today)).to contain_exactly(e1, e2, e3)
     end
+
+    context 'when the user cannot read read cross project' do
+      before do
+        allow(Ability).to receive(:allowed?).and_call_original
+        expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
+      end
+
+      it 'does not return any events' do
+        create_event(public_project, today)
+
+        expect(calendar(user).events_by_date(today)).to be_empty
+      end
+    end
   end
 
   describe '#starting_year' do

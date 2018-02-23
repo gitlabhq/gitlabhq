@@ -138,7 +138,7 @@ textUtils.init = function(form) {
   return $('.js-md', form).off('click').on('click', function() {
     var $this;
     $this = $(this);
-    return self.updateText($this.closest('.md-area').find('textarea'), $this.data('md-tag'), $this.data('md-block'), !$this.data('md-prepend'));
+    return self.updateText($this.closest('.md-area').find('textarea'), $this.data('mdTag'), $this.data('mdBlock'), !$this.data('mdPrepend'));
   });
 };
 

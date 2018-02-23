@@ -1,5 +1,0 @@
----
-title: Replace "cluster" with "Kubernetes cluster"
-merge_request: 16778
-author:
-type: changed

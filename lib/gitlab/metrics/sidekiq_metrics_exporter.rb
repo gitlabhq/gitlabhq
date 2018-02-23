@@ -23,7 +23,7 @@ module Gitlab
       end
 
       def stop_working
-        server.shutdown
+        server.shutdown if server
         @server = nil
       end
 

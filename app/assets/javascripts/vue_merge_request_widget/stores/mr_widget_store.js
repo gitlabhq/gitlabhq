@@ -4,7 +4,6 @@ import { stateKey } from './state_maps';
 import { formatDate } from '../../lib/utils/datetime_utility';
 
 export default class MergeRequestStore {
-
   constructor(data) {
     this.sha = data.diff_head_sha;
     this.gitlabLogo = data.gitlabLogo;
@@ -169,5 +168,4 @@ export default class MergeRequestStore {
 
     return timeagoInstance.format(date);
   }
-
 }

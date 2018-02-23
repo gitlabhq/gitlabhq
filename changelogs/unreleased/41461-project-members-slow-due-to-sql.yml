@@ -1,0 +1,5 @@
+---
+title: Improve query performance of MembersFinder.
+merge_request: 17190
+author:
+type: performance

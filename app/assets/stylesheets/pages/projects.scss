@@ -678,6 +678,9 @@ a.deploy-project-label {
   }
 }
 
+.project-empty-note-panel {
+  border-bottom: 1px solid $border-color;
+}
 
 .project-stats {
   font-size: 0;
@@ -686,11 +689,13 @@ a.deploy-project-label {
   border-bottom: 1px solid $border-color;
 
   .nav {
-    padding-top: 12px;
-    padding-bottom: 12px;
+    margin-top: $gl-padding-8;
+    margin-bottom: $gl-padding-8;
 
     > li {
       display: inline-block;
+      margin-top: $gl-padding-4;
+      margin-bottom: $gl-padding-4;
 
       &:not(:last-child) {
         margin-right: $gl-padding;
@@ -704,36 +709,32 @@ a.deploy-project-label {
           float: right;
         }
       }
+    }
 
-      > a {
-        padding: 0;
-        background-color: transparent;
-        font-size: 14px;
-        line-height: 29px;
-        color: $notes-light-color;
+    .stat-text,
+    .stat-link {
+      padding: $gl-btn-vert-padding 0;
+      background-color: transparent;
+      font-size: $gl-font-size;
+      line-height: $gl-btn-line-height;
+      color: $notes-light-color;
+    }
 
-        &:hover,
-        &:focus {
-          color: $gl-text-color;
-          text-decoration: underline;
-        }
+    .stat-link {
+      &:hover,
+      &:focus {
+        color: $gl-text-color;
+        text-decoration: underline;
       }
     }
-  }
 
-  li.missing {
-    border: 1px dashed $border-gray-normal-dashed;
-    border-radius: $border-radius-default;
-
-    a {
-      padding-left: 10px;
-      padding-right: 10px;
-      color: $notes-light-color;
-      display: block;
+    .btn {
+      padding: $gl-btn-vert-padding $gl-btn-horz-padding;
+      line-height: $gl-btn-line-height;
     }
 
-    &:hover {
-      background-color: $gray-normal;
+    .btn-missing {
+      @extend .btn-missing;
     }
   }
 }
@@ -743,7 +744,7 @@ pre.light-well {
 }
 
 .git-empty {
-  margin: 0 7px 7px;
+  margin-bottom: 7px;
 
   h5 {
     color: $gl-text-color;
@@ -892,6 +893,12 @@ pre.light-well {
   label {
     margin-top: 6px;
     font-weight: $gl-font-weight-normal;
+  }
+}
+
+.project-tip-command {
+  > .input-group-btn:first-child {
+    width: auto;
   }
 }
 

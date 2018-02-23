@@ -1,6 +1,0 @@
----
-title: Fix export removal for hashed-storage projects within a renamed or deleted
-  namespace
-merge_request: 16658
-author:
-type: fixed

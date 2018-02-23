@@ -4,8 +4,8 @@ import memberExpirationDate from '~/member_expiration_date';
 import Members from '~/members';
 import UsersSelect from '~/users_select';
 
-export default () => {
+document.addEventListener('DOMContentLoaded', () => {
   memberExpirationDate();
   new Members();
   new UsersSelect();
-};
+});

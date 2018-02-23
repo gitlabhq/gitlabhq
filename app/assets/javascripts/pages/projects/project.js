@@ -50,7 +50,7 @@ export default class Project {
     Project.projectSelectDropdown();
   }
 
-  static projectSelectDropdown () {
+  static projectSelectDropdown() {
     projectSelect();
     $('.project-item-select').on('click', e => Project.changeProject($(e.currentTarget).val()));
   }
@@ -71,7 +71,7 @@ export default class Project {
       selected = $dropdown.data('selected');
       return $dropdown.glDropdown({
         data(term, callback) {
-          axios.get($dropdown.data('refs-url'), {
+          axios.get($dropdown.data('refsUrl'), {
             params: {
               ref: $dropdown.data('ref'),
               search: term,
@@ -84,8 +84,8 @@ export default class Project {
         filterable: true,
         filterRemote: true,
         filterByText: true,
-        inputFieldName: $dropdown.data('input-field-name'),
-        fieldName: $dropdown.data('field-name'),
+        inputFieldName: $dropdown.data('inputFieldName'),
+        fieldName: $dropdown.data('fieldName'),
         renderRow: function(ref) {
           var li = refListItem.cloneNode(false);
 

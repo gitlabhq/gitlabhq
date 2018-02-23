@@ -15,4 +15,7 @@ class BasePolicy < DeclarativePolicy::Base
   condition(:restricted_public_level, scope: :global) do
     Gitlab::CurrentSettings.current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)
   end
+
+  # This is prevented in some cases in `gitlab-ee`
+  rule { default }.enable :read_cross_project
 end

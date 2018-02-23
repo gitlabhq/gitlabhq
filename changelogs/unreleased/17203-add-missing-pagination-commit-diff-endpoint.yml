@@ -1,0 +1,5 @@
+---
+  title: Add missing pagination on the commit diff endpoint
+  merge_request: 17203
+  author: Maxime Roussin-Bélanger
+  type: fixed

@@ -19,8 +19,9 @@ module Banzai
     #
     # Returns the documents passed as the first argument.
     def redact(documents)
-      all_document_nodes = document_nodes(documents)
+      redact_cross_project_references(documents) unless can_read_cross_project?
 
+      all_document_nodes = document_nodes(documents)
       redact_document_nodes(all_document_nodes)
     end
 
@@ -51,6 +52,18 @@ module Banzai
       metadata
     end
 
+    def redact_cross_project_references(documents)
+      extractor = Banzai::IssuableExtractor.new(project, user)
+      issuables = extractor.extract(documents)
+
+      issuables.each do |node, issuable|
+        next if issuable.project == project
+
+        node['class'] = node['class'].gsub('has-tooltip', '')
+        node['title'] = nil
+      end
+    end
+
     # Returns the nodes visible to the current user.
     #
     # nodes - The input nodes to check.
@@ -77,6 +90,12 @@ module Banzai
       documents.map do |document|
         { document: document, nodes: Querying.css(document, 'a.gfm[data-reference-type]') }
       end
+    end
+
+    private
+
+    def can_read_cross_project?
+      Ability.allowed?(user, :read_cross_project)
     end
   end
 end

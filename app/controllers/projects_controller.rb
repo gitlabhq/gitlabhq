@@ -45,7 +45,7 @@ class ProjectsController < Projects::ApplicationController
         notice: _("Project '%{project_name}' was successfully created.") % { project_name: @project.name }
       )
     else
-      render 'new'
+      render 'new', locals: { active_tab: ('import' if project_params[:import_url].present?) }
     end
   end
 
@@ -114,6 +114,8 @@ class ProjectsController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         @notification_setting = current_user.notification_settings_for(@project) if current_user
+        @project = @project.present(current_user: current_user)
+
         render_landing_page
       end
 
@@ -279,7 +281,6 @@ class ProjectsController < Projects::ApplicationController
         @project_wiki = @project.wiki
         @wiki_home = @project_wiki.find_page('home', params[:version_id])
       elsif @project.feature_available?(:issues, current_user)
-        @finder_type = IssuesFinder
         @issues = issuables_collection.page(params[:page])
         @collection_type = 'Issue'
         @issuable_meta_data = issuable_meta_data(@issues, @collection_type)
@@ -287,6 +288,10 @@ class ProjectsController < Projects::ApplicationController
 
       render :show
     end
+  end
+
+  def finder_type
+    IssuesFinder
   end
 
   def determine_layout
