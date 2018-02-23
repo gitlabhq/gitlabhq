@@ -354,7 +354,7 @@ module BlobHelper
     elsif display_modify_blob?(blob, project, ref)
       edit_link_tag(text, edit_path, common_classes)
     elsif user_can_fork_project?(project)
-      edit_fork_button_tag(common_classes, project, text, edit_path)
+      edit_fork_button_tag(common_classes, project, text, edit_blob_fork_params(edit_path))
     end
   end
 end
