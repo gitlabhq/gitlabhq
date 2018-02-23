@@ -23,6 +23,10 @@ describe GithubService do
 
   subject { described_class.create(service_params) }
 
+  before do
+    stub_licensed_features(github_project_service_integration: true)
+  end
+
   describe "Associations" do
     it { is_expected.to belong_to :project }
   end
@@ -143,6 +147,16 @@ describe GithubService do
         subject.execute(pipeline_sample_data)
       end
     end
+
+    context 'without a license' do
+      it 'does nothing' do
+        stub_licensed_features(github_project_service_integration: false)
+
+        result = subject.execute(pipeline_sample_data)
+
+        expect(result).to be_nil
+      end
+    end
   end
 
   describe '#can_test?' do
@@ -195,6 +209,16 @@ describe GithubService do
 
       expect(result[:success]).to eq false
       expect(result[:result].to_s).to end_with('401 - Bad credentials')
+    end
+
+    context 'without a license' do
+      it 'fails gracefully' do
+        stub_licensed_features(github_project_service_integration: false)
+
+        result = subject.test(pipeline_sample_data)
+
+        expect(result[:success]).to eq false
+      end
     end
   end
 end

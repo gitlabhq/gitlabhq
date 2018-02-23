@@ -51,6 +51,8 @@ class GithubService < Service
   end
 
   def execute(data)
+    return if disabled?
+
     status_message = StatusMessage.from_pipeline_data(project, data)
 
     update_status(status_message)
@@ -79,6 +81,10 @@ class GithubService < Service
   end
 
   private
+
+  def disabled?
+    project.disabled_services.include?(to_param)
+  end
 
   def update_status(status_message)
     notifier.notify(status_message.sha,

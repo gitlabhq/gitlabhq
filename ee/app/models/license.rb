@@ -42,6 +42,7 @@ class License < ActiveRecord::Base
     external_files_in_gitlab_ci
     file_locks
     geo
+    github_project_service_integration
     group_issue_boards
     jira_dev_panel_integration
     ldap_group_sync_filter

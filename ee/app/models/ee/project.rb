@@ -451,6 +451,10 @@ module EE
           disabled_services.push('jenkins', 'jenkins_deprecated')
         end
 
+        unless feature_available?(:github_project_service_integration)
+          disabled_services.push('github')
+        end
+
         disabled_services
       end
     end
