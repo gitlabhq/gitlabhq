@@ -1,7 +1,7 @@
 Gitlab::Graphql::Authorize.register!
 
 GitlabSchema = GraphQL::Schema.define do
-  use GraphQL::Batch
+  use BatchLoader::GraphQL
 
   enable_preloading
   enable_authorization

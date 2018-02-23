@@ -47,6 +47,8 @@ module Gitlab
 
       def build_checker(current_user, abilities)
         proc do |obj|
+          # Load the elements if they weren't loaded by BatchLoader yet
+          obj = obj.sync if obj.respond_to?(:sync)
           obj if abilities.all? { |ability| Ability.allowed?(current_user, ability, obj) }
         end
       end

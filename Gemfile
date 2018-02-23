@@ -95,7 +95,6 @@ gem 'rack-cors', '~> 1.0.0', require: 'rack/cors'
 
 # GraphQL API
 gem 'graphql', '~> 1.7.14'
-gem 'graphql-batch', '~> 0.3.9'
 gem 'graphql-preload', '~> 2.0.0'
 gem 'graphiql-rails', '~> 1.4.10'
 
