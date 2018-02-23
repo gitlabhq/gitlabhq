@@ -8,7 +8,7 @@ module Ci
 
         temp_file!(JobArtifactUploader.workhorse_upload_path) do |temp_path|
           FileUtils.cp(stream.path, temp_path)
-          create_job_trace!(temp_path)
+          create_job_trace!(job, temp_path)
           FileUtils.rm(stream.path)
         end
       end
@@ -16,17 +16,17 @@ module Ci
 
     private
 
-    def create_job_trace!(path)
+    def create_job_trace!(job, path)
       job.create_job_artifacts_trace!(
         project: job.project,
         file_type: :trace,
-        file: UploadedFile.new(path, 'build.log', 'application/octet-stream')
+        file: UploadedFile.new(path, 'job.log', 'application/octet-stream')
       )
     end
 
     def temp_file!(temp_dir)
       FileUtils.mkdir_p(temp_dir)
-      temp_file = Tempfile.new('file', temp_dir)
+      temp_file = Tempfile.new('legacy-trace-tmp-', temp_dir)
       temp_file&.close
       yield(temp_file.path)
     ensure
