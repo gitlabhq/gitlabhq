@@ -1,20 +1,20 @@
-require('spec_helper')
+require 'spec_helper'
 
-describe Projects::PrometheusController do
+describe Projects::Prometheus::MetricsController do
   let(:user) { create(:user) }
-  let!(:project) { create(:project) }
+  let(:project) { create(:project) }
 
   let(:prometheus_service) { double('prometheus_service') }
 
   before do
     allow(controller).to receive(:project).and_return(project)
-    allow(project).to receive(:prometheus_service).and_return(prometheus_service)
+    allow(project).to receive(:find_or_initialize_service).with('prometheus').and_return(prometheus_service)
 
     project.add_master(user)
     sign_in(user)
   end
 
-  describe 'GET #active_metrics' do
+  describe 'GET #active_common' do
     context 'when prometheus metrics are enabled' do
       context 'when data is not present' do
         before do
@@ -22,7 +22,7 @@ describe Projects::PrometheusController do
         end
 
         it 'returns no content response' do
-          get :active_metrics, project_params(format: :json)
+          get :active_common, project_params(format: :json)
 
           expect(response).to have_gitlab_http_status(204)
         end
@@ -36,7 +36,7 @@ describe Projects::PrometheusController do
         end
 
         it 'returns no content response' do
-          get :active_metrics, project_params(format: :json)
+          get :active_common, project_params(format: :json)
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response).to eq(sample_response.deep_stringify_keys)
@@ -45,7 +45,7 @@ describe Projects::PrometheusController do
 
       context 'when requesting non json response' do
         it 'returns not found response' do
-          get :active_metrics, project_params
+          get :active_common, project_params
 
           expect(response).to have_gitlab_http_status(404)
         end
