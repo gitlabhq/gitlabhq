@@ -93,7 +93,38 @@ module Gitlab
         job.erase_old_trace!
       end
 
+      def archive!
+        return if trace_artifact
+
+        if current_path
+          File.open(current_path) do |f|
+            archive_stream!(f)
+            f.unlink
+          end
+        elsif old_trace
+          StringIO(old_trace).tap do |stream|
+            archive_stream!(stream)
+            job.erase_old_trace!
+          end
+        end
+      end
+
       private
+
+      def archive_stream!(stream)
+        file = Tempfile.new('trace.log')
+        size = IO.copy_stream(file, stream)
+        raise 'Not all saved' unless size == stream.size
+        file.close
+
+        job.create_job_artifacts_trace!(
+          project: job.project,
+          file_type: :trace,
+          file: file)
+      ensure
+        file&.close
+        file&.unlink
+      end
 
       def ensure_path
         return current_path if current_path
