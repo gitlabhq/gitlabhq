@@ -4,7 +4,7 @@ module Ci
       return if job.job_artifacts_trace
 
       job.trace.read do |stream|
-        return unless stream.file?
+        return unless stream.file? # rubocop:disable Lint/NonLocalExitFromIterator
 
         temp_file!(stream.path, JobArtifactUploader.workhorse_upload_path) do |temp_path|
           job.create_job_artifacts_trace!(

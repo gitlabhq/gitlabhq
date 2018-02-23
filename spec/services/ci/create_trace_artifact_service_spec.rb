@@ -12,13 +12,13 @@ describe Ci::CreateTraceArtifactService do
         let(:new_path) { job.job_artifacts_trace.file.path }
         let(:new_checksum) { Digest::SHA256.file(new_path).hexdigest }
 
-        it { expect(File.exists?(legacy_path)).to be_truthy }
+        it { expect(File.exist?(legacy_path)).to be_truthy }
 
         it 'creates trace artifact' do
           expect { subject }.to change { Ci::JobArtifact.count }.by(1)
 
-          expect(File.exists?(legacy_path)).to be_falsy
-          expect(File.exists?(new_path)).to be_truthy
+          expect(File.exist?(legacy_path)).to be_falsy
+          expect(File.exist?(new_path)).to be_truthy
           expect(new_checksum).to eq(legacy_checksum)
           expect(job.job_artifacts_trace.file.exists?).to be_truthy
           expect(job.job_artifacts_trace.file.filename).to eq('job.log')
@@ -37,7 +37,7 @@ describe Ci::CreateTraceArtifactService do
           end
 
           it 'keeps legacy trace and removes trace artifact' do
-            expect(File.exists?(legacy_path)).to be_truthy
+            expect(File.exist?(legacy_path)).to be_truthy
             expect(job.job_artifacts_trace).to be_nil
           end
         end
@@ -50,7 +50,7 @@ describe Ci::CreateTraceArtifactService do
           it 'raises an error' do
             expect { subject }.to raise_error('Trace artifact not found')
 
-            expect(File.exists?(legacy_path)).to be_truthy
+            expect(File.exist?(legacy_path)).to be_truthy
           end
         end
       end
