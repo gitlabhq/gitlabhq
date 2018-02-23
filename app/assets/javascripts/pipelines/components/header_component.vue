@@ -19,7 +19,6 @@
         required: true,
       },
     },
-
     data() {
       return {
         actions: this.getActions(),

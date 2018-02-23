@@ -30,6 +30,7 @@ describe Gitlab::UsageData do
         license_trial
         licensee
         license_md5
+        license_id
         recorded_at
         mattermost_enabled
         edition
@@ -160,6 +161,7 @@ describe Gitlab::UsageData do
 
       expect(subject[:uuid]).to eq(Gitlab::CurrentSettings.uuid)
       expect(subject[:license_md5]).to eq(Digest::MD5.hexdigest(license.data))
+      expect(subject[:license_id]).to eq(license.license_id)
       expect(subject[:version]).to eq(Gitlab::VERSION)
       expect(subject[:licensee]).to eq(license.licensee)
       expect(subject[:active_user_count]).to eq(User.active.count)

@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.5.1 (2018-02-22)
+
+- No changes.
+
 ## 10.5.0 (2018-02-22)
 
 ### Security (3 changes, 1 of them is from the community)
@@ -165,9 +169,8 @@ entry.
 - Log and send a system hook if a blocked user attempts to login.
 - Add Gitaly Servers admin dashboard.
 
-### Other (26 changes, 7 of them are from the community)
+### Other (25 changes, 7 of them are from the community)
 
-- Activated the Web IDE Button also on the main project page. !4250
 - Updated the katex library. !15864
 - Add modal for deleting a milestone. !16229
 - Remove unused CSS selectors for Cycle Analytics. !16270 (Takuya Noguchi)

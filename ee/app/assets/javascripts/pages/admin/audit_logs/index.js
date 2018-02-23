@@ -1,3 +1,3 @@
 import AuditLogs from './audit_logs';
 
-export default () => new AuditLogs();
+document.addEventListener('DOMContentLoaded', () => new AuditLogs());

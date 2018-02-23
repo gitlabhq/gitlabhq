@@ -93,4 +93,10 @@ describe Groups::AnalyticsController do
       expect { get :show, group_id: group.path }.not_to exceed_query_limit(control_count)
     end
   end
+
+  describe 'GET #index' do
+    subject { get :show, group_id: group.to_param }
+
+    it_behaves_like 'disabled when using an external authorization service'
+  end
 end

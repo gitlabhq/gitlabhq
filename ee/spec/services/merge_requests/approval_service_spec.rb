@@ -44,6 +44,12 @@ describe MergeRequests::ApprovalService do
         expect(todo.reload).to be_done
       end
 
+      it 'resets the cache for approvals' do
+        expect(merge_request).to receive(:reset_approval_cache!)
+
+        service.execute(merge_request)
+      end
+
       context 'with remaining approvals' do
         it 'does not fire a webhook' do
           expect(merge_request).to receive(:approvals_left).and_return(5)

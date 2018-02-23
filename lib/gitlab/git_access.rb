@@ -201,7 +201,7 @@ module Gitlab
     end
 
     def check_repository_existence!
-      unless project.repository.exists?
+      unless repository.exists?
         raise UnauthorizedError, ERROR_MESSAGES[:no_repo]
       end
     end
@@ -349,6 +349,10 @@ module Gitlab
 
     def push_to_read_only_message
       ERROR_MESSAGES[:cannot_push_to_read_only]
+    end
+
+    def repository
+      project.repository
     end
   end
 end

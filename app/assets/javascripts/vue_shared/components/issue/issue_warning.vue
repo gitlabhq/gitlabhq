@@ -5,7 +5,6 @@
     components: {
       icon,
     },
-
     props: {
       isLocked: {
         type: Boolean,

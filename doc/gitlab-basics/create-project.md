@@ -41,16 +41,16 @@ When you create a new repo locally, instead of going to GitLab to manually
 create a new project and then push the repo, you can directly push it to
 GitLab to create the new project, all without leaving your terminal. If you have access to that
 namespace, we will automatically create a new project under that GitLab namespace with its 
-visibility set to private by default (you can later change it in the UI).
+visibility set to Private by default (you can later change it in the [project's settings](../public_access/public_access.md#how-to-change-project-visibility)).
 
 This can be done by using either SSH or HTTP:
 
 ```
 ## Git push using SSH
-git push git@gitlab.example.com:namespace/nonexistent-project.git
+git push --set-upstream git@gitlab.example.com:namespace/nonexistent-project.git master
 
 ## Git push using HTTP
-git push https://gitlab.example.com/namespace/nonexistent-project.git
+git push --set-upstream https://gitlab.example.com/namespace/nonexistent-project.git master
 ```
 
 Once the push finishes successfully, a remote message will indicate

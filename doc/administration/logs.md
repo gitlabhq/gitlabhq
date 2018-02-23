@@ -32,6 +32,8 @@ In this example, you can see this was a GET request for a specific issue. Notice
 2. `view`: total time taken inside the Rails views
 3. `db`: total time to retrieve data from the database
 
+User clone/fetch activity using http transport appears in this log as `action: git_upload_pack`.
+
 In addition, the log contains the IP address from which the request originated
 (`remote_ip`) as well as the user's ID (`user_id`), and username (`username`).
 
@@ -156,6 +158,8 @@ SSH access to Git repositories. For example:
 I, [2015-02-13T06:17:00.671315 #9291]  INFO -- : Adding project root/example.git at </var/opt/gitlab/git-data/repositories/root/dcdcdcdcd.git>.
 I, [2015-02-13T06:17:00.679433 #9291]  INFO -- : Moving existing hooks directory and symlinking global hooks directory for /var/opt/gitlab/git-data/repositories/root/example.git.
 ```
+
+User clone/fetch activity using ssh transport appears in this log as `executing git command <gitaly-upload-pack...`.
 
 ## `unicorn\_stderr.log`
 

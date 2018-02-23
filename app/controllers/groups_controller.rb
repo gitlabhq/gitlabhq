@@ -20,6 +20,12 @@ class GroupsController < Groups::ApplicationController
 
   before_action :user_actions, only: [:show, :subgroups]
 
+  skip_cross_project_access_check :index, :new, :create, :edit, :update,
+                                  :destroy, :projects
+  # When loading show as an atom feed, we render events that could leak cross
+  # project information
+  skip_cross_project_access_check :show, if: -> { request.format.html? }
+
   layout :determine_layout
 
   def index

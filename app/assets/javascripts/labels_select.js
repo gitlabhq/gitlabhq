@@ -316,7 +316,7 @@ export default class LabelsSelect {
         },
         multiSelect: $dropdown.hasClass('js-multiselect'),
         vue: $dropdown.hasClass('js-issue-board-sidebar'),
-        clicked: function(clickEvent) {
+        clicked: function (clickEvent) {
           const { $el, e, isMarking } = clickEvent;
           const label = clickEvent.selectedObj;
 

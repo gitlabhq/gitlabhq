@@ -4,6 +4,8 @@ module MergeRequests
       approval = merge_request.approvals.new(user: current_user)
 
       if approval.save
+        merge_request.reset_approval_cache!
+
         create_approval_note(merge_request)
         mark_pending_todos_as_done(merge_request)
 

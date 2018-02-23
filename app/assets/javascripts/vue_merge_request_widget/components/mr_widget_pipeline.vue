@@ -80,6 +80,7 @@
         >
           <ci-icon :status="status" />
         </a>
+
         <div class="media-body">
           Pipeline
           <a

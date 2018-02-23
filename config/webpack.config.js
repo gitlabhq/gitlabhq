@@ -29,13 +29,19 @@ var pageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'ap
 var dispatcher = fs.readFileSync(path.join(ROOT_PATH, 'app/assets/javascripts/dispatcher.js')).toString();
 var dispatcherChunks = dispatcher.match(/(?!import\(')\.\/pages\/[^']+/g);
 
-pageEntries.forEach(( path ) => {
-  let chunkPath = path.replace(/\/index\.js$/, '');
-  if (!dispatcherChunks.includes('./' + chunkPath)) {
-    let chunkName = chunkPath.replace(/\//g, '.');
-    autoEntries[chunkName] = './' + path;
+function generateAutoEntries(path, prefix = '.') {
+  const chunkPath = path.replace(/\/index\.js$/, '');
+  if (!dispatcherChunks.includes(`${prefix}/${chunkPath}`)) {
+    const chunkName = chunkPath.replace(/\//g, '.');
+    autoEntries[chunkName] = `${prefix}/${path}`;
   }
-});
+}
+
+pageEntries.forEach(( path ) => generateAutoEntries(path));
+
+// add and replace any ce entries with ee entries
+const eePageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'ee/app/assets/javascripts') });
+eePageEntries.forEach(( path ) => generateAutoEntries(path, 'ee'));
 
 // report our auto-generated bundle count
 var autoEntriesCount = Object.keys(autoEntries).length;
@@ -48,31 +54,17 @@ var config = {
   },
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
-    add_gitlab_slack_application: './add_gitlab_slack_application/index.js',
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
     blob:                 './blob_edit/blob_bundle.js',
-    burndown_chart:       './burndown_chart/index.js',
-    common:               './commons/index.js',
-    common_vue:           './vue_shared/vue_resource_interceptor.js',
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
     deploy_keys:          './deploy_keys/index.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
     environments:         './environments/environments_bundle.js',
     environments_folder:  './environments/folder/environments_folder_bundle.js',
-    epic_show:            'ee/epics/epic_show/epic_show_bundle.js',
-    new_epic:             'ee/epics/new_epic/new_epic_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
-    geo_nodes:            'ee/geo_nodes',
     help:                 './help/help.js',
-    issuable:             './issuable/issuable_bundle.js',
-    issues:               './issues/issues_bundle.js',
-    issue_show:           './issue_show/index.js',
-    ldap_group_links:     './groups/ldap_group_links.js',
-    locale:               './locale/index.js',
-    main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
-    mirrors:              './mirrors',
     monitoring:           './monitoring/monitoring_bundle.js',
     network:              './network/network_bundle.js',
     notebook_viewer:      './blob/notebook_viewer.js',
@@ -82,27 +74,44 @@ var config = {
     profile:              './profile/profile_bundle.js',
     project_import_gl:    './projects/project_import_gitlab_project.js',
     protected_branches:   './protected_branches',
-    ee_protected_branches: 'ee/protected_branches',
     protected_tags:       './protected_tags',
-    ee_protected_tags:    'ee/protected_tags',
-    service_desk:         './projects/settings_service_desk/service_desk_bundle.js',
-    service_desk_issues:  './service_desk_issues/index.js',
     registry_list:        './registry/index.js',
-    roadmap:              'ee/roadmap',
-    ide:                  './ide/index.js',
     sidebar:              './sidebar/sidebar_bundle.js',
-    ee_sidebar:           'ee/sidebar/sidebar_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
     sketch_viewer:        './blob/sketch_viewer.js',
     stl_viewer:           './blob/stl_viewer.js',
     terminal:             './terminal/terminal_bundle.js',
-    u2f:                  ['vendor/u2f'],
     ui_development_kit:   './ui_development_kit.js',
-    raven:                './raven/index.js',
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
-    test:                 './test.js',
     two_factor_auth:      './two_factor_auth.js',
+
+
+    common:               './commons/index.js',
+    common_vue:           './vue_shared/vue_resource_interceptor.js',
+    locale:               './locale/index.js',
+    main:                 './main.js',
+    ide:                  './ide/index.js',
+    raven:                './raven/index.js',
+    test:                 './test.js',
+    u2f:                  ['vendor/u2f'],
     webpack_runtime:      './webpack.js',
+
+    // EE-only
+    add_gitlab_slack_application: './add_gitlab_slack_application/index.js',
+    burndown_chart:       './burndown_chart/index.js',
+    epic_show:            'ee/epics/epic_show/epic_show_bundle.js',
+    new_epic:             'ee/epics/new_epic/new_epic_bundle.js',
+    geo_nodes:            'ee/geo_nodes',
+    issuable:             './issuable/issuable_bundle.js',
+    issues:               './issues/issues_bundle.js',
+    ldap_group_links:     './groups/ldap_group_links.js',
+    mirrors:              './mirrors',
+    ee_protected_branches: 'ee/protected_branches',
+    ee_protected_tags:    'ee/protected_tags',
+    service_desk:         './projects/settings_service_desk/service_desk_bundle.js',
+    service_desk_issues:  './service_desk_issues/index.js',
+    roadmap:              'ee/roadmap',
+    ee_sidebar:           'ee/sidebar/sidebar_bundle.js',
   },
 
   output: {
@@ -264,8 +273,6 @@ var config = {
         'environments_folder',
         'filtered_search',
         'groups',
-        'issuable',
-        'issue_show',
         'merge_conflicts',
         'monitoring',
         'notebook_viewer',
@@ -276,7 +283,6 @@ var config = {
         'ide',
         'schedule_form',
         'schedules_index',
-        'service_desk',
         'sidebar',
         'vue_merge_request_widget',
       ],
@@ -325,6 +331,7 @@ var config = {
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
       'vue$':           'vue/dist/vue.esm.js',
 
+      // EE-only
       'ee':              path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
       'ee_empty_states': path.join(ROOT_PATH, 'ee/app/views/shared/empty_states'),
       'ee_icons':        path.join(ROOT_PATH, 'ee/app/views/shared/icons'),

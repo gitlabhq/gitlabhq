@@ -102,6 +102,15 @@ You can choose to only pull the protected branches from your remote repository t
 
 To use this option go to your project's repository settings page under pull mirror.
 
+### Overwrite diverged branches
+
+>[Introduced][ee-4559] in GitLab Enterprise Edition 10.6.
+
+You can choose to always update your local branch with the remote version even 
+if your local version has diverged from the remote.
+
+To use this option go to your project's repository settings page under pull mirror.
+
 ### Hard failure
 
 >[Introduced][ee-3117] in GitLab Enterprise Edition 10.2.

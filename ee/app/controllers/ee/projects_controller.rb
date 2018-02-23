@@ -20,6 +20,7 @@ module EE
         mirror
         mirror_trigger_builds
         mirror_user_id
+        external_authorization_classification_label
       ]
     end
   end

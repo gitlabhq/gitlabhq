@@ -113,21 +113,6 @@ describe IssuesHelper do
     end
   end
 
-  describe "milestone_options" do
-    it "gets closed milestone from current issue" do
-      closed_milestone = create(:closed_milestone, project: project)
-      milestone1       = create(:milestone, project: project)
-      milestone2       = create(:milestone, project: project)
-      issue.update_attributes(milestone_id: closed_milestone.id)
-
-      options = milestone_options(issue)
-
-      expect(options).to have_selector('option[selected]', text: closed_milestone.title)
-      expect(options).to have_selector('option', text: milestone1.title)
-      expect(options).to have_selector('option', text: milestone2.title)
-    end
-  end
-
   describe "#link_to_discussions_to_resolve" do
     describe "passing only a merge request" do
       let(:merge_request) { create(:merge_request) }

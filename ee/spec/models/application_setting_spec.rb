@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe ApplicationSetting do
-  let(:setting) { described_class.create_from_defaults }
+  subject(:setting) { described_class.create_from_defaults }
 
   describe 'validations' do
     it { is_expected.to allow_value(100).for(:mirror_max_delay) }
@@ -23,6 +23,18 @@ describe ApplicationSetting do
     it { is_expected.not_to allow_value(1.0).for(:mirror_capacity_threshold) }
     it { is_expected.not_to allow_value(-1).for(:mirror_capacity_threshold) }
     it { is_expected.not_to allow_value(subject.mirror_max_capacity + 1).for(:mirror_capacity_threshold) }
+
+    describe 'when external authorization service is enabled' do
+      before do
+        stub_licensed_features(external_authorization_service: true)
+        setting.external_authorization_service_enabled = true
+      end
+
+      it { is_expected.not_to allow_value(nil).for(:external_authorization_service_url) }
+      it { is_expected.not_to allow_value('not a URL').for(:external_authorization_service_url) }
+      it { is_expected.to allow_value('https://example.com').for(:external_authorization_service_url) }
+      it { is_expected.not_to allow_value(nil).for(:external_authorization_service_default_label) }
+    end
   end
 
   describe '#should_check_namespace_plan?' do

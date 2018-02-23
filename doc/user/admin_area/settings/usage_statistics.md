@@ -10,9 +10,8 @@ under **Admin area > Settings > Usage statistics**.
 
 GitLab can inform you when an update is available and the importance of it.
 
-GitLab Inc. collects version statistics, but no information other than
-the GitLab version and the instance's hostname (through the HTTP
-referer) is collected.
+No information other than the GitLab version and the instance's hostname (through the HTTP referer)
+are collected.
 
 In the **Overview** tab you can see if your GitLab version is up to date. There
 are three cases: 1) you are up to date (green), 2) there is an update available

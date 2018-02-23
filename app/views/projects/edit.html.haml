@@ -37,6 +37,8 @@
               %span.light (optional)
             = f.text_area :description, class: "form-control", rows: 3, maxlength: 250
 
+          = render 'projects/ee/classification_policy_settings',  f: f
+
           - unless @project.empty_repo?
             .form-group
               = f.label :default_branch, "Default Branch", class: 'label-light'

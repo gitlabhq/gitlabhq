@@ -134,10 +134,15 @@ class ApplicationController < ActionController::Base
     Ability.allowed?(object, action, subject)
   end
 
-  def access_denied!
+  def access_denied!(message = nil)
     respond_to do |format|
-      format.json { head :not_found }
-      format.any { render "errors/access_denied", layout: "errors", status: 404 }
+      format.any { head :not_found }
+      format.html do
+        render "errors/access_denied",
+               layout: "errors",
+               status: 404,
+               locals: { message: message }
+      end
     end
   end
 

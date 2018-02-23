@@ -5,11 +5,11 @@ import UserCallout from '~/user_callout';
 import groupsSelect from '~/groups_select';
 import ApproversSelect from 'ee/approvers_select';
 
-export default () => {
+document.addEventListener('DOMContentLoaded', () => {
   new UsersSelect();
   groupsSelect();
 
   new UserCallout({ className: 'js-service-desk-callout' });
   new UserCallout({ className: 'js-mr-approval-callout' });
   new ApproversSelect();
-};
+});

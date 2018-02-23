@@ -1,4 +1,6 @@
 module Approvable
+  include Gitlab::Utils::StrongMemoize
+
   def requires_approve?
     approvals_required.nonzero?
   end
@@ -13,7 +15,7 @@ module Approvable
   #
   def approvals_left
     [
-      [approvals_required - approvals.count, number_of_potential_approvers].min,
+      [approvals_required - approvals.size, number_of_potential_approvers].min,
       0
     ].max
   end
@@ -66,7 +68,9 @@ module Approvable
   # Users in the list of approvers who have not already approved this MR.
   #
   def approvers_left
-    User.where(id: all_approvers_including_groups.map(&:id)).where.not(id: approvals.select(:user_id))
+    strong_memoize(:approvers_left) do
+      User.where(id: all_approvers_including_groups.map(&:id)).where.not(id: approved_by_users.select(:id))
+    end
   end
 
   # The list of approvers from either this MR (if they've been set on the MR) or the
@@ -79,7 +83,7 @@ module Approvable
     approvers_relation = approvers_overwritten? ? approvers : target_project.approvers
     approvers_relation = approvers_relation.where.not(user_id: author.id) if author
 
-    approvers_relation
+    approvers_relation.includes(:user)
   end
 
   def overall_approver_groups
@@ -87,14 +91,16 @@ module Approvable
   end
 
   def all_approvers_including_groups
-    approvers = []
+    strong_memoize(:all_approvers_including_groups) do
+      approvers = []
 
-    # Approvers from direct assignment
-    approvers << approvers_from_users
+      # Approvers from direct assignment
+      approvers << approvers_from_users
 
-    approvers << approvers_from_groups
+      approvers << approvers_from_groups
 
-    approvers.flatten
+      approvers.flatten
+    end
   end
 
   def approvers_from_users
@@ -144,10 +150,6 @@ module Approvable
     remaining_approvals.zero? || remaining_approvals > approvers_left.count
   end
 
-  def approved_by_users
-    approvals.map(&:user)
-  end
-
   def approver_ids=(value)
     value.split(",").map(&:strip).each do |user_id|
       next if author && user_id == author.id
@@ -160,5 +162,13 @@ module Approvable
     value.split(",").map(&:strip).each do |group_id|
       approver_groups.find_or_initialize_by(group_id: group_id, target_id: id)
     end
+  end
+
+  def reset_approval_cache!
+    approvals(true)
+    approved_by_users(true)
+
+    clear_memoization(:approvers_left)
+    clear_memoization(:all_approvers_including_groups)
   end
 end

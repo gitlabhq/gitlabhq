@@ -234,6 +234,18 @@ merge request widget area.
 
 [Read more about SAST Docker images reports.](sast_docker.md)
 
+## Dynamic Application Security Testing
+
+> Introduced in [GitLab Ultimate][products] 10.4.
+
+If you are using [GitLab CI/CD][ci], you can analyze your running web
+application(s) for known vulnerabilities using Dynamic Application Security
+Testing (DAST).
+Going a step further, GitLab can show the vulnerability report right in the
+merge request widget area.
+
+[Read more about Dynamic Application Security Testing reports.](dast.md)
+
 ## Browser Performance Testing
 
 > Introduced in [GitLab Premium][products] 10.3.

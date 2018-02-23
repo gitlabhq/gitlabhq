@@ -5,6 +5,8 @@ class ProjectMirrorEntity < Grape::Entity
   expose :username_only_import_url
   expose :mirror_user_id
   expose :mirror_trigger_builds
+  expose :only_mirror_protected_branches
+  expose :mirror_overwrites_diverged_branches
 
   expose :import_data_attributes do |project|
     import_data = project.import_data

@@ -1,6 +1,8 @@
 require_dependency 'declarative_policy'
 
 class BasePolicy < DeclarativePolicy::Base
+  prepend EE::BasePolicy
+
   desc "User is an instance admin"
   with_options scope: :user, score: 0
   condition(:admin) { @user&.admin? }
@@ -15,6 +17,9 @@ class BasePolicy < DeclarativePolicy::Base
   condition(:restricted_public_level, scope: :global) do
     Gitlab::CurrentSettings.current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)
   end
+
+  # This is prevented in some cases in `gitlab-ee`
+  rule { default }.enable :read_cross_project
 
   # EE Extensions
   with_scope :user
