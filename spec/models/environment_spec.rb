@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Environment do
-  set(:project) { create(:project) }
+  let(:project) { create(:project) }
   subject(:environment) { create(:environment, project: project) }
 
   it { is_expected.to belong_to(:project) }
@@ -623,10 +623,7 @@ describe Environment do
   end
 
   describe '#prometheus_adapter' do
-    let!(:cluster_for_all) { create(:cluster, environment_scope: '*', projects: [project]) }
-    let!(:cluster_for_dev) { create(:cluster, environment_scope: 'dev', projects: [project]) }
-
-    let!(:prometheus_for_dev) { create(:clusters_applications_prometheus, :installed, cluster: cluster_for_dev) }
+    let(:cluster) { create(:cluster, :provided_by_user, environment_scope: '*', projects: [project]) }
 
     context 'prometheus service can execute queries' do
       let(:prometheus_service) { double(:prometheus_service, can_query?: true) }
@@ -643,53 +640,17 @@ describe Environment do
     context "prometheus service can't execute queries" do
       let(:prometheus_service) { double(:prometheus_service, can_query?: false) }
 
-      context 'with cluster for all environments with prometheus installed' do
-        let!(:prometheus_for_all) { create(:clusters_applications_prometheus, :installed, cluster: cluster_for_all) }
+      context 'with cluster with prometheus installed' do
+        let!(:prometheus) { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
 
-        context 'without environment supplied' do
-          it 'returns application handling all environments' do
-            expect(environment.prometheus_adapter).to eq(prometheus_for_all)
-          end
-        end
-
-        context 'with dev environment supplied' do
-          let!(:environment) { create(:environment, project: project, name: 'dev') }
-
-          it 'returns dev cluster prometheus application' do
-            expect(environment.prometheus_adapter).to eq(prometheus_for_dev)
-          end
-        end
-
-        context 'with prod environment supplied' do
-          let!(:environment) { create(:environment, project: project, name: 'prod') }
-
-          it 'returns application handling all environments' do
-            expect(environment.prometheus_adapter).to eq(prometheus_for_all)
-          end
+        it 'returns application handling all environments' do
+          expect(environment.prometheus_adapter).to eq(prometheus)
         end
       end
 
-      context 'with cluster for all environments without prometheus installed' do
-        context 'without environment supplied' do
-          it 'returns nil' do
-            expect(environment.prometheus_adapter).to be_nil
-          end
-        end
-
-        context 'with dev environment supplied' do
-          let!(:environment) { create(:environment, project: project, name: 'dev') }
-
-          it 'returns dev cluster prometheus application' do
-            expect(environment.prometheus_adapter).to eq(prometheus_for_dev)
-          end
-        end
-
-        context 'with prod environment supplied' do
-          let!(:environment) { create(:environment, project: project, name: 'prod') }
-
-          it 'returns nil' do
-            expect(environment.prometheus_adapter).to be_nil
-          end
+      context 'with cluster without prometheus installed' do
+        it 'returns nil' do
+          expect(environment.prometheus_adapter).to be_nil
         end
       end
     end
