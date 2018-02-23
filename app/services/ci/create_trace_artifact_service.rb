@@ -6,28 +6,27 @@ module Ci
       job.trace.read do |stream|
         return unless stream.file?
 
-        temp_file!(JobArtifactUploader.workhorse_upload_path) do |temp_path|
-          FileUtils.cp(stream.path, temp_path)
-          create_job_trace!(job, temp_path)
-          FileUtils.rm(stream.path)
+        temp_file!(stream.path, JobArtifactUploader.workhorse_upload_path) do |temp_path|
+          job.create_job_artifacts_trace!(
+            project: job.project,
+            file_type: :trace,
+            file: UploadedFile.new(temp_path, 'job.log', 'application/octet-stream')
+          )
         end
+
+        raise 'Trace artifact not found' unless job.job_artifacts_trace.file.exists?
+
+        FileUtils.rm(stream.path)
       end
     end
 
     private
 
-    def create_job_trace!(job, path)
-      job.create_job_artifacts_trace!(
-        project: job.project,
-        file_type: :trace,
-        file: UploadedFile.new(path, 'job.log', 'application/octet-stream')
-      )
-    end
-
-    def temp_file!(temp_dir)
+    def temp_file!(src_file, temp_dir)
       FileUtils.mkdir_p(temp_dir)
-      temp_file = Tempfile.new('legacy-trace-tmp-', temp_dir)
+      temp_file = Tempfile.new('trace-tmp-', temp_dir)
       temp_file&.close
+      FileUtils.cp(src_file, temp_file.path)
       yield(temp_file.path)
     ensure
       temp_file&.close
