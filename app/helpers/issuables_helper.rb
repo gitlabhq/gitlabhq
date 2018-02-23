@@ -237,7 +237,7 @@ module IssuablesHelper
 
     data.merge!(updated_at_by(issuable))
 
-    data.to_json
+    data
   end
 
   def updated_at_by(issuable)
