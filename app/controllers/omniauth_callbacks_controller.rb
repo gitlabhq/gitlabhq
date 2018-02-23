@@ -10,8 +10,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
   end
 
-  if Gitlab::LDAP::Config.enabled?
-    Gitlab::LDAP::Config.available_servers.each do |server|
+  if Gitlab::Auth::LDAP::Config.enabled?
+    Gitlab::Auth::LDAP::Config.available_servers.each do |server|
       define_method server['provider_name'] do
         ldap
       end
@@ -31,7 +31,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # We only find ourselves here
   # if the authentication to LDAP was successful.
   def ldap
-    ldap_user = Gitlab::LDAP::User.new(oauth)
+    ldap_user = Gitlab::Auth::LDAP::User.new(oauth)
     ldap_user.save if ldap_user.changed? # will also save new users
 
     @user = ldap_user.gl_user
@@ -62,13 +62,13 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         redirect_to after_sign_in_path_for(current_user)
       end
     else
-      saml_user = Gitlab::Saml::User.new(oauth)
+      saml_user = Gitlab::Auth::Saml::User.new(oauth)
       saml_user.save if saml_user.changed?
       @user = saml_user.gl_user
 
       continue_login_process
     end
-  rescue Gitlab::OAuth::SignupDisabledError
+  rescue Gitlab::Auth::OAuth::User::SignupDisabledError
     handle_signup_error
   end
 
@@ -106,20 +106,20 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       log_audit_event(current_user, with: oauth['provider'])
       redirect_to profile_account_path, notice: 'Authentication method updated'
     else
-      oauth_user = Gitlab::OAuth::User.new(oauth)
+      oauth_user = Gitlab::Auth::OAuth::User.new(oauth)
       oauth_user.save
       @user = oauth_user.gl_user
 
       continue_login_process
     end
-  rescue Gitlab::OAuth::SigninDisabledForProviderError
+  rescue Gitlab::Auth::OAuth::User::SigninDisabledForProviderError
     handle_disabled_provider
-  rescue Gitlab::OAuth::SignupDisabledError
+  rescue Gitlab::Auth::OAuth::User::SignupDisabledError
     handle_signup_error
   end
 
   def handle_service_ticket(provider, ticket)
-    Gitlab::OAuth::Session.create provider, ticket
+    Gitlab::Auth::OAuth::Session.create provider, ticket
     session[:service_tickets] ||= {}
     session[:service_tickets][provider] = ticket
   end
@@ -142,7 +142,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def handle_signup_error
-    label = Gitlab::OAuth::Provider.label_for(oauth['provider'])
+    label = Gitlab::Auth::OAuth::Provider.label_for(oauth['provider'])
     message = "Signing in using your #{label} account without a pre-existing GitLab account is not allowed."
 
     if Gitlab::CurrentSettings.allow_signup?
@@ -171,7 +171,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def handle_disabled_provider
-    label = Gitlab::OAuth::Provider.label_for(oauth['provider'])
+    label = Gitlab::Auth::OAuth::Provider.label_for(oauth['provider'])
     flash[:alert] = "Signing in using #{label} has been disabled"
 
     redirect_to new_user_session_path
