@@ -1,7 +1,7 @@
 module Gitlab
   module Prometheus
     module Queries
-      class MatchedMetricsQuery < BaseQuery
+      class MatchedMetricQuery < BaseQuery
         MAX_QUERY_ITEMS = 40.freeze
 
         def query
@@ -18,7 +18,7 @@ module Gitlab
         private
 
         def groups_data
-          metrics_groups = groups_with_active_metrics(Gitlab::Prometheus::MetricGroup.all)
+          metrics_groups = groups_with_active_metrics(Gitlab::Prometheus::MetricGroup.common_metrics)
           lookup = active_series_lookup(metrics_groups)
 
           groups = {}

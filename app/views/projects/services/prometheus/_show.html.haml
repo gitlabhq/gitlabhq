@@ -7,7 +7,7 @@
       = link_to s_('PrometheusService|More information'), help_page_path('user/project/integrations/prometheus')
 
   .col-lg-9
-    .panel.panel-default.js-panel-monitored-metrics{ data: { "active-metrics" => "#{project_prometheus_active_metrics_path(@project, :json)}" } }
+    .panel.panel-default.js-panel-monitored-metrics{ data: { active_metrics: active_common_project_prometheus_metrics_path(@project, :json) } }
       .panel-heading
         %h3.panel-title
           = s_('PrometheusService|Monitored')

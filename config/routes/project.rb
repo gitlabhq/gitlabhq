@@ -74,7 +74,9 @@ constraints(ProjectUrlConstrainer.new) do
       resource :mattermost, only: [:new, :create]
 
       namespace :prometheus do
-        get :active_metrics
+        resources :metrics, constraints: { id: %r{[^\/]+} }, only: [] do
+          get :active_common, on: :collection
+        end
       end
 
       resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create, :edit, :update] do
@@ -237,6 +239,7 @@ constraints(ProjectUrlConstrainer.new) do
 
         member do
           get :status, format: :json
+          get :metrics, format: :json
 
           scope :applications do
             post '/:application', to: 'clusters/applications#create', as: :install_applications

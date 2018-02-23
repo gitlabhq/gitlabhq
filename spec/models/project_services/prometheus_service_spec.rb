@@ -63,7 +63,7 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
     end
 
     context 'with valid data' do
-      subject { service.environment_metrics(environment) }
+      subject { service.query(:environment, environment) }
 
       before do
         stub_reactive_cache(service, prometheus_data, environment_query, environment.id)
@@ -76,14 +76,14 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
   end
 
   describe '#matched_metrics' do
-    let(:matched_metrics_query) { Gitlab::Prometheus::Queries::MatchedMetricsQuery }
-    let(:client) { double(:client, label_values: nil) }
+    let(:matched_metrics_query) { Gitlab::Prometheus::Queries::MatchedMetricQuery }
+    let(:prometheus_client_wrapper) { double(:prometheus_client_wrapper, label_values: nil) }
 
     context 'with valid data' do
-      subject { service.matched_metrics }
+      subject { service.query(:matched_metrics) }
 
       before do
-        allow(service).to receive(:client).and_return(client)
+        allow(service).to receive(:prometheus_client_wrapper).and_return(prometheus_client_wrapper)
         synchronous_reactive_cache(service)
       end
 
@@ -103,17 +103,14 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
     end
 
     context 'with valid data' do
-      subject { service.deployment_metrics(deployment) }
-      let(:fake_deployment_time) { 10 }
+      subject { service.query(:deployment, deployment) }
 
       before do
-        stub_reactive_cache(service, prometheus_data, deployment_query, deployment.environment.id, deployment.id)
+        stub_reactive_cache(service, prometheus_data, deployment_query, deployment.id)
       end
 
       it 'returns reactive data' do
-        expect(deployment).to receive(:created_at).and_return(fake_deployment_time)
-
-        expect(subject).to eq(prometheus_metrics_data.merge(deployment_time: fake_deployment_time))
+        expect(subject).to eq(prometheus_metrics_data)
       end
     end
   end
@@ -161,91 +158,31 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
     end
   end
 
-  describe '#client' do
+  describe '#prometheus_client' do
     context 'manual configuration is enabled' do
       let(:api_url) { 'http://some_url' }
+
       before do
+        subject.active = true
         subject.manual_configuration = true
         subject.api_url = api_url
       end
 
-      it 'returns simple rest client from api_url' do
-        expect(subject.client).to be_instance_of(Gitlab::PrometheusClient)
-        expect(subject.client.rest_client.url).to eq(api_url)
+      it 'returns rest client from api_url' do
+        expect(subject.prometheus_client.url).to eq(api_url)
       end
     end
 
     context 'manual configuration is disabled' do
-      let!(:cluster_for_all) { create(:cluster, environment_scope: '*', projects: [project]) }
-      let!(:cluster_for_dev) { create(:cluster, environment_scope: 'dev', projects: [project]) }
-
-      let!(:prometheus_for_dev) { create(:clusters_applications_prometheus, :installed, cluster: cluster_for_dev) }
-      let(:proxy_client) { double('proxy_client') }
+      let(:api_url) { 'http://some_url' }
 
       before do
-        service.manual_configuration = false
+        subject.manual_configuration = false
+        subject.api_url = api_url
       end
 
-      context 'with cluster for all environments with prometheus installed' do
-        let!(:prometheus_for_all) { create(:clusters_applications_prometheus, :installed, cluster: cluster_for_all) }
-
-        context 'without environment supplied' do
-          it 'returns client handling all environments' do
-            expect(service).to receive(:client_from_cluster).with(cluster_for_all).and_return(proxy_client).twice
-
-            expect(service.client).to be_instance_of(Gitlab::PrometheusClient)
-            expect(service.client.rest_client).to eq(proxy_client)
-          end
-        end
-
-        context 'with dev environment supplied' do
-          let!(:environment) { create(:environment, project: project, name: 'dev') }
-
-          it 'returns dev cluster client' do
-            expect(service).to receive(:client_from_cluster).with(cluster_for_dev).and_return(proxy_client).twice
-
-            expect(service.client(environment.id)).to be_instance_of(Gitlab::PrometheusClient)
-            expect(service.client(environment.id).rest_client).to eq(proxy_client)
-          end
-        end
-
-        context 'with prod environment supplied' do
-          let!(:environment) { create(:environment, project: project, name: 'prod') }
-
-          it 'returns dev cluster client' do
-            expect(service).to receive(:client_from_cluster).with(cluster_for_all).and_return(proxy_client).twice
-
-            expect(service.client(environment.id)).to be_instance_of(Gitlab::PrometheusClient)
-            expect(service.client(environment.id).rest_client).to eq(proxy_client)
-          end
-        end
-      end
-
-      context 'with cluster for all environments without prometheus installed' do
-        context 'without environment supplied' do
-          it 'raises PrometheusError because cluster was not found' do
-            expect { service.client }.to raise_error(Gitlab::PrometheusError, /couldn't find cluster with Prometheus installed/)
-          end
-        end
-
-        context 'with dev environment supplied' do
-          let!(:environment) { create(:environment, project: project, name: 'dev') }
-
-          it 'returns dev cluster client' do
-            expect(service).to receive(:client_from_cluster).with(cluster_for_dev).and_return(proxy_client).twice
-
-            expect(service.client(environment.id)).to be_instance_of(Gitlab::PrometheusClient)
-            expect(service.client(environment.id).rest_client).to eq(proxy_client)
-          end
-        end
-
-        context 'with prod environment supplied' do
-          let!(:environment) { create(:environment, project: project, name: 'prod') }
-
-          it 'raises PrometheusError because cluster was not found' do
-            expect { service.client }.to raise_error(Gitlab::PrometheusError, /couldn't find cluster with Prometheus installed/)
-          end
-        end
+      it 'no client provided' do
+        expect(subject.prometheus_client).to be_nil
       end
     end
   end
