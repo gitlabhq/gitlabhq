@@ -72,7 +72,6 @@ var config = {
     protected_branches:   './protected_branches',
     protected_tags:       './protected_tags',
     registry_list:        './registry/index.js',
-    sidebar:              './sidebar/sidebar_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
     sketch_viewer:        './blob/sketch_viewer.js',
     stl_viewer:           './blob/stl_viewer.js',
