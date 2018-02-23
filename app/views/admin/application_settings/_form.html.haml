@@ -924,5 +924,8 @@
       .col-sm-10
         = f.number_field :throttle_authenticated_web_period_in_seconds, class: 'form-control'
 
+  - if License.feature_available?(:external_authorization_service)
+    = render partial: 'external_authorization_service_form', locals: { f: f }
+
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'

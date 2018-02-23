@@ -15,6 +15,14 @@ module EE
       with_scope :subject
       condition(:deploy_board_disabled) { !@subject.feature_available?(:deploy_board) }
 
+      with_scope :subject
+      condition(:classification_label_authorized, score: 32) do
+        EE::Gitlab::ExternalAuthorization.access_allowed?(
+          @user,
+          @subject.external_authorization_classification_label
+        )
+      end
+
       with_scope :global
       condition(:is_development) { Rails.env.development? }
 
@@ -95,6 +103,24 @@ module EE
       rule { admin | (reject_unsigned_commits_disabled_globally & can?(:master_access)) }.enable :change_reject_unsigned_commits
 
       rule { admin | (commit_committer_check_disabled_globally & can?(:master_access)) }.enable :change_commit_committer_check
+
+      rule { owner | reporter }.enable :build_read_project
+
+      rule { ~can?(:read_cross_project) & ~classification_label_authorized }.policy do
+        # Preventing access here still allows the projects to be listed. Listing
+        # projects doesn't check the `:read_project` ability. But instead counts
+        # on the `project_authorizations` table.
+        #
+        # All other actions should explicitly check read project, which would
+        # trigger the `classification_label_authorized` condition.
+        prevent :guest_access
+        prevent :public_access
+        prevent :public_user_access
+        prevent :reporter_access
+        prevent :developer_access
+        prevent :master_access
+        prevent :owner_access
+      end
     end
   end
 end

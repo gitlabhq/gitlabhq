@@ -177,7 +177,18 @@ class Issue < ActiveRecord::Base
       object.all_references(current_user, extractor: ext)
     end
 
-    ext.merge_requests.sort_by(&:iid)
+    merge_requests = ext.merge_requests.sort_by(&:iid)
+
+    cross_project_filter = -> (merge_requests) do
+      merge_requests.select { |mr| mr.target_project == project }
+    end
+
+    Ability.merge_requests_readable_by_user(
+      merge_requests, current_user,
+      filters: {
+        read_cross_project: cross_project_filter
+      }
+    )
   end
 
   # All branches containing the current issue's ID, except for
@@ -202,7 +213,11 @@ class Issue < ActiveRecord::Base
                        .preload(preload)
                        .reorder('issue_link_id')
 
-    Ability.issues_readable_by_user(related_issues, current_user)
+    cross_project_filter = -> (issues) { issues.where(project: project) }
+    Ability.issues_readable_by_user(
+      related_issues, current_user,
+      filters: { read_cross_project: cross_project_filter }
+    )
   end
 
   # Returns boolean if a related branch exists for the current issue

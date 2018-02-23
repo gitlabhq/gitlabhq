@@ -75,6 +75,10 @@ describe Groups::EpicsController do
           expect(assigns(:epics).current_page).to eq(last_page)
           expect(response).to have_gitlab_http_status(200)
         end
+
+        it_behaves_like 'disabled when using an external authorization service' do
+          subject { get :index, group_id: group }
+        end
       end
 
       context 'when format is JSON' do
@@ -133,6 +137,14 @@ describe Groups::EpicsController do
             expect(response.content_type).to eq 'text/html'
           end
         end
+
+        it_behaves_like 'disabled when using an external authorization service' do
+          subject { show_epic }
+
+          before do
+            group.add_developer(user)
+          end
+        end
       end
 
       context 'when format is JSON' do
@@ -188,6 +200,12 @@ describe Groups::EpicsController do
           expect(response).to have_http_status(404)
         end
       end
+
+      it_behaves_like 'disabled when using an external authorization service' do
+        before do
+          group.add_developer(user)
+        end
+      end
     end
 
     describe '#create' do
@@ -216,6 +234,8 @@ describe Groups::EpicsController do
 
             expect(JSON.parse(response.body)).to eq({ 'web_url' => group_epic_path(group, Epic.last) })
           end
+
+          it_behaves_like 'disabled when using an external authorization service'
         end
 
         context 'when required parameter is missing' do

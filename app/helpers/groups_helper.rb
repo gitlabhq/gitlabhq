@@ -5,6 +5,14 @@ module GroupsHelper
     %w[groups#projects groups#edit ci_cd#show ldap_group_links#index hooks#index audit_events#index pipeline_quota#index]
   end
 
+  def group_sidebar_links
+    @group_sidebar_links ||= get_group_sidebar_links
+  end
+
+  def group_sidebar_link?(link)
+    group_sidebar_links.include?(link)
+  end
+
   def can_change_group_visibility_level?(group)
     can?(current_user, :change_visibility_level, group)
   end
@@ -114,6 +122,20 @@ module GroupsHelper
   end
 
   private
+
+  def get_group_sidebar_links
+    links = [:overview, :group_members]
+
+    if can?(current_user, :read_cross_project)
+      links += [:activity, :issues, :labels, :milestones, :merge_requests]
+    end
+
+    if can?(current_user, :admin_group, @group)
+      links << :settings
+    end
+
+    links
+  end
 
   def group_title_link(group, hidable: false, show_avatar: false, for_dropdown: false)
     link_to(group_path(group), class: "group-path #{'breadcrumb-item-text' unless for_dropdown} js-breadcrumb-item-text #{'hidable' if hidable}") do

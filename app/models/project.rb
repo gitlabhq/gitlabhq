@@ -1048,6 +1048,9 @@ class Project < ActiveRecord::Base
   end
 
   def user_can_push_to_empty_repo?(user)
+    return false unless empty_repo?
+    return false unless Ability.allowed?(user, :push_code, self)
+
     !ProtectedBranch.default_branch_protected? || team.max_member_access(user.id) > Gitlab::Access::DEVELOPER
   end
 

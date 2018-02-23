@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Boards::IssuesController do
+  include ExternalAuthorizationServiceHelpers
+
   let(:group) { create(:group) }
   let(:project_1) { create(:project, namespace: group) }
   let(:project_2) { create(:project, namespace: group) }
@@ -77,6 +79,7 @@ describe Boards::IssuesController do
 
     context 'with unauthorized user' do
       before do
+        allow(Ability).to receive(:allowed?).and_call_original
         allow(Ability).to receive(:allowed?).with(user, :read_group, group).and_return(false)
       end
 
@@ -84,6 +87,26 @@ describe Boards::IssuesController do
         list_issues user: user, board: board, list: list2
 
         expect(response).to have_gitlab_http_status(403)
+      end
+    end
+
+    context 'with external authorization' do
+      before do
+        sign_in(user)
+        enable_external_authorization_service
+      end
+
+      it 'returns a 404 for group boards' do
+        get :index, board_id: board
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+
+      it 'is successful for project boards' do
+        project_board = create(:board, project: project_1)
+        list_issues(user: user, board: project_board)
+
+        expect(response).to have_gitlab_http_status(200)
       end
     end
 

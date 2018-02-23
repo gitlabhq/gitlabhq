@@ -77,6 +77,14 @@ describe Banzai::Filter::IssuableStateFilter do
     expect(doc.css('a').last.text).to eq("#{closed_issue.to_reference(other_project)} (closed)")
   end
 
+  it 'skips cross project references if the user cannot read cross project' do
+    expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
+    link = create_link(closed_issue.to_reference(other_project), issue: closed_issue.id, reference_type: 'issue')
+    doc = filter(link, context.merge(project: other_project))
+
+    expect(doc.css('a').last.text).to eq("#{closed_issue.to_reference(other_project)}")
+  end
+
   it 'does not append state when filter is not enabled' do
     link = create_link('text', issue: closed_issue.id, reference_type: 'issue')
     context = { current_user: user }

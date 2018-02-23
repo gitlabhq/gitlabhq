@@ -1,11 +1,14 @@
 require 'spec_helper'
 
 describe Projects::BoardsController do
+  include Rails.application.routes.url_helpers
+
   let(:project) { create(:project) }
   let(:user)    { create(:user) }
 
   before do
     project.add_master(user)
+    allow(Ability).to receive(:allowed?).and_call_original
     sign_in(user)
   end
 
@@ -20,6 +23,10 @@ describe Projects::BoardsController do
 
       expect(response).to match_response_schema('boards')
       expect(parsed_response.length).to eq 2
+    end
+
+    it_behaves_like 'unauthorized when external service denies access' do
+      subject { list_boards }
     end
 
     def list_boards(format: :html)

@@ -1,8 +1,13 @@
 class SearchController < ApplicationController
-  skip_before_action :authenticate_user!
-
+  include ControllerWithCrossProjectAccessCheck
   include SearchHelper
   include RendersCommits
+
+  skip_before_action :authenticate_user!
+  requires_cross_project_access if: -> do
+    search_term_present = params[:search].present? || params[:term].present?
+    search_term_present && !params[:project_id].present?
+  end
 
   layout 'search'
 

@@ -210,6 +210,7 @@ module ProjectsHelper
       controller.controller_name,
       controller.action_name,
       Gitlab::CurrentSettings.cache_key,
+      "cross-project:#{can?(current_user, :read_cross_project)}",
       'v2.5'
     ]
 
@@ -543,5 +544,9 @@ module ProjectsHelper
     ref = @ref || @project.repository.root_ref
 
     project_find_file_path(@project, ref)
+  end
+
+  def can_show_last_commit_in_list?(project)
+    can?(current_user, :read_cross_project) && project.commit
   end
 end
