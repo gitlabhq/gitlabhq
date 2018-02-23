@@ -29,7 +29,7 @@ shared_examples "migrates" do |to_store:, from_store: nil|
     elsif from == described_class::Store::LOCAL
       expect(subject.file).to be_a(CarrierWave::SanitizedFile)
     else
-      raise 'Enexpected file type'
+      raise 'Unexpected file type'
     end
   end
 
@@ -70,16 +70,16 @@ shared_examples "migrates" do |to_store:, from_store: nil|
   end
 
   context 'when migrate! is oqqupied by another process' do
-    let(:exclusive_lease_key) { "object_storage_migrate:#{subject.store_path}" }
+    let(:exclusive_lease_key) { "object_storage_migrate:#{subject.model.class}:#{subject.model.id}" }
 
     before do
       @uuid = Gitlab::ExclusiveLease.new(exclusive_lease_key, timeout: 1.hour.to_i).try_obtain
     end
 
     it 'does not execute migrate!' do
-      expect(subject).not_to receive(:object_store=)
+      expect(subject).not_to receive(:unsafe_migrate!)
 
-      migrate(to)
+      expect { migrate(to) }.to raise_error('Already running')
     end
 
     after do
