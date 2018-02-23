@@ -111,8 +111,8 @@ describe('RepoCommitSection', () => {
   });
 
   describe('discard draft button', () => {
-    it('disabled when commitMessage is empty', () => {
-      expect(vm.$el.querySelector('.multi-file-commit-form .btn-default').getAttribute('disabled')).not.toBeNull();
+    it('hidden when commitMessage is empty', () => {
+      expect(vm.$el.querySelector('.multi-file-commit-form .btn-default')).toBeNull();
     });
 
     it('resets commitMessage when clicking discard button', (done) => {

@@ -266,7 +266,7 @@ table.table tr td.multi-file-table-name {
   display: flex;
   position: relative;
   flex-direction: column;
-  width: 290px;
+  width: 340px;
   padding: 0;
   background-color: $gray-light;
   padding-right: 3px;
@@ -469,7 +469,7 @@ table.table tr td.multi-file-table-name {
 }
 
 .multi-file-commit-message.form-control {
-  height: 80px;
+  height: 160px;
   resize: none;
 }
 

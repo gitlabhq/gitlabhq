@@ -110,7 +110,7 @@ export default {
       >
         <div class="multi-file-commit-fieldset">
           <textarea
-            class="form-control input-sm multi-file-commit-message"
+            class="form-control multi-file-commit-message"
             name="commit-message"
             :value="commitMessage"
             :placeholder="__('Write a commit message...')"
@@ -128,9 +128,9 @@ export default {
             @click="commitChanges"
           />
           <button
+            v-if="!discardDraftButtonDisabled"
             type="button"
             class="btn btn-default btn-sm pull-right"
-            :disabled="discardDraftButtonDisabled"
             @click="discardDraft"
           >
             {{ __('Discard draft') }}
