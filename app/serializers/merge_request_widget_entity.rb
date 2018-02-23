@@ -11,6 +11,7 @@ class MergeRequestWidgetEntity < IssuableEntity
   expose :source_project_id
   expose :target_branch
   expose :target_project_id
+  expose :allow_maintainer_to_push
 
   expose :should_be_rebased?, as: :should_be_rebased
   expose :ff_only_enabled do |merge_request|

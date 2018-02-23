@@ -349,6 +349,7 @@ describe('mrWidgetOptions', () => {
       expect(comps['mr-widget-pipeline-blocked']).toBeDefined();
       expect(comps['mr-widget-pipeline-failed']).toBeDefined();
       expect(comps['mr-widget-merge-when-pipeline-succeeds']).toBeDefined();
+      expect(comps['mr-widget-maintainer-edit']).toBeDefined();
     });
   });
 
