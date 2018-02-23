@@ -114,7 +114,15 @@ module Gitlab
       end
 
       def current_user(request)
-        request.env['warden']&.authenticate
+        authenticator = Gitlab::Auth::RequestAuthenticator.new(request)
+        user = authenticator.find_user_from_access_token || authenticator.find_user_from_warden
+
+        return unless user&.can?(:access_api)
+
+        # Right now, the `api` scope is the only one that should be able to determine private project existence.
+        return unless authenticator.valid_access_token?(scopes: [:api])
+
+        user
       end
     end
   end
