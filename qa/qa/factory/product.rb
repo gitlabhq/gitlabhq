@@ -19,7 +19,8 @@ module QA
         new.tap do |product|
           factory.class.attributes.each_value do |attribute|
             product.instance_exec(factory, attribute.block) do |factory, block|
-              product.define_singleton_method(attribute.name) { block.call(factory) }
+              value = block.call(factory)
+              product.define_singleton_method(attribute.name) { value }
             end
           end
         end
