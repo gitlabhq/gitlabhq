@@ -26,7 +26,6 @@ export default class IssuableTemplateSelector extends TemplateSelector {
     $('.no-template', this.dropdown.parent()).on('click', () => {
       if (this.currentTemplate && !this.dirty) {
         this.currentTemplate.content = '';
-        this.dirty = false;
         this.setInputValueToTemplateContent();
       }
 
