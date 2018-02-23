@@ -151,6 +151,26 @@ describe API::MergeRequests do
         expect(json_response.first['id']).to eq(merge_request3.id)
       end
 
+      context 'source_branch param' do
+        it 'returns merge requests with the given source branch' do
+          get api('/merge_requests', user), source_branch: merge_request_closed.source_branch, state: 'all'
+
+          expect(json_response.length).to eq(2)
+          expect(json_response.map { |mr| mr['id'] })
+            .to contain_exactly(merge_request_closed.id, merge_request_merged.id)
+        end
+      end
+
+      context 'target_branch param' do
+        it 'returns merge requests with the given target branch' do
+          get api('/merge_requests', user), target_branch: merge_request_closed.target_branch, state: 'all'
+
+          expect(json_response.length).to eq(2)
+          expect(json_response.map { |mr| mr['id'] })
+            .to contain_exactly(merge_request_closed.id, merge_request_merged.id)
+        end
+      end
+
       context 'search params' do
         before do
           merge_request.update(title: 'Search title', description: 'Search description')
@@ -425,6 +445,26 @@ describe API::MergeRequests do
           expect(json_response.length).to eq(3)
           response_dates = json_response.map { |merge_request| merge_request['created_at'] }
           expect(response_dates).to eq(response_dates.sort)
+        end
+      end
+
+      context 'source_branch param' do
+        it 'returns merge requests with the given source branch' do
+          get api('/merge_requests', user), source_branch: merge_request_closed.source_branch, state: 'all'
+
+          expect(json_response.length).to eq(2)
+          expect(json_response.map { |mr| mr['id'] })
+            .to contain_exactly(merge_request_closed.id, merge_request_merged.id)
+        end
+      end
+
+      context 'target_branch param' do
+        it 'returns merge requests with the given target branch' do
+          get api('/merge_requests', user), target_branch: merge_request_closed.target_branch, state: 'all'
+
+          expect(json_response.length).to eq(2)
+          expect(json_response.map { |mr| mr['id'] })
+            .to contain_exactly(merge_request_closed.id, merge_request_merged.id)
         end
       end
     end
