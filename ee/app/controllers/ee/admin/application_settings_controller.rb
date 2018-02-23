@@ -12,6 +12,10 @@ module EE
           attrs << :default_project_creation
         end
 
+        if License.feature_available?(:external_authorization_service)
+          attrs += EE::ApplicationSettingsHelper.external_authorization_service_attributes
+        end
+
         attrs
       end
     end

@@ -89,6 +89,19 @@ shared_examples 'handle uploads' do
           end
         end
 
+        context "when neither the uploader nor the model exists" do
+          before do
+            allow_any_instance_of(Upload).to receive(:build_uploader).and_return(nil)
+            allow(controller).to receive(:find_model).and_return(nil)
+          end
+
+          it "responds with status 404" do
+            show_upload
+
+            expect(response).to have_gitlab_http_status(404)
+          end
+        end
+
         context "when the file doesn't exist" do
           before do
             allow_any_instance_of(FileUploader).to receive(:exists?).and_return(false)

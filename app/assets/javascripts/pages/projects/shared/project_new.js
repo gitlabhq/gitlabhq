@@ -106,7 +106,7 @@ export default class ProjectNew {
     }
   }
 
-  toggleRepoVisibility () {
+  toggleRepoVisibility() {
     var $repoAccessLevel = $('.js-repo-access-level select');
     var $lfsEnabledOption = $('.js-lfs-enabled select');
     var containerRegistry = document.querySelectorAll('.js-container-registry')[0];
@@ -117,7 +117,8 @@ export default class ProjectNew {
       .nextAll()
       .hide();
 
-    $repoAccessLevel.off('change')
+    $repoAccessLevel
+      .off('change')
       .on('change', function () {
         var selectedVal = parseInt($repoAccessLevel.val(), 10);
 

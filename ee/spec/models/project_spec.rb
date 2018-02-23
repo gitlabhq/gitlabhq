@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Project do
+  include ExternalAuthorizationServiceHelpers
   using RSpec::Parameterized::TableSyntax
 
   describe 'associations' do
@@ -1153,6 +1154,46 @@ describe Project do
 
       expect(projects).to include(project1)
       expect(projects).not_to include(project2)
+    end
+  end
+
+  describe '#external_authorization_classification_label' do
+    it 'falls back to the default when none is configured' do
+      enable_external_authorization_service
+
+      expect(build(:project).external_authorization_classification_label)
+        .to eq('default_label')
+    end
+
+    it 'returns `nil` if the feature is disabled' do
+      stub_licensed_features(external_authorization_service: false)
+
+      project = build(:project,
+                      external_authorization_classification_label: 'hello')
+
+      expect(project.external_authorization_classification_label)
+        .to eq(nil)
+    end
+
+    it 'returns the classification label if it was configured on the project' do
+      enable_external_authorization_service
+
+      project = build(:project,
+                      external_authorization_classification_label: 'hello')
+
+      expect(project.external_authorization_classification_label)
+        .to eq('hello')
+    end
+  end
+
+  describe '#user_can_push_to_empty_repo?' do
+    it 'returns false when the external service denies access' do
+      user = create(:user)
+      project = create(:project)
+      project.add_master(user)
+      external_service_deny_access(user, project)
+
+      expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
     end
   end
 end

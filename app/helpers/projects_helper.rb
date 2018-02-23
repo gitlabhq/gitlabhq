@@ -155,11 +155,6 @@ module ProjectsHelper
     end
   end
 
-  def license_short_name(project)
-    license = project.repository.license
-    license&.nickname || license&.name || 'LICENSE'
-  end
-
   def last_push_event
     current_user&.recent_push(@project)
   end
@@ -215,6 +210,7 @@ module ProjectsHelper
       controller.controller_name,
       controller.action_name,
       Gitlab::CurrentSettings.cache_key,
+      "cross-project:#{can?(current_user, :read_cross_project)}",
       'v2.5'
     ]
 
@@ -265,6 +261,17 @@ module ProjectsHelper
 
   def show_projects?(projects, params)
     !!(params[:personal] || params[:name] || any_projects?(projects))
+  end
+
+  def push_to_create_project_command(user = current_user)
+    repository_url =
+      if Gitlab::CurrentSettings.current_application_settings.enabled_git_access_protocol == 'http'
+        user_url(user)
+      else
+        Gitlab.config.gitlab_shell.ssh_path_prefix + user.username
+      end
+
+    "git push --set-upstream #{repository_url}/$(git rev-parse --show-toplevel | xargs basename).git $(git rev-parse --abbrev-ref HEAD)"
   end
 
   private
@@ -411,55 +418,6 @@ module ProjectsHelper
     end
   end
 
-  def add_special_file_path(project, file_name:, commit_message: nil, branch_name: nil, context: nil)
-    commit_message ||= s_("CommitMessage|Add %{file_name}") % { file_name: file_name }
-    project_new_blob_path(
-      project,
-      project.default_branch || 'master',
-      file_name:      file_name,
-      commit_message: commit_message,
-      branch_name: branch_name,
-      context: context
-    )
-  end
-
-  def add_koding_stack_path(project)
-    project_new_blob_path(
-      project,
-      project.default_branch || 'master',
-      file_name:      '.koding.yml',
-      commit_message: "Add Koding stack script",
-      content: <<-CONTENT.strip_heredoc
-        provider:
-          aws:
-            access_key: '${var.aws_access_key}'
-            secret_key: '${var.aws_secret_key}'
-        resource:
-          aws_instance:
-            #{project.path}-vm:
-              instance_type: t2.nano
-              user_data: |-
-
-                # Created by GitLab UI for :>
-
-                echo _KD_NOTIFY_@Installing Base packages...@
-
-                apt-get update -y
-                apt-get install git -y
-
-                echo _KD_NOTIFY_@Cloning #{project.name}...@
-
-                export KODING_USER=${var.koding_user_username}
-                export REPO_URL=#{root_url}${var.koding_queryString_repo}.git
-                export BRANCH=${var.koding_queryString_branch}
-
-                sudo -i -u $KODING_USER git clone $REPO_URL -b $BRANCH
-
-                echo _KD_NOTIFY_@#{project.name} cloned.@
-      CONTENT
-    )
-  end
-
   def koding_project_url(project = nil, branch = nil, sha = nil)
     if project
       import_path = "/Home/Stacks/import"
@@ -474,36 +432,6 @@ module ProjectsHelper
     end
 
     Gitlab::CurrentSettings.koding_url
-  end
-
-  def contribution_guide_path(project)
-    if project && contribution_guide = project.repository.contribution_guide
-      project_blob_path(
-        project,
-        tree_join(project.default_branch,
-                  contribution_guide.name)
-      )
-    end
-  end
-
-  def readme_path(project)
-    filename_path(project, :readme)
-  end
-
-  def changelog_path(project)
-    filename_path(project, :changelog)
-  end
-
-  def license_path(project)
-    filename_path(project, :license_blob)
-  end
-
-  def version_path(project)
-    filename_path(project, :version)
-  end
-
-  def ci_configuration_path(project)
-    filename_path(project, :gitlab_ci_yml)
   end
 
   def project_wiki_path_with_version(proj, page, version, is_newest)
@@ -537,15 +465,6 @@ module ProjectsHelper
 
   def current_ref
     @ref || @repository.try(:root_ref)
-  end
-
-  def filename_path(project, filename)
-    if project && blob = project.repository.public_send(filename) # rubocop:disable GitlabSecurity/PublicSend
-      project_blob_path(
-        project,
-        tree_join(project.default_branch, blob.name)
-      )
-    end
   end
 
   def sanitize_repo_path(project, message)
@@ -636,5 +555,9 @@ module ProjectsHelper
     ref = @ref || @project.repository.root_ref
 
     project_find_file_path(@project, ref)
+  end
+
+  def can_show_last_commit_in_list?(project)
+    can?(current_user, :read_cross_project) && project.commit
   end
 end

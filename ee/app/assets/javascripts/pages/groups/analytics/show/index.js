@@ -1,6 +1,6 @@
 import Chart from 'chart.js';
 
-export default () => {
+document.addEventListener('DOMContentLoaded', () => {
   const dataEl = document.getElementById('js-analytics-data');
   if (dataEl) {
     const data = JSON.parse(dataEl.innerHTML);
@@ -33,4 +33,4 @@ export default () => {
 
     $('#event-stats').tablesorter();
   }
-};
+});

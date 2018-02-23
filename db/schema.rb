@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180213131630) do
+ActiveRecord::Schema.define(version: 20180215181245) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -180,6 +180,9 @@ ActiveRecord::Schema.define(version: 20180213131630) do
     t.boolean "mirror_available", default: true, null: false
     t.string "auto_devops_domain"
     t.integer "default_project_creation", default: 2, null: false
+    t.boolean "external_authorization_service_enabled", default: false, null: false
+    t.string "external_authorization_service_url"
+    t.string "external_authorization_service_default_label"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -1913,6 +1916,8 @@ ActiveRecord::Schema.define(version: 20180213131630) do
     t.boolean "only_mirror_protected_branches"
     t.boolean "pull_mirror_available_overridden"
     t.integer "jobs_cache_index"
+    t.boolean "mirror_overwrites_diverged_branches"
+    t.string "external_authorization_classification_label"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree

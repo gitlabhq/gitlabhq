@@ -1,3 +1,3 @@
-- if koding_enabled? && current_user && @repository.koding_yml && can_push_branch?(@project, @project.default_branch)
+- if koding_enabled? && current_user && @repository.koding_yml && @project.can_current_user_push_code?
   = link_to koding_project_url(@project), class: 'btn project-action-button inline', target: '_blank', rel: 'noopener noreferrer' do
     _('Run in IDE (Koding)')

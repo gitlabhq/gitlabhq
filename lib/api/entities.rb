@@ -965,6 +965,10 @@ module API
       expose(*EE::ApplicationSettingsHelper.repository_mirror_attributes, if: lambda do |_instance, _options|
         ::License.feature_available?(:repository_mirrors)
       end)
+      expose(*EE::ApplicationSettingsHelper.external_authorization_service_attributes, if: lambda do |_instance, _options|
+        ::License.feature_available?(:external_authorization_service)
+      end)
+
       expose(:restricted_visibility_levels) do |setting, _options|
         setting.restricted_visibility_levels.map { |level| Gitlab::VisibilityLevel.string_level(level) }
       end

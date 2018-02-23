@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.5.1 (2018-02-22)
+
+- No changes.
+
 ## 10.5.0 (2018-02-22)
 
 ### Fixed (23 changes, 1 of them is from the community)
@@ -68,6 +72,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ### Other (3 changes)
 
+- Activated the Web IDE Button also on the main project page. !4250
 - Geo - add documentation about using shared a S3 bucket with GitLab Container Registry.
 - Geo: Improve replication status. Using pg_stat_wal_receiver.
 - Remove unaproved typo check in sast:container report.

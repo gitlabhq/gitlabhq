@@ -340,8 +340,8 @@ class User < ActiveRecord::Base
       SQL
 
       where(
-        fuzzy_arel_match(:name, query)
-          .or(fuzzy_arel_match(:username, query))
+        fuzzy_arel_match(:name, query, lower_exact_match: true)
+          .or(fuzzy_arel_match(:username, query, lower_exact_match: true))
           .or(arel_table[:email].eq(query))
       ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, :name)
     end
