@@ -71,7 +71,11 @@
           class="help-block inline"
           :title="helpText"
         >
-          <i class="fa fa-question-circle"></i>
+          <i
+            class="fa fa-question-circle"
+            aria-hidden="true"
+          >
+          </i>
         </span>
       </span>
     </label>

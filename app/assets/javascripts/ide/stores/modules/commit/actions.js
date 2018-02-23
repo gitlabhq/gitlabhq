@@ -146,7 +146,6 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState }) =
     }
   })
   .catch((err) => {
-    console.log(err);
     let errMsg = __('Error committing changes. Please try again.');
     if (err.response.data && err.response.data.message) {
       errMsg += ` (${stripHtml(err.response.data.message)})`;

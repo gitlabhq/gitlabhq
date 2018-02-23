@@ -51,13 +51,13 @@
     </radio-group>
     <radio-group
       :value="$options.commitToNewBranch"
-      label="Create a new branch"
+      :label="__('Create a new branch')"
       :show-input="true"
       :help-text="commitToNewBranchText"
     />
     <radio-group
       :value="$options.commitToNewBranchMR"
-      label="Create a new branch and merge request"
+      :label="__('Create a new branch and merge request')"
       :show-input="true"
       :help-text="newMergeRequestHelpText"
     />
