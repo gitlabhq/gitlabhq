@@ -4,9 +4,9 @@ module Gitlab
       module Expression
         class Lexer
           LEXEMES = [
-            Expression::Variable,
-            Expression::String,
-            Expression::Equals
+            Expression::Lexeme::Variable,
+            Expression::Lexeme::String,
+            Expression::Lexeme::Equals
           ].freeze
 
           MAX_CYCLES = 5

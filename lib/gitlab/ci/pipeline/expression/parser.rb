@@ -22,7 +22,7 @@ module Gitlab
               end
             end
           rescue StopIteration
-            @nodes.last || Expression::Null.new
+            @nodes.last || Expression::Lexeme::Null.new
           end
 
           def self.seed(statement)

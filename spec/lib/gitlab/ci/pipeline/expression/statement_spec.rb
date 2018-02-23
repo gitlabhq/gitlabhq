@@ -37,7 +37,7 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
 
         it 'returns a reverse descent parse tree' do
           expect(subject.parse_tree)
-            .to be_a Gitlab::Ci::Pipeline::Expression::Equals
+            .to be_a Gitlab::Ci::Pipeline::Expression::Lexeme::Equals
         end
       end
 
@@ -46,7 +46,7 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
 
         it 'returns a single token instance' do
           expect(subject.parse_tree)
-            .to be_a Gitlab::Ci::Pipeline::Expression::Variable
+            .to be_a Gitlab::Ci::Pipeline::Expression::Lexeme::Variable
         end
       end
     end
