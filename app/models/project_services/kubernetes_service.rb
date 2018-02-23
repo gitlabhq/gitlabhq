@@ -204,7 +204,11 @@ class KubernetesService < DeploymentService
   end
 
   def kubeclient_ssl_options
-    opts = { verify_ssl: OpenSSL::SSL::VERIFY_PEER }
+    opts = if Rails.env.development?
+             { verify_ssl: OpenSSL::SSL::VERIFY_NONE }
+           else
+             { verify_ssl: OpenSSL::SSL::VERIFY_PEER }
+           end
 
     if ca_pem.present?
       opts[:cert_store] = OpenSSL::X509::Store.new
