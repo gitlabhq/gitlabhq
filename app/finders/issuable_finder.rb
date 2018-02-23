@@ -21,7 +21,11 @@
 #     my_reaction_emoji: string
 #
 class IssuableFinder
+  prepend FinderWithCrossProjectAccess
+  include FinderMethods
   include CreatedAtFilter
+
+  requires_cross_project_access unless: -> { project? }
 
   NONE = '0'.freeze
 
@@ -87,14 +91,6 @@ class IssuableFinder
     by_my_reaction_emoji(items)
   end
 
-  def find(*params)
-    execute.find(*params)
-  end
-
-  def find_by(*params)
-    execute.find_by(*params)
-  end
-
   def row_count
     Gitlab::IssuablesCountForState.new(self).for_state_or_opened(params[:state])
   end
@@ -122,10 +118,6 @@ class IssuableFinder
     counts[:all] = counts.values.sum
 
     counts
-  end
-
-  def find_by!(*params)
-    execute.find_by!(*params)
   end
 
   def group

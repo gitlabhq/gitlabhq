@@ -1,4 +1,6 @@
 class MergeRequestTargetProjectFinder
+  include FinderMethods
+
   attr_reader :current_user, :source_project
 
   def initialize(current_user: nil, source_project:)

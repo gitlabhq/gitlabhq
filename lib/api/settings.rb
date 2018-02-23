@@ -147,7 +147,7 @@ module API
         attrs[:password_authentication_enabled_for_web] = attrs.delete(:password_authentication_enabled)
       end
 
-      if current_settings.update_attributes(attrs)
+      if ApplicationSettings::UpdateService.new(current_settings, current_user, attrs).execute
         present current_settings, with: Entities::ApplicationSetting
       else
         render_validation_error!(current_settings)
