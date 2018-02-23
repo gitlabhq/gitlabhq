@@ -6,6 +6,7 @@ module EE
 
     included do
       has_many :approvals, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+      has_many :approved_by_users, through: :approvals, source: :user
       has_many :approvers, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
       has_many :approver_groups, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
