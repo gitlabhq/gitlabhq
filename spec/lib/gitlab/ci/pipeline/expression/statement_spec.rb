@@ -69,7 +69,7 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
       ['$VAR == null', true],
       ['null == $VAR', true],
       ['$VARIABLE', 'my variable'],
-      ['$VAR', nil],
+      ['$VAR', nil]
     ]
 
     statements.each do |expression, value|

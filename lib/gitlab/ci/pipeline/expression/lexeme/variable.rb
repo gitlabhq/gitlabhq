@@ -10,8 +10,8 @@ module Gitlab
               @name = name
             end
 
-            def evaluate(variables)
-              variables[@name]
+            def evaluate(**variables)
+              variables[@name.to_sym]
             end
 
             def self.build(string)

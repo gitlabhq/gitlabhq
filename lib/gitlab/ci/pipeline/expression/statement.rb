@@ -18,7 +18,7 @@ module Gitlab
             @lexer = Expression::Lexer.new(statement)
 
             @variables = pipeline.variables.map do |variable|
-              [variable.key, variable.value]
+              [variable.key.to_sym, variable.value]
             end
           end
 

@@ -11,7 +11,7 @@ module Gitlab
               @right = right
             end
 
-            def evaluate(variables)
+            def evaluate(**variables)
               @left.evaluate(variables) == @right.evaluate(variables)
             end
 
