@@ -1,5 +1,0 @@
----
-title: 'Fix custom header logo design nitpick: Remove unneeded margin on empty logo text'
-merge_request: 16383
-author: Markus Doits
-type: fixed

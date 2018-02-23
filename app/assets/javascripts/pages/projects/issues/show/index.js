@@ -3,6 +3,7 @@ import Issue from '~/issue';
 import ShortcutsIssuable from '~/shortcuts_issuable';
 import ZenMode from '~/zen_mode';
 import '~/notes/index';
+import '~/issue_show/index';
 
 document.addEventListener('DOMContentLoaded', () => {
   new Issue(); // eslint-disable-line no-new

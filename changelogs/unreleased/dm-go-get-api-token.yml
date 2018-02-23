@@ -1,0 +1,5 @@
+---
+title: Allow token authentication on go-get request
+merge_request:
+author:
+type: changed

@@ -1,5 +1,0 @@
----
-title: Adds Rubocop rule for line break around conditionals
-merge_request: 15739
-author: Jacopo Beschi @jacopo-beschi
-type: added

@@ -1,3 +1,3 @@
 import initBlob from '~/pages/projects/init_blob';
 
-export default initBlob;
+document.addEventListener('DOMContentLoaded', initBlob);

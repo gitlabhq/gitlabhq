@@ -29,13 +29,15 @@ var pageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'ap
 var dispatcher = fs.readFileSync(path.join(ROOT_PATH, 'app/assets/javascripts/dispatcher.js')).toString();
 var dispatcherChunks = dispatcher.match(/(?!import\(')\.\/pages\/[^']+/g);
 
-pageEntries.forEach(( path ) => {
-  let chunkPath = path.replace(/\/index\.js$/, '');
-  if (!dispatcherChunks.includes('./' + chunkPath)) {
-    let chunkName = chunkPath.replace(/\//g, '.');
-    autoEntries[chunkName] = './' + path;
+function generateAutoEntries(path, prefix = '.') {
+  const chunkPath = path.replace(/\/index\.js$/, '');
+  if (!dispatcherChunks.includes(`${prefix}/${chunkPath}`)) {
+    const chunkName = chunkPath.replace(/\//g, '.');
+    autoEntries[chunkName] = `${prefix}/${path}`;
   }
-});
+}
+
+pageEntries.forEach(( path ) => generateAutoEntries(path));
 
 // report our auto-generated bundle count
 var autoEntriesCount = Object.keys(autoEntries).length;
@@ -54,15 +56,11 @@ var config = {
     common_vue:           './vue_shared/vue_resource_interceptor.js',
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
-    deploy_keys:          './deploy_keys/index.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
     environments:         './environments/environments_bundle.js',
     environments_folder:  './environments/folder/environments_folder_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
     help:                 './help/help.js',
-    issue_show:           './issue_show/index.js',
-    locale:               './locale/index.js',
-    main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
     monitoring:           './monitoring/monitoring_bundle.js',
     network:              './network/network_bundle.js',
@@ -75,18 +73,24 @@ var config = {
     protected_branches:   './protected_branches',
     protected_tags:       './protected_tags',
     registry_list:        './registry/index.js',
-    ide:                  './ide/index.js',
     sidebar:              './sidebar/sidebar_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
     sketch_viewer:        './blob/sketch_viewer.js',
     stl_viewer:           './blob/stl_viewer.js',
     terminal:             './terminal/terminal_bundle.js',
-    u2f:                  ['vendor/u2f'],
     ui_development_kit:   './ui_development_kit.js',
-    raven:                './raven/index.js',
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
-    test:                 './test.js',
     two_factor_auth:      './two_factor_auth.js',
+
+
+    common:               './commons/index.js',
+    common_vue:           './vue_shared/vue_resource_interceptor.js',
+    locale:               './locale/index.js',
+    main:                 './main.js',
+    ide:                  './ide/index.js',
+    raven:                './raven/index.js',
+    test:                 './test.js',
+    u2f:                  ['vendor/u2f'],
     webpack_runtime:      './webpack.js',
   },
 
@@ -249,7 +253,6 @@ var config = {
         'environments_folder',
         'filtered_search',
         'groups',
-        'issue_show',
         'merge_conflicts',
         'monitoring',
         'notebook_viewer',

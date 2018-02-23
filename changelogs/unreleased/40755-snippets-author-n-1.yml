@@ -1,5 +1,0 @@
----
-title: Fix N+1 query problem for snippets dashboard.
-merge_request: 16944
-author:
-type: performance

@@ -96,9 +96,7 @@ export default {
             cb.call(null, data);
           }
         })
-        .catch(() => {
-          new Flash('Something went wrong. Please try again.'); // eslint-disable-line
-        });
+        .catch(() => new Flash('Something went wrong. Please try again.'));
     },
     initPolling() {
       this.pollingInterval = new SmartInterval({
@@ -146,9 +144,7 @@ export default {
             Project.initRefSwitcher();
           }
         })
-        .catch(() => {
-          new Flash('Something went wrong. Please try again.'); // eslint-disable-line
-        });
+        .catch(() => new Flash('Something went wrong. Please try again.'));
     },
     handleNotification(data) {
       if (data.ci_status === this.mr.ciStatus) return;

@@ -4,6 +4,7 @@
 - page_title    'New Project'
 - header_title  "Projects", dashboard_projects_path
 - visibility_level = params.dig(:project, :visibility_level) || default_project_visibility
+- active_tab = local_assigns.fetch(:active_tab, 'blank')
 
 .project-edit-container
   .project-edit-errors
@@ -18,34 +19,41 @@
         All features are enabled when you create a project, but you can disable the ones you don’t need in the project settings.
       .md
         = brand_new_project_guidelines
+      %p
+        %strong= _("Tip:")
+        = _("You can also create a project from the command line.")
+        %a.push-new-project-tip{ data: { title: _("Push to create a project") }, href: help_page_path('gitlab-basics/create-project', anchor: 'push-to-create-a-new-project'), target: "_blank", rel: "noopener noreferrer" }
+          = _("Show command")
+        %template.push-new-project-tip-template= render partial: "new_project_push_tip"
+
     .col-lg-9.js-toggle-container
       %ul.nav-links.gitlab-tabs{ role: 'tablist' }
-        %li.active{ role: 'presentation' }
+        %li{ class: ('active' if active_tab == 'blank'), role: 'presentation' }
           %a{ href: '#blank-project-pane', id: 'blank-project-tab', data: { toggle: 'tab' }, role: 'tab' }
             %span.hidden-xs Blank project
             %span.visible-xs Blank
-        %li{ role: 'presentation' }
+        %li{ class: ('active' if active_tab == 'template'), role: 'presentation' }
           %a{ href: '#create-from-template-pane', id: 'create-from-template-tab', data: { toggle: 'tab' }, role: 'tab' }
             %span.hidden-xs Create from template
             %span.visible-xs Template
-        %li{ role: 'presentation' }
+        %li{ class: ('active' if active_tab == 'import'), role: 'presentation' }
           %a{ href: '#import-project-pane', id: 'import-project-tab', data: { toggle: 'tab' }, role: 'tab' }
             %span.hidden-xs Import project
             %span.visible-xs Import
 
       .tab-content.gitlab-tab-content
-        .tab-pane.active{ id: 'blank-project-pane', role: 'tabpanel' }
+        .tab-pane{ id: 'blank-project-pane', class: ('active' if active_tab == 'blank'), role: 'tabpanel' }
           = form_for @project, html: { class: 'new_project' } do |f|
             = render 'new_project_fields', f: f, project_name_id: "blank-project-name"
 
-        .tab-pane.no-padding{ id: 'create-from-template-pane', role: 'tabpanel' }
+        .tab-pane.no-padding{ id: 'create-from-template-pane', class: ('active' if active_tab == 'template'), role: 'tabpanel' }
           = form_for @project, html: { class: 'new_project' } do |f|
             .project-template
               .form-group
                 %div
                   = render 'project_templates', f: f
 
-        .tab-pane.import-project-pane{ id: 'import-project-pane', role: 'tabpanel' }
+        .tab-pane.import-project-pane{ id: 'import-project-pane', class: ('active' if active_tab == 'import'), role: 'tabpanel' }
           = form_for @project, html: { class: 'new_project' } do |f|
             - if import_sources_enabled?
               .project-import.row
@@ -92,7 +100,7 @@
                           %button.btn.js-toggle-button.import_git{ type: "button" }
                             = icon('git', text: 'Repo by URL')
                 .col-lg-12
-                  .js-toggle-content.hide.toggle-import-form
+                  .js-toggle-content.toggle-import-form{ class: ('hide' if active_tab != 'import') }
                     %hr
                       = render "shared/import_form", f: f
                       = render 'new_project_fields', f: f, project_name_id: "import-url-name"

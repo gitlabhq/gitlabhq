@@ -1,5 +1,0 @@
----
-title: Disable MR check out button when source branch is deleted
-merge_request: 16631
-author: Jacopo Beschi @jacopo-beschi
-type: fixed

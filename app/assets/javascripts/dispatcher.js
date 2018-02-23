@@ -42,190 +42,34 @@ var Dispatcher;
         });
       });
 
-      switch (page) {
-        case 'projects:merge_requests:index':
-        case 'projects:issues:index':
-        case 'projects:issues:show':
-        case 'projects:issues:new':
-        case 'projects:issues:edit':
-        case 'projects:merge_requests:creations:new':
-        case 'projects:merge_requests:creations:diffs':
-        case 'projects:merge_requests:edit':
-        case 'projects:merge_requests:show':
-        case 'projects:commit:show':
-        case 'projects:activity':
-        case 'projects:commits:show':
-        case 'projects:show':
-          shortcut_handler = true;
-          break;
-        case 'groups:activity':
-          import('./pages/groups/activity')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:show':
-          shortcut_handler = true;
-          break;
-        case 'groups:group_members:index':
-          import('./pages/groups/group_members/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:project_members:index':
-          import('./pages/projects/project_members')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:create':
-        case 'groups:new':
-          import('./pages/groups/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:edit':
-          import('./pages/groups/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'admin:groups:create':
-        case 'admin:groups:new':
-          import('./pages/admin/groups/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'admin:groups:edit':
-          import('./pages/admin/groups/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:tree:show':
-          import('./pages/projects/tree/show')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'projects:find_file:show':
-          import('./pages/projects/find_file/show')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'projects:blob:show':
-          import('./pages/projects/blob/show')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'projects:blame:show':
-          import('./pages/projects/blame/show')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'groups:labels:new':
-          import('./pages/groups/labels/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:labels:edit':
-          import('./pages/groups/labels/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:labels:new':
-          import('./pages/projects/labels/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:labels:edit':
-          import('./pages/projects/labels/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:labels:index':
-          import('./pages/groups/labels/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:labels:index':
-          import('./pages/projects/labels/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:network:show':
-          // Ensure we don't create a particular shortcut handler here. This is
-          // already created, where the network graph is created.
-          shortcut_handler = true;
-          break;
-        case 'projects:forks:new':
-          import('./pages/projects/forks/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:artifacts:browse':
-          import('./pages/projects/artifacts/browse')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'projects:artifacts:file':
-          import('./pages/projects/artifacts/file')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'search:show':
-          import('./pages/search/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:settings:repository:show':
-          import('./pages/projects/settings/repository/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:settings:ci_cd:show':
-          import('./pages/projects/settings/ci_cd/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:settings:ci_cd:show':
-          import('./pages/groups/settings/ci_cd/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'ci:lints:create':
-        case 'ci:lints:show':
-          import('./pages/ci/lints')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'admin:conversational_development_index:show':
-          import('./pages/admin/conversational_development_index/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'import:fogbugz:new_user_map':
-          import('./pages/import/fogbugz/new_user_map')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'profiles:personal_access_tokens:index':
-          import('./pages/profiles/personal_access_tokens')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'admin:impersonation_tokens:index':
-          import('./pages/admin/impersonation_tokens')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'dashboard:groups:index':
-          import('./pages/dashboard/groups/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
+      const shortcutHandlerPages = [
+        'projects:activity',
+        'projects:artifacts:browse',
+        'projects:artifacts:file',
+        'projects:blame:show',
+        'projects:blob:show',
+        'projects:commit:show',
+        'projects:commits:show',
+        'projects:find_file:show',
+        'projects:issues:edit',
+        'projects:issues:index',
+        'projects:issues:new',
+        'projects:issues:show',
+        'projects:merge_requests:creations:diffs',
+        'projects:merge_requests:creations:new',
+        'projects:merge_requests:edit',
+        'projects:merge_requests:index',
+        'projects:merge_requests:show',
+        'projects:network:show',
+        'projects:show',
+        'projects:tree:show',
+        'groups:show',
+      ];
+
+      if (shortcutHandlerPages.indexOf(page) !== -1) {
+        shortcut_handler = true;
       }
+
       switch (path[0]) {
         case 'admin':
           switch (path[1]) {

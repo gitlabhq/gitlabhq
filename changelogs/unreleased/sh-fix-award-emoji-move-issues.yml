@@ -1,5 +1,0 @@
----
-title: Fix bug where award emojis would be lost when moving issues between projects
-merge_request:
-author:
-type: fixed
