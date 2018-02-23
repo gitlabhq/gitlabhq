@@ -50,7 +50,7 @@ export default class Project {
     Project.projectSelectDropdown();
   }
 
-  static projectSelectDropdown () {
+  static projectSelectDropdown() {
     projectSelect();
     $('.project-item-select').on('click', e => Project.changeProject($(e.currentTarget).val()));
   }

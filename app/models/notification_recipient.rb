@@ -85,6 +85,7 @@ class NotificationRecipient
       return false unless user.can?(:receive_notifications)
       return true if @skip_read_ability
 
+      return false if @target && !user.can?(:read_cross_project)
       return false if @project && !user.can?(:read_project, @project)
 
       return true unless read_ability

@@ -37,7 +37,7 @@
       >
         <div class="item-details">
           <!-- FIXME: Pass an alt attribute here for accessibility -->
-          <user-avatar-image :img-src="mergeRequest.author.avatarUrl"/>
+          <user-avatar-image :img-src="mergeRequest.author.avatarUrl" />
           <h5 class="item-title merge-merquest-title">
             <a :href="mergeRequest.url">
               {{ mergeRequest.title }}

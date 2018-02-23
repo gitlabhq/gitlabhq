@@ -25,6 +25,24 @@ feature 'Project' do
     end
   end
 
+  describe 'shows tip about push to create git command' do
+    let(:user)    { create(:user) }
+
+    before do
+      sign_in user
+      visit new_project_path
+    end
+
+    it 'shows the command in a popover', :js do
+      page.within '.profile-settings-sidebar' do
+        click_link 'Show command'
+      end
+
+      expect(page).to have_css('.popover .push-to-create-popover #push_to_create_tip')
+      expect(page).to have_content 'Private projects can be created in your personal namespace with:'
+    end
+  end
+
   describe 'description' do
     let(:project) { create(:project, :repository) }
     let(:path)    { project_path(project) }

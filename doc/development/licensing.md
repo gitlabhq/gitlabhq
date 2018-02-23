@@ -1,6 +1,6 @@
 # GitLab Licensing and Compatibility
 
-GitLab CE is licensed under the terms of the MIT License. GitLab EE is licensed under "The GitLab Enterprise Edition (EE) license" wherein there are more restrictions. See their respective LICENSE files ([CE][CE], [EE][EE]) for more information.
+[GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab-ce/) (CE) is licensed [under the terms of the MIT License][CE]. [GitLab Enterprise Edition](https://gitlab.com/gitlab-org/gitlab-ee/) (EE) is licensed under "[The GitLab Enterprise Edition (EE) license][EE]" wherein there are more restrictions.
 
 ## Automated Testing
 

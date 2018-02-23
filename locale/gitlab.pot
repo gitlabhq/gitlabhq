@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-07 11:38-0600\n"
-"PO-Revision-Date: 2018-02-07 11:38-0600\n"
+"POT-Creation-Date: 2018-02-20 10:26+0100\n"
+"PO-Revision-Date: 2018-02-20 10:26+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -150,6 +150,39 @@ msgstr ""
 msgid "AdminHealthPageLink|health page"
 msgstr ""
 
+msgid "AdminProjects|Delete"
+msgstr ""
+
+msgid "AdminProjects|Delete Project %{projectName}?"
+msgstr ""
+
+msgid "AdminProjects|Delete project"
+msgstr ""
+
+msgid "AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages."
+msgstr ""
+
+msgid "AdminUsers|Block user"
+msgstr ""
+
+msgid "AdminUsers|Delete User %{username} and contributions?"
+msgstr ""
+
+msgid "AdminUsers|Delete User %{username}?"
+msgstr ""
+
+msgid "AdminUsers|Delete user"
+msgstr ""
+
+msgid "AdminUsers|Delete user and contributions"
+msgstr ""
+
+msgid "AdminUsers|To confirm, type %{projectName}"
+msgstr ""
+
+msgid "AdminUsers|To confirm, type %{username}"
+msgstr ""
+
 msgid "Advanced settings"
 msgstr ""
 
@@ -177,7 +210,19 @@ msgstr ""
 msgid "An error occurred while getting projects"
 msgstr ""
 
+msgid "An error occurred while importing project"
+msgstr ""
+
+msgid "An error occurred while loading commits"
+msgstr ""
+
+msgid "An error occurred while loading diff"
+msgstr ""
+
 msgid "An error occurred while loading filenames"
+msgstr ""
+
+msgid "An error occurred while loading the file"
 msgstr ""
 
 msgid "An error occurred while rendering KaTeX"
@@ -190,6 +235,9 @@ msgid "An error occurred while retrieving calendar activity"
 msgstr ""
 
 msgid "An error occurred while retrieving diff"
+msgstr ""
+
+msgid "An error occurred while saving assignees"
 msgstr ""
 
 msgid "An error occurred while validating username"
@@ -1018,6 +1066,9 @@ msgstr ""
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
 msgstr ""
 
+msgid "Create branch"
+msgstr ""
+
 msgid "Create directory"
 msgstr ""
 
@@ -1031,6 +1082,9 @@ msgid "Create lists from labels. Issues with that label appear in that list."
 msgstr ""
 
 msgid "Create merge request"
+msgstr ""
+
+msgid "Create merge request and branch"
 msgstr ""
 
 msgid "Create new branch"
@@ -1290,7 +1344,13 @@ msgstr ""
 msgid "Failed to change the owner"
 msgstr ""
 
+msgid "Failed to remove issue from board, please try again."
+msgstr ""
+
 msgid "Failed to remove the pipeline schedule"
+msgstr ""
+
+msgid "Failed to update issues, please try again."
 msgstr ""
 
 msgid "Feb"
@@ -1985,6 +2045,24 @@ msgstr ""
 msgid "Pipelines|Get started with Pipelines"
 msgstr ""
 
+msgid "Pipeline|Retry pipeline"
+msgstr ""
+
+msgid "Pipeline|Retry pipeline #%{id}?"
+msgstr ""
+
+msgid "Pipeline|Stop pipeline"
+msgstr ""
+
+msgid "Pipeline|Stop pipeline #%{id}?"
+msgstr ""
+
+msgid "Pipeline|You’re about to retry pipeline %{id}."
+msgstr ""
+
+msgid "Pipeline|You’re about to stop pipeline %{id}."
+msgstr ""
+
 msgid "Pipeline|all"
 msgstr ""
 
@@ -2144,10 +2222,28 @@ msgstr ""
 msgid "ProjectsDropdown|This feature requires browser localStorage support"
 msgstr ""
 
+msgid "PrometheusService|Active"
+msgstr ""
+
+msgid "PrometheusService|Auto configuration"
+msgstr ""
+
+msgid "PrometheusService|Automatically deploy and configure Prometheus on your clusters to monitor your project’s environments"
+msgstr ""
+
 msgid "PrometheusService|By default, Prometheus listens on ‘http://localhost:9090’. It’s not recommended to change the default address and port as this might affect or conflict with other services running on the GitLab server."
 msgstr ""
 
 msgid "PrometheusService|Finding and configuring metrics..."
+msgstr ""
+
+msgid "PrometheusService|Install Prometheus on clusters"
+msgstr ""
+
+msgid "PrometheusService|Manage clusters"
+msgstr ""
+
+msgid "PrometheusService|Manual configuration"
 msgstr ""
 
 msgid "PrometheusService|Metrics"
@@ -2171,7 +2267,16 @@ msgstr ""
 msgid "PrometheusService|Prometheus API Base URL, like http://prometheus.example.com/"
 msgstr ""
 
+msgid "PrometheusService|Prometheus is being automatically managed on your clusters"
+msgstr ""
+
 msgid "PrometheusService|Time-series monitoring service"
+msgstr ""
+
+msgid "PrometheusService|To enable manual configuration, uninstall Prometheus from your clusters"
+msgstr ""
+
+msgid "PrometheusService|To enable the installation of Prometheus on your clusters, deactivate the manual configuration below"
 msgstr ""
 
 msgid "PrometheusService|View environments"
@@ -2376,10 +2481,16 @@ msgstr ""
 msgid "Something went wrong when toggling the button"
 msgstr ""
 
+msgid "Something went wrong while closing the issue. Please try again later"
+msgstr ""
+
 msgid "Something went wrong while fetching the projects."
 msgstr ""
 
 msgid "Something went wrong while fetching the registry list."
+msgstr ""
+
+msgid "Something went wrong while reopening the issue. Please try again later"
 msgstr ""
 
 msgid "Something went wrong. Please try again."
@@ -2476,6 +2587,9 @@ msgid "SortOptions|Start soon"
 msgstr ""
 
 msgid "Source"
+msgstr ""
+
+msgid "Source (branch or tag)"
 msgstr ""
 
 msgid "Source code"
@@ -2738,6 +2852,9 @@ msgstr ""
 msgid "This merge request is locked."
 msgstr ""
 
+msgid "This page is unavailable because you are not allowed to read information across multiple projects."
+msgstr ""
+
 msgid "This project"
 msgstr ""
 
@@ -2932,9 +3049,6 @@ msgid "Track time with quick actions"
 msgstr ""
 
 msgid "Trigger this manual action"
-msgstr ""
-
-msgid "Type %{value} to confirm:"
 msgstr ""
 
 msgid "Unable to reset project cache."
@@ -3229,6 +3343,9 @@ msgid_plural "merge requests"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "mrWidget| Please restore it or use a different %{missingBranchName} branch"
+msgstr ""
+
 msgid "mrWidget|Cancel automatic merge"
 msgstr ""
 
@@ -3260,6 +3377,9 @@ msgid "mrWidget|Email patches"
 msgstr ""
 
 msgid "mrWidget|If the %{branch} branch exists in your local repository, you can merge this merge request manually using the"
+msgstr ""
+
+msgid "mrWidget|If the %{missingBranchName} branch exists in your local repository, you can merge this merge request manually using the command line"
 msgstr ""
 
 msgid "mrWidget|Mentions"
@@ -3347,6 +3467,9 @@ msgid "mrWidget|You can merge this merge request manually using the"
 msgstr ""
 
 msgid "mrWidget|You can remove source branch now"
+msgstr ""
+
+msgid "mrWidget|branch does not exist."
 msgstr ""
 
 msgid "mrWidget|command line"

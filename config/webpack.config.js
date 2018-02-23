@@ -29,13 +29,15 @@ var pageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'ap
 var dispatcher = fs.readFileSync(path.join(ROOT_PATH, 'app/assets/javascripts/dispatcher.js')).toString();
 var dispatcherChunks = dispatcher.match(/(?!import\(')\.\/pages\/[^']+/g);
 
-pageEntries.forEach(( path ) => {
-  let chunkPath = path.replace(/\/index\.js$/, '');
-  if (!dispatcherChunks.includes('./' + chunkPath)) {
-    let chunkName = chunkPath.replace(/\//g, '.');
-    autoEntries[chunkName] = './' + path;
+function generateAutoEntries(path, prefix = '.') {
+  const chunkPath = path.replace(/\/index\.js$/, '');
+  if (!dispatcherChunks.includes(`${prefix}/${chunkPath}`)) {
+    const chunkName = chunkPath.replace(/\//g, '.');
+    autoEntries[chunkName] = `${prefix}/${path}`;
   }
-});
+}
+
+pageEntries.forEach(( path ) => generateAutoEntries(path));
 
 // report our auto-generated bundle count
 var autoEntriesCount = Object.keys(autoEntries).length;

@@ -20,29 +20,34 @@
         %ul.nav.navbar-nav
           - if current_user
             = render 'layouts/header/new_dropdown'
-          %li.hidden-sm.hidden-xs
-            = render 'layouts/search' unless current_controller?(:search)
-          %li.visible-sm-inline-block.visible-xs-inline-block
-            = link_to search_path, title: 'Search', aria: { label: "Search" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-              = sprite_icon('search', size: 16)
-          - if current_user
+          - if header_link?(:search)
+            %li.hidden-sm.hidden-xs
+              = render 'layouts/search' unless current_controller?(:search)
+            %li.visible-sm-inline-block.visible-xs-inline-block
+              = link_to search_path, title: 'Search', aria: { label: "Search" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+                = sprite_icon('search', size: 16)
+
+          - if header_link?(:issues)
             = nav_link(path: 'dashboard#issues', html_options: { class: "user-counter" }) do
               = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'dashboard-shortcuts-issues', aria: { label: "Issues" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = sprite_icon('issues', size: 16)
                 - issues_count = assigned_issuables_count(:issues)
                 %span.badge.issues-count{ class: ('hidden' if issues_count.zero?) }
                   = number_with_delimiter(issues_count)
+          - if header_link?(:merge_requests)
             = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter" }) do
               = link_to assigned_mrs_dashboard_path, title: 'Merge requests', class: 'dashboard-shortcuts-merge_requests', aria: { label: "Merge requests" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = sprite_icon('git-merge', size: 16)
                 - merge_requests_count = assigned_issuables_count(:merge_requests)
                 %span.badge.merge-requests-count{ class: ('hidden' if merge_requests_count.zero?) }
                   = number_with_delimiter(merge_requests_count)
+          - if header_link?(:todos)
             = nav_link(controller: 'dashboard/todos', html_options: { class: "user-counter" }) do
               = link_to dashboard_todos_path, title: 'Todos', aria: { label: "Todos" }, class: 'shortcuts-todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = sprite_icon('todo-done', size: 16)
                 %span.badge.todos-count{ class: ('hidden' if todos_pending_count.zero?) }
                   = todos_count_format(todos_pending_count)
+          - if header_link?(:user_dropdown)
             %li.header-user.dropdown
               = link_to current_user, class: user_dropdown_class, data: { toggle: "dropdown" } do
                 = image_tag avatar_icon_for_user(current_user, 23), width: 23, height: 23, class: "header-user-avatar qa-user-avatar"
@@ -64,11 +69,11 @@
                   %li.divider
                   %li
                     = link_to "Sign out", destroy_user_session_path, class: "sign-out-link"
-            - if session[:impersonator_id]
-              %li.impersonation
-                = link_to admin_impersonation_path, class: 'impersonation-btn', method: :delete, title: "Stop impersonation", aria: { label: 'Stop impersonation' }, data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
-                  = icon('user-secret')
-          - else
+          - if header_link?(:admin_impersonation)
+            %li.impersonation
+              = link_to admin_impersonation_path, class: 'impersonation-btn', method: :delete, title: "Stop impersonation", aria: { label: 'Stop impersonation' }, data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
+                = icon('user-secret')
+          - if header_link?(:sign_in)
             %li
               %div
                 = link_to "Sign in / Register", new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in'

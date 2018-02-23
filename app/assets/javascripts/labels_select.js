@@ -316,9 +316,9 @@ export default class LabelsSelect {
         },
         multiSelect: $dropdown.hasClass('js-multiselect'),
         vue: $dropdown.hasClass('js-issue-board-sidebar'),
-        clicked: function(options) {
-          const { $el, e, isMarking } = options;
-          const label = options.selectedObj;
+        clicked: function (clickEvent) {
+          const { $el, e, isMarking } = clickEvent;
+          const label = clickEvent.selectedObj;
 
           var isIssueIndex, isMRIndex, page, boardsModel;
           var fadeOutLoader = () => {

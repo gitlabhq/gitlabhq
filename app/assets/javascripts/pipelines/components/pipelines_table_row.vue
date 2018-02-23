@@ -223,7 +223,8 @@
     <div class="table-section section-10 commit-link">
       <div
         class="table-mobile-header"
-        role="rowheader">
+        role="rowheader"
+      >
         Status
       </div>
       <div class="table-mobile-content">
