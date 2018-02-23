@@ -49,6 +49,14 @@ describe Event do
         end
       end
     end
+
+    describe 'after_create :track_user_contributed_projects' do
+      it 'passes event to UserContributedProjects.track' do
+        event = build(:push_event, project: project, author: project.owner)
+        expect(UserContributedProjects).to receive(:track).with(event)
+        event.save
+      end
+    end
   end
 
   describe "Push event" do

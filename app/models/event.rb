@@ -65,6 +65,7 @@ class Event < ActiveRecord::Base
   # Callbacks
   after_create :reset_project_activity
   after_create :set_last_repository_updated_at, if: :push?
+  after_create :track_user_contributed_projects
 
   # Scopes
   scope :recent, -> { reorder(id: :desc) }
@@ -388,5 +389,9 @@ class Event < ActiveRecord::Base
   def set_last_repository_updated_at
     Project.unscoped.where(id: project_id)
       .update_all(last_repository_updated_at: created_at)
+  end
+
+  def track_user_contributed_projects
+    UserContributedProjects.track(self)
   end
 end

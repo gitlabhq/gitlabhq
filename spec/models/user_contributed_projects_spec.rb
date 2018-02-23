@@ -1,0 +1,37 @@
+require 'spec_helper'
+
+describe UserContributedProjects do
+
+  describe '.track' do
+    subject { described_class.track(event) }
+    let(:event) { build(:event) }
+
+    Event::ACTIONS.each do |action|
+      context "for all actions (event types)" do
+        let(:event) { build(:event, action: action) }
+        it 'creates a record' do
+          expect { subject }.to change { UserContributedProjects.count }.from(0).to(1)
+        end
+
+      end
+    end
+
+    it 'sets project accordingly' do
+      expect(subject.project).to eq(event.project)
+    end
+
+    it 'sets user accordingly' do
+      expect(subject.user).to eq(event.author)
+    end
+
+    it 'only creates a record once per user/project' do
+      expect do
+        subject
+        described_class.track(event)
+      end.to change { UserContributedProjects.count }.from(0).to(1)
+    end
+  end
+
+  it { is_expected.to validate_presence_of(:project) }
+  it { is_expected.to validate_presence_of(:user) }
+end
