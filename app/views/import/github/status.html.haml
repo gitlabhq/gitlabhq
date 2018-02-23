@@ -1,6 +1,8 @@
-- page_title "GitHub Import"
+- title = has_ci_cd_only_params? ? _('Connect repositories from GitHub') : _('GitHub import')
+- page_title title
+- breadcrumb_title title
 - header_title "Projects", root_path
 %h3.page-title
-  = icon 'github', text: 'Import Projects from GitHub'
+  = icon 'github', text: import_github_title
 
 = render 'import/githubish_status', provider: 'github'

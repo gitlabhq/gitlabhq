@@ -14,6 +14,10 @@
             = s_('ImportButtons|Connect repositories from')
           .import-buttons
             %div
+              - if github_import_enabled?
+                = link_to new_import_github_path(ci_cd_only: true), class: 'btn js-import-github' do
+                  = icon('github', text: 'GitHub')
+            %div
               - if git_import_enabled?
                 %button.btn.js-toggle-button.js-import-git-toggle-button{ type: "button", data: { toggle_open_class: 'active' } }
                   = icon('git', text: _('Repo by URL'))
