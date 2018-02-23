@@ -1,6 +1,5 @@
 - breadcrumb_title "Edit Profile"
 - @content_class = "limit-container-width" unless fluid_layout
-= render 'profiles/head'
 
 = bootstrap_form_for @user, url: profile_path, method: :put, html: { multipart: true, class: 'edit-user prepend-top-default js-quick-submit' }, authenticity_token: true do |f|
   = form_errors(@user)

@@ -117,11 +117,6 @@ var Dispatcher;
               break;
           }
           break;
-        case 'profiles':
-          import('./pages/profiles/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects':
           import('./pages/projects')
             .then(callDefault)
