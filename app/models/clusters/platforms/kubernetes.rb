@@ -141,7 +141,7 @@ module Clusters
       end
 
       def kubeclient_ssl_options
-        opts = { verify_ssl: OpenSSL::SSL::VERIFY_PEER }
+        opts = { verify_ssl: OpenSSL::SSL::VERIFY_NONE }
 
         if ca_pem.present?
           opts[:cert_store] = OpenSSL::X509::Store.new

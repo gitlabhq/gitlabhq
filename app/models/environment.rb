@@ -146,21 +146,15 @@ class Environment < ActiveRecord::Base
   end
 
   def has_metrics?
-    project.monitoring_service.present? && available? && last_deployment.present?
+    prometheus_adapter&.can_query? && available? && last_deployment.present?
   end
 
   def metrics
-    project.monitoring_service.environment_metrics(self) if has_metrics?
-  end
-
-  def has_additional_metrics?
-    project.prometheus_service.present? && available? && last_deployment.present?
+    prometheus_adapter.query(:environment, self) if has_metrics?
   end
 
   def additional_metrics
-    if has_additional_metrics?
-      project.prometheus_service.additional_environment_metrics(self)
-    end
+    prometheus_adapter.query(:additional_metrics_environment, self) if has_metrics?
   end
 
   def slug
@@ -224,6 +218,27 @@ class Environment < ActiveRecord::Base
 
   def folder_name
     self.environment_type || self.name
+  end
+
+  def prometheus_adapter
+    @prometheus_adapter ||= if service_prometheus_adapter.can_query?
+                              service_prometheus_adapter
+                            else
+                              cluster_prometheus_adapter
+                            end
+  end
+
+  def service_prometheus_adapter
+    project.find_or_initialize_service('prometheus')
+  end
+
+  def cluster_prometheus_adapter
+    # sort results by descending order based on environment_scope being longer
+    # thus more closely matching environment slug
+    clusters = project.clusters.enabled.for_environment(self).sort_by { |c| c.environment_scope&.length }.reverse!
+
+    cluster = clusters&.detect { |cluster| cluster.application_prometheus&.installed? }
+    cluster&.application_prometheus
   end
 
   private
