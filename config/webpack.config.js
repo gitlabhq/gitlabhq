@@ -107,7 +107,6 @@ var config = {
     ldap_group_links:     './groups/ldap_group_links.js',
     mirrors:              './mirrors',
     ee_protected_branches: 'ee/protected_branches',
-    ee_protected_tags:    'ee/protected_tags',
     service_desk:         './projects/settings_service_desk/service_desk_bundle.js',
     service_desk_issues:  './service_desk_issues/index.js',
     roadmap:              'ee/roadmap',
