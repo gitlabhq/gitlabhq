@@ -23,30 +23,14 @@ module BlobHelper
 
     edit_button_tag(blob,
                     common_classes,
-                    edit_text,
+                    _('Edit'),
                     edit_blob_path(project, ref, path, options),
                     project,
                     ref)
   end
 
-  def user_can_fork_project?(project)
-    current_user && can?(current_user, :fork_project, project)
-  end
-
   def display_modify_blob?(blob, project, ref)
     !current_user || (current_user && can_modify_blob?(blob, project, ref))
-  end
-
-  def ide_edit_path(project = @project, ref = @ref, path = @path, options = {})
-    "#{ide_path}/project#{edit_blob_path(project, ref, path, options)}"
-  end
-
-  def edit_text
-    _('Edit')
-  end
-
-  def ide_edit_text
-    _('Web IDE')
   end
 
   def ide_edit_button(project = @project, ref = @ref, path = @path, options = {})
@@ -57,13 +41,13 @@ module BlobHelper
 
     edit_button_tag(blob,
                     common_classes,
-                    ide_edit_text,
-                    ide_edit_path(project, ref, path, options),
+                    _('Web IDE'),
+                    "#{ide_path}/project#{edit_blob_path(project, ref, path, options)}",
                     project,
                     ref)
   end
 
-  def modify_file_element(project = @project, ref = @ref, path = @path, label:, action:, btn_class:, modal_type:)
+  def modify_file_button(project = @project, ref = @ref, path = @path, label:, action:, btn_class:, modal_type:)
     return unless current_user
 
     blob = project.repository.blob_at(ref, path) rescue nil
@@ -84,7 +68,7 @@ module BlobHelper
   end
 
   def replace_blob_link(project = @project, ref = @ref, path = @path)
-    modify_file_element(
+    modify_file_button(
       project,
       ref,
       path,
@@ -96,7 +80,7 @@ module BlobHelper
   end
 
   def delete_blob_link(project = @project, ref = @ref, path = @path)
-    modify_file_element(
+    modify_file_button(
       project,
       ref,
       path,
@@ -353,7 +337,7 @@ module BlobHelper
       # Web IDE (Beta) requires the user to have this feature enabled
     elsif display_modify_blob?(blob, project, ref)
       edit_link_tag(text, edit_path, common_classes)
-    elsif user_can_fork_project?(project)
+    elsif current_user && can?(current_user, :fork_project, project)
       edit_fork_button_tag(common_classes, project, text, edit_blob_fork_params(edit_path))
     end
   end
