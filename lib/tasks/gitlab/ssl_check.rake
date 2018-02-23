@@ -1,8 +1,8 @@
 namespace :gitlab do
-  desc "GitLab | Check SSL connectivity and verify certificates for a specific host and port"
-  task :ssl_check => :environment do
+  desc 'GitLab | Check SSL connectivity and verify certificates for a specific host and port'
+  task ssl_check: :environment do
     unless ENV['HOST']
-      puts "Please specify a host and/or port: `rake gitlab:ssl_check HOST=example.com`".color(:red)
+      puts 'Please specify a host and/or port: `rake gitlab:ssl_check HOST=example.com`'.color(:red)
       exit 1
     end
 
