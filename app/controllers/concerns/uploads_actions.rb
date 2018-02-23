@@ -64,8 +64,9 @@ module UploadsActions
   def build_uploader_from_upload
     return nil unless params[:secret] && params[:filename]
 
-    upload_path = uploader_class.upload_path(params[:secret], params[:filename])
-    upload = Upload.find_by(uploader: uploader_class.to_s, path: upload_path)
+    upload_paths = uploader_class.new(model, secret: params[:secret])
+                     .upload_paths(params[:filename])
+    upload = Upload.find_by(uploader: uploader_class.to_s, path: upload_paths)
     upload&.build_uploader
   end
 

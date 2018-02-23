@@ -32,8 +32,11 @@ class FileUploader < GitlabUploader
     )
   end
 
-  def self.base_dir(model)
-    model_path_segment(model)
+  def self.base_dir(model, store = Store::LOCAL)
+    decorated_model = model
+    decorated_model = Storage::HashedProject.new(model) if store == Store::REMOTE
+
+    model_path_segment(decorated_model)
   end
 
   # used in migrations and import/exports
@@ -64,6 +67,13 @@ class FileUploader < GitlabUploader
     SecureRandom.hex
   end
 
+  def upload_paths(filename)
+    [
+      File.join(secret, filename),
+      File.join(base_dir(Store::REMOTE), secret, filename)
+    ]
+  end
+
   attr_accessor :model
 
   def initialize(model, mounted_as = nil, **uploader_context)
@@ -75,10 +85,8 @@ class FileUploader < GitlabUploader
 
   # enforce the usage of Hashed storage when storing to
   # remote store as the FileMover doesn't support OS
-  def base_dir
-    model = file_storage? ? @model : Storage::HashedProject.new(@model)
-
-    self.class.base_dir(model)
+  def base_dir(store = nil)
+    self.class.base_dir(@model, store || object_store)
   end
 
   # we don't need to know the actual path, an uploader instance should be
@@ -88,7 +96,8 @@ class FileUploader < GitlabUploader
   end
 
   def upload_path
-    if file_storage? # Legacy
+    if file_storage?
+      # Legacy path relative to project.full_path
       File.join(dynamic_segment, identifier)
     else
       File.join(store_dir, identifier)
@@ -97,8 +106,8 @@ class FileUploader < GitlabUploader
 
   def store_dirs
     {
-      Store::LOCAL => local_store_dir = File.join(base_dir, dynamic_segment),
-      Store::REMOTE => local_store_dir
+      Store::LOCAL => File.join(base_dir, dynamic_segment),
+      Store::REMOTE => File.join(base_dir(ObjectStorage::Store::REMOTE), dynamic_segment)
     }
   end
 

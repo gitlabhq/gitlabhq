@@ -4,7 +4,7 @@ class NamespaceFileUploader < FileUploader
     options.storage_path
   end
 
-  def self.base_dir(model)
+  def self.base_dir(model, _store = nil)
     File.join(options.base_dir, 'namespace', model_path_segment(model))
   end
 
