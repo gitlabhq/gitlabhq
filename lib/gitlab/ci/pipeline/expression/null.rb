@@ -6,7 +6,7 @@ module Gitlab
           PATTERN = /null/.freeze
           TYPE = :value
 
-          def initialize(value)
+          def initialize(value = nil)
             @value = value
           end
 

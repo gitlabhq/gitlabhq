@@ -67,5 +67,4 @@ describe Gitlab::Ci::Pipeline::Expression::Lexer do
       expect(lexer.lexemes).to eq %w[variable string]
     end
   end
-
 end

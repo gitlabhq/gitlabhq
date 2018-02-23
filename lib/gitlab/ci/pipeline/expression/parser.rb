@@ -4,9 +4,7 @@ module Gitlab
       module Expression
         class Parser
           def initialize(tokens)
-            # raise ArgumentError unless tokens.enumerator?
-
-            @tokens = tokens
+            @tokens = tokens.to_enum
             @nodes = []
           end
 
@@ -14,10 +12,7 @@ module Gitlab
             while token = @tokens.next
               case token.type
               when :operator
-                lookbehind = @nodes.last
-                lookahead = Parser.new(@tokens).tree
-
-                token.build(lookbehind, lookahead).tap do |node|
+                token.build(@nodes.last, tree).tap do |node|
                   @nodes.push(node)
                 end
               when :value
@@ -27,7 +22,11 @@ module Gitlab
               end
             end
           rescue StopIteration
-            @nodes.last
+            @nodes.last || Expression::Null.new
+          end
+
+          def self.seed(statement)
+            new(Expression::Lexer.new(statement).tokens)
           end
         end
       end

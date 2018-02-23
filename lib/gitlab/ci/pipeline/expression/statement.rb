@@ -29,7 +29,7 @@ module Gitlab
               raise StatementError, 'Unknown pipeline expression!'
             end
 
-            Expression::Parser.new(@lexer.tokens.to_enum).tree
+            Expression::Parser.new(@lexer.tokens).tree
           end
 
           def evaluate
