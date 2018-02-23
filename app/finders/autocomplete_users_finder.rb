@@ -1,6 +1,12 @@
 class AutocompleteUsersFinder
+  # The number of users to display in the results is hardcoded to 20, and
+  # pagination is not supported. This ensures that performance remains
+  # consistent and removes the need for implementing keyset pagination to ensure
+  # good performance.
+  LIMIT = 20
+
   attr_reader :current_user, :project, :group, :search, :skip_users,
-              :page, :per_page, :author_id, :params
+              :author_id, :params
 
   # EE
   attr_reader :skip_ldap
@@ -11,8 +17,6 @@ class AutocompleteUsersFinder
     @group = group
     @search = params[:search]
     @skip_users = params[:skip_users]
-    @page = params[:page]
-    @per_page = params[:per_page]
     @author_id = params[:author_id]
     @params = params
 
@@ -30,9 +34,10 @@ class AutocompleteUsersFinder
     items = items.reorder(:name)
     items = items.search(search) if search.present?
     items = items.where.not(id: skip_users) if skip_users.present?
+    items = items.limit(LIMIT)
 
     # EE
-    items = load_users_by_push_ability(items) || items.page(page).per(per_page)
+    items = load_users_by_push_ability(items)
 
     if params[:todo_filter].present? && current_user
       items = items.todo_authors(current_user.id, params[:todo_state_filter])
@@ -64,22 +69,25 @@ class AutocompleteUsersFinder
   end
 
   def users_from_project
-    user_ids = project.team.users.pluck(:id)
-    user_ids << author_id if author_id.present?
+    if author_id.present?
+      union = Gitlab::SQL::Union
+        .new([project.authorized_users, User.where(id: author_id)])
 
-    User.where(id: user_ids)
+      User.from("(#{union.to_sql}) #{User.table_name}")
+    else
+      project.authorized_users
+    end
   end
 
   # EE
   def load_users_by_push_ability(items)
-    return unless project
+    return items unless project
 
     ability = push_ability
-    return if ability.blank?
+    return items if ability.blank?
 
     items.to_a
       .select { |user| user.can?(ability, project) }
-      .take(per_page&.to_i || Kaminari.config.default_per_page)
   end
 
   def push_ability
