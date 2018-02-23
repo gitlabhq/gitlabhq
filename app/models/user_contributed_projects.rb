@@ -8,7 +8,21 @@ class UserContributedProjects < ActiveRecord::Base
   CACHE_EXPIRY_TIME = 1.day
 
   def self.track(event)
-    attributes = {project_id: event.project_id, user_id: event.author_id}
+    # For events without a project, we simply don't care.
+    # An example of this is the creation of a snippet (which
+    # is not related to any project).
+    return unless event.project
+
+    # This is a precaution because the cache lookup
+    # will work just fine without an author.
+    #
+    # However, this should never happen (tm).
+    raise 'event#author not present unexpectedly' unless event.author
+
+    attributes = {
+      project_id: event.project_id,
+      user_id: event.author_id
+    }
 
     cached_exists?(attributes) do
       begin

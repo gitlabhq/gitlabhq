@@ -31,6 +31,14 @@ describe UserContributedProjects do
         described_class.track(event)
       end.to change { UserContributedProjects.count }.from(0).to(1)
     end
+
+    describe 'with an event without a project' do
+      let(:event) { build(:event, project: nil) }
+
+      it 'ignores the event' do
+        expect { subject }.not_to change { UserContributedProjects.count }
+      end
+    end
   end
 
   it { is_expected.to validate_presence_of(:project) }
