@@ -3,7 +3,7 @@ import Profile from '~/profile/profile';
 import { getPagePath } from '~/lib/utils/common_utils';
 
 document.addEventListener('DOMContentLoaded', () => {
-  $(document).on('input.ssh_key', '#key_key', () => {
+  $(document).on('input.ssh_key', '#key_key', function () { // eslint-disable-line func-names
     const $title = $('#key_title');
     const comment = $(this).val().match(/^\S+ \S+ (.+)\n?$/);
 
