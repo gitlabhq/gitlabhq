@@ -1,9 +1,6 @@
 class Groups::ApplicationController < ApplicationController
-  include RoutableActions
-<<<<<<< HEAD
   prepend EE::Groups::ApplicationController
-=======
->>>>>>> upstream/master
+  include RoutableActions
   include ControllerWithCrossProjectAccessCheck
 
   layout 'group'
