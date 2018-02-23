@@ -20,7 +20,6 @@ class BasePolicy < DeclarativePolicy::Base
 
   # This is prevented in some cases in `gitlab-ee`
   rule { default }.enable :read_cross_project
-<<<<<<< HEAD
 
   # EE Extensions
   with_scope :user
@@ -31,6 +30,4 @@ class BasePolicy < DeclarativePolicy::Base
 
   with_scope :global
   condition(:license_block) { License.block_changes? }
-=======
->>>>>>> upstream/master
 end
