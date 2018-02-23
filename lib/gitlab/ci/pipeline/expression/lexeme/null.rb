@@ -10,8 +10,12 @@ module Gitlab
               @value = value
             end
 
-            def evaluate(**_)
+            def evaluate(_)
               nil
+            end
+
+            def self.build(value)
+              new(value)
             end
           end
         end

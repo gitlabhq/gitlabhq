@@ -60,4 +60,24 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
       end
     end
   end
+
+  describe '#evaluate' do
+    statements = [
+      ['$VARIABLE == "my variable"', true],
+      ['"my variable" == $VARIABLE', true],
+      ['$VARIABLE == null', false],
+      ['$VAR == null', true],
+      ['null == $VAR', true],
+      ['$VARIABLE', 'my variable'],
+      ['$VAR', nil],
+    ]
+
+    statements.each do |expression, value|
+      it "evaluates `#{expression}` to `#{value}`" do
+        statement = described_class.new(expression, pipeline)
+
+        expect(statement.evaluate).to eq value
+      end
+    end
+  end
 end

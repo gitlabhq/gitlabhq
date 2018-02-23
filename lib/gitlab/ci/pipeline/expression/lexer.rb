@@ -6,6 +6,7 @@ module Gitlab
           LEXEMES = [
             Expression::Lexeme::Variable,
             Expression::Lexeme::String,
+            Expression::Lexeme::Null,
             Expression::Lexeme::Equals
           ].freeze
 

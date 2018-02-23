@@ -18,7 +18,7 @@ module Gitlab
             @lexer = Expression::Lexer.new(statement)
 
             @variables = pipeline.variables.map do |variable|
-              { variable.key => variable.value }
+              [variable.key, variable.value]
             end
           end
 
@@ -33,7 +33,7 @@ module Gitlab
           end
 
           def evaluate
-            parse_tree.evaluate(**@variables)
+            parse_tree.evaluate(@variables.to_h)
           end
         end
       end
