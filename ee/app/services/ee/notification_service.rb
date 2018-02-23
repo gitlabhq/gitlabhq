@@ -22,5 +22,11 @@ module EE
 
       Notify.service_desk_new_note_email(issue.id, note.id).deliver_later
     end
+
+    def mirror_was_hard_failed(project)
+      recepient = project.mirror_user
+
+      mailer.mirror_hard_failed(project.id, recepient.id).deliver_later
+    end
   end
 end

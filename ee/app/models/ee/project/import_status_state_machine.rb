@@ -21,7 +21,10 @@ module EE
           end
 
           after_transition [:scheduled, :started] => [:finished, :failed] do |project, _|
-            ::Gitlab::Mirror.decrement_capacity(project.id) if project.mirror?
+            if project.mirror?
+              ::Gitlab::Mirror.decrement_capacity(project.id)
+              ::NotificationService.new.mirror_was_hard_failed(project)
+            end
           end
 
           before_transition started: :failed do |project, _|
