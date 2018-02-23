@@ -47,10 +47,10 @@ This can be done by using either SSH or HTTP:
 
 ```
 ## Git push using SSH
-git push git@gitlab.example.com:namespace/nonexistent-project.git
+git push --set-upstream git@gitlab.example.com:namespace/nonexistent-project.git master
 
 ## Git push using HTTP
-git push https://gitlab.example.com/namespace/nonexistent-project.git
+git push --set-upstream https://gitlab.example.com/namespace/nonexistent-project.git master
 ```
 
 Once the push finishes successfully, a remote message will indicate
