@@ -8,6 +8,9 @@ describe Ci::CreateTraceArtifactService do
       context 'when the job has a trace file' do
         let!(:job) { create(:ci_build, :trace_live) }
         let!(:legacy_path) { job.trace.read { |stream| return stream.path } }
+        let!(:legacy_checksum) { Digest::SHA256.file(legacy_path).hexdigest }
+        let(:new_path) { job.job_artifacts_trace.file.path }
+        let(:new_checksum) { Digest::SHA256.file(new_path).hexdigest }
 
         it { expect(File.exists?(legacy_path)).to be_truthy }
 
@@ -15,8 +18,9 @@ describe Ci::CreateTraceArtifactService do
           expect { subject }.to change { Ci::JobArtifact.count }.by(1)
 
           expect(File.exists?(legacy_path)).to be_falsy
-          expect(File.exists?(job.job_artifacts_trace.file.path)).to be_truthy
-          expect(job.job_artifacts_trace.exists?).to be_truthy
+          expect(File.exists?(new_path)).to be_truthy
+          expect(new_checksum).to eq(legacy_checksum)
+          expect(job.job_artifacts_trace.file.exists?).to be_truthy
           expect(job.job_artifacts_trace.file.filename).to eq('job.log')
         end
 
@@ -35,6 +39,18 @@ describe Ci::CreateTraceArtifactService do
           it 'keeps legacy trace and removes trace artifact' do
             expect(File.exists?(legacy_path)).to be_truthy
             expect(job.job_artifacts_trace).to be_nil
+          end
+        end
+
+        context 'when migrated trace artifact file is not found' do
+          before do
+            allow_any_instance_of(CarrierWave::SanitizedFile).to receive(:exists?) { false }
+          end
+
+          it 'raises an error' do
+            expect { subject }.to raise_error('Trace artifact not found')
+
+            expect(File.exists?(legacy_path)).to be_truthy
           end
         end
       end
