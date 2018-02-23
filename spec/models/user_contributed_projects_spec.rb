@@ -12,16 +12,17 @@ describe UserContributedProjects do
         it 'creates a record' do
           expect { subject }.to change { UserContributedProjects.count }.from(0).to(1)
         end
-
       end
     end
 
     it 'sets project accordingly' do
-      expect(subject.project).to eq(event.project)
+      subject
+      expect(UserContributedProjects.first.project).to eq(event.project)
     end
 
     it 'sets user accordingly' do
-      expect(subject.user).to eq(event.author)
+      subject
+      expect(UserContributedProjects.first.user).to eq(event.author)
     end
 
     it 'only creates a record once per user/project' do
