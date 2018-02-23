@@ -25,16 +25,15 @@ module Gitlab
     end
 
     def output
-      puts '---'
-      puts 'Certificate chain'
+      out = "---\nCertificate chain\n"
       @ssl_client.peer_cert_chain.each_with_index do |cert, i|
-        puts "#{i}: s: #{cert.subject}\n #{cert.issuer}"
+        out += "#{i}: s: #{cert.subject}\n #{cert.issuer}"
       end
-      puts '---'
-      puts '---Server certificate---'
-      puts @ssl_client.peer_cert
-      puts "\n---Chain Certificates---"
-      @ssl_client.peer_cert_chain.each { |x| puts x }
+
+      out += "---\n---Server certificate---\n#{@ssl_client.peer_cert}"
+      out += "\n---Chain Certificates---\n"
+      out += @ssl_client.peer_cert_chain.map(&:to_s).join("\n")
+      out
     end
 
     private
