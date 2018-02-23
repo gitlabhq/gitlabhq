@@ -155,6 +155,7 @@ class Project < ActiveRecord::Base
 
   # Merge Requests for target project should be removed with it
   has_many :merge_requests, foreign_key: 'target_project_id'
+  has_many :source_of_merge_requests, foreign_key: 'source_project_id', class_name: 'MergeRequest'
   has_many :issues
   has_many :labels, class_name: 'ProjectLabel'
   has_many :services
@@ -1805,6 +1806,33 @@ class Project < ActiveRecord::Base
     Badge.where("id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
   end
 
+  def merge_requests_allowing_push_to_user(user)
+    return MergeRequest.none unless user
+
+    developer_access_exists = user.project_authorizations
+                                .where('access_level >= ? ', Gitlab::Access::DEVELOPER)
+                                .where('project_authorizations.project_id = merge_requests.target_project_id')
+                                .limit(1)
+                                .select(1)
+    source_of_merge_requests.opened
+      .where(allow_maintainer_to_push: true)
+      .where('EXISTS (?)', developer_access_exists)
+  end
+
+  def branch_allows_maintainer_push?(user, branch_name)
+    return false unless user
+
+    cache_key = "user:#{user.id}:#{branch_name}:branch_allows_push"
+
+    memoized_results = strong_memoize(:branch_allows_maintainer_push) do
+      Hash.new do |result, cache_key|
+        result[cache_key] = fetch_branch_allows_maintainer_push?(user, branch_name)
+      end
+    end
+
+    memoized_results[cache_key]
+  end
+
   private
 
   def storage
@@ -1926,5 +1954,23 @@ class Project < ActiveRecord::Base
     end
 
     raise ex
+  end
+
+  def fetch_branch_allows_maintainer_push?(user, branch_name)
+    check_access = -> do
+      merge_request = source_of_merge_requests.opened
+                        .where(allow_maintainer_to_push: true)
+                        .find_by(source_branch: branch_name)
+
+      merge_request&.can_be_merged_by?(user)
+    end
+
+    if RequestStore.active?
+      RequestStore.fetch("project-#{id}:branch-#{branch_name}:user-#{user.id}:branch_allows_maintainer_push") do
+        check_access.call
+      end
+    else
+      check_access.call
+    end
   end
 end

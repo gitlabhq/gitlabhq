@@ -1,0 +1,6 @@
+- unless can?(current_user, :push_code, @project)
+  .inline.prepend-left-10
+    - if @project.branch_allows_maintainer_push?(current_user, selected_branch)
+      = commit_in_single_accessible_branch
+    - else
+      = commit_in_fork_help

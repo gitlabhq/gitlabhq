@@ -535,6 +535,7 @@ Creates a new merge request.
 POST /projects/:id/merge_requests
 ```
 
+<<<<<<< HEAD
 | Attribute              | Type    | Required | Description                                                                     |
 | ---------              | ----    | -------- | -----------                                                                     |
 | `id`                   | integer/string  | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
@@ -549,6 +550,7 @@ POST /projects/:id/merge_requests
 | `remove_source_branch` | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
 | `approvals_before_merge` | integer| no | Number of approvals required before this can be merged (see below) |
 | `squash` | boolean| no | Squash commits into a single commit when merging |
+| `allow_maintainer_to_push` | boolean | no       | Whether or not a maintainer of the target project can push to the source branch  |
 
 If `approvals_before_merge` is not provided, it inherits the value from the
 target project. If it is provided, then the following conditions must hold in
@@ -565,7 +567,7 @@ order for it to take effect:
   "iid": 1,
   "target_branch": "master",
   "source_branch": "test1",
-  "project_id": 3,
+  "project_id": 4,
   "title": "test1",
   "state": "opened",
   "upvotes": 0,
@@ -586,7 +588,7 @@ order for it to take effect:
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
   },
-  "source_project_id": 4,
+  "source_project_id": 3,
   "target_project_id": 4,
   "labels": [ ],
   "description": "fixed login page css paddings",
@@ -614,6 +616,7 @@ order for it to take effect:
   "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
   "discussion_locked": false,
+  "allow_maintainer_to_push": false,
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -632,6 +635,7 @@ Updates an existing merge request. You can change the target branch, title, or e
 PUT /projects/:id/merge_requests/:merge_request_iid
 ```
 
+<<<<<<< HEAD
 | Attribute              | Type    | Required | Description                                                                     |
 | ---------              | ----    | -------- | -----------                                                                     |
 | `id`                   | integer/string | yes  | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
@@ -646,6 +650,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 | `remove_source_branch` | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
 | `squash` | boolean| no | Squash commits into a single commit when merging |
 | `discussion_locked`    | boolean | no       | Flag indicating if the merge request's discussion is locked. If the discussion is locked only project members can add, edit or resolve comments. |
+| `allow_maintainer_to_push` | boolean | no       | Whether or not a maintainer of the target project can push to the source branch  |
 
 Must include at least one non-required attribute from above.
 
@@ -654,7 +659,7 @@ Must include at least one non-required attribute from above.
   "id": 1,
   "iid": 1,
   "target_branch": "master",
-  "project_id": 3,
+  "project_id": 4,
   "title": "test1",
   "state": "opened",
   "upvotes": 0,
@@ -675,7 +680,7 @@ Must include at least one non-required attribute from above.
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
   },
-  "source_project_id": 4,
+  "source_project_id": 3,
   "target_project_id": 4,
   "labels": [ ],
   "description": "description1",
@@ -703,6 +708,7 @@ Must include at least one non-required attribute from above.
   "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
   "discussion_locked": false,
+  "allow_maintainer_to_push": false,
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,

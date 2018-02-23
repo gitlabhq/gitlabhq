@@ -49,7 +49,7 @@ module Gitlab
       protected
 
       def push_checks
-        if user_access.cannot_do_action?(:push_code)
+        unless can_push?
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:push_code]
         end
       end
@@ -184,6 +184,11 @@ module Gitlab
 
       def commits
         @commits ||= project.repository.new_commits(newrev)
+      end
+
+      def can_push?
+        user_access.can_do_action?(:push_code) ||
+          user_access.can_push_to_branch?(branch_name)
       end
     end
   end
