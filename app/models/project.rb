@@ -15,6 +15,7 @@ class Project < ActiveRecord::Base
   include ValidAttribute
   include ProjectFeaturesCompatibility
   include SelectForProjectAuthorization
+  include Presentable
   include Routable
   include GroupDescendant
   include Gitlab::SQL::Pattern
