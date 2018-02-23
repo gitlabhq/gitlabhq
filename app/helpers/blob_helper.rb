@@ -21,25 +21,20 @@ module BlobHelper
 
     common_classes = "btn js-edit-blob #{options[:extra_class]}"
 
-    if !on_top_of_branch?(project, ref)
-      edit_disabled_button_tag(edit_text, common_classes)
-    # This condition applies to anonymous or users who can edit directly
-    elsif !current_user || user_can_modify_blob?(blob, project, ref)
-      edit_link_tag(edit_text, edit_blob_path(project, ref, path, options), common_classes)
-    elsif user_can_fork_project?(project)
-      edit_fork_button_tag(common_classes,
-                           project,
-                           edit_text,
-                           edit_blob_fork_params(edit_blob_path(project, ref, path, options)))
-    end
+    edit_button_tag(blob,
+                    common_classes,
+                    edit_text,
+                    edit_blob_path(project, ref, path, options),
+                    project,
+                    ref)
   end
 
   def user_can_fork_project?(project)
     current_user && can?(current_user, :fork_project, project)
   end
 
-  def user_can_modify_blob?(blob, project, ref)
-    current_user && can_modify_blob?(blob, project, ref)
+  def display_modify_blob?(blob, project, ref)
+    !current_user || (current_user && can_modify_blob?(blob, project, ref))
   end
 
   def ide_edit_path(project = @project, ref = @ref, path = @path, options = {})
@@ -60,18 +55,12 @@ module BlobHelper
 
     common_classes = "btn js-edit-ide #{options[:extra_class]}"
 
-    if !on_top_of_branch?(project, ref)
-      edit_disabled_button_tag(ide_edit_text, common_classes)
-    # This condition only applies to users who are logged in
-    # Web IDE (Beta) requires the user to have this feature enabled
-    elsif user_can_modify_blob?(blob, project, ref)
-      edit_link_tag(ide_edit_text, ide_edit_path(project, ref, path, options), common_classes)
-    elsif user_can_fork_project?(project)
-      edit_fork_button_tag(common_classes,
-                           project,
-                           ide_edit_text,
-                           edit_blob_fork_params(ide_edit_path(project, ref, path, options)))
-    end
+    edit_button_tag(blob,
+                    common_classes,
+                    ide_edit_text,
+                    ide_edit_path(project, ref, path, options),
+                    project,
+                    ref)
   end
 
   def modify_file_element(project = @project, ref = @ref, path = @path, label:, action:, btn_class:, modal_type:)
@@ -355,5 +344,17 @@ module BlobHelper
 
   def edit_link_tag(link_text, edit_path, common_classes)
     link_to link_text, edit_path, class: "#{common_classes} btn-sm"
+  end
+
+  def edit_button_tag(blob, common_classes, text, edit_path, project, ref)
+    if !on_top_of_branch?(project, ref)
+      edit_disabled_button_tag(text, common_classes)
+      # This condition only applies to users who are logged in
+      # Web IDE (Beta) requires the user to have this feature enabled
+    elsif display_modify_blob?(blob, project, ref)
+      edit_link_tag(text, edit_path, common_classes)
+    elsif user_can_fork_project?(project)
+      edit_fork_button_tag(common_classes, project, text, edit_path)
+    end
   end
 end
