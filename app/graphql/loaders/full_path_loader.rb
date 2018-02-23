@@ -1,23 +1,21 @@
-class Loaders::FullPathLoader < Loaders::BaseLoader
+module Loaders::FullPathLoader
+  include Loaders::BaseLoader
+
   class << self
     def project(obj, args, ctx)
       project_by_full_path(args[:full_path])
     end
 
     def project_by_full_path(full_path)
-      self.for(Project).load(full_path)
+      model_by_full_path(Project, full_path)
     end
-  end
 
-  attr_reader :model
-
-  def initialize(model)
-    @model = model
-  end
-
-  def perform(keys)
-    # `with_route` prevents relation.all.map(&:full_path)` from being N+1
-    relation = model.where_full_path_in(keys).with_route
-    fulfill_all(relation, keys, &:full_path)
+    def model_by_full_path(model, full_path)
+      BatchLoader.for(full_path).batch(key: "#{model.model_name.param_key}:full_path") do |full_paths, loader|
+        # `with_route` avoids an N+1 calculating full_path
+        results = model.where_full_path_in(full_paths).with_route
+        results.each { |project| loader.call(project.full_path, project) }
+      end
+    end
   end
 end

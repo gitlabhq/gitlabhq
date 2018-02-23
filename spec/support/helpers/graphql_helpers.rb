@@ -4,20 +4,17 @@ module GraphqlHelpers
     kls[name].call(obj, args, ctx)
   end
 
-  # Runs a block inside a GraphQL::Batch wrapper
+  # Runs a block inside a BatchLoader::Executor wrapper
   def batch(max_queries: nil, &blk)
     wrapper = proc do
-      GraphQL::Batch.batch do
-        result = yield
-
-        if result.is_a?(Array)
-          Promise.all(result)
-        else
-          result
-        end
+      begin
+        BatchLoader::Executor.ensure_current
+        blk.call
+      ensure
+        BatchLoader::Executor.clear_current
       end
     end
-
+  
     if max_queries
       result = nil
       expect { result = wrapper.call }.not_to exceed_query_limit(max_queries)

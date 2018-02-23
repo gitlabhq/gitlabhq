@@ -1102,7 +1102,6 @@ DEPENDENCIES
   grape_logging (~> 1.7)
   graphiql-rails (~> 1.4.10)
   graphql (~> 1.7.14)
-  graphql-batch (~> 0.3.9)
   graphql-preload (~> 2.0.0)
   grpc (~> 1.11.0)
   gssapi

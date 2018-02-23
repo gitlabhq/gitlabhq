@@ -24,12 +24,6 @@ describe Loaders::FullPathLoader do
 
       expect(result).to be_nil
     end
-
-    it 'returns a promise' do
-      batch do
-        expect(resolve_project(project1.full_path)).to be_a(Promise)
-      end
-    end
   end
 
   def resolve_project(full_path)
