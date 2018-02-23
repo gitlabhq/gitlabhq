@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe GitlabSchema do
   it 'uses batch loading' do
-    expect(described_class.instrumenters[:multiplex]).to include(GraphQL::Batch::SetupMultiplex)
+    expect(field_instrumenters).to include(BatchLoader::GraphQL)
   end
 
   it 'enables the preload instrumenter' do

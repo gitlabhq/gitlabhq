@@ -50,12 +50,6 @@ describe Loaders::IidLoader do
 
       expect(result).to be_nil
     end
-
-    it 'returns a promise' do
-      batch do
-        expect(resolve_mr(full_path, iid_1)).to be_a(Promise)
-      end
-    end
   end
 
   def resolve_mr(full_path, iid)

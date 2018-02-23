@@ -1,35 +1,23 @@
-class Loaders::IidLoader < Loaders::BaseLoader
+class Loaders::IidLoader
+  include Loaders::BaseLoader
+
   class << self
     def merge_request(obj, args, ctx)
       iid = args[:iid]
-      promise = Loaders::FullPathLoader.project_by_full_path(args[:project])
+      project = Loaders::FullPathLoader.project_by_full_path(args[:project])
+      merge_request_by_project_and_iid(project, iid)
+    end
 
-      promise.then do |project|
-        if project
-          merge_request_by_project_and_iid(project.id, iid)
-        else
-          nil
+    def merge_request_by_project_and_iid(project_loader, iid)
+      project_id = project_loader.__sync&.id
+
+      # IIDs are represented as the GraphQL `id` type, which is a string
+      BatchLoader.for(iid.to_s).batch(key: "merge_request:target_project:#{project_id}:iid") do |iids, loader|
+        if project_id
+          results = MergeRequest.where(target_project_id: project_id, iid: iids)
+          results.each { |mr| loader.call(mr.iid.to_s, mr) }
         end
       end
     end
-
-    def merge_request_by_project_and_iid(project_id, iid)
-      self.for(MergeRequest, target_project_id: project_id.to_s).load(iid.to_s)
-    end
-  end
-
-  attr_reader :model, :restrictions
-
-  def initialize(model, restrictions = {})
-    @model = model
-    @restrictions = restrictions
-  end
-
-  def perform(keys)
-    relation = model.where(iid: keys)
-    relation = relation.where(restrictions) if restrictions.present?
-
-    # IIDs are represented as the GraphQL `id` type, which is a string
-    fulfill_all(relation, keys) { |instance| instance.iid.to_s }
   end
 end
