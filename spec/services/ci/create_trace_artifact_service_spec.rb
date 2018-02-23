@@ -41,18 +41,6 @@ describe Ci::CreateTraceArtifactService do
             expect(job.job_artifacts_trace).to be_nil
           end
         end
-
-        context 'when migrated trace artifact file is not found' do
-          before do
-            allow_any_instance_of(CarrierWave::SanitizedFile).to receive(:exists?) { false }
-          end
-
-          it 'raises an error' do
-            expect { subject }.to raise_error('Trace artifact not found')
-
-            expect(File.exist?(legacy_path)).to be_truthy
-          end
-        end
       end
 
       context 'when the job does not have a trace file' do
