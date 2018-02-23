@@ -59,6 +59,8 @@ class User < ActiveRecord::Base
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
   def update_tracked_fields!(request)
+    return if Gitlab::Database.read_only?
+
     update_tracked_fields(request)
 
     lease = Gitlab::ExclusiveLease.new("user_update_tracked_fields:#{id}", timeout: 1.hour.to_i)
@@ -325,8 +327,8 @@ class User < ActiveRecord::Base
       SQL
 
       where(
-        fuzzy_arel_match(:name, query)
-          .or(fuzzy_arel_match(:username, query))
+        fuzzy_arel_match(:name, query, lower_exact_match: true)
+          .or(fuzzy_arel_match(:username, query, lower_exact_match: true))
           .or(arel_table[:email].eq(query))
       ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, :name)
     end

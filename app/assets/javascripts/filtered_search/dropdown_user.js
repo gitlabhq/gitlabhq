@@ -12,7 +12,6 @@ class DropdownUser extends gl.FilteredSearchDropdown {
         endpoint: `${gon.relative_url_root || ''}/autocomplete/users.json`,
         searchKey: 'search',
         params: {
-          per_page: 20,
           active: true,
           group_id: this.getGroupId(),
           project_id: this.getProjectId(),

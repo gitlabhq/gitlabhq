@@ -34,14 +34,13 @@ function UsersSelect(currentUser, els, options = {}) {
       var options = {};
       var $block, $collapsedSidebar, $dropdown, $loading, $selectbox, $value, abilityName, assignTo, assigneeTemplate, collapsedAssigneeTemplate, defaultLabel, defaultNullUser, firstUser, issueURL, selectedId, selectedIdDefault, showAnyUser, showNullUser, showMenuAbove;
       $dropdown = $(dropdown);
-      options.projectId = $dropdown.data('project-id');
-      options.groupId = $dropdown.data('group-id');
-      options.showCurrentUser = $dropdown.data('current-user');
-      options.todoFilter = $dropdown.data('todo-filter');
-      options.todoStateFilter = $dropdown.data('todo-state-filter');
-      options.perPage = $dropdown.data('per-page');
-      showNullUser = $dropdown.data('null-user');
-      defaultNullUser = $dropdown.data('null-user-default');
+      options.projectId = $dropdown.data('projectId');
+      options.groupId = $dropdown.data('groupId');
+      options.showCurrentUser = $dropdown.data('currentUser');
+      options.todoFilter = $dropdown.data('todoFilter');
+      options.todoStateFilter = $dropdown.data('todoStateFilter');
+      showNullUser = $dropdown.data('nullUser');
+      defaultNullUser = $dropdown.data('nullUserDefault');
       showMenuAbove = $dropdown.data('showMenuAbove');
       showAnyUser = $dropdown.data('any-user');
       firstUser = $dropdown.data('first-user');
@@ -669,7 +668,6 @@ UsersSelect.prototype.users = function(query, options, callback) {
   const url = this.buildUrl(this.usersPath);
   const params = {
     search: query,
-    per_page: options.perPage || 20,
     active: true,
     project_id: options.projectId || null,
     group_id: options.groupId || null,

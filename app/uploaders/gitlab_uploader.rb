@@ -67,6 +67,10 @@ class GitlabUploader < CarrierWave::Uploader::Base
     super || file&.filename
   end
 
+  def model_valid?
+    !!model
+  end
+
   private
 
   # Designed to be overridden by child uploaders that have a dynamic path

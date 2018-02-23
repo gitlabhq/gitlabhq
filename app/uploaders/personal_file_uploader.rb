@@ -14,6 +14,12 @@ class PersonalFileUploader < FileUploader
     File.join(model.class.to_s.underscore, model.id.to_s)
   end
 
+  # model_path_segment does not require a model to be passed, so we can always
+  # generate a path, even when there's no model.
+  def model_valid?
+    true
+  end
+
   # Revert-Override
   def store_dir
     File.join(base_dir, dynamic_segment)

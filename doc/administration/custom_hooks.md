@@ -4,8 +4,9 @@
 **Note:** Custom Git hooks must be configured on the filesystem of the GitLab
 server. Only GitLab server administrators will be able to complete these tasks.
 Please explore [webhooks] as an option if you do not
-have filesystem access. For a user configurable Git hook interface, please see
-[GitLab Enterprise Edition Git Hooks](http://docs.gitlab.com/ee/git_hooks/git_hooks.html).
+have filesystem access. For a user configurable Git hook interface, see
+[Push Rules](https://docs.gitlab.com/ee/push_rules/push_rules.html),
+available in GitLab Enterprise Edition.
 
 Git natively supports hooks that are executed on different actions.
 Examples of server-side git hooks include pre-receive, post-receive, and update.
