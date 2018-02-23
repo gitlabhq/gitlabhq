@@ -3,9 +3,8 @@ module Gitlab
     module Pipeline
       module Expression
         module Lexeme
-          class String < Lexeme::Base
+          class String < Lexeme::Value
             PATTERN = /"(?<string>.+?)"/.freeze
-            TYPE = :value
 
             def initialize(value)
               @value = value

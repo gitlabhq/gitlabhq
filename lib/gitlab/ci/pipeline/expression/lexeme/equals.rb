@@ -3,9 +3,8 @@ module Gitlab
     module Pipeline
       module Expression
         module Lexeme
-          class Equals < Lexeme::Base
+          class Equals < Lexeme::Operator
             PATTERN = /==/.freeze
-            TYPE = :operator
 
             def initialize(left, right)
               @left = left

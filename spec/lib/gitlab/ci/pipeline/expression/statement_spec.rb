@@ -23,11 +23,20 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
     end
 
     context 'when expression grammar is incorrect' do
-      let(:text) { '$VAR "text"' }
+      table = [
+        '$VAR "text"',      # missing operator
+        '== "123"',         # invalid right side
+        "'single quotes'",  # single quotes string
+        '$VAR ==',          # invalid right side
+        '12345',            # unknown syntax
+        ''                  # empty statement
+      ]
 
-      it 'raises an error' do
-        expect { subject.parse_tree }
-          .to raise_error described_class::StatementError
+      table.each do |syntax|
+        it "raises an error when syntax is `#{syntax}`" do
+          expect { described_class.new(syntax, pipeline).parse_tree }
+            .to raise_error described_class::StatementError
+        end
       end
     end
 

@@ -3,9 +3,8 @@ module Gitlab
     module Pipeline
       module Expression
         module Lexeme
-          class Variable < Lexeme::Base
+          class Variable < Lexeme::Value
             PATTERN = /\$(?<name>\w+)/.freeze
-            TYPE = :value
 
             def initialize(name)
               @name = name

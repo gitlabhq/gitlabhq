@@ -3,9 +3,8 @@ module Gitlab
     module Pipeline
       module Expression
         module Lexeme
-          class Null < Lexeme::Base
+          class Null < Lexeme::Value
             PATTERN = /null/.freeze
-            TYPE = :value
 
             def initialize(value = nil)
               @value = value

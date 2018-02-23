@@ -10,7 +10,7 @@ module Gitlab
           ].freeze
 
           MAX_CYCLES = 5
-          SyntaxError = Class.new(StandardError)
+          SyntaxError = Class.new(Statement::StatementError)
 
           def initialize(statement)
             @scanner = StringScanner.new(statement)
