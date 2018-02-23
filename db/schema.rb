@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180215181245) do
+ActiveRecord::Schema.define(version: 20180216121030) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -156,6 +156,7 @@ ActiveRecord::Schema.define(version: 20180215181245) do
     t.integer "gitaly_timeout_fast", default: 10, null: false
     t.boolean "authorized_keys_enabled", default: true, null: false
     t.string "auto_devops_domain"
+    t.boolean "pages_domain_verification_enabled", default: true, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -1313,10 +1314,16 @@ ActiveRecord::Schema.define(version: 20180215181245) do
     t.string "encrypted_key_iv"
     t.string "encrypted_key_salt"
     t.string "domain"
+    t.datetime_with_timezone "verified_at"
+    t.string "verification_code", null: false
+    t.datetime_with_timezone "enabled_until"
   end
 
   add_index "pages_domains", ["domain"], name: "index_pages_domains_on_domain", unique: true, using: :btree
+  add_index "pages_domains", ["project_id", "enabled_until"], name: "index_pages_domains_on_project_id_and_enabled_until", using: :btree
   add_index "pages_domains", ["project_id"], name: "index_pages_domains_on_project_id", using: :btree
+  add_index "pages_domains", ["verified_at", "enabled_until"], name: "index_pages_domains_on_verified_at_and_enabled_until", using: :btree
+  add_index "pages_domains", ["verified_at"], name: "index_pages_domains_on_verified_at", using: :btree
 
   create_table "personal_access_tokens", force: :cascade do |t|
     t.integer "user_id", null: false

@@ -23,12 +23,20 @@ module Projects
     end
 
     def pages_domains_config
-      project.pages_domains.map do |domain|
+      enabled_pages_domains.map do |domain|
         {
           domain: domain.domain,
           certificate: domain.certificate,
           key: domain.key
         }
+      end
+    end
+
+    def enabled_pages_domains
+      if Gitlab::CurrentSettings.pages_domain_verification_enabled?
+        project.pages_domains.enabled
+      else
+        project.pages_domains
       end
     end
 

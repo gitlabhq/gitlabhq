@@ -3,7 +3,7 @@ class Projects::PagesDomainsController < Projects::ApplicationController
 
   before_action :require_pages_enabled!
   before_action :authorize_update_pages!, except: [:show]
-  before_action :domain, only: [:show, :destroy]
+  before_action :domain, only: [:show, :destroy, :verify]
 
   def show
   end
@@ -12,11 +12,23 @@ class Projects::PagesDomainsController < Projects::ApplicationController
     @domain = @project.pages_domains.new
   end
 
+  def verify
+    result = VerifyPagesDomainService.new(@domain).execute
+
+    if result[:status] == :success
+      flash[:notice] = 'Successfully verified domain ownership'
+    else
+      flash[:alert] = 'Failed to verify domain ownership'
+    end
+
+    redirect_to project_pages_domain_path(@project, @domain)
+  end
+
   def create
     @domain = @project.pages_domains.create(pages_domain_params)
 
     if @domain.valid?
-      redirect_to project_pages_path(@project)
+      redirect_to project_pages_domain_path(@project, @domain)
     else
       render 'new'
     end
@@ -46,6 +58,6 @@ class Projects::PagesDomainsController < Projects::ApplicationController
   end
 
   def domain
-    @domain ||= @project.pages_domains.find_by(domain: params[:id].to_s)
+    @domain ||= @project.pages_domains.find_by!(domain: params[:id].to_s)
   end
 end
