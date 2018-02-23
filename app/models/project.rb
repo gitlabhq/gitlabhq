@@ -1566,6 +1566,8 @@ class Project < ActiveRecord::Base
 
     variables += container_registry_variables
     variables += auto_devops_variables
+
+    variables
   end
 
   def container_registry_variables
