@@ -9,6 +9,8 @@ class LfsObject < ActiveRecord::Base
 
   validates :oid, presence: true, uniqueness: true
 
+  validate :verify_filename!
+
   mount_uploader :file, LfsObjectUploader
 
   after_save :update_file_store, if: :file_changed?
@@ -35,5 +37,11 @@ class LfsObject < ActiveRecord::Base
 
   def self.calculate_oid(path)
     Digest::SHA256.file(path).hexdigest
+  end
+
+  def :verify_filename!
+    return unless self.file_identifier
+
+    self.errors.add(:filename, "invalid filename") unless self.file_identifier == oid[0, 2]
   end
 end

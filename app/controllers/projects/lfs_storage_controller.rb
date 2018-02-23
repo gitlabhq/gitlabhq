@@ -69,7 +69,7 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
 
   def create_file!(oid, size)
     uploaded_file = UploadedFile.from_params(
-      params, :file, LfsObjectUploader.workhorse_local_upload_path)
+      create_params, :file, LfsObjectUploader.workhorse_local_upload_path)
     return unless uploaded_file
 
     LfsObject.create!(oid: oid, size: size, file: uploaded_file)
@@ -79,5 +79,9 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
     if object && !object.projects.exists?(storage_project.id)
       object.lfs_objects_projects.create!(project: storage_project)
     end
+  end
+
+  def create_params
+    params.merge("file.name" => oid[4..-1])
   end
 end
