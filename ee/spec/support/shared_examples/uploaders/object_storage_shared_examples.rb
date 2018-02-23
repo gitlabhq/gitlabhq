@@ -69,7 +69,7 @@ shared_examples "migrates" do |to_store:, from_store: nil|
     end
   end
 
-  context 'when migrate! is oqqupied by another process' do
+  context 'when migrate! is occupied by another process' do
     let(:exclusive_lease_key) { "object_storage_migrate:#{subject.model.class}:#{subject.model.id}" }
 
     before do
