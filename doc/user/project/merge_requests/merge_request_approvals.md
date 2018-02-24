@@ -81,8 +81,8 @@ the following is possible:
       ![Approve](img/approve.png)
 
   - If the required number of approvals has already been met, they can still
-    approve it by clicking the displayed **Approve additionally** button.
-      ![Approve additionally](img/approve_additionally.png)
+    approve it by clicking the displayed **Add Approval** button.
+      ![Add Approval](img/approve_additionally.png)
 
     ---
 
