@@ -1,0 +1,5 @@
+---
+title: Move RecentSearchesDropdownContent vue component
+merge_request: 16951
+author: George Tsiolis
+type: performance
