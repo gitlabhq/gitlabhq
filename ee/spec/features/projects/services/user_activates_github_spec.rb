@@ -30,17 +30,39 @@ describe 'User activates GitHub Service' do
       visit project_settings_integrations_path(project)
 
       click_link('GitHub')
+      fill_in_details
+    end
+
+    def fill_in_details
+      check('Active')
+      fill_in "Token", with: "aaaaaaaaaa"
+      fill_in "Owner", with: "h5bp"
+      fill_in "Repository name", with: "html5-boilerplate"
     end
 
     it 'activates service' do
-      check('Active')
-      fill_in "Token", with: "aaaaaaaaaa"
-      fill_in "Api url", with: "https://api.github.com"
-      fill_in "Owner", with: "h5bp"
-      fill_in "Repository name", with: "html5-boilerplate"
       click_button('Save')
 
       expect(page).to have_content('GitHub activated.')
+    end
+
+    it 'allows API URL to be set' do
+      fill_in "Api url", with: "https://api.github.com"
+      click_button('Save')
+
+      expect(page).to have_content('GitHub activated.')
+    end
+
+    context 'with pipelines', :js do
+      let(:pipeline) { create(:ci_pipeline) }
+      let(:project) { create(:project, pipelines: [pipeline])}
+
+      it 'tests service before save' do
+        click_button 'Test settings and save changes'
+        wait_for_requests
+
+        expect(page).to have_content('GitHub activated.')
+      end
     end
   end
 end
