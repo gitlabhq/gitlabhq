@@ -49,8 +49,6 @@ module Clusters
     scope :enabled, -> { where(enabled: true) }
     scope :disabled, -> { where(enabled: false) }
 
-    scope :for_environment, -> (env) { where(environment_scope: ['*', '', env.slug]) }
-
     def status_name
       if provider
         provider.status_name

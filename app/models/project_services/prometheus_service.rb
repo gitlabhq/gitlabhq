@@ -9,7 +9,7 @@ class PrometheusService < MonitoringService
     validates :api_url, url: true
   end
 
-  before_save :synchronize_service_state!
+  before_save :synchronize_service_state
 
   after_save :clear_reactive_cache!
 
@@ -82,7 +82,7 @@ class PrometheusService < MonitoringService
 
   private
 
-  def synchronize_service_state!
+  def synchronize_service_state
     self.active = prometheus_installed? || manual_configuration?
 
     true

@@ -117,7 +117,7 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
     end
   end
 
-  describe '#synchronize_service_state! before_save callback' do
+  describe '#synchronize_service_state before_save callback' do
     context 'no clusters with prometheus are installed' do
       context 'when service is inactive' do
         before do
