@@ -1,0 +1,6 @@
+---
+title: Merges a destroy and create entries in one CI Variables transaction params
+  into a single update entry.
+merge_request: 17350
+author:
+type: fixed
