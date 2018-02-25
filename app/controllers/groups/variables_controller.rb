@@ -1,5 +1,7 @@
 module Groups
   class VariablesController < Groups::ApplicationController
+    include CiVariables
+
     before_action :authorize_admin_build!
 
     skip_cross_project_access_check :show, :update
@@ -13,7 +15,7 @@ module Groups
     end
 
     def update
-      if @group.update(group_variables_params)
+      if @group.update(filtered_variables_params)
         respond_to do |format|
           format.json { return render_group_variables }
         end
@@ -34,7 +36,7 @@ module Groups
       render status: :bad_request, json: @group.errors.full_messages
     end
 
-    def group_variables_params
+    def variables_params
       params.permit(variables_attributes: [*variable_params_attributes])
     end
 
