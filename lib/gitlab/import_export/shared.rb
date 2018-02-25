@@ -1,10 +1,11 @@
 module Gitlab
   module ImportExport
     class Shared
-      attr_reader :errors, :project
+      attr_reader :errors, :project, :opts
 
-      def initialize(project)
+      def initialize(project, opts = {})
         @project = project
+        @opts = opts
         @errors = []
       end
 
@@ -39,10 +40,10 @@ module Gitlab
       end
 
       def relative_archive_path
-        if @project.is_a?(Project)
-          @project.disk_path
+        if @opts[:relative_path]
+          @opts[:relative_path]
         else
-          @project[:relative_path]
+          @project.disk_path
         end
       end
 

@@ -7,7 +7,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       @user = create(:user)
 
       RSpec::Mocks.with_temporary_scope do
-        @shared = Gitlab::ImportExport::Shared.new(relative_path: "", project_path: 'path')
+        @shared = Gitlab::ImportExport::Shared.new(@project)
         allow(@shared).to receive(:export_path).and_return('spec/lib/gitlab/import_export/')
         @project = create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project')
 

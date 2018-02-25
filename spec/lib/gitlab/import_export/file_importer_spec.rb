@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::ImportExport::FileImporter do
-  let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: 'test') }
+  let(:shared) { Gitlab::ImportExport::Shared.new(nil, relative_path: 'test') }
   let(:export_path) { "#{Dir.tmpdir}/file_importer_spec" }
   let(:valid_file) { "#{shared.export_path}/valid.json" }
   let(:symlink_file) { "#{shared.export_path}/invalid.json" }
