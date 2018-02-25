@@ -120,4 +120,29 @@ shared_examples 'PATCH #update updates variables' do
       expect(response).to match_response_schema('variables')
     end
   end
+
+  context 'with a deleted variable and an update value' do
+    let(:variables_attributes) do
+      [
+        variable_attributes.merge(_destroy: 'true'),
+        variable_attributes.merge(id: '', value: 'other_value')
+      ]
+    end
+
+    it 'updates the existing variable' do
+      expect { subject }.to change { variable.reload.value }.to('other_value')
+    end
+
+    it 'returns a successful response' do
+      subject
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'has all variables in response' do
+      subject
+
+      expect(response).to match_response_schema('variables')
+    end
+  end
 end
