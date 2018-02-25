@@ -2,6 +2,27 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.5.2 (2018-02-25)
+
+### Fixed (7 changes)
+
+- Fix single digit value clipping for stacked progress bar. !17217
+- Fix issue with cache key being empty when variable used as the key. !17260
+- Enable Legacy Authorization by default on Cluster creations. !17302
+- Allow branch names to be named the same as the sha it points to.
+- Fix 500 error when loading an invalid upload URL.
+- Don't attempt to update user tracked fields if database is in read-only.
+- Prevent MR Widget error when no CI configured.
+
+### Performance (5 changes)
+
+- Improve query performance for snippets dashboard. !17088
+- Only check LFS integrity for first ref in a push to avoid timeout. !17098
+- Improve query performance of MembersFinder. !17190
+- Increase feature flag cache TTL to one hour.
+- Improve performance of searching for and autocompleting of users.
+
+
 ## 10.5.1 (2018-02-22)
 
 - No changes.
