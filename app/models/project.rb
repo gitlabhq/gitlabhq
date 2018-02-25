@@ -1567,6 +1567,21 @@ class Project < ActiveRecord::Base
     Dir.glob("#{export_path}/*export.tar.gz").max_by { |f| File.ctime(f) }
   end
 
+  def export_status
+    if export_in_progress?
+      :started
+    elsif export_project_path
+      :finished
+    else
+      :none
+    end
+  end
+
+  def export_in_progress?
+    shared = Gitlab::ImportExport::Shared.new(relative_path: File.join(disk_path, 'work'))
+    File.directory?(shared.export_path)
+  end
+
   def remove_exports
     return nil unless export_path.present?
 
