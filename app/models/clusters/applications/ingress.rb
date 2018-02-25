@@ -14,13 +14,13 @@ module Clusters
         nginx: 1
       }
 
-      IP_ADDRESS_FETCH_RETRIES = 3
+      FETCH_IP_ADDRESS_DELAY = 30.seconds
 
       state_machine :status do
         before_transition any => [:installed] do |application|
           application.run_after_commit do
             ClusterWaitForIngressIpAddressWorker.perform_in(
-              ClusterWaitForIngressIpAddressWorker::INTERVAL, application.name, application.id, IP_ADDRESS_FETCH_RETRIES)
+              FETCH_IP_ADDRESS_DELAY, application.name, application.id)
           end
         end
       end
@@ -41,8 +41,7 @@ module Clusters
         return unless installed?
         return if external_ip
 
-        ClusterWaitForIngressIpAddressWorker.perform_async(
-          name, id, IP_ADDRESS_FETCH_RETRIES)
+        ClusterWaitForIngressIpAddressWorker.perform_async(name, id)
       end
     end
   end

@@ -22,7 +22,7 @@ describe ClusterWaitForIngressIpAddressWorker do
     end
 
     it 'finds the application and calls CheckIngressIpAddressService#execute' do
-      worker.perform('ingress', 117, 2)
+      worker.perform('ingress', 117)
 
       expect(service).to have_received(:execute)
     end

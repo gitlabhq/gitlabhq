@@ -20,7 +20,7 @@ describe Clusters::Applications::Ingress do
 
     it 'schedules a ClusterWaitForIngressIpAddressWorker' do
       expect(ClusterWaitForIngressIpAddressWorker).to have_received(:perform_in)
-        .with(ClusterWaitForIngressIpAddressWorker::INTERVAL, 'ingress', application.id, 3)
+        .with(Clusters::Applications::Ingress::FETCH_IP_ADDRESS_DELAY, 'ingress', application.id)
     end
   end
 
@@ -33,7 +33,7 @@ describe Clusters::Applications::Ingress do
 
     it 'schedules a ClusterWaitForIngressIpAddressWorker' do
       expect(ClusterWaitForIngressIpAddressWorker).to have_received(:perform_async)
-        .with('ingress', application.id, 3)
+        .with('ingress', application.id)
     end
 
     context 'when the application is not installed' do
