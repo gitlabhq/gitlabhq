@@ -1,10 +1,10 @@
-# Project import API
+# Project import/export API
 
 [Introduced][ce-41899] in GitLab 10.6
 
 [See also the project import/export documentation](../user/project/settings/import_export.md)
 
-## Export start
+## Schedule an export
 
 Start a new export.
 
@@ -66,7 +66,7 @@ Status can be one of `none`, `started`, or `finished`.
 Download the finished export.
 
 ```http
-GET /projects/:id/export
+GET /projects/:id/export/download
 ```
 
 | Attribute | Type           | Required | Description                              |
