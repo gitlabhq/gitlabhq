@@ -25,7 +25,7 @@ describe Clusters::Applications::CheckIngressIpAddressService do
     allow(application.cluster).to receive(:kubeclient).and_return(kubeclient)
     allow(Gitlab::ExclusiveLease)
       .to receive(:new)
-      .with("check_ingress_ip_address_service:#{application.id}", timeout: 3.seconds.to_i)
+      .with("check_ingress_ip_address_service:#{application.id}", timeout: 15.seconds.to_i)
       .and_return(exclusive_lease)
   end
 

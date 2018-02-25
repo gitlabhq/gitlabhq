@@ -5,7 +5,7 @@ module Clusters
 
       Error = Class.new(StandardError)
 
-      LEASE_TIMEOUT = 3.seconds.to_i
+      LEASE_TIMEOUT = 15.seconds.to_i
 
       def execute
         return if app.external_ip
