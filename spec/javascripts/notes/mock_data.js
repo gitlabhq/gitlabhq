@@ -273,6 +273,73 @@ export const discussionMock = {
   individual_note: false,
 };
 
+export const collapseNotesMock = [
+  {
+    expanded: true,
+    id: '0fb4e0e3f9276e55ff32eb4195add694aece4edd',
+    individual_note: true,
+    notes: [{
+      id: 1390,
+      attachment: null,
+      author: {
+        id: 1,
+        name: 'Root',
+        username: 'root',
+        state: 'active',
+        avatar_url: 'test',
+        path: '/root',
+      },
+      created_at: '2018-02-26T18:07:41.071Z',
+      updated_at: '2018-02-26T18:07:41.071Z',
+      system: true,
+      system_note_icon_name: 'pencil',
+      noteable_id: 98,
+      noteable_type: 'Issue',
+      type: null,
+      human_access: 'Owner',
+      note: 'changed the description',
+      note_html: '<p dir="auto">changed the description</p>',
+      current_user: { can_edit: false },
+      discussion_id: 'b97fb7bda470a65b3e009377a9032edec0a4dd05',
+      emoji_awardable: false,
+      path: '/h5bp/html5-boilerplate/notes/1057',
+      report_abuse_path: '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fh5bp%2Fhtml5-boilerplate%2Fissues%2F10%23note_1057&user_id=1',
+    }],
+  },
+  {
+    expanded: true,
+    id: 'ffde43f25984ad7f2b4275135e0e2846875336c0',
+    individual_note: true,
+    notes: [{
+      id: 1391,
+      attachment: null,
+      author: {
+        id: 1,
+        name: 'Root',
+        username: 'root',
+        state: 'active',
+        avatar_url: 'test',
+        path: '/root',
+      },
+      created_at: '2018-02-26T18:13:24.071Z',
+      updated_at: '2018-02-26T18:13:24.071Z',
+      system: true,
+      system_note_icon_name: 'pencil',
+      noteable_id: 99,
+      noteable_type: 'Issue',
+      type: null,
+      human_access: 'Owner',
+      note: 'changed the description',
+      note_html: '<p dir="auto">changed the description</p>',
+      current_user: { can_edit: false },
+      discussion_id: '3eb958b4d81dec207ec3537a2f3bd8b9f271bb34',
+      emoji_awardable: false,
+      path: '/h5bp/html5-boilerplate/notes/1057',
+      report_abuse_path: '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fh5bp%2Fhtml5-boilerplate%2Fissues%2F10%23note_1057&user_id=1',
+    }],
+  }
+];
+
 export const loggedOutnoteableData = {
   "id": 98,
   "iid": 26,
