@@ -58,7 +58,7 @@
 
 .issue-details.issuable-details
   .detail-page-description.content-block
-    %script#js-issuable-app-initial-data{ type: "application/json" }= issuable_initial_data(@issue)
+    %script#js-issuable-app-initial-data{ type: "application/json" }= issuable_initial_data(@issue).to_json
     #js-issuable-app
       %h2.title= markdown_field(@issue, :title)
       - if @issue.description.present?
