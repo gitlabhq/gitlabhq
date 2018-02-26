@@ -220,6 +220,10 @@ class Environment < ActiveRecord::Base
     self.environment_type || self.name
   end
 
+  def deployment_platform
+    project.deployment_platform
+  end
+
   def prometheus_adapter
     @prometheus_adapter ||= if service_prometheus_adapter.can_query?
                               service_prometheus_adapter
@@ -233,9 +237,9 @@ class Environment < ActiveRecord::Base
   end
 
   def cluster_prometheus_adapter
-    return unless project.deployment_platform.respond_to?(:cluster)
+    return unless deployment_platform.respond_to?(:cluster)
 
-    cluster = project.deployment_platform.cluster
+    cluster = deployment_platform.cluster
     return unless cluster.application_prometheus&.installed?
 
     cluster.application_prometheus
