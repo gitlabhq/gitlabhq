@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import store from '~/ide/stores';
 import newBranchForm from '~/ide/components/new_branch_form.vue';
-import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { resetStore } from '../helpers';
 
 describe('Multi-file editor new branch form', () => {

@@ -309,6 +309,7 @@ var config = {
       'images':         path.join(ROOT_PATH, 'app/assets/images'),
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
       'vue$':           'vue/dist/vue.esm.js',
+      'spec':           path.join(ROOT_PATH, 'spec/javascripts'),
     }
   }
 }

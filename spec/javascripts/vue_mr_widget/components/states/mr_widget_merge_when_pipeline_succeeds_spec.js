@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import mwpsComponent from '~/vue_merge_request_widget/components/states/mr_widget_merge_when_pipeline_succeeds.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
-import mountComponent from '../../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('MRWidgetMergeWhenPipelineSucceeds', () => {
   let vm;
