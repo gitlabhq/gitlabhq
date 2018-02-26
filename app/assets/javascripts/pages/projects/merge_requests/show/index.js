@@ -7,6 +7,7 @@ import ShortcutsIssuable from '~/shortcuts_issuable';
 import Diff from '~/diff';
 import { handleLocationHash } from '~/lib/utils/common_utils';
 import howToMerge from '~/how_to_merge';
+import initPipelines from '~/commit/pipelines/pipelines_bundle';
 
 document.addEventListener('DOMContentLoaded', () => {
   new Diff(); // eslint-disable-line no-new
@@ -15,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initIssuableSidebar();
   initNotes();
   initDiffNotes();
+  initPipelines();
 
   const mrShowNode = document.querySelector('.merge-request');
 
