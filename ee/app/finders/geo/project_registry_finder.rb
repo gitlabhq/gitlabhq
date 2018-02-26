@@ -141,11 +141,25 @@ module Geo
 
     # @return [ActiveRecord::Relation<Project>] list of projects updated recently
     def legacy_find_projects_updated_recently
-      legacy_inner_join_registry_ids(
-        current_node.projects,
-        Geo::ProjectRegistry.dirty.retry_due.pluck(:project_id),
-        Project
-      )
+      registries = Geo::ProjectRegistry.dirty.retry_due.pluck(:project_id, :last_repository_successful_sync_at)
+      return Project.none if registries.empty?
+
+      id_and_last_sync_values = registries.map do |id, last_repository_successful_sync_at|
+        "(#{id}, #{quote_value(last_repository_successful_sync_at)})"
+      end
+
+      joined_relation = current_node.projects.joins(<<~SQL)
+        INNER JOIN
+        (VALUES #{id_and_last_sync_values.join(',')})
+        project_registry(id, last_repository_successful_sync_at)
+        ON #{Project.table_name}.id = project_registry.id
+      SQL
+
+      joined_relation
+    end
+
+    def quote_value(value)
+      ::Gitlab::SQL::Glob.q(value)
     end
 
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of synced projects

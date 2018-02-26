@@ -7,12 +7,13 @@ describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cach
 
   let!(:primary) { create(:geo_node, :primary) }
   let!(:secondary) { create(:geo_node) }
-  let!(:synced_group) { create(:group) }
-  let!(:project_in_synced_group) { create(:project, group: synced_group) }
-  let!(:unsynced_project) { create(:project) }
-  let(:shard_name) { Gitlab.config.repositories.storages.keys.first }
 
-  subject { described_class.new }
+  let!(:restricted_group) { create(:group) }
+
+  let!(:unsynced_project_in_restricted_group) { create(:project, group: restricted_group) }
+  let!(:unsynced_project) { create(:project) }
+
+  let(:shard_name) { Gitlab.config.repositories.storages.keys.first }
 
   before do
     stub_current_geo_node(secondary)
@@ -37,7 +38,7 @@ describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cach
     end
 
     it 'performs Geo::ProjectSyncWorker for projects where last attempt to sync failed' do
-      create(:geo_project_registry, :sync_failed, project: project_in_synced_group)
+      create(:geo_project_registry, :sync_failed, project: unsynced_project_in_restricted_group)
       create(:geo_project_registry, :synced, project: unsynced_project)
 
       expect(Geo::ProjectSyncWorker).to receive(:perform_async).once.and_return(spy)
@@ -54,7 +55,7 @@ describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cach
     end
 
     it 'performs Geo::ProjectSyncWorker for synced projects updated recently' do
-      create(:geo_project_registry, :synced, :repository_dirty, project: project_in_synced_group)
+      create(:geo_project_registry, :synced, :repository_dirty, project: unsynced_project_in_restricted_group)
       create(:geo_project_registry, :synced, project: unsynced_project)
       create(:geo_project_registry, :synced, :wiki_dirty)
 
@@ -104,12 +105,12 @@ describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cach
 
     context 'when node has namespace restrictions' do
       before do
-        secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
+        secondary.update!(selective_sync_type: 'namespaces', namespaces: [restricted_group])
       end
 
       it 'does not perform Geo::ProjectSyncWorker for projects that do not belong to selected namespaces to replicate' do
         expect(Geo::ProjectSyncWorker).to receive(:perform_async)
-          .with(project_in_synced_group.id, within(1.minute).of(Time.now))
+          .with(unsynced_project_in_restricted_group.id, within(1.minute).of(Time.now))
           .once
           .and_return(spy)
 
@@ -117,15 +118,55 @@ describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cach
       end
 
       it 'does not perform Geo::ProjectSyncWorker for synced projects updated recently that do not belong to selected namespaces to replicate' do
-        create(:geo_project_registry, :synced, :repository_dirty, project: project_in_synced_group)
+        create(:geo_project_registry, :synced, :repository_dirty, project: unsynced_project_in_restricted_group)
         create(:geo_project_registry, :synced, :repository_dirty, project: unsynced_project)
 
         expect(Geo::ProjectSyncWorker).to receive(:perform_async)
-          .with(project_in_synced_group.id, within(1.minute).of(Time.now))
+          .with(unsynced_project_in_restricted_group.id, within(1.minute).of(Time.now))
           .once
           .and_return(spy)
 
         subject.perform(shard_name)
+      end
+    end
+
+    context 'repositories that have never been updated' do
+      let!(:project_list) { create_list(:project, 4, last_repository_updated_at: 2.hours.ago) }
+      let!(:abandoned_project) { create(:project) }
+
+      before do
+        # Project sync failed but never received an update
+        create(:geo_project_registry, :repository_sync_failed, project: abandoned_project)
+        abandoned_project.update_column(:last_repository_updated_at, 1.year.ago)
+
+        # Neither of these are needed for this spec
+        unsynced_project.destroy
+        unsynced_project_in_restricted_group.destroy
+
+        allow_any_instance_of(described_class).to receive(:db_retrieve_batch_size).and_return(2) # Must be >1 because of the Geo::BaseSchedulerWorker#interleave
+        secondary.update!(repos_max_capacity: 3) # Must be more than db_retrieve_batch_size
+
+        project_list.each do |project|
+          allow(Geo::ProjectSyncWorker)
+            .to receive(:perform_async)
+              .with(project.id, anything)
+              .and_call_original
+        end
+
+        allow_any_instance_of(Geo::ProjectRegistry).to receive(:wiki_sync_due?).and_return(false)
+        allow_any_instance_of(Geo::RepositorySyncService).to receive(:expire_repository_caches)
+      end
+
+      it 'tries to sync project where last attempt to sync failed' do
+        expect(Geo::ProjectSyncWorker)
+          .to receive(:perform_async)
+            .with(abandoned_project.id, anything)
+            .at_least(:once)
+            .and_return(spy)
+
+        3.times do
+          Sidekiq::Testing.inline! { subject.perform(shard_name) }
+        end
       end
     end
 
@@ -135,7 +176,7 @@ describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cach
       before do
         # Neither of these are needed for this spec
         unsynced_project.destroy
-        project_in_synced_group.destroy
+        unsynced_project_in_restricted_group.destroy
 
         allow_any_instance_of(described_class).to receive(:db_retrieve_batch_size).and_return(2) # Must be >1 because of the Geo::BaseSchedulerWorker#interleave
         secondary.update!(repos_max_capacity: 3) # Must be more than db_retrieve_batch_size
@@ -161,14 +202,14 @@ describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cach
 
     context 'additional shards' do
       it 'skips backfill for projects on unhealthy shards' do
-        missing_not_synced = create(:project, group: synced_group)
+        missing_not_synced = create(:project, group: restricted_group)
         missing_not_synced.update_column(:repository_storage, 'unknown')
-        missing_dirty = create(:project, group: synced_group)
+        missing_dirty = create(:project, group: restricted_group)
         missing_dirty.update_column(:repository_storage, 'unknown')
 
         create(:geo_project_registry, :synced, :repository_dirty, project: missing_dirty)
 
-        expect(Geo::ProjectSyncWorker).to receive(:perform_async).with(project_in_synced_group.id, anything)
+        expect(Geo::ProjectSyncWorker).to receive(:perform_async).with(unsynced_project_in_restricted_group.id, anything)
         expect(Geo::ProjectSyncWorker).not_to receive(:perform_async).with(missing_not_synced.id, anything)
         expect(Geo::ProjectSyncWorker).not_to receive(:perform_async).with(missing_dirty.id, anything)
 
