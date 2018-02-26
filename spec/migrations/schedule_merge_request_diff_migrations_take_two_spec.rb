@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170926150348_schedule_merge_request_diff_migrations_take_two')
 
-describe ScheduleMergeRequestDiffMigrationsTakeTwo, :migration, :sidekiq do
+describe ScheduleMergeRequestDiffMigrationsTakeTwo, :sidekiq do
   let(:merge_request_diffs) { table(:merge_request_diffs) }
   let(:merge_requests) { table(:merge_requests) }
   let(:projects) { table(:projects) }

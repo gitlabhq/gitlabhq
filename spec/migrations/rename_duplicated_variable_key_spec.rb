@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20170622135451_rename_duplicated_variable_key.rb')
 
-describe RenameDuplicatedVariableKey, :migration do
+describe RenameDuplicatedVariableKey do
   let(:variables) { table(:ci_variables) }
   let(:projects) { table(:projects) }
 

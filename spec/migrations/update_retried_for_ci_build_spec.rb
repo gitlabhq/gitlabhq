@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170503004427_update_retried_for_ci_build.rb')
 
-describe UpdateRetriedForCiBuild, :delete do
+describe UpdateRetriedForCiBuild, schema: :latest do
   let(:pipeline) { create(:ci_pipeline) }
   let!(:build_old) { create(:ci_build, pipeline: pipeline, name: 'test') }
   let!(:build_new) { create(:ci_build, pipeline: pipeline, name: 'test') }

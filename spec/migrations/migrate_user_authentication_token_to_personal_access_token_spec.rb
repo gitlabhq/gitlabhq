@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20171012125712_migrate_user_authentication_token_to_personal_access_token.rb')
 
-describe MigrateUserAuthenticationTokenToPersonalAccessToken, :migration do
+describe MigrateUserAuthenticationTokenToPersonalAccessToken do
   let(:users) { table(:users) }
   let(:personal_access_tokens) { table(:personal_access_tokens) }
 

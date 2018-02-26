@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170921101004_normalize_ldap_extern_uids')
 
-describe NormalizeLdapExternUids, :migration, :sidekiq do
+describe NormalizeLdapExternUids, :sidekiq do
   let!(:identities) { table(:identities) }
 
   around do |example|

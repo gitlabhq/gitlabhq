@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20171005130944_schedule_create_gpg_key_subkeys_from_gpg_keys')
 
-describe ScheduleCreateGpgKeySubkeysFromGpgKeys, :migration, :sidekiq do
+describe ScheduleCreateGpgKeySubkeysFromGpgKeys, :sidekiq do
   before do
     create(:gpg_key, id: 1, key: GpgHelpers::User1.public_key)
     create(:gpg_key, id: 2, key: GpgHelpers::User3.public_key)

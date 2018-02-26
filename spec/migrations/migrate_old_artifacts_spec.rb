@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170523083112_migrate_old_artifacts.rb')
 
-describe MigrateOldArtifacts do
+describe MigrateOldArtifacts, schema: :latest do
   let(:migration) { described_class.new }
   let!(:directory) { Dir.mktmpdir }
 

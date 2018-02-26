@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170612071012_move_personal_snippets_files.rb')
 
-describe MovePersonalSnippetsFiles do
+describe MovePersonalSnippetsFiles, schema: :latest do
   let(:migration) { described_class.new }
   let(:test_dir) { File.join(Rails.root, "tmp", "tests", "move_snippet_files_test") }
   let(:uploads_dir) { File.join(test_dir, 'uploads') }

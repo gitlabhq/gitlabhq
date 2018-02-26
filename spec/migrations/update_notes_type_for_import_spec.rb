@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170927112319_update_notes_type_for_import.rb')
 
-describe UpdateNotesTypeForImport, :migration do
+describe UpdateNotesTypeForImport do
   let(:notes) { table(:notes) }
 
   before do

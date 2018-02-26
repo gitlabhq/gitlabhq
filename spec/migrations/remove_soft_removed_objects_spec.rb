@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20171207150343_remove_soft_removed_objects.rb')
 
-describe RemoveSoftRemovedObjects, :migration do
+describe RemoveSoftRemovedObjects do
   describe '#up' do
     it 'removes various soft removed objects' do
       5.times do

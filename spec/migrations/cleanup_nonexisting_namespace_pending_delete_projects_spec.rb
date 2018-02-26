@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170816102555_cleanup_nonexisting_namespace_pending_delete_projects.rb')
 
-describe CleanupNonexistingNamespacePendingDeleteProjects do
+describe CleanupNonexistingNamespacePendingDeleteProjects, schema: :latest do
   before do
     # Stub after_save callbacks that will fail when Project has invalid namespace
     allow_any_instance_of(Project).to receive(:ensure_storage_path_exist).and_return(nil)

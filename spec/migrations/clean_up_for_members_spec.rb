@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20171216111734_clean_up_for_members.rb')
 
-describe CleanUpForMembers, :migration do
+describe CleanUpForMembers do
   let(:migration) { described_class.new }
   let!(:group_member) { create_group_member }
   let!(:unbinded_group_member) { create_group_member }

@@ -73,6 +73,7 @@ RSpec.configure do |config|
     location = metadata[:location]
 
     metadata[:api] = true if location =~ %r{/spec/requests/api/}
+    metadata[:migration] = true if location =~ %r{/spec/migrations/}
 
     # do not overwrite type if it's already set
     next if metadata.key?(:type)

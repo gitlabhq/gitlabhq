@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20170713104829_add_foreign_key_to_merge_requests.rb')
 
-describe AddForeignKeyToMergeRequests, :migration do
+describe AddForeignKeyToMergeRequests do
   let(:projects) { table(:projects) }
   let(:merge_requests) { table(:merge_requests) }
   let(:pipelines) { table(:ci_pipelines) }

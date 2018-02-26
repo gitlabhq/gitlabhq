@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20170912113435_clean_stages_statuses_migration.rb')
 
-describe CleanStagesStatusesMigration, :migration, :sidekiq, :redis do
+describe CleanStagesStatusesMigration, :sidekiq, :redis, schema: :latest do
   let(:migration) { spy('migration') }
 
   before do

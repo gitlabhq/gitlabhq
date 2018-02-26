@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20170825104051_migrate_issues_to_ghost_user.rb')
 
-describe MigrateIssuesToGhostUser, :migration do
+describe MigrateIssuesToGhostUser do
   describe '#up' do
     let(:projects) { table(:projects) }
     let(:issues) { table(:issues) }

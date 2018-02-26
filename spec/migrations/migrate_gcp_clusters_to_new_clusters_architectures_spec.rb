@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20171013104327_migrate_gcp_clusters_to_new_clusters_architectures.rb')
 
-describe MigrateGcpClustersToNewClustersArchitectures, :migration do
+describe MigrateGcpClustersToNewClustersArchitectures do
   let(:projects) { table(:projects) }
   let(:project) { projects.create }
   let(:user) { create(:user) }

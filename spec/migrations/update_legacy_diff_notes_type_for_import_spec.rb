@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170927112318_update_legacy_diff_notes_type_for_import.rb')
 
-describe UpdateLegacyDiffNotesTypeForImport, :migration do
+describe UpdateLegacyDiffNotesTypeForImport do
   let(:notes) { table(:notes) }
 
   before do

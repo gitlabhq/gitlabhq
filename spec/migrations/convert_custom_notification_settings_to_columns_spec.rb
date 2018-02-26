@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170607121233_convert_custom_notification_settings_to_columns')
 
-describe ConvertCustomNotificationSettingsToColumns, :migration do
+describe ConvertCustomNotificationSettingsToColumns do
   let(:user_class) { table(:users) }
 
   let(:settings_params) do

@@ -5,8 +5,7 @@ require 'spec_helper'
 
 describe ActiveRecord::Schema do
   let(:latest_migration_timestamp) do
-    migrations = Dir[Rails.root.join('db', 'migrate', '*'), Rails.root.join('db', 'post_migrate', '*')]
-    migrations.map { |migration| File.basename(migration).split('_').first.to_i }.max
+    ActiveRecord::Migrator.migrations(ActiveRecord::Migrator.migrations_paths).last.version
   end
 
   it '> schema version equals last migration timestamp' do

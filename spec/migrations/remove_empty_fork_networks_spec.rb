@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20171114104051_remove_empty_fork_networks.rb')
 
-describe RemoveEmptyForkNetworks, :migration do
+describe RemoveEmptyForkNetworks do
   let!(:fork_networks) { table(:fork_networks) }
   let!(:projects) { table(:projects) }
   let!(:fork_network_members) { table(:fork_network_members) }

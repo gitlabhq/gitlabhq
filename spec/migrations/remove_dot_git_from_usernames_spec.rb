@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20161226122833_remove_dot_git_from_usernames.rb')
 
-describe RemoveDotGitFromUsernames do
+describe RemoveDotGitFromUsernames, schema: :latest do
   let(:user) { create(:user) }
   let(:migration) { described_class.new }
 

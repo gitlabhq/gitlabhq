@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170523073948_remove_assignee_id_from_issue.rb')
 
-describe RemoveAssigneeIdFromIssue, :migration do
+describe RemoveAssigneeIdFromIssue do
   let(:issues) { table(:issues) }
   let(:issue_assignees) { table(:issue_assignees) }
   let(:users) { table(:users) }

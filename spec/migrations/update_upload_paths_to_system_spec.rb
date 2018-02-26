@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170317162059_update_upload_paths_to_system.rb')
 
-describe UpdateUploadPathsToSystem, :migration do
+describe UpdateUploadPathsToSystem, schema: :latest do
   let(:migration) { described_class.new }
   let(:uploads_table) { table(:uploads) }
   let(:base_upload_attributes) { { size: 42, uploader: 'John Doe' } }

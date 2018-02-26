@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20170710083355_clean_stage_id_reference_migration.rb')
 
-describe CleanStageIdReferenceMigration, :migration, :sidekiq, :redis do
+describe CleanStageIdReferenceMigration, :sidekiq, :redis do
   let(:migration_class) { 'MigrateBuildStageIdReference' }
   let(:migration) { spy('migration') }
 

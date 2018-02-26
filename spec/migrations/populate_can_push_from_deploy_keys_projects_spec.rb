@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20171215113714_populate_can_push_from_deploy_keys_projects.rb')
 
-describe PopulateCanPushFromDeployKeysProjects, :migration do
+describe PopulateCanPushFromDeployKeysProjects do
   let(:migration) { described_class.new }
   let(:deploy_keys) { table(:keys) }
   let(:deploy_keys_projects) { table(:deploy_keys_projects) }

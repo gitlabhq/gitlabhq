@@ -10,7 +10,7 @@ require Rails.root.join('db', 'post_migrate', '20161221153951_rename_reserved_pr
 #   1. This migration is a data migration
 #   2. It only relies on very stable DB fields: routes.id, routes.path, namespaces.id, projects.namespace_id
 # Ideally, the test should not use factories and rely on the `table` helper instead.
-describe RenameReservedProjectNames, :migration, schema: :latest do
+describe RenameReservedProjectNames, schema: :latest do
   let(:migration) { described_class.new }
   let!(:project) { create(:project) }
 

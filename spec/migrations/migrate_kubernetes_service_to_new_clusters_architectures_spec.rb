@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20171124104327_migrate_kubernetes_service_to_new_clusters_architectures.rb')
 
-describe MigrateKubernetesServiceToNewClustersArchitectures, :migration do
+describe MigrateKubernetesServiceToNewClustersArchitectures do
   context 'when unique KubernetesService exists' do
     shared_examples 'KubernetesService migration' do
       let(:sample_num) { 2 }

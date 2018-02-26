@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170907170235_delete_conflicting_redirect_routes')
 
-describe DeleteConflictingRedirectRoutes, :migration, :sidekiq do
+describe DeleteConflictingRedirectRoutes, :sidekiq do
   let!(:redirect_routes) { table(:redirect_routes) }
   let!(:routes) { table(:routes) }
 

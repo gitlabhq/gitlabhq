@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170628080858_migrate_stage_id_reference_in_background')
 
-describe MigrateStageIdReferenceInBackground, :migration, :sidekiq do
+describe MigrateStageIdReferenceInBackground, :sidekiq do
   let(:jobs) { table(:ci_builds) }
   let(:stages) { table(:ci_stages) }
   let(:pipelines) { table(:ci_pipelines) }

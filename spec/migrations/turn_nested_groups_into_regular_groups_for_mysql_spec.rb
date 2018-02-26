@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20170503140202_turn_nested_groups_into_regular_groups_for_mysql.rb')
 
-describe TurnNestedGroupsIntoRegularGroupsForMysql do
+describe TurnNestedGroupsIntoRegularGroupsForMysql, schema: :latest do
   let!(:parent_group) { create(:group) }
   let!(:child_group) { create(:group, parent: parent_group) }
   let!(:project) { create(:project, :legacy_storage, :empty_repo, namespace: child_group) }
