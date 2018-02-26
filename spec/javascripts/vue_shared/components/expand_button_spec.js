@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import expandButton from '~/vue_shared/components/expand_button.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('expand button', () => {
   let vm;

@@ -1,9 +1,8 @@
 import Vue from 'vue';
 
 import geoNodesListComponent from 'ee/geo_nodes/components/geo_nodes_list.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { mockNodes } from '../mock_data';
-
-import mountComponent from '../../helpers/vue_mount_component_helper';
 
 const createComponent = () => {
   const Component = Vue.extend(geoNodesListComponent);

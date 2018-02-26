@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import DeployBoard from '~/environments/components/deploy_board_component.vue';
+import DeployBoard from 'ee/environments/components/deploy_board_component.vue';
 import { deployBoardMockData } from './mock_data';
 
 describe('Deploy Board', () => {

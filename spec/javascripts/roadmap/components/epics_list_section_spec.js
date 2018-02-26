@@ -3,9 +3,8 @@ import Vue from 'vue';
 import epicsListSectionComponent from 'ee/roadmap/components/epics_list_section.vue';
 import RoadmapStore from 'ee/roadmap/store/roadmap_store';
 import eventHub from 'ee/roadmap/event_hub';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { rawEpics, mockTimeframe, mockGroupId, mockShellWidth } from '../mock_data';
-
-import mountComponent from '../../helpers/vue_mount_component_helper';
 
 const store = new RoadmapStore(mockGroupId, mockTimeframe);
 store.setEpics(rawEpics);

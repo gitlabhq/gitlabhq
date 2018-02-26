@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import issueItem from '~/issuable/related_issues/components/issue_item.vue';
-import eventHub from '~/issuable/related_issues/event_hub';
-import mountComponent from '../../../helpers/vue_mount_component_helper';
+import issueItem from 'ee/issuable/related_issues/components/issue_item.vue';
+import eventHub from 'ee/issuable/related_issues/event_hub';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('issueItem', () => {
   let vm;

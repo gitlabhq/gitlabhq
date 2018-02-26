@@ -5,7 +5,7 @@ import Disposable from './common/disposable';
 import ModelManager from './common/model_manager';
 import editorOptions from './editor_options';
 
-import gitlabTheme from './themes/gl_theme';
+import gitlabTheme from 'ee/ide/lib/themes/gl_theme'; // eslint-disable-line import/first
 
 export default class Editor {
   static create(monaco) {

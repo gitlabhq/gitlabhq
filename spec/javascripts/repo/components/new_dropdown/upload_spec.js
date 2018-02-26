@@ -2,7 +2,7 @@ import Vue from 'vue';
 import upload from '~/ide/components/new_dropdown/upload.vue';
 import store from '~/ide/stores';
 import service from '~/ide/services';
-import { createComponentWithStore } from '../../../helpers/vue_mount_component_helper';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { resetStore } from '../../helpers';
 
 describe('new dropdown upload', () => {

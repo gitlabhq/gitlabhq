@@ -7,9 +7,9 @@ import epicSidebar from 'ee/epics/sidebar/components/sidebar_app.vue';
 import issuableApp from '~/issue_show/components/app.vue';
 import issuableAppEventHub from '~/issue_show/event_hub';
 import * as urlUtils from '~/lib/utils/url_utility';
-import mountComponent from '../../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import issueShowData from 'spec/issue_show/mock_data';
 import { props } from '../mock_data';
-import issueShowData from '../../../issue_show/mock_data';
 
 describe('EpicShowApp', () => {
   let mock;

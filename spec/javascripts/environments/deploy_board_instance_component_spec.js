@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import DeployBoardInstance from '~/environments/components/deploy_board_instance_component.vue';
+import DeployBoardInstance from 'ee/environments/components/deploy_board_instance_component.vue';
 
 describe('Deploy Board Instance', () => {
   let DeployBoardInstanceComponent;
