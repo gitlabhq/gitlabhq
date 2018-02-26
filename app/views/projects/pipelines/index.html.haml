@@ -15,6 +15,3 @@
     "has-ci" => @repository.gitlab_ci_yml,
     "ci-lint-path" => ci_lint_path,
     "reset-cache-path" => reset_cache_project_settings_ci_cd_path(@project) } }
-
-  = webpack_bundle_tag('common_vue')
-  = webpack_bundle_tag('pipelines')

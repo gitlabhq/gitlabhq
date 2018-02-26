@@ -7,6 +7,7 @@ import ShortcutsIssuable from '~/shortcuts_issuable';
 import Diff from '~/diff';
 import { handleLocationHash } from '~/lib/utils/common_utils';
 import howToMerge from '~/how_to_merge';
+import initWidget from '../../../../vue_merge_request_widget';
 
 document.addEventListener('DOMContentLoaded', () => {
   new Diff(); // eslint-disable-line no-new
@@ -25,4 +26,5 @@ document.addEventListener('DOMContentLoaded', () => {
   new ShortcutsIssuable(true); // eslint-disable-line no-new
   handleLocationHash();
   howToMerge();
+  initWidget();
 });
