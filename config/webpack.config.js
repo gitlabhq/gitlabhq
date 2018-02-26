@@ -56,7 +56,6 @@ var config = {
   entry: {
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
-    commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
     deploy_keys:          './deploy_keys/index.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
     environments:         './environments/environments_bundle.js',
@@ -264,7 +263,6 @@ var config = {
       name: 'common_vue',
       chunks: [
         'boards',
-        'commit_pipelines',
         'cycle_analytics',
         'deploy_keys',
         'diff_notes',
