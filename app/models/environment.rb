@@ -241,9 +241,9 @@ class Environment < ActiveRecord::Base
   end
 
   def cluster_prometheus_adapter
-    return unless project.deployment_platform.respond_to?(:cluster)
+    return unless deployment_platform.respond_to?(:cluster)
 
-    cluster = project.deployment_platform.cluster
+    cluster = deployment_platform.cluster
     return unless cluster.application_prometheus&.installed?
 
     cluster.application_prometheus

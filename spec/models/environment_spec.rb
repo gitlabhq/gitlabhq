@@ -493,9 +493,9 @@ describe Environment do
       end
 
       it 'returns the metrics from the deployment service' do
-        expect(project.monitoring_service)
-          .to receive(:environment_metrics).with(environment)
-          .and_return(:fake_metrics)
+        expect(environment.prometheus_adapter)
+          .to receive(:query).with(:environment, environment)
+                .and_return(:fake_metrics)
 
         is_expected.to eq(:fake_metrics)
       end
