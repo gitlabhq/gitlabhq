@@ -13,24 +13,11 @@ module Gitlab
     end
 
     def self.execute(file, data)
-      # Prepare the hook subprocess. Attach a pipe to its stdin, and merge
-      # both its stdout and stderr into our own stdout.
-      stdin_reader, stdin_writer = IO.pipe
-      hook_pid = spawn({}, file, in: stdin_reader, err: :out)
-      stdin_reader.close
-
-      # Submit changes to the hook via its stdin.
-      begin
-        IO.copy_stream(StringIO.new(data.to_json), stdin_writer)
-      rescue Errno::EPIPE
-        # It is not an error if the hook does not consume all of its input.
+      _output, exit_status = Gitlab::Popen.popen([file]) do |stdin|
+        stdin.write(data.to_json)
       end
 
-      # Close the pipe to let the hook know there is no further input.
-      stdin_writer.close
-
-      Process.wait(hook_pid)
-      $?.success?
+      exit_status.zero?
     end
   end
 end
