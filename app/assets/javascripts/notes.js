@@ -1415,6 +1415,8 @@ export default class Notes {
 
     // Get Form metadata
     const $submitBtn = $(e.target);
+    // initially disabled the button on submit.
+    $submitBtn.prop('disabled', true);
     let $form = $submitBtn.parents('form');
     const $closeBtn = $form.find('.js-note-target-close');
     const isDiscussionNote = $submitBtn.parent().find('li.droplab-item-selected').attr('id') === 'discussion';
@@ -1484,7 +1486,10 @@ export default class Notes {
     axios.post(formAction, formData)
       .then((res) => {
         const note = res.data;
-
+        // technically we don't need this but it matches with the catch.
+        // There is a flash of the button going disabled when you create
+        // a comment but that is unrelated to this and was here before these changes.
+        $submitBtn.prop('disabled', false);
         // Submission successful! remove placeholder
         $notesContainer.find(`#${noteUniqueId}`).remove();
 
@@ -1558,6 +1563,7 @@ export default class Notes {
 
         $form.trigger('ajax:success', [note]);
       }).catch(() => {
+        $submitBtn.prop('disabled', false);
         // Submission failed, remove placeholder note and show Flash error message
         $notesContainer.find(`#${noteUniqueId}`).remove();
 
