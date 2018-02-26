@@ -6,7 +6,7 @@ import eventHub from '~/projects_dropdown/event_hub';
 import ProjectsStore from '~/projects_dropdown/store/projects_store';
 import ProjectsService from '~/projects_dropdown/service/projects_service';
 
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { currentSession, mockProject, mockRawProject } from '../mock_data';
 
 const createComponent = () => {

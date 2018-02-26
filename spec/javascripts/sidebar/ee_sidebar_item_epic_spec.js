@@ -2,7 +2,7 @@ import Vue from 'vue';
 import CESidebarStore from '~/sidebar/stores/sidebar_store';
 import SidebarStore from 'ee/sidebar/stores/sidebar_store';
 import sidebarItemEpic from 'ee/sidebar/components/sidebar_item_epic.vue';
-import mountComponent from '../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('sidebarItemEpic', () => {
   let vm;

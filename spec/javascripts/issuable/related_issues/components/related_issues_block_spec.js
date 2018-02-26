@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import eventHub from '~/issuable/related_issues/event_hub';
-import relatedIssuesBlock from '~/issuable/related_issues/components/related_issues_block.vue';
+import eventHub from 'ee/issuable/related_issues/event_hub';
+import relatedIssuesBlock from 'ee/issuable/related_issues/components/related_issues_block.vue';
 
 import { issuable1, issuable2, issuable3, issuable4, issuable5 } from '../mock_data';
 

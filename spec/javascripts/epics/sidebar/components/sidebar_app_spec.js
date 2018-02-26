@@ -2,7 +2,7 @@ import Vue from 'vue';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
 import epicSidebar from 'ee/epics/sidebar/components/sidebar_app.vue';
-import mountComponent from '../../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('epicSidebar', () => {
   let vm;

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import WeightSelect from '~/boards/components/weight_select.vue';
+import WeightSelect from 'ee/boards/components/weight_select.vue';
 import IssuableContext from '~/issuable_context';
 
 let vm;
