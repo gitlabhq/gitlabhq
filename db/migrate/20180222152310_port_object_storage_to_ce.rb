@@ -7,31 +7,31 @@ class PortObjectStorageToCe < ActiveRecord::Migration
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
+  def add_column_idempotent(table, column, *defs)
+    return if column_exists?(table, column)
+
+    add_column(table, column, *defs)
+  end
+
+  def remove_column_idempotent(table, column)
+    return unless column_exists?(table, column)
+
+    remove_column(table, column)
+  end
+
   def up
-    unless column_exists?(:ci_job_artifacts, :file_store)
-      add_column(:ci_job_artifacts, :file_store, :integer)
-    end
-
-    unless column_exists?(:lfs_objects, :file_store)
-      add_column(:lfs_objects, :file_store, :integer)
-    end
-
-    unless column_exists?(:uploads, :store)
-      add_column(:uploads, :store, :integer)
-    end
+    add_column_idempotent(:ci_job_artifacts, :file_store, :integer)
+    add_column_idempotent(:ci_builds, :artifacts_file_store, :integer)
+    add_column_idempotent(:ci_builds, :artifacts_metadata_store, :integer)
+    add_column_idempotent(:lfs_objects, :file_store, :integer)
+    add_column_idempotent(:uploads, :store, :integer)
   end
 
   def down
-    if column_exists?(:ci_job_artifacts, :file_store)
-      remove_column(:ci_job_artifacts, :file_store)
-    end
-
-    if column_exists?(:lfs_objects, :file_store)
-      remove_column(:lfs_objects, :file_store)
-    end
-
-    if column_exists?(:uploads, :store)
-      remove_column(:uploads, :store)
-    end
+    remove_column_idempotent(:ci_job_artifacts, :file_store)
+    remove_column_idempotent(:ci_builds, :artifacts_file_store)
+    remove_column_idempotent(:ci_builds, :artifacts_metadata_store)
+    remove_column_idempotent(:lfs_objects, :file_store)
+    remove_column_idempotent(:uploads, :store)
   end
 end

@@ -3,6 +3,7 @@ module Ci
     prepend ArtifactMigratable
     include TokenAuthenticatable
     include AfterCommitQueue
+    include ObjectStorage::BackgroundMove
     include Presentable
     include Importable
 
@@ -41,10 +42,13 @@ module Ci
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
+
     scope :with_artifacts, ->() do
       where('(artifacts_file IS NOT NULL AND artifacts_file <> ?) OR EXISTS (?)',
         '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id'))
     end
+    scope :with_artifacts_stored_locally, -> { with_artifacts.where(artifacts_file_store: [nil, LegacyArtifactUploader::Store::LOCAL]) }
+
     scope :with_artifacts_not_expired, ->() { with_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
     scope :with_artifacts_stored_locally, ->() { with_artifacts.where(artifacts_file_store: [nil, LegacyArtifactUploader::Store::LOCAL]) }

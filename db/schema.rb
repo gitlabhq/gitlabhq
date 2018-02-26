@@ -294,6 +294,8 @@ ActiveRecord::Schema.define(version: 20180222152310) do
     t.integer "artifacts_metadata_store", default: 1, null: false
     t.boolean "protected"
     t.integer "failure_reason"
+    t.integer "artifacts_file_store"
+    t.integer "artifacts_metadata_store"
   end
 
   add_index "ci_builds", ["artifacts_expire_at"], name: "index_ci_builds_on_artifacts_expire_at", where: "(artifacts_file <> ''::text)", using: :btree
