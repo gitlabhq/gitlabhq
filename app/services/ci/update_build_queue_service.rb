@@ -16,7 +16,7 @@ module Ci
 
     def tick_for(build, runners)
       runners.each do |runner|
-        runner.tick_runner_queue if runner.can_pick?(build)
+        runner.invalidate_build_cache!(build)
       end
     end
   end
