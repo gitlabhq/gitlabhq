@@ -1,9 +1,6 @@
 import Vue from 'vue';
 import { visitUrl } from '../../lib/utils/url_utility';
-import flash from '../../flash';
-import service from '../services';
 import * as types from './mutation_types';
-import { stripHtml } from '../../lib/utils/text_utility';
 
 export const redirectToUrl = (_, url) => visitUrl(url);
 
@@ -50,84 +47,6 @@ export const setPanelCollapsedStatus = ({ commit }, { side, collapsed }) => {
 export const setResizingStatus = ({ commit }, resizing) => {
   commit(types.SET_RESIZING_STATUS, resizing);
 };
-
-export const checkCommitStatus = ({ state }) =>
-  service
-    .getBranchData(state.currentProjectId, state.currentBranchId)
-    .then(({ data }) => {
-      const { id } = data.commit;
-      const selectedBranch =
-        state.projects[state.currentProjectId].branches[state.currentBranchId];
-
-      if (selectedBranch.workingReference !== id) {
-        return true;
-      }
-
-      return false;
-    })
-    .catch(() => flash('Error checking branch data. Please try again.', 'alert', document, null, false, true));
-
-export const commitChanges = (
-  { commit, state, dispatch },
-  { payload, newMr },
-) =>
-  service
-    .commit(state.currentProjectId, payload)
-    .then(({ data }) => {
-      const { branch } = payload;
-      if (!data.short_id) {
-        flash(data.message, 'alert', document, null, false, true);
-        return;
-      }
-
-      const selectedProject = state.projects[state.currentProjectId];
-      const lastCommit = {
-        commit_path: `${selectedProject.web_url}/commit/${data.id}`,
-        commit: {
-          message: data.message,
-          authored_date: data.committed_date,
-        },
-      };
-
-      let commitMsg = `Your changes have been committed. Commit ${data.short_id}`;
-      if (data.stats) {
-        commitMsg += ` with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`;
-      }
-      commit(types.SET_LAST_COMMIT_MSG, commitMsg);
-
-      if (newMr) {
-        dispatch('discardAllChanges');
-        dispatch(
-          'redirectToUrl',
-          `${selectedProject.web_url}/merge_requests/new?merge_request%5Bsource_branch%5D=${branch}`,
-        );
-      } else {
-        commit(types.SET_BRANCH_WORKING_REFERENCE, {
-          projectId: state.currentProjectId,
-          branchId: state.currentBranchId,
-          reference: data.id,
-        });
-
-        state.changedFiles.forEach((entry) => {
-          commit(types.SET_LAST_COMMIT_DATA, {
-            entry,
-            lastCommit,
-          });
-        });
-
-        dispatch('discardAllChanges');
-
-        window.scrollTo(0, 0);
-      }
-    })
-    .catch((err) => {
-      let errMsg = 'Error committing changes. Please try again.';
-      if (err.response.data && err.response.data.message) {
-        errMsg += ` (${stripHtml(err.response.data.message)})`;
-      }
-      flash(errMsg, 'alert', document, null, false, true);
-      window.dispatchEvent(new Event('resize'));
-    });
 
 export const createTempEntry = (
   { state, dispatch },

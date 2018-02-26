@@ -187,3 +187,18 @@ export const createOrMergeEntry = ({ projectId,
     level,
   });
 };
+
+export const createCommitPayload = (branch, newBranch, state, rootState) => ({
+  branch,
+  commit_message: state.commitMessage,
+  actions: rootState.changedFiles.map(f => ({
+    action: f.tempFile ? 'create' : 'update',
+    file_path: f.path,
+    content: f.content,
+    encoding: f.base64 ? 'base64' : 'text',
+  })),
+  start_branch: newBranch ? rootState.currentBranchId : undefined,
+});
+
+export const createNewMergeRequestUrl = (projectUrl, source, target) =>
+  `${projectUrl}/merge_requests/new?merge_request[source_branch]=${source}&merge_request[target_branch]=${target}`;
