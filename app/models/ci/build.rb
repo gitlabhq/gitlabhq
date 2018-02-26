@@ -124,7 +124,7 @@ module Ci
 
       after_transition pending: :running do |build|
         build.used_timeout = build.timeout
-        build.timeout_source = build.should_use_runner_timeout? ? 'Runner' : 'Project'
+        build.timeout_source = build.timeout < build.project.build_timeout ? 'Runner' : 'Project'
         build.save!
 
         build.run_after_commit do
@@ -239,13 +239,7 @@ module Ci
     end
 
     def timeout
-      return runner.maximum_job_timeout if should_use_runner_timeout?
-
-      project.build_timeout
-    end
-
-    def should_use_runner_timeout?
-      !runner.nil? && runner.defines_maximum_job_timeout? && runner.maximum_job_timeout < project.build_timeout
+      [project.build_timeout, runner&.maximum_job_timeout].compact.min
     end
 
     def triggered_by?(current_user)

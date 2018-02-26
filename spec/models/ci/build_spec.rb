@@ -2036,6 +2036,52 @@ describe Ci::Build do
     end
   end
 
+  describe 'state transition: pending: :running' do
+    let(:runner) { create(:ci_runner) }
+    let(:job) { create(:ci_build, :pending, runner: runner) }
+
+    before do
+      job.project.build_timeout = 1800
+      job.project.save!
+    end
+
+    shared_examples 'saves data on transition' do
+      it 'saves used_timeout and timeout_source on transition' do
+        expect(job.used_timeout).to be_nil
+        expect(job.timeout_source).to be_nil
+
+        job.run!
+
+        expect(job.used_timeout).to eq(expected_timeout)
+        expect(job.timeout_source).to eq(expected_timeout_source)
+      end
+    end
+
+    context 'when runner timeout overrides project timeout' do
+      let(:expected_timeout) { 900 }
+      let(:expected_timeout_source) { 'Runner' }
+
+      before do
+        runner.maximum_job_timeout = 900
+        runner.save!
+      end
+
+      it_behaves_like 'saves data on transition'
+    end
+
+    context "when runner timeout doesn't override project timeout" do
+      let(:expected_timeout) { 1800 }
+      let(:expected_timeout_source) { 'Project' }
+
+      before do
+        runner.maximum_job_timeout = 3600
+        runner.save!
+      end
+
+      it_behaves_like 'saves data on transition'
+    end
+  end
+
   describe 'state transition: any => [:running]' do
     shared_examples 'validation is active' do
       context 'when depended job has not been completed yet' do
