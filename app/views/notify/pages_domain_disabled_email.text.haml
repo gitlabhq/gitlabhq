@@ -1,0 +1,13 @@
+Following a verification check, your GitLab Pages custom domain has been
+**disabled**. This means that your content is no longer visible at #{@domain.url}
+
+Project: #{@project.human_name} (#{project_url(@project)})
+Domain:  #{@domain.domain} (#{project_pages_domain_url(@project, @domain)})
+
+If this domain has been disabled in error, please follow these instructions
+to verify and re-enable your domain:
+
+= help_page_url('user/project/pages/getting_started_part_three.md', anchor: 'dns-txt-record')
+
+If you no longer wish to use this domain with GitLab Pages, please remove it
+from your GitLab project and delete any related DNS records.

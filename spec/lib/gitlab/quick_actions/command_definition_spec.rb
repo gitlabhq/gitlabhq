@@ -40,7 +40,7 @@ describe Gitlab::QuickActions::CommandDefinition do
   end
 
   describe "#available?" do
-    let(:opts) { { go: false } }
+    let(:opts) { OpenStruct.new(go: false) }
 
     context "when the command has a condition block" do
       before do
@@ -78,7 +78,7 @@ describe Gitlab::QuickActions::CommandDefinition do
       it "doesn't execute the command" do
         expect(context).not_to receive(:instance_exec)
 
-        subject.execute(context, {}, nil)
+        subject.execute(context, nil)
 
         expect(context.run).to be false
       end
@@ -95,7 +95,7 @@ describe Gitlab::QuickActions::CommandDefinition do
         end
 
         it "doesn't execute the command" do
-          subject.execute(context, {}, nil)
+          subject.execute(context, nil)
 
           expect(context.run).to be false
         end
@@ -109,7 +109,7 @@ describe Gitlab::QuickActions::CommandDefinition do
 
           context "when the command is provided an argument" do
             it "executes the command" do
-              subject.execute(context, {}, true)
+              subject.execute(context, true)
 
               expect(context.run).to be true
             end
@@ -117,7 +117,7 @@ describe Gitlab::QuickActions::CommandDefinition do
 
           context "when the command is not provided an argument" do
             it "executes the command" do
-              subject.execute(context, {}, nil)
+              subject.execute(context, nil)
 
               expect(context.run).to be true
             end
@@ -131,7 +131,7 @@ describe Gitlab::QuickActions::CommandDefinition do
 
           context "when the command is provided an argument" do
             it "executes the command" do
-              subject.execute(context, {}, true)
+              subject.execute(context, true)
 
               expect(context.run).to be true
             end
@@ -139,7 +139,7 @@ describe Gitlab::QuickActions::CommandDefinition do
 
           context "when the command is not provided an argument" do
             it "doesn't execute the command" do
-              subject.execute(context, {}, nil)
+              subject.execute(context, nil)
 
               expect(context.run).to be false
             end
@@ -153,7 +153,7 @@ describe Gitlab::QuickActions::CommandDefinition do
 
           context "when the command is provided an argument" do
             it "executes the command" do
-              subject.execute(context, {}, true)
+              subject.execute(context, true)
 
               expect(context.run).to be true
             end
@@ -161,7 +161,7 @@ describe Gitlab::QuickActions::CommandDefinition do
 
           context "when the command is not provided an argument" do
             it "executes the command" do
-              subject.execute(context, {}, nil)
+              subject.execute(context, nil)
 
               expect(context.run).to be true
             end
@@ -175,7 +175,7 @@ describe Gitlab::QuickActions::CommandDefinition do
           end
 
           it 'executes the command passing the parsed param' do
-            subject.execute(context, {}, 'something   ')
+            subject.execute(context, 'something   ')
 
             expect(context.received_arg).to eq('something')
           end
@@ -192,7 +192,7 @@ describe Gitlab::QuickActions::CommandDefinition do
       end
 
       it 'returns nil' do
-        result = subject.explain({}, {}, nil)
+        result = subject.explain({}, nil)
 
         expect(result).to be_nil
       end
@@ -204,7 +204,7 @@ describe Gitlab::QuickActions::CommandDefinition do
       end
 
       it 'returns this static string' do
-        result = subject.explain({}, {}, nil)
+        result = subject.explain({}, nil)
 
         expect(result).to eq 'Explanation'
       end
@@ -216,7 +216,7 @@ describe Gitlab::QuickActions::CommandDefinition do
       end
 
       it 'invokes the proc' do
-        result = subject.explain({}, {}, 'explanation')
+        result = subject.explain({}, 'explanation')
 
         expect(result).to eq 'Dynamic explanation'
       end

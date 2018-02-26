@@ -29,6 +29,7 @@ export default {
         <input
           type="checkbox"
           name="squash"
+          class="qa-squash-checkbox"
           :disabled="isMergeButtonDisabled"
           v-model="squashBeforeMerge"
           @change="updateSquashModel"/>

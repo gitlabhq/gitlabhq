@@ -231,7 +231,8 @@ export default {
               @click="handleMergeButtonClick()"
               :disabled="isMergeButtonDisabled"
               :class="mergeButtonClass"
-              type="button">
+              type="button"
+              class="qa-merge-button">
               <i
                 v-if="isMakingRequest"
                 class="fa fa-spinner fa-spin"
