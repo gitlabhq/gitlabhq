@@ -310,7 +310,7 @@ If you use **Windows PowerShell** to run your shell scripts you need to replace
 
 ```yaml
 cache:
-  key: "$($env:CI_JOB_STAGE)_$env:CI_COMMIT_REF_NAME"
+  key: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_NAME"
   untracked: true
 ```
 
