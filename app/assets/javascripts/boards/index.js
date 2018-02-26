@@ -30,7 +30,7 @@ import collapseIcon from './icons/fullscreen_collapse.svg';
 import expandIcon from './icons/fullscreen_expand.svg';
 import tooltip from '../vue_shared/directives/tooltip';
 
-$(() => {
+export default () => {
   const $boardApp = document.getElementById('board-app');
   const Store = gl.issueBoards.BoardsStore;
   const ModalStore = gl.issueBoards.ModalStore;
@@ -366,4 +366,4 @@ $(() => {
       'boards-selector': gl.issueBoards.BoardsSelector,
     }
   });
-});
+};
