@@ -37,7 +37,7 @@
     %p.runner-description
       = runner.description
   - if runner.defines_maximum_job_timeout?
-    %p Maximum job timeout: #{runner.maximum_job_timeout_user_readable}
+    %p Maximum job timeout: #{runner.maximum_job_timeout_human_readable}
   - if runner.tag_list.present?
     %p
       - runner.tag_list.sort.each do |tag|

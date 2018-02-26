@@ -6,7 +6,7 @@ class BuildDetailsEntity < JobEntity
   expose :pipeline, using: PipelineEntity
 
   expose :timeout, if: -> (*) { !build.used_timeout.nil? } do |build|
-    { value: build.used_timeout_user_readable,
+    { value: build.used_timeout_human_readable,
       source: build.timeout_source }
   end
 

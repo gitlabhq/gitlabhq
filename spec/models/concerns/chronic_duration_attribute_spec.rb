@@ -26,7 +26,7 @@ end
 
 describe 'ChronicDurationAttribute' do
   let(:source_field) {:maximum_job_timeout}
-  let(:virtual_field) {:maximum_job_timeout_user_readable}
+  let(:virtual_field) {:maximum_job_timeout_human_readable}
   subject {Ci::Runner.new}
 
   it_behaves_like 'ChronicDurationAttribute reader'
@@ -35,7 +35,7 @@ end
 
 describe 'ChronicDurationAttribute - reader' do
   let(:source_field) {:used_timeout}
-  let(:virtual_field) {:used_timeout_user_readable}
+  let(:virtual_field) {:used_timeout_human_readable}
   subject {Ci::Build.new}
 
   it "doesn't contain dynamically created writer method" do

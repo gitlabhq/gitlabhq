@@ -20,7 +20,7 @@
     = runner.ip_address
   %td
     - if runner.defines_maximum_job_timeout?
-      = runner.maximum_job_timeout_user_readable
+      = runner.maximum_job_timeout_human_readable
     - else
       n/a
   %td
