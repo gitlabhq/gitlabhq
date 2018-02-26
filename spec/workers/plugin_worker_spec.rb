@@ -21,7 +21,7 @@ describe PluginWorker do
 
       allow(Gitlab::Plugin).to receive(:execute).with(filename, data).and_raise('Permission denied')
 
-      expect { subject.perform(filename, data) }.to_not raise_error
+      expect { subject.perform(filename, data) }.not_to raise_error
     end
   end
 end
