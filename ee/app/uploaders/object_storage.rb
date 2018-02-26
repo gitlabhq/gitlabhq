@@ -175,7 +175,7 @@ module ObjectStorage
       return unless persist_object_store?
 
       updated = model.update_column(store_serialization_column, object_store)
-      raise ActiveRecordError unless updated
+      raise 'Failed to update object store' unless updated
     end
 
     def use_file
