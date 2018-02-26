@@ -27,6 +27,3 @@
             - unless can?(current_user, :push_code, @project)
               .inline.prepend-left-10
                 = commit_in_fork_help
-
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag('blob')

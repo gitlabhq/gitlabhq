@@ -24,7 +24,7 @@ import './components/new_list_dropdown';
 import './components/modal/index';
 import '../vue_shared/vue_resource_interceptor';
 
-$(() => {
+export default () => {
   const $boardApp = document.getElementById('board-app');
   const Store = gl.issueBoards.BoardsStore;
   const ModalStore = gl.issueBoards.ModalStore;
@@ -236,4 +236,4 @@ $(() => {
       </div>
     `,
   });
-});
+};

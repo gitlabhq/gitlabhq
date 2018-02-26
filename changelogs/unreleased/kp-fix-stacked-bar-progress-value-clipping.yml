@@ -1,5 +1,0 @@
----
-title: Fix single digit value clipping for stacked progress bar
-merge_request: 17217
-author:
-type: fixed
