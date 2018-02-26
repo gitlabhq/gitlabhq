@@ -55,7 +55,6 @@ var config = {
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
-    blob:                 './blob_edit/blob_bundle.js',
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
     deploy_keys:          './deploy_keys/index.js',
