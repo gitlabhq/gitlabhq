@@ -7,9 +7,9 @@ module Gitlab
     end
 
     def self.execute_all_async(data)
-      files.each do |file|
-        PluginWorker.perform_async(file, data)
-      end
+      args = files.map { |file| [file, data] }
+
+      PluginWorker.bulk_perform_async(args)
     end
 
     def self.execute(file, data)
