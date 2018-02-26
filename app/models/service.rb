@@ -1,6 +1,7 @@
 # To add new service you should build a class inherited from Service
 # and implement a set of methods
 class Service < ActiveRecord::Base
+  prepend EE::Service
   include Sortable
   include Importable
 
@@ -240,11 +241,8 @@ class Service < ActiveRecord::Base
       external_wiki
       flowdock
       gemnasium
-      github
       hipchat
       irker
-      jenkins
-      jenkins_deprecated
       jira
       kubernetes
       mattermost_slash_commands

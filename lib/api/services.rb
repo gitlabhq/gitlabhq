@@ -368,32 +368,6 @@ module API
           desc: "The project's slug on gemnasium.com"
         }
       ],
-      'github' => [
-        {
-          required: true,
-          name: :token,
-          type: String,
-          desc: 'GitHub API token with repo:status OAuth scope'
-        },
-        {
-          required: false,
-          name: :api_url,
-          type: String,
-          desc: 'GitHub instance API URL, defaults to https://api.github.com'
-        },
-        {
-          required: true,
-          name: :owner,
-          type: String,
-          desc: 'Owner or organization of the GitHub repo'
-        },
-        {
-          required: true,
-          name: :repository_name,
-          type: String,
-          desc: "GitHub repository name"
-        }
-      ],
       'hipchat' => [
         {
           required: true,
@@ -699,6 +673,32 @@ module API
         }
       ],
       # EE-specific services
+      'github' => [
+        {
+          required: true,
+          name: :token,
+          type: String,
+          desc: 'GitHub API token with repo:status OAuth scope'
+        },
+        {
+          required: false,
+          name: :api_url,
+          type: String,
+          desc: 'GitHub instance API URL, defaults to https://api.github.com'
+        },
+        {
+          required: true,
+          name: :owner,
+          type: String,
+          desc: 'Owner or organization of the GitHub repo'
+        },
+        {
+          required: true,
+          name: :repository_name,
+          type: String,
+          desc: "GitHub repository name"
+        }
+      ],
       'jenkins' => [
         {
           required: true,

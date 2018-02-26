@@ -29,6 +29,7 @@ module EE
       has_one :index_status
       has_one :jenkins_service
       has_one :jenkins_deprecated_service
+      has_one :github_service
 
       has_many :approvers, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
       has_many :approver_groups, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
