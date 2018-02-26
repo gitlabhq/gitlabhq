@@ -52,7 +52,7 @@ module Ci
 
     cached_attr_reader :version, :revision, :platform, :architecture, :contacted_at, :ip_address
 
-    chronic_duration_attribute :maximum_job_timeout_user_readable, :maximum_job_timeout
+    chronic_duration_attr :maximum_job_timeout_user_readable, :maximum_job_timeout
 
     # Searches for runners matching the given query.
     #

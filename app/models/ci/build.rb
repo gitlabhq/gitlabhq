@@ -91,7 +91,7 @@ module Ci
     after_commit :update_project_statistics_after_save, on: [:create, :update]
     after_commit :update_project_statistics, on: :destroy
 
-    chronic_duration_attribute_reader :used_timeout_user_readable, :used_timeout
+    chronic_duration_attr_reader :used_timeout_user_readable, :used_timeout
 
     class << self
       # This is needed for url_for to work,
