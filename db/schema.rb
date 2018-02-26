@@ -346,6 +346,7 @@ ActiveRecord::Schema.define(version: 20180304204842) do
     t.datetime_with_timezone "updated_at", null: false
     t.datetime_with_timezone "expire_at"
     t.string "file"
+    t.string "checksum", limit: 64
   end
 
   add_index "ci_job_artifacts", ["expire_at", "job_id"], name: "index_ci_job_artifacts_on_expire_at_and_job_id", using: :btree
