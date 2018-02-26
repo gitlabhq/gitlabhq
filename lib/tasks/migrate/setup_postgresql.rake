@@ -19,7 +19,6 @@ task setup_postgresql: :environment do
   AddIndexOnNamespacesLowerName.new.up
   ReworkRedirectRoutesIndexes.new.up
   UsersNameLowerIndex.new.up
-<<<<<<< HEAD
 end
 
 desc 'GitLab | Generate PostgreSQL Password Hash'
@@ -35,6 +34,4 @@ task :postgresql_md5_hash do
   end
   hash = Digest::MD5.hexdigest("#{password}#{username}")
   puts "The MD5 hash of your database password for user: #{username} -> #{hash}"
-=======
->>>>>>> upstream/master
 end
