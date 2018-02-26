@@ -3,7 +3,7 @@ module WaitableWorker
 
   module ClassMethods
     # Schedules multiple jobs and waits for them to be completed.
-    def bulk_perform_and_wait(args_list)
+    def bulk_perform_and_wait(args_list, timeout: 10)
       # Short-circuit: it's more efficient to do small numbers of jobs inline
       return bulk_perform_inline(args_list) if args_list.size <= 3
 
@@ -14,7 +14,7 @@ module WaitableWorker
       waiting_args_list = args_list.map { |args| [*args, waiter.key] }
       bulk_perform_async(waiting_args_list)
 
-      waiter.wait
+      waiter.wait(timeout)
     end
 
     # Performs multiple jobs directly. Failed jobs will be put into sidekiq so
