@@ -62,9 +62,8 @@ module Gitlab
 
         # Allows to define conditions that must be met in order for the command
         # to be returned by `.command_names` & `.command_definitions`.
-        # It accepts a block that will be evaluated with the context given to
-        # `CommandDefintion#to_h`.
-        #
+        # It accepts a block that will be evaluated with the context
+        # of a QuickActions::InterpretService instance
         # Example:
         #
         #   condition do

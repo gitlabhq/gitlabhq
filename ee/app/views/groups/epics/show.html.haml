@@ -16,4 +16,4 @@
   = webpack_bundle_tag 'common_vue'
   = webpack_bundle_tag 'epic_show'
 
-#epic-show-app{ data: { initial: issuable_initial_data(@epic), meta: epic_meta_data } }
+#epic-show-app{ data: { initial: issuable_initial_data(@epic).to_json, meta: epic_meta_data } }

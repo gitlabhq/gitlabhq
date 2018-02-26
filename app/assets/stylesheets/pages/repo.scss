@@ -19,6 +19,7 @@
 .ide-view {
   display: flex;
   height: calc(100vh - #{$header-height});
+  margin-top: 40px;
   color: $almost-black;
   border-top: 1px solid $white-dark;
   border-bottom: 1px solid $white-dark;
@@ -265,7 +266,7 @@ table.table tr td.multi-file-table-name {
   display: flex;
   position: relative;
   flex-direction: column;
-  width: 290px;
+  width: 340px;
   padding: 0;
   background-color: $gray-light;
   padding-right: 3px;
@@ -465,20 +466,14 @@ table.table tr td.multi-file-table-name {
 .multi-file-commit-form {
   padding: $gl-padding;
   border-top: 1px solid $white-dark;
-}
-
-.multi-file-commit-fieldset {
-  display: flex;
-  align-items: center;
-  padding-bottom: 12px;
 
   .btn {
-    flex: 1;
+    font-size: $gl-font-size;
   }
 }
 
 .multi-file-commit-message.form-control {
-  height: 80px;
+  height: 160px;
   resize: none;
 }
 
@@ -638,4 +633,19 @@ table.table tr td.multi-file-table-name {
   &.dragleft {
     left: 0;
   }
+}
+
+.ide-commit-radios {
+  label {
+    font-weight: normal;
+  }
+
+  .help-block {
+    margin-top: 0;
+    line-height: 0;
+  }
+}
+
+.ide-commit-new-branch {
+  margin-left: 25px;
 }

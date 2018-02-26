@@ -7,6 +7,7 @@ describe QA::Factory::Base do
 
     before do
       allow(QA::Factory::Product).to receive(:new).and_return(product)
+      allow(QA::Factory::Product).to receive(:populate!).and_return(product)
     end
 
     it 'instantiates the factory and calls factory method' do
@@ -76,6 +77,7 @@ describe QA::Factory::Base do
         allow(subject).to receive(:new).and_return(instance)
         allow(instance).to receive(:mydep).and_return(nil)
         allow(QA::Factory::Product).to receive(:new)
+        allow(QA::Factory::Product).to receive(:populate!)
       end
 
       it 'builds all dependencies first' do
@@ -89,8 +91,16 @@ describe QA::Factory::Base do
   describe '.product' do
     subject do
       Class.new(described_class) do
+        def fabricate!
+          "any"
+        end
+
+        # Defined only to be stubbed
+        def self.find_page
+        end
+
         product :token do
-          page.do_something_on_page!
+          find_page.do_something_on_page!
           'resulting value'
         end
       end
@@ -105,16 +115,17 @@ describe QA::Factory::Base do
       let(:page) { spy('page') }
 
       before do
-        allow(subject).to receive(:new).and_return(factory)
+        allow(factory).to receive(:class).and_return(subject)
         allow(QA::Factory::Product).to receive(:new).and_return(product)
         allow(product).to receive(:page).and_return(page)
+        allow(subject).to receive(:find_page).and_return(page)
       end
 
       it 'populates product after fabrication' do
         subject.fabricate!
 
-        expect(page).to have_received(:do_something_on_page!)
         expect(product.token).to eq 'resulting value'
+        expect(page).to have_received(:do_something_on_page!)
       end
     end
   end

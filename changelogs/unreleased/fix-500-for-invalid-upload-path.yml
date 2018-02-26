@@ -1,5 +1,0 @@
----
-title: Fix 500 error when loading an invalid upload URL
-merge_request:
-author:
-type: fixed
