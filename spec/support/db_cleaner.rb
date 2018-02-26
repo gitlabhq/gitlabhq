@@ -30,19 +30,11 @@ RSpec.configure do |config|
   end
 
   config.before(:each, :js) do
-<<<<<<< HEAD
     DatabaseCleaner.strategy = :deletion, { except: %w[licenses], cache_tables: false }
   end
 
   config.before(:each, :delete) do
     DatabaseCleaner.strategy = :deletion, { except: %w[licenses], cache_tables: false }
-=======
-    DatabaseCleaner.strategy = :deletion, { cache_tables: false }
-  end
-
-  config.before(:each, :delete) do
-    DatabaseCleaner.strategy = :deletion, { cache_tables: false }
->>>>>>> upstream/master
   end
 
   config.before(:each, :migration) do
