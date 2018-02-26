@@ -490,7 +490,7 @@ module EE
     def load_licensed_feature_available(feature)
       globally_available = License.feature_available?(feature)
 
-      if namespace && ::Gitlab::CurrentSettings.should_check_namespace_plan?
+      if ::Gitlab::CurrentSettings.should_check_namespace_plan? && namespace
         globally_available &&
           (public? && namespace.public? || namespace.feature_available_in_plan?(feature))
       else
