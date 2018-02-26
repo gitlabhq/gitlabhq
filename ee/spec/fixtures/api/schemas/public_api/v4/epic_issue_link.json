@@ -21,7 +21,13 @@
         "start_date": { "type": ["string", "null"] },
         "end_date": { "type": ["string", "null"] },
         "created_at": { "type": ["string", "null"] },
-        "updated_at": { "type": ["string", "null"] }
+        "updated_at": { "type": ["string", "null"] },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       },
       "additionalProperties": false
     },
