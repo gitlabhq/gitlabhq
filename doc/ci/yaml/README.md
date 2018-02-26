@@ -1029,7 +1029,7 @@ If you use **Windows PowerShell** to run your shell scripts you need to replace
 ```yaml
 job:
   artifacts:
-    name: "$env:CI_JOB_STAGE_$env:CI_COMMIT_REF_NAME"
+    name: "$($env:CI_JOB_STAGE)_$env:CI_COMMIT_REF_NAME"
     untracked: true
 ```
 
