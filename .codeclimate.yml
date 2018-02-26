@@ -45,3 +45,4 @@ exclude_paths:
 - log/
 - backups/
 - coverage-javascript/
+- plugins/
