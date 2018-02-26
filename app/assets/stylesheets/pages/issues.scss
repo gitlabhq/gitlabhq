@@ -13,10 +13,20 @@
       display: inline-block;
     }
 
+    .issuable-meta {
+      .author_link {
+        display: inline-block;
+      }
+
+      .issuable-comments {
+        height: 18px;
+      }
+    }
+
     .icon-merge-request-unmerged {
       height: 13px;
       margin-bottom: 3px;
-     }
+    }
   }
 }
 
