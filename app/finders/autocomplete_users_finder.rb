@@ -7,12 +7,9 @@ class AutocompleteUsersFinder
 
   attr_reader :current_user, :project, :group, :search, :skip_users,
               :author_id, :params
-<<<<<<< HEAD
 
   # EE
   attr_reader :skip_ldap
-=======
->>>>>>> upstream/master
 
   def initialize(params:, current_user:, project:, group:)
     @current_user = current_user
@@ -38,12 +35,9 @@ class AutocompleteUsersFinder
     items = items.search(search) if search.present?
     items = items.where.not(id: skip_users) if skip_users.present?
     items = items.limit(LIMIT)
-<<<<<<< HEAD
 
     # EE
     items = load_users_by_push_ability(items)
-=======
->>>>>>> upstream/master
 
     if params[:todo_filter].present? && current_user
       items = items.todo_authors(current_user.id, params[:todo_state_filter])
@@ -78,7 +72,6 @@ class AutocompleteUsersFinder
     if author_id.present?
       union = Gitlab::SQL::Union
         .new([project.authorized_users, User.where(id: author_id)])
-<<<<<<< HEAD
 
       User.from("(#{union.to_sql}) #{User.table_name}")
     else
@@ -102,12 +95,6 @@ class AutocompleteUsersFinder
       :push_code_to_protected_branches
     elsif params[:push_code].present?
       :push_code
-=======
-
-      User.from("(#{union.to_sql}) #{User.table_name}")
-    else
-      project.authorized_users
->>>>>>> upstream/master
     end
   end
   # EE
