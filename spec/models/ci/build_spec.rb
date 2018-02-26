@@ -1274,10 +1274,13 @@ describe Ci::Build do
     describe '#timeout' do
       set(:project2) { create(:project, :repository, group: group, build_timeout: 1000) }
       set(:pipeline2) { create(:ci_pipeline, project: project2, sha: project2.commit.id, ref: project2.default_branch, status: 'success') }
+
       let(:build) { create(:ci_build, :manual, pipeline: pipeline2) }
 
+      subject { build.timeout }
+
       it 'returns project timeout configuration' do
-        expect(build.timeout).to eq(project2.build_timeout)
+        is_expected.to eq(project2.build_timeout)
       end
 
       context 'when runner sets timeout to bigger value' do
@@ -1285,7 +1288,7 @@ describe Ci::Build do
         let(:build) { create(:ci_build, :manual, pipeline: pipeline2, runner: runner2) }
 
         it 'returns project timeout configuration' do
-          expect(build.timeout).to eq(project2.build_timeout)
+          is_expected.to eq(project2.build_timeout)
         end
       end
 
@@ -1294,7 +1297,7 @@ describe Ci::Build do
         let(:build) { create(:ci_build, :manual, pipeline: pipeline2, runner: runner2) }
 
         it 'returns project timeout configuration' do
-          expect(build.timeout).to eq(runner2.maximum_job_timeout)
+          is_expected.to eq(runner2.maximum_job_timeout)
         end
       end
     end
