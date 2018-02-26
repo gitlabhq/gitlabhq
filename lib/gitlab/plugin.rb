@@ -1,12 +1,13 @@
 module Gitlab
   module Plugin
     def self.files
-      Dir.glob(Rails.root.join('plugins/enabled/*'))
+      Dir.glob(Rails.root.join('plugins/*')).select do |entry|
+        File.file?(entry)
+      end
     end
 
     def self.execute_all_async(data)
       files.each do |file|
-        puts file
         PluginWorker.perform_async(file, data)
       end
     end
