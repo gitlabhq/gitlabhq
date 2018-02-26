@@ -98,7 +98,7 @@
 
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "merge-request-settings-form" }, authenticity_token: true do |f|
         = render 'projects/ee/merge_request_settings', form: f
-        = f.submit 'Save changes', class: "btn btn-save"
+        = f.submit 'Save changes', class: "btn btn-save qa-save-merge-request-changes"
 
   = render 'projects/ee/service_desk_settings'
 

@@ -225,4 +225,17 @@ describe MergeRequest do
   describe '#dast_artifact' do
     it { is_expected.to delegate_method(:dast_artifact).to(:head_pipeline) }
   end
+
+  %w(sast dast performance sast_container).each do |type|
+    method = "expose_#{type}_data?"
+
+    describe "##{method}" do
+      before do
+        allow(merge_request).to receive(:"has_#{type}_data?").and_return(true)
+        allow(merge_request.project).to receive(:feature_available?).and_return(true)
+      end
+
+      it { expect(merge_request.send(method.to_sym)).to be_truthy }
+    end
+  end
 end

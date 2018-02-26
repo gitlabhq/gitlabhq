@@ -2,32 +2,46 @@ require 'spec_helper'
 
 describe StuckImportJobsWorker do
   let(:worker) { described_class.new }
-  let(:exclusive_lease_uuid) { SecureRandom.uuid }
-
-  before do
-    allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(exclusive_lease_uuid)
-  end
 
   shared_examples 'project import job detection' do
-    describe 'long running import' do
-      it 'marks the project as failed' do
-        allow(Gitlab::SidekiqStatus).to receive(:completed_jids).and_return(['123'])
+    context 'when the job has completed' do
+      context 'when the import status was already updated' do
+        before do
+          allow(Gitlab::SidekiqStatus).to receive(:completed_jids) do
+            project.import_start
+            project.import_finish
 
-        expect { worker.perform }.to change { project.reload.import_status }.to('failed')
+            [project.import_jid]
+          end
+        end
+
+        it 'does not mark the project as failed' do
+          worker.perform
+
+          expect(project.reload.import_status).to eq('finished')
+        end
+      end
+
+      context 'when the import status was not updated' do
+        before do
+          allow(Gitlab::SidekiqStatus).to receive(:completed_jids).and_return([project.import_jid])
+        end
+
+        it 'marks the project as failed' do
+          worker.perform
+
+          expect(project.reload.import_status).to eq('failed')
+        end
       end
     end
 
-    describe 'running import' do
-      it 'does not mark the project as failed' do
+    context 'when the job is still in Sidekiq' do
+      before do
         allow(Gitlab::SidekiqStatus).to receive(:completed_jids).and_return([])
-
-        expect { worker.perform }.not_to change { project.reload.import_status }
       end
 
-      describe 'import without import_jid' do
-        it 'marks the project as failed' do
-          expect { worker.perform }.to change { project.reload.import_status }.to('failed')
-        end
+      it 'does not mark the project as failed' do
+        expect { worker.perform }.not_to change { project.reload.import_status }
       end
     end
   end

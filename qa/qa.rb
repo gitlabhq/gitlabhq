@@ -130,6 +130,7 @@ module QA
         autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
         autoload :SecretVariables, 'qa/page/project/settings/secret_variables'
         autoload :Runners, 'qa/page/project/settings/runners'
+        autoload :MergeRequest, 'qa/page/project/settings/merge_request'
       end
 
       module Issue
@@ -145,6 +146,7 @@ module QA
 
     module MergeRequest
       autoload :New, 'qa/page/merge_request/new'
+      autoload :Show, 'qa/page/merge_request/show'
     end
 
     module Admin

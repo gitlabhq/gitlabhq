@@ -1,0 +1,14 @@
+Verification has failed for one of your GitLab Pages custom domains!
+
+Project: #{@project.human_name} (#{project_url(@project)})
+Domain:  #{@domain.domain} (#{project_pages_domain_url(@project, @domain)})
+
+Unless you take action, it will be disabled on *#{@domain.enabled_until.strftime('%F %T')}*.
+Until then, you can view your content at #{@domain.url}
+
+Please visit
+= help_page_url('user/project/pages/getting_started_part_three.md', anchor: 'dns-txt-record')
+for more information about custom domain verification.
+
+If you no longer wish to use this domain with GitLab Pages, please remove it
+from your GitLab project and delete any related DNS records.
