@@ -271,6 +271,18 @@ describe 'New/edit issue', :js do
     end
   end
 
+  context 'inline edit' do
+    before do
+      visit project_issue_path(project, issue)
+    end
+
+    it 'opens inline edit form with shortcut' do
+      find('body').send_keys('e')
+
+      expect(page).to have_selector('.detail-page-description form')
+    end
+  end
+
   describe 'sub-group project' do
     let(:group) { create(:group) }
     let(:nested_group_1) { create(:group, parent: group) }
