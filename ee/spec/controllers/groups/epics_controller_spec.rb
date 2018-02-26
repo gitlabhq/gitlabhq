@@ -4,6 +4,7 @@ describe Groups::EpicsController do
   let(:group) { create(:group, :private) }
   let(:epic) { create(:epic, group: group) }
   let(:user)  { create(:user) }
+  let(:label) { create(:group_label, group: group, title: 'Bug') }
 
   before do
     sign_in(user)
@@ -170,7 +171,7 @@ describe Groups::EpicsController do
     describe 'PUT #update' do
       before do
         group.add_developer(user)
-        put :update, group_id: group, id: epic.to_param, epic: { title: 'New title' }, format: :json
+        put :update, group_id: group, id: epic.to_param, epic: { title: 'New title', label_ids: [label.id] }, format: :json
       end
 
       it 'returns status 200' do
@@ -178,7 +179,10 @@ describe Groups::EpicsController do
       end
 
       it 'updates the epic correctly' do
-        expect(epic.reload.title).to eq('New title')
+        epic.reload
+
+        expect(epic.title).to eq('New title')
+        expect(epic.labels).to eq([label])
       end
     end
 
@@ -210,7 +214,7 @@ describe Groups::EpicsController do
 
     describe '#create' do
       subject do
-        post :create, group_id: group, epic: { title: 'new epic', description: 'some descripition' }
+        post :create, group_id: group, epic: { title: 'new epic', description: 'some descripition', label_ids: [label.id] }
       end
 
       context 'when user has permissions to create an epic' do
@@ -227,6 +231,10 @@ describe Groups::EpicsController do
 
           it 'creates a new epic' do
             expect { subject }.to change { Epic.count }.from(0).to(1)
+          end
+
+          it 'assigns labels to the new epic' do
+            expect { subject }.to change { LabelLink.count }.from(0).to(1)
           end
 
           it 'returns the correct json' do

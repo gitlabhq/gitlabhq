@@ -11,4 +11,5 @@ class EpicEntity < IssuableEntity
   expose :web_url do |epic|
     group_epic_path(epic.group, epic)
   end
+  expose :labels, using: LabelEntity
 end
