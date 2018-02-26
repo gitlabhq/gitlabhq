@@ -3,11 +3,7 @@ class AddMaximumJobTimeoutToCiRunners < ActiveRecord::Migration
 
   DOWNTIME = false
 
-  def up
+  def change
     add_column :ci_runners, :maximum_job_timeout, :integer
-  end
-
-  def down
-    remove_column :ci_runners, :maximum_job_timeout
   end
 end
