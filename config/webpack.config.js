@@ -72,7 +72,6 @@ var config = {
     pipelines_details:    './pipelines/pipeline_details_bundle.js',
     profile:              './profile/profile_bundle.js',
     project_import_gl:    './projects/project_import_gitlab_project.js',
-    protected_branches:   './protected_branches',
     protected_tags:       './protected_tags',
     registry_list:        './registry/index.js',
     sidebar:              './sidebar/sidebar_bundle.js',
