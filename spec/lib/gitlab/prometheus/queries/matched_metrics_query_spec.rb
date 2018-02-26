@@ -24,7 +24,7 @@ describe Gitlab::Prometheus::Queries::MatchedMetricsQuery do
 
   context 'with one group where two metrics is found' do
     before do
-      allow(metric_group_class).to receive(:all).and_return([simple_metric_group])
+      allow(metric_group_class).to receive(:common_metrics).and_return([simple_metric_group])
       allow(client).to receive(:label_values).and_return(metric_names)
     end
 
@@ -70,7 +70,7 @@ describe Gitlab::Prometheus::Queries::MatchedMetricsQuery do
 
   context 'with one group where only one metric is found' do
     before do
-      allow(metric_group_class).to receive(:all).and_return([simple_metric_group])
+      allow(metric_group_class).to receive(:common_metrics).and_return([simple_metric_group])
       allow(client).to receive(:label_values).and_return('metric_a')
     end
 
@@ -99,7 +99,7 @@ describe Gitlab::Prometheus::Queries::MatchedMetricsQuery do
     let(:second_metric_group) { simple_metric_group(name: 'nameb', metrics: simple_metrics(added_metric_name: 'metric_c')) }
 
     before do
-      allow(metric_group_class).to receive(:all).and_return([simple_metric_group, second_metric_group])
+      allow(metric_group_class).to receive(:common_metrics).and_return([simple_metric_group, second_metric_group])
       allow(client).to receive(:label_values).and_return('metric_c')
     end
 

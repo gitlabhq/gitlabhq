@@ -1,9 +1,20 @@
 describe QA::Factory::Product do
-  let(:factory) { spy('factory') }
+  let(:factory) do
+    QA::Factory::Base.new
+  end
+
+  let(:attributes) do
+    { test: QA::Factory::Product::Attribute.new(:test, proc { 'returned' }) }
+  end
+
   let(:product) { spy('product') }
 
+  before do
+    allow(QA::Factory::Base).to receive(:attributes).and_return(attributes)
+  end
+
   describe '.populate!' do
-    it 'returns a fabrication product' do
+    it 'returns a fabrication product and define factory attributes as its methods' do
       expect(described_class).to receive(:new).and_return(product)
 
       result = described_class.populate!(factory) do |instance|
@@ -11,6 +22,7 @@ describe QA::Factory::Product do
       end
 
       expect(result).to be product
+      expect(result.test).to eq('returned')
     end
   end
 
