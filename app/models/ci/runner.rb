@@ -153,7 +153,7 @@ module Ci
     end
 
     def project?
-      runner_projects.present?
+      runner_projects.any?
     end
 
     def can_pick?(build)
