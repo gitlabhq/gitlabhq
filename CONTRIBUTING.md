@@ -196,6 +196,17 @@ release. There are two levels of priority labels:
   milestone. If these issues are not done in the current release, they will
   strongly be considered for the next release.
 
+### Severity labels (~S1, ~S2, etc.)
+
+Severity labels help us clearly communicate the impact of a ~bug on users.
+
+| Label | Meaning                                  | Example |
+|-------|------------------------------------------|---------|
+| ~S1   | Feature broken, no workaround            | Unable to create an issue |
+| ~S2   | Feature broken, workaround unacceptable  | Can push commits, but only via the command line |
+| ~S3   | Feature broken, workaround acceptable    | Can create merge requests only from the Merge Requests page, not through the Issue |
+| ~S4   | Cosmetic issue                           | Label colors are incorrect / not being displayed |       
+
 ### Label for community contributors (~"Accepting Merge Requests")
 
 Issues that are beneficial to our users, 'nice to haves', that we currently do
@@ -397,9 +408,9 @@ For issues related to the open source stewardship of GitLab,
 there is the ~"stewardship" label.
 
 This label is to be used for issues in which the stewardship of GitLab
-is a topic of discussion. For instance if GitLab Inc. is planning to remove
-features from GitLab CE to make exclusive in GitLab EE, related issues
-would be labelled with ~"stewardship".
+is a topic of discussion. For instance if GitLab Inc. is planning to add
+features from GitLab EE to GitLab CE, related issues would be labelled with
+~"stewardship".
 
 A recent example of this was the issue for
 [bringing the time tracking API to GitLab CE][time-tracking-issue].
