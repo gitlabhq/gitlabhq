@@ -63,10 +63,8 @@ var config = {
     help:                 './help/help.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
     monitoring:           './monitoring/monitoring_bundle.js',
-    network:              './network/network_bundle.js',
     notebook_viewer:      './blob/notebook_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
-    pipelines:            './pipelines/pipelines_bundle.js',
     pipelines_details:    './pipelines/pipeline_details_bundle.js',
     profile:              './profile/profile_bundle.js',
     project_import_gl:    './projects/project_import_gitlab_project.js',
@@ -79,7 +77,6 @@ var config = {
     stl_viewer:           './blob/stl_viewer.js',
     terminal:             './terminal/terminal_bundle.js',
     ui_development_kit:   './ui_development_kit.js',
-    vue_merge_request_widget: './vue_merge_request_widget/index.js',
     two_factor_auth:      './two_factor_auth.js',
 
 
