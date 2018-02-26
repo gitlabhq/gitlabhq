@@ -112,18 +112,28 @@ module Gitlab
       private
 
       def archive_stream!(stream)
-        file = Tempfile.new('trace.log')
-        size = IO.copy_stream(file, stream)
-        raise 'Not all saved' unless size == stream.size
-        file.close
+        clone_file!(stream, JobArtifactUploader.workhorse_upload_path) do |clone_path|
+          create_job_trace!(job, clone_path)
+        end
+      end
 
-        job.create_job_artifacts_trace!(
-          project: job.project,
-          file_type: :trace,
-          file: file)
-      ensure
-        file&.close
-        file&.unlink
+      def clone_file!(src_stream, temp_dir)
+        FileUtils.mkdir_p(temp_dir)
+        Dir.mktmpdir('tmp-trace', temp_dir) do |dir_path|
+          temp_path = File.join(dir_path, "job.log")
+          size = IO.write(src_stream, temp_path)
+          raise 'Not all saved' unless size == src_stream.size
+          yield(temp_path)
+        end
+      end
+
+      def create_job_trace!(job, path)
+        File.open(path) do |stream|
+          job.create_job_artifacts_trace!(
+            project: job.project,
+            file_type: :trace,
+            file: stream)
+        end
       end
 
       def ensure_path
