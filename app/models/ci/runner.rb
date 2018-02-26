@@ -170,10 +170,6 @@ module Ci
       end
     end
 
-    def defines_maximum_job_timeout?
-      !maximum_job_timeout.nil? && maximum_job_timeout > 0
-    end
-
     private
 
     def cleanup_runner_queue
