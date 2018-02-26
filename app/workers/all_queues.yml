@@ -84,6 +84,7 @@
 - new_note
 - pages
 - pages_domain_verification
+- plugin
 - post_receive
 - process_commit
 - project_cache
