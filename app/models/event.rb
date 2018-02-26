@@ -392,6 +392,9 @@ class Event < ActiveRecord::Base
   end
 
   def track_user_contributed_projects
-    UserContributedProjects.track(self)
+    # Note the call to .available? is due to earlier migrations
+    # that would otherwise conflict with the call to .track
+    # (because the table does not exist yet).
+    UserContributedProjects.track(self) if UserContributedProjects.available?
   end
 end

@@ -7,6 +7,9 @@ class UserContributedProjects < ActiveRecord::Base
 
   CACHE_EXPIRY_TIME = 1.day
 
+  # Schema version required for this model
+  REQUIRED_SCHEMA_VERSION = 20180223120443
+
   class << self
     def track(event)
       # For events without a project, we simply don't care.
@@ -33,6 +36,11 @@ class UserContributedProjects < ActiveRecord::Base
           retry
         end
       end
+    end
+
+    # Check if we can safely call .track (table exists)
+    def available?
+      @available_flag ||= ActiveRecord::Migrator.current_version >= REQUIRED_SCHEMA_VERSION # rubocop:disable Gitlab/PredicateMemoization
     end
 
     private

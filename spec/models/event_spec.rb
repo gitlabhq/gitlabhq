@@ -51,9 +51,17 @@ describe Event do
     end
 
     describe 'after_create :track_user_contributed_projects' do
+      let(:event) { build(:push_event, project: project, author: project.owner) }
+
       it 'passes event to UserContributedProjects.track' do
-        event = build(:push_event, project: project, author: project.owner)
+        expect(UserContributedProjects).to receive(:available?).and_return(true)
         expect(UserContributedProjects).to receive(:track).with(event)
+        event.save
+      end
+
+      it 'does not call UserContributedProjects.track if its not yet available' do
+        expect(UserContributedProjects).to receive(:available?).and_return(false)
+        expect(UserContributedProjects).not_to receive(:track)
         event.save
       end
     end

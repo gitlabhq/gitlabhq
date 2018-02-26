@@ -40,6 +40,21 @@ describe UserContributedProjects do
     end
   end
 
+  describe '.available?' do
+    before do
+      described_class.instance_variable_set('@available_flag', nil)
+    end
+
+    it 'checks schema version and properly caches positive result' do
+      expect(ActiveRecord::Migrator).to receive(:current_version).and_return(described_class::REQUIRED_SCHEMA_VERSION - 1 - rand(1000))
+      expect(described_class.available?).to be_falsey
+      expect(ActiveRecord::Migrator).to receive(:current_version).and_return(described_class::REQUIRED_SCHEMA_VERSION + rand(1000))
+      expect(described_class.available?).to be_truthy
+      expect(ActiveRecord::Migrator).not_to receive(:current_version)
+      expect(described_class.available?).to be_truthy # cached response
+    end
+  end
+
   it { is_expected.to validate_presence_of(:project) }
   it { is_expected.to validate_presence_of(:user) }
 end
