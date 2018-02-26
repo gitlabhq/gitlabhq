@@ -211,6 +211,12 @@ module Ci
       end
     end
 
+    def invalidate_build_cache!(build)
+      if can_pick?(build)
+        tick_runner_queue
+      end
+    end
+
     private
 
     def cleanup_runner_queue
