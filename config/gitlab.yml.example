@@ -253,7 +253,6 @@ production: &base
     pages_domain_verification_cron_worker:
       cron: "*/15 * * * *"
 
-<<<<<<< HEAD
     ##
     # GitLab EE only jobs:
 
@@ -287,8 +286,6 @@ production: &base
     geo_file_download_dispatch_worker:
       cron: "*/1 * * * *"
 
-=======
->>>>>>> upstream/master
   registry:
     # enabled: true
     # host: registry.example.com

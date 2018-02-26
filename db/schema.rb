@@ -179,7 +179,6 @@ ActiveRecord::Schema.define(version: 20180216121030) do
     t.integer "gitaly_timeout_fast", default: 10, null: false
     t.boolean "mirror_available", default: true, null: false
     t.string "auto_devops_domain"
-<<<<<<< HEAD
     t.integer "default_project_creation", default: 2, null: false
     t.boolean "external_authorization_service_enabled", default: false, null: false
     t.string "external_authorization_service_url"
@@ -192,9 +191,6 @@ ActiveRecord::Schema.define(version: 20180216121030) do
     t.integer "user_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-=======
-    t.boolean "pages_domain_verification_enabled", default: true, null: false
->>>>>>> upstream/master
   end
 
   add_index "approvals", ["merge_request_id"], name: "index_approvals_on_merge_request_id", using: :btree
@@ -1729,7 +1725,6 @@ ActiveRecord::Schema.define(version: 20180216121030) do
   add_index "pages_domains", ["project_id"], name: "index_pages_domains_on_project_id", using: :btree
   add_index "pages_domains", ["verified_at", "enabled_until"], name: "index_pages_domains_on_verified_at_and_enabled_until", using: :btree
   add_index "pages_domains", ["verified_at"], name: "index_pages_domains_on_verified_at", using: :btree
-<<<<<<< HEAD
 
   create_table "path_locks", force: :cascade do |t|
     t.string "path", null: false
@@ -1742,8 +1737,6 @@ ActiveRecord::Schema.define(version: 20180216121030) do
   add_index "path_locks", ["path"], name: "index_path_locks_on_path", using: :btree
   add_index "path_locks", ["project_id"], name: "index_path_locks_on_project_id", using: :btree
   add_index "path_locks", ["user_id"], name: "index_path_locks_on_user_id", using: :btree
-=======
->>>>>>> upstream/master
 
   create_table "personal_access_tokens", force: :cascade do |t|
     t.integer "user_id", null: false
