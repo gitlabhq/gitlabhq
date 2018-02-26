@@ -619,6 +619,7 @@ Example response:
   "active": true,
   "push_events": true,
   "issues_events": true,
+  "confidential_issues_events": true,
   "merge_requests_events": true,
   "tag_push_events": true,
   "note_events": true,
