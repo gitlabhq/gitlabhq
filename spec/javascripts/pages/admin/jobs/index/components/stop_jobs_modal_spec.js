@@ -4,7 +4,7 @@ import axios from '~/lib/utils/axios_utils';
 import stopJobsModal from '~/pages/admin/jobs/index/components/stop_jobs_modal.vue';
 import * as urlUtility from '~/lib/utils/url_utility';
 
-import mountComponent from '../../../../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('stop_jobs_modal.vue', () => {
   const props = {

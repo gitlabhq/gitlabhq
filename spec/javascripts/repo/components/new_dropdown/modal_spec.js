@@ -2,7 +2,7 @@ import Vue from 'vue';
 import store from '~/ide/stores';
 import service from '~/ide/services';
 import modal from '~/ide/components/new_dropdown/modal.vue';
-import { createComponentWithStore } from '../../../helpers/vue_mount_component_helper';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { file, resetStore } from '../../helpers';
 
 describe('new file modal component', () => {
