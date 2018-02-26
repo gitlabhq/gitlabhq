@@ -386,6 +386,11 @@
 .comment-type-dropdown {
   .comment-btn {
     width: auto;
+
+    &.has-emoji {
+      padding-top: 1px;
+      padding-bottom: 1px;
+    }
   }
 
   .dropdown-toggle {

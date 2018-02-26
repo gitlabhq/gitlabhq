@@ -1,4 +1,5 @@
 <script>
+  import sentiment from 'sentiment';
   import { mapActions, mapGetters } from 'vuex';
   import _ from 'underscore';
   import Autosize from 'autosize';
@@ -15,6 +16,8 @@
   import noteSignedOutWidget from './note_signed_out_widget.vue';
   import discussionLockedWidget from './discussion_locked_widget.vue';
   import issuableStateMixin from '../mixins/issuable_state';
+
+  import { glEmojiTag } from '../../emoji';
 
   export default {
     name: 'CommentForm',
@@ -35,6 +38,7 @@
         noteType: constants.COMMENT,
         isSubmitting: false,
         isSubmitButtonDisabled: true,
+        totalSentiment: null,
       };
     },
     computed: {
@@ -93,6 +97,31 @@
       },
       endpoint() {
         return this.getNoteableData.create_note_path;
+      },
+      getSentimentEmoji() {
+        if (this.totalSentiment === -5) {
+          return glEmojiTag('triumph');
+        } else if (this.totalSentiment === -4) {
+          return glEmojiTag('angry');
+        } else if (this.totalSentiment === -3) {
+          return glEmojiTag('frowning2');
+        } else if (this.totalSentiment === -2) {
+          return glEmojiTag('slightly_frowning_face');
+        } else if (this.totalSentiment === -1) {
+          return glEmojiTag('confused');
+        } else if (this.totalSentiment === 0) {
+          return glEmojiTag('neutral_face');
+        } else if (this.totalSentiment === 1) {
+          return glEmojiTag('slightly_smiling_face');
+        } else if (this.totalSentiment === 2) {
+          return glEmojiTag('smiley');
+        } else if (this.totalSentiment === 3) {
+          return glEmojiTag('smile');
+        } else if (this.totalSentiment >= 4) {
+          return glEmojiTag('grin');
+        }
+
+        return;
       },
     },
     watch: {
@@ -259,6 +288,16 @@ Please check your network connection and try again.`;
           Autosize.update(this.$refs.textarea);
         });
       },
+      checkSentiment() {
+        const text = this.$refs.textarea.value;
+        if (text) {
+          const { score, positive, negative } = sentiment(text);
+          const impactfulWordCount = (positive.length + negative.length) || 1;
+          this.totalSentiment = Math.round(score / impactfulWordCount);
+        } else {
+          this.totalSentiment = null;
+        }
+      },
     },
   };
 </script>
@@ -319,7 +358,9 @@ js-gfm-input js-autosize markdown-area js-vue-textarea"
                   placeholder="Write a comment or drag your files here..."
                   @keydown.up="editCurrentUserLastNote()"
                   @keydown.meta.enter="handleSave()"
-                  @keydown.ctrl.enter="handleSave()">
+                  @keydown.ctrl.enter="handleSave()"
+                  @keyup="checkSentiment()"
+                >
                 </textarea>
               </markdown-field>
               <div class="note-form-actions">
@@ -330,7 +371,13 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                     @click.prevent="handleSave()"
                     :disabled="isSubmitButtonDisabled"
                     class="btn btn-create comment-btn js-comment-button js-comment-submit-button"
+                    :class="{ 'has-emoji': totalSentiment !== null }"
                     type="submit">
+                    <span
+                      v-if="totalSentiment !== null"
+                      v-html="getSentimentEmoji"
+                    >
+                    </span>
                     {{ commentButtonTitle }}
                   </button>
                   <button
