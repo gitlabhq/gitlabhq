@@ -213,7 +213,7 @@ export default class LabelsSelect {
             }
           }
           if (label.duplicate) {
-            color = gl.DropdownUtils.duplicateLabelColor(label.color);
+            color = DropdownUtils.duplicateLabelColor(label.color);
           }
           else {
             if (label.color != null) {
