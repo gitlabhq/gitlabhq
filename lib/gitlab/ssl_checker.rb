@@ -20,8 +20,10 @@ module Gitlab
     rescue Errno::ECONNREFUSED, Errno::ECONNRESET,
            Errno::EHOSTUNREACH, SocketError => e
       @error = 'Network Failure: ' + e.message
+      false
     rescue OpenSSL::SSL::SSLError => e
       @error = 'SSL Error: ' + e.message
+      false
     end
 
     def output
