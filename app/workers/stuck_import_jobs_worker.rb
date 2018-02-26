@@ -29,25 +29,23 @@ class StuckImportJobsWorker
   end
 
   def mark_projects_with_jid_as_failed!
-    completed_jids_count = 0
+    jids_and_ids = enqueued_projects_with_jid.pluck(:import_jid, :id).to_h
 
-    enqueued_projects_with_jid.find_in_batches(batch_size: 500) do |group|
-      jids = group.map(&:import_jid)
+    # Find the jobs that aren't currently running or that exceeded the threshold.
+    completed_jids = Gitlab::SidekiqStatus.completed_jids(jids_and_ids.keys)
+    return unless completed_jids.any?
 
-      # Find the jobs that aren't currently running or that exceeded the threshold.
-      completed_jids = Gitlab::SidekiqStatus.completed_jids(jids).to_set
+    completed_project_ids = jids_and_ids.values_at(*completed_jids)
 
-      if completed_jids.any?
-        completed_jids_count += completed_jids.count
-        group.each do |project|
-          project.mark_import_as_failed(error_message) if completed_jids.include?(project.import_jid)
-        end
+    # We select the projects again, because they may have transitioned from
+    # scheduled/started to finished/failed while we were looking up their Sidekiq status.
+    completed_projects = enqueued_projects_with_jid.where(id: completed_project_ids)
 
-        Rails.logger.info("Marked stuck import jobs as failed. JIDs: #{completed_jids.to_a.join(', ')}")
-      end
-    end
+    Rails.logger.info("Marked stuck import jobs as failed. JIDs: #{completed_projects.map(&:import_jid).join(', ')}")
 
-    completed_jids_count
+    completed_projects.each do |project|
+      project.mark_import_as_failed(error_message)
+    end.count
   end
 
   def enqueued_projects
