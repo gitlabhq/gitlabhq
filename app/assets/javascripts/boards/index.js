@@ -25,11 +25,14 @@ import './components/new_list_dropdown';
 import './components/modal/index';
 import '../vue_shared/vue_resource_interceptor';
 
+<<<<<<< HEAD:app/assets/javascripts/boards/index.js
 import './components/boards_selector';
 import collapseIcon from './icons/fullscreen_collapse.svg';
 import expandIcon from './icons/fullscreen_expand.svg';
 import tooltip from '../vue_shared/directives/tooltip';
 
+=======
+>>>>>>> upstream/master:app/assets/javascripts/boards/index.js
 export default () => {
   const $boardApp = document.getElementById('board-app');
   const Store = gl.issueBoards.BoardsStore;
@@ -319,6 +322,7 @@ export default () => {
       </div>
     `,
   });
+<<<<<<< HEAD:app/assets/javascripts/boards/index.js
 
   gl.IssueBoardsToggleFocusBtn = new Vue({
     el: document.getElementById('js-toggle-focus-btn'),
@@ -366,4 +370,6 @@ export default () => {
       'boards-selector': gl.issueBoards.BoardsSelector,
     }
   });
+=======
+>>>>>>> upstream/master:app/assets/javascripts/boards/index.js
 };

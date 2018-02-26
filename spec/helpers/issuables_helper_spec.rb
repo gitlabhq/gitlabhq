@@ -177,7 +177,10 @@ describe IssuablesHelper do
         updateEndpoint: "/#{@project.full_path}/issues/#{issue.iid}.json",
         canUpdate: true,
         canDestroy: true,
+<<<<<<< HEAD
         canAdmin: true,
+=======
+>>>>>>> upstream/master
         issuableRef: "##{issue.iid}",
         markdownPreviewPath: "/#{@project.full_path}/preview_markdown",
         markdownDocsPath: '/help/user/markdown',
@@ -191,6 +194,7 @@ describe IssuablesHelper do
         initialTaskStatus: '0 of 0 tasks completed'
       }
       expect(helper.issuable_initial_data(issue)).to eq(expected_data)
+<<<<<<< HEAD
     end
 
     it 'returns the correct data for an epic' do
@@ -216,6 +220,8 @@ describe IssuablesHelper do
         initialTaskStatus: '0 of 0 tasks completed'
       }
       expect(helper.issuable_initial_data(epic)).to eq(expected_data)
+=======
+>>>>>>> upstream/master
     end
   end
 
