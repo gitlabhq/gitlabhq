@@ -120,16 +120,22 @@ module EE
       mirror? && !empty_repo?
     end
 
-    def scheduled_mirror?
+    override :import_in_progress?
+    def import_in_progress?
+      # If we're importing while we do have a repository, we're simply updating the mirror.
+      super && !mirror_with_content?
+    end
+
+    def mirror_about_to_update?
       return false unless mirror_with_content?
       return false if mirror_hard_failed?
-      return true if import_scheduled?
+      return false if updating_mirror?
 
       self.mirror_data.next_execution_timestamp <= Time.now
     end
 
     def updating_mirror?
-      mirror_with_content? && import_started?
+      (import_scheduled? || import_started?) && mirror_with_content?
     end
 
     def mirror_last_update_status
@@ -232,7 +238,7 @@ module EE
     end
 
     def force_import_job!
-      return if scheduled_mirror? || updating_mirror?
+      return if mirror_about_to_update? || updating_mirror?
 
       mirror_data = self.mirror_data
 
