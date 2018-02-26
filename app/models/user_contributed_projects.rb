@@ -43,6 +43,12 @@ class UserContributedProjects < ActiveRecord::Base
       @available_flag ||= ActiveRecord::Migrator.current_version >= REQUIRED_SCHEMA_VERSION # rubocop:disable Gitlab/PredicateMemoization
     end
 
+    # Flushes cached information about schema
+    def reset_column_information
+      @available_flag = nil
+      super
+    end
+
     private
 
     def cached_exists?(project_id:, user_id:, &block)
