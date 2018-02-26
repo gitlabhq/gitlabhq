@@ -46,7 +46,46 @@ describe Projects::PagesDomainsController do
         post(:create, request_params.merge(pages_domain: pages_domain_params))
       end.to change { PagesDomain.count }.by(1)
 
-      expect(response).to redirect_to(project_pages_path(project))
+      created_domain = PagesDomain.reorder(:id).last
+
+      expect(created_domain).to be_present
+      expect(response).to redirect_to(project_pages_domain_path(project, created_domain))
+    end
+  end
+
+  describe 'POST verify' do
+    let(:params) { request_params.merge(id: pages_domain.domain) }
+
+    def stub_service
+      service = double(:service)
+
+      expect(VerifyPagesDomainService).to receive(:new) { service }
+
+      service
+    end
+
+    it 'handles verification success' do
+      expect(stub_service).to receive(:execute).and_return(status: :success)
+
+      post :verify, params
+
+      expect(response).to redirect_to project_pages_domain_path(project, pages_domain)
+      expect(flash[:notice]).to eq('Successfully verified domain ownership')
+    end
+
+    it 'handles verification failure' do
+      expect(stub_service).to receive(:execute).and_return(status: :failed)
+
+      post :verify, params
+
+      expect(response).to redirect_to project_pages_domain_path(project, pages_domain)
+      expect(flash[:alert]).to eq('Failed to verify domain ownership')
+    end
+
+    it 'returns a 404 response for an unknown domain' do
+      post :verify, request_params.merge(id: 'unknown-domain')
+
+      expect(response).to have_gitlab_http_status(404)
     end
   end
 

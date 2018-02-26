@@ -67,6 +67,7 @@
   - [gcp_cluster, 1]
   - [project_migrate_hashed_storage, 1]
   - [storage_migrator, 1]
+  - [pages_domain_verification, 1]
 
   # EE-specific queues
   - [ldap_group_sync, 2]
