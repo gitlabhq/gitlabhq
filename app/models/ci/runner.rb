@@ -252,11 +252,11 @@ module Ci
     end
 
     def either_projects_or_group
-      if groups.length > 1
+      if groups.many?
         errors.add(:runner, 'can only be assigned to one group')
       end
 
-      if groups.length > 0 && projects.length > 0
+      if group? && project?
         errors.add(:runner, 'can only be assigned either to projects or to a group')
       end
     end
