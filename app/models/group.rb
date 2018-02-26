@@ -45,13 +45,6 @@ class Group < Namespace
 
   add_authentication_token_field :runners_token
 
-  # each existing group needs to have a `runners_token`.
-  # we do this on read since migrating all existing groups is not a feasible
-  # solution.
-  def runners_token
-    ensure_runners_token!
-  end
-
   after_create :post_create_hook
   after_destroy :post_destroy_hook
   after_save :update_two_factor_requirement
@@ -299,6 +292,13 @@ class Group < Namespace
 
   def hashed_storage?(_feature)
     false
+  end
+
+  # each existing group needs to have a `runners_token`.
+  # we do this on read since migrating all existing groups is not a feasible
+  # solution.
+  def runners_token
+    ensure_runners_token!
   end
 
   private
