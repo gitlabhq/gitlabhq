@@ -44,8 +44,12 @@
       <a
         :href="helpUrl"
         target="_blank"
+        rel="noopener noreferrer nofollow"
       >
-        <i class="fa fa-question-circle"></i>
+        <i
+          class="fa fa-question-circle"
+          aria-hidden="true"
+        ></i>
       </a>
     </span>
   </p>

@@ -111,4 +111,4 @@
 
 .js-build-options{ data: javascript_build_options }
 
-#js-job-details-vue{ data: { endpoint: project_job_path(@project, @build, format: :json) } }
+#js-job-details-vue{ data: { endpoint: project_job_path(@project, @build, format: :json), runner_help_url: '/help/ci/runners/README.html#setting-maximum-job-timeout-for-a-runner' } }

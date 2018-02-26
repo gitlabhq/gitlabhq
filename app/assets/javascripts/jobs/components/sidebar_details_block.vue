@@ -22,6 +22,11 @@
         type: Boolean,
         required: true,
       },
+      runnerHelpUrl: {
+        type: String,
+        required: false,
+        default: '',
+      },
     },
     computed: {
       shouldRenderContent() {
@@ -127,7 +132,7 @@
           class="js-job-timeout"
           v-if="job.timeout"
           title="Timeout"
-          help-url="/help/ci/runners/README.html#setting-maximum-job-timeout-for-a-runner"
+          :help-url="runnerHelpUrl"
           :value="timeout"
         />
         <detail-row
