@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Project do
+  include ProjectForksHelper
+
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
@@ -3375,6 +3377,56 @@ describe Project do
         it 'returns the project and the project nested groups badges' do
           expect(project.badges.count).to eq 5
         end
+      end
+    end
+  end
+
+  describe '#branches_allowing_maintainer_access_to_user' do
+    let(:maintainer) { create(:user) }
+    let(:target_project) { create(:project) }
+    let(:project) { fork_project(target_project) }
+    let!(:merge_request) do
+      create(
+        :merge_request,
+        target_project: target_project,
+        source_project: project,
+        source_branch: 'awesome-feature-1',
+        allow_maintainer_to_push: true
+      )
+    end
+
+    before do
+      target_project.add_developer(maintainer)
+    end
+
+    it 'includes branch names for merge requests allowing maintainer access to a user' do
+      expect(project.branches_allowing_maintainer_access_to_user(maintainer))
+        .to include('awesome-feature-1')
+    end
+
+    it 'does not include branches for closed MRs' do
+      create(:merge_request, :closed,
+             target_project: target_project,
+             source_project: project,
+             source_branch: 'rejected-feature-1',
+             allow_maintainer_to_push: true)
+
+      expect(project.branches_allowing_maintainer_access_to_user(maintainer))
+        .not_to include('rejected-feature-1')
+    end
+
+    it 'only queries once per user' do
+      expect { 3.times { project.branches_allowing_maintainer_access_to_user(maintainer) } }
+        .not_to exceed_query_limit(1)
+    end
+
+    context 'when the requeststore is active', :request_store do
+      it 'only queries once per user accross project instances' do
+        # limiting to 3 queries:
+        # 2 times loading the project
+        # once loading the accessible branches
+        expect { 2.times { described_class.find(project.id).branches_allowing_maintainer_access_to_user(maintainer) } }
+          .not_to exceed_query_limit(3)
       end
     end
   end

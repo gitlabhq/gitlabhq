@@ -278,6 +278,7 @@ project:
 - custom_attributes
 - lfs_file_locks
 - project_badges
+- source_of_merge_requests
 award_emoji:
 - awardable
 - user

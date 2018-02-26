@@ -30,9 +30,9 @@ describe Gitlab::Checks::ChangeAccess do
       end
     end
 
-    context 'when the user is not allowed to push code' do
+    context 'when the user is not allowed to push to the repo' do
       it 'raises an error' do
-        expect(user_access).to receive(:can_do_action?).with(:push_code).and_return(false)
+        expect(user_access).to receive(:can_do_action?).with(:push_to_repo).and_return(false)
 
         expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to push code to this project.')
       end
@@ -42,7 +42,7 @@ describe Gitlab::Checks::ChangeAccess do
       let(:ref) { 'refs/tags/v1.0.0' }
 
       it 'raises an error if the user is not allowed to update tags' do
-        allow(user_access).to receive(:can_do_action?).with(:push_code).and_return(true)
+        allow(user_access).to receive(:can_do_action?).with(:push_to_repo).and_return(true)
         expect(user_access).to receive(:can_do_action?).with(:admin_project).and_return(false)
 
         expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to change existing tags on this project.')

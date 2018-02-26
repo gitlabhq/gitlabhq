@@ -61,6 +61,11 @@ class ProjectPolicy < BasePolicy
   desc "Project has request access enabled"
   condition(:request_access_enabled, scope: :subject) { project.request_access_enabled }
 
+  desc "The project has merge requests open that allow external users to push"
+  condition(:merge_request_allows_push, scope: :subject) do
+    project.branches_allowing_maintainer_access_to_user(@user).any?
+  end
+
   features = %w[
     merge_requests
     issues
@@ -240,6 +245,7 @@ class ProjectPolicy < BasePolicy
 
   rule { repository_disabled }.policy do
     prevent :push_code
+    prevent :push_single_branch
     prevent :download_code
     prevent :fork_project
     prevent :read_commit_status
@@ -289,6 +295,16 @@ class ProjectPolicy < BasePolicy
     prevent :update_issue
     prevent :admin_issue
     prevent :read_issue
+  end
+
+  # These rules are included to allow maintainers of projects to push to certain
+  # branches of forks.
+  rule { can?(:public_access) & merge_request_allows_push }.policy do
+    enable :push_single_branch
+    enable :create_build
+    enable :update_build
+    enable :create_pipeline
+    enable :update_pipeline
   end
 
   private

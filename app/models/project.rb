@@ -150,6 +150,7 @@ class Project < ActiveRecord::Base
 
   # Merge Requests for target project should be removed with it
   has_many :merge_requests, foreign_key: 'target_project_id'
+  has_many :source_of_merge_requests, foreign_key: 'source_project_id', class_name: 'MergeRequest'
   has_many :issues
   has_many :labels, class_name: 'ProjectLabel'
   has_many :services
@@ -1799,6 +1800,14 @@ class Project < ActiveRecord::Base
     Badge.where("id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
   end
 
+  def branches_allowing_maintainer_access_to_user(user)
+    @branches_allowing_maintainer_access_to_user ||= Hash.new do |result, user|
+      result[user] = fetch_branches_allowing_maintainer_access_to_user(user)
+    end
+
+    @branches_allowing_maintainer_access_to_user[user]
+  end
+
   private
 
   def storage
@@ -1920,5 +1929,25 @@ class Project < ActiveRecord::Base
     end
 
     raise ex
+  end
+
+  def fetch_branches_allowing_maintainer_access_to_user(user)
+    return [] unless user
+
+    projects_with_developer_access = user.project_authorizations
+                                       .where('access_level >= ? ', Gitlab::Access::DEVELOPER)
+                                       .select(:project_id)
+    merge_requests_allowing_push = source_of_merge_requests.opened
+                                     .where(allow_maintainer_to_push: true)
+                                     .where(target_project_id: projects_with_developer_access)
+                                     .select(:source_branch).uniq
+
+    if RequestStore.active?
+      RequestStore.fetch("project-#{id}:user-#{user.id}:branches_allowing_maintainer_access") do
+        merge_requests_allowing_push.pluck(:source_branch)
+      end
+    else
+      merge_requests_allowing_push.pluck(:source_branch)
+    end
   end
 end
