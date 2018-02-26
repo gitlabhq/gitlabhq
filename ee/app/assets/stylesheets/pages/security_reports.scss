@@ -64,3 +64,17 @@
     text-align: left;
   }
 }
+
+.report-block-issue-code {
+  width: 100%;
+}
+
+.modal-security-report-dast {
+  .modal-dialog {
+    width: $modal-lg;
+  }
+  // TODO remove this when gl_modal support not rendering the footer
+  .moda-footer {
+    display: none;
+  }
+}
