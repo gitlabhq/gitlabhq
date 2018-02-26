@@ -241,12 +241,12 @@ class Environment < ActiveRecord::Base
   end
 
   def cluster_prometheus_adapter
-    # sort results by descending order based on environment_scope being longer
-    # thus more closely matching environment slug
-    clusters = project.clusters.enabled.for_environment(self).sort_by { |c| c.environment_scope&.length }.reverse!
+    return unless project.deployment_platform.respond_to?(:cluster)
 
-    cluster = clusters&.detect { |cluster| cluster.application_prometheus&.installed? }
-    cluster&.application_prometheus
+    cluster = project.deployment_platform.cluster
+    return unless cluster.application_prometheus&.installed?
+
+    cluster.application_prometheus
   end
 
   private
