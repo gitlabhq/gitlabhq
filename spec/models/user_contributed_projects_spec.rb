@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe UserContributedProjects do
-
   describe '.track' do
     subject { described_class.track(event) }
     let(:event) { build(:event) }
@@ -10,33 +9,33 @@ describe UserContributedProjects do
       context "for all actions (event types)" do
         let(:event) { build(:event, action: action) }
         it 'creates a record' do
-          expect { subject }.to change { UserContributedProjects.count }.from(0).to(1)
+          expect { subject }.to change { described_class.count }.from(0).to(1)
         end
       end
     end
 
     it 'sets project accordingly' do
       subject
-      expect(UserContributedProjects.first.project).to eq(event.project)
+      expect(described_class.first.project).to eq(event.project)
     end
 
     it 'sets user accordingly' do
       subject
-      expect(UserContributedProjects.first.user).to eq(event.author)
+      expect(described_class.first.user).to eq(event.author)
     end
 
     it 'only creates a record once per user/project' do
       expect do
         subject
         described_class.track(event)
-      end.to change { UserContributedProjects.count }.from(0).to(1)
+      end.to change { described_class.count }.from(0).to(1)
     end
 
     describe 'with an event without a project' do
       let(:event) { build(:event, project: nil) }
 
       it 'ignores the event' do
-        expect { subject }.not_to change { UserContributedProjects.count }
+        expect { subject }.not_to change { described_class.count }
       end
     end
   end
