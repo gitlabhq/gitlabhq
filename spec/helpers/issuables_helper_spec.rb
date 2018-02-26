@@ -173,23 +173,23 @@ describe IssuablesHelper do
       @project = issue.project
 
       expected_data = {
-        'endpoint' => "/#{@project.full_path}/issues/#{issue.iid}",
-        'updateEndpoint' => "/#{@project.full_path}/issues/#{issue.iid}.json",
-        'canUpdate' => true,
-        'canDestroy' => true,
-        'issuableRef' => "##{issue.iid}",
-        'markdownPreviewPath' => "/#{@project.full_path}/preview_markdown",
-        'markdownDocsPath' => '/help/user/markdown',
-        'issuableTemplates' => [],
-        'projectPath' => @project.path,
-        'projectNamespace' => @project.namespace.path,
-        'initialTitleHtml' => issue.title,
-        'initialTitleText' => issue.title,
-        'initialDescriptionHtml' => '<p dir="auto">issue text</p>',
-        'initialDescriptionText' => 'issue text',
-        'initialTaskStatus' => '0 of 0 tasks completed'
+        endpoint: "/#{@project.full_path}/issues/#{issue.iid}",
+        updateEndpoint: "/#{@project.full_path}/issues/#{issue.iid}.json",
+        canUpdate: true,
+        canDestroy: true,
+        issuableRef: "##{issue.iid}",
+        markdownPreviewPath: "/#{@project.full_path}/preview_markdown",
+        markdownDocsPath: '/help/user/markdown',
+        issuableTemplates: [],
+        projectPath: @project.path,
+        projectNamespace: @project.namespace.path,
+        initialTitleHtml: issue.title,
+        initialTitleText: issue.title,
+        initialDescriptionHtml: '<p dir="auto">issue text</p>',
+        initialDescriptionText: 'issue text',
+        initialTaskStatus: '0 of 0 tasks completed'
       }
-      expect(JSON.parse(helper.issuable_initial_data(issue))).to eq(expected_data)
+      expect(helper.issuable_initial_data(issue)).to eq(expected_data)
     end
   end
 

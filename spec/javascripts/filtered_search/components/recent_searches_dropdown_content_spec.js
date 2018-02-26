@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import eventHub from '~/filtered_search/event_hub';
-import RecentSearchesDropdownContent from '~/filtered_search/components/recent_searches_dropdown_content';
-
+import RecentSearchesDropdownContent from '~/filtered_search/components/recent_searches_dropdown_content.vue';
 import FilteredSearchTokenKeys from '~/filtered_search/filtered_search_token_keys';
 
 const createComponent = (propsData) => {

@@ -2283,6 +2283,20 @@ describe Gitlab::Git::Repository, seed_helper: true do
           expect(subject).to match(/\h{40}/)
         end
       end
+
+      context 'with trailing whitespace in an invalid patch', :skip_gitaly_mock do
+        let(:diff) { "diff --git a/README.md b/README.md\nindex faaf198..43c5edf 100644\n--- a/README.md\n+++ b/README.md\n@@ -1,4 +1,4 @@\n-testme\n+   \n ======   \n \n Sample repo for testing gitlab features\n" }
+
+        it 'does not include whitespace warnings in the error' do
+          allow(repository).to receive(:run_git!).and_call_original
+          allow(repository).to receive(:run_git!).with(%W(diff --binary #{start_sha}...#{end_sha})).and_return(diff.force_encoding('ASCII-8BIT'))
+
+          expect { subject }.to raise_error do |error|
+            expect(error).to be_a(described_class::GitError)
+            expect(error.message).not_to include('trailing whitespace')
+          end
+        end
+      end
     end
   end
 

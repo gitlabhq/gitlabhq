@@ -42,31 +42,34 @@ var Dispatcher;
         });
       });
 
-      switch (page) {
-        case 'projects:merge_requests:index':
-        case 'projects:issues:index':
-        case 'projects:issues:show':
-        case 'projects:issues:new':
-        case 'projects:issues:edit':
-        case 'projects:merge_requests:creations:new':
-        case 'projects:merge_requests:creations:diffs':
-        case 'projects:merge_requests:edit':
-        case 'projects:merge_requests:show':
-        case 'projects:commit:show':
-        case 'projects:activity':
-        case 'projects:commits:show':
-        case 'projects:show':
-        case 'groups:show':
-        case 'projects:tree:show':
-        case 'projects:find_file:show':
-        case 'projects:blob:show':
-        case 'projects:blame:show':
-        case 'projects:network:show':
-        case 'projects:artifacts:browse':
-        case 'projects:artifacts:file':
-          shortcut_handler = true;
-          break;
+      const shortcutHandlerPages = [
+        'projects:activity',
+        'projects:artifacts:browse',
+        'projects:artifacts:file',
+        'projects:blame:show',
+        'projects:blob:show',
+        'projects:commit:show',
+        'projects:commits:show',
+        'projects:find_file:show',
+        'projects:issues:edit',
+        'projects:issues:index',
+        'projects:issues:new',
+        'projects:issues:show',
+        'projects:merge_requests:creations:diffs',
+        'projects:merge_requests:creations:new',
+        'projects:merge_requests:edit',
+        'projects:merge_requests:index',
+        'projects:merge_requests:show',
+        'projects:network:show',
+        'projects:show',
+        'projects:tree:show',
+        'groups:show',
+      ];
+
+      if (shortcutHandlerPages.indexOf(page) !== -1) {
+        shortcut_handler = true;
       }
+
       switch (path[0]) {
         case 'admin':
           switch (path[1]) {

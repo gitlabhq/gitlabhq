@@ -1,5 +1,0 @@
----
-title: Allow branch names to be named the same as the sha it points to
-merge_request:
-author:
-type: fixed

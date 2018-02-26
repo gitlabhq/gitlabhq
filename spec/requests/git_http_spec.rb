@@ -597,7 +597,7 @@ describe 'Git HTTP requests' do
         context "when a gitlab ci token is provided" do
           let(:project) { create(:project, :repository) }
           let(:build) { create(:ci_build, :running) }
-          let(:other_project) { create(:project) }
+          let(:other_project) { create(:project, :repository) }
 
           before do
             build.update!(project: project) # can't associate it on factory create
@@ -648,10 +648,10 @@ describe 'Git HTTP requests' do
               context 'when the repo does not exist' do
                 let(:project) { create(:project) }
 
-                it 'rejects pulls with 403 Forbidden' do
+                it 'rejects pulls with 404 Not Found' do
                   clone_get path, env
 
-                  expect(response).to have_gitlab_http_status(:forbidden)
+                  expect(response).to have_gitlab_http_status(:not_found)
                   expect(response.body).to eq(git_access_error(:no_repo))
                 end
               end

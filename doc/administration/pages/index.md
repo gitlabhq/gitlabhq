@@ -226,6 +226,18 @@ world. Custom domains and TLS are supported.
 
 1. [Reconfigure GitLab][reconfigure]
 
+### Custom domain verification
+
+To prevent malicious users from hijacking domains that don't belong to them,
+GitLab supports [custom domain verification](../../user/project/pages/getting_started_part_three.md#dns-txt-record).
+When adding a custom domain, users will be required to prove they own it by
+adding a GitLab-controlled verification code to the DNS records for that domain.
+
+If your userbase is private or otherwise trusted, you can disable the
+verification requirement. Navigate to `Admin area ➔ Settings` and uncheck
+**Require users to prove ownership of custom domains** in the Pages section.
+This setting is enabled by default.
+
 ## Change storage path
 
 Follow the steps below to change the default path where GitLab Pages' contents
