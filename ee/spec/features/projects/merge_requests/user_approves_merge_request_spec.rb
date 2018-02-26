@@ -58,13 +58,13 @@ describe 'User approves a merge request', :js do
       wait_for_requests
 
       expect(page).not_to have_button('Approve')
-      expect(page).not_to have_button('Add Approval')
+      expect(page).not_to have_button('Add approval')
     end
 
     def sign_in_visit_merge_request(user, additional_approver = false)
       sign_in(user)
       visit(merge_request_path(merge_request))
-      button_text = additional_approver ? 'Add Approval' : 'Approve'
+      button_text = additional_approver ? 'Add approval' : 'Approve'
       click_button(button_text)
       wait_for_requests
       sign_out(user)

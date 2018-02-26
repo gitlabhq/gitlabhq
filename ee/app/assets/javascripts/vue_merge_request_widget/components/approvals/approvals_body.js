@@ -55,7 +55,7 @@ export default {
     approveButtonText() {
       let approveButtonText = s__('mrWidget|Approve');
       if (this.approvalsLeft <= 0) {
-        approveButtonText = s__('mrWidget|Add Approval');
+        approveButtonText = s__('mrWidget|Add approval');
       }
       return approveButtonText;
     },
