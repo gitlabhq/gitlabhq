@@ -24,15 +24,14 @@ module Gitlab
         action_block.nil?
       end
 
-      def available?(opts)
+      def available?(context)
         return true unless condition_block
 
-        context = OpenStruct.new(opts)
         context.instance_exec(&condition_block)
       end
 
-      def explain(context, opts, arg)
-        return unless available?(opts)
+      def explain(context, arg)
+        return unless available?(context)
 
         if explanation.respond_to?(:call)
           execute_block(explanation, context, arg)
@@ -41,15 +40,13 @@ module Gitlab
         end
       end
 
-      def execute(context, opts, arg)
-        return if noop? || !available?(opts)
+      def execute(context, arg)
+        return if noop? || !available?(context)
 
         execute_block(action_block, context, arg)
       end
 
-      def to_h(opts)
-        context = OpenStruct.new(opts)
-
+      def to_h(context)
         desc = description
         if desc.respond_to?(:call)
           desc = context.instance_exec(&desc) rescue ''

@@ -18,6 +18,10 @@ module QA
           end
         end
       end
+
+      module MergeRequest
+        autoload :Show, 'qa/ee/page/merge_request/show'
+      end
     end
 
     module Factory

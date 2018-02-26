@@ -55,7 +55,11 @@ constraints(ProjectUrlConstrainer.new) do
       end
 
       resource :pages, only: [:show, :destroy] do
-        resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains', constraints: { id: %r{[^/]+} }
+        resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains', constraints: { id: %r{[^/]+} } do
+          member do
+            post :verify
+          end
+        end
       end
 
       resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do

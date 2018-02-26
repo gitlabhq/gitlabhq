@@ -10,7 +10,7 @@ describe EpicEntity do
   subject { described_class.new(resource, request: request).as_json }
 
   it 'has Issuable attributes' do
-    expect(subject).to include(:id, :iid, :description,  :title)
+    expect(subject).to include(:id, :iid, :description,  :title, :labels)
   end
 
   it 'has epic specific attributes' do
