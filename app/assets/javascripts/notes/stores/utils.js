@@ -1,5 +1,4 @@
 import AjaxCache from '~/lib/utils/ajax_cache';
-import { n__, s__, sprintf } from '~/locale';
 
 const REGEX_QUICK_ACTIONS = /^\/\w+.*$/gm;
 

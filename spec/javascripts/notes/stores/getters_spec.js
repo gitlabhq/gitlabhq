@@ -21,7 +21,7 @@ describe('Getters Notes Store', () => {
     });
   });
 
-  describe('collapsedNotes', () => {
+  describe('Collapsed notes', () => {
     const stateCollapsedNotes = {
       notes: collapseNotesMock,
       targetNoteHash: 'hash',
@@ -33,7 +33,7 @@ describe('Getters Notes Store', () => {
     };
 
     it('should return a single system note when a description was updated multiple times', () => {
-      expect(getters.collapsedNotes(stateCollapsedNotes).length).toEqual(1);
+      expect(getters.notes(stateCollapsedNotes).length).toEqual(1);
     });
   });
 
