@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import addGitlabSlackApplication from '~/add_gitlab_slack_application/components/add_gitlab_slack_application.vue';
-import GitlabSlackService from '~/add_gitlab_slack_application/services/gitlab_slack_service';
+import addGitlabSlackApplication from 'ee/add_gitlab_slack_application/components/add_gitlab_slack_application.vue';
+import GitlabSlackService from 'ee/add_gitlab_slack_application/services/gitlab_slack_service';
 import * as UrlUtility from '~/lib/utils/url_utility';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('AddGitlabSlackApplication', () => {
   const redirectLink = '//redirectLink';

@@ -25,16 +25,10 @@ var NO_COMPRESSION = process.env.NO_COMPRESSION;
 var autoEntries = {};
 var pageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'app/assets/javascripts') });
 
-// filter out entries currently imported dynamically in dispatcher.js
-var dispatcher = fs.readFileSync(path.join(ROOT_PATH, 'app/assets/javascripts/dispatcher.js')).toString();
-var dispatcherChunks = dispatcher.match(/(?!import\(')\.\/pages\/[^']+/g);
-
 function generateAutoEntries(path, prefix = '.') {
   const chunkPath = path.replace(/\/index\.js$/, '');
-  if (!dispatcherChunks.includes(`${prefix}/${chunkPath}`)) {
-    const chunkName = chunkPath.replace(/\//g, '.');
-    autoEntries[chunkName] = `${prefix}/${path}`;
-  }
+  const chunkName = chunkPath.replace(/\//g, '.');
+  autoEntries[chunkName] = `${prefix}/${path}`;
 }
 
 pageEntries.forEach(( path ) => generateAutoEntries(path));
@@ -55,11 +49,12 @@ var config = {
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
+    blob:                 './blob_edit/blob_bundle.js',
+    common:               './commons/index.js',
+    common_vue:           './vue_shared/vue_resource_interceptor.js',
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
-    deploy_keys:          './deploy_keys/index.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
     environments:         './environments/environments_bundle.js',
-    environments_folder:  './environments/folder/environments_folder_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
     help:                 './help/help.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
@@ -95,19 +90,19 @@ var config = {
     webpack_runtime:      './webpack.js',
 
     // EE-only
-    add_gitlab_slack_application: './add_gitlab_slack_application/index.js',
-    burndown_chart:       './burndown_chart/index.js',
+    add_gitlab_slack_application: 'ee/add_gitlab_slack_application/index.js',
+    burndown_chart:       'ee/burndown_chart/index.js',
     epic_show:            'ee/epics/epic_show/epic_show_bundle.js',
     new_epic:             'ee/epics/new_epic/new_epic_bundle.js',
     geo_nodes:            'ee/geo_nodes',
-    issuable:             './issuable/issuable_bundle.js',
-    issues:               './issues/issues_bundle.js',
-    ldap_group_links:     './groups/ldap_group_links.js',
-    mirrors:              './mirrors',
+    issuable:             'ee/issuable/issuable_bundle.js',
+    issues:               'ee/issues/issues_bundle.js',
+    ldap_group_links:     'ee/groups/ldap_group_links.js',
+    mirrors:              'ee/mirrors',
     ee_protected_branches: 'ee/protected_branches',
     ee_protected_tags:    'ee/protected_tags',
-    service_desk:         './projects/settings_service_desk/service_desk_bundle.js',
-    service_desk_issues:  './service_desk_issues/index.js',
+    service_desk:         'ee/projects/settings_service_desk/service_desk_bundle.js',
+    service_desk_issues:  'ee/service_desk_issues/index.js',
     roadmap:              'ee/roadmap',
     ee_sidebar:           'ee/sidebar/sidebar_bundle.js',
   },
@@ -267,7 +262,6 @@ var config = {
         'deploy_keys',
         'diff_notes',
         'environments',
-        'environments_folder',
         'filtered_search',
         'groups',
         'merge_conflicts',
@@ -327,6 +321,7 @@ var config = {
       'images':         path.join(ROOT_PATH, 'app/assets/images'),
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
       'vue$':           'vue/dist/vue.esm.js',
+      'spec':           path.join(ROOT_PATH, 'spec/javascripts'),
 
       // EE-only
       'ee':              path.join(ROOT_PATH, 'ee/app/assets/javascripts'),

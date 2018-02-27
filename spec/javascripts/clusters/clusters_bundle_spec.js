@@ -7,7 +7,7 @@ import {
   REQUEST_SUCCESS,
   REQUEST_FAILURE,
 } from '~/clusters/constants';
-import getSetTimeoutPromise from '../helpers/set_timeout_promise_helper';
+import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 
 describe('Clusters', () => {
   let cluster;

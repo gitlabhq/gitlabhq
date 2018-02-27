@@ -3,9 +3,8 @@ import Vue from 'vue';
 import roadmapTimelineSectionComponent from 'ee/roadmap/components/roadmap_timeline_section.vue';
 import eventHub from 'ee/roadmap/event_hub';
 
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { mockEpic, mockTimeframe, mockShellWidth } from '../mock_data';
-
-import mountComponent from '../../helpers/vue_mount_component_helper';
 
 const createComponent = ({
   epics = [mockEpic],

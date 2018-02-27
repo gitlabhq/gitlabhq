@@ -4,7 +4,7 @@ import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import '~/labels_select';
-import LabelsSelect from '~/boards/components/labels_select.vue';
+import LabelsSelect from 'ee/boards/components/labels_select.vue';
 import IssuableContext from '~/issuable_context';
 
 let vm;

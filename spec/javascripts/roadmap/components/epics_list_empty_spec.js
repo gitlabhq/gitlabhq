@@ -2,9 +2,8 @@ import Vue from 'vue';
 
 import epicsListEmptyComponent from 'ee/roadmap/components/epics_list_empty.vue';
 
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { mockTimeframe, mockSvgPath } from '../mock_data';
-
-import mountComponent from '../../helpers/vue_mount_component_helper';
 
 const createComponent = () => {
   const Component = Vue.extend(epicsListEmptyComponent);
