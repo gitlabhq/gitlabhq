@@ -1,6 +1,7 @@
+# frozen_string_literal: true
 module API
   class Services < Grape::API
-    chat_notification_settings = [
+    CHAT_NOTIFICATION_SETTINGS = [
       {
         required: true,
         name: :webhook,
@@ -19,9 +20,9 @@ module API
         type: String,
         desc: 'The default chat channel'
       }
-    ]
+    ].freeze
 
-    chat_notification_flags = [
+    CHAT_NOTIFICATION_FLAGS = [
       {
         required: false,
         name: :notify_only_broken_pipelines,
@@ -34,9 +35,9 @@ module API
         type: Boolean,
         desc: 'Send notifications only for the default branch'
       }
-    ]
+    ].freeze
 
-    chat_notification_channels = [
+    CHAT_NOTIFICATION_CHANNELS = [
       {
         required: false,
         name: :push_channel,
@@ -85,9 +86,9 @@ module API
         type: String,
         desc: 'The name of the channel to receive wiki_page_events notifications'
       }
-    ]
+    ].freeze
 
-    chat_notification_events = [
+    CHAT_NOTIFICATION_EVENTS = [
       {
         required: false,
         name: :push_events,
@@ -136,9 +137,9 @@ module API
         type: Boolean,
         desc: 'Enable notifications for wiki_page_events'
       }
-    ]
+    ].freeze
 
-    services = {
+    SERVICES = {
       'asana' => [
         {
           required: true,
@@ -626,10 +627,10 @@ module API
         }
       ],
       'slack' => [
-        chat_notification_settings,
-        chat_notification_flags,
-        chat_notification_channels,
-        chat_notification_events
+        CHAT_NOTIFICATION_SETTINGS,
+        CHAT_NOTIFICATION_FLAGS,
+        CHAT_NOTIFICATION_CHANNELS,
+        CHAT_NOTIFICATION_EVENTS
       ].flatten,
       'microsoft-teams' => [
         {
@@ -640,10 +641,10 @@ module API
         }
       ],
       'mattermost' => [
-        chat_notification_settings,
-        chat_notification_flags,
-        chat_notification_channels,
-        chat_notification_events
+        CHAT_NOTIFICATION_SETTINGS,
+        CHAT_NOTIFICATION_FLAGS,
+        CHAT_NOTIFICATION_CHANNELS,
+        CHAT_NOTIFICATION_EVENTS
       ].flatten,
       'teamcity' => [
         {
@@ -718,9 +719,9 @@ module API
           desc: 'Should unstable builds be treated as passing?'
         }
       ]
-    }
+    }.freeze
 
-    service_classes = [
+    SERVICE_CLASSES = [
       AsanaService,
       AssemblaService,
       BambooService,
@@ -751,10 +752,10 @@ module API
       TeamcityService,
       JenkinsService,
       JenkinsDeprecatedService
-    ]
+    ].freeze
 
     if Rails.env.development?
-      services['mock-ci'] = [
+      SERVICES['mock-ci'] = [
         {
           required: true,
           name: :mock_service_url,
@@ -762,17 +763,29 @@ module API
           desc: 'URL to the mock service'
         }
       ]
-      services['mock-deployment'] = []
-      services['mock-monitoring'] = []
+      SERVICES['mock-deployment'] = []
+      SERVICES['mock-monitoring'] = []
 
-      service_classes += [
+      SERVICE_CLASSES += [
         MockCiService,
         MockDeploymentService,
         MockMonitoringService
       ]
     end
 
-    trigger_services = {
+    SERVICE_CLASSES.each do |service|
+      event_names = service.try(:event_names) || next
+      event_names.each do |event_name|
+        SERVICES[service.to_param.tr("_", "-")] << {
+          required: false,
+          name: event_name.to_sym,
+          type: String,
+          desc: ServicesHelper.service_event_description(event_name)
+        }
+      end
+    end
+
+    TRIGGER_SERVICES = {
       'mattermost-slash-commands' => [
         {
           name: :token,
@@ -804,22 +817,9 @@ module API
         end
       end
 
-      services.each do |service_slug, settings|
+      SERVICES.each do |service_slug, settings|
         desc "Set #{service_slug} service for project"
         params do
-          service_classes.each do |service|
-            event_names = service.try(:event_names) || next
-            event_names.each do |event_name|
-              services[service.to_param.tr("_", "-")] << {
-                required: false,
-                name: event_name.to_sym,
-                type: String,
-                desc: ServicesHelper.service_event_description(event_name)
-              }
-            end
-          end
-          services.freeze
-
           settings.each do |setting|
             if setting[:required]
               requires setting[:name], type: setting[:type], desc: setting[:desc]
@@ -842,7 +842,7 @@ module API
 
       desc "Delete a service for project"
       params do
-        requires :service_slug, type: String, values: services.keys, desc: 'The name of the service'
+        requires :service_slug, type: String, values: SERVICES.keys, desc: 'The name of the service'
       end
       delete ":id/services/:service_slug" do
         service = user_project.find_or_initialize_service(params[:service_slug].underscore)
@@ -862,7 +862,7 @@ module API
         success Entities::ProjectService
       end
       params do
-        requires :service_slug, type: String, values: services.keys, desc: 'The name of the service'
+        requires :service_slug, type: String, values: SERVICES.keys, desc: 'The name of the service'
       end
       get ":id/services/:service_slug" do
         service = user_project.find_or_initialize_service(params[:service_slug].underscore)
@@ -870,7 +870,7 @@ module API
       end
     end
 
-    trigger_services.each do |service_slug, settings|
+    TRIGGER_SERVICES.each do |service_slug, settings|
       helpers do
         def slash_command_service(project, service_slug, params)
           project.services.active.where(template: false).find do |service|
