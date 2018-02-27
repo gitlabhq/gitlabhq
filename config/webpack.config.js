@@ -107,10 +107,6 @@ function generateEntries() {
 }
 
 var config = {
-  // because sqljs requires fs.
-  node: {
-    fs: "empty"
-  },
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
 
   entry: generateEntries,
@@ -339,8 +335,13 @@ var config = {
       'ee_icons':        path.join(ROOT_PATH, 'ee/app/views/shared/icons'),
       'ee_images':       path.join(ROOT_PATH, 'ee/app/assets/images'),
     }
-  }
-}
+  },
+
+  // sqljs requires fs
+  node: {
+    fs: 'empty',
+  },
+};
 
 if (IS_PRODUCTION) {
   config.devtool = 'source-map';
