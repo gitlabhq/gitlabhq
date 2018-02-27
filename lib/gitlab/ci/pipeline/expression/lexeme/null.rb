@@ -10,7 +10,7 @@ module Gitlab
               @value = nil
             end
 
-            def evaluate(**_)
+            def evaluate(variables = {})
               nil
             end
 
