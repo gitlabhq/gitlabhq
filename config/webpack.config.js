@@ -40,7 +40,6 @@ function generateEntries() {
 
   pageEntries.forEach(( path ) => generateAutoEntries(path));
 
-<<<<<<< HEAD
   // EE-specific auto entries
   const eePageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'ee/app/assets/javascripts') });
   eePageEntries.forEach(( path ) => generateAutoEntries(path, 'ee'));
@@ -48,10 +47,6 @@ function generateEntries() {
 
   autoEntriesCount = Object.keys(autoEntries).length;
 
-=======
-  autoEntriesCount = Object.keys(autoEntries).length;
-
->>>>>>> upstream/master
   const manualEntries = {
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
     common:               './commons/index.js',
@@ -69,10 +64,7 @@ function generateEntries() {
     protected_branches:   './protected_branches',
     protected_tags:       './protected_tags',
     registry_list:        './registry/index.js',
-<<<<<<< HEAD
     snippet:              './snippet/snippet_bundle.js',
-=======
->>>>>>> upstream/master
     sketch_viewer:        './blob/sketch_viewer.js',
     stl_viewer:           './blob/stl_viewer.js',
     terminal:             './terminal/terminal_bundle.js',
@@ -89,7 +81,6 @@ function generateEntries() {
     test:                 './test.js',
     u2f:                  ['vendor/u2f'],
     webpack_runtime:      './webpack.js',
-<<<<<<< HEAD
 
     // EE-only
     add_gitlab_slack_application: 'ee/add_gitlab_slack_application/index.js',
@@ -106,8 +97,6 @@ function generateEntries() {
     service_desk:         'ee/projects/settings_service_desk/service_desk_bundle.js',
     service_desk_issues:  'ee/service_desk_issues/index.js',
     roadmap:              'ee/roadmap',
-=======
->>>>>>> upstream/master
   };
 
   return Object.assign(manualEntries, autoEntries);
@@ -399,11 +388,7 @@ if (IS_DEV_SERVER) {
           callback();
         })
       },
-<<<<<<< HEAD
-    },
-=======
     }
->>>>>>> upstream/master
   );
   if (DEV_SERVER_LIVERELOAD) {
     config.plugins.push(new webpack.HotModuleReplacementPlugin());
