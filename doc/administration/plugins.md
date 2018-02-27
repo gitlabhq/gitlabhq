@@ -1,0 +1,50 @@
+# Plugins
+
+**Note:** Plugins must be configured on the filesystem of the GitLab
+server. Only GitLab server administrators will be able to complete these tasks.
+Please explore [system hooks] or [webhooks] as an option if you do not
+have filesystem access. 
+
+Introduced in GitLab 10.6.
+
+Plugin will run on each event so it's up to you to filter events or projects within a plugin code. You can have as many plugins as you want. Each plugin will be triggered by GitLab asyncronously in case of event. For list of events please see [system hooks] documentation.    
+
+## Setup
+
+Plugins must be placed directly into `plugins` directory, subdirectories will be ignored. There is an `example` directory insider `plugins` where you can find some basic examples. 
+
+Follow the steps below to set up a custom hook:
+
+1. On the GitLab server, navigate to the project's plugin directory.
+   For an installation from source the path is usually
+   `/home/git/gitlab/plugins/`. For Omnibus installs the path is
+   usually `/opt/gitlab/embedded/service/gitlab-rails/plugins`.
+1. Inside the `plugins` directory, create a file with a name of your choice, but without spaces or sepcial characters. 
+1. Make the hook file executable and make sure it's owned by git.
+1. Write the code to make the plugin function as expected. Plugin can be
+   in any language. Ensure the 'shebang' at the top properly reflects the language
+   type. For example, if the script is in Ruby the shebang will probably be
+   `#!/usr/bin/env ruby`.
+
+That's it! Assuming the plugin code is properly implemented the hook will fire
+as appropriate. Plugins file list is updated on each event. There is no need to restart GitLab to apply a new plugin. 
+
+## Validation
+
+Writing own plugin can be tricky and its easier if you can check it without altering the system. We provided a rake task you can use with staging enviromnent to test your plugin before using it in production. The rake task will use a sample data and execute each of plugins. By output you should be able to determine if system sees your plugin and if it was executed without errors. 
+
+```bash
+# Omnibus installations
+sudo gitlab-rake plugins:validate
+
+# Installations from source
+bundle exec rake plugins:validate RAILS_ENV=production
+```
+
+
+[hooks]: https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks#Server-Side-Hooks
+[system hooks]: ../system_hooks/system_hooks.md
+[webhooks]: ../user/project/integrations/webhooks.md
+[5073]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5073
+[93]: https://gitlab.com/gitlab-org/gitlab-shell/merge_requests/93
+
