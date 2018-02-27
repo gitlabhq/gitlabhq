@@ -450,12 +450,34 @@ module ProjectsHelper
     end
   end
 
+  def project_can_be_shared?
+    !membership_locked? || @project.allowed_to_share_with_group?
+  end
+
   def membership_locked?
     if @project.group && @project.group.membership_lock
       true
     else
       false
     end
+  end
+
+  def share_project_description
+    share_with_group   = @project.allowed_to_share_with_group?
+    share_with_members = !membership_locked?
+    project_name       = content_tag(:strong, @project.name)
+    member_message     = "You can add a new member to #{project_name}"
+
+    description =
+      if share_with_group && share_with_members
+        "#{member_message} or share it with another group."
+      elsif share_with_group
+        "You can share #{project_name} with another group."
+      elsif share_with_members
+        "#{member_message}."
+      end
+
+    description.to_s.html_safe
   end
 
   def readme_cache_key
