@@ -551,28 +551,34 @@ On those a default key should not be provided.
 #### `:key`
 When using `v-for` you need to provide a *unique* `:key` attribute for each item.
 
-1. If the elements of array being iterated have an unique `id` it is advised to use it:
+1. If the elements of the array being iterated have an unique `id` it is advised to use it:
     ```html
-      <div v-for="item in items" :key="item.id">
+      <div
+        v-for="item in items"
+        :key="item.id"
+      >
         <!-- content -->
       </div>
     ```
 
 1. When the elements being iterated don't have a unique id, you can use the array index as the `:key` attribute
     ```html
-      <div v-for="(item, index) in items" :key="index">
+      <div
+        v-for="(item, index) in items"
+        :key="index"
+      >
         <!-- content -->
       </div>
     ```
 
-1. When using `v-for` with `template` the child items need a `:key` attribute, since Vue doesn't allow for the `:key` to be in the `template` element.
+1. When using `v-for` with `template` the child item needs a `:key` attribute, since Vue doesn't allow for the `:key` to be in the `template` element.
     ```html
       <template v-for="(item, index) in items">
         <span :key="index"></span>
       </template>
     ```
 
-1. When using `v-for` with `template` and there is more than one child element, they `:key` values must be unique. It's adivsed to `kebab-case` namespaces.
+1. When using `v-for` with `template` and there is more than one child element, the `:key` values must be unique. It's advised to use `kebab-case` namespaces.
     ```html
       <template v-for="(item, index) in items">
         <span :key="`span-${index}`"></span>
