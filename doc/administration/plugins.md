@@ -7,7 +7,7 @@ have filesystem access.
 
 Introduced in GitLab 10.6.
 
-Plugin will run on each event so it's up to you to filter events or projects within a plugin code. You can have as many plugins as you want. Each plugin will be triggered by GitLab asyncronously in case of event. For list of events please see [system hooks] documentation.    
+A plugin will run on each event so it's up to you to filter events or projects within a plugin code. You can have as many plugins as you want. Each plugin will be triggered by GitLab asynchronously in case of an event. For a list of events please see [system hooks] documentation.
 
 ## Setup
 
@@ -19,7 +19,7 @@ Follow the steps below to set up a custom hook:
    For an installation from source the path is usually
    `/home/git/gitlab/plugins/`. For Omnibus installs the path is
    usually `/opt/gitlab/embedded/service/gitlab-rails/plugins`.
-1. Inside the `plugins` directory, create a file with a name of your choice, but without spaces or sepcial characters. 
+1. Inside the `plugins` directory, create a file with a name of your choice, but without spaces or special characters.
 1. Make the hook file executable and make sure it's owned by git.
 1. Write the code to make the plugin function as expected. Plugin can be
    in any language. Ensure the 'shebang' at the top properly reflects the language
@@ -27,11 +27,11 @@ Follow the steps below to set up a custom hook:
    `#!/usr/bin/env ruby`.
 
 That's it! Assuming the plugin code is properly implemented the hook will fire
-as appropriate. Plugins file list is updated on each event. There is no need to restart GitLab to apply a new plugin. 
+as appropriate. Plugins file list is updated for each event. There is no need to restart GitLab to apply a new plugin.
 
 ## Validation
 
-Writing own plugin can be tricky and its easier if you can check it without altering the system. We provided a rake task you can use with staging enviromnent to test your plugin before using it in production. The rake task will use a sample data and execute each of plugins. By output you should be able to determine if system sees your plugin and if it was executed without errors. 
+Writing own plugin can be tricky and its easier if you can check it without altering the system. We provided a rake task you can use with staging environment to test your plugin before using it in production. The rake task will use a sample data and execute each of plugins. By output you should be able to determine if system sees your plugin and if it was executed without errors.
 
 ```bash
 # Omnibus installations
