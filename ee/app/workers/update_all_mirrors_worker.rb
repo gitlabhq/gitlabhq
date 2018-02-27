@@ -3,6 +3,7 @@ class UpdateAllMirrorsWorker
   include CronjobQueue
 
   LEASE_TIMEOUT = 5.minutes
+  SCHEDULE_WAIT_TIMEOUT = 4.minutes
   LEASE_KEY = 'update_all_mirrors'.freeze
 
   def perform
@@ -15,29 +16,31 @@ class UpdateAllMirrorsWorker
   end
 
   def schedule_mirrors!
-    capacity = batch_size = Gitlab::Mirror.available_capacity
+    capacity = Gitlab::Mirror.available_capacity
 
     # Ignore mirrors that become due for scheduling once work begins, so we
     # can't end up in an infinite loop
     now = Time.now
     last = nil
+    all_project_ids = []
 
-    # Normally, this will complete in 1-2 batches. One batch will be added per
-    # `batch_size` unlicensed projects in the database.
     while capacity > 0
-      projects = pull_mirrors_batch(freeze_at: now, batch_size: batch_size, offset_at: last)
+      batch_size = [capacity * 2, 500].min
+      projects = pull_mirrors_batch(freeze_at: now, batch_size: batch_size, offset_at: last).to_a
       break if projects.empty?
 
+      project_ids = projects.lazy.select(&:mirror?).take(capacity).map(&:id).force
+      capacity -= project_ids.length
+
+      all_project_ids.concat(project_ids)
+
+      # If fewer than `batch_size` projects were returned, we don't need to query again
+      break if projects.length < batch_size
+
       last = projects.last.mirror_data.next_execution_timestamp
-
-      projects.each do |project|
-        next unless project.mirror?
-
-        capacity -= 1
-        project.import_schedule
-        break unless capacity > 0
-      end
     end
+
+    ProjectImportScheduleWorker.bulk_perform_and_wait(all_project_ids.map { |id| [id] }, timeout: SCHEDULE_WAIT_TIMEOUT.to_i)
   end
 
   private
@@ -51,7 +54,11 @@ class UpdateAllMirrorsWorker
   end
 
   def pull_mirrors_batch(freeze_at:, batch_size:, offset_at: nil)
-    relation = Project.mirrors_to_sync(freeze_at).reorder('project_mirror_data.next_execution_timestamp').limit(batch_size)
+    relation = Project
+      .mirrors_to_sync(freeze_at)
+      .reorder('project_mirror_data.next_execution_timestamp')
+      .limit(batch_size)
+      .includes(:namespace) # Used by `project.mirror?`
 
     relation = relation.where('next_execution_timestamp > ?', offset_at) if offset_at
 

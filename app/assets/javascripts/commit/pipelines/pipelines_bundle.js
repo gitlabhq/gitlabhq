@@ -15,7 +15,7 @@ const CommitPipelinesTable = Vue.extend(commitPipelinesTable);
 window.gl = window.gl || {};
 window.gl.CommitPipelinesTable = CommitPipelinesTable;
 
-document.addEventListener('DOMContentLoaded', () => {
+export default () => {
   const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
 
   if (pipelineTableViewEl) {
@@ -43,4 +43,4 @@ document.addEventListener('DOMContentLoaded', () => {
       pipelineTableViewEl.appendChild(table.$el);
     }
   }
-});
+};

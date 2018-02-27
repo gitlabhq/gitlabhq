@@ -18,7 +18,7 @@ module Gitlab
         private
 
         def groups_data
-          metrics_groups = groups_with_active_metrics(Gitlab::Prometheus::MetricGroup.all)
+          metrics_groups = groups_with_active_metrics(Gitlab::Prometheus::MetricGroup.common_metrics)
           lookup = active_series_lookup(metrics_groups)
 
           groups = {}

@@ -1,6 +1,7 @@
 import Vue from 'vue';
 
 import itemStatsComponent from '~/groups/components/item_stats.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import {
   mockParentGroupItem,
   ITEM_TYPE,
@@ -8,8 +9,6 @@ import {
   GROUP_VISIBILITY_TYPE,
   PROJECT_VISIBILITY_TYPE,
 } from '../mock_data';
-
-import mountComponent from '../../helpers/vue_mount_component_helper';
 
 const createComponent = (item = mockParentGroupItem) => {
   const Component = Vue.extend(itemStatsComponent);

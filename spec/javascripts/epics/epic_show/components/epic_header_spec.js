@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import epicHeader from 'ee/epics/epic_show/components/epic_header.vue';
-import mountComponent from '../../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { headerProps } from '../mock_data';
 
 describe('epicHeader', () => {

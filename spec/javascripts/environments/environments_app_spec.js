@@ -1,9 +1,9 @@
 import _ from 'underscore';
 import Vue from 'vue';
 import environmentsComponent from '~/environments/components/environments_app.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { headersInterceptor } from 'spec/helpers/vue_resource_helper';
 import { environment, folder } from './mock_data';
-import { headersInterceptor } from '../helpers/vue_resource_helper';
-import mountComponent from '../helpers/vue_mount_component_helper';
 
 describe('Environment', () => {
   const mockData = {

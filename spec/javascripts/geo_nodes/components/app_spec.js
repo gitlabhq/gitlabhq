@@ -6,9 +6,8 @@ import appComponent from 'ee/geo_nodes/components/app.vue';
 import eventHub from 'ee/geo_nodes/event_hub';
 import GeoNodesStore from 'ee/geo_nodes/store/geo_nodes_store';
 import GeoNodesService from 'ee/geo_nodes/service/geo_nodes_service';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { PRIMARY_VERSION, NODE_DETAILS_PATH, mockNodes, rawMockNodeDetails } from '../mock_data';
-
-import mountComponent from '../../helpers/vue_mount_component_helper';
 
 const createComponent = () => {
   const Component = Vue.extend(appComponent);

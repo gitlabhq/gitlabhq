@@ -3,6 +3,7 @@ require 'spec_helper'
 describe SlashCommands::GlobalSlackHandler do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
+  let(:chat_name) { double(:chat_name, user: user) }
   let(:verification_token) { '123' }
 
   before do
@@ -32,7 +33,7 @@ describe SlashCommands::GlobalSlackHandler do
   context 'Valid token' do
     it 'calls command handler if project alias is valid' do
       expect_any_instance_of(Gitlab::SlashCommands::Command).to receive(:execute)
-      expect_any_instance_of(ChatNames::FindUserService).to receive(:execute).and_return(user)
+      expect_any_instance_of(ChatNames::FindUserService).to receive(:execute).and_return(chat_name)
 
       enable_slack_application(project)
 

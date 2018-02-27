@@ -534,6 +534,19 @@ describe Gitlab::GitAccess do
       expect { pull_access_check }.to raise_unauthorized('Your account has been blocked.')
     end
 
+    context 'when the project repository does not exist' do
+      it 'returns not found' do
+        project.add_guest(user)
+        repo = project.repository
+        FileUtils.rm_rf(repo.path)
+
+        # Sanity check for rm_rf
+        expect(repo.exists?).to eq(false)
+
+        expect { pull_access_check }.to raise_error(Gitlab::GitAccess::NotFoundError, 'A repository for this project does not exist yet.')
+      end
+    end
+
     describe 'without access to project' do
       context 'pull code' do
         it { expect { pull_access_check }.to raise_not_found }
