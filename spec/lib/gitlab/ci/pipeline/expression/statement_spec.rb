@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Gitlab::Ci::Pipeline::Expression::Statement do
   let(:pipeline) { build(:ci_pipeline) }
-  let(:text) { '$VAR "text"' }
 
   subject do
     described_class.new(text, pipeline)
@@ -74,10 +73,12 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
     ]
 
     statements.each do |expression, value|
-      it "evaluates `#{expression}` to `#{value}`" do
-        statement = described_class.new(expression, pipeline)
+      context "when using expression `#{expression}`" do
+        let(:text) { expression }
 
-        expect(statement.evaluate).to eq value
+        it "evaluates to `#{value.inspect}`" do
+          expect(subject.evaluate).to eq value
+        end
       end
     end
   end
