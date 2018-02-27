@@ -64,7 +64,7 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def metrics
-    render_404 unless prometheus_adapter&.can_query?
+    return render_404 unless prometheus_adapter&.can_query?
 
     respond_to do |format|
       format.json do
