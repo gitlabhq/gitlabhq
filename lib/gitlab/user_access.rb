@@ -68,8 +68,12 @@ module Gitlab
         return true if project.user_can_push_to_empty_repo?(user)
 
         protected_branch_accessible_to?(ref, action: :push)
+      elsif user.can?(:push_code, project)
+        true
+      elsif user.can?(:push_single_branch, project)
+        project.branches_allowing_maintainer_access_to_user(user).include?(ref)
       else
-        user.can?(:push_code, project)
+        false
       end
     end
 
