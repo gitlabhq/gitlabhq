@@ -1,5 +1,6 @@
 import Compare from '~/compare';
 import MergeRequest from '~/merge_request';
+import initPipelines from '~/commit/pipelines/pipelines_bundle';
 
 document.addEventListener('DOMContentLoaded', () => {
   const mrNewCompareNode = document.querySelector('.js-merge-request-new-compare');
@@ -14,5 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
     new MergeRequest({ // eslint-disable-line no-new
       action: mrNewSubmitNode.dataset.mrSubmitAction,
     });
+    initPipelines();
   }
 });
