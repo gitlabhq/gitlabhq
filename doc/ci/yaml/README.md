@@ -998,7 +998,7 @@ tag including only the files that are untracked by Git:
 ```yaml
 job:
   artifacts:
-    name: "${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}"
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
     untracked: true
 ```
 
@@ -1007,7 +1007,7 @@ To create an archive with a name of the current [stage](#stages) and branch name
 ```yaml
 job:
   artifacts:
-    name: "${CI_JOB_STAGE}-${CI_COMMIT_REF_NAME}"
+    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"
     untracked: true
 ```
 
