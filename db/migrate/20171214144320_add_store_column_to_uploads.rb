@@ -6,15 +6,7 @@ class AddStoreColumnToUploads < ActiveRecord::Migration
 
   DOWNTIME = false
 
-  def up
-    unless column.exists?(:uploads, :store)
-      add_column(:uploads, :store, :integer)
-    end
-  end
-
-  def down
-    if column.exists?(:uploads, :store)
-      remove_column(:uploads, :store)
-    end
+  def change
+    add_column(:uploads, :store, :integer)
   end
 end

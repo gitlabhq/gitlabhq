@@ -23,17 +23,9 @@ class AddFileStoreToLfsObjects < ActiveRecord::Migration
   #
   # To disable transactions uncomment the following line and remove these
   # comments:
-  disable_ddl_transaction!
+  # disable_ddl_transaction!
 
-  def up
-    unless column_exists?(:lfs_objects, :file_store)
-      add_column(:lfs_objects, :file_store, :integer)
-    end
-  end
-
-  def down
-    if column_exists?(:lfs_objects, :file_store)
-      remove_column(:lfs_objects, :file_store)
-    end
+  def change
+    add_column(:lfs_objects, :file_store, :integer)
   end
 end
