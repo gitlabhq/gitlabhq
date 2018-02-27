@@ -259,7 +259,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
   context 'Light JSON' do
     let(:user) { create(:user) }
-    let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: "", project_path: 'path') }
+    let(:shared) { Gitlab::ImportExport::Shared.new(project) }
     let!(:project) { create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project') }
     let(:project_tree_restorer) { described_class.new(user: user, shared: shared, project: project) }
     let(:restored_project_json) { project_tree_restorer.restore }
