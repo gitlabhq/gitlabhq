@@ -93,7 +93,6 @@ function generateEntries() {
     issues:               'ee/issues/issues_bundle.js',
     ldap_group_links:     'ee/groups/ldap_group_links.js',
     mirrors:              'ee/mirrors',
-    ee_protected_branches: 'ee/protected_branches',
     ee_protected_tags:    'ee/protected_tags',
     service_desk:         'ee/projects/settings_service_desk/service_desk_bundle.js',
     service_desk_issues:  'ee/service_desk_issues/index.js',
