@@ -13,11 +13,20 @@ module Gitlab
     end
 
     def self.execute(file, data)
-      _output, exit_status = Gitlab::Popen.popen([file]) do |stdin|
+      result = Gitlab::Popen.popen_with_detail([file]) do |stdin|
         stdin.write(data.to_json)
       end
 
+      exit_status = result.status&.exitstatus
+
+      unless exit_status.zero?
+        Rails.logger.error("Plugin Error => #{file}: #{result.stderr}")
+      end
+
       exit_status.zero?
+    rescue => e
+      Rails.logger.error("Plugin Error => #{file}: #{e.message}")
+      false
     end
   end
 end

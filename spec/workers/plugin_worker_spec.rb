@@ -15,13 +15,5 @@ describe PluginWorker do
 
       expect(subject.perform(filename, data)).to be_truthy
     end
-
-    it 'handles exception well' do
-      data = { 'event_name' => 'project_create' }
-
-      allow(Gitlab::Plugin).to receive(:execute).with(filename, data).and_raise('Permission denied')
-
-      expect { subject.perform(filename, data) }.not_to raise_error
-    end
   end
 end
