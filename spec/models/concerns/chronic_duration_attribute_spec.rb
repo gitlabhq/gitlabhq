@@ -63,8 +63,8 @@ shared_examples 'ChronicDurationAttribute writer' do
       subject.send("#{virtual_field}=", '')
     end
 
-    it 'writes nil' do
-      expect(subject.send(source_field)).to be_nil
+    it 'writes default value' do
+      expect(subject.send(source_field)).to eq(default_value)
     end
 
     it 'passes validation' do
@@ -77,8 +77,8 @@ shared_examples 'ChronicDurationAttribute writer' do
       subject.send("#{virtual_field}=", nil)
     end
 
-    it 'writes nil' do
-      expect(subject.send(source_field)).to be_nil
+    it 'writes default value' do
+      expect(subject.send(source_field)).to eq(default_value)
     end
 
     it 'passes validation' do
@@ -92,20 +92,34 @@ shared_examples 'ChronicDurationAttribute writer' do
 end
 
 describe 'ChronicDurationAttribute' do
-  let(:source_field) {:maximum_timeout}
-  let(:virtual_field) {:maximum_timeout_human_readable}
+  context 'when default value is not set' do
+    let(:source_field) {:maximum_timeout}
+    let(:virtual_field) {:maximum_timeout_human_readable}
+    let(:default_value) { nil }
 
-  subject { Ci::Runner.new }
+    subject { create(:ci_runner) }
 
-  it_behaves_like 'ChronicDurationAttribute reader'
-  it_behaves_like 'ChronicDurationAttribute writer'
+    it_behaves_like 'ChronicDurationAttribute reader'
+    it_behaves_like 'ChronicDurationAttribute writer'
+  end
+
+  context 'when default value is set' do
+    let(:source_field) {:build_timeout}
+    let(:virtual_field) {:build_timeout_human_readable}
+    let(:default_value) { 3600 }
+
+    subject { create(:project) }
+
+    it_behaves_like 'ChronicDurationAttribute reader'
+    it_behaves_like 'ChronicDurationAttribute writer'
+  end
 end
 
 describe 'ChronicDurationAttribute - reader' do
   let(:source_field) {:timeout}
   let(:virtual_field) {:timeout_human_readable}
 
-  subject {Ci::BuildMetadata.new}
+  subject { create(:ci_build).ensure_metadata }
 
   it "doesn't contain dynamically created writer method" do
     expect(subject.class).not_to be_public_method_defined("#{virtual_field}=")
