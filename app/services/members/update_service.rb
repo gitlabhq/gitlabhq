@@ -1,7 +1,10 @@
 module Members
   class UpdateService < Members::BaseService
+<<<<<<< HEAD
     prepend EE::Members::UpdateService
 
+=======
+>>>>>>> upstream/master
     # returns the updated member
     def execute(member, permission: :update)
       raise Gitlab::Access::AccessDeniedError unless can?(current_user, action_member_permission(permission, member), member)

@@ -1,0 +1,5 @@
+---
+title: Add catch-up background migration to migrate pipeline stages
+merge_request: 15741
+author:
+type: performance

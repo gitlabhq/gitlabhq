@@ -1,9 +1,14 @@
 module Members
   class CreateService < Members::BaseService
+<<<<<<< HEAD
     prepend EE::Members::CreateService
 
     DEFAULT_LIMIT = 100
 
+=======
+    DEFAULT_LIMIT = 100
+
+>>>>>>> upstream/master
     def execute(source)
       return error('No users specified.') if params[:user_ids].blank?
 

@@ -1,7 +1,10 @@
 module Members
   class ApproveAccessRequestService < Members::BaseService
+<<<<<<< HEAD
     prepend EE::Members::ApproveAccessRequestService
 
+=======
+>>>>>>> upstream/master
     def execute(access_requester, skip_authorization: false, skip_log_audit_event: false)
       raise Gitlab::Access::AccessDeniedError unless skip_authorization || can_update_access_requester?(access_requester)
 
