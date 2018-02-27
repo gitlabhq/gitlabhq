@@ -139,18 +139,25 @@ class Member < ActiveRecord::Base
       member.attributes = {
         created_by: member.created_by || current_user,
         access_level: access_level,
-        expires_at: expires_at,
+        expires_at: expires_at
+      }
+
+      ## EE-only START
+      member.attributes = {
         skip_notification: ldap,
         ldap: ldap
       }
+      ## EE-only END
 
       if member.request?
         ::Members::ApproveAccessRequestService.new(
-          source,
           current_user,
-          id: member.id,
           access_level: access_level
-        ).execute(force: ldap)
+        ).execute(
+          member,
+          skip_authorization: ldap,
+          skip_log_audit_event: ldap
+        )
       else
         member.save
       end
