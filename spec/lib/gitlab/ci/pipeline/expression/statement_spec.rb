@@ -64,6 +64,7 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
   describe '#evaluate' do
     statements = [
       ['$VARIABLE == "my variable"', true],
+      ["$VARIABLE == 'my variable'", true],
       ['"my variable" == $VARIABLE', true],
       ['$VARIABLE == null', false],
       ['$VAR == null', true],
