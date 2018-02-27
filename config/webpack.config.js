@@ -48,7 +48,6 @@ var config = {
     common:               './commons/index.js',
     common_vue:           './vue_shared/vue_resource_interceptor.js',
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
-    commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
     environments:         './environments/environments_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
@@ -237,7 +236,6 @@ var config = {
       name: 'common_vue',
       chunks: [
         'boards',
-        'commit_pipelines',
         'cycle_analytics',
         'deploy_keys',
         'diff_notes',
