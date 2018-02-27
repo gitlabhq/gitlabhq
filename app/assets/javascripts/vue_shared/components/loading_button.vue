@@ -1,6 +1,5 @@
 <script>
   /* eslint-disable vue/require-default-prop */
-
   /* This is a re-usable vue component for rendering a button
     that will probably be sending off ajax requests and need
     to show the loading status by setting the `loading` option.

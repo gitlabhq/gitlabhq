@@ -1,3 +1,3 @@
 import Search from './search';
 
-export default () => new Search();
+document.addEventListener('DOMContentLoaded', () => new Search());

@@ -7,7 +7,6 @@
       jobComponent,
       dropdownJobComponent,
     },
-
     props: {
       title: {
         type: String,

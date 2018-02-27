@@ -2,7 +2,7 @@
   .modal-dialog.modal-lg
     .modal-content
       .modal-header
-        %a.close{ href: "#", "data-dismiss" => "modal" } ×
+        %a.close{ href: "#", "data-dismiss" => "modal" } &times;
         %h3.page-title= title
       .modal-body
         = form_tag form_path, method: method, class: 'js-quick-submit js-upload-blob-form form-horizontal', data: { method: method } do
@@ -29,4 +29,4 @@
                 = commit_in_fork_help
 
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('blob')
+  = webpack_bundle_tag('blob')

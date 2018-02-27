@@ -19,7 +19,7 @@ export default class PrometheusMetrics {
     this.$missingEnvVarMetricCount = this.$missingEnvVarPanel.find('.js-env-var-count');
     this.$missingEnvVarMetricsList = this.$missingEnvVarPanel.find('.js-missing-var-metrics-list');
 
-    this.activeMetricsEndpoint = this.$monitoredMetricsPanel.data('active-metrics');
+    this.activeMetricsEndpoint = this.$monitoredMetricsPanel.data('activeMetrics');
 
     this.$panelToggle.on('click', e => this.handlePanelToggle(e));
   }

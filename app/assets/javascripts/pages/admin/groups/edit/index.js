@@ -1,3 +1,3 @@
-import groupAvatar from '../../../../group_avatar';
+import groupAvatar from '~/group_avatar';
 
-export default () => groupAvatar();
+document.addEventListener('DOMContentLoaded', groupAvatar);

@@ -15,21 +15,21 @@ export default class AbuseReports {
     const $messageCellElement = $(this);
     const reportMessage = $messageCellElement.text();
     if (reportMessage.length > MAX_MESSAGE_LENGTH) {
-      $messageCellElement.data('original-message', reportMessage);
-      $messageCellElement.data('message-truncated', 'true');
+      $messageCellElement.data('originalMessage', reportMessage);
+      $messageCellElement.data('messageTruncated', 'true');
       $messageCellElement.text(truncate(reportMessage, MAX_MESSAGE_LENGTH));
     }
   }
 
   toggleMessageTruncation() {
     const $messageCellElement = $(this);
-    const originalMessage = $messageCellElement.data('original-message');
+    const originalMessage = $messageCellElement.data('originalMessage');
     if (!originalMessage) return;
-    if ($messageCellElement.data('message-truncated') === 'true') {
-      $messageCellElement.data('message-truncated', 'false');
+    if ($messageCellElement.data('messageTruncated') === 'true') {
+      $messageCellElement.data('messageTruncated', 'false');
       $messageCellElement.text(originalMessage);
     } else {
-      $messageCellElement.data('message-truncated', 'true');
+      $messageCellElement.data('messageTruncated', 'true');
       $messageCellElement.text(`${originalMessage.substr(0, (MAX_MESSAGE_LENGTH - 3))}...`);
     }
   }

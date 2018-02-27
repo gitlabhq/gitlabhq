@@ -12,7 +12,7 @@ module Gitlab
             while token = @tokens.next
               case token.type
               when :operator
-                token.build(@nodes.last, tree).tap do |node|
+                token.build(@nodes.pop, tree).tap do |node|
                   @nodes.push(node)
                 end
               when :value

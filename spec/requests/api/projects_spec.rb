@@ -7,7 +7,7 @@ describe API::Projects do
   let(:user3) { create(:user) }
   let(:admin) { create(:admin) }
   let(:project) { create(:project, namespace: user.namespace) }
-  let(:project2) { create(:project, path: 'project2', namespace: user.namespace) }
+  let(:project2) { create(:project, namespace: user.namespace) }
   let(:snippet) { create(:project_snippet, :public, author: user, project: project, title: 'example') }
   let(:project_member) { create(:project_member, :developer, user: user3, project: project) }
   let(:user4) { create(:user) }
@@ -315,7 +315,7 @@ describe API::Projects do
 
       context 'and with all query parameters' do
         let!(:project5) { create(:project, :public, path: 'gitlab5', namespace: create(:namespace)) }
-        let!(:project6) { create(:project, :public, path: 'project6', namespace: user.namespace) }
+        let!(:project6) { create(:project, :public, namespace: user.namespace) }
         let!(:project7) { create(:project, :public, path: 'gitlab7', namespace: user.namespace) }
         let!(:project8) { create(:project, path: 'gitlab8', namespace: user.namespace) }
         let!(:project9) { create(:project, :public, path: 'gitlab9') }

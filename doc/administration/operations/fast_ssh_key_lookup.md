@@ -1,7 +1,7 @@
 # Fast lookup of authorized SSH keys in the database
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/1631) in 
-> [GitLab Enterprise Edition Standard](https://about.gitlab.com/gitlab-ee) 9.3.
+> [GitLab Starter](https://about.gitlab.com/gitlab-ee) 9.3.
 >
 > [Available in](https://gitlab.com/gitlab-org/gitlab-ee/issues/3953) GitLab
 > Community Edition 10.4.

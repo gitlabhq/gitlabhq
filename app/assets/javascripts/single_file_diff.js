@@ -18,7 +18,7 @@ export default class SingleFileDiff {
     this.toggleDiff = this.toggleDiff.bind(this);
     this.content = $('.diff-content', this.file);
     this.$toggleIcon = $('.diff-toggle-caret', this.file);
-    this.diffForPath = this.content.find('[data-diff-for-path]').data('diff-for-path');
+    this.diffForPath = this.content.find('[data-diff-for-path]').data('diffForPath');
     this.isOpen = !this.diffForPath;
     if (this.diffForPath) {
       this.collapsedContent = this.content;
@@ -88,6 +88,8 @@ export default class SingleFileDiff {
 
         if (cb) cb();
       })
-      .catch(createFlash(__('An error occurred while retrieving diff')));
+      .catch(() => {
+        createFlash(__('An error occurred while retrieving diff'));
+      });
   }
 }

@@ -3,14 +3,18 @@ module RoutableActions
 
   def find_routable!(routable_klass, requested_full_path, extra_authorization_proc: nil)
     routable = routable_klass.find_by_full_path(requested_full_path, follow_redirects: request.get?)
-
     if routable_authorized?(routable, extra_authorization_proc)
       ensure_canonical_path(routable, requested_full_path)
       routable
     else
-      route_not_found
+      handle_not_found_or_authorized(routable)
       nil
     end
+  end
+
+  # This is overridden in gitlab-ee.
+  def handle_not_found_or_authorized(_routable)
+    route_not_found
   end
 
   def routable_authorized?(routable, extra_authorization_proc)
