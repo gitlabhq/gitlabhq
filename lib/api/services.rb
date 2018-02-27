@@ -139,7 +139,7 @@ module API
       }
     ].freeze
 
-    SERVICES = {
+    services = {
       'asana' => [
         {
           required: true,
@@ -719,9 +719,9 @@ module API
           desc: 'Should unstable builds be treated as passing?'
         }
       ]
-    }.freeze
+    }
 
-    SERVICE_CLASSES = [
+    service_classes = [
       AsanaService,
       AssemblaService,
       BambooService,
@@ -752,10 +752,10 @@ module API
       TeamcityService,
       JenkinsService,
       JenkinsDeprecatedService
-    ].freeze
+    ]
 
     if Rails.env.development?
-      SERVICES['mock-ci'] = [
+      services['mock-ci'] = [
         {
           required: true,
           name: :mock_service_url,
@@ -763,15 +763,18 @@ module API
           desc: 'URL to the mock service'
         }
       ]
-      SERVICES['mock-deployment'] = []
-      SERVICES['mock-monitoring'] = []
+      services['mock-deployment'] = []
+      services['mock-monitoring'] = []
 
-      SERVICE_CLASSES += [
+      service_classes += [
         MockCiService,
         MockDeploymentService,
         MockMonitoringService
       ]
     end
+
+    SERVICES = services.freeze
+    SERVICE_CLASSES = service_classes.freeze
 
     SERVICE_CLASSES.each do |service|
       event_names = service.try(:event_names) || next
