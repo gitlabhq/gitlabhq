@@ -73,10 +73,10 @@
 
         %hr
         .form-group
-          = f.label :build_timeout_in_minutes, 'Timeout', class: 'label-light'
-          = f.number_field :build_timeout_in_minutes, class: 'form-control', min: '0'
+          = f.label :build_timeout_human_readable, 'Timeout', class: 'label-light'
+          = f.text_field :build_timeout_human_readable, class: 'form-control'
           %p.help-block
-            Per job in minutes. If a job passes this threshold, it will be marked as failed
+            Per job. If a job passes this threshold, it will be marked as failed
             = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'timeout'), target: '_blank'
 
         %hr
