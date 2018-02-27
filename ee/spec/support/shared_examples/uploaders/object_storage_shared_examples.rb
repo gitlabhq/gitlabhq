@@ -20,6 +20,19 @@ shared_examples "migrates" do |to_store:, from_store: nil|
     migrate(from)
   end
 
+  it 'returns corresponding file type' do
+    expect(subject).to be_an(CarrierWave::Uploader::Base)
+    expect(subject).to be_a(ObjectStorage::Concern)
+
+    if from == described_class::Store::REMOTE
+      expect(subject.file).to be_a(CarrierWave::Storage::Fog::File)
+    elsif from == described_class::Store::LOCAL
+      expect(subject.file).to be_a(CarrierWave::SanitizedFile)
+    else
+      raise 'Unexpected file type'
+    end
+  end
+
   it 'does nothing when migrating to the current store' do
     expect { migrate(from) }.not_to change { subject.object_store }.from(from)
   end
@@ -36,6 +49,42 @@ shared_examples "migrates" do |to_store:, from_store: nil|
     migrate(to)
 
     expect(File.exist?(original_file)).to be_falsey
+  end
+
+  it 'can access to the original file during migration' do
+    file = subject.file
+
+    allow(subject).to receive(:delete_migrated_file) { } # Remove as a callback of :migrate
+    allow(subject).to receive(:record_upload) { } # Remove as a callback of :store (:record_upload)
+
+    expect(file.exists?).to be_truthy
+    expect { migrate(to) }.not_to change { file.exists? }
+  end
+
+  context 'when migrate! is not oqqupied by another process' do
+    it 'executes migrate!' do
+      expect(subject).to receive(:object_store=).at_least(1)
+
+      migrate(to)
+    end
+  end
+
+  context 'when migrate! is occupied by another process' do
+    let(:exclusive_lease_key) { "object_storage_migrate:#{subject.model.class}:#{subject.model.id}" }
+
+    before do
+      @uuid = Gitlab::ExclusiveLease.new(exclusive_lease_key, timeout: 1.hour.to_i).try_obtain
+    end
+
+    it 'does not execute migrate!' do
+      expect(subject).not_to receive(:unsafe_migrate!)
+
+      expect { migrate(to) }.to raise_error('Already running')
+    end
+
+    after do
+      Gitlab::ExclusiveLease.cancel(exclusive_lease_key, @uuid)
+    end
   end
 
   context 'migration is unsuccessful' do

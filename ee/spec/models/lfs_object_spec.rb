@@ -61,9 +61,23 @@ describe LfsObject do
           end
 
           it 'schedules the model for migration' do
-            expect(ObjectStorage::BackgroundMoveWorker).to receive(:perform_async).with('LfsObjectUploader', described_class.name, :file, kind_of(Numeric))
+            expect(ObjectStorage::BackgroundMoveWorker)
+              .to receive(:perform_async)
+              .with('LfsObjectUploader', described_class.name, :file, kind_of(Numeric))
+              .once
 
             subject
+          end
+
+          it 'schedules the model for migration once' do
+            expect(ObjectStorage::BackgroundMoveWorker)
+              .to receive(:perform_async)
+              .with('LfsObjectUploader', described_class.name, :file, kind_of(Numeric))
+              .once
+
+            lfs_object = create(:lfs_object)
+            lfs_object.file = fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "`/png")
+            lfs_object.save!
           end
         end
 
