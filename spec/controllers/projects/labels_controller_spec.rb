@@ -133,7 +133,7 @@ describe Projects::LabelsController do
       it 'gives access' do
         post :promote, namespace_id: project.namespace.to_param, project_id: project, id: label_1.to_param
 
-        expect(response).to redirect_to(namespace_project_labels_path)
+        expect(response.location).to include(namespace_project_labels_path)
       end
 
       it 'promotes the label' do

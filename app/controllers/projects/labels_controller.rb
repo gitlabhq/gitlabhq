@@ -1,5 +1,6 @@
 class Projects::LabelsController < Projects::ApplicationController
   include ToggleSubscriptionAction
+  include FlashHelper
 
   before_action :check_issuables_available!
   before_action :label, only: [:edit, :update, :destroy, :promote]
@@ -114,7 +115,7 @@ class Projects::LabelsController < Projects::ApplicationController
 
       respond_to do |format|
         format.html do
-          redirect_to(project_labels_path(@project), status: 303)
+          redirect_to(project_labels_path(@project, body_data: get_body_data_page(project_labels_path(@project))), status: 303)
         end
         format.js
       end

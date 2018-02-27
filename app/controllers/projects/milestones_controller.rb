@@ -1,5 +1,6 @@
 class Projects::MilestonesController < Projects::ApplicationController
   include MilestoneActions
+  include FlashHelper
 
   before_action :check_issuables_available!
   before_action :milestone, only: [:edit, :update, :destroy, :show, :merge_requests, :participants, :labels, :promote]
@@ -70,8 +71,8 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def promote
-    promoted_milestone = Milestones::PromoteService.new(project, current_user).execute(milestone)
-    redirect_to group_milestone_path(project.group, promoted_milestone.iid), status: 303
+    Milestones::PromoteService.new(project, current_user).execute(milestone)
+    redirect_to project_milestones_path(project, body_data: get_body_data_page(project_milestones_path(project))), status: 303
   rescue Milestones::PromoteService::PromoteMilestoneError => error
     redirect_to milestone, alert: error.message
   end

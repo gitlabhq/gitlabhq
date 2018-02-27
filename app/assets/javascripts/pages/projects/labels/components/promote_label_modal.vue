@@ -1,5 +1,6 @@
 <script>
   import axios from '~/lib/utils/axios_utils';
+  import { saveFlashMessage } from '~/lib/utils/flash_queue';
   import createFlash from '~/flash';
   import GlModal from '~/vue_shared/components/gl_modal.vue';
   import { redirectTo } from '~/lib/utils/url_utility';
@@ -50,7 +51,10 @@
         return axios.post(this.url)
           .then((response) => {
             eventHub.$emit('promoteLabelModal.requestFinished', { labelUrl: this.url, successful: true });
-            redirectTo(response.request.responseURL);
+            const responseURL = new URL(response.request.responseURL);
+            const bodyData = responseURL.searchParams.get('body_data');
+            saveFlashMessage(bodyData, `${this.labelTitle} promoted to group label`, 'notice');
+            redirectTo(`${responseURL.protocol}//${responseURL.host}${responseURL.pathname}`);
           })
           .catch((error) => {
             eventHub.$emit('promoteLabelModal.requestFinished', { labelUrl: this.url, successful: false });

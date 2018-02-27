@@ -98,9 +98,7 @@ describe Projects::MilestonesController do
       it 'shows group milestone' do
         post :promote, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid
 
-        group_milestone = assigns(:milestone)
-
-        expect(response).to redirect_to(group_milestone_path(project.group, group_milestone.iid))
+        expect(response.location).to include(project_milestones_path(project))
       end
     end
 
