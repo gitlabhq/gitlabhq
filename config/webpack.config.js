@@ -360,7 +360,7 @@ if (IS_DEV_SERVER) {
           callback();
         })
       },
-    },
+    }
   );
   if (DEV_SERVER_LIVERELOAD) {
     config.plugins.push(new webpack.HotModuleReplacementPlugin());
