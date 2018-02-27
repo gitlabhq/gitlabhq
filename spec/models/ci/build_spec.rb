@@ -1854,7 +1854,8 @@ describe Ci::Build do
         end
 
         allow_any_instance_of(Ci::Pipeline)
-          .to receive(:predefined_variables) { [pipeline_pre_var] }
+          .to receive(:predefined_variables)
+          .and_return([project_pre_var] + [pipeline_pre_var])
       end
 
       it do
