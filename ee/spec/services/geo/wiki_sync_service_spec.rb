@@ -94,6 +94,19 @@ RSpec.describe Geo::WikiSyncService do
       expect(Geo::ProjectRegistry.last.wiki_retry_count).to eq(1)
     end
 
+    it 'marks sync as successful if no repository found' do
+      registry = create(:geo_project_registry, project: project)
+
+      allow(repository).to receive(:fetch_as_mirror)
+        .with(url_to_repo, remote_name: 'geo', forced: true)
+        .and_raise(Gitlab::Shell::Error.new(Gitlab::GitAccess::ERROR_MESSAGES[:no_repo]))
+
+      subject.execute
+
+      expect(registry.reload.resync_wiki).to be false
+      expect(registry.last_wiki_successful_sync_at).not_to be nil
+    end
+
     context 'tracking database' do
       it 'creates a new registry if does not exists' do
         expect { subject.execute }.to change(Geo::ProjectRegistry, :count).by(1)

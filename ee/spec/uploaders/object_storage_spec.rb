@@ -128,6 +128,33 @@ describe ObjectStorage do
         expect(uploader.object_store).to eq(uploader.upload.store)
       end
     end
+
+    describe '#migrate!' do
+      let(:new_store) { ObjectStorage::Store::REMOTE }
+
+      before do
+        stub_uploads_object_storage(uploader: AvatarUploader)
+      end
+
+      subject { uploader.migrate!(new_store) }
+
+      it 'persist @object_store to the recorded upload' do
+        subject
+
+        expect(uploader.upload.store).to eq(new_store)
+      end
+
+      describe 'fails' do
+        it 'is handled gracefully' do
+          store = uploader.object_store
+          expect_any_instance_of(Upload).to receive(:save!).and_raise("An error")
+
+          expect { subject }.to raise_error("An error")
+          expect(uploader.exists?).to be_truthy
+          expect(uploader.upload.store).to eq(store)
+        end
+      end
+    end
   end
 
   # this means the model holds an <mounted_as>_store attribute directly

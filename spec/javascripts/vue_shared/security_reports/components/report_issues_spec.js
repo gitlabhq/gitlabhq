@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import reportIssues from 'ee/vue_shared/security_reports/components/report_issues.vue';
-import mountComponent from '../../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import {
   codequalityParsedIssues,
-} from '../../../vue_mr_widget/mock_data';
+} from 'spec/vue_mr_widget/mock_data';
 import {
   sastParsedIssues,
   dockerReportParsed,

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import listItem from '~/ide/components/commit_sidebar/list_item.vue';
-import mountComponent from '../../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { file } from '../../helpers';
 
 describe('Multi-file editor commit sidebar list item', () => {

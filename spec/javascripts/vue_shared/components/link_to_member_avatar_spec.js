@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 
 import Vue from 'vue';
-import linkToMemberAvatar from '~/vue_shared/components/link_to_member_avatar';
+import linkToMemberAvatar from 'ee/vue_shared/components/link_to_member_avatar';
 
 (() => {
   function initComponent(propsData = {}) {

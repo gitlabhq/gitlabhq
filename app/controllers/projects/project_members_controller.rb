@@ -26,33 +26,6 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     @project_member = @project.project_members.new
   end
 
-  def update
-    @project_member = @project.members_and_requesters.find(params[:id])
-      .present(current_user: current_user)
-
-    return render_403 unless can?(current_user, :update_project_member, @project_member)
-
-    old_access_level = @project_member.human_access
-
-    if @project_member.update_attributes(member_params)
-      log_audit_event(@project_member, action: :update, old_access_level: old_access_level)
-    end
-  end
-
-  def resend_invite
-    redirect_path = project_project_members_path(@project)
-
-    @project_member = @project.project_members.find(params[:id])
-
-    if @project_member.invite?
-      @project_member.resend_invite
-
-      redirect_to redirect_path, notice: 'The invitation was successfully resent.'
-    else
-      redirect_to redirect_path, alert: 'The invitation has already been accepted.'
-    end
-  end
-
   def import
     @projects = current_user.authorized_projects.order_id_desc
   end
@@ -69,12 +42,6 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
     redirect_to(project_project_members_path(project),
                 notice: notice)
-  end
-
-  protected
-
-  def member_params
-    params.require(:project_member).permit(:user_id, :access_level, :expires_at)
   end
 
   # MembershipActions concern

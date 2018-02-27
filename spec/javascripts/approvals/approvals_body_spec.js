@@ -115,13 +115,13 @@ import ApprovalsBody from 'ee/vue_merge_request_widget/components/approvals/appr
           });
         });
 
-        it('The approve button should have the "Approve additionally" text', function (done) {
+        it('The approve button should have the "Add approval" text', function (done) {
           this.approvalsBody.approvalsLeft = 0;
           this.approvalsBody.userHasApproved = false;
           this.approvalsBody.userCanApprove = true;
 
           Vue.nextTick(() => {
-            expect(this.approvalsBody.approveButtonText).toBe('Approve additionally');
+            expect(this.approvalsBody.approveButtonText).toBe('Add approval');
             done();
           });
         });

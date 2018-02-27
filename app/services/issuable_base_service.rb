@@ -79,8 +79,12 @@ class IssuableBaseService < BaseService
     return unless labels
 
     params[:label_ids] = labels.split(",").map do |label_name|
-      service = Labels::FindOrCreateService.new(current_user, project, title: label_name.strip)
-      label   = service.execute
+      label = Labels::FindOrCreateService.new(
+        current_user,
+        parent,
+        title: label_name.strip,
+        available_labels: available_labels
+      ).execute
 
       label.try(:id)
     end.compact
@@ -104,7 +108,7 @@ class IssuableBaseService < BaseService
   end
 
   def available_labels
-    LabelsFinder.new(current_user, project_id: @project.id).execute
+    @available_labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute
   end
 
   def merge_quick_actions_into_params!(issuable)
@@ -304,5 +308,9 @@ class IssuableBaseService < BaseService
 
   def update_project_counter_caches?(issuable)
     issuable.state_changed?
+  end
+
+  def parent
+    project
   end
 end

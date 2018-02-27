@@ -75,6 +75,7 @@
   - [repository_remove_remote, 1]
   - [repository_update_mirror, 1]
   - [repository_update_remote_mirror, 1]
+  - [project_import_schedule, 1]
   - [project_update_repository_storage, 1]
   - [admin_emails, 1]
   - [elastic_batch_project_indexer, 1]

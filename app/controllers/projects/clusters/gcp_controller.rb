@@ -40,9 +40,9 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
   def verify_billing
     case google_project_billing_status
     when nil
-      flash[:alert] = _('We could not verify that one of your projects on GCP has billing enabled. Please try again.')
+      flash.now[:alert] = _('We could not verify that one of your projects on GCP has billing enabled. Please try again.')
     when false
-      flash[:alert] = _('Please <a href=%{link_to_billing} target="_blank" rel="noopener noreferrer">enable billing for one of your projects to be able to create a Kubernetes cluster</a>, then try again.').html_safe % { link_to_billing: "https://console.cloud.google.com/freetrial?utm_campaign=2018_cpanel&utm_source=gitlab&utm_medium=referral" }
+      flash.now[:alert] = _('Please <a href=%{link_to_billing} target="_blank" rel="noopener noreferrer">enable billing for one of your projects to be able to create a Kubernetes cluster</a>, then try again.').html_safe % { link_to_billing: "https://console.cloud.google.com/freetrial?utm_campaign=2018_cpanel&utm_source=gitlab&utm_medium=referral" }
     when true
       return
     end

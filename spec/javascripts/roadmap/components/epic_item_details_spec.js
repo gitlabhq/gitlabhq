@@ -2,9 +2,8 @@ import Vue from 'vue';
 
 import epicItemDetailsComponent from 'ee/roadmap/components/epic_item_details.vue';
 
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { mockGroupId, mockEpic } from '../mock_data';
-
-import mountComponent from '../../helpers/vue_mount_component_helper';
 
 const createComponent = (epic = mockEpic, currentGroupId = mockGroupId) => {
   const Component = Vue.extend(epicItemDetailsComponent);

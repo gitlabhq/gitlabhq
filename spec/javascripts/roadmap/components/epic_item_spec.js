@@ -2,9 +2,8 @@ import Vue from 'vue';
 
 import epicItemComponent from 'ee/roadmap/components/epic_item.vue';
 
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { mockTimeframe, mockEpic, mockGroupId, mockShellWidth } from '../mock_data';
-
-import mountComponent from '../../helpers/vue_mount_component_helper';
 
 const createComponent = ({
   epic = mockEpic,

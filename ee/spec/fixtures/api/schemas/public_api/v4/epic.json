@@ -18,6 +18,12 @@
       },
       "additionalProperties": false
     },
+    "labels": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "start_date": { "type": ["string", "null"] },
     "end_date": { "type": ["string", "null"] },
     "created_at": { "type": ["string", "null"] },

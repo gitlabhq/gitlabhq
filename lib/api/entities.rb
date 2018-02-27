@@ -508,6 +508,10 @@ module API
       expose :end_date
       expose :created_at
       expose :updated_at
+      expose :labels do |epic, options|
+        # Avoids an N+1 query since labels are preloaded
+        epic.labels.map(&:title).sort
+      end
     end
 
     class EpicIssue < Issue
