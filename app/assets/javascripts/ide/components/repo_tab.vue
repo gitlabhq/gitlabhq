@@ -1,6 +1,6 @@
 <script>
   import { mapActions } from 'vuex';
-  import fileIcon from '../../vue_shared/components/file_icon.vue';
+  import fileIcon from '~/vue_shared/components/file_icon.vue';
 
   export default {
     components: {

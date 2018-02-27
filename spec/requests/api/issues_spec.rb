@@ -1417,7 +1417,7 @@ describe API::Issues do
 
     context 'when source project does not exist' do
       it 'returns 404 when trying to move an issue' do
-        post api("/projects/12345/issues/#{issue.iid}/move", user),
+        post api("/projects/0/issues/#{issue.iid}/move", user),
                  to_project_id: target_project.id
 
         expect(response).to have_gitlab_http_status(404)
@@ -1428,7 +1428,7 @@ describe API::Issues do
     context 'when target project does not exist' do
       it 'returns 404 when trying to move an issue' do
         post api("/projects/#{project.id}/issues/#{issue.iid}/move", user),
-                 to_project_id: 12345
+                 to_project_id: 0
 
         expect(response).to have_gitlab_http_status(404)
       end
