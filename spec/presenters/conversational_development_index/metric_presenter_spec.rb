@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe ConversationalDevelopmentIndex::MetricPresenter do
+describe DevOpsScore::MetricPresenter do
   subject { described_class.new(metric) }
-  let(:metric) { build(:conversational_development_index_metric) }
+  let(:metric) { build(:devops_score_metric) }
 
   describe '#cards' do
     it 'includes instance score, leader score and percentage score' do
