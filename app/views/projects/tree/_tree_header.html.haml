@@ -72,15 +72,8 @@
                   #{ _('New tag') }
 
 .tree-controls
-<<<<<<< HEAD
-  = lock_file_link(html_options: { class: 'btn path-lock' })
-=======
-  - if show_new_ide?
-    = succeed " " do
-      = link_to ide_edit_path(@project, @id), class: 'btn btn-default' do
-        = _('Web IDE')
 
->>>>>>> upstream/master
+  = lock_file_link(html_options: { class: 'btn path-lock' })
   = link_to s_('Commits|History'), project_commits_path(@project, @id), class: 'btn'
 
   = render 'projects/find_file_link'

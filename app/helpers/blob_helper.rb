@@ -34,11 +34,7 @@ module BlobHelper
   end
 
   def ide_edit_button(project = @project, ref = @ref, path = @path, options = {})
-<<<<<<< HEAD
     return unless show_new_ide?(project)
-=======
-    return unless show_new_ide?
->>>>>>> upstream/master
     return unless blob = readable_blob(options, path, project, ref)
 
     common_classes = "btn js-edit-ide #{options[:extra_class]}"
