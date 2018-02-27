@@ -1,0 +1,5 @@
+---
+title: Disables diff comment buttons to prevent multiple submits
+merge_request:
+author:
+type: fixed
