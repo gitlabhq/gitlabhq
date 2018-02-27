@@ -25,9 +25,10 @@ module Geo
     rescue Gitlab::Git::RepositoryMirroring::RemoteError,
            Gitlab::Shell::Error,
            ProjectWiki::CouldNotCreateWikiError => e
-      # In some cases repository does not exists, the onle way to know about this is to parse the error text.
+      # In some cases repository does not exists, the only way to know about this is to parse the error text.
       # If it does not exist we should consider it as successfuly downloaded.
       if e.message.include? Gitlab::GitAccess::ERROR_MESSAGES[:no_repo]
+        log_info('Repository is not found, marking it as successfully synced')
         mark_sync_as_successful
       else
         fail_registry!('Error syncing wiki repository', e)
