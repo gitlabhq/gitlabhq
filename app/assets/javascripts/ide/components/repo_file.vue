@@ -1,9 +1,9 @@
 <script>
   import { mapState } from 'vuex';
-  import timeAgoMixin from '../../vue_shared/mixins/timeago';
-  import skeletonLoadingContainer from '../../vue_shared/components/skeleton_loading_container.vue';
+  import timeAgoMixin from '~/vue_shared/mixins/timeago';
+  import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
+  import fileIcon from '~/vue_shared/components/file_icon.vue';
   import newDropdown from './new_dropdown/index.vue';
-  import fileIcon from '../../vue_shared/components/file_icon.vue';
 
   export default {
     components: {

@@ -25,16 +25,10 @@ var NO_COMPRESSION = process.env.NO_COMPRESSION;
 var autoEntries = {};
 var pageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'app/assets/javascripts') });
 
-// filter out entries currently imported dynamically in dispatcher.js
-var dispatcher = fs.readFileSync(path.join(ROOT_PATH, 'app/assets/javascripts/dispatcher.js')).toString();
-var dispatcherChunks = dispatcher.match(/(?!import\(')\.\/pages\/[^']+/g);
-
 function generateAutoEntries(path, prefix = '.') {
   const chunkPath = path.replace(/\/index\.js$/, '');
-  if (!dispatcherChunks.includes(`${prefix}/${chunkPath}`)) {
-    const chunkName = chunkPath.replace(/\//g, '.');
-    autoEntries[chunkName] = `${prefix}/${path}`;
-  }
+  const chunkName = chunkPath.replace(/\//g, '.');
+  autoEntries[chunkName] = `${prefix}/${path}`;
 }
 
 pageEntries.forEach(( path ) => generateAutoEntries(path));
@@ -307,6 +301,7 @@ var config = {
       'images':         path.join(ROOT_PATH, 'app/assets/images'),
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
       'vue$':           'vue/dist/vue.esm.js',
+      'spec':           path.join(ROOT_PATH, 'spec/javascripts'),
     }
   }
 }

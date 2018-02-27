@@ -2,11 +2,13 @@
 
 import _ from 'underscore';
 import Vue from 'vue';
-import Flash from '../flash';
-import { __ } from '../locale';
+
+import Flash from '~/flash';
+import { __ } from '~/locale';
+
 import FilteredSearchBoards from './filtered_search_boards';
 import eventHub from './eventhub';
-import sidebarEventHub from '../sidebar/event_hub';
+import sidebarEventHub from '~/sidebar/event_hub'; // eslint-disable-line import/first
 import './models/issue';
 import './models/label';
 import './models/list';
@@ -22,7 +24,7 @@ import './components/board';
 import './components/board_sidebar';
 import './components/new_list_dropdown';
 import './components/modal/index';
-import '../vue_shared/vue_resource_interceptor';
+import '~/vue_shared/vue_resource_interceptor'; // eslint-disable-line import/first
 
 export default () => {
   const $boardApp = document.getElementById('board-app');
