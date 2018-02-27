@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import loadingButton from '~/vue_shared/components/loading_button.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 const LABEL = 'Hello';
 

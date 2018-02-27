@@ -1,3 +1,3 @@
 import UsersSelect from '../../../../users_select';
 
-export default () => new UsersSelect();
+document.addEventListener('DOMContentLoaded', () => new UsersSelect());

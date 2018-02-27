@@ -2,7 +2,7 @@ import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import commitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
-import mountComponent from '../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('Commit pipeline status component', () => {
   let vm;
