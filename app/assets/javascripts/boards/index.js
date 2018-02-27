@@ -32,7 +32,6 @@ import collapseIcon from 'ee/boards/icons/fullscreen_collapse.svg'; // eslint-di
 import expandIcon from 'ee/boards/icons/fullscreen_expand.svg'; // eslint-disable-line import/first
 import tooltip from '~/vue_shared/directives/tooltip'; // eslint-disable-line import/first
 
-
 export default () => {
   const $boardApp = document.getElementById('board-app');
   const Store = gl.issueBoards.BoardsStore;
@@ -322,7 +321,6 @@ export default () => {
       </div>
     `,
   });
-<<<<<<< HEAD:app/assets/javascripts/boards/index.js
 
   gl.IssueBoardsToggleFocusBtn = new Vue({
     el: document.getElementById('js-toggle-focus-btn'),
