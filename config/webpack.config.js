@@ -56,11 +56,8 @@ var config = {
   entry: {
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
     blob:                 './blob_edit/blob_bundle.js',
-<<<<<<< HEAD
-=======
     common:               './commons/index.js',
     common_vue:           './vue_shared/vue_resource_interceptor.js',
->>>>>>> upstream/master
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
