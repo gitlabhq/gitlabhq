@@ -49,7 +49,6 @@ var config = {
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
-    blob:                 './blob_edit/blob_bundle.js',
     common:               './commons/index.js',
     common_vue:           './vue_shared/vue_resource_interceptor.js',
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
@@ -326,12 +325,15 @@ var config = {
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
       'vue$':           'vue/dist/vue.esm.js',
       'spec':           path.join(ROOT_PATH, 'spec/javascripts'),
+<<<<<<< HEAD
 
       // EE-only
       'ee':              path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
       'ee_empty_states': path.join(ROOT_PATH, 'ee/app/views/shared/empty_states'),
       'ee_icons':        path.join(ROOT_PATH, 'ee/app/views/shared/icons'),
       'ee_images':       path.join(ROOT_PATH, 'ee/app/assets/images'),
+=======
+>>>>>>> upstream/master
     }
   }
 }

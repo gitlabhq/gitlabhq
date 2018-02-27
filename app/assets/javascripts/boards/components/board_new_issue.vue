@@ -1,6 +1,9 @@
 <script>
 import eventHub from '../eventhub';
+<<<<<<< HEAD:app/assets/javascripts/boards/components/board_new_issue.vue
 import ProjectSelect from 'ee/boards/components/project_select.vue'; // eslint-disable-line import/first
+=======
+>>>>>>> upstream/master:app/assets/javascripts/boards/components/board_new_issue.vue
 import ListIssue from '../models/issue';
 
 const Store = gl.issueBoards.BoardsStore;
@@ -28,6 +31,7 @@ export default {
       selectedProject: {},
     };
   },
+<<<<<<< HEAD:app/assets/javascripts/boards/components/board_new_issue.vue
   computed: {
     disabled() {
       if (this.groupId) {
@@ -39,6 +43,10 @@ export default {
   mounted() {
     this.$refs.input.focus();
     eventHub.$on('setSelectedProject', this.setSelectedProject);
+=======
+  mounted() {
+    this.$refs.input.focus();
+>>>>>>> upstream/master:app/assets/javascripts/boards/components/board_new_issue.vue
   },
   methods: {
     submit(e) {
@@ -90,6 +98,7 @@ export default {
 </script>
 
 <template>
+<<<<<<< HEAD:app/assets/javascripts/boards/components/board_new_issue.vue
   <div class="board-new-issue-form">
     <div class="card">
       <form @submit="submit($event)">
@@ -138,5 +147,49 @@ export default {
         </div>
       </form>
     </div>
+=======
+  <div class="card board-new-issue-form">
+    <form @submit="submit($event)">
+      <div
+        class="flash-container"
+        v-if="error"
+      >
+        <div class="flash-alert">
+          An error occurred. Please try again.
+        </div>
+      </div>
+      <label
+        class="label-light"
+        :for="list.id + '-title'"
+      >
+        Title
+      </label>
+      <input
+        class="form-control"
+        type="text"
+        v-model="title"
+        ref="input"
+        autocomplete="off"
+        :id="list.id + '-title'"
+      />
+      <div class="clearfix prepend-top-10">
+        <button
+          class="btn btn-success pull-left"
+          type="submit"
+          :disabled="title === ''"
+          ref="submit-button"
+        >
+          Submit issue
+        </button>
+        <button
+          class="btn btn-default pull-right"
+          type="button"
+          @click="cancel"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+>>>>>>> upstream/master:app/assets/javascripts/boards/components/board_new_issue.vue
   </div>
 </template>

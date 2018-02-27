@@ -398,9 +398,9 @@ For issues related to the open source stewardship of GitLab,
 there is the ~"stewardship" label.
 
 This label is to be used for issues in which the stewardship of GitLab
-is a topic of discussion. For instance if GitLab Inc. is planning to remove
-features from GitLab CE to make exclusive in GitLab EE, related issues
-would be labelled with ~"stewardship".
+is a topic of discussion. For instance if GitLab Inc. is planning to add
+features from GitLab EE to GitLab CE, related issues would be labelled with
+~"stewardship".
 
 A recent example of this was the issue for
 [bringing the time tracking API to GitLab CE][time-tracking-issue].
