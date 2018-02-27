@@ -41,6 +41,14 @@ sudo gitlab-rake plugins:validate
 bundle exec rake plugins:validate RAILS_ENV=production
 ```
 
+Example of output can be next: 
+
+```
+-> bundle exec rake plugins:validate RAILS_ENV=production
+Validating plugins from /plugins directory
+* /home/git/gitlab/plugins/save_to_file.clj succeed (zero exit code)
+* /home/git/gitlab/plugins/save_to_file.rb failure (non-zero exit code)
+```
 
 [hooks]: https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks#Server-Side-Hooks
 [system hooks]: ../system_hooks/system_hooks.md
