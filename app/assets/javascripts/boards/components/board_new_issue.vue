@@ -1,5 +1,6 @@
-/* global ListIssue */
+<script>
 import eventHub from '../eventhub';
+import ListIssue from '../models/issue';
 
 const Store = gl.issueBoards.BoardsStore;
 
@@ -16,6 +17,9 @@ export default {
       title: '',
       error: false,
     };
+  },
+  mounted() {
+    this.$refs.input.focus();
   },
   methods: {
     submit(e) {
@@ -59,42 +63,51 @@ export default {
       eventHub.$emit(`hide-issue-form-${this.list.id}`);
     },
   },
-  mounted() {
-    this.$refs.input.focus();
-  },
-  template: `
-    <div class="card board-new-issue-form">
-      <form @submit="submit($event)">
-        <div class="flash-container"
-          v-if="error">
-          <div class="flash-alert">
-            An error occurred. Please try again.
-          </div>
-        </div>
-        <label class="label-light"
-          :for="list.id + '-title'">
-          Title
-        </label>
-        <input class="form-control"
-          type="text"
-          v-model="title"
-          ref="input"
-          autocomplete="off"
-          :id="list.id + '-title'" />
-        <div class="clearfix prepend-top-10">
-          <button class="btn btn-success pull-left"
-            type="submit"
-            :disabled="title === ''"
-            ref="submit-button">
-            Submit issue
-          </button>
-          <button class="btn btn-default pull-right"
-            type="button"
-            @click="cancel">
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
-  `,
 };
+</script>
+
+<template>
+  <div class="card board-new-issue-form">
+    <form @submit="submit($event)">
+      <div
+        class="flash-container"
+        v-if="error"
+      >
+        <div class="flash-alert">
+          An error occurred. Please try again.
+        </div>
+      </div>
+      <label
+        class="label-light"
+        :for="list.id + '-title'"
+      >
+        Title
+      </label>
+      <input
+        class="form-control"
+        type="text"
+        v-model="title"
+        ref="input"
+        autocomplete="off"
+        :id="list.id + '-title'"
+      />
+      <div class="clearfix prepend-top-10">
+        <button
+          class="btn btn-success pull-left"
+          type="submit"
+          :disabled="title === ''"
+          ref="submit-button"
+        >
+          Submit issue
+        </button>
+        <button
+          class="btn btn-default pull-right"
+          type="button"
+          @click="cancel"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</template>
