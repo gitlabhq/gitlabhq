@@ -104,3 +104,5 @@
 - update_user_activity
 - upload_checksum
 - web_hook
+
+- object_storage:archive_legacy_trace_worker
