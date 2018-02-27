@@ -1,6 +1,6 @@
 <script>
+import icon from '~/vue_shared/components/icon.vue';
 import repoTree from './ide_repo_tree.vue';
-import icon from '../../vue_shared/components/icon.vue';
 import newDropdown from './new_dropdown/index.vue';
 
 export default {
