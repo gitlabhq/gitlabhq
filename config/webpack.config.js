@@ -54,7 +54,6 @@ function generateEntries() {
     monitoring:           './monitoring/monitoring_bundle.js',
     notebook_viewer:      './blob/notebook_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
-    profile:              './profile/profile_bundle.js',
     project_import_gl:    './projects/project_import_gitlab_project.js',
     protected_branches:   './protected_branches',
     protected_tags:       './protected_tags',

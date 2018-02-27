@@ -1,6 +1,5 @@
 - page_title 'Preferences'
 - @content_class = "limit-container-width" unless fluid_layout
-= render 'profiles/head'
 
 = form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { class: 'row prepend-top-default js-preferences-form' } do |f|
   .col-lg-4.application-theme
