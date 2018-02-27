@@ -10,6 +10,9 @@ nodeExporter:
 pushgateway:
   enabled: false
 
+rbac:
+  create: false
+
 server:
   image:
     tag: v2.1.0
