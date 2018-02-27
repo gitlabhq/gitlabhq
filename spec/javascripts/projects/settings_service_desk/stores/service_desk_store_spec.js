@@ -1,4 +1,4 @@
-import ServiceDeskStore from '~/projects/settings_service_desk/stores/service_desk_store';
+import ServiceDeskStore from 'ee/projects/settings_service_desk/stores/service_desk_store';
 
 describe('ServiceDeskStore', () => {
   let store;

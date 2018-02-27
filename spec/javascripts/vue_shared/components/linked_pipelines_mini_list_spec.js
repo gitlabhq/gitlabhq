@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import LinkedPipelinesMiniList from '~/vue_shared/components/linked_pipelines_mini_list.vue';
-import mockData from '../../pipelines/graph/linked_pipelines_mock_data';
+import LinkedPipelinesMiniList from 'ee/vue_shared/components/linked_pipelines_mini_list.vue';
+import mockData from 'spec/pipelines/graph/linked_pipelines_mock_data';
 
 const ListComponent = Vue.extend(LinkedPipelinesMiniList);
 

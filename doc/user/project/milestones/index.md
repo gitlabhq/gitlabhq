@@ -8,8 +8,8 @@ Milestones allow you to organize issues and merge requests into a cohesive group
 
 ## Project milestones and group milestones
 
-- **Project milestones** can be assigned to issues or merge requests in that project only. 
-- **Group milestones** can be assigned to any issue or merge request of any project in that group. 
+- **Project milestones** can be assigned to issues or merge requests in that project only.
+- **Group milestones** can be assigned to any issue or merge request of any project in that group.
 - In the [future](https://gitlab.com/gitlab-org/gitlab-ce/issues/36862), you will be able to assign group milestones to issues and merge reqeusts of projects in [subgroups](../../group/subgroups/index.md).
 
 ## Creating milestones

@@ -1266,7 +1266,7 @@ describe API::V3::Issues do
 
     context 'when source project does not exist' do
       it 'returns 404 when trying to move an issue' do
-        post v3_api("/projects/999999/issues/#{issue.id}/move", user),
+        post v3_api("/projects/0/issues/#{issue.id}/move", user),
                  to_project_id: target_project.id
 
         expect(response).to have_gitlab_http_status(404)
@@ -1277,7 +1277,7 @@ describe API::V3::Issues do
     context 'when target project does not exist' do
       it 'returns 404 when trying to move an issue' do
         post v3_api("/projects/#{project.id}/issues/#{issue.id}/move", user),
-                 to_project_id: 999999
+                 to_project_id: 0
 
         expect(response).to have_gitlab_http_status(404)
       end

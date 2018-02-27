@@ -3,9 +3,8 @@ import Vue from 'vue';
 import epicItemTimelineComponent from 'ee/roadmap/components/epic_item_timeline.vue';
 import { TIMELINE_CELL_MIN_WIDTH, TIMELINE_END_OFFSET_FULL, TIMELINE_END_OFFSET_HALF } from 'ee/roadmap/constants';
 
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { mockTimeframe, mockEpic, mockShellWidth } from '../mock_data';
-
-import mountComponent from '../../helpers/vue_mount_component_helper';
 
 const createComponent = ({
   timeframe = mockTimeframe,

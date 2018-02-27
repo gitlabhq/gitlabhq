@@ -4,6 +4,7 @@ import axios from '~/lib/utils/axios_utils';
 import mrWidgetOptions from 'ee/vue_merge_request_widget/mr_widget_options';
 import MRWidgetService from 'ee/vue_merge_request_widget/services/mr_widget_service';
 import MRWidgetStore from 'ee/vue_merge_request_widget/stores/mr_widget_store';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import mockData, {
   baseIssues,
   headIssues,
@@ -20,8 +21,6 @@ import {
   sastBaseAllIssues,
   sastHeadAllIssues,
 } from '../vue_shared/security_reports/mock_data';
-
-import mountComponent from '../helpers/vue_mount_component_helper';
 
 describe('ee merge request widget options', () => {
   let vm;

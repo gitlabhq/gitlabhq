@@ -1,6 +1,6 @@
 <script>
 import eventHub from '../eventhub';
-import ProjectSelect from './project_select.vue';
+import ProjectSelect from 'ee/boards/components/project_select.vue'; // eslint-disable-line import/first
 import ListIssue from '../models/issue';
 
 const Store = gl.issueBoards.BoardsStore;
