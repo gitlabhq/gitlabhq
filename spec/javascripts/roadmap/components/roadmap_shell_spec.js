@@ -2,9 +2,8 @@ import Vue from 'vue';
 
 import roadmapShellComponent from 'ee/roadmap/components/roadmap_shell.vue';
 
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { mockEpic, mockTimeframe, mockGroupId } from '../mock_data';
-
-import mountComponent from '../../helpers/vue_mount_component_helper';
 
 const createComponent = ({
   epics = [mockEpic],

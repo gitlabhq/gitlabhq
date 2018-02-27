@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import navigationTabs from '~/vue_shared/components/navigation_tabs.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('navigation tabs component', () => {
   let vm;

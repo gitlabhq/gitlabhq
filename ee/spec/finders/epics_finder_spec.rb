@@ -79,6 +79,15 @@ describe EpicsFinder do
           end
         end
 
+        context 'by label' do
+          let(:label) { create(:label) }
+          let!(:labeled_epic) { create(:labeled_epic, group: group, labels: [label]) }
+
+          it 'returns all epics with given label' do
+            expect(epics(label_name: label.title)).to contain_exactly(labeled_epic)
+          end
+        end
+
         context 'when subgroups are supported', :nested_groups do
           let(:subgroup) { create(:group, :private, parent: group) }
           let(:subgroup2) { create(:group, :private, parent: subgroup) }

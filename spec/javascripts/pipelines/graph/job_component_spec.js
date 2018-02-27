@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import jobComponent from '~/pipelines/components/graph/job_component.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('pipeline graph job component', () => {
   let JobComponent;

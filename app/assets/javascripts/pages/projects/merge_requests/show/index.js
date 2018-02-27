@@ -7,6 +7,8 @@ import ShortcutsIssuable from '~/shortcuts_issuable';
 import Diff from '~/diff';
 import { handleLocationHash } from '~/lib/utils/common_utils';
 import howToMerge from '~/how_to_merge';
+import initPipelines from '~/commit/pipelines/pipelines_bundle';
+import initWidget from '../../../../vue_merge_request_widget';
 
 document.addEventListener('DOMContentLoaded', () => {
   new Diff(); // eslint-disable-line no-new
@@ -15,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initIssuableSidebar();
   initNotes();
   initDiffNotes();
+  initPipelines();
 
   const mrShowNode = document.querySelector('.merge-request');
 
@@ -25,4 +28,5 @@ document.addEventListener('DOMContentLoaded', () => {
   new ShortcutsIssuable(true); // eslint-disable-line no-new
   handleLocationHash();
   howToMerge();
+  initWidget();
 });

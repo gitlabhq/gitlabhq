@@ -54,11 +54,12 @@ class Groups::EpicsController < Groups::ApplicationController
   end
 
   def epic_params_attributes
-    %i[
-      title
-      description
-      start_date
-      end_date
+    [
+      :title,
+      :description,
+      :start_date,
+      :end_date,
+      label_ids: []
     ]
   end
 
@@ -67,7 +68,7 @@ class Groups::EpicsController < Groups::ApplicationController
   end
 
   def update_service
-    Epics::UpdateService.new(nil, current_user, epic_params)
+    Epics::UpdateService.new(@group, current_user, epic_params)
   end
 
   def finder_type

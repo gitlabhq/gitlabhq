@@ -13,7 +13,7 @@ describe UpdateAllMirrorsWorker do
 
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(false)
 
-      expect(worker).not_to receive(:fail_stuck_mirrors!)
+      expect(worker).not_to receive(:schedule_mirrors!)
 
       worker.perform
     end
@@ -29,7 +29,9 @@ describe UpdateAllMirrorsWorker do
     def schedule_mirrors!(capacity:)
       allow(Gitlab::Mirror).to receive_messages(available_capacity: capacity)
 
-      Sidekiq::Testing.fake! do
+      allow_any_instance_of(RepositoryImportWorker).to receive(:perform)
+
+      Sidekiq::Testing.inline! do
         worker.schedule_mirrors!
       end
     end
@@ -74,29 +76,82 @@ describe UpdateAllMirrorsWorker do
         allow(Gitlab).to receive_messages(com?: true)
       end
 
-      let!(:unlicensed_project) { scheduled_mirror(at: 4.weeks.ago, licensed: false) }
-      let!(:earliest_project)   { scheduled_mirror(at: 3.weeks.ago, licensed: true) }
-      let!(:latest_project)     { scheduled_mirror(at: 2.weeks.ago, licensed: true) }
+      let!(:unlicensed_project1) { scheduled_mirror(at: 8.weeks.ago, licensed: false) }
+      let!(:unlicensed_project2) { scheduled_mirror(at: 7.weeks.ago, licensed: false) }
+      let!(:licensed_project1)   { scheduled_mirror(at: 6.weeks.ago, licensed: true) }
+      let!(:unlicensed_project3) { scheduled_mirror(at: 5.weeks.ago, licensed: false) }
+      let!(:licensed_project2)   { scheduled_mirror(at: 4.weeks.ago, licensed: true) }
+      let!(:unlicensed_project4) { scheduled_mirror(at: 3.weeks.ago, licensed: false) }
+      let!(:licensed_project3)   { scheduled_mirror(at: 1.week.ago, licensed: true) }
 
-      it "schedules all available mirrors when capacity is in excess" do
-        schedule_mirrors!(capacity: 3)
+      let(:unlicensed_projects) { [unlicensed_project1, unlicensed_project2, unlicensed_project3, unlicensed_project4] }
 
-        expect_import_scheduled(earliest_project, latest_project)
-        expect_import_not_scheduled(unlicensed_project)
+      context 'when capacity is in excess' do
+        it "schedules all available mirrors" do
+          schedule_mirrors!(capacity: 4)
+
+          expect_import_scheduled(licensed_project1, licensed_project2, licensed_project3)
+          expect_import_not_scheduled(*unlicensed_projects)
+        end
+
+        it 'requests as many batches as necessary' do
+          # The first batch will only contain 3 licensed mirrors, but since we have
+          # fewer than 8 mirrors in total, there's no need to request another batch
+          expect(subject).to receive(:pull_mirrors_batch).with(hash_including(batch_size: 8)).and_call_original
+
+          schedule_mirrors!(capacity: 4)
+        end
       end
 
-      it "schedules all available mirrors when capacity is sufficient" do
-        schedule_mirrors!(capacity: 2)
+      context 'when capacity is exacly sufficient' do
+        it "schedules all available mirrors" do
+          schedule_mirrors!(capacity: 3)
 
-        expect_import_scheduled(earliest_project, latest_project)
-        expect_import_not_scheduled(unlicensed_project)
+          expect_import_scheduled(licensed_project1, licensed_project2, licensed_project3)
+          expect_import_not_scheduled(*unlicensed_projects)
+        end
+
+        it 'requests as many batches as necessary' do
+          # The first batch will only contain 2 licensed mirrors, so we need to request another batch
+          expect(subject).to receive(:pull_mirrors_batch).with(hash_including(batch_size: 6)).ordered.and_call_original
+          expect(subject).to receive(:pull_mirrors_batch).with(hash_including(batch_size: 2)).ordered.and_call_original
+
+          schedule_mirrors!(capacity: 3)
+        end
       end
 
-      it 'schedules mirrors by next_execution_timestamp when capacity is insufficient' do
-        schedule_mirrors!(capacity: 1)
+      context 'when capacity is insufficient' do
+        it 'schedules mirrors by next_execution_timestamp' do
+          schedule_mirrors!(capacity: 2)
 
-        expect_import_scheduled(earliest_project)
-        expect_import_not_scheduled(unlicensed_project, latest_project)
+          expect_import_scheduled(licensed_project1, licensed_project2)
+          expect_import_not_scheduled(*unlicensed_projects, licensed_project3)
+        end
+
+        it 'requests as many batches as necessary' do
+          # The first batch will only contain 1 licensed mirror, so we need to request another batch
+          expect(subject).to receive(:pull_mirrors_batch).with(hash_including(batch_size: 4)).ordered.and_call_original
+          expect(subject).to receive(:pull_mirrors_batch).with(hash_including(batch_size: 2)).ordered.and_call_original
+
+          schedule_mirrors!(capacity: 2)
+        end
+      end
+
+      context 'when capacity is insufficient and the first batch is empty' do
+        it 'schedules mirrors by next_execution_timestamp' do
+          schedule_mirrors!(capacity: 1)
+
+          expect_import_scheduled(licensed_project1)
+          expect_import_not_scheduled(*unlicensed_projects, licensed_project2, licensed_project3)
+        end
+
+        it 'requests as many batches as necessary' do
+          # The first batch will not contain any licensed mirrors, so we need to request another batch
+          expect(subject).to receive(:pull_mirrors_batch).with(hash_including(batch_size: 2)).ordered.and_call_original
+          expect(subject).to receive(:pull_mirrors_batch).with(hash_including(batch_size: 2)).ordered.and_call_original
+
+          schedule_mirrors!(capacity: 1)
+        end
       end
     end
   end

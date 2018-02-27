@@ -5,7 +5,7 @@ import deleteMilestoneModal from '~/pages/milestones/shared/components/delete_mi
 import eventHub from '~/pages/milestones/shared/event_hub';
 import * as urlUtility from '~/lib/utils/url_utility';
 
-import mountComponent from '../../../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('delete_milestone_modal.vue', () => {
   const Component = Vue.extend(deleteMilestoneModal);

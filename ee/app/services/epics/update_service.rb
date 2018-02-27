@@ -1,5 +1,5 @@
 module Epics
-  class UpdateService < ::IssuableBaseService
+  class UpdateService < Epics::BaseService
     def execute(epic)
       update(epic)
     end

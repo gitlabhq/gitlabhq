@@ -1,0 +1,5 @@
+---
+title: Fix multiple assignees avatar alignment in issues list
+merge_request: 4664
+author:
+type: fixed

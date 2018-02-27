@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import LinkedPipelinesColumn from '~/pipelines/components/graph/linked_pipelines_column.vue';
+import LinkedPipelinesColumn from 'ee/pipelines/components/graph/linked_pipelines_column.vue';
 import mockData from './linked_pipelines_mock_data';
 
 const LinkedPipelinesColumnComponent = Vue.extend(LinkedPipelinesColumn);
