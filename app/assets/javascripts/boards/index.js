@@ -368,6 +368,4 @@ export default () => {
       'boards-selector': gl.issueBoards.BoardsSelector,
     }
   });
-=======
->>>>>>> upstream/master:app/assets/javascripts/boards/index.js
 };
