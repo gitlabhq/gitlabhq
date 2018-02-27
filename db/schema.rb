@@ -1293,6 +1293,7 @@ ActiveRecord::Schema.define(version: 20180327101207) do
     t.integer "last_edited_by_id"
     t.boolean "discussion_locked"
     t.datetime_with_timezone "closed_at"
+    t.integer "closed_by_id"
   end
 
   add_index "issues", ["author_id"], name: "index_issues_on_author_id", using: :btree
@@ -2695,6 +2696,7 @@ ActiveRecord::Schema.define(version: 20180327101207) do
   add_foreign_key "issues", "milestones", name: "fk_96b1dd429c", on_delete: :nullify
   add_foreign_key "issues", "projects", name: "fk_899c8f3231", on_delete: :cascade
   add_foreign_key "issues", "users", column: "author_id", name: "fk_05f1e72feb", on_delete: :nullify
+  add_foreign_key "issues", "users", column: "closed_by_id", name: "fk_c63cbf6c25", on_delete: :nullify
   add_foreign_key "issues", "users", column: "updated_by_id", name: "fk_ffed080f01", on_delete: :nullify
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade
