@@ -119,4 +119,24 @@ describe EE::NotificationService, :mailer do
       end
     end
   end
+
+  describe 'mirror hard failed' do
+    let(:user) { create(:user) }
+
+    it 'does not send email when mirror is not hard failed' do
+      project = create(:project, :mirror)
+
+      expect(Notify).not_to receive(:mirror_was_hard_failed_email)
+
+      subject.mirror_was_hard_failed(project)
+    end
+
+    it 'sends email to mirror user when mirror hard failed' do
+      project = create(:project, :mirror, :import_hard_failed, mirror_user: user)
+
+      expect(Notify).to receive(:mirror_was_hard_failed_email).with(project.id, user.id).and_call_original
+
+      subject.mirror_was_hard_failed(project)
+    end
+  end
 end

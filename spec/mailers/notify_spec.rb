@@ -1419,6 +1419,22 @@ describe Notify do
     end
   end
 
+  describe 'mirror was hard failed' do
+    let(:project) { create(:project, :mirror, :import_hard_failed) }
+
+    subject { described_class.mirror_was_hard_failed_email(project.id, user.id) }
+
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'it should not have Gmail Actions links'
+    it_behaves_like "a user cannot unsubscribe through footer link"
+
+    it 'has the correct subject and body' do
+      is_expected.to have_subject("#{project.name} | Pull mirroring paused")
+      is_expected.to have_html_escaped_body_text(project.import_url)
+      is_expected.to have_html_escaped_body_text(project.full_path)
+    end
+  end
+
   describe 'admin notification' do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }

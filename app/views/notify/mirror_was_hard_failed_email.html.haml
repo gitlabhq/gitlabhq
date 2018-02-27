@@ -1,0 +1,7 @@
+%p
+  Mirroring from #{@project.import_url} to #{@project.full_path} failed with the following error:
+
+%p
+  = @project.import_error.try(:strip)
+
+Repository mirroring has been paused due to too many failed attempts, and can be resumed by a project admin.

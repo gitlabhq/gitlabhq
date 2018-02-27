@@ -39,12 +39,12 @@ module Emails
            subject:   @message.subject)
     end
 
-    def mirror_hard_failed(project_id, user_id)
-      @current_user = @user = User.find user_id
-      @project = Project.find project_id
+    def mirror_was_hard_failed_email(project_id, user_id)
+      @user = User.find(user_id)
+      @project = Project.find(project_id)
 
       mail(to: @user.notification_email,
-           subject: subject('Mirror hard failed'))
+           subject: subject('Pull mirroring paused'))
     end
   end
 end
