@@ -20,9 +20,6 @@ Capybara.register_driver :chrome do |app|
   # Chrome won't work properly in a Docker container in sandbox mode
   options.add_argument("no-sandbox")
 
-  # Workaround for Chrome v64 bug: https://bugs.chromium.org/p/chromedriver/issues/detail?id=2239
-  options.add_argument("disable-browser-side-navigation")
-
   # Run headless by default unless CHROME_HEADLESS specified
   unless ENV['CHROME_HEADLESS'] =~ /^(false|no|0)$/i
     options.add_argument("headless")
