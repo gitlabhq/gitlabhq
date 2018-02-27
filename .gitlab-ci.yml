@@ -108,7 +108,7 @@ stages:
     - '[[ -f $FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${FLAKY_RSPEC_REPORT_PATH}'
     - '[[ -f $NEW_FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${NEW_FLAKY_RSPEC_REPORT_PATH}'
     - scripts/gitaly-test-spawn
-    - knapsack rspec "--color --format documentation"
+    - knapsack rspec "--color --format documentation --tag ~migration"
   artifacts:
     expire_in: 31d
     when: always
@@ -124,6 +124,22 @@ stages:
 
 .rspec-metadata-mysql: &rspec-metadata-mysql
   <<: *rspec-metadata
+  <<: *use-mysql
+
+.rspec-migrations: &rspec-migrations
+  <<: *rspec-metadata
+  script:
+    - export NO_KNAPSACK=1
+    - export CACHE_CLASSES=true
+    - scripts/gitaly-test-spawn
+    - bundle exec rspec --color --format documentation --tag migration
+
+.rspec-migrations-pg: &rspec-migrations-pg
+  <<: *rspec-migrations
+  <<: *use-pg
+
+.rspec-migrations-mysql: &rspec-migrations-mysql
+  <<: *rspec-migrations
   <<: *use-mysql
 
 .spinach-metadata: &spinach-metadata
@@ -322,6 +338,9 @@ setup-test-env:
     paths:
       - tmp/tests
       - config/secrets.yml
+
+rspec-pg migrations: *rspec-migrations-pg
+rspec-mysql migrations: *rspec-migrations-mysql
 
 rspec-pg 0 28: *rspec-metadata-pg
 rspec-pg 1 28: *rspec-metadata-pg
