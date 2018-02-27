@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180216121030) do
+ActiveRecord::Schema.define(version: 20180227182036) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1735,6 +1735,7 @@ ActiveRecord::Schema.define(version: 20180216121030) do
     t.datetime "updated_at"
     t.integer "note_id"
     t.string "commit_id"
+    t.datetime_with_timezone "snoozed_until"
   end
 
   add_index "todos", ["author_id"], name: "index_todos_on_author_id", using: :btree
@@ -1799,6 +1800,13 @@ ActiveRecord::Schema.define(version: 20180216121030) do
 
   add_index "user_callouts", ["user_id", "feature_name"], name: "index_user_callouts_on_user_id_and_feature_name", unique: true, using: :btree
   add_index "user_callouts", ["user_id"], name: "index_user_callouts_on_user_id", using: :btree
+
+  create_table "user_contributed_projects", id: false, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "project_id", null: false
+  end
+
+  add_index "user_contributed_projects", ["user_id", "project_id"], name: "index_user_contributed_projects_on_user_id_and_project_id", unique: true, using: :btree
 
   create_table "user_custom_attributes", force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false

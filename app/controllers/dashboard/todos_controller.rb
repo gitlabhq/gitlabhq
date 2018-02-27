@@ -41,6 +41,18 @@ class Dashboard::TodosController < Dashboard::ApplicationController
     render json: todos_counts
   end
 
+  def snooze
+    TodoService.new.mark_todos_as_snoozed_by_ids(params[:id], current_user)
+
+    render json: todos_counts
+  end
+
+  def unsnooze
+    TodoService.new.mark_todos_as_unsnoozed_by_ids(params[:id], current_user)
+
+    render json: todos_counts
+  end
+
   def bulk_restore
     TodoService.new.mark_todos_as_pending_by_ids(params[:ids], current_user)
 
@@ -65,7 +77,8 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   def todos_counts
     {
       count: number_with_delimiter(current_user.todos_pending_count),
-      done_count: number_with_delimiter(current_user.todos_done_count)
+      done_count: number_with_delimiter(current_user.todos_done_count),
+      snoozed_count: number_with_delimiter(current_user.todos_snoozed_count)
     }
   end
 

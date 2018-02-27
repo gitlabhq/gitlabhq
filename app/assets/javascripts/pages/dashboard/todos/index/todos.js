@@ -22,7 +22,7 @@ export default class Todos {
   }
 
   unbindEvents() {
-    $('.js-done-todo, .js-undo-todo, .js-add-todo').off('click', this.updateRowStateClickedWrapper);
+    $('.js-done-todo, .js-undo-todo, .js-add-todo, .js-snooze-todo, .js-unsnooze-todo').off('click', this.updateRowStateClickedWrapper);
     $('.js-todos-mark-all', '.js-todos-undo-all').off('click', this.updateallStateClickedWrapper);
     $('.todo').off('click', this.goToTodoUrl);
   }
@@ -31,7 +31,7 @@ export default class Todos {
     this.updateRowStateClickedWrapper = this.updateRowStateClicked.bind(this);
     this.updateAllStateClickedWrapper = this.updateAllStateClicked.bind(this);
 
-    $('.js-done-todo, .js-undo-todo, .js-add-todo').on('click', this.updateRowStateClickedWrapper);
+    $('.js-done-todo, .js-undo-todo, .js-add-todo, .js-snooze-todo, .js-unsnooze-todo').on('click', this.updateRowStateClickedWrapper);
     $('.js-todos-mark-all, .js-todos-undo-all').on('click', this.updateAllStateClickedWrapper);
     $('.todo').on('click', this.goToTodoUrl);
   }
@@ -74,6 +74,8 @@ export default class Todos {
     const row = target.closest('li');
     const restoreBtn = row.querySelector('.js-undo-todo');
     const doneBtn = row.querySelector('.js-done-todo');
+    const snoozeBtn = row.querySelector('.js-snooze-todo');
+    const unsnoozeBtn = row.querySelector('.js-unsnooze-todo');
 
     target.classList.add('hidden');
     target.removeAttribute('disabled');
@@ -82,9 +84,23 @@ export default class Todos {
     if (target === doneBtn) {
       row.classList.add('done-reversible');
       restoreBtn.classList.remove('hidden');
+      snoozeBtn.classList.add('hidden');
+      unsnoozeBtn.classList.add('hidden');
     } else if (target === restoreBtn) {
       row.classList.remove('done-reversible');
       doneBtn.classList.remove('hidden');
+      snoozeBtn.classList.remove('hidden');
+      unsnoozeBtn.classList.add('hidden');
+    } else if (target === snoozeBtn) {
+      row.classList.add('done-reversible');
+      doneBtn.classList.add('hidden');
+      snoozeBtn.classList.add('hidden');
+      unsnoozeBtn.classList.remove('hidden');
+    } else if (target === unsnoozeBtn) {
+      row.classList.remove('done-reversible');
+      doneBtn.classList.remove('hidden');
+      snoozeBtn.classList.remove('hidden');
+      unsnoozeBtn.classList.add('hidden');
     } else {
       row.parentNode.removeChild(row);
     }
@@ -125,6 +141,7 @@ export default class Todos {
   updateBadges(data) {
     $(document).trigger('todo:toggle', data.count);
     document.querySelector('.todos-pending .badge').innerHTML = data.count;
+    document.querySelector('.todos-snoozed .badge').innerHTML = data.snoozed_count;
     document.querySelector('.todos-done .badge').innerHTML = data.done_count;
   }
 

@@ -11,6 +11,10 @@ module TodosHelper
     @todos_done_count ||= current_user.todos_done_count
   end
 
+  def todos_snoozed_count
+    @todos_snoozed_count ||= current_user.todos_snoozed_count
+  end
+
   def todo_action_name(todo)
     case todo.action
     when Todo::ASSIGNED then todo.self_added? ? 'assigned' : 'assigned you'

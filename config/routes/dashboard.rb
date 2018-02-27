@@ -23,6 +23,8 @@ resource :dashboard, controller: 'dashboard', only: [] do
       end
       member do
         patch :restore
+        patch :snooze
+        patch :unsnooze
       end
     end
 

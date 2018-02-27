@@ -11,6 +11,12 @@
             Todos
           %span.badge
             = number_with_delimiter(todos_pending_count)
+      %li.todos-snoozed{ class: active_when(params[:state].blank? || params[:state] == 'snoozed') }>
+        = link_to todos_filter_path(state: 'snoozed') do
+          %span
+            Snoozed
+          %span.badge
+            = number_with_delimiter(todos_snoozed_count)
       %li.todos-done{ class: active_when(params[:state] == 'done') }>
         = link_to todos_filter_path(state: 'done') do
           %span

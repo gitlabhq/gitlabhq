@@ -165,6 +165,8 @@ class TodosFinder
     case params[:state].to_s
     when 'done'
       items.done
+    when 'snoozed'
+      items.snoozed
     else
       items.pending
     end

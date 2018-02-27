@@ -1056,9 +1056,16 @@ class User < ActiveRecord::Base
     end
   end
 
+  def todos_snoozed_count(force: false)
+    Rails.cache.fetch(['users', id, 'todos_snoozed_count'], force: force, expires_in: 20.minutes) do
+      TodosFinder.new(self, state: :snoozed).execute.count
+    end
+  end
+
   def update_todos_count_cache
     todos_done_count(force: true)
     todos_pending_count(force: true)
+    todos_snoozed_count(force: true)
   end
 
   # This is copied from Devise::Models::Lockable#valid_for_authentication?, as our auth

@@ -188,6 +188,32 @@ class TodoService
     mark_todos_as_pending(todos, current_user)
   end
 
+  # When user marks some todos as snoozed
+  def mark_todos_as_snoozed(todos, current_user)
+    todos.each do |todo|
+      todo.snooze
+    end
+    current_user.update_todos_count_cache
+  end
+
+  def mark_todos_as_snoozed_by_ids(ids, current_user)
+    todos = todos_by_ids(ids, current_user)
+    mark_todos_as_snoozed(todos, current_user)
+  end
+
+  # When user marks some todos as unsnoozed
+  def mark_todos_as_unsnoozed(todos, current_user)
+    todos.each do |todo|
+      todo.unsnooze
+    end
+    current_user.update_todos_count_cache
+  end
+
+  def mark_todos_as_unsnoozed_by_ids(ids, current_user)
+    todos = todos_by_ids(ids, current_user)
+    mark_todos_as_unsnoozed(todos, current_user)
+  end
+
   # When user marks an issue as todo
   def mark_todo(issuable, current_user)
     attributes = attributes_for_todo(issuable.project, issuable, current_user, Todo::MARKED)

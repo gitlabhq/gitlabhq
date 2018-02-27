@@ -36,14 +36,32 @@ class Todo < ActiveRecord::Base
 
   scope :pending, -> { with_state(:pending) }
   scope :done, -> { with_state(:done) }
+  scope :snoozed, -> { with_state(:snoozed) }
 
   state_machine :state, initial: :pending do
     event :done do
       transition [:pending] => :done
     end
 
+    event :snooze do
+      transition [:pending] => :snoozed
+    end
+
+    event :unsnooze do
+      transition [:snoozed] => :pending
+    end
+
+    before_transition [:pending] => :snoozed do |todo|
+      todo.snoozed_until = Time.now + 1.day
+    end
+
+    before_transition [:snoozed] => :pending do |todo|
+      todo.snoozed_until = nil
+    end
+
     state :pending
     state :done
+    state :snoozed
   end
 
   after_save :keep_around_commit
