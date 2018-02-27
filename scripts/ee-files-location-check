@@ -2,7 +2,6 @@
 
 WHITELIST = [
   'CHANGELOG-EE.md',
-  'app/assets/javascripts/**/*', # https://gitlab.com/gitlab-org/gitlab-ee/issues/4536
   'config/**/*', # https://gitlab.com/gitlab-org/gitlab-ee/issues/4946
   'doc/**/*', # https://gitlab.com/gitlab-org/gitlab-ee/issues/4948#note_59945483
   'qa/**/*', # https://gitlab.com/gitlab-org/gitlab-ee/issues/4997#note_59764702

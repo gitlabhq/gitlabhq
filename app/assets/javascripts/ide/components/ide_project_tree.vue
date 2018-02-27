@@ -1,6 +1,6 @@
 <script>
+import projectAvatarImage from '~/vue_shared/components/project_avatar/image.vue';
 import branchesTree from './ide_project_branches_tree.vue';
-import projectAvatarImage from '../../vue_shared/components/project_avatar/image.vue';
 
 export default {
   components: {
