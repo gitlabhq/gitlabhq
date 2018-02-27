@@ -25,16 +25,10 @@ var NO_COMPRESSION = process.env.NO_COMPRESSION;
 var autoEntries = {};
 var pageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'app/assets/javascripts') });
 
-// filter out entries currently imported dynamically in dispatcher.js
-var dispatcher = fs.readFileSync(path.join(ROOT_PATH, 'app/assets/javascripts/dispatcher.js')).toString();
-var dispatcherChunks = dispatcher.match(/(?!import\(')\.\/pages\/[^']+/g);
-
 function generateAutoEntries(path, prefix = '.') {
   const chunkPath = path.replace(/\/index\.js$/, '');
-  if (!dispatcherChunks.includes(`${prefix}/${chunkPath}`)) {
-    const chunkName = chunkPath.replace(/\//g, '.');
-    autoEntries[chunkName] = `${prefix}/${path}`;
-  }
+  const chunkName = chunkPath.replace(/\//g, '.');
+  autoEntries[chunkName] = `${prefix}/${path}`;
 }
 
 pageEntries.forEach(( path ) => generateAutoEntries(path));
@@ -51,14 +45,11 @@ var config = {
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
-    blob:                 './blob_edit/blob_bundle.js',
     common:               './commons/index.js',
     common_vue:           './vue_shared/vue_resource_interceptor.js',
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
-    commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
     environments:         './environments/environments_bundle.js',
-    environments_folder:  './environments/folder/environments_folder_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
     help:                 './help/help.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
@@ -242,12 +233,10 @@ var config = {
       name: 'common_vue',
       chunks: [
         'boards',
-        'commit_pipelines',
         'cycle_analytics',
         'deploy_keys',
         'diff_notes',
         'environments',
-        'environments_folder',
         'filtered_search',
         'groups',
         'merge_conflicts',
@@ -307,6 +296,7 @@ var config = {
       'images':         path.join(ROOT_PATH, 'app/assets/images'),
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
       'vue$':           'vue/dist/vue.esm.js',
+      'spec':           path.join(ROOT_PATH, 'spec/javascripts'),
     }
   }
 }

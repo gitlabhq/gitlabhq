@@ -1,0 +1,5 @@
+---
+title: Fixes Prometheus admin configuration page
+merge_request: 17377
+author:
+type: fixed

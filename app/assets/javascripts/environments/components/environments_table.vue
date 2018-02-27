@@ -2,8 +2,8 @@
 /**
  * Render environments table.
  */
+import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import environmentItem from './environment_item.vue';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
 export default {
   components: {

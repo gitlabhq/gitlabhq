@@ -4,7 +4,7 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import boardNewIssue from '~/boards/components/board_new_issue';
+import boardNewIssue from '~/boards/components/board_new_issue.vue';
 
 import '~/boards/models/list';
 import { listObj, boardsMockInterceptor, mockBoardService } from './mock_data';
