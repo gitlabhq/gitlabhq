@@ -21,33 +21,33 @@ var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
 var NO_COMPRESSION = process.env.NO_COMPRESSION;
 
-// generate automatic entry points
-var autoEntries = {};
-var pageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'app/assets/javascripts') });
+var autoEntriesCount = 0;
+var watchAutoEntries = [];
 
-function generateAutoEntries(path, prefix = '.') {
-  const chunkPath = path.replace(/\/index\.js$/, '');
-  const chunkName = chunkPath.replace(/\//g, '.');
-  autoEntries[chunkName] = `${prefix}/${path}`;
-}
+function generateEntries() {
+  // generate automatic entry points
+  var autoEntries = {};
+  var pageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'app/assets/javascripts') });
+  watchAutoEntries = [
+    path.join(ROOT_PATH, 'app/assets/javascripts/pages/'),
+  ];
 
-pageEntries.forEach(( path ) => generateAutoEntries(path));
+  function generateAutoEntries(path, prefix = '.') {
+    const chunkPath = path.replace(/\/index\.js$/, '');
+    const chunkName = chunkPath.replace(/\//g, '.');
+    autoEntries[chunkName] = `${prefix}/${path}`;
+  }
 
-// add and replace any ce entries with ee entries
-const eePageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'ee/app/assets/javascripts') });
-eePageEntries.forEach(( path ) => generateAutoEntries(path, 'ee'));
+  pageEntries.forEach(( path ) => generateAutoEntries(path));
 
-// report our auto-generated bundle count
-var autoEntriesCount = Object.keys(autoEntries).length;
-console.log(`${autoEntriesCount} entries from '/pages' automatically added to webpack output.`);
+  // EE-specific auto entries
+  const eePageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'ee/app/assets/javascripts') });
+  eePageEntries.forEach(( path ) => generateAutoEntries(path, 'ee'));
+  watchAutoEntries.concat(path.join(ROOT_PATH, 'ee/app/assets/javascripts/pages/'));
 
-var config = {
-  // because sqljs requires fs.
-  node: {
-    fs: "empty"
-  },
-  context: path.join(ROOT_PATH, 'app/assets/javascripts'),
-  entry: {
+  autoEntriesCount = Object.keys(autoEntries).length;
+
+  const manualEntries = {
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
     common:               './commons/index.js',
     common_vue:           './vue_shared/vue_resource_interceptor.js',
@@ -100,7 +100,15 @@ var config = {
     service_desk_issues:  'ee/service_desk_issues/index.js',
     roadmap:              'ee/roadmap',
     ee_sidebar:           'ee/sidebar/sidebar_bundle.js',
-  },
+  };
+
+  return Object.assign(manualEntries, autoEntries);
+}
+
+var config = {
+  context: path.join(ROOT_PATH, 'app/assets/javascripts'),
+
+  entry: generateEntries,
 
   output: {
     path: path.join(ROOT_PATH, 'public/assets/webpack'),
@@ -323,10 +331,13 @@ var config = {
       'ee_icons':        path.join(ROOT_PATH, 'ee/app/views/shared/icons'),
       'ee_images':       path.join(ROOT_PATH, 'ee/app/assets/images'),
     }
-  }
-}
+  },
 
-config.entry = Object.assign({}, autoEntries, config.entry);
+  // sqljs requires fs
+  node: {
+    fs: 'empty',
+  },
+};
 
 if (IS_PRODUCTION) {
   config.devtool = 'source-map';
@@ -363,7 +374,24 @@ if (IS_DEV_SERVER) {
   };
   config.plugins.push(
     // watch node_modules for changes if we encounter a missing module compile error
-    new WatchMissingNodeModulesPlugin(path.join(ROOT_PATH, 'node_modules'))
+    new WatchMissingNodeModulesPlugin(path.join(ROOT_PATH, 'node_modules')),
+
+    // watch for changes to our automatic entry point modules
+    {
+      apply(compiler) {
+        compiler.plugin('emit', (compilation, callback) => {
+          compilation.contextDependencies = [
+            ...compilation.contextDependencies,
+            ...watchAutoEntries,
+          ];
+
+          // report our auto-generated bundle count
+          console.log(`${autoEntriesCount} entries from '/pages' automatically added to webpack output.`);
+
+          callback();
+        })
+      },
+    },
   );
   if (DEV_SERVER_LIVERELOAD) {
     config.plugins.push(new webpack.HotModuleReplacementPlugin());
