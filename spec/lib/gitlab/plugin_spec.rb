@@ -4,7 +4,7 @@ describe Gitlab::Plugin do
   describe '.execute' do
     let(:data) { Gitlab::DataBuilder::Push::SAMPLE_DATA }
     let(:plugin) { Rails.root.join('plugins', 'test.rb') }
-    let(:tmp_file) { Tempfile.new('plugin-dump').path }
+    let(:tmp_file) { Tempfile.new('plugin-dump') }
 
     before do
       File.write(plugin, plugin_source)
@@ -13,7 +13,7 @@ describe Gitlab::Plugin do
 
     after do
       FileUtils.rm(plugin)
-      FileUtils.rm(tmp_file)
+      tmp_file.close!
     end
 
     subject { described_class.execute(plugin.to_s, data) }
@@ -23,17 +23,17 @@ describe Gitlab::Plugin do
     it 'ensures plugin received data via stdin' do
       subject
 
-      expect(File.read(tmp_file)).to eq(data.to_json)
+      expect(File.read(tmp_file.path)).to eq(data.to_json)
     end
   end
 
   private
 
   def plugin_source
-    <<-EOS
-#!/usr/bin/env ruby
-x = STDIN.read
-File.write('#{tmp_file}', x)
+    <<~EOS
+      #!/usr/bin/env ruby
+      x = STDIN.read
+      File.write('#{tmp_file.path}', x)
     EOS
   end
 end
