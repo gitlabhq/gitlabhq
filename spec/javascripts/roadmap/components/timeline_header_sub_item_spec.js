@@ -2,9 +2,8 @@ import Vue from 'vue';
 
 import timelineHeaderSubItemComponent from 'ee/roadmap/components/timeline_header_sub_item.vue';
 
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { mockTimeframe } from '../mock_data';
-
-import mountComponent from '../../helpers/vue_mount_component_helper';
 
 const createComponent = ({
   currentDate = mockTimeframe[0],

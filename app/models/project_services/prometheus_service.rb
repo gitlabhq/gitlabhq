@@ -69,16 +69,16 @@ class PrometheusService < MonitoringService
     client.ping
 
     { success: true, result: 'Checked API endpoint' }
-  rescue Gitlab::PrometheusError => err
+  rescue Gitlab::PrometheusClient::Error => err
     { success: false, result: err }
   end
 
   def environment_metrics(environment)
-    with_reactive_cache(Gitlab::Prometheus::Queries::EnvironmentQuery.name, environment.id, &method(:rename_data_to_metrics))
+    with_reactive_cache(Gitlab::Prometheus::Queries::EnvironmentQuery.name, environment.id, &rename_field(:data, :metrics))
   end
 
   def deployment_metrics(deployment)
-    metrics = with_reactive_cache(Gitlab::Prometheus::Queries::DeploymentQuery.name, deployment.environment.id, deployment.id, &method(:rename_data_to_metrics))
+    metrics = with_reactive_cache(Gitlab::Prometheus::Queries::DeploymentQuery.name, deployment.environment.id, deployment.id, &rename_field(:data, :metrics))
     metrics&.merge(deployment_time: deployment.created_at.to_i) || {}
   end
 
@@ -107,7 +107,7 @@ class PrometheusService < MonitoringService
       data: data,
       last_update: Time.now.utc
     }
-  rescue Gitlab::PrometheusError => err
+  rescue Gitlab::PrometheusClient::Error => err
     { success: false, result: err.message }
   end
 
@@ -116,10 +116,10 @@ class PrometheusService < MonitoringService
       Gitlab::PrometheusClient.new(RestClient::Resource.new(api_url))
     else
       cluster = cluster_with_prometheus(environment_id)
-      raise Gitlab::PrometheusError, "couldn't find cluster with Prometheus installed" unless cluster
+      raise Gitlab::PrometheusClient::Error, "couldn't find cluster with Prometheus installed" unless cluster
 
       rest_client = client_from_cluster(cluster)
-      raise Gitlab::PrometheusError, "couldn't create proxy Prometheus client" unless rest_client
+      raise Gitlab::PrometheusClient::Error, "couldn't create proxy Prometheus client" unless rest_client
 
       Gitlab::PrometheusClient.new(rest_client)
     end
@@ -152,9 +152,11 @@ class PrometheusService < MonitoringService
     cluster.application_prometheus.proxy_client
   end
 
-  def rename_data_to_metrics(metrics)
-    metrics[:metrics] = metrics.delete :data
-    metrics
+  def rename_field(old_field, new_field)
+    -> (metrics) do
+      metrics[new_field] = metrics.delete(old_field)
+      metrics
+    end
   end
 
   def synchronize_service_state!

@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import eventHub from '~/projects/settings_service_desk/event_hub';
-import serviceDeskSetting from '~/projects/settings_service_desk/components/service_desk_setting.vue';
+import eventHub from 'ee/projects/settings_service_desk/event_hub';
+import serviceDeskSetting from 'ee/projects/settings_service_desk/components/service_desk_setting.vue';
 
 describe('ServiceDeskSetting', () => {
   let ServiceDeskSetting;

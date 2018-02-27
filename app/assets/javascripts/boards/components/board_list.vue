@@ -1,6 +1,6 @@
 <script>
 import Sortable from 'vendor/Sortable';
-import boardNewIssue from './board_new_issue';
+import boardNewIssue from './board_new_issue.vue';
 import boardCard from './board_card.vue';
 import eventHub from '../eventhub';
 import loadingIcon from '../../vue_shared/components/loading_icon.vue';

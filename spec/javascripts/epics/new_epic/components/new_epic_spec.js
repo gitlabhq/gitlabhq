@@ -2,7 +2,7 @@ import Vue from 'vue';
 import _ from 'underscore';
 import newEpic from 'ee/epics/new_epic/components/new_epic.vue';
 import * as urlUtility from '~/lib/utils/url_utility';
-import mountComponent from '../../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('newEpic', () => {
   let vm;

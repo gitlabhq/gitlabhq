@@ -4085,7 +4085,7 @@ msgstr ""
 msgid "mrWidget|Approve"
 msgstr ""
 
-msgid "mrWidget|Approve additionally"
+msgid "mrWidget|Add approval"
 msgstr ""
 
 msgid "mrWidget|Approved by"
