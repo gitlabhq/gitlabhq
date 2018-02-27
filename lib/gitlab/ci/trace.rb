@@ -97,12 +97,12 @@ module Gitlab
         return if trace_artifact
 
         if current_path
-          File.open(current_path) do |f|
-            archive_stream!(f)
-            f.unlink
+          File.open(current_path) do |stream|
+            archive_stream!(stream)
+            FileUtils.rm(current_path)
           end
         elsif old_trace
-          StringIO(old_trace).tap do |stream|
+          StringIO.new(old_trace, 'rb').tap do |stream|
             archive_stream!(stream)
             job.erase_old_trace!
           end
@@ -121,7 +121,8 @@ module Gitlab
         FileUtils.mkdir_p(temp_dir)
         Dir.mktmpdir('tmp-trace', temp_dir) do |dir_path|
           temp_path = File.join(dir_path, "job.log")
-          size = IO.write(src_stream, temp_path)
+          FileUtils.touch(temp_path)
+          size = IO.copy_stream(src_stream, temp_path)
           raise 'Not all saved' unless size == src_stream.size
           yield(temp_path)
         end
