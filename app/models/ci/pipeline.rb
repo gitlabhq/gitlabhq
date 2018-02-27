@@ -473,10 +473,9 @@ module Ci
     end
 
     def predefined_variables
-      predefined = [
+      pipeline_predefined = [
         { key: 'CI', value: 'true', public: true },
         { key: 'GITLAB_CI', value: 'true', public: true },
-        { key: 'GITLAB_FEATURES', value: project.namespace.features.join(','), public: true },
         { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
         { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
         { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true },
@@ -485,11 +484,16 @@ module Ci
         { key: 'CI_PIPELINE_SOURCE', value: source.to_s, public: true }
       ]
 
-      predefined += project.predefined_variables
-      predefined += pipeline_schedule.job_variables if pipeline_schedule
-      predefined += self.variables.map(&:to_runner_variable)
+      Array(project.predefined_variables) + pipeline_predefined
+    end
 
-      predefined
+    def priority_variables
+      Array(pipeline_schedule&.job_variables) +
+        self.variables.map(&:to_runner_variable)
+    end
+
+    def runtime_variables
+      predefined_variables + priority_variables
     end
 
     def queued_duration

@@ -167,15 +167,46 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
-  describe '#predefined_variables' do
-    subject { pipeline.predefined_variables }
+  describe 'pipeline variables' do
+    describe '#predefined_variables' do
+      subject { pipeline.predefined_variables }
 
-    it { is_expected.to be_an(Array) }
+      it { is_expected.to be_an(Array) }
 
-    it 'includes the defined keys' do
-      keys = subject.map { |v| v[:key] }
+      it 'includes the defined keys' do
+        keys = subject.map { |v| v.fetch(:key) }
 
-      expect(keys).to include('CI_PIPELINE_ID', 'CI_CONFIG_PATH', 'CI_PIPELINE_SOURCE')
+        expect(keys).to include('CI_PIPELINE_ID', 'CI_CONFIG_PATH', 'CI_PIPELINE_SOURCE')
+      end
+
+      it 'includes project-level predefined variables' do
+        keys = subject.map { |v| v.fetch(:key) }
+
+        expect(keys).to include('CI_PROJECT_NAME')
+      end
+    end
+
+    describe '#priority_variables' do
+      before do
+        pipeline.variables.build(key: 'MY_VAR', value: 'my var')
+      end
+
+      it 'returns trigger variables' do
+        expect(pipeline.priority_variables)
+          .to include(key: 'MY_VAR', value: 'my var', public: false)
+      end
+    end
+
+    describe '#runtime_variables' do
+      before do
+        pipeline.variables.build(key: 'MY_VAR', value: 'my var')
+      end
+
+      it 'includes predefined and priority variables' do
+        variables = pipeline.runtime_variables.map { |v| v.fetch(:key) }
+
+        expect(variables).to include('MY_VAR', 'CI_PIPELINE_ID', 'CI_PROJECT_ID')
+      end
     end
   end
 

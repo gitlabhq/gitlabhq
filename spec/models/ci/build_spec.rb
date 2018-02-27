@@ -1891,6 +1891,32 @@ describe Ci::Build do
         end
       end
     end
+
+    context 'when there are duplicated variables present ' do
+      context 'when there are duplicated YAML variables' do
+        before do
+          build.yaml_variables = [{ key: 'MYVAR', value: 'first', public: true },
+                                  { key: 'MYVAR', value: 'second', public: true}]
+        end
+
+        it 'keeps the last occurence of a variable by given key' do
+          expect(subject).not_to include(key: 'MYVAR', value: 'first', public: true)
+          expect(subject).to include(key: 'MYVAR', value: 'second', public: true)
+        end
+      end
+
+      context 'when pipeline trigger variable overrides YAML variables' do
+        before do
+          build.yaml_variables = [{ key: 'MYVAR', value: 'myvar', public: true }]
+          pipeline.variables.build(key: 'MYVAR', value: 'pipeline value')
+        end
+
+        it 'overrides YAML variable with a pipeline trigger variable' do
+          expect(subject).not_to include(key: 'MYVAR', value: 'myvar', public: true)
+          expect(subject).to include(key: 'MYVAR', value: 'pipeline value', public: false)
+        end
+      end
+    end
   end
 
   describe 'state transition: any => [:pending]' do

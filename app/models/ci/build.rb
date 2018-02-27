@@ -262,8 +262,9 @@ module Ci
       variables += secret_variables(environment: environment)
       variables += trigger_request.user_variables if trigger_request
       variables += persisted_environment_variables if environment
+      variables += pipeline.priority_variables
 
-      variables
+      variables.reverse.uniq { |variable| variable.fetch(:key) }.reverse
     end
 
     def features
