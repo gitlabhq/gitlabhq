@@ -16,64 +16,58 @@ export default () => {
 
   mediator.fetchPipeline();
 
-  const pipelineGraphEl = document.querySelector('#js-pipeline-graph-vue');
-  if (pipelineGraphEl) {
-    // eslint-disable-next-line
-    new Vue({
-      el: pipelineGraphEl,
-      components: {
-        pipelineGraph,
-      },
-      data() {
-        return {
-          mediator,
-        };
-      },
-      render(createElement) {
-        return createElement('pipeline-graph', {
-          props: {
-            isLoading: this.mediator.state.isLoading,
-            pipeline: this.mediator.store.state.pipeline,
-          },
-        });
-      },
-    });
-  }
-
-  const pipelineHeaderEl = document.querySelector('#js-pipeline-header-vue');
-  if (pipelineHeaderEl) {
-    // eslint-disable-next-line
-    new Vue({
-      el: pipelineHeaderEl,
-      components: {
-        pipelineHeader,
-      },
-      data() {
-        return {
-          mediator,
-        };
-      },
-      created() {
-        eventHub.$on('headerPostAction', this.postAction);
-      },
-      beforeDestroy() {
-        eventHub.$off('headerPostAction', this.postAction);
-      },
-      methods: {
-        postAction(action) {
-          this.mediator.service.postAction(action.path)
-            .then(() => this.mediator.refreshPipeline())
-            .catch(() => Flash(__('An error occurred while making the request.')));
+  // eslint-disable-next-line
+  new Vue({
+    el: '#js-pipeline-graph-vue',
+    components: {
+      pipelineGraph,
+    },
+    data() {
+      return {
+        mediator,
+      };
+    },
+    render(createElement) {
+      return createElement('pipeline-graph', {
+        props: {
+          isLoading: this.mediator.state.isLoading,
+          pipeline: this.mediator.store.state.pipeline,
         },
+      });
+    },
+  });
+
+  // eslint-disable-next-line
+  new Vue({
+    el: '#js-pipeline-header-vue',
+    components: {
+      pipelineHeader,
+    },
+    data() {
+      return {
+        mediator,
+      };
+    },
+    created() {
+      eventHub.$on('headerPostAction', this.postAction);
+    },
+    beforeDestroy() {
+      eventHub.$off('headerPostAction', this.postAction);
+    },
+    methods: {
+      postAction(action) {
+        this.mediator.service.postAction(action.path)
+          .then(() => this.mediator.refreshPipeline())
+          .catch(() => Flash(__('An error occurred while making the request.')));
       },
-      render(createElement) {
-        return createElement('pipeline-header', {
-          props: {
-            isLoading: this.mediator.state.isLoading,
-            pipeline: this.mediator.store.state.pipeline,
-          },
-        });
-      },
-    });
-  }
+    },
+    render(createElement) {
+      return createElement('pipeline-header', {
+        props: {
+          isLoading: this.mediator.state.isLoading,
+          pipeline: this.mediator.store.state.pipeline,
+        },
+      });
+    },
+  });
 };
