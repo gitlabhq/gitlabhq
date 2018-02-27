@@ -165,7 +165,7 @@
                 type="button"
                 @click="openDastModal(issue, index)"
                 data-toggle="modal"
-                class="js-modal-dast btn-link btn-blank btn-open-modal"
+                class="js-modal-dast btn-link btn-blank btn-open-modal break-link"
                 :data-target="modalTargetId"
               >
                 {{ issue.name }}
@@ -210,7 +210,7 @@
       class="modal-security-report-dast"
     >
 
-      <slot class="modal-lg">
+      <slot>
         {{ modalDesc }}
 
         <h5 class="prepend-top-20">
@@ -241,19 +241,17 @@
                   :href="instance.uri"
                   target="_blank"
                   rel="noopener noreferrer nofollow"
-                  class="prepend-left-5"
+                  class="break-link"
                 >
                   {{ instance.uri }}
                 </a>
               </div>
-              <div>
-                <expand-button v-if="instance.evidence">
-                  <pre
-                    slot="expanded"
-                    class="block report-block-dast-code prepend-top-10"
-                  >{{ instance.evidence }}</pre>
-                </expand-button>
-              </div>
+              <expand-button v-if="instance.evidence">
+                <pre
+                  slot="expanded"
+                  class="block report-block-dast-code prepend-top-10 report-block-issue-code"
+                >{{ instance.evidence }}</pre>
+              </expand-button>
             </div>
           </li>
         </ul>

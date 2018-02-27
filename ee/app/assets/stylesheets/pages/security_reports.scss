@@ -55,18 +55,20 @@
   align-self: center;
   margin: 5px 0px;
 
-  .break-link {
-    word-wrap: break-word;
-    word-break: break-all;
-  }
-
   .btn-open-modal {
     text-align: left;
   }
 }
 
+.report-block {
+  .break-link {
+    word-wrap: break-word;
+    word-break: break-all;
+  }
+}
+
 .report-block-issue-code {
-  width: 100%;
+  width: $modal-lg - 70px;
 }
 
 .modal-security-report-dast {
@@ -74,7 +76,7 @@
     width: $modal-lg;
   }
   // TODO remove this when gl_modal support not rendering the footer
-  .moda-footer {
+  .modal-footer {
     display: none;
   }
 }
