@@ -548,6 +548,41 @@ On those a default key should not be provided.
 1. Properties in a Vue Component:
   Check [order of properties in components rule][vue-order].
 
+#### `:key`
+When using `v-for` you need to provide a *unique* `:key` attribute for each item.
+
+1. If the elements of array being iterated have an unique `id` it is advised to use it:
+    ```html
+      <div v-for="item in items" :key="item.id">
+        <!-- content -->
+      </div>
+    ```
+
+1. When the elements being iterated don't have a unique id, you can use the array index as the `:key` attribute
+    ```html
+      <div v-for="(item, index) in items" :key="index">
+        <!-- content -->
+      </div>
+    ```
+
+1. When using `v-for` with `template` the child items need a `:key` attribute, since Vue doesn't allow for the `:key` to be in the `template` element.
+    ```html
+      <template v-for="(item, index) in items">
+        <span :key="index"></span>
+      </template>
+    ```
+
+1. When using `v-for` with `template` and there is more than one child element, they `:key` values must be unique. It's adivsed to `kebab-case` namespaces.
+    ```html
+      <template v-for="(item, index) in items">
+        <span :key="`span-${index}`"></span>
+        <button :key="`button-${index}`"></button>
+      </template>
+    ```
+
+Useful links:
+1. [`key`](https://vuejs.org/v2/guide/list.html#key)
+1. [Vue Style Guide: Keyed v-for](https://vuejs.org/v2/style-guide/#Keyed-v-for-essential )
 #### Vue and Bootstrap
 
 1. Tooltips: Do not rely on `has-tooltip` class name for Vue components
