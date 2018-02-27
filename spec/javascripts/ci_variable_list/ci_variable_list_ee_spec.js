@@ -1,5 +1,5 @@
 import VariableList from '~/ci_variable_list/ci_variable_list';
-import getSetTimeoutPromise from '../helpers/set_timeout_promise_helper';
+import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 
 describe('VariableList (EE features)', () => {
   preloadFixtures('projects/ci_cd_settings.html.raw');

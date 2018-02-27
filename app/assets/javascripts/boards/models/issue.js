@@ -4,7 +4,7 @@
 /* global ListAssignee */
 
 import Vue from 'vue';
-import IssueProject from './project';
+import IssueProject from 'ee/boards/models/project';
 
 class ListIssue {
   constructor (obj, defaultAvatar) {
@@ -122,3 +122,5 @@ class ListIssue {
 }
 
 window.ListIssue = ListIssue;
+
+export default ListIssue;

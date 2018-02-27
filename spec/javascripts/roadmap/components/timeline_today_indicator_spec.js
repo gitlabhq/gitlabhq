@@ -3,9 +3,8 @@ import Vue from 'vue';
 import timelineTodayIndicatorComponent from 'ee/roadmap/components/timeline_today_indicator.vue';
 import eventHub from 'ee/roadmap/event_hub';
 
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { mockTimeframe } from '../mock_data';
-
-import mountComponent from '../../helpers/vue_mount_component_helper';
 
 const mockCurrentDate = new Date(
   mockTimeframe[0].getFullYear(),

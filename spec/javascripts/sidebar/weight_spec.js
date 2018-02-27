@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import weight from 'ee/sidebar/components/weight/weight.vue';
 import eventHub from '~/sidebar/event_hub';
-import mountComponent from '../helpers/vue_mount_component_helper';
-import getSetTimeoutPromise from '../helpers/set_timeout_promise_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 
 const DEFAULT_PROPS = {
   weightOptions: ['No Weight', 1, 2, 3],

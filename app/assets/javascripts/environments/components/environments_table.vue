@@ -2,9 +2,10 @@
 /**
  * Render environments table.
  */
+import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import environmentItem from './environment_item.vue';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
-import deployBoard from './deploy_board_component.vue';
+
+import deployBoard from 'ee/environments/components/deploy_board_component.vue'; // eslint-disable-line import/first
 
 export default {
   components: {
