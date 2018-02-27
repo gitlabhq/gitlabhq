@@ -105,11 +105,12 @@ module Gitlab
         entry unless entry.oid.blank?
       end
 
-      def tree_entries(repository, revision, path)
+      def tree_entries(repository, revision, path, recursive)
         request = Gitaly::GetTreeEntriesRequest.new(
           repository: @gitaly_repo,
           revision: encode_binary(revision),
-          path: path.present? ? encode_binary(path) : '.'
+          path: path.present? ? encode_binary(path) : '.',
+          recursive: recursive
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :get_tree_entries, request, timeout: GitalyClient.medium_timeout)
