@@ -4,11 +4,8 @@
  */
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import environmentItem from './environment_item.vue';
-<<<<<<< HEAD
 
 import deployBoard from 'ee/environments/components/deploy_board_component.vue'; // eslint-disable-line import/first
-=======
->>>>>>> upstream/master
 
 export default {
   components: {

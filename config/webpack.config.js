@@ -325,15 +325,12 @@ var config = {
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
       'vue$':           'vue/dist/vue.esm.js',
       'spec':           path.join(ROOT_PATH, 'spec/javascripts'),
-<<<<<<< HEAD
 
       // EE-only
       'ee':              path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
       'ee_empty_states': path.join(ROOT_PATH, 'ee/app/views/shared/empty_states'),
       'ee_icons':        path.join(ROOT_PATH, 'ee/app/views/shared/icons'),
       'ee_images':       path.join(ROOT_PATH, 'ee/app/assets/images'),
-=======
->>>>>>> upstream/master
     }
   }
 }

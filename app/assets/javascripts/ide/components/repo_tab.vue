@@ -1,15 +1,11 @@
 <script>
   import { mapActions } from 'vuex';
-<<<<<<< HEAD
 
   import fileIcon from '~/vue_shared/components/file_icon.vue';
   import icon from '~/vue_shared/components/icon.vue';
 
   import fileStatusIcon from 'ee/ide/components/repo_file_status_icon.vue';
   import changedFileIcon from 'ee/ide/components/changed_file_icon.vue';
-=======
-  import fileIcon from '~/vue_shared/components/file_icon.vue';
->>>>>>> upstream/master
 
   export default {
     components: {

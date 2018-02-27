@@ -1,19 +1,13 @@
 <script>
   import { mapState } from 'vuex';
-<<<<<<< HEAD
 
-=======
->>>>>>> upstream/master
   import timeAgoMixin from '~/vue_shared/mixins/timeago';
   import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
   import fileIcon from '~/vue_shared/components/file_icon.vue';
   import newDropdown from './new_dropdown/index.vue';
-<<<<<<< HEAD
 
   import fileStatusIcon from 'ee/ide/components/repo_file_status_icon.vue'; // eslint-disable-line import/first
   import changedFileIcon from 'ee/ide/components/changed_file_icon.vue'; // eslint-disable-line import/first
-=======
->>>>>>> upstream/master
 
   export default {
     components: {
