@@ -1,4 +1,4 @@
-module ConversationalDevelopmentIndex
+module DevOpsScore
   class Card
     attr_accessor :metric, :title, :description, :feature, :blog, :docs
 

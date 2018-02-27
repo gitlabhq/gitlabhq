@@ -1,4 +1,4 @@
-module ConversationalDevelopmentIndex
+module DevOpsScore
   class Metric < ActiveRecord::Base
     include Presentable
 
