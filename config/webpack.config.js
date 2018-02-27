@@ -21,33 +21,29 @@ var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
 var NO_COMPRESSION = process.env.NO_COMPRESSION;
 
-// generate automatic entry points
-var autoEntries = {};
-var pageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'app/assets/javascripts') });
+function generateEntries() {
+  // generate automatic entry points
+  var autoEntries = {};
+  var pageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'app/assets/javascripts') });
 
-function generateAutoEntries(path, prefix = '.') {
-  const chunkPath = path.replace(/\/index\.js$/, '');
-  const chunkName = chunkPath.replace(/\//g, '.');
-  autoEntries[chunkName] = `${prefix}/${path}`;
-}
+  function generateAutoEntries(path, prefix = '.') {
+    const chunkPath = path.replace(/\/index\.js$/, '');
+    const chunkName = chunkPath.replace(/\//g, '.');
+    autoEntries[chunkName] = `${prefix}/${path}`;
+  }
 
-pageEntries.forEach(( path ) => generateAutoEntries(path));
+  pageEntries.forEach(( path ) => generateAutoEntries(path));
 
-// add and replace any ce entries with ee entries
-const eePageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'ee/app/assets/javascripts') });
-eePageEntries.forEach(( path ) => generateAutoEntries(path, 'ee'));
+  const eePageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'ee/app/assets/javascripts') });
+  eePageEntries.forEach(( path ) => generateAutoEntries(path, 'ee'));
 
-// report our auto-generated bundle count
-var autoEntriesCount = Object.keys(autoEntries).length;
-console.log(`${autoEntriesCount} entries from '/pages' automatically added to webpack output.`);
+  // report our auto-generated bundle count
+  if (IS_DEV_SERVER) {
+    var autoEntriesCount = Object.keys(autoEntries).length;
+    console.log(`${autoEntriesCount} entries from '/pages' automatically added to webpack output.`);
+  }
 
-var config = {
-  // because sqljs requires fs.
-  node: {
-    fs: "empty"
-  },
-  context: path.join(ROOT_PATH, 'app/assets/javascripts'),
-  entry: {
+  const manualEntries = {
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
@@ -105,7 +101,19 @@ var config = {
     service_desk_issues:  'ee/service_desk_issues/index.js',
     roadmap:              'ee/roadmap',
     ee_sidebar:           'ee/sidebar/sidebar_bundle.js',
+  };
+
+  return Object.assign(manualEntries, autoEntries);
+}
+
+var config = {
+  // because sqljs requires fs.
+  node: {
+    fs: "empty"
   },
+  context: path.join(ROOT_PATH, 'app/assets/javascripts'),
+
+  entry: generateEntries,
 
   output: {
     path: path.join(ROOT_PATH, 'public/assets/webpack'),
@@ -333,8 +341,6 @@ var config = {
     }
   }
 }
-
-config.entry = Object.assign({}, autoEntries, config.entry);
 
 if (IS_PRODUCTION) {
   config.devtool = 'source-map';
