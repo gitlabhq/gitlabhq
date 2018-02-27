@@ -2,7 +2,7 @@ import Vue from 'vue';
 
 import projectsListItemComponent from '~/projects_dropdown/components/projects_list_item.vue';
 
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { mockProject } from '../mock_data';
 
 const createComponent = () => {

@@ -2,7 +2,7 @@ import _ from 'underscore';
 import Vue from 'vue';
 import pipelinesComp from '~/pipelines/components/pipelines.vue';
 import Store from '~/pipelines/stores/pipelines_store';
-import mountComponent from '../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('Pipelines', () => {
   const jsonFixtureName = 'pipelines/pipelines.json';

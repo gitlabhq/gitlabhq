@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import store from '~/ide/stores';
 import ide from '~/ide/components/ide.vue';
-import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { file, resetStore } from '../helpers';
 
 describe('ide component', () => {

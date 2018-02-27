@@ -8,7 +8,7 @@ import {
   mouseenter,
   inserted,
 } from '~/feature_highlight/feature_highlight_helper';
-import getSetTimeoutPromise from '../helpers/set_timeout_promise_helper';
+import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 
 describe('feature highlight helper', () => {
   describe('getSelector', () => {
