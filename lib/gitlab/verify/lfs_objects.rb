@@ -1,6 +1,8 @@
 module Gitlab
   module Verify
     class LfsObjects < BatchVerifier
+      prepend ::EE::Gitlab::Verify::LfsObjects
+
       def name
         'LFS objects'
       end

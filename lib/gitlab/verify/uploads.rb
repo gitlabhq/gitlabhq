@@ -1,6 +1,8 @@
 module Gitlab
   module Verify
     class Uploads < BatchVerifier
+      prepend ::EE::Gitlab::Verify::Uploads
+
       def name
         'Uploads'
       end
