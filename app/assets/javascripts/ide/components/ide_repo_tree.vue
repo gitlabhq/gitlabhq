@@ -1,8 +1,8 @@
 <script>
 import { mapState } from 'vuex';
+import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
 import repoPreviousDirectory from './repo_prev_directory.vue';
 import repoFile from './repo_file.vue';
-import skeletonLoadingContainer from '../../vue_shared/components/skeleton_loading_container.vue';
 import { treeList } from '../stores/utils';
 
 export default {

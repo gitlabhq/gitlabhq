@@ -1,9 +1,9 @@
 <script>
   import { mapState, mapActions } from 'vuex';
+  import icon from '~/vue_shared/components/icon.vue';
+  import panelResizer from '~/vue_shared/components/panel_resizer.vue';
+  import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
   import projectTree from './ide_project_tree.vue';
-  import icon from '../../vue_shared/components/icon.vue';
-  import panelResizer from '../../vue_shared/components/panel_resizer.vue';
-  import skeletonLoadingContainer from '../../vue_shared/components/skeleton_loading_container.vue';
 
   export default {
     components: {
