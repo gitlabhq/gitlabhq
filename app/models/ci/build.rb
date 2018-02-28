@@ -124,7 +124,7 @@ module Ci
 
       after_transition pending: :running do |build|
         build.used_timeout = build.timeout
-        build.timeout_source = build.timeout < build.project.build_timeout ? 'Runner' : 'Project'
+        build.timeout_source = build.timeout < build.project.build_timeout ? 'runner' : 'project'
         build.save!
 
         build.run_after_commit do
