@@ -586,6 +586,24 @@ When using `v-for` you need to provide a *unique* `:key` attribute for each item
       </template>
     ```
 
+1. When dealing with nested `v-for` use the same guidelines as above.
+      ```html
+        <div
+          v-for="item in items"
+          :key="item.id"
+        >
+          <span
+            v-for="element in array"
+            :key="element.id"
+          >
+            <!-- content -->
+          </span>
+        </div>
+      ```
+  * Do not reuse the parent `:key` in the nested `v-for`
+
+
+
 Useful links:
 1. [`key`](https://vuejs.org/v2/guide/list.html#key)
 1. [Vue Style Guide: Keyed v-for](https://vuejs.org/v2/style-guide/#Keyed-v-for-essential )
