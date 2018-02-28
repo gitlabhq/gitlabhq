@@ -8,7 +8,7 @@ export const getNotesDataByProp = state => prop => state.notesData[prop];
 
 export const getNoteableData = state => state.noteableData;
 export const getNoteableDataByProp = state => prop => state.noteableData[prop];
-export const issueState = state => state.noteableData.state;
+export const openState = state => state.noteableData.state;
 
 export const getUserData = state => state.userData || {};
 export const getUserDataByProp = state => prop => state.userData && state.userData[prop];
@@ -30,3 +30,37 @@ export const getCurrentUserLastNote = state => _.flatten(
 
 export const getDiscussionLastNote = state => discussion => reverseNotes(discussion.notes)
   .find(el => isLastNote(el, state));
+
+export const discussionCount = (state) => {
+  const discussions = state.notes.filter(n => !n.individual_note);
+
+  return discussions.length;
+};
+
+export const unresolvedDiscussions = (state, getters) => {
+  const resolvedMap = getters.resolvedDiscussionsById;
+
+  return state.notes.filter(n => !n.individual_note && !resolvedMap[n.id]);
+};
+
+export const resolvedDiscussionsById = (state) => {
+  const map = {};
+
+  state.notes.forEach((n) => {
+    if (n.notes) {
+      const resolved = n.notes.every(note => note.resolved && !note.system);
+
+      if (resolved) {
+        map[n.id] = n;
+      }
+    }
+  });
+
+  return map;
+};
+
+export const resolvedDiscussionCount = (state, getters) => {
+  const resolvedMap = getters.resolvedDiscussionsById;
+
+  return Object.keys(resolvedMap).length;
+};

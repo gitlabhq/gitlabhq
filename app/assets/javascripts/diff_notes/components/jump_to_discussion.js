@@ -197,7 +197,7 @@ const JumpToDiscussion = Vue.extend({
       }
 
       $.scrollTo($target, {
-        offset: 0
+        offset: -150
       });
     }
   },
