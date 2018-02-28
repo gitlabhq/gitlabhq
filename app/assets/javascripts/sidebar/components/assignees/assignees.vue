@@ -194,10 +194,7 @@ export default {
           >
             <a
               class="user-link has-tooltip"
-<<<<<<< HEAD
               data-container="body"
-=======
->>>>>>> upstream/master
               data-placement="bottom"
               :href="assigneeUrl(user)"
               :data-title="user.name"
@@ -232,4 +229,3 @@ export default {
     </div>
   </div>
 </template>
-
