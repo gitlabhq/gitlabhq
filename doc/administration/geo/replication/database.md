@@ -3,7 +3,7 @@
 >**Note:**
 This is the documentation for the Omnibus GitLab packages. For installations
 from source, follow the
-[**database replication for installations from source**](database_source.md) guide.
+[**database replication for installations from source**][database-source] guide.
 
 >**Note:**
 If your GitLab installation uses external PostgreSQL, the Omnibus roles
@@ -32,8 +32,7 @@ connect to the secondary database servers (which are also read-only).
 In database documentation you may see "primary" being referenced as "master"
 and "secondary" as either "slave" or "standby" server (read-only).
 
-We recommend using [PostgreSQL replication
-slots](https://medium.com/@tk512/replication-slots-in-postgresql-b4b03d277c75)
+We recommend using [PostgreSQL replication slots][replication-slots-article]
 to ensure that the primary retains all the data necessary for the secondaries to
 recover. See below for more details.
 
@@ -89,7 +88,7 @@ The following guide assumes that:
     gitlab_rails['db_password'] = 'mypassword'
     ```
 
-1. Omnibus GitLab already has a [replication user](https://wiki.postgresql.org/wiki/Streaming_Replication)
+1. Omnibus GitLab already has a [replication user]
    called `gitlab_replicator`. You must set the password for this user manually.
    You will be prompted to enter a password:
 
@@ -100,6 +99,10 @@ The following guide assumes that:
     This command will also read the `postgresql['sql_replication_user']` Omnibus
     setting in case you have changed `gitlab_replicator` username to something
     else.
+    
+    If you are using an external database not managed by Omnibus GitLab, you need
+    to create the replicator user and define a password to it manually.
+    Check [How to create replication user][database-source-primary] documentation. 
 
 1. Configure PostgreSQL to listen on network interfaces
 
@@ -128,21 +131,19 @@ The following guide assumes that:
     In most cases, the following addresses will be used to configure GitLab
     Geo:
 
-    | Configuration | Address |
-    |-----|-----|
-    | `postgresql['listen_address']` | Primary's private address |
-    | `postgresql['trust_auth_cidr_addresses']` | Primary's private address |
-    | `postgresql['md5_auth_cidr_addresses']` | Secondary's public addresses |
+    | Configuration                           | Address                                     |
+    |-----------------------------------------|---------------------------------------------|
+    | `postgresql['listen_address']`          | Primary's public or VPC private address     |
+    | `postgresql['md5_auth_cidr_addresses']` | Secondary's public or VPC private addresses |
 
     If you are using Google Cloud Platform, SoftLayer, or any other vendor that
-    provides a virtual private cloud you can use the secondary's private
+    provides a virtual private cloud (VPC) you can use the secondary's private
     address (corresponds to "internal address" for Google Cloud Platform) for
-    `postgresql['md5_auth_cidr_addresses']`.
+    `postgresql['md5_auth_cidr_addresses']` and `postgresql['listen_address']`.
 
     The `listen_address` option opens PostgreSQL up to network connections
     with the interface corresponding to the given address. See [the PostgreSQL
-    documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-connection.html)
-    for more details.
+    documentation][pg-docs-runtime-conn] for more details.
 
     Depending on your network configuration, the suggested addresses may not
     be correct. If your primary and secondary connect over a local
@@ -158,14 +159,13 @@ The following guide assumes that:
 
     ##
     ## Primary address
-    ## - replace '1.2.3.4' with the primary private address
+    ## - replace '1.2.3.4' with the primary public or VPC address
     ##
     postgresql['listen_address'] = '1.2.3.4'
-    postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','1.2.3.4/32']
-
+    
     ##
     # Secondary addresses
-    # - replace '5.6.7.8' with the secondary public address
+    # - replace '5.6.7.8' with the secondary public or VPC address
     ##
     postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
 
@@ -192,7 +192,7 @@ The following guide assumes that:
 
     You may also want to edit the `wal_keep_segments` and `max_wal_senders` to
     match your database replication requirements. Consult the [PostgreSQL -
-    Replication documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-replication.html)
+    Replication documentation][pg-docs-runtime-replication]
     for more information.
 
 1. Save the file and reconfigure GitLab for the database listen changes and
@@ -241,31 +241,7 @@ The following guide assumes that:
     will need it when setting up the secondary! The certificate is not sensitive
     data.
 
-### Step 2. Add the secondary GitLab node
-
-To prevent the secondary geo node from trying to act as the primary once the
-database is replicated, the secondary geo node must be added on the
-primary before the database is replicated.
-
-1. Visit the **primary** node's **Admin Area ➔ Geo Nodes**
-   (`/admin/geo_nodes`) in your browser.
-1. Add the secondary node by providing its full URL. **Do NOT** check the box
-   'This is a primary node'.
-1. Optionally, choose which namespaces should be replicated by the
-   secondary node. Leave blank to replicate all. Read more in
-   [selective replication](#selective-replication).
-1. Click the **Add node** button.
-1. SSH into your GitLab **primary** server and login as root to verify the
-   secondary is reachable:
-
-    ```
-    gitlab-rake gitlab:geo:check
-    ```
-
-The new secondary geo node will have the status **Unhealthy**. This is expected
-because we have not yet configured the secondary server. This is the next step.
-
-### Step 3. Configure the secondary server
+### Step 2. Configure the secondary server
 
 1. SSH into your GitLab **secondary** server and login as root:
 
@@ -273,14 +249,22 @@ because we have not yet configured the secondary server. This is the next step.
     sudo -i
     ```
 
-1. [Check TCP connectivity](../../raketasks/maintenance.md) to the
-   primary's PostgreSQL server:
+1. Stop application server and Sidekiq
+
+    ```
+    gitlab-ctl stop unicorn
+    gitlab-ctl stop sidekiq
+    ```
+
+   > **Note**: This step is important so we don't try to execute anything before the node is fully configured. 
+
+1. [Check TCP connectivity][rake-maintenance] to the primary's PostgreSQL server:
 
     ```bash
     gitlab-rake gitlab:tcp_check[1.2.3.4,5432]
     ```
 
-    If this step fails, you may be using the wrong IP address, or a firewall may
+    > **Note**: If this step fails, you may be using the wrong IP address, or a firewall may
     be preventing access to the server. Check the IP address, paying close
     attention to the difference between public and private addresses and ensure
     that, if a firewall is present, the secondary is permitted to connect to the
@@ -329,9 +313,8 @@ because we have not yet configured the secondary server. This is the next step.
 
     ```ruby
     # Secondary addresses
-    # - replace '5.6.7.8' with the secondary private address
+    # - replace '5.6.7.8' with the secondary public or VPC address
     postgresql['listen_address'] = '5.6.7.8'
-    postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','5.6.7.8/32']
     postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
 
     # gitlab database user's password (defined previously)
@@ -339,11 +322,8 @@ because we have not yet configured the secondary server. This is the next step.
 
     # enable fdw for the geo tracking database
     geo_secondary['db_fdw'] = true
-    ```
 
-1. Edit `/etc/gitlab/gitlab.rb` and add the following:
-
-    ```ruby
+    # make this a secondary Geo node
     geo_secondary_role['enable'] = true
     ```
 
@@ -362,7 +342,7 @@ because we have not yet configured the secondary server. This is the next step.
     gitlab-ctl restart postgresql
     ```
 
-### Step 4. Initiate the replication process
+### Step 3. Initiate the replication process
 
 Below we provide a script that connects the database on the secondary node to
 the database on the primary node, replicates the database, and creates the
@@ -408,7 +388,7 @@ data before running `pg_basebackup`.
          (e.g., you know the network path is secure, or you are using a site-to-site
          VPN). This is **not** safe over the public Internet!
        - You can read more details about each `sslmode` in the
-         [PostgreSQL documentation](https://www.postgresql.org/docs/9.6/static/libpq-ssl.html#LIBPQ-SSL-PROTECTION);
+         [PostgreSQL documentation][pg-docs-ssl];
          the instructions above are carefully written to ensure protection against
          both passive eavesdroppers and active "man-in-the-middle" attackers.
        - Change the `--slot-name` to the name of the replication slot
@@ -458,7 +438,7 @@ max_replication_slots = 1 # number of secondary instances
 hot_standby = on
 ```
 
-Th `geo_secondary_role` makes configuration changes to `postgresql.conf` and
+The `geo_secondary_role` makes configuration changes to `postgresql.conf` and
 enables the Geo Log Cursor (`geo_logcursor`) and secondary tracking database
 on the secondary. The PostgreSQL settings for this database it adds to
 the default settings:
@@ -486,8 +466,16 @@ MySQL replication is not supported for Geo.
 
 Read the [troubleshooting document](troubleshooting.md).
 
+[replication-slots-article]: https://medium.com/@tk512/replication-slots-in-postgresql-b4b03d277c75
 [pgback]: http://www.postgresql.org/docs/9.2/static/app-pgbasebackup.html
+[replication user]:https://wiki.postgresql.org/wiki/Streaming_Replication
 [external postgresql]: #external-postgresql-instances
 [tracking]: database_source.md#enable-tracking-database-on-the-secondary-server
 [FDW]: https://www.postgresql.org/docs/9.6/static/postgres-fdw.html
 [toc]: index.md#using-omnibus-gitlab
+[database-source]: database_source.md
+[database-source-primary]: database_source.md#step-1-configure-the-primary-server
+[rake-maintenance]: ../../raketasks/maintenance.md
+[pg-docs-ssl]: https://www.postgresql.org/docs/9.6/static/libpq-ssl.html#LIBPQ-SSL-PROTECTION
+[pg-docs-runtime-conn]: https://www.postgresql.org/docs/9.6/static/runtime-config-connection.html
+[pg-docs-runtime-replication]: https://www.postgresql.org/docs/9.6/static/runtime-config-replication.html
