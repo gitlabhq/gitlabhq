@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initPipelines();
 
   const mrShowNode = document.querySelector('.merge-request');
-
   window.mergeRequest = new MergeRequest({
     action: mrShowNode.dataset.mrAction,
   });
