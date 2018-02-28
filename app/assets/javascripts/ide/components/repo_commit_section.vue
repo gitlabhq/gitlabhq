@@ -1,8 +1,8 @@
 <script>
 import { mapGetters, mapState, mapActions } from 'vuex';
-import tooltip from '../../vue_shared/directives/tooltip';
-import icon from '../../vue_shared/components/icon.vue';
-import modal from '../../vue_shared/components/modal.vue';
+import tooltip from '~/vue_shared/directives/tooltip';
+import icon from '~/vue_shared/components/icon.vue';
+import modal from '~/vue_shared/components/modal.vue';
 import commitFilesList from './commit_sidebar/list.vue';
 
 export default {

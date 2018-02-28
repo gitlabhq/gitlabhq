@@ -122,6 +122,15 @@ describe API::Runner do
           end
         end
       end
+
+      it "sets the runner's ip_address" do
+        post api('/runners'),
+          { token: registration_token },
+          { 'REMOTE_ADDR' => '123.111.123.111' }
+
+        expect(response).to have_gitlab_http_status 201
+        expect(Ci::Runner.first.ip_address).to eq('123.111.123.111')
+      end
     end
 
     describe 'DELETE /api/v4/runners' do
@@ -420,6 +429,15 @@ describe API::Runner do
                 expect(runner.reload.read_attribute(param.to_sym)).to eq(value)
               end
             end
+          end
+
+          it "sets the runner's ip_address" do
+            post api('/jobs/request'),
+              { token: runner.token },
+              { 'User-Agent' => user_agent, 'REMOTE_ADDR' => '123.222.123.222' }
+
+            expect(response).to have_gitlab_http_status 201
+            expect(runner.reload.ip_address).to eq('123.222.123.222')
           end
 
           context 'when concurrently updating a job' do

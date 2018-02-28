@@ -16,7 +16,8 @@ module API
         optional :tag_list, type: Array[String], desc: %q(List of Runner's tags)
       end
       post '/' do
-        attributes = attributes_for_keys [:description, :locked, :run_untagged, :tag_list]
+        attributes = attributes_for_keys([:description, :locked, :run_untagged, :tag_list])
+          .merge(get_runner_details_from_request)
 
         runner =
           if runner_registration_token_valid?
@@ -30,7 +31,6 @@ module API
         return forbidden! unless runner
 
         if runner.id
-          runner.update(get_runner_version_from_params)
           present runner, with: Entities::RunnerRegistrationDetails
         else
           not_found!
