@@ -4,6 +4,8 @@ import axios from '~/lib/utils/axios_utils';
 import CommitsList from '~/commits';
 
 describe('Commits List', () => {
+  let commitsList;
+
   beforeEach(() => {
     setFixtures(`
       <form class="commits-search-form" action="/h5bp/html5-boilerplate/commits/master">
@@ -11,6 +13,7 @@ describe('Commits List', () => {
       </form>
       <ol id="commits-list"></ol>
       `);
+    commitsList = new CommitsList(25);
   });
 
   it('should be defined', () => {
@@ -19,7 +22,7 @@ describe('Commits List', () => {
 
   describe('processCommits', () => {
     it('should join commit headers', () => {
-      CommitsList.$contentList = $(`
+      commitsList.$contentList = $(`
         <div>
           <li class="commit-header" data-day="2016-09-20">
             <span class="day">20 Sep, 2016</span>
@@ -39,7 +42,7 @@ describe('Commits List', () => {
 
       // The last commit header should be removed
       // since the previous one has the same data-day value.
-      expect(CommitsList.processCommits(data).find('li.commit-header').length).toBe(0);
+      expect(commitsList.processCommits(data).find('li.commit-header').length).toBe(0);
     });
   });
 
@@ -48,8 +51,7 @@ describe('Commits List', () => {
     let mock;
 
     beforeEach(() => {
-      CommitsList.init(25);
-      CommitsList.searchField.val('');
+      commitsList.searchField.val('');
 
       spyOn(history, 'replaceState').and.stub();
       mock = new MockAdapter(axios);
@@ -66,11 +68,11 @@ describe('Commits List', () => {
     });
 
     it('should save the last search string', (done) => {
-      CommitsList.searchField.val('GitLab');
-      CommitsList.filterResults()
+      commitsList.searchField.val('GitLab');
+      commitsList.filterResults()
         .then(() => {
           expect(ajaxSpy).toHaveBeenCalled();
-          expect(CommitsList.lastSearch).toEqual('GitLab');
+          expect(commitsList.lastSearch).toEqual('GitLab');
 
           done();
         })
@@ -78,10 +80,10 @@ describe('Commits List', () => {
     });
 
     it('should not make ajax call if the input does not change', (done) => {
-      CommitsList.filterResults()
+      commitsList.filterResults()
         .then(() => {
           expect(ajaxSpy).not.toHaveBeenCalled();
-          expect(CommitsList.lastSearch).toEqual('');
+          expect(commitsList.lastSearch).toEqual('');
 
           done();
         })

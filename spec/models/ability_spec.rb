@@ -204,6 +204,78 @@ describe Ability do
     end
   end
 
+  describe '.merge_requests_readable_by_user' do
+    context 'with an admin' do
+      it 'returns all merge requests' do
+        user = build(:user, admin: true)
+        merge_request = build(:merge_request)
+
+        expect(described_class.merge_requests_readable_by_user([merge_request], user))
+          .to eq([merge_request])
+      end
+    end
+
+    context 'without a user' do
+      it 'returns merge_requests that are publicly visible' do
+        hidden_merge_request = build(:merge_request)
+        visible_merge_request = build(:merge_request, source_project: build(:project, :public))
+
+        merge_requests = described_class
+                           .merge_requests_readable_by_user([hidden_merge_request, visible_merge_request])
+
+        expect(merge_requests).to eq([visible_merge_request])
+      end
+    end
+
+    context 'with a user' do
+      let(:user) { create(:user) }
+      let(:project) { create(:project) }
+      let(:merge_request) { create(:merge_request, source_project: project) }
+      let(:cross_project_merge_request) do
+        create(:merge_request, source_project: create(:project, :public))
+      end
+      let(:other_merge_request) { create(:merge_request) }
+      let(:all_merge_requests) do
+        [merge_request, cross_project_merge_request, other_merge_request]
+      end
+
+      subject(:readable_merge_requests) do
+        described_class.merge_requests_readable_by_user(all_merge_requests, user)
+      end
+
+      before do
+        project.add_developer(user)
+      end
+
+      it 'returns projects visible to the user' do
+        expect(readable_merge_requests).to contain_exactly(merge_request, cross_project_merge_request)
+      end
+
+      context 'when a user cannot read cross project and a filter is passed' do
+        before do
+          allow(described_class).to receive(:allowed?).and_call_original
+          expect(described_class).to receive(:allowed?).with(user, :read_cross_project) { false }
+        end
+
+        subject(:readable_merge_requests) do
+          read_cross_project_filter = -> (merge_requests) do
+            merge_requests.select { |mr| mr.source_project == project }
+          end
+          described_class.merge_requests_readable_by_user(
+            all_merge_requests, user,
+            filters: { read_cross_project: read_cross_project_filter }
+          )
+        end
+
+        it 'returns only MRs of the specified project without checking access on others' do
+          expect(described_class).not_to receive(:allowed?).with(user, :read_merge_request, cross_project_merge_request)
+
+          expect(readable_merge_requests).to contain_exactly(merge_request)
+        end
+      end
+    end
+  end
+
   describe '.issues_readable_by_user' do
     context 'with an admin user' do
       it 'returns all given issues' do
@@ -248,6 +320,29 @@ describe Ability do
           .issues_readable_by_user([hidden_issue, visible_issue])
 
         expect(issues).to eq([visible_issue])
+      end
+    end
+
+    context 'when the user cannot read cross project' do
+      let(:user) { create(:user) }
+      let(:issue) { create(:issue) }
+      let(:other_project_issue) { create(:issue) }
+      let(:project) { issue.project }
+
+      before do
+        project.add_developer(user)
+
+        allow(described_class).to receive(:allowed?).and_call_original
+        allow(described_class).to receive(:allowed?).with(user, :read_cross_project, any_args) { false }
+      end
+
+      it 'excludes issues from other projects whithout checking separatly when passing a scope' do
+        expect(described_class).not_to receive(:allowed?).with(user, :read_issue, other_project_issue)
+
+        filters = { read_cross_project: -> (issues) { issues.where(project: project) } }
+        result = described_class.issues_readable_by_user(Issue.all, user, filters: filters)
+
+        expect(result).to contain_exactly(issue)
       end
     end
   end

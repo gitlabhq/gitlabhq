@@ -1,19 +1,27 @@
 - failed_builds = @pipeline.statuses.latest.failed
+- sast_artifact = @pipeline.sast_artifact
+- sast_artifact_url = raw_project_build_artifacts_url(@project, sast_artifact, path: Ci::Build::SAST_FILE) if sast_artifact
+- blob_path = project_blob_path(@project, @pipeline.sha)
 
 .tabs-holder
   %ul.pipelines-tabs.nav-links.no-top.no-bottom.mobile-separator
     %li.js-pipeline-tab-link
-      = link_to project_pipeline_path(@project, @pipeline), data: { target: 'div#js-tab-pipeline', action: 'pipelines', toggle: 'tab' },  class: 'pipeline-tab' do
-        Pipeline
+      = link_to project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-pipeline', action: 'pipelines', toggle: 'tab' }, class: 'pipeline-tab' do
+        = _("Pipeline")
     %li.js-builds-tab-link
-      = link_to builds_project_pipeline_path(@project, @pipeline), data: {target: 'div#js-tab-builds', action: 'builds', toggle: 'tab' }, class: 'builds-tab' do
-        Jobs
+      = link_to builds_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-builds', action: 'builds', toggle: 'tab' }, class: 'builds-tab' do
+        = _("Jobs")
         %span.badge.js-builds-counter= pipeline.total_size
     - if failed_builds.present?
       %li.js-failures-tab-link
-        = link_to failures_project_pipeline_path(@project, @pipeline), data: {target: 'div#js-tab-failures', action: 'failures', toggle: 'tab' }, class: 'failures-tab' do
-          Failed Jobs
+        = link_to failures_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-failures', action: 'failures', toggle: 'tab' }, class: 'failures-tab' do
+          = _("Failed Jobs")
           %span.badge.js-failures-counter= failed_builds.count
+    - if sast_artifact
+      %li.js-security-tab-link
+        = link_to security_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-security', action: 'security', toggle: 'tab' }, class: 'security-tab' do
+          = _("Security report")
+          %span.badge.js-sast-counter.hidden
 
 .tab-content
   #js-tab-pipeline.tab-pane
@@ -53,3 +61,6 @@
           %span.build-name
             = link_to build.name, pipeline_job_url(pipeline, build)
         %pre.build-log= build_summary(build, skip: index >= 10)
+  - if sast_artifact
+    #js-tab-security.build-security.tab-pane
+      #js-security-report-app{ data: { endpoint: sast_artifact_url, blob_path: blob_path } }

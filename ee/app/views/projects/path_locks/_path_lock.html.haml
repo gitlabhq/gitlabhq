@@ -6,7 +6,7 @@
 
     .controls
       - if can_unlock?(path_lock)
-        = link_to project_path_lock_path(@project, path_lock), class: 'btn btn-grouped btn-xs btn-remove remove-row has-tooltip', title: "Unlock", method: :delete, data: { confirm: "Are you sure you want to unlock #{path_lock.path}?", container: 'body' }, remote: true do
+        = link_to project_path_lock_path(@project, path_lock), class: 'btn btn-grouped btn-xs btn-remove remove-row has-tooltip', title: _("Unlock"), method: :delete, data: { confirm: _("Are you sure you want to unlock %{path_lock_path}?") % { path_lock_path: path_lock.path }, container: 'body' }, remote: true do
           = icon("trash-o")
 
-  locked by #{path_lock.user.name} #{time_ago_with_tooltip(path_lock.created_at)}
+  = _("locked by %{path_lock_user_name} %{created_at}") % { path_lock_user_name: path_lock.user.name, created_at: time_ago_with_tooltip(path_lock.created_at) }

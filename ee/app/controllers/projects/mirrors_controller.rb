@@ -81,6 +81,7 @@ class Projects::MirrorsController < Projects::ApplicationController
       :mirror_user_id,
       :mirror_trigger_builds,
       :only_mirror_protected_branches,
+      :mirror_overwrites_diverged_branches,
 
       import_data_attributes: %i[
         id

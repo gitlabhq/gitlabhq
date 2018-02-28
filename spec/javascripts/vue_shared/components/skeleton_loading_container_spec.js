@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('Skeleton loading container', () => {
   let vm;

@@ -1025,7 +1025,7 @@ describe 'Git LFS API and storage' do
 
           context 'and workhorse requests upload finalize for a new lfs object' do
             before do
-              allow_any_instance_of(LfsObjectUploader).to receive(:exists?) { false }
+              lfs_object.destroy
             end
 
             context 'with object storage disabled' do

@@ -12,6 +12,7 @@
     mixins: [
       issuableMixin,
     ],
+
     props: {
       isLocked: {
         required: true,
@@ -31,6 +32,7 @@
         },
       },
     },
+
     computed: {
       lockIcon() {
         return this.isLocked ? 'lock' : 'lock-open';
@@ -72,7 +74,7 @@
       {{ sprintf(__('Lock %{issuableDisplayName}'), { issuableDisplayName: issuableDisplayName }) }}
       <button
         v-if="isEditable"
-        class="pull-right lock-edit btn btn-blank"
+        class="pull-right lock-edit"
         type="button"
         @click.prevent="toggleForm"
       >

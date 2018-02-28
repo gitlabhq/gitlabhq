@@ -3,8 +3,8 @@
 - add_to_breadcrumbs("Pipelines", project_pipelines_path(@project))
 
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag("common_vue")
-  = page_specific_javascript_bundle_tag("environments")
+  = webpack_bundle_tag("common_vue")
+  = webpack_bundle_tag("environments")
 
 #environments-list-view{ data: { environments_data: environments_list_data,
   "can-create-deployment" => can?(current_user, :create_deployment, @project).to_s,

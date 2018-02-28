@@ -231,7 +231,12 @@ class NotificationService
   def new_access_request(member)
     return true unless member.notifiable?(:subscription)
 
-    mailer.member_access_requested_email(member.real_source_type, member.id).deliver_later
+    recipients = member.source.members.owners_and_masters
+    if fallback_to_group_owners_masters?(recipients, member)
+      recipients = member.source.group.members.owners_and_masters
+    end
+
+    recipients.each { |recipient| deliver_access_request_email(recipient, member) }
   end
 
   def decline_access_request(member)
@@ -357,6 +362,30 @@ class NotificationService
     end
   end
 
+  def pages_domain_verification_succeeded(domain)
+    recipients_for_pages_domain(domain).each do |user|
+      mailer.pages_domain_verification_succeeded_email(domain, user).deliver_later
+    end
+  end
+
+  def pages_domain_verification_failed(domain)
+    recipients_for_pages_domain(domain).each do |user|
+      mailer.pages_domain_verification_failed_email(domain, user).deliver_later
+    end
+  end
+
+  def pages_domain_enabled(domain)
+    recipients_for_pages_domain(domain).each do |user|
+      mailer.pages_domain_enabled_email(domain, user).deliver_later
+    end
+  end
+
+  def pages_domain_disabled(domain)
+    recipients_for_pages_domain(domain).each do |user|
+      mailer.pages_domain_disabled_email(domain, user).deliver_later
+    end
+  end
+
   protected
 
   def new_resource_email(target, method)
@@ -475,11 +504,29 @@ class NotificationService
 
   private
 
+  def recipients_for_pages_domain(domain)
+    project = domain.project
+
+    return [] unless project
+
+    notifiable_users(project.team.masters, :watch, target: project)
+  end
+
   def notifiable?(*args)
     NotificationRecipientService.notifiable?(*args)
   end
 
   def notifiable_users(*args)
     NotificationRecipientService.notifiable_users(*args)
+  end
+
+  def deliver_access_request_email(recipient, member)
+    mailer.member_access_requested_email(member.real_source_type, member.id, recipient.user.notification_email).deliver_later
+  end
+
+  def fallback_to_group_owners_masters?(recipients, member)
+    return false if recipients.present?
+
+    member.source.respond_to?(:group) && member.source.group
   end
 end

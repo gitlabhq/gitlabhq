@@ -126,8 +126,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def referenced_merge_requests
-    @merge_requests = @issue.referenced_merge_requests(current_user)
-    @closed_by_merge_requests = @issue.closed_by_merge_requests(current_user)
+    @merge_requests, @closed_by_merge_requests = ::Issues::FetchReferencedMergeRequestsService.new(project, current_user).execute(issue)
 
     respond_to do |format|
       format.json do
@@ -248,9 +247,8 @@ class Projects::IssuesController < Projects::ApplicationController
     Issues::UpdateService.new(project, current_user, update_params)
   end
 
-  def set_issuables_index
-    @finder_type = IssuesFinder
-    super
+  def finder_type
+    IssuesFinder
   end
 
   def whitelist_query_limiting

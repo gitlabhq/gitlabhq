@@ -1,10 +1,9 @@
 import Vue from 'vue';
-import * as urlUtils from '~/lib/utils/url_utility';
 import store from '~/ide/stores';
 import service from '~/ide/services';
 import repoCommitSection from '~/ide/components/repo_commit_section.vue';
-import getSetTimeoutPromise from '../../helpers/set_timeout_promise_helper';
-import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 import { file, resetStore } from '../helpers';
 
 describe('RepoCommitSection', () => {
@@ -76,8 +75,6 @@ describe('RepoCommitSection', () => {
         committedStateSvgPath: 'svg',
       }).$mount();
 
-      // Vue.nextTick();
-
       expect(vm.$el.querySelector('.js-empty-state').textContent.trim()).toContain('No changes');
       expect(vm.$el.querySelector('.js-empty-state img').getAttribute('src')).toBe('nochangessvg');
     });
@@ -98,62 +95,57 @@ describe('RepoCommitSection', () => {
     expect(submitCommit.querySelector('.fa-spinner.fa-spin')).toBeNull();
   });
 
-  describe('when submitting', () => {
-    let changedFiles;
+  it('updates commitMessage in store on input', (done) => {
+    const textarea = vm.$el.querySelector('textarea');
 
-    beforeEach(() => {
-      vm.commitMessage = 'testing';
-      changedFiles = JSON.parse(JSON.stringify(vm.$store.state.changedFiles));
+    textarea.value = 'testing commit message';
 
-      spyOn(service, 'commit').and.returnValue(Promise.resolve({
-        data: {
-          short_id: '1',
-          stats: {},
-        },
-      }));
+    textarea.dispatchEvent(new Event('input'));
+
+    getSetTimeoutPromise()
+      .then(() => {
+        expect(vm.$store.state.commit.commitMessage).toBe('testing commit message');
+      })
+      .then(done)
+      .catch(done.fail);
+  });
+
+  describe('discard draft button', () => {
+    it('hidden when commitMessage is empty', () => {
+      expect(vm.$el.querySelector('.multi-file-commit-form .btn-default')).toBeNull();
     });
 
-    it('allows you to submit', () => {
-      expect(vm.$el.querySelector('form .btn').disabled).toBeTruthy();
-    });
+    it('resets commitMessage when clicking discard button', (done) => {
+      vm.$store.state.commit.commitMessage = 'testing commit message';
 
-    it('submits commit', (done) => {
-      vm.makeCommit();
-
-      // Wait for the branch check to finish
       getSetTimeoutPromise()
-        .then(() => Vue.nextTick())
         .then(() => {
-          const args = service.commit.calls.allArgs()[0];
-          const { commit_message, actions, branch: payloadBranch } = args[1];
-
-          expect(commit_message).toBe('testing');
-          expect(actions.length).toEqual(2);
-          expect(payloadBranch).toEqual('master');
-          expect(actions[0].action).toEqual('update');
-          expect(actions[1].action).toEqual('update');
-          expect(actions[0].content).toEqual(changedFiles[0].content);
-          expect(actions[1].content).toEqual(changedFiles[1].content);
-          expect(actions[0].file_path).toEqual(changedFiles[0].path);
-          expect(actions[1].file_path).toEqual(changedFiles[1].path);
-
-          expect(vm.$el.querySelector('.js-empty-state').textContent.trim()).toContain('All changes are committed');
-          expect(vm.$el.querySelector('.js-empty-state img').getAttribute('src')).toBe('commitsvg');
+          vm.$el.querySelector('.multi-file-commit-form .btn-default').click();
+        })
+        .then(Vue.nextTick)
+        .then(() => {
+          expect(vm.$store.state.commit.commitMessage).not.toBe('testing commit message');
         })
         .then(done)
         .catch(done.fail);
     });
+  });
 
-    it('redirects to MR creation page if start new MR checkbox checked', (done) => {
-      spyOn(urlUtils, 'visitUrl');
-      vm.startNewMR = true;
+  describe('when submitting', () => {
+    beforeEach(() => {
+      spyOn(vm, 'commitChanges');
+    });
 
-      vm.makeCommit();
+    it('calls commitChanges', (done) => {
+      vm.$store.state.commit.commitMessage = 'testing commit message';
 
       getSetTimeoutPromise()
-        .then(() => Vue.nextTick())
         .then(() => {
-          expect(urlUtils.visitUrl).toHaveBeenCalled();
+          vm.$el.querySelector('.multi-file-commit-form .btn-success').click();
+        })
+        .then(Vue.nextTick)
+        .then(() => {
+          expect(vm.commitChanges).toHaveBeenCalled();
         })
         .then(done)
         .catch(done.fail);

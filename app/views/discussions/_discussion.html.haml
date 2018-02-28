@@ -3,7 +3,7 @@
   .timeline-entry-inner
     .timeline-icon
       = link_to user_path(discussion.author) do
-        = image_tag avatar_icon(discussion.author), class: "avatar s40"
+        = image_tag avatar_icon_for_user(discussion.author), class: "avatar s40"
     .timeline-content
       .discussion.js-toggle-container{ data: { discussion_id: discussion.id } }
         .discussion-header

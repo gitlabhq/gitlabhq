@@ -1,6 +1,0 @@
----
-title: Implement multi server support and use kube proxy to connect to Prometheus
-  servers inside K8S cluster
-merge_request: 16182
-author:
-type: added

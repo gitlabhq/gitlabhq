@@ -80,7 +80,7 @@ module Geo
       url = Gitlab::Geo.primary_node.url + repository.full_path + '.git'
 
       # Fetch the repository, using a JWT header for authentication
-      authorization = ::Gitlab::Geo::BaseRequest.new.authorization
+      authorization = ::Gitlab::Geo::RepoSyncRequest.new.authorization
       header = { "http.#{url}.extraHeader" => "Authorization: #{authorization}" }
 
       repository.with_config(header) do
@@ -108,6 +108,7 @@ module Geo
         attrs["resync_#{type}"] = false
         attrs["#{type}_retry_count"] = nil
         attrs["#{type}_retry_at"] = nil
+        attrs["force_to_redownload_#{type}"] = false
       end
 
       registry.update!(attrs)
@@ -164,6 +165,11 @@ module Geo
         raise Gitlab::Shell::Error, 'Can not create a temporary repository'
       end
 
+      log_info(
+        'Created temporary repository',
+        temp_path: disk_path_temp
+      )
+
       repository.clone.tap { |repo| repo.disk_path = disk_path_temp }
     end
 
@@ -183,8 +189,7 @@ module Geo
       # Remove the deleted path in case it exists, but it may not be there
       gitlab_shell.remove_repository(project.repository_storage_path, deleted_disk_path_temp)
 
-      # Move the original repository out of the way
-      unless gitlab_shell.mv_repository(project.repository_storage_path, repository.disk_path, deleted_disk_path_temp)
+      if project.repository_exists? && !gitlab_shell.mv_repository(project.repository_storage_path, repository.disk_path, deleted_disk_path_temp)
         raise Gitlab::Shell::Error, 'Can not move original repository out of the way'
       end
 

@@ -22,10 +22,10 @@ module SlashCommands
       service = integration.service
       project = service.project
 
-      user = ChatNames::FindUserService.new(service, params).execute
+      chat_user = ChatNames::FindUserService.new(service, params).execute
 
-      if user
-        Gitlab::SlashCommands::Command.new(project, user, params).execute
+      if chat_user&.user
+        Gitlab::SlashCommands::Command.new(project, chat_user, params).execute
       else
         url = ChatNames::AuthorizeUserService.new(service, params).execute
         Gitlab::SlashCommands::Presenters::Access.new(url).authorize

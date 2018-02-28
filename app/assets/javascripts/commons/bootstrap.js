@@ -13,6 +13,6 @@ import 'bootstrap-sass/assets/javascripts/bootstrap/popover';
 
 // custom jQuery functions
 $.fn.extend({
-  disable() { return $(this).attr('disabled', 'disabled').addClass('disabled'); },
-  enable() { return $(this).removeAttr('disabled').removeClass('disabled'); },
+  disable() { return $(this).prop('disabled', true).addClass('disabled'); },
+  enable() { return $(this).prop('disabled', false).removeClass('disabled'); },
 });

@@ -55,7 +55,7 @@ export default {
     approveButtonText() {
       let approveButtonText = s__('mrWidget|Approve');
       if (this.approvalsLeft <= 0) {
-        approveButtonText = s__('mrWidget|Approve additionally');
+        approveButtonText = s__('mrWidget|Add approval');
       }
       return approveButtonText;
     },
@@ -65,7 +65,7 @@ export default {
       };
     },
     showApproveButton() {
-      return this.userCanApprove && !this.userHasApproved;
+      return this.userCanApprove && !this.userHasApproved && this.mr.isOpen;
     },
     showSuggestedApprovers() {
       return this.suggestedApprovers && this.suggestedApprovers.length;

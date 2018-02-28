@@ -13,7 +13,9 @@
 # params are optional
 class SnippetsFinder < UnionFinder
   include Gitlab::Allowable
-  attr_accessor :current_user, :params, :project
+  include FinderMethods
+
+  attr_accessor :current_user, :project, :params
 
   def initialize(current_user, params = {})
     @current_user = current_user
@@ -52,12 +54,18 @@ class SnippetsFinder < UnionFinder
   end
 
   def authorized_snippets
-    Snippet.where(feature_available_projects.or(not_project_related)).public_or_visible_to_user(current_user)
+    Snippet.where(feature_available_projects.or(not_project_related))
+      .public_or_visible_to_user(current_user)
   end
 
   def feature_available_projects
-    projects = Project.public_or_visible_to_user(current_user)
-      .with_feature_available_for_user(:snippets, current_user).select(:id)
+    # Don't return any project related snippets if the user cannot read cross project
+    return table[:id].eq(nil) unless Ability.allowed?(current_user, :read_cross_project)
+
+    projects = Project.public_or_visible_to_user(current_user, use_where_in: false) do |part|
+      part.with_feature_available_for_user(:snippets, current_user)
+    end.select(:id)
+
     arel_query = Arel::Nodes::SqlLiteral.new(projects.to_sql)
     table[:project_id].in(arel_query)
   end

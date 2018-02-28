@@ -18,7 +18,7 @@ documentation.
 
 > **Important:**
 For security reasons, when using the command line, we strongly recommend
-you to [connect with GitLab via SSH](../../../ssh/README.md).
+that you [connect with GitLab via SSH](../../../ssh/README.md).
 
 ## Files
 
@@ -66,9 +66,8 @@ your implementation with your team.
 You can live preview changes submitted to a new branch with
 [Review Apps](../../../ci/review_apps/index.md).
 
-With [GitLab Enterprise Edition](https://about.gitlab.com/products/)
-subscriptions, you can also request
-[approval](../merge_requests/merge_request_approvals.md) from your managers.
+With [GitLab Starter](https://about.gitlab.com/products/), you can also request
+[approval](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your managers.
 
 To create, delete, and [branches](branches/index.md) via GitLab's UI:
 

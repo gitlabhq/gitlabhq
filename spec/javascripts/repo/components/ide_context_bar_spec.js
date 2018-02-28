@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import store from '~/ide/stores';
 import ideContextBar from '~/ide/components/ide_context_bar.vue';
-import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 
 describe('Multi-file editor right context bar', () => {
   let vm;

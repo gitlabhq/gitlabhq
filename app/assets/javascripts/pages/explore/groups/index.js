@@ -2,7 +2,7 @@ import GroupsList from '~/groups_list';
 import Landing from '~/landing';
 import initGroupsList from '../../../groups';
 
-export default function () {
+document.addEventListener('DOMContentLoaded', () => {
   new GroupsList(); // eslint-disable-line no-new
   initGroupsList();
   const landingElement = document.querySelector('.js-explore-groups-landing');
@@ -13,4 +13,4 @@ export default function () {
     'explore_groups_landing_dismissed',
   );
   exploreGroupsLanding.toggle();
-}
+});

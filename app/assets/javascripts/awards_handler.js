@@ -50,10 +50,8 @@ class AwardsHandler {
 
     this.registerEventListener('on', $('html'), 'click', (e) => {
       const $target = $(e.target);
-      if (!$target.closest('.emoji-menu-content').length) {
-        $('.js-awards-block.current').removeClass('current');
-      }
       if (!$target.closest('.emoji-menu').length) {
+        $('.js-awards-block.current').removeClass('current');
         if ($('.emoji-menu').is(':visible')) {
           $('.js-add-award.is-active').removeClass('is-active');
           this.hideMenuElement($('.emoji-menu'));
@@ -314,7 +312,7 @@ class AwardsHandler {
   }
 
   getAwardUrl() {
-    return this.getVotesBlock().data('award-url');
+    return this.getVotesBlock().data('awardUrl');
   }
 
   checkMutuality(votesBlock, emoji) {

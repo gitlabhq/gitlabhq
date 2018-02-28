@@ -2,7 +2,6 @@
 - page_title "Metrics for environment", @environment.name
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag 'common_vue'
-  = webpack_bundle_tag 'common_d3'
 
 .prometheus-container{ class: container_class }
   .top-area

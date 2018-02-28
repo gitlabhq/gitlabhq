@@ -939,6 +939,10 @@ module Gitlab
         nil
       end
 
+      def update_branch(user, branch_name, newrev, oldrev)
+        Gitlab::Git::OperationService.new(user, self).update_branch(branch_name, newrev, oldrev)
+      end
+
       AUTOCRLF_VALUES = {
         "true" => true,
         "false" => false,
@@ -1234,7 +1238,13 @@ module Gitlab
       end
 
       def squash_in_progress?(squash_id)
-        fresh_worktree?(worktree_path(SQUASH_WORKTREE_PREFIX, squash_id))
+        gitaly_migrate(:squash_in_progress) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.squash_in_progress?(squash_id)
+          else
+            fresh_worktree?(worktree_path(SQUASH_WORKTREE_PREFIX, squash_id))
+          end
+        end
       end
 
       def push_remote_branches(remote_name, branch_names, forced: true)
@@ -1349,7 +1359,7 @@ module Gitlab
           if is_enabled
             gitaly_ref_client.branch_names_contains_sha(sha)
           else
-            refs_contains_sha(:branch, sha)
+            refs_contains_sha('refs/heads/', sha)
           end
         end
       end
@@ -1359,7 +1369,7 @@ module Gitlab
           if is_enabled
             gitaly_ref_client.tag_names_contains_sha(sha)
           else
-            refs_contains_sha(:tag, sha)
+            refs_contains_sha('refs/tags/', sha)
           end
         end
       end
@@ -1458,19 +1468,25 @@ module Gitlab
         end
       end
 
-      def refs_contains_sha(ref_type, sha)
-        args = %W(#{ref_type} --contains #{sha})
-        names = run_git(args).first
+      def refs_contains_sha(refs_prefix, sha)
+        refs_prefix << "/" unless refs_prefix.ends_with?('/')
 
-        return [] unless names.respond_to?(:split)
+        # By forcing the output to %(refname) each line wiht a ref will start with
+        # the ref prefix. All other lines can be discarded.
+        args = %W(for-each-ref --contains=#{sha} --format=%(refname) #{refs_prefix})
+        names, code = run_git(args)
 
-        names = names.split("\n").map(&:strip)
+        return [] unless code.zero?
 
-        names.each do |name|
-          name.slice! '* '
+        refs = []
+        left_slice_count = refs_prefix.length
+        names.lines.each do |line|
+          next unless line.start_with?(refs_prefix)
+
+          refs << line.rstrip[left_slice_count..-1]
         end
 
-        names
+        refs
       end
 
       def rugged_write_config(full_path:)
@@ -2188,13 +2204,14 @@ module Gitlab
         )
         diff_range = "#{start_sha}...#{end_sha}"
         diff_files = run_git!(
-          %W(diff --name-only --diff-filter=a --binary #{diff_range})
+          %W(diff --name-only --diff-filter=ar --binary #{diff_range})
         ).chomp
 
         with_worktree(squash_path, branch, sparse_checkout_files: diff_files, env: env) do
           # Apply diff of the `diff_range` to the worktree
           diff = run_git!(%W(diff --binary #{diff_range}))
-          run_git!(%w(apply --index), chdir: squash_path, env: env) do |stdin|
+          run_git!(%w(apply --index --whitespace=nowarn), chdir: squash_path, env: env) do |stdin|
+            stdin.binmode
             stdin.write(diff)
           end
 

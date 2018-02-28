@@ -9,9 +9,7 @@ module MergeRequests
       currently_approved = merge_request.approved?
 
       if approval.destroy_all
-        # bust the cache here, otherwise will show results from
-        # before the deletion
-        merge_request.approvals(true)
+        merge_request.reset_approval_cache!
 
         create_note(merge_request)
 

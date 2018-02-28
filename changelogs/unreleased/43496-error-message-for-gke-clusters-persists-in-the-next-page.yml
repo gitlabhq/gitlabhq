@@ -1,0 +1,5 @@
+---
+title: Do not persist Google Project verification flash errors after a page reload
+merge_request: 17299
+author:
+type: fixed

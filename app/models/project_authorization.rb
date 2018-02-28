@@ -1,4 +1,6 @@
 class ProjectAuthorization < ActiveRecord::Base
+  prepend ::EE::ProjectAuthorization
+
   belongs_to :user
   belongs_to :project
 

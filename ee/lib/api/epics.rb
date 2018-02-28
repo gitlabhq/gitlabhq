@@ -29,6 +29,15 @@ module API
       def epic
         @epic ||= user_group.epics.find_by(iid: params[:epic_iid])
       end
+
+      def find_epics(args = {})
+        args = declared_params.merge(args)
+        args[:label_name] = args.delete(:labels)
+
+        epics = EpicsFinder.new(current_user, args).execute.preload(:labels)
+
+        epics.reorder(args[:order_by] => args[:sort])
+      end
     end
 
     params do
@@ -39,8 +48,17 @@ module API
       desc 'Get epics for the group' do
         success Entities::Epic
       end
+      params do
+        optional :order_by, type: String, values: %w[created_at updated_at], default: 'created_at',
+                            desc: 'Return epics ordered by `created_at` or `updated_at` fields.'
+        optional :sort, type: String, values: %w[asc desc], default: 'desc',
+                        desc: 'Return epics sorted in `asc` or `desc` order.'
+        optional :search, type: String, desc: 'Search epics for text present in the title or description'
+        optional :author_id, type: Integer, desc: 'Return epics which are authored by the user with the given ID'
+        optional :labels, type: String, desc: 'Comma-separated list of label names'
+      end
       get ':id/-/epics' do
-        present EpicsFinder.new(current_user, group_id: user_group.id).execute, with: Entities::Epic
+        present find_epics(group_id: user_group.id), with: Entities::Epic
       end
 
       desc 'Get details of an epic' do
@@ -63,6 +81,7 @@ module API
         optional :description, type: String, desc: 'The description of an epic'
         optional :start_date, type: String, desc: 'The start date of an epic'
         optional :end_date, type: String, desc: 'The end date of an epic'
+        optional :labels, type: String, desc: 'Comma-separated list of label names'
       end
       post ':id/-/epics' do
         authorize_can_create!
@@ -84,14 +103,15 @@ module API
         optional :description, type: String, desc: 'The description of an epic'
         optional :start_date, type: String, desc: 'The start date of an epic'
         optional :end_date, type: String, desc: 'The end date of an epic'
-        at_least_one_of :title, :description, :start_date, :end_date
+        optional :labels, type: String, desc: 'Comma-separated list of label names'
+        at_least_one_of :title, :description, :start_date, :end_date, :labels
       end
       put ':id/-/epics/:epic_iid' do
         authorize_can_admin!
         update_params = declared_params(include_missing: false)
         update_params.delete(:epic_iid)
 
-        result = ::Epics::UpdateService.new(nil, current_user, update_params).execute(epic)
+        result = ::Epics::UpdateService.new(user_group, current_user, update_params).execute(epic)
 
         if result.valid?
           present result, with: Entities::Epic

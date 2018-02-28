@@ -12,6 +12,10 @@ GitLab offers the most scalable Git-based fully integrated platform for software
 
 With GitLab self-hosted, you deploy your own GitLab instance on-premises or on a private cloud of your choice. GitLab self-hosted is available for [free and with paid subscriptions](https://about.gitlab.com/products/): Libre, Starter, Premium, and Ultimate.
 
+Every feature available in Libre is also available in Starter, Premium, and Ultimate.
+Starter features are also available in Premium and Ultimate, and Premium features are also
+available in Ultimate.
+
 GitLab.com is our SaaS offering. It's hosted, managed, and administered by GitLab, with [free and paid plans](https://about.gitlab.com/gitlab-com/) for individuals and teams: Free, Bronze, Silver, and Gold.
 
 ## Shortcuts to GitLab's most visited docs
@@ -54,6 +58,7 @@ GitLab.com is our SaaS offering. It's hosted, managed, and administered by GitLa
 - [Groups](user/group/index.md): Organize your projects in groups.
   - [Subgroups](user/group/subgroups/index.md)
   - **(Ultimate)** [Epics](user/group/epics/index.md)
+  - **(Ultimate)** [Roadmap](user/group/roadmap/index.md)
   - **(Starter/Premium)** [Contribution Analytics](user/group/contribution_analytics/index.md): See detailed statistics of group contributors.
 - [Search through GitLab](user/search/index.md): Search for issues, merge requests, projects, groups, todos, and issues in Issue Boards.
   - **(Starter/Premium)** [Advanced Global Search](user/search/advanced_global_search.md): Leverage Elasticsearch for faster, more advanced code search across your entire GitLab instance.
@@ -143,8 +148,8 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
 
 ## Administrator documentation
 
-[Administration documentation](administration/index.md) applies to admin users of [GitLab
-self-hosted instances](#self-hosted-gitlab): Libre, Starter, Premium, Ultimate.
+[Administration documentation](administration/index.md) applies to admin users of GitLab
+self-hosted instances.
 
 Learn how to install, configure, update, upgrade, integrate, and maintain your own instance.
 Regular users don't have access to GitLab administration tools and settings.
@@ -152,7 +157,7 @@ Regular users don't have access to GitLab administration tools and settings.
 ## Contributor documentation
 
 GitLab Community Edition is [open source](https://gitlab.com/gitlab-org/gitlab-ce/)
-and Enterprise Editions are [open-core](https://gitlab.com/gitlab-org/gitlab-ee/).
+and GitLab Enterprise Edition is [open-core](https://gitlab.com/gitlab-org/gitlab-ee/).
 Learn how to contribute to GitLab:
 
 - [Development](development/README.md): All styleguides and explanations how to contribute.

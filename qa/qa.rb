@@ -117,9 +117,8 @@ module QA
         autoload :Show, 'qa/page/project/pipeline/show'
       end
 
-      module Pipeline
-        autoload :Index, 'qa/page/project/pipeline/index'
-        autoload :Show, 'qa/page/project/pipeline/show'
+      module Job
+        autoload :Show, 'qa/page/project/job/show'
       end
 
       module Settings
@@ -131,6 +130,7 @@ module QA
         autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
         autoload :SecretVariables, 'qa/page/project/settings/secret_variables'
         autoload :Runners, 'qa/page/project/settings/runners'
+        autoload :MergeRequest, 'qa/page/project/settings/merge_request'
       end
 
       module Issue
@@ -146,6 +146,7 @@ module QA
 
     module MergeRequest
       autoload :New, 'qa/page/merge_request/new'
+      autoload :Show, 'qa/page/merge_request/show'
     end
 
     module Admin
@@ -170,6 +171,7 @@ module QA
   #
   module Git
     autoload :Repository, 'qa/git/repository'
+    autoload :Location, 'qa/git/location'
   end
 
   ##

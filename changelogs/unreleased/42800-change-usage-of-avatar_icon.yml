@@ -1,0 +1,6 @@
+---
+title: Use a user object in ApplicationHelper#avatar_icon where possible to avoid
+  N+1 queries.
+merge_request: 42800
+author:
+type: performance

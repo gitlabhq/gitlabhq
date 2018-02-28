@@ -1627,6 +1627,13 @@ describe Project do
 
       expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
     end
+
+    it 'returns false when the repo is not empty' do
+      project.add_master(user)
+      expect(project).to receive(:empty_repo?).and_return(false)
+
+      expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
+    end
   end
 
   describe '#container_registry_url' do

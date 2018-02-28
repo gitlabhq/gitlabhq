@@ -21,15 +21,18 @@ module Geo
         fetch_geo_mirror(project.wiki.repository)
       end
 
-      update_registry!(finished_at: DateTime.now, attrs: { last_wiki_sync_failure: nil })
-
-      log_info('Finished wiki sync',
-               update_delay_s: update_delay_in_seconds,
-               download_time_s: download_time_in_seconds)
+      mark_sync_as_successful
     rescue Gitlab::Git::RepositoryMirroring::RemoteError,
            Gitlab::Shell::Error,
            ProjectWiki::CouldNotCreateWikiError => e
-      fail_registry!('Error syncing wiki repository', e)
+      # In some cases repository does not exists, the only way to know about this is to parse the error text.
+      # If it does not exist we should consider it as successfuly downloaded.
+      if e.message.include? Gitlab::GitAccess::ERROR_MESSAGES[:no_repo]
+        log_info('Repository is not found, marking it as successfully synced')
+        mark_sync_as_successful
+      else
+        fail_registry!('Error syncing wiki repository', e)
+      end
     rescue Gitlab::Git::Repository::NoRepository => e
       log_info('Setting force_to_redownload flag')
       fail_registry!('Invalid wiki', e, force_to_redownload_wiki: true)
@@ -43,6 +46,14 @@ module Geo
 
     def repository
       project.wiki.repository
+    end
+
+    def mark_sync_as_successful
+      update_registry!(finished_at: DateTime.now, attrs: { last_wiki_sync_failure: nil })
+
+      log_info('Finished wiki sync',
+               update_delay_s: update_delay_in_seconds,
+               download_time_s: download_time_in_seconds)
     end
 
     def retry_count

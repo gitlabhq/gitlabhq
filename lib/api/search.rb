@@ -11,7 +11,7 @@ module API
         projects: Entities::BasicProjectDetails,
         milestones: Entities::Milestone,
         notes: Entities::Note,
-        commits: Entities::Commit,
+        commits: Entities::CommitDetail,
         blobs: Entities::Blob,
         wiki_blobs: Entities::Blob,
         snippet_titles: Entities::Snippet,
@@ -43,7 +43,7 @@ module API
 
         case params[:scope]
         when 'wiki_blobs'
-          paginate(results).map { |blob| Gitlab::ProjectSearchResults.parse_search_result(blob) }
+          paginate(results).map { |blob| Gitlab::ProjectSearchResults.parse_search_result(blob, user_project) }
         when 'blobs'
           paginate(results).map { |blob| blob[1] }
         else
@@ -110,9 +110,7 @@ module API
       get ':id/-/search' do
         check_elasticsearch_scope!
 
-        group = find_group!(params[:id])
-
-        present search(group_id: group.id), with: entity
+        present search(group_id: user_group.id), with: entity
       end
     end
 
@@ -131,9 +129,7 @@ module API
         use :pagination
       end
       get ':id/-/search' do
-        project = find_project!(params[:id])
-
-        present search(project_id: project.id), with: entity
+        present search(project_id: user_project.id), with: entity
       end
     end
   end

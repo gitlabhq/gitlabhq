@@ -1,10 +1,10 @@
 - @no_container = true
-- page_title "File Locks"
+- page_title _("Locked Files")
 
 %div{ class: (container_class) }
   .top-area
     .nav-text
-      Locks give the ability to lock specific file or folder.
+      = _("Locks give the ability to lock specific file or folder.")
 
   .locks
     - if @path_locks.any?
@@ -14,4 +14,4 @@
       = paginate @path_locks, theme: 'gitlab'
     - else
       .nothing-here-block
-        Repository has no locks.
+        = _("Repository has no locks.")

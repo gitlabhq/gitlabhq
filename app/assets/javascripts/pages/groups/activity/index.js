@@ -1,3 +1,3 @@
 import Activities from '~/activities';
 
-export default () => new Activities();
+document.addEventListener('DOMContentLoaded', () => new Activities());

@@ -485,7 +485,7 @@ GitLabDropdown = (function() {
       $target = $(e.target);
       if ($target && !$target.hasClass('dropdown-menu-close') &&
                      !$target.hasClass('dropdown-menu-close-icon') &&
-                     !$target.data('is-link')) {
+                     !$target.data('isLink')) {
         e.stopPropagation();
         return false;
       } else {
@@ -634,7 +634,7 @@ GitLabDropdown = (function() {
       html.style.display = 'none';
     }
 
-    if ((data === 'divider' || data === 'separator')) {
+    if (data === 'divider' || data === 'separator') {
       html.className = data;
       return html;
     }

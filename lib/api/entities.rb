@@ -22,6 +22,7 @@ module API
       end
 
       expose :avatar_path, if: ->(user, options) { options.fetch(:only_path, false) && user.avatar_path }
+      expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes
 
       expose :web_url do |user, options|
         Gitlab::Routing.url_helpers.user_url(user)
@@ -100,6 +101,13 @@ module API
       expose :created_at
     end
 
+    class ProjectImportStatus < ProjectIdentity
+      expose :import_status
+
+      # TODO: Use `expose_nil` once we upgrade the grape-entity gem
+      expose :import_error, if: lambda { |status, _ops| status.import_error }
+    end
+
     class BasicProjectDetails < ProjectIdentity
       include ::API::ProjectsRelationBuilder
 
@@ -118,6 +126,8 @@ module API
       end
       expose :star_count, :forks_count
       expose :last_activity_at
+
+      expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes
 
       def self.preload_relation(projects_relation, options =  {})
         projects_relation.preload(:project_feature, :route)
@@ -256,6 +266,8 @@ module API
         expose :parent_id
       end
 
+      expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes
+
       expose :statistics, if: :statistics do
         with_options format_with: -> (value) { value.to_i } do
           expose :storage_size
@@ -303,6 +315,11 @@ module API
       expose :stats, using: Entities::CommitStats, if: :stats
       expose :status
       expose :last_pipeline, using: 'API::Entities::PipelineBasic'
+      expose :project_id
+    end
+
+    class BasicRef < Grape::Entity
+      expose :type, :name
     end
 
     class Branch < Grape::Entity
@@ -489,6 +506,12 @@ module API
       expose :author, using: Entities::UserBasic
       expose :start_date
       expose :end_date
+      expose :created_at
+      expose :updated_at
+      expose :labels do |epic, options|
+        # Avoids an N+1 query since labels are preloaded
+        epic.labels.map(&:title).sort
+      end
     end
 
     class EpicIssue < Issue
@@ -946,6 +969,10 @@ module API
       expose(*EE::ApplicationSettingsHelper.repository_mirror_attributes, if: lambda do |_instance, _options|
         ::License.feature_available?(:repository_mirrors)
       end)
+      expose(*EE::ApplicationSettingsHelper.external_authorization_service_attributes, if: lambda do |_instance, _options|
+        ::License.feature_available?(:external_authorization_service)
+      end)
+
       expose(:restricted_visibility_levels) do |setting, _options|
         setting.restricted_visibility_levels.map { |level| Gitlab::VisibilityLevel.string_level(level) }
       end
@@ -1415,6 +1442,10 @@ module API
       expose :domain
       expose :url
       expose :project_id
+      expose :verified?, as: :verified
+      expose :verification_code, as: :verification_code
+      expose :enabled_until
+
       expose :certificate,
         as: :certificate_expiration,
         if: ->(pages_domain, _) { pages_domain.certificate? },
@@ -1426,6 +1457,10 @@ module API
     class PagesDomain < Grape::Entity
       expose :domain
       expose :url
+      expose :verified?, as: :verified
+      expose :verification_code, as: :verification_code
+      expose :enabled_until
+
       expose :certificate,
         if: ->(pages_domain, _) { pages_domain.certificate? },
         using: PagesDomainCertificate do |pages_domain|
@@ -1450,6 +1485,7 @@ module API
       expose :id
       expose :ref
       expose :startline
+      expose :project_id
     end
   end
 end

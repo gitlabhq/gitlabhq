@@ -1,11 +1,5 @@
 module Epics
-  class CreateService < IssuableBaseService
-    attr_reader :group
-
-    def initialize(group, current_user, params)
-      @group, @current_user, @params = group, current_user, params
-    end
-
+  class CreateService < Epics::BaseService
     def execute
       @epic = group.epics.new(whitelisted_epic_params)
       create(@epic)

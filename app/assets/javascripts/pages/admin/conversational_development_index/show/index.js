@@ -1,3 +1,3 @@
-import UserCallout from '../../../../user_callout';
+import UserCallout from '~/user_callout';
 
-export default () => new UserCallout();
+document.addEventListener('DOMContentLoaded', () => new UserCallout());

@@ -1,0 +1,58 @@
+.report-block-container {
+  border-top: 1px solid $gray-darker;
+  padding: $gl-padding-top;
+  background-color: $gray-light;
+  margin: $gl-padding #{-$gl-padding} #{-$gl-padding};
+}
+
+.report-block-dast-code {
+  margin-left: 26px;
+}
+
+.report-block-list {
+  list-style: none;
+  padding: 0 1px;
+  margin: 0;
+  line-height: $code_line_height;
+
+  .btn-open-modal {
+    padding: 0 5px 4px;
+  }
+
+  .report-block-list-item {
+    display: flex;
+  }
+
+  .report-block-list-item-modal {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .failed .report-block-icon {
+    color: $red-500;
+  }
+
+  .success .report-block-icon {
+    color: $green-500;
+  }
+
+  .neutral .report-block-icon {
+    color: $theme-gray-700;
+  }
+
+  .report-block-icon {
+    margin: -5px 4px 0 0;
+    fill: currentColor;
+  }
+}
+
+.pipeline-tab-content {
+  .space-children,
+  .space-children > * {
+    display: flex;
+  }
+
+  .media {
+    align-items: center;
+  }
+}

@@ -21,106 +21,92 @@ var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
 var NO_COMPRESSION = process.env.NO_COMPRESSION;
 
-// generate automatic entry points
-var autoEntries = {};
-var pageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'app/assets/javascripts') });
+var autoEntriesCount = 0;
+var watchAutoEntries = [];
 
-// filter out entries currently imported dynamically in dispatcher.js
-var dispatcher = fs.readFileSync(path.join(ROOT_PATH, 'app/assets/javascripts/dispatcher.js')).toString();
-var dispatcherChunks = dispatcher.match(/(?!import\('.\/)pages\/[^']+/g);
+function generateEntries() {
+  // generate automatic entry points
+  var autoEntries = {};
+  var pageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'app/assets/javascripts') });
+  watchAutoEntries = [
+    path.join(ROOT_PATH, 'app/assets/javascripts/pages/'),
+  ];
 
-pageEntries.forEach(( path ) => {
-  let chunkPath = path.replace(/\/index\.js$/, '');
-  if (!dispatcherChunks.includes(chunkPath)) {
-    let chunkName = chunkPath.replace(/\//g, '.');
-    autoEntries[chunkName] = './' + path;
+  function generateAutoEntries(path, prefix = '.') {
+    const chunkPath = path.replace(/\/index\.js$/, '');
+    const chunkName = chunkPath.replace(/\//g, '.');
+    autoEntries[chunkName] = `${prefix}/${path}`;
   }
-});
 
-// report our auto-generated bundle count
-var autoEntriesCount = Object.keys(autoEntries).length;
-console.log(`${autoEntriesCount} entries from '/pages' automatically added to webpack output.`);
+  pageEntries.forEach(( path ) => generateAutoEntries(path));
 
-var config = {
-  // because sqljs requires fs.
-  node: {
-    fs: "empty"
-  },
-  context: path.join(ROOT_PATH, 'app/assets/javascripts'),
-  entry: {
-    account:              './profile/account/index.js',
-    add_gitlab_slack_application: './add_gitlab_slack_application/index.js',
+  // EE-specific auto entries
+  const eePageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'ee/app/assets/javascripts') });
+  eePageEntries.forEach(( path ) => generateAutoEntries(path, 'ee'));
+  watchAutoEntries.concat(path.join(ROOT_PATH, 'ee/app/assets/javascripts/pages/'));
+
+  autoEntriesCount = Object.keys(autoEntries).length;
+
+  const manualEntries = {
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
-    blob:                 './blob_edit/blob_bundle.js',
-    boards:               './boards/boards_bundle.js',
-    burndown_chart:       './burndown_chart/index.js',
     common:               './commons/index.js',
     common_vue:           './vue_shared/vue_resource_interceptor.js',
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
-    commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
-    deploy_keys:          './deploy_keys/index.js',
-    docs:                 './docs/docs_bundle.js',
-    diff_notes:           './diff_notes/diff_notes_bundle.js',
     environments:         './environments/environments_bundle.js',
-    environments_folder:  './environments/folder/environments_folder_bundle.js',
-    epic_show:            'ee/epics/epic_show/epic_show_bundle.js',
-    new_epic:             'ee/epics/new_epic/new_epic_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
-    geo_nodes:            'ee/geo_nodes',
-    graphs:               './graphs/graphs_bundle.js',
-    graphs_charts:        './graphs/graphs_charts.js',
-    graphs_show:          './graphs/graphs_show.js',
     help:                 './help/help.js',
-    issuable:             './issuable/issuable_bundle.js',
-    issues:               './issues/issues_bundle.js',
-    how_to_merge:         './how_to_merge.js',
-    issue_show:           './issue_show/index.js',
-    integrations:         './integrations',
-    job_details:          './jobs/job_details_bundle.js',
-    ldap_group_links:     './groups/ldap_group_links.js',
-    locale:               './locale/index.js',
-    main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
-    mirrors:              './mirrors',
     monitoring:           './monitoring/monitoring_bundle.js',
-    network:              './network/network_bundle.js',
     notebook_viewer:      './blob/notebook_viewer.js',
-    notes:                './notes/index.js',
     pdf_viewer:           './blob/pdf_viewer.js',
-    pipelines:            './pipelines/pipelines_bundle.js',
-    pipelines_charts:     './pipelines/pipelines_charts.js',
     pipelines_details:    './pipelines/pipeline_details_bundle.js',
-    pipelines_times:      './pipelines/pipelines_times.js',
     profile:              './profile/profile_bundle.js',
     project_import_gl:    './projects/project_import_gitlab_project.js',
-    project_new:          './projects/project_new.js',
-    prometheus_metrics:   'ee/prometheus_metrics',
     protected_branches:   './protected_branches',
-    ee_protected_branches: 'ee/protected_branches',
     protected_tags:       './protected_tags',
-    ee_protected_tags:    'ee/protected_tags',
-    service_desk:         './projects/settings_service_desk/service_desk_bundle.js',
-    service_desk_issues:  './service_desk_issues/index.js',
     registry_list:        './registry/index.js',
-    roadmap:              'ee/roadmap',
-    ide:                 './ide/index.js',
-    sidebar:              './sidebar/sidebar_bundle.js',
-    ee_sidebar:           'ee/sidebar/sidebar_bundle.js',
-    schedule_form:        './pipeline_schedules/pipeline_schedule_form_bundle.js',
-    schedules_index:      './pipeline_schedules/pipeline_schedules_index_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
     sketch_viewer:        './blob/sketch_viewer.js',
     stl_viewer:           './blob/stl_viewer.js',
     terminal:             './terminal/terminal_bundle.js',
-    u2f:                  ['vendor/u2f'],
     ui_development_kit:   './ui_development_kit.js',
-    raven:                './raven/index.js',
-    vue_merge_request_widget: './vue_merge_request_widget/index.js',
-    test:                 './test.js',
     two_factor_auth:      './two_factor_auth.js',
-    users:                './users/index.js',
+
+
+    common:               './commons/index.js',
+    common_vue:           './vue_shared/vue_resource_interceptor.js',
+    locale:               './locale/index.js',
+    main:                 './main.js',
+    ide:                  './ide/index.js',
+    raven:                './raven/index.js',
+    test:                 './test.js',
+    u2f:                  ['vendor/u2f'],
     webpack_runtime:      './webpack.js',
-  },
+
+    // EE-only
+    add_gitlab_slack_application: 'ee/add_gitlab_slack_application/index.js',
+    burndown_chart:       'ee/burndown_chart/index.js',
+    epic_show:            'ee/epics/epic_show/epic_show_bundle.js',
+    new_epic:             'ee/epics/new_epic/new_epic_bundle.js',
+    geo_nodes:            'ee/geo_nodes',
+    issuable:             'ee/issuable/issuable_bundle.js',
+    issues:               'ee/issues/issues_bundle.js',
+    ldap_group_links:     'ee/groups/ldap_group_links.js',
+    mirrors:              'ee/mirrors',
+    ee_protected_branches: 'ee/protected_branches',
+    ee_protected_tags:    'ee/protected_tags',
+    service_desk:         'ee/projects/settings_service_desk/service_desk_bundle.js',
+    service_desk_issues:  'ee/service_desk_issues/index.js',
+    roadmap:              'ee/roadmap',
+  };
+
+  return Object.assign(manualEntries, autoEntries);
+}
+
+var config = {
+  context: path.join(ROOT_PATH, 'app/assets/javascripts'),
+
+  entry: generateEntries,
 
   output: {
     path: path.join(ROOT_PATH, 'public/assets/webpack'),
@@ -174,7 +160,7 @@ var config = {
         include: /node_modules\/katex\/dist/,
         use: [
           { loader: 'style-loader' },
-          { 
+          {
             loader: 'css-loader',
             options: {
               name: '[name].[hash].[ext]'
@@ -273,21 +259,14 @@ var config = {
       name: 'common_vue',
       chunks: [
         'boards',
-        'commit_pipelines',
         'cycle_analytics',
         'deploy_keys',
-        'diff_notes',
         'environments',
-        'environments_folder',
         'filtered_search',
         'groups',
-        'issuable',
-        'issue_show',
-        'job_details',
         'merge_conflicts',
         'monitoring',
         'notebook_viewer',
-        'notes',
         'pdf_viewer',
         'pipelines',
         'pipelines_details',
@@ -295,27 +274,11 @@ var config = {
         'ide',
         'schedule_form',
         'schedules_index',
-        'service_desk',
         'sidebar',
         'vue_merge_request_widget',
       ],
       minChunks: function(module, count) {
         return module.resource && (/vue_shared/).test(module.resource);
-      },
-    }),
-
-    // create cacheable common library bundle for all d3 chunks
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'common_d3',
-      chunks: [
-        'graphs',
-        'graphs_show',
-        'monitoring',
-        'users',
-        'burndown_chart', // EE
-      ],
-      minChunks: function (module, count) {
-        return module.resource && /d3-/.test(module.resource);
       },
     }),
 
@@ -358,16 +321,21 @@ var config = {
       'images':         path.join(ROOT_PATH, 'app/assets/images'),
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
       'vue$':           'vue/dist/vue.esm.js',
+      'spec':           path.join(ROOT_PATH, 'spec/javascripts'),
 
+      // EE-only
       'ee':              path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
       'ee_empty_states': path.join(ROOT_PATH, 'ee/app/views/shared/empty_states'),
       'ee_icons':        path.join(ROOT_PATH, 'ee/app/views/shared/icons'),
       'ee_images':       path.join(ROOT_PATH, 'ee/app/assets/images'),
     }
-  }
-}
+  },
 
-config.entry = Object.assign({}, autoEntries, config.entry);
+  // sqljs requires fs
+  node: {
+    fs: 'empty',
+  },
+};
 
 if (IS_PRODUCTION) {
   config.devtool = 'source-map';
@@ -404,7 +372,24 @@ if (IS_DEV_SERVER) {
   };
   config.plugins.push(
     // watch node_modules for changes if we encounter a missing module compile error
-    new WatchMissingNodeModulesPlugin(path.join(ROOT_PATH, 'node_modules'))
+    new WatchMissingNodeModulesPlugin(path.join(ROOT_PATH, 'node_modules')),
+
+    // watch for changes to our automatic entry point modules
+    {
+      apply(compiler) {
+        compiler.plugin('emit', (compilation, callback) => {
+          compilation.contextDependencies = [
+            ...compilation.contextDependencies,
+            ...watchAutoEntries,
+          ];
+
+          // report our auto-generated bundle count
+          console.log(`${autoEntriesCount} entries from '/pages' automatically added to webpack output.`);
+
+          callback();
+        })
+      },
+    },
   );
   if (DEV_SERVER_LIVERELOAD) {
     config.plugins.push(new webpack.HotModuleReplacementPlugin());

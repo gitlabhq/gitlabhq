@@ -2,9 +2,10 @@ require 'spec_helper'
 
 describe Groups::BoardsController do
   let(:group) { create(:group) }
-  let(:user)    { create(:user) }
+  let(:user) { create(:user) }
 
   before do
+    allow(Ability).to receive(:allowed?).and_call_original
     group.add_master(user)
     sign_in(user)
     stub_licensed_features(group_issue_boards: true)
@@ -62,6 +63,10 @@ describe Groups::BoardsController do
           expect(response.content_type).to eq 'application/json'
         end
       end
+    end
+
+    it_behaves_like 'disabled when using an external authorization service' do
+      subject { list_boards }
     end
 
     def list_boards(format: :html)
@@ -123,6 +128,10 @@ describe Groups::BoardsController do
 
         expect(response).to have_gitlab_http_status(404)
       end
+    end
+
+    it_behaves_like 'disabled when using an external authorization service' do
+      subject { read_board board: board }
     end
 
     def read_board(board:, format: :html)

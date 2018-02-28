@@ -6,6 +6,7 @@ module EE
 
     included do
       has_many :approvals, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+      has_many :approved_by_users, through: :approvals, source: :user
       has_many :approvers, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
       has_many :approver_groups, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
@@ -61,6 +62,26 @@ module EE
 
     def has_dast_data?
       dast_artifact&.success?
+    end
+
+    def expose_performance_data?
+      project.feature_available?(:merge_request_performance_metrics) &&
+        has_performance_data?
+    end
+
+    def expose_sast_data?
+      project.feature_available?(:sast) &&
+        has_sast_data?
+    end
+
+    def expose_dast_data?
+      project.feature_available?(:dast) &&
+        has_dast_data?
+    end
+
+    def expose_sast_container_data?
+      project.feature_available?(:sast_container) &&
+        has_sast_container_data?
     end
   end
 end

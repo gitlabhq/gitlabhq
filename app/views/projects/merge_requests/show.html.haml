@@ -6,7 +6,6 @@
 - page_card_attributes @merge_request.card_attributes
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag('common_vue')
-  = webpack_bundle_tag('diff_notes')
   = webpack_bundle_tag('issuable')
 
 .merge-request{ data: { mr_action: j(params[:tab].presence || 'show'), url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project) } }
@@ -31,9 +30,6 @@
       window.gl.mrWidgetData.squash_before_merge_help_path = '#{help_page_path("user/project/merge_requests/squash_and_merge")}';
 
     #js-vue-mr-widget.mr-widget
-
-    - content_for :page_specific_javascripts do
-      = webpack_bundle_tag 'vue_merge_request_widget'
 
     .content-block.content-block-small.emoji-list-container
       = render 'award_emoji/awards_block', awardable: @merge_request, inline: true

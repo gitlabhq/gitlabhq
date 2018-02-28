@@ -1,5 +1,5 @@
 require 'rspec/mocks'
-require 'toml'
+require 'toml-rb'
 
 module TestEnv
   extend self

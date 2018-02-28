@@ -3,8 +3,8 @@ import mrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import notify from '~/lib/utils/notify';
 import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import mockData from './mock_data';
-import mountComponent from '../helpers/vue_mount_component_helper';
 
 const returnPromise = data => new Promise((resolve) => {
   resolve({
@@ -292,6 +292,15 @@ describe('mrWidgetOptions', () => {
         vm.mr.ciStatus = data.ci_status;
 
         vm.handleNotification(data);
+
+        expect(notify.notifyMe).not.toHaveBeenCalled();
+      });
+
+      it('should not notify if no pipeline provided', () => {
+        vm.handleNotification({
+          ...data,
+          pipeline: undefined,
+        });
 
         expect(notify.notifyMe).not.toHaveBeenCalled();
       });

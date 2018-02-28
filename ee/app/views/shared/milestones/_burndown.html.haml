@@ -4,8 +4,7 @@
 - warning = data_warning_for(burndown)
 
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_d3')
-  = page_specific_javascript_bundle_tag('burndown_chart')
+  = webpack_bundle_tag 'burndown_chart'
 
 = warning
 

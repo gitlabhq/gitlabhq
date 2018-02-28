@@ -185,6 +185,12 @@ module Elastic
       # documents gated by that project feature - e.g., "issues". The feature's
       # visibility level must be taken into account.
       def project_ids_query(user, project_ids, public_and_internal_projects, feature = nil)
+        # When reading cross project is not allowed, only allow searching a
+        # a single project, so the `:read_*` ability is only checked once.
+        unless Ability.allowed?(user, :read_cross_project)
+          project_ids = [] if project_ids.is_a?(Array) && project_ids.size > 1
+        end
+
         # At least one condition must be present, so pick no projects for
         # anonymous users.
         # Pick private, internal and public projects the user is a member of.

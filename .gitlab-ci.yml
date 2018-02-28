@@ -146,7 +146,7 @@ stages:
     - export KNAPSACK_TEST_FILE_PATTERN="ee/spec/**{,/*/**}/*_spec.rb" KNAPSACK_GENERATE_REPORT=true CACHE_CLASSES=true
     - JOB_NAME=( $CI_JOB_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[-2]} CI_NODE_TOTAL=${JOB_NAME[-1]}
-    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report-ee.json
+    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - cp ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
     - scripts/gitaly-test-spawn
     - knapsack rspec "-Ispec --color --format documentation --tag ~geo"
@@ -289,6 +289,17 @@ retrieve-tests-metadata:
     - wget -O $EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/$EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH || rm $EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH
     - '[[ -f $EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH ]] || echo "{}" > ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH}'
 
+ee-files-location-check:
+  <<: *dedicated-runner
+  stage: test
+  before_script: []
+  cache: {}
+  script:
+    - scripts/ee-files-location-check
+  only:
+    - branches
+    - //@gitlab-org/gitlab-ee
+
 update-tests-metadata:
   <<: *tests-metadata-state
   <<: *only-canonical-masters
@@ -303,7 +314,7 @@ update-tests-metadata:
     - retry gem install fog-aws mime-types
     - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg_node_*.json
     - scripts/merge-reports ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/spinach-pg_node_*.json
-    - scripts/merge-reports ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg_node_*-ee.json
+    - scripts/merge-reports ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg-ee_node_*.json
     - scripts/merge-reports ${FLAKY_RSPEC_SUITE_REPORT_PATH} rspec_flaky/all_*_*.json
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $KNAPSACK_RSPEC_SUITE_REPORT_PATH $KNAPSACK_SPINACH_SUITE_REPORT_PATH'
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH'
@@ -379,69 +390,69 @@ rspec-mysql-ee 1 2: *rspec-ee-mysql
 rspec-pg geo: *rspec-metadata-pg-geo
 ## EE jobs
 
-rspec-pg 0 27: *rspec-metadata-pg
-rspec-pg 1 27: *rspec-metadata-pg
-rspec-pg 2 27: *rspec-metadata-pg
-rspec-pg 3 27: *rspec-metadata-pg
-rspec-pg 4 27: *rspec-metadata-pg
-rspec-pg 5 27: *rspec-metadata-pg
-rspec-pg 6 27: *rspec-metadata-pg
-rspec-pg 7 27: *rspec-metadata-pg
-rspec-pg 8 27: *rspec-metadata-pg
-rspec-pg 9 27: *rspec-metadata-pg
-rspec-pg 10 27: *rspec-metadata-pg
-rspec-pg 11 27: *rspec-metadata-pg
-rspec-pg 12 27: *rspec-metadata-pg
-rspec-pg 13 27: *rspec-metadata-pg
-rspec-pg 14 27: *rspec-metadata-pg
-rspec-pg 15 27: *rspec-metadata-pg
-rspec-pg 16 27: *rspec-metadata-pg
-rspec-pg 17 27: *rspec-metadata-pg
-rspec-pg 18 27: *rspec-metadata-pg
-rspec-pg 19 27: *rspec-metadata-pg
-rspec-pg 20 27: *rspec-metadata-pg
-rspec-pg 21 27: *rspec-metadata-pg
-rspec-pg 22 27: *rspec-metadata-pg
-rspec-pg 23 27: *rspec-metadata-pg
-rspec-pg 24 27: *rspec-metadata-pg
-rspec-pg 25 27: *rspec-metadata-pg
-rspec-pg 26 27: *rspec-metadata-pg
+rspec-pg 0 28: *rspec-metadata-pg
+rspec-pg 1 28: *rspec-metadata-pg
+rspec-pg 2 28: *rspec-metadata-pg
+rspec-pg 3 28: *rspec-metadata-pg
+rspec-pg 4 28: *rspec-metadata-pg
+rspec-pg 5 28: *rspec-metadata-pg
+rspec-pg 6 28: *rspec-metadata-pg
+rspec-pg 7 28: *rspec-metadata-pg
+rspec-pg 8 28: *rspec-metadata-pg
+rspec-pg 9 28: *rspec-metadata-pg
+rspec-pg 10 28: *rspec-metadata-pg
+rspec-pg 11 28: *rspec-metadata-pg
+rspec-pg 12 28: *rspec-metadata-pg
+rspec-pg 13 28: *rspec-metadata-pg
+rspec-pg 14 28: *rspec-metadata-pg
+rspec-pg 15 28: *rspec-metadata-pg
+rspec-pg 16 28: *rspec-metadata-pg
+rspec-pg 17 28: *rspec-metadata-pg
+rspec-pg 18 28: *rspec-metadata-pg
+rspec-pg 19 28: *rspec-metadata-pg
+rspec-pg 20 28: *rspec-metadata-pg
+rspec-pg 21 28: *rspec-metadata-pg
+rspec-pg 22 28: *rspec-metadata-pg
+rspec-pg 23 28: *rspec-metadata-pg
+rspec-pg 24 28: *rspec-metadata-pg
+rspec-pg 25 28: *rspec-metadata-pg
+rspec-pg 26 28: *rspec-metadata-pg
+rspec-pg 27 28: *rspec-metadata-pg
 
-rspec-mysql 0 27: *rspec-metadata-mysql
-rspec-mysql 1 27: *rspec-metadata-mysql
-rspec-mysql 2 27: *rspec-metadata-mysql
-rspec-mysql 3 27: *rspec-metadata-mysql
-rspec-mysql 4 27: *rspec-metadata-mysql
-rspec-mysql 5 27: *rspec-metadata-mysql
-rspec-mysql 6 27: *rspec-metadata-mysql
-rspec-mysql 7 27: *rspec-metadata-mysql
-rspec-mysql 8 27: *rspec-metadata-mysql
-rspec-mysql 9 27: *rspec-metadata-mysql
-rspec-mysql 10 27: *rspec-metadata-mysql
-rspec-mysql 11 27: *rspec-metadata-mysql
-rspec-mysql 12 27: *rspec-metadata-mysql
-rspec-mysql 13 27: *rspec-metadata-mysql
-rspec-mysql 14 27: *rspec-metadata-mysql
-rspec-mysql 15 27: *rspec-metadata-mysql
-rspec-mysql 16 27: *rspec-metadata-mysql
-rspec-mysql 17 27: *rspec-metadata-mysql
-rspec-mysql 18 27: *rspec-metadata-mysql
-rspec-mysql 19 27: *rspec-metadata-mysql
-rspec-mysql 20 27: *rspec-metadata-mysql
-rspec-mysql 21 27: *rspec-metadata-mysql
-rspec-mysql 22 27: *rspec-metadata-mysql
-rspec-mysql 23 27: *rspec-metadata-mysql
-rspec-mysql 24 27: *rspec-metadata-mysql
-rspec-mysql 25 27: *rspec-metadata-mysql
-rspec-mysql 26 27: *rspec-metadata-mysql
+rspec-mysql 0 28: *rspec-metadata-mysql
+rspec-mysql 1 28: *rspec-metadata-mysql
+rspec-mysql 2 28: *rspec-metadata-mysql
+rspec-mysql 3 28: *rspec-metadata-mysql
+rspec-mysql 4 28: *rspec-metadata-mysql
+rspec-mysql 5 28: *rspec-metadata-mysql
+rspec-mysql 6 28: *rspec-metadata-mysql
+rspec-mysql 7 28: *rspec-metadata-mysql
+rspec-mysql 8 28: *rspec-metadata-mysql
+rspec-mysql 9 28: *rspec-metadata-mysql
+rspec-mysql 10 28: *rspec-metadata-mysql
+rspec-mysql 11 28: *rspec-metadata-mysql
+rspec-mysql 12 28: *rspec-metadata-mysql
+rspec-mysql 13 28: *rspec-metadata-mysql
+rspec-mysql 14 28: *rspec-metadata-mysql
+rspec-mysql 15 28: *rspec-metadata-mysql
+rspec-mysql 16 28: *rspec-metadata-mysql
+rspec-mysql 17 28: *rspec-metadata-mysql
+rspec-mysql 18 28: *rspec-metadata-mysql
+rspec-mysql 19 28: *rspec-metadata-mysql
+rspec-mysql 20 28: *rspec-metadata-mysql
+rspec-mysql 21 28: *rspec-metadata-mysql
+rspec-mysql 22 28: *rspec-metadata-mysql
+rspec-mysql 23 28: *rspec-metadata-mysql
+rspec-mysql 24 28: *rspec-metadata-mysql
+rspec-mysql 25 28: *rspec-metadata-mysql
+rspec-mysql 26 28: *rspec-metadata-mysql
+rspec-mysql 27 28: *rspec-metadata-mysql
 
-spinach-pg 0 3: *spinach-metadata-pg
-spinach-pg 1 3: *spinach-metadata-pg
-spinach-pg 2 3: *spinach-metadata-pg
+spinach-pg 0 2: *spinach-metadata-pg
+spinach-pg 1 2: *spinach-metadata-pg
 
-spinach-mysql 0 3: *spinach-metadata-mysql
-spinach-mysql 1 3: *spinach-metadata-mysql
-spinach-mysql 2 3: *spinach-metadata-mysql
+spinach-mysql 0 2: *spinach-metadata-mysql
+spinach-mysql 1 2: *spinach-metadata-mysql
 
 # Static analysis jobs
 .ruby-static-analysis: &ruby-static-analysis
@@ -663,22 +674,24 @@ karma:
 codequality:
   <<: *except-docs
   <<: *pull-cache
-  before_script: []
-  image: docker:latest
   stage: test
-  variables:
-    SETUP_DB: "false"
-    DOCKER_DRIVER: overlay
+  image: docker:latest
+  before_script: []
   services:
     - docker:dind
+  variables:
+    SETUP_DB: "false"
+    DOCKER_DRIVER: overlay2
+    CODECLIMATE_FORMAT: json
+  cache: {}
+  dependencies: []
   script:
-    - cp .rubocop.yml .rubocop.yml.bak
-    - grep -v "rubocop-gitlab-security" .rubocop.yml.bak > .rubocop.yml
-    - docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc dev.gitlab.org:5005/gitlab/gitlab-build-images:gitlab-codeclimate-v2 analyze -f json > raw_codeclimate.json
-    - cat raw_codeclimate.json | docker run -i stedolan/jq -c 'map({check_name,fingerprint,location})' > codeclimate.json
-    - mv .rubocop.yml.bak .rubocop.yml
+    - ./scripts/codequality analyze -f json > raw_codeclimate.json || true
+    # The following line keeps only the fields used in the MR widget, reducing the JSON artifact size
+    - cat raw_codeclimate.json | docker run -i stedolan/jq -c 'map({check_name,description,fingerprint,location})' > codeclimate.json
   artifacts:
     paths: [codeclimate.json]
+    expire_in: 1 week
 
 sast:
   <<: *except-docs

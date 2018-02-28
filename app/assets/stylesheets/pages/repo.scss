@@ -19,6 +19,7 @@
 .ide-view {
   display: flex;
   height: calc(100vh - #{$header-height});
+  margin-top: 40px;
   color: $almost-black;
   border-top: 1px solid $white-dark;
   border-bottom: 1px solid $white-dark;
@@ -265,7 +266,7 @@ table.table tr td.multi-file-table-name {
   display: flex;
   position: relative;
   flex-direction: column;
-  width: 290px;
+  width: 340px;
   padding: 0;
   background-color: $gray-light;
   padding-right: 3px;
@@ -465,20 +466,14 @@ table.table tr td.multi-file-table-name {
 .multi-file-commit-form {
   padding: $gl-padding;
   border-top: 1px solid $white-dark;
-}
-
-.multi-file-commit-fieldset {
-  display: flex;
-  align-items: center;
-  padding-bottom: 12px;
 
   .btn {
-    flex: 1;
+    font-size: $gl-font-size;
   }
 }
 
 .multi-file-commit-message.form-control {
-  height: 80px;
+  height: 160px;
   resize: none;
 }
 
@@ -550,7 +545,7 @@ table.table tr td.multi-file-table-name {
 .ide {
   overflow: hidden;
 
-  .nav-only {
+  &.nav-only {
     .flash-container {
       margin-top: $header-height;
       margin-bottom: 0;
@@ -561,8 +556,9 @@ table.table tr td.multi-file-table-name {
       margin-bottom: 0;
     }
 
-    .content {
+    .content-wrapper {
       margin-top: $header-height;
+      padding-bottom: 0;
     }
 
     .multi-file-commit-panel .multi-file-commit-panel-inner-scroll {
@@ -571,7 +567,7 @@ table.table tr td.multi-file-table-name {
     }
 
     &.flash-shown {
-      .content {
+      .content-wrapper {
         margin-top: 0;
       }
 
@@ -592,8 +588,9 @@ table.table tr td.multi-file-table-name {
     margin-top: #{$header-height + $performance-bar-height};
   }
 
-  .content {
+  .content-wrapper {
     margin-top: #{$header-height + $performance-bar-height};
+    padding-bottom: 0;
   }
 
   .ide-view {
@@ -606,7 +603,7 @@ table.table tr td.multi-file-table-name {
   }
 
   &.flash-shown {
-    .content {
+    .content-wrapper {
       margin-top: 0;
     }
 
@@ -636,4 +633,19 @@ table.table tr td.multi-file-table-name {
   &.dragleft {
     left: 0;
   }
+}
+
+.ide-commit-radios {
+  label {
+    font-weight: normal;
+  }
+
+  .help-block {
+    margin-top: 0;
+    line-height: 0;
+  }
+}
+
+.ide-commit-new-branch {
+  margin-left: 25px;
 }

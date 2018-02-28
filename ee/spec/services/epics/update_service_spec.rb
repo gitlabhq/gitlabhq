@@ -7,7 +7,7 @@ describe Epics::UpdateService do
 
   describe '#execute' do
     def update_epic(opts)
-      described_class.new(nil, user, opts).execute(epic)
+      described_class.new(group, user, opts).execute(epic)
     end
 
     context 'multiple values update' do

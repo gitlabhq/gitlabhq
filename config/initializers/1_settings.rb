@@ -294,7 +294,7 @@ Settings.gitlab['signup_enabled'] ||= true if Settings.gitlab['signup_enabled'].
 Settings.gitlab['signin_enabled'] ||= true if Settings.gitlab['signin_enabled'].nil?
 Settings.gitlab['restricted_visibility_levels'] = Settings.__send__(:verify_constant_array, Gitlab::VisibilityLevel, Settings.gitlab['restricted_visibility_levels'], [])
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
-Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)|[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)' if Settings.gitlab['issue_closing_pattern'].nil?
+Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)|[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?: *,? +and +| *, *)?)|([A-Z][A-Z0-9_]+-\d+))+)' if Settings.gitlab['issue_closing_pattern'].nil?
 Settings.gitlab['default_projects_features'] ||= {}
 Settings.gitlab['webhook_timeout'] ||= 10
 Settings.gitlab['max_attachment_size'] ||= 10
@@ -348,9 +348,9 @@ Settings.artifacts['storage_path'] = Settings.absolute(Settings.artifacts.values
 Settings.artifacts['path']         = Settings.artifacts['storage_path']
 Settings.artifacts['max_size'] ||= 100 # in megabytes
 Settings.artifacts['object_store'] ||= Settingslogic.new({})
-Settings.artifacts['object_store']['enabled']           ||= false
-Settings.artifacts['object_store']['remote_directory']  ||= nil
-Settings.artifacts['object_store']['background_upload'] ||= true
+Settings.artifacts['object_store']['enabled'] = false if Settings.artifacts['object_store']['enabled'].nil?
+Settings.artifacts['object_store']['remote_directory'] ||= nil
+Settings.artifacts['object_store']['background_upload'] = true if Settings.artifacts['object_store']['background_upload'].nil?
 # Convert upload connection settings to use string keys, to make Fog happy
 Settings.artifacts['object_store']['connection']&.deep_stringify_keys!
 
@@ -394,9 +394,9 @@ Settings['lfs'] ||= Settingslogic.new({})
 Settings.lfs['enabled']      = true if Settings.lfs['enabled'].nil?
 Settings.lfs['storage_path'] = Settings.absolute(Settings.lfs['storage_path'] || File.join(Settings.shared['path'], "lfs-objects"))
 Settings.lfs['object_store'] ||= Settingslogic.new({})
-Settings.lfs['object_store']['enabled']           ||= false
-Settings.lfs['object_store']['remote_directory']  ||= nil
-Settings.lfs['object_store']['background_upload'] ||= true
+Settings.lfs['object_store']['enabled'] = false if Settings.lfs['object_store']['enabled'].nil?
+Settings.lfs['object_store']['remote_directory'] ||= nil
+Settings.lfs['object_store']['background_upload'] = true if Settings.lfs['object_store']['background_upload'].nil?
 # Convert upload connection settings to use string keys, to make Fog happy
 Settings.lfs['object_store']['connection']&.deep_stringify_keys!
 
@@ -407,18 +407,11 @@ Settings['uploads'] ||= Settingslogic.new({})
 Settings.uploads['storage_path'] = Settings.absolute(Settings.uploads['storage_path'] || 'public')
 Settings.uploads['base_dir'] = Settings.uploads['base_dir'] || 'uploads/-/system'
 Settings.uploads['object_store'] ||= Settingslogic.new({})
-Settings.uploads['object_store']['enabled']           ||= false
-Settings.uploads['object_store']['remote_directory']  ||= 'uploads'
-Settings.uploads['object_store']['background_upload'] ||= true
+Settings.uploads['object_store']['enabled'] = false if Settings.uploads['object_store']['enabled'].nil?
+Settings.uploads['object_store']['remote_directory'] ||= 'uploads'
+Settings.uploads['object_store']['background_upload'] = true if Settings.uploads['object_store']['background_upload'].nil?
 # Convert upload connection settings to use string keys, to make Fog happy
 Settings.uploads['object_store']['connection']&.deep_stringify_keys!
-
-#
-# Uploads
-#
-Settings['uploads'] ||= Settingslogic.new({})
-Settings.uploads['storage_path'] = Settings.absolute(Settings.uploads['storage_path'] || 'public')
-Settings.uploads['base_dir'] = Settings.uploads['base_dir'] || 'uploads/-/system'
 
 #
 # Mattermost
@@ -523,6 +516,10 @@ Settings.cron_jobs['remove_old_web_hook_logs_worker']['job_class'] = 'RemoveOldW
 Settings.cron_jobs['stuck_merge_jobs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_merge_jobs_worker']['cron'] ||= '0 */2 * * *'
 Settings.cron_jobs['stuck_merge_jobs_worker']['job_class'] = 'StuckMergeJobsWorker'
+
+Settings.cron_jobs['pages_domain_verification_cron_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['pages_domain_verification_cron_worker']['cron'] ||= '*/15 * * * *'
+Settings.cron_jobs['pages_domain_verification_cron_worker']['job_class'] = 'PagesDomainVerificationCronWorker'
 
 #
 # GitLab Shell

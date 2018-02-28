@@ -27,6 +27,30 @@ feature "License Admin" do
       end
     end
 
+    context 'with a trial license' do
+      let!(:license) { create(:license, trial: true) }
+
+      it 'shows expiration duration with license type' do
+        visit admin_license_path
+
+        page.within '.js-license-info-panel' do
+          expect(page).to have_content('Expires: Free trial will expire in')
+        end
+      end
+    end
+
+    context 'with a regular license' do
+      let!(:license) { create(:license) }
+
+      it 'shows only expiration duration' do
+        visit admin_license_path
+
+        page.within '.js-license-info-panel' do
+          expect(page).not_to have_content('Expires: Free trial will expire in')
+        end
+      end
+    end
+
     context 'with an expired trial license' do
       let!(:license) { create(:license, trial: true, expired: true) }
 

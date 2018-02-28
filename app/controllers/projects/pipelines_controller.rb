@@ -1,4 +1,6 @@
 class Projects::PipelinesController < Projects::ApplicationController
+  prepend ::EE::Projects::PipelinesController
+
   before_action :whitelist_query_limiting, only: [:create, :retry]
   before_action :pipeline, except: [:index, :new, :create, :charts]
   before_action :commit, only: [:show, :builds, :failures]

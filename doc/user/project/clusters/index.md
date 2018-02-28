@@ -5,20 +5,23 @@
 Connect your project to Google Kubernetes Engine (GKE) or an existing Kubernetes
 cluster in a few steps.
 
-With a cluster associated to your project, you can use Review Apps, deploy your
-applications, run your pipelines, and much more, in an easy way.
+## Overview
+
+With a Kubernetes cluster associated to your project, you can use
+[Review Apps](../../../ci/review_apps/index.md), deploy your applications, run
+your pipelines, and much more, in an easy way.
 
 There are two options when adding a new cluster to your project; either associate
 your account with Google Kubernetes Engine (GKE) so that you can [create new
 clusters](#adding-and-creating-a-new-gke-cluster-via-gitlab) from within GitLab,
 or provide the credentials to an [existing Kubernetes cluster](#adding-an-existing-kubernetes-cluster).
 
-## Prerequisites
+## Adding and creating a new GKE cluster via GitLab
 
-In order to be able to manage your Kubernetes cluster through GitLab, the
-following prerequisites must be met.
+NOTE: **Note:**
+You need Master [permissions] and above to access the Kubernetes page.
 
-**For a cluster hosted on GKE:**
+Before proceeding, make sure the following requirements are met:
 
 - The [Google authentication integration](../../../integration/google.md) must
   be enabled in GitLab at the instance level. If that's not the case, ask your
@@ -28,30 +31,16 @@ following prerequisites must be met.
   account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
   must be set up and that you have to have permissions to access it.
 - You must have Master [permissions] in order to be able to access the
-  **Cluster** page.
+  **Kubernetes** page.
 - You must have [Cloud Billing API](https://cloud.google.com/billing/) enabled
 - You must have [Resource Manager
   API](https://cloud.google.com/resource-manager/)
 
-**For an existing Kubernetes cluster:**
+If all of the above requirements are met, you can proceed to create and add a
+new Kubernetes cluster that will be hosted on GKE to your project:
 
-- Since the cluster is already created, there are no prerequisites.
-
----
-
-If all of the above requirements are met, you can proceed to add a new Kubernetes
-cluster.
-
-## Adding and creating a new GKE cluster via GitLab
-
-NOTE: **Note:**
-You need Master [permissions] and above to access the Clusters page.
-
-Before proceeding, make sure all [prerequisites](#prerequisites) are met.
-To add a new cluster hosted on GKE to your project:
-
-1. Navigate to your project's **CI/CD > Clusters** page.
-1. Click on **Add cluster**.
+1. Navigate to your project's **CI/CD > Kubernetes** page.
+1. Click on **Add Kubernetes cluster**.
 1. Click on **Create with GKE**.
 1. Connect your Google account if you haven't done already by clicking the
    **Sign in with Google** button.
@@ -66,7 +55,7 @@ To add a new cluster hosted on GKE to your project:
   - **Machine type** - The [machine type](https://cloud.google.com/compute/docs/machine-types)
     of the Virtual Machine instance that the cluster will be based on.
   - **Environment scope** - The [associated environment](#setting-the-environment-scope) to this cluster.
-1. Finally, click the **Create cluster** button.
+1. Finally, click the **Create Kubernetes cluster** button.
 
 After a few moments, your cluster should be created. If something goes wrong,
 you will be notified.
@@ -77,14 +66,14 @@ enable the Cluster integration.
 ## Adding an existing Kubernetes cluster
 
 NOTE: **Note:**
-You need Master [permissions] and above to access the Clusters page.
+You need Master [permissions] and above to access the Kubernetes page.
 
 To add an existing Kubernetes cluster to your project:
 
-1. Navigate to your project's **CI/CD > Clusters** page.
-1. Click on **Add cluster**.
-1. Click on **Add an existing cluster** and fill in the details:
-    - **Cluster name** (required) - The name you wish to give the cluster.
+1. Navigate to your project's **CI/CD > Kubernetes** page.
+1. Click on **Add Kuberntes cluster**.
+1. Click on **Add an existing Kubernetes cluster** and fill in the details:
+    - **Kubernetes cluster name** (required) - The name you wish to give the cluster.
     - **Environment scope** (required)- The
       [associated environment](#setting-the-environment-scope) to this cluster.
     - **API URL** (required) -
@@ -112,15 +101,13 @@ To add an existing Kubernetes cluster to your project:
       - If you or someone created a secret specifically for the project, usually
         with limited permissions, the secret's namespace and project namespace may
         be the same.
-1. Finally, click the **Create cluster** button.
-
-The Kubernetes service takes the following parameters:
+1. Finally, click the **Create Kuberntes cluster** button.
 
 After a few moments, your cluster should be created. If something goes wrong,
 you will be notified.
 
 You can now proceed to install some pre-defined applications and then
-enable the Cluster integration.
+enable the Kubernetes cluster integration.
 
 ## Installing applications
 
@@ -139,7 +126,7 @@ added directly to your configured cluster. Those applications are needed for
 NOTE: **Note:**
 You need a load balancer installed in your cluster in order to obtain the
 external IP address with the following procedure. It can be deployed using the
-**Ingress** application described in the previous section.
+[**Ingress** application](#installing-appplications).
 
 In order to publish your web application, you first need to find the external IP
 address associated to your load balancer.
@@ -153,7 +140,8 @@ the `gcloud` command in a local terminal or using the **Cloud Shell**.
 If the cluster is not on GKE, follow the specific instructions for your
 Kubernetes provider to configure `kubectl` with the right credentials.
 
-If you installed the Ingress using the **Applications** section, run the following command:
+If you installed the Ingress [via the **Applications**](#installing-applications),
+run the following command:
 
 ```bash
 kubectl get svc --namespace=gitlab-managed-apps ingress-nginx-ingress-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip} '
@@ -171,9 +159,14 @@ your deployed applications.
 
 ## Setting the environment scope
 
-When adding more than one clusters, you need to differentiate them with an
-environment scope. The environment scope associates clusters and
-[environments](../../../ci/environments.md) in an 1:1 relationship similar to how the
+NOTE: **Note:**
+This is only available for [GitLab Premium][ee] where you can add more than
+one Kubernetes cluster.
+
+When adding more than one Kubernetes clusters to your project, you need to
+differentiate them with an environment scope. The environment scope associates
+clusters and [environments](../../../ci/environments.md) in an 1:1 relationship
+similar to how the
 [environment-specific variables](../../../ci/variables/README.md#limiting-environment-scopes-of-secret-variables)
 work.
 
@@ -183,7 +176,7 @@ cluster in a project, and a validation error will occur if otherwise.
 
 ---
 
-For example, let's say the following clusters exist in a project:
+For example, let's say the following Kubernetes clusters exist in a project:
 
 | Cluster    | Environment scope   |
 | ---------- | ------------------- |
@@ -231,8 +224,7 @@ With GitLab Premium, you can associate more than one Kubernetes clusters to your
 project. That way you can have different clusters for different environments,
 like dev, staging, production, etc.
 
-To add another cluster, follow the same steps as described in [adding a
-Kubernetes cluster](#adding-a-kubernetes-cluster) and make sure to
+Simply add another cluster, like you did the first time, and make sure to
 [set an environment scope](#setting-the-environment-scope) that will
 differentiate the new cluster with the rest.
 
@@ -240,45 +232,42 @@ differentiate the new cluster with the rest.
 
 The Kubernetes cluster integration exposes the following
 [deployment variables](../../../ci/variables/README.md#deployment-variables) in the
-GitLab CI/CD build environment:
+GitLab CI/CD build environment.
 
-- `KUBE_URL` - Equal to the API URL.
-- `KUBE_TOKEN` - The Kubernetes token.
-- `KUBE_NAMESPACE` - The Kubernetes namespace is auto-generated if not specified.
-  The default value is `<project_name>-<project_id>`. You can overwrite it to
-  use different one if needed, otherwise the `KUBE_NAMESPACE` variable will
-  receive the default value.
-- `KUBE_CA_PEM_FILE` - Only present if a custom CA bundle was specified. Path
-  to a file containing PEM data.
-- `KUBE_CA_PEM` (deprecated) - Only if a custom CA bundle was specified. Raw PEM data.
-- `KUBECONFIG` - Path to a file containing `kubeconfig` for this deployment.
-  CA bundle would be embedded if specified.
+| Variable | Description |
+| -------- | ----------- |
+| `KUBE_URL` | Equal to the API URL. |
+| `KUBE_TOKEN` | The Kubernetes token. |
+| `KUBE_NAMESPACE` | The Kubernetes namespace is auto-generated if not specified. The default value is `<project_name>-<project_id>`. You can overwrite it to use different one if needed, otherwise the `KUBE_NAMESPACE` variable will receive the default value. |
+| `KUBE_CA_PEM_FILE` | Only present if a custom CA bundle was specified. Path to a file containing PEM data. |
+| `KUBE_CA_PEM` | (**deprecated**) Only if a custom CA bundle was specified. Raw PEM data. |
+| `KUBECONFIG` | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified. |
 
-## Enabling or disabling the Cluster integration
+## Enabling or disabling the Kubernetes cluster integration
 
 After you have successfully added your cluster information, you can enable the
-Cluster integration:
+Kubernetes cluster integration:
 
 1. Click the "Enabled/Disabled" switch
 1. Hit **Save** for the changes to take effect
 
 You can now start using your Kubernetes cluster for your deployments.
 
-To disable the Cluster integration, follow the same procedure.
+To disable the Kubernetes cluster integration, follow the same procedure.
 
-## Removing the Cluster integration
+## Removing the Kubernetes cluster integration
 
 NOTE: **Note:**
-You need Master [permissions] and above to remove a cluster integration.
+You need Master [permissions] and above to remove a Kubernetes cluster integration.
 
 NOTE: **Note:**
 When you remove a cluster, you only remove its relation to GitLab, not the
 cluster itself. To remove the cluster, you can do so by visiting the GKE
 dashboard or using `kubectl`.
 
-To remove the Cluster integration from your project, simply click on the
+To remove the Kubernetes cluster integration from your project, simply click on the
 **Remove integration** button. You will then be able to follow the procedure
-and [add a cluster](#adding-a-cluster) again.
+and add a Kubernetes cluster again.
 
 ## What you can get with the Kubernetes integration
 

@@ -1,4 +1,6 @@
 import Flash from './flash';
+import { __ } from './locale';
+import axios from './lib/utils/axios_utils';
 
 export default class Members {
   constructor() {
@@ -28,7 +30,7 @@ export default class Members {
 
           return !$el.hasClass('is-active');
         },
-        fieldName: $btn.data('field-name'),
+        fieldName: $btn.data('fieldName'),
         id(selected, $el) {
           return $el.data('id');
         },
@@ -50,10 +52,11 @@ export default class Members {
             $toggle.disable();
             $dateInput.disable();
 
-            this.overrideLdap($memberListItem, $link.data('endpoint'), false).fail(() => {
-              $toggle.enable();
-              $dateInput.enable();
-            });
+            this.overrideLdap($memberListItem, $link.data('endpoint'), false)
+              .catch(() => {
+                $toggle.enable();
+                $dateInput.enable();
+              });
           }
         },
       });
@@ -86,7 +89,7 @@ export default class Members {
   }
   // eslint-disable-next-line class-methods-use-this
   getMemberListItems($el) {
-    const $memberListItem = $el.is('.member') ? $el : $(`#${$el.data('el-id')}`);
+    const $memberListItem = $el.is('.member') ? $el : $(`#${$el.data('elId')}`);
 
     return {
       $memberListItem,
@@ -101,32 +104,31 @@ export default class Members {
 
     $btn.disable();
     // eslint-disable-next-line promise/catch-or-return
-    this.overrideLdap($memberListItem, $btn.data('endpoint'), true).then(() => {
-      this.showLDAPPermissionsWarning(e);
+    this.overrideLdap($memberListItem, $btn.data('endpoint'), true)
+      .then(() => {
+        this.showLDAPPermissionsWarning(e);
 
-      $toggle.enable();
-      $dateInput.enable();
-    }).fail((xhr) => {
-      $btn.enable();
+        $toggle.enable();
+        $dateInput.enable();
+      })
+      .catch((xhr) => {
+        $btn.enable();
 
-      if (xhr.status === 403) {
-        Flash('You do not have the correct permissions to override the settings from the LDAP group sync.', 'alert');
-      } else {
-        Flash('An error occured whilst saving LDAP override status. Please try again.', 'alert');
-      }
-    });
+        if (xhr.status === 403) {
+          Flash(__('You do not have the correct permissions to override the settings from the LDAP group sync.'));
+        } else {
+          Flash(__('An error occurred while saving LDAP override status. Please try again.'));
+        }
+      });
   }
   // eslint-disable-next-line class-methods-use-this
   overrideLdap($memberListitem, endpoint, override) {
-    return $.ajax({
-      url: endpoint,
-      type: 'PATCH',
-      data: {
-        group_member: {
-          override,
-        },
+    return axios.patch(endpoint, {
+      group_member: {
+        override,
       },
-    }).then(() => {
+    })
+    .then(() => {
       $memberListitem.toggleClass('is-overriden', override);
     });
   }

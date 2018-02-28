@@ -1,4 +1,4 @@
-- return unless group.feature_available?(:epics)
+- return unless group_sidebar_link?(:epics)
 
 - epics = EpicsFinder.new(current_user, group_id: @group.id).execute
 - epics_items = ['epics#show', 'epics#index', 'roadmap#show']

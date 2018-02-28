@@ -1,8 +1,18 @@
 # Administrator documentation
 
 Learn how to administer your GitLab instance (Community Edition and
-[Enterprise Editions](https://about.gitlab.com/products/)).
+Enterprise Edition).
 Regular users don't have access to GitLab administration tools and settings.
+
+GitLab has two product distributions: the open source
+[GitLab Community Edition (CE)](https://gitlab.com/gitlab-org/gitlab-ce),
+and the open core [GitLab Enterprise Edition (EE)](https://gitlab.com/gitlab-org/gitlab-ee),
+available through [different subscriptions](https://about.gitlab.com/products/).
+
+You can [install GitLab CE or GitLab EE](https://about.gitlab.com/installation/ce-or-ee/),
+but the features you'll have access to depend on the subscription you choose
+(Libre, Starter, Premium, or Ultimate). GitLab Community Edition installations
+only have access to Libre features.
 
 GitLab.com is administered by GitLab, Inc., therefore, only GitLab team members have
 access to its admin configurations. If you're a GitLab.com user, please check the
@@ -20,7 +30,8 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   - **(Starter/Premium)** [Omnibus support for log forwarding](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only)
 - [High Availability](high_availability/README.md): Configure multiple servers for scaling or high availability.
   - [High Availability on AWS](../university/high-availability/aws/README.md): Set up GitLab HA on Amazon AWS.
-- **(Premium)** [GitLab Geo](../gitlab-geo/README.md): Replicate your GitLab instance to other geographical locations as a read-only fully operational version.
+- **(Premium)** [Geo](geo/replication/index.md): Replicate your GitLab instance to other geographical locations as a read-only fully operational version.
+- **(Premium)** [Disaster Recovery](geo/disaster_recovery/index.md): Quickly fail-over to a different site with minimal effort in a disaster situation.
 - **(Premium)** [Pivotal Tile](../install/pivotal/index.md): Deploy GitLab as a pre-configured appliance using Ops Manager (BOSH) for Pivotal Cloud Foundry.
 
 ### Configuring GitLab

@@ -276,7 +276,7 @@ To enable per-branch caching:
 
 ```yaml
 cache:
-  key: "$CI_COMMIT_REF_NAME"
+  key: "$CI_COMMIT_REF_SLUG"
   untracked: true
 ```
 
@@ -284,7 +284,7 @@ To enable per-job and per-branch caching:
 
 ```yaml
 cache:
-  key: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
+  key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
   untracked: true
 ```
 
@@ -292,7 +292,7 @@ To enable per-branch and per-stage caching:
 
 ```yaml
 cache:
-  key: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"
+  key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
   untracked: true
 ```
 
@@ -301,7 +301,7 @@ If you use **Windows Batch** to run your shell scripts you need to replace
 
 ```yaml
 cache:
-  key: "%CI_JOB_STAGE%-%CI_COMMIT_REF_NAME%"
+  key: "%CI_JOB_STAGE%-%CI_COMMIT_REF_SLUG%"
   untracked: true
 ```
 
@@ -310,7 +310,7 @@ If you use **Windows PowerShell** to run your shell scripts you need to replace
 
 ```yaml
 cache:
-  key: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_NAME"
+  key: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_SLUG"
   untracked: true
 ```
 
@@ -361,72 +361,82 @@ Additionally, if you have a job that unconditionally recreates the cache without
 reference to its previous contents, you can use `policy: push` in that job to
 skip the download step.
 
-### include (EEP)
+### include
 
-> Introduced in [GitLab Enterprise Edition Premium][ee] 10.5.
+> Introduced in [GitLab Edition Premium][ee] 10.5.
 
-From 10.5 we can use `include` keyword to allow the inclusion of external YAML files.
+Using the `include` keyword, you can allow the inclusion of external YAML files.
+
+In the following example, the content of`.before-script-template.yml` will be
+automatically fetched and evaluated along with the content of `.gitlab-ci.yml`:
 
 ```yaml
 # Content of https://gitlab.com/awesome-project/raw/master/.before-script-template.yml
+
 before_script:
   - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
-  - ruby -v
-  - which ruby
   - gem install bundler --no-ri --no-rdoc
   - bundle install --jobs $(nproc)  "${FLAGS[@]}"
 ```
 
 ```yaml
 # Content of .gitlab-ci.yml
+
 include: 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
 
 rspec:
   script:
     - bundle exec rspec
-
-rubocop:
-  script:
-    - bundle exec rubocop
 ```
 
-In the above example `.before-script-template.yml` content will be automatically fetched and evaluated along with the content of `.gitlab-ci.yml`.
+You can define it either as a single string, or, in case you want to include
+more than one files, an array of different values . The following examples
+are both valid cases:
+
+```yaml
+# Single string
+
+include: '/templates/.after-script-template.yml'
+```
+
+```yaml
+# Array
+
+include:
+  - 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
+  - '/templates/.after-script-template.yml'
+```
+
+---
 
 `include` supports two types of files:
 
-- **local** to the same repository, referenced using the paths in the same the repository, i.e:
+- **local** to the same repository, referenced by using full paths in the same
+  repository, with `/` being the root directory. For example:
 
-```yaml
-# Within the repository
-include: '/templates/.gitlab-ci-template.yml'
-```
+    ```yaml
+    # Within the repository
+    include: '/templates/.gitlab-ci-template.yml'
+    ```
 
-- **remote** in a different location, accessed using HTTP/HTTPS protocol, referenced using the full URL, i.e:
+    NOTE: **Note:**
+    You can only use files that are currently tracked by Git on the same branch
+    your configuration file is. In other words, when using a **local file**, make
+    sure that both `.gitlab-ci.yml` and the local file are on the same branch.
 
-```yaml
-include: 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-template.yml'
-```
+- **remote** in a different location, accessed using HTTP/HTTPS, referenced
+  using the full URL. For example:
 
-Also, `include` supports a single string or an array composed by different values, so
+    ```yaml
+    include: 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-template.yml'
+    ```
 
-```yaml
-include: '/templates/.gitlab-ci-template.yml'
-```
+---
 
-and
-
-```yaml
-include:
-  - 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-template.yml'
-  - '/templates/.gitlab-ci-template.yml'
-```
-
-are both valid use cases.
-
-#### Restrictions
-
-- We can only use files that are currently tracked by Git on the same branch your configuration file is. In other words, when using a **local file** make sure that both, `.gitlab-ci.yml` and the local file are on the same branch.
-- Since external files defined on `include` are evaluated first, the content on `.gitlab-ci.yml` **will always take precedence over the content of the external files, no matters of the position of the `include` keyword, allowing to override values and functions with local definitions**, for example:
+Since external files defined by `include` are evaluated first, the content of
+`.gitlab-ci.yml` will always take precedence over the content of the external
+files, no matter of the position of the `include` keyword. This allows you to
+override values and functions with local definitions. For example:
 
 ```yaml
 # Content of https://company.com/autodevops-template.yml
@@ -434,32 +444,18 @@ are both valid use cases.
 variables:
   POSTGRES_USER: user
   POSTGRES_PASSWORD: testing_password
-  POSTGRES_ENABLED: "true"
   POSTGRES_DB: $CI_ENVIRONMENT_SLUG
-
-  KUBERNETES_VERSION: 1.8.6
-  HELM_VERSION: 2.6.1
-  CODECLIMATE_VERSION: 0.69.0
 
 production:
   stage: production
   script:
-    - check_kube_domain
     - install_dependencies
-    - download_chart
-    - ensure_namespace
-    - install_tiller
-    - create_secret
     - deploy
-    - delete canary
-    - persist_environment_url
   environment:
     name: production
-    url: http://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
+    url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
   only:
-    refs:
-      - master
-    kubernetes: active
+    - master
 ```
 
 ```yaml
@@ -477,35 +473,24 @@ variables:
 stages:
   - build
   - test
-  - review
-  - dast
-  - staging
-  - canary
   - production
-  - performance
-  - cleanup
 
 production:
   stage: production
   script:
-    - check_kube_domain
     - install_dependencies
-    - download_chart
-    - ensure_namespace
-    - install_tiller
-    - create_secret
     - deploy
   environment:
     name: production
-    url: http://auto_devops_domain.com
+    url: https://domain.com
   only:
-    refs:
-      - master
-
-# ....
+    - master
 ```
 
-In this case, the variables `POSTGRES_USER`, `POSTGRES_PASSWORD` and `POSTGRES_DB` along with the `production` job defined on `autodevops-template.yml` will be overridden by the ones defined on `.gitlab-ci.yml`.
+In this case, the variables `POSTGRES_USER`, `POSTGRES_PASSWORD` and
+`POSTGRES_DB` along with the `production` job defined in
+`autodevops-template.yml` will be overridden by the ones defined in
+`.gitlab-ci.yml`.
 
 ## Jobs
 

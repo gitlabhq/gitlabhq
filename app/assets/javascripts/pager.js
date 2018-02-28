@@ -56,7 +56,7 @@ export default {
   },
 
   initLoadMore() {
-    $(document).unbind('scroll');
+    $(document).off('scroll');
     $(document).endlessScroll({
       bottomPixels: ENDLESS_SCROLL_BOTTOM_PX,
       fireDelay: ENDLESS_SCROLL_FIRE_DELAY_MS,

@@ -35,6 +35,14 @@ module QA
         ENV['GITLAB_PASSWORD']
       end
 
+      def ldap_username
+        ENV['GITLAB_LDAP_USERNAME']
+      end
+
+      def ldap_password
+        ENV['GITLAB_LDAP_PASSWORD']
+      end
+
       def sandbox_name
         ENV['GITLAB_SANDBOX_NAME']
       end

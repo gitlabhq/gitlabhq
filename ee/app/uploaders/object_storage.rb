@@ -88,7 +88,13 @@ module ObjectStorage
     def changed_mounts
       self.class.uploaders.select do |mount, uploader_class|
         mounted_as = uploader_class.serialization_column(self.class, mount)
-        mount if send(:"#{mounted_as}_changed?") # rubocop:disable GitlabSecurity/PublicSend
+        uploader = send(:"#{mounted_as}") # rubocop:disable GitlabSecurity/PublicSend
+
+        next unless uploader
+        next unless uploader.exists?
+        next unless send(:"#{mounted_as}_changed?") # rubocop:disable GitlabSecurity/PublicSend
+
+        mount
       end.keys
     end
 
@@ -169,7 +175,7 @@ module ObjectStorage
       return unless persist_object_store?
 
       updated = model.update_column(store_serialization_column, object_store)
-      raise ActiveRecordError unless updated
+      raise 'Failed to update object store' unless updated
     end
 
     def use_file
@@ -195,32 +201,12 @@ module ObjectStorage
     #   new_store: Enum (Store::LOCAL, Store::REMOTE)
     #
     def migrate!(new_store)
-      return unless object_store != new_store
-      return unless file
+      uuid = Gitlab::ExclusiveLease.new(exclusive_lease_key, timeout: 1.hour.to_i).try_obtain
+      raise 'Already running' unless uuid
 
-      new_file = nil
-      file_to_delete = file
-      from_object_store = object_store
-      self.object_store = new_store # changes the storage and file
-
-      cache_stored_file! if file_storage?
-
-      with_callbacks(:migrate, file_to_delete) do
-        with_callbacks(:store, file_to_delete) do # for #store_versions!
-          new_file = storage.store!(file)
-          persist_object_store!
-          self.file = new_file
-        end
-      end
-
-      file
-    rescue => e
-      # in case of failure delete new file
-      new_file.delete unless new_file.nil?
-      # revert back to the old file
-      self.object_store = from_object_store
-      self.file = file_to_delete
-      raise e
+      unsafe_migrate!(new_store)
+    ensure
+      Gitlab::ExclusiveLease.cancel(exclusive_lease_key, uuid)
     end
 
     def schedule_background_upload(*args)
@@ -309,6 +295,44 @@ module ObjectStorage
       else
         raise UnknownStoreError
       end
+    end
+
+    def exclusive_lease_key
+      "object_storage_migrate:#{model.class}:#{model.id}"
+    end
+
+    #
+    # Move the file to another store
+    #
+    #   new_store: Enum (Store::LOCAL, Store::REMOTE)
+    #
+    def unsafe_migrate!(new_store)
+      return unless object_store != new_store
+      return unless file
+
+      new_file = nil
+      file_to_delete = file
+      from_object_store = object_store
+      self.object_store = new_store # changes the storage and file
+
+      cache_stored_file! if file_storage?
+
+      with_callbacks(:migrate, file_to_delete) do
+        with_callbacks(:store, file_to_delete) do # for #store_versions!
+          new_file = storage.store!(file)
+          persist_object_store!
+          self.file = new_file
+        end
+      end
+
+      file
+    rescue => e
+      # in case of failure delete new file
+      new_file.delete unless new_file.nil?
+      # revert back to the old file
+      self.object_store = from_object_store
+      self.file = file_to_delete
+      raise e
     end
   end
 end

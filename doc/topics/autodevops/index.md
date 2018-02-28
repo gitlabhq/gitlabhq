@@ -95,7 +95,9 @@ Auto Deploy, and Auto Monitoring will be silently skipped.
 
 The Auto DevOps base domain is required if you want to make use of [Auto
 Review Apps](#auto-review-apps) and [Auto Deploy](#auto-deploy). It is defined
-under the project's CI/CD settings while [enabling Auto DevOps](#enabling-auto-devops).
+either under the project's CI/CD settings while 
+[enabling Auto DevOps](#enabling-auto-devops) or in instance-wide settings in
+the CI/CD section.
 It can also be set at the project or group level as a variable, `AUTO_DEVOPS_DOMAIN`.
 
 A wildcard DNS A record matching the base domain is required, for example,
@@ -439,6 +441,8 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `POSTGRES_PASSWORD` | The PostgreSQL password; defaults to `testing-password`. Set it to use a custom password. |
 | `POSTGRES_DB`       | The PostgreSQL database name; defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/README.md#predefined-variables-environment-variables). Set it to use a custom database name. |
 | `BUILDPACK_URL`  | The buildpack's full URL. It can point to either Git repositories or a tarball URL. For Git repositories, it is possible to point to a specific `ref`, for example `https://github.com/heroku/heroku-buildpack-ruby.git#v142`|
+| `SAST_CONFIDENCE_LEVEL`  | The minimum confidence level of security issues you want to be reported; `1` for Low, `2` for Medium, `3` for High; defaults to `3`.|
+| `SAST_DISABLE_REMOTE_CHECKS`  | Whether remote SAST checks are disabled; defaults to `"false"`. Set to `"true"` to disable SAST checks that send data to GitLab central servers. [Read more about remote checks](https://gitlab.com/gitlab-org/security-products/sast#remote-checks).|
 
 TIP: **Tip:**
 Set up the replica variables using a
