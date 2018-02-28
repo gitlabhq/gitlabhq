@@ -192,7 +192,7 @@ describe Projects::ClustersController do
             go
 
             expect(response).to have_gitlab_http_status(:ok)
-            expect(response.body).to eq(query_response)
+            expect(response.body).to eq(query_response.to_json)
           end
         end
 
@@ -418,8 +418,8 @@ describe Projects::ClustersController do
           it "destroys and redirects back to clusters list" do
             expect { go }
               .to change { Clusters::Cluster.count }.by(-1)
-              .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
-              .and change { Clusters::Providers::Gcp.count }.by(-1)
+                    .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
+                           .and change { Clusters::Providers::Gcp.count }.by(-1)
 
             expect(response).to redirect_to(project_clusters_path(project))
             expect(flash[:notice]).to eq('Kubernetes cluster integration was successfully removed.')
@@ -432,7 +432,7 @@ describe Projects::ClustersController do
           it "destroys and redirects back to clusters list" do
             expect { go }
               .to change { Clusters::Cluster.count }.by(-1)
-              .and change { Clusters::Providers::Gcp.count }.by(-1)
+                    .and change { Clusters::Providers::Gcp.count }.by(-1)
 
             expect(response).to redirect_to(project_clusters_path(project))
             expect(flash[:notice]).to eq('Kubernetes cluster integration was successfully removed.')
@@ -446,8 +446,8 @@ describe Projects::ClustersController do
         it "destroys and redirects back to clusters list" do
           expect { go }
             .to change { Clusters::Cluster.count }.by(-1)
-            .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
-            .and change { Clusters::Providers::Gcp.count }.by(0)
+                  .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
+                         .and change { Clusters::Providers::Gcp.count }.by(0)
 
           expect(response).to redirect_to(project_clusters_path(project))
           expect(flash[:notice]).to eq('Kubernetes cluster integration was successfully removed.')
@@ -470,8 +470,8 @@ describe Projects::ClustersController do
 
     def go
       delete :destroy, namespace_id: project.namespace,
-                       project_id: project,
-                       id: cluster
+             project_id: project,
+             id: cluster
     end
   end
 end
