@@ -411,7 +411,8 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.85.0', require: 'gitaly'
+# gem 'gitaly-proto', '~> 0.85.0', require: 'gitaly'
+gem 'gitaly-proto', require: 'gitaly', git: 'https://gitlab.com/gitlab-org/gitaly-proto.git', ref: 'add-get-commits-signature-rpc'
 # Locked until https://github.com/google/protobuf/issues/4210 is closed
 gem 'google-protobuf', '= 3.5.1'
 

@@ -1,3 +1,12 @@
+GIT
+  remote: https://gitlab.com/gitlab-org/gitaly-proto.git
+  revision: be6ba6f75e62f4652500ca97c5c8d8ebd50c671a
+  ref: add-get-commits-signature-rpc
+  specs:
+    gitaly-proto (0.86.0)
+      google-protobuf (~> 3.1)
+      grpc (~> 1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -285,9 +294,6 @@ GEM
       po_to_json (>= 1.0.0)
       rails (>= 3.2.0)
     gherkin-ruby (0.3.2)
-    gitaly-proto (0.85.0)
-      google-protobuf (~> 3.1)
-      grpc (~> 1.0)
     github-linguist (5.3.3)
       charlock_holmes (~> 0.7.5)
       escape_utils (~> 1.1.0)
@@ -1057,7 +1063,7 @@ DEPENDENCIES
   gettext (~> 3.2.2)
   gettext_i18n_rails (~> 1.8.0)
   gettext_i18n_rails_js (~> 1.2.0)
-  gitaly-proto (~> 0.85.0)
+  gitaly-proto!
   github-linguist (~> 5.3.3)
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab-markup (~> 1.6.2)
