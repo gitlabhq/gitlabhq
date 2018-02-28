@@ -449,7 +449,7 @@ class User < ActiveRecord::Base
   end
 
   def self.non_internal
-    where(Hash[internal_attributes.zip([[false, nil]] * internal_attributes.size)])
+    where(internal_attributes.map { |attr| "#{attr} IS NOT TRUE" }.join(" AND "))
   end
 
   #

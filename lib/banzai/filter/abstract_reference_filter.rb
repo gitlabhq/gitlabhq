@@ -174,7 +174,9 @@ module Banzai
             title = object_link_title(object)
             klass = reference_class(object_sym)
 
-            data = data_attributes_for(link_content || match, parent, object, link: !!link_content)
+            data = data_attributes_for(link_content || match, parent, object,
+                                       link_content: !!link_content,
+                                       link_reference: link_reference)
 
             url =
               if matches.names.include?("url") && matches[:url]
@@ -194,12 +196,13 @@ module Banzai
         end
       end
 
-      def data_attributes_for(text, project, object, link: false)
+      def data_attributes_for(text, project, object, link_content: false, link_reference: false)
         data_attribute(
-          original:     text,
-          link:         link,
-          project:      project.id,
-          object_sym => object.id
+          original:       text,
+          link:           link_content,
+          link_reference: link_reference,
+          project:        project.id,
+          object_sym =>   object.id
         )
       end
 
