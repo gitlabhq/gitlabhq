@@ -57,7 +57,6 @@ function generateEntries() {
     mr_notes:             './mr_notes/index.js',
     notebook_viewer:      './blob/notebook_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
-    pipelines_details:    './pipelines/pipeline_details_bundle.js',
     project_import_gl:    './projects/project_import_gitlab_project.js',
     protected_branches:   './protected_branches',
     protected_tags:       './protected_tags',
@@ -67,7 +66,6 @@ function generateEntries() {
     terminal:             './terminal/terminal_bundle.js',
     ui_development_kit:   './ui_development_kit.js',
     two_factor_auth:      './two_factor_auth.js',
-
 
     common:               './commons/index.js',
     common_vue:           './vue_shared/vue_resource_interceptor.js',
