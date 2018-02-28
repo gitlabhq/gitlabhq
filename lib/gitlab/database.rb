@@ -46,12 +46,38 @@ module Gitlab
       database_version.match(/\A(?:PostgreSQL |)([^\s]+).*\z/)[1]
     end
 
+    def self.postgresql_9_or_less?
+      postgresql? && version.to_f < 10
+    end
+
     def self.join_lateral_supported?
       postgresql? && version.to_f >= 9.3
     end
 
     def self.replication_slots_supported?
       postgresql? && version.to_f >= 9.4
+    end
+
+    def self.pg_stat_wal_receiver_supported?
+      postgresql? && version.to_f >= 9.6
+    end
+
+    # map some of the function names that changed between PostgreSQL 9 and 10
+    # https://wiki.postgresql.org/wiki/New_in_postgres_10
+    def self.pg_wal_lsn_diff
+      Gitlab::Database.postgresql_9_or_less? ? 'pg_xlog_location_diff' : 'pg_wal_lsn_diff'
+    end
+
+    def self.pg_current_wal_insert_lsn
+      Gitlab::Database.postgresql_9_or_less? ? 'pg_current_xlog_insert_location' : 'pg_current_wal_insert_lsn'
+    end
+
+    def self.pg_last_wal_receive_lsn
+      Gitlab::Database.postgresql_9_or_less? ? 'pg_last_xlog_receive_location' : 'pg_last_wal_receive_lsn'
+    end
+
+    def self.pg_last_wal_replay_lsn
+      Gitlab::Database.postgresql_9_or_less? ? 'pg_last_xlog_replay_location' : 'pg_last_wal_replay_lsn'
     end
 
     def self.nulls_last_order(field, direction = 'ASC')
@@ -84,6 +110,10 @@ module Gitlab
 
     def self.random
       postgresql? ? "RANDOM()" : "RAND()"
+    end
+
+    def self.minute_interval(value)
+      postgresql? ? "#{value} * '1 minute'::interval" : "INTERVAL #{value} MINUTE"
     end
 
     def self.true_value
@@ -177,6 +207,14 @@ module Gitlab
           ConnectionSpecification::Resolver.new(config).spec(env.to_sym)
 
       ActiveRecord::ConnectionAdapters::ConnectionPool.new(spec)
+    end
+
+    # Disables prepared statements for the current database connection.
+    def self.disable_prepared_statements
+      config = ActiveRecord::Base.configurations[Rails.env]
+      config['prepared_statements'] = false
+
+      ActiveRecord::Base.establish_connection(config)
     end
 
     def self.connection
