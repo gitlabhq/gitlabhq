@@ -18,15 +18,9 @@ module Gitlab
       end
 
       exit_status = result.status&.exitstatus
-
-      unless exit_status.zero?
-        Rails.logger.error("Plugin Error => #{file}: #{result.stderr}")
-      end
-
-      exit_status.zero?
+      [exit_status.zero?, result.stderr]
     rescue => e
-      Rails.logger.error("Plugin Error => #{file}: #{e.message}")
-      false
+      [false, e.message]
     end
   end
 end
