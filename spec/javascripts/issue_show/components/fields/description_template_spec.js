@@ -1,7 +1,5 @@
 import Vue from 'vue';
 import descriptionTemplate from '~/issue_show/components/fields/description_template.vue';
-import '~/templates/issuable_template_selector';
-import '~/templates/issuable_template_selectors';
 
 describe('Issue description template component', () => {
   let vm;

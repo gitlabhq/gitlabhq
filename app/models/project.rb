@@ -20,6 +20,7 @@ class Project < ActiveRecord::Base
   include GroupDescendant
   include Gitlab::SQL::Pattern
   include DeploymentPlatform
+  include ::Gitlab::Utils::StrongMemoize
 
   extend Gitlab::ConfigHelper
   extend Gitlab::CurrentSettings
@@ -198,13 +199,13 @@ class Project < ActiveRecord::Base
   has_many :container_repositories, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :commit_statuses
-  has_many :pipelines, class_name: 'Ci::Pipeline'
+  has_many :pipelines, class_name: 'Ci::Pipeline', inverse_of: :project
 
   # Ci::Build objects store data on the file system such as artifact files and
   # build traces. Currently there's no efficient way of removing this data in
   # bulk that doesn't involve loading the rows into memory. As a result we're
   # still using `dependent: :destroy` here.
-  has_many :builds, class_name: 'Ci::Build', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :builds, class_name: 'Ci::Build', inverse_of: :project, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :build_trace_section_names, class_name: 'Ci::BuildTraceSectionName'
   has_many :runner_projects, class_name: 'Ci::RunnerProject'
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
@@ -233,7 +234,7 @@ class Project < ActiveRecord::Base
   validates :creator, presence: true, on: :create
   validates :description, length: { maximum: 2000 }, allow_blank: true
   validates :ci_config_path,
-    format: { without: /(\.{2}|\A\/)/,
+    format: { without: %r{(\.{2}|\A/)},
               message: 'cannot include leading slash or directory traversal.' },
     length: { maximum: 255 },
     allow_blank: true
@@ -309,6 +310,7 @@ class Project < ActiveRecord::Base
 
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
+  scope :with_issues_available_for_user, ->(current_user) { with_feature_available_for_user(:issues, current_user) }
   scope :with_merge_requests_enabled, -> { with_feature_enabled(:merge_requests) }
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
@@ -562,6 +564,9 @@ class Project < ActiveRecord::Base
         RepositoryForkWorker.perform_async(id,
                                            forked_from_project.repository_storage_path,
                                            forked_from_project.disk_path)
+      elsif gitlab_project_import?
+        # Do not retry on Import/Export until https://gitlab.com/gitlab-org/gitlab-ce/issues/26189 is solved.
+        RepositoryImportWorker.set(retry: false).perform_async(self.id)
       else
         RepositoryImportWorker.perform_async(self.id)
       end
@@ -629,6 +634,7 @@ class Project < ActiveRecord::Base
       project_import_data.data ||= {}
       project_import_data.data = project_import_data.data.merge(data)
     end
+
     if credentials
       project_import_data.credentials ||= {}
       project_import_data.credentials = project_import_data.credentials.merge(credentials)
@@ -953,9 +959,11 @@ class Project < ActiveRecord::Base
 
   def execute_hooks(data, hooks_scope = :push_hooks)
     run_after_commit_or_now do
-      hooks.public_send(hooks_scope).each do |hook| # rubocop:disable GitlabSecurity/PublicSend
+      hooks.hooks_for(hooks_scope).each do |hook|
         hook.async_execute(data, hooks_scope.to_s)
       end
+
+      SystemHooksService.new.execute_hooks(data, hooks_scope)
     end
   end
 
@@ -980,9 +988,13 @@ class Project < ActiveRecord::Base
   end
 
   def repo_exists?
-    @repo_exists ||= repository.exists?
-  rescue
-    @repo_exists = false
+    strong_memoize(:repo_exists) do
+      begin
+        repository.exists?
+      rescue
+        false
+      end
+    end
   end
 
   def root_ref?(branch)
@@ -1011,6 +1023,8 @@ class Project < ActiveRecord::Base
   end
 
   def fork_source
+    return nil unless forked?
+
     forked_from_project || fork_network&.root_project
   end
 
@@ -1137,7 +1151,7 @@ class Project < ActiveRecord::Base
   def change_head(branch)
     if repository.branch_exists?(branch)
       repository.before_change_head
-      repository.write_ref('HEAD', "refs/heads/#{branch}")
+      repository.raw_repository.write_ref('HEAD', "refs/heads/#{branch}", shell: false)
       repository.copy_gitattributes(branch)
       repository.after_change_head
       reload_default_branch
@@ -1312,7 +1326,7 @@ class Project < ActiveRecord::Base
     host = "#{subdomain}.#{Settings.pages.host}".downcase
 
     # The host in URL always needs to be downcased
-    url = Gitlab.config.pages.url.sub(/^https?:\/\//) do |prefix|
+    url = Gitlab.config.pages.url.sub(%r{^https?://}) do |prefix|
       "#{prefix}#{subdomain}."
     end.downcase
 
@@ -1417,7 +1431,7 @@ class Project < ActiveRecord::Base
     # We'd need to keep track of project full path otherwise directory tree
     # created with hashed storage enabled cannot be usefully imported using
     # the import rake task.
-    repository.rugged.config['gitlab.fullpath'] = gl_full_path
+    repository.raw_repository.write_config(full_path: gl_full_path)
   rescue Gitlab::Git::Repository::NoRepository => e
     Rails.logger.error("Error writing to .git/config for project #{full_path} (#{id}): #{e.message}.")
     nil

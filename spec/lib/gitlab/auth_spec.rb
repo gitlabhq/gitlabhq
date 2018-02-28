@@ -136,8 +136,8 @@ describe Gitlab::Auth do
 
       it 'grants deploy key write permissions' do
         project = create(:project)
-        key = create(:deploy_key, can_push: true)
-        create(:deploy_keys_project, deploy_key: key, project: project)
+        key = create(:deploy_key)
+        create(:deploy_keys_project, :write_access, deploy_key: key, project: project)
         token = Gitlab::LfsToken.new(key).token
 
         expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: "lfs+deploy-key-#{key.id}")
@@ -146,7 +146,7 @@ describe Gitlab::Auth do
 
       it 'does not grant deploy key write permissions' do
         project = create(:project)
-        key = create(:deploy_key, can_push: true)
+        key = create(:deploy_key)
         token = Gitlab::LfsToken.new(key).token
 
         expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: "lfs+deploy-key-#{key.id}")

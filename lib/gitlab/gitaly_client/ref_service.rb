@@ -14,12 +14,18 @@ module Gitlab
         request = Gitaly::FindAllBranchesRequest.new(repository: @gitaly_repo)
         response = GitalyClient.call(@storage, :ref_service, :find_all_branches, request)
 
-        response.flat_map do |message|
-          message.branches.map do |branch|
-            target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target)
-            Gitlab::Git::Branch.new(@repository, branch.name, branch.target.id, target_commit)
-          end
-        end
+        consume_find_all_branches_response(response)
+      end
+
+      def merged_branches(branch_names = [])
+        request = Gitaly::FindAllBranchesRequest.new(
+          repository: @gitaly_repo,
+          merged_only: true,
+          merged_branches: branch_names.map { |s| encode_binary(s) }
+        )
+        response = GitalyClient.call(@storage, :ref_service, :find_all_branches, request)
+
+        consume_find_all_branches_response(response)
       end
 
       def default_branch_name
@@ -62,7 +68,7 @@ module Gitlab
         request = Gitaly::FindLocalBranchesRequest.new(repository: @gitaly_repo)
         request.sort_by = sort_by_param(sort_by) if sort_by
         response = GitalyClient.call(@storage, :ref_service, :find_local_branches, request)
-        consume_branches_response(response)
+        consume_find_local_branches_response(response)
       end
 
       def tags
@@ -127,13 +133,16 @@ module Gitlab
         GitalyClient.call(@repository.storage, :ref_service, :delete_branch, request)
       end
 
-      def delete_refs(except_with_prefixes:)
+      def delete_refs(refs: [], except_with_prefixes: [])
         request = Gitaly::DeleteRefsRequest.new(
           repository: @gitaly_repo,
-          except_with_prefix: except_with_prefixes
+          refs: refs.map { |r| encode_binary(r) },
+          except_with_prefix: except_with_prefixes.map { |r| encode_binary(r) }
         )
 
-        GitalyClient.call(@repository.storage, :ref_service, :delete_refs, request)
+        response = GitalyClient.call(@repository.storage, :ref_service, :delete_refs, request)
+
+        raise Gitlab::Git::Repository::GitError, response.git_error if response.git_error.present?
       end
 
       private
@@ -151,7 +160,7 @@ module Gitlab
         enum_value
       end
 
-      def consume_branches_response(response)
+      def consume_find_local_branches_response(response)
         response.flat_map do |message|
           message.branches.map do |gitaly_branch|
             Gitlab::Git::Branch.new(
@@ -160,6 +169,15 @@ module Gitlab
               gitaly_branch.commit_id,
               commit_from_local_branches_response(gitaly_branch)
             )
+          end
+        end
+      end
+
+      def consume_find_all_branches_response(response)
+        response.flat_map do |message|
+          message.branches.map do |branch|
+            target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target)
+            Gitlab::Git::Branch.new(@repository, branch.name, branch.target.id, target_commit)
           end
         end
       end

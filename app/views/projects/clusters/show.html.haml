@@ -1,6 +1,6 @@
 - @content_class = "limit-container-width" unless fluid_layout
 - add_to_breadcrumbs "Clusters", project_clusters_path(@project)
-- breadcrumb_title @cluster.id
+- breadcrumb_title @cluster.name
 - page_title _("Cluster")
 
 - expanded = Rails.env.test?

@@ -13,11 +13,11 @@
         - if @user.avatar?
           You can change your avatar here
           - if gravatar_enabled?
-            or remove the current avatar to revert to #{link_to Gitlab.config.gravatar.host, 'http://' + Gitlab.config.gravatar.host}
+            or remove the current avatar to revert to #{link_to Gitlab.config.gravatar.host, 'https://' + Gitlab.config.gravatar.host}
         - else
           You can upload an avatar here
           - if gravatar_enabled?
-            or change it at #{link_to Gitlab.config.gravatar.host, 'http://' + Gitlab.config.gravatar.host}
+            or change it at #{link_to Gitlab.config.gravatar.host, 'https://' + Gitlab.config.gravatar.host}
     .col-lg-8
       .clearfix.avatar-image.append-bottom-default
         = link_to avatar_icon(@user, 400), target: '_blank', rel: 'noopener noreferrer' do

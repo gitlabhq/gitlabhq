@@ -11,9 +11,10 @@ describe('Pipelines Table', () => {
   preloadFixtures(jsonFixtureName);
 
   beforeEach(() => {
-    PipelinesTableComponent = Vue.extend(pipelinesTableComp);
     const pipelines = getJSONFixture(jsonFixtureName).pipelines;
-    pipeline = pipelines.find(p => p.id === 1);
+
+    PipelinesTableComponent = Vue.extend(pipelinesTableComp);
+    pipeline = pipelines.find(p => p.user !== null && p.commit !== null);
   });
 
   describe('table', () => {

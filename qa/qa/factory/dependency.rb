@@ -16,20 +16,21 @@ module QA
       def build!
         return if overridden?
 
-        Builder.new(@signature).fabricate!.tap do |product|
+        Builder.new(@signature, @factory).fabricate!.tap do |product|
           @factory.public_send("#{@name}=", product)
         end
       end
 
       class Builder
-        def initialize(signature)
+        def initialize(signature, caller_factory)
           @factory = signature.factory
           @block = signature.block
+          @caller_factory = caller_factory
         end
 
         def fabricate!
           @factory.fabricate! do |factory|
-            @block&.call(factory)
+            @block&.call(factory, @caller_factory)
           end
         end
       end

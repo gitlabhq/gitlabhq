@@ -13,17 +13,6 @@
   import autosave from '../mixins/autosave';
 
   export default {
-    props: {
-      note: {
-        type: Object,
-        required: true,
-      },
-    },
-    data() {
-      return {
-        isReplying: false,
-      };
-    },
     components: {
       noteableNote,
       userAvatarLink,
@@ -37,6 +26,17 @@
     mixins: [
       autosave,
     ],
+    props: {
+      note: {
+        type: Object,
+        required: true,
+      },
+    },
+    data() {
+      return {
+        isReplying: false,
+      };
+    },
     computed: {
       ...mapGetters([
         'getNoteableData',
@@ -71,6 +71,20 @@
 
         return null;
       },
+    },
+    mounted() {
+      if (this.isReplying) {
+        this.initAutoSave();
+      }
+    },
+    updated() {
+      if (this.isReplying) {
+        if (!this.autosave) {
+          this.initAutoSave();
+        } else {
+          this.setAutoSave();
+        }
+      }
     },
     methods: {
       ...mapActions([
@@ -130,27 +144,14 @@
             this.removePlaceholderNotes();
             this.isReplying = true;
             this.$nextTick(() => {
-              const msg = 'Your comment could not be submitted! Please check your network connection and try again.';
+              const msg = `Your comment could not be submitted!
+Please check your network connection and try again.`;
               Flash(msg, 'alert', this.$el);
               this.$refs.noteForm.note = noteText;
               callback(err);
             });
           });
       },
-    },
-    mounted() {
-      if (this.isReplying) {
-        this.initAutoSave();
-      }
-    },
-    updated() {
-      if (this.isReplying) {
-        if (!this.autosave) {
-          this.initAutoSave();
-        } else {
-          this.setAutoSave();
-        }
-      }
     },
   };
 </script>
@@ -164,7 +165,7 @@
           :img-src="author.avatar_url"
           :img-alt="author.name"
           :img-size="40"
-          />
+        />
       </div>
       <div class="timeline-content">
         <div class="discussion">
@@ -184,42 +185,43 @@
               :edited-by="lastUpdatedBy"
               action-text="Last updated"
               class-name="discussion-headline-light js-discussion-headline"
-              />
-            </div>
+            />
           </div>
-          <div
-            v-if="note.expanded"
-            class="discussion-body">
-            <div class="panel panel-default">
-              <div class="discussion-notes">
-                <ul class="notes">
-                  <component
-                    v-for="note in note.notes"
-                    :is="componentName(note)"
-                    :note="componentData(note)"
-                    :key="note.id"
-                    />
-                </ul>
-                <div
-                  :class="{ 'is-replying': isReplying }"
-                  class="discussion-reply-holder">
-                  <button
-                    v-if="canReply && !isReplying"
-                    @click="showReplyForm"
-                    type="button"
-                    class="js-vue-discussion-reply btn btn-text-field"
-                    title="Add a reply">Reply...</button>
-                  <note-form
-                    v-if="isReplying"
-                    save-button-title="Comment"
-                    :discussion="note"
-                    :is-editing="false"
-                    @handleFormUpdate="saveReply"
-                    @cancelFormEdition="cancelReplyForm"
-                    ref="noteForm"
-                    />
-                  <note-signed-out-widget v-if="!canReply" />
-                </div>
+        </div>
+        <div
+          v-if="note.expanded"
+          class="discussion-body">
+          <div class="panel panel-default">
+            <div class="discussion-notes">
+              <ul class="notes">
+                <component
+                  v-for="note in note.notes"
+                  :is="componentName(note)"
+                  :note="componentData(note)"
+                  :key="note.id"
+                />
+              </ul>
+              <div
+                :class="{ 'is-replying': isReplying }"
+                class="discussion-reply-holder">
+                <button
+                  v-if="canReply && !isReplying"
+                  @click="showReplyForm"
+                  type="button"
+                  class="js-vue-discussion-reply btn btn-text-field"
+                  title="Add a reply">
+                  Reply...
+                </button>
+                <note-form
+                  v-if="isReplying"
+                  save-button-title="Comment"
+                  :discussion="note"
+                  :is-editing="false"
+                  @handleFormUpdate="saveReply"
+                  @cancelFormEdition="cancelReplyForm"
+                  ref="noteForm"
+                />
+                <note-signed-out-widget v-if="!canReply" />
               </div>
             </div>
           </div>

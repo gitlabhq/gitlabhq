@@ -63,13 +63,13 @@ describe('text_utility', () => {
     });
   });
 
-  describe('stripeHtml', () => {
+  describe('stripHtml', () => {
     it('replaces html tag with the default replacement', () => {
-      expect(textUtils.stripeHtml('This is a text with <p>html</p>.')).toEqual('This is a text with html.');
+      expect(textUtils.stripHtml('This is a text with <p>html</p>.')).toEqual('This is a text with html.');
     });
 
     it('replaces html tags with the provided replacement', () => {
-      expect(textUtils.stripeHtml('This is a text with <p>html</p>.', ' ')).toEqual('This is a text with  html .');
+      expect(textUtils.stripHtml('This is a text with <p>html</p>.', ' ')).toEqual('This is a text with  html .');
     });
   });
 });

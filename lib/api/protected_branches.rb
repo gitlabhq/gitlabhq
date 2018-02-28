@@ -2,7 +2,7 @@ module API
   class ProtectedBranches < Grape::API
     include PaginationParams
 
-    BRANCH_ENDPOINT_REQUIREMENTS = API::PROJECT_ENDPOINT_REQUIREMENTS.merge(branch: API::NO_SLASH_URL_PART_REGEX)
+    BRANCH_ENDPOINT_REQUIREMENTS = API::PROJECT_ENDPOINT_REQUIREMENTS.merge(name: API::NO_SLASH_URL_PART_REGEX)
 
     before { authorize_admin_project }
 

@@ -1,4 +1,6 @@
 import 'vendor/jquery.endless-scroll';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import CommitsList from '~/commits';
 
 describe('Commits List', () => {
@@ -43,30 +45,47 @@ describe('Commits List', () => {
 
   describe('on entering input', () => {
     let ajaxSpy;
+    let mock;
 
     beforeEach(() => {
       CommitsList.init(25);
       CommitsList.searchField.val('');
 
       spyOn(history, 'replaceState').and.stub();
-      ajaxSpy = spyOn(jQuery, 'ajax').and.callFake((req) => {
-        req.success({
-          data: '<li>Result</li>',
-        });
+      mock = new MockAdapter(axios);
+
+      mock.onGet('/h5bp/html5-boilerplate/commits/master').reply(200, {
+        html: '<li>Result</li>',
       });
+
+      ajaxSpy = spyOn(axios, 'get').and.callThrough();
     });
 
-    it('should save the last search string', () => {
+    afterEach(() => {
+      mock.restore();
+    });
+
+    it('should save the last search string', (done) => {
       CommitsList.searchField.val('GitLab');
-      CommitsList.filterResults();
-      expect(ajaxSpy).toHaveBeenCalled();
-      expect(CommitsList.lastSearch).toEqual('GitLab');
+      CommitsList.filterResults()
+        .then(() => {
+          expect(ajaxSpy).toHaveBeenCalled();
+          expect(CommitsList.lastSearch).toEqual('GitLab');
+
+          done();
+        })
+        .catch(done.fail);
     });
 
-    it('should not make ajax call if the input does not change', () => {
-      CommitsList.filterResults();
-      expect(ajaxSpy).not.toHaveBeenCalled();
-      expect(CommitsList.lastSearch).toEqual('');
+    it('should not make ajax call if the input does not change', (done) => {
+      CommitsList.filterResults()
+        .then(() => {
+          expect(ajaxSpy).not.toHaveBeenCalled();
+          expect(CommitsList.lastSearch).toEqual('');
+
+          done();
+        })
+        .catch(done.fail);
     });
   });
 });

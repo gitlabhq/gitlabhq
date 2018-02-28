@@ -12,7 +12,7 @@ module Gitlab
 
         # Ends with /:random_hex/:filename
         FILE_UPLOADER_PATH = %r{/\h+/[^/]+\z}
-        FULL_PATH_CAPTURE = %r{\A(.+)#{FILE_UPLOADER_PATH}}
+        FULL_PATH_CAPTURE = /\A(.+)#{FILE_UPLOADER_PATH}/
 
         # These regex patterns are tested against a relative path, relative to
         # the upload directory.

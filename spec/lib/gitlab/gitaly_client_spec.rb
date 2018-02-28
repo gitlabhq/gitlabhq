@@ -3,6 +3,31 @@ require 'spec_helper'
 # We stub Gitaly in `spec/support/gitaly.rb` for other tests. We don't want
 # those stubs while testing the GitalyClient itself.
 describe Gitlab::GitalyClient, skip_gitaly_mock: true do
+  describe '.stub_class' do
+    it 'returns the gRPC health check stub' do
+      expect(described_class.stub_class(:health_check)).to eq(::Grpc::Health::V1::Health::Stub)
+    end
+
+    it 'returns a Gitaly stub' do
+      expect(described_class.stub_class(:ref_service)).to eq(::Gitaly::RefService::Stub)
+    end
+  end
+
+  describe '.stub_address' do
+    it 'returns the same result after being called multiple times' do
+      address = 'localhost:9876'
+      prefixed_address = "tcp://#{address}"
+
+      allow(Gitlab.config.repositories).to receive(:storages).and_return({
+        'default' => { 'gitaly_address' => prefixed_address }
+      })
+
+      2.times do
+        expect(described_class.stub_address('default')).to eq('localhost:9876')
+      end
+    end
+  end
+
   describe '.stub' do
     # Notice that this is referring to gRPC "stubs", not rspec stubs
     before do

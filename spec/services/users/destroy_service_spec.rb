@@ -15,7 +15,7 @@ describe Users::DestroyService do
 
         expect { user_data['email'].to eq(user.email) }
         expect { User.find(user.id) }.to raise_error(ActiveRecord::RecordNotFound)
-        expect { Namespace.with_deleted.find(namespace.id) }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { Namespace.find(namespace.id) }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
       it 'will delete the project' do

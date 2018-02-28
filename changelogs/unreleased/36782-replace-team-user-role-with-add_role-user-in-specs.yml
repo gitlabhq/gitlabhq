@@ -1,5 +1,0 @@
----
-title: Replace '.team << [user, role]' with 'add_role(user)' in specs
-merge_request: 16069
-author: "@blackst0ne"
-type: other

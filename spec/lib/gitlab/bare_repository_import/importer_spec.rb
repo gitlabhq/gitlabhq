@@ -74,14 +74,18 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
         importer.create_project_if_needed
       end
 
-      it 'creates the Git repo in disk' do
+      it 'creates the Git repo on disk with the proper symlink for hooks' do
         create_bare_repository("#{project_path}.git")
 
         importer.create_project_if_needed
 
         project = Project.find_by_full_path(project_path)
+        repo_path = File.join(project.repository_storage_path, project.disk_path + '.git')
+        hook_path = File.join(repo_path, 'hooks')
 
-        expect(File).to exist(File.join(project.repository_storage_path, project.disk_path + '.git'))
+        expect(File).to exist(repo_path)
+        expect(File.symlink?(hook_path)).to be true
+        expect(File.readlink(hook_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
       end
 
       context 'hashed storage enabled' do

@@ -39,7 +39,7 @@ describe Gitlab::Git::RevList do
     ]
 
     expect(rev_list).to receive(:popen).with(*params) do |*_, lazy_block:|
-      lazy_block.call(output.split("\n").lazy)
+      lazy_block.call(output.lines.lazy.map(&:chomp))
     end
   end
 
@@ -62,6 +62,15 @@ describe Gitlab::Git::RevList do
       stub_popen_rev_list('newrev', '--not', '--all', '--objects', output: "sha1\nsha2 path/to/file")
 
       expect(rev_list.new_objects(require_path: true)).to eq(%w[sha2])
+    end
+
+    it 'can handle non utf-8 paths' do
+      non_utf_char = [0x89].pack("c*").force_encoding("UTF-8")
+      stub_lazy_popen_rev_list('newrev', '--not', '--all', '--objects', output: "sha2 πå†h/†ø/ƒîlé#{non_utf_char}\nsha1")
+
+      rev_list.new_objects(require_path: true) do |object_ids|
+        expect(object_ids.force).to eq(%w[sha2])
+      end
     end
 
     it 'can yield a lazy enumerator' do

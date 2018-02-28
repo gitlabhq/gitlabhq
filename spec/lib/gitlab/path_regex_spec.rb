@@ -121,7 +121,7 @@ describe Gitlab::PathRegex do
   STARTING_WITH_NAMESPACE = %r{^/\*namespace_id/:(project_)?id}
   NON_PARAM_PARTS = %r{[^:*][a-z\-_/]*}
   ANY_OTHER_PATH_PART = %r{[a-z\-_/:]*}
-  WILDCARD_SEGMENT = %r{\*}
+  WILDCARD_SEGMENT = /\*/
   let(:namespaced_wildcard_routes) do
     routes_without_format.select do |p|
       p =~ %r{#{STARTING_WITH_NAMESPACE}/#{NON_PARAM_PARTS}/#{ANY_OTHER_PATH_PART}#{WILDCARD_SEGMENT}}

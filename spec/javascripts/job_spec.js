@@ -52,19 +52,13 @@ describe('Job', () => {
         expect($('.build-job[data-stage="test"]').is(':visible')).toBe(false);
         expect($('.build-job[data-stage="deploy"]').is(':visible')).toBe(false);
       });
-
-      it('displays the remove date correctly', () => {
-        const removeDateElement = document.querySelector('.js-artifacts-remove');
-        expect(removeDateElement.innerText.trim()).toBe('1 year remaining');
-      });
     });
 
     describe('running build', () => {
       it('updates the build trace on an interval', function () {
         const deferred1 = $.Deferred();
         const deferred2 = $.Deferred();
-        const deferred3 = $.Deferred();
-        spyOn($, 'ajax').and.returnValues(deferred1.promise(), deferred2.promise(), deferred3.promise());
+        spyOn($, 'ajax').and.returnValues(deferred1.promise(), deferred2.promise());
         spyOn(urlUtils, 'visitUrl');
 
         deferred1.resolve({
@@ -75,9 +69,7 @@ describe('Job', () => {
           complete: false,
         });
 
-        deferred2.resolve();
-
-        deferred3.resolve({
+        deferred2.resolve({
           html: '<span>More</span>',
           status: 'running',
           state: 'finalstate',
@@ -99,9 +91,8 @@ describe('Job', () => {
       it('replaces the entire build trace', () => {
         const deferred1 = $.Deferred();
         const deferred2 = $.Deferred();
-        const deferred3 = $.Deferred();
 
-        spyOn($, 'ajax').and.returnValues(deferred1.promise(), deferred2.promise(), deferred3.promise());
+        spyOn($, 'ajax').and.returnValues(deferred1.promise(), deferred2.promise());
 
         spyOn(urlUtils, 'visitUrl');
 
@@ -112,9 +103,7 @@ describe('Job', () => {
           complete: false,
         });
 
-        deferred2.resolve();
-
-        deferred3.resolve({
+        deferred2.resolve({
           html: '<span>Different</span>',
           status: 'running',
           append: false,
@@ -175,9 +164,8 @@ describe('Job', () => {
         it('shows incremented size', () => {
           const deferred1 = $.Deferred();
           const deferred2 = $.Deferred();
-          const deferred3 = $.Deferred();
 
-          spyOn($, 'ajax').and.returnValues(deferred1.promise(), deferred2.promise(), deferred3.promise());
+          spyOn($, 'ajax').and.returnValues(deferred1.promise(), deferred2.promise());
 
           spyOn(urlUtils, 'visitUrl');
 
@@ -189,8 +177,6 @@ describe('Job', () => {
             total: 100,
           });
 
-          deferred2.resolve();
-
           this.job = new Job();
 
           expect(
@@ -199,7 +185,7 @@ describe('Job', () => {
 
           jasmine.clock().tick(4001);
 
-          deferred3.resolve({
+          deferred2.resolve({
             html: '<span>Update</span>',
             status: 'success',
             append: true,

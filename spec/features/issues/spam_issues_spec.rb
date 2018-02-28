@@ -34,6 +34,9 @@ describe 'New issue', :js do
 
       click_button 'Submit issue'
 
+      # reCAPTCHA alerts when it can't contact the server, so just accept it and move on
+      page.driver.browser.switch_to.alert.accept
+
       # it is impossible to test recaptcha automatically and there is no possibility to fill in recaptcha
       # recaptcha verification is skipped in test environment and it always returns true
       expect(page).not_to have_content('issue title')

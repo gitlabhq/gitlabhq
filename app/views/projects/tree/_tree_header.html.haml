@@ -24,6 +24,8 @@
           .add-to-tree-dropdown
             %ul.dropdown-menu
               - if can_edit_tree?
+                %li.dropdown-header
+                  #{ _('This directory') }
                 %li
                   = link_to project_new_blob_path(@project, @id) do
                     #{ _('New file') }
@@ -60,6 +62,8 @@
                     #{ _('New directory') }
 
               %li.divider
+              %li.dropdown-header
+                #{ _('This repository') }
               %li
                 = link_to new_project_branch_path(@project) do
                   #{ _('New branch') }

@@ -373,7 +373,7 @@ configuration.
 If the case of `404.html`, there are different scenarios. For example:
 
 - If you use project Pages (served under `/projectname/`) and try to access
-  `/projectname/non/exsiting_file`, GitLab Pages will try to serve first
+  `/projectname/non/existing_file`, GitLab Pages will try to serve first
   `/projectname/404.html`, and then `/404.html`.
 - If you use user/group Pages (served under `/`) and try to access
   `/non/existing_file` GitLab Pages will try to serve `/404.html`.

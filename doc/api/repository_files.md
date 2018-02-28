@@ -68,7 +68,7 @@ Example response:
 
 ```json
 {
-  "file_name": "app/project.rb",
+  "file_path": "app/project.rb",
   "branch": "master"
 }
 ```
@@ -98,7 +98,7 @@ Example response:
 
 ```json
 {
-  "file_name": "app/project.rb",
+  "file_path": "app/project.rb",
   "branch": "master"
 }
 ```
@@ -132,15 +132,6 @@ DELETE /projects/:id/repository/files/:file_path
 
 ```bash
 curl --request DELETE --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb?branch=master&author_email=author%40example.com&author_name=Firstname%20Lastname&commit_message=delete%20file'
-```
-
-Example response:
-
-```json
-{
-  "file_name": "app/project.rb",
-  "branch": "master"
-}
 ```
 
 Parameters:

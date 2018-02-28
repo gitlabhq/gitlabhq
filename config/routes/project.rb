@@ -40,7 +40,7 @@ constraints(ProjectUrlConstrainer.new) do
       #
       # Templates
       #
-      get '/templates/:template_type/:key' => 'templates#show', as: :template
+      get '/templates/:template_type/:key' => 'templates#show', as: :template, constraints: { key: %r{[^/]+} }
 
       resource  :avatar, only: [:show, :destroy]
       resources :commit, only: [:show], constraints: { id: /\h{7,40}/ } do
@@ -50,11 +50,12 @@ constraints(ProjectUrlConstrainer.new) do
           post :revert
           post :cherry_pick
           get :diff_for_path
+          get :merge_requests
         end
       end
 
       resource :pages, only: [:show, :destroy] do
-        resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains', constraints: { id: /[^\/]+/ }
+        resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains', constraints: { id: %r{[^/]+} }
       end
 
       resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do
@@ -64,7 +65,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :services, constraints: { id: /[^\/]+/ }, only: [:index, :edit, :update] do
+      resources :services, constraints: { id: %r{[^/]+} }, only: [:index, :edit, :update] do
         member do
           put :test
         end
@@ -345,7 +346,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :project_members, except: [:show, :new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }, concerns: :access_requestable do
+      resources :project_members, except: [:show, :new, :edit], constraints: { id: %r{[a-zA-Z./0-9_\-#%+]+} }, concerns: :access_requestable do
         collection do
           delete :leave
 
@@ -378,7 +379,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :uploads, only: [:create] do
         collection do
-          get ":secret/:filename", action: :show, as: :show, constraints: { filename: /[^\/]+/ }
+          get ":secret/:filename", action: :show, as: :show, constraints: { filename: %r{[^/]+} }
         end
       end
 

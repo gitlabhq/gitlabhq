@@ -241,6 +241,7 @@ Devise.setup do |config|
           true
         end
       end
+
       if provider['name'] == 'authentiq'
         provider['args'][:remote_sign_out_handler] = lambda do |request|
           authentiq_session = request.params['sid']

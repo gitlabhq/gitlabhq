@@ -21,6 +21,13 @@
         return this.loading || this.branchName === '';
       },
     },
+    created() {
+      // Dropdown is outside of Vue instance & is controlled by Bootstrap
+      this.$dropdown = $('.git-revision-dropdown');
+
+      // text element is outside Vue app
+      this.dropdownText = document.querySelector('.project-refs-form .dropdown-toggle-text');
+    },
     methods: {
       ...mapActions([
         'createNewBranch',
@@ -54,13 +61,6 @@
             flash(data.message, 'alert', this.$el);
           }));
       },
-    },
-    created() {
-      // Dropdown is outside of Vue instance & is controlled by Bootstrap
-      this.$dropdown = $('.git-revision-dropdown');
-
-      // text element is outside Vue app
-      this.dropdownText = document.querySelector('.project-refs-form .dropdown-toggle-text');
     },
   };
 </script>

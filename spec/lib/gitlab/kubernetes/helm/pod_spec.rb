@@ -52,18 +52,20 @@ describe Gitlab::Kubernetes::Helm::Pod do
 
       it 'should include volumes for the container' do
         container = subject.generate.spec.containers.first
-        expect(container.volumeMounts.first['name']).to eq('config-volume')
-        expect(container.volumeMounts.first['mountPath']).to eq('/etc/config')
+        expect(container.volumeMounts.first['name']).to eq('configuration-volume')
+        expect(container.volumeMounts.first['mountPath']).to eq("/data/helm/#{app.name}/config")
       end
 
       it 'should include a volume inside the specification' do
         spec = subject.generate.spec
-        expect(spec.volumes.first['name']).to eq('config-volume')
+        expect(spec.volumes.first['name']).to eq('configuration-volume')
       end
 
       it 'should mount configMap specification in the volume' do
         spec = subject.generate.spec
-        expect(spec.volumes.first.configMap['name']).to eq('values-config')
+        expect(spec.volumes.first.configMap['name']).to eq('values-content-configuration')
+        expect(spec.volumes.first.configMap['items'].first['key']).to eq('values')
+        expect(spec.volumes.first.configMap['items'].first['path']).to eq('values.yaml')
       end
     end
 

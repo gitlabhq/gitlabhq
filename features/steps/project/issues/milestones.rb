@@ -3,7 +3,6 @@ class Spinach::Features::ProjectIssuesMilestones < Spinach::FeatureSteps
   include SharedProject
   include SharedPaths
   include SharedMarkdown
-  include CapybaraHelpers
 
   step 'I should see milestone "v2.2"' do
     milestone = @project.milestones.find_by(title: "v2.2")
@@ -65,8 +64,12 @@ class Spinach::Features::ProjectIssuesMilestones < Spinach::FeatureSteps
     expect(page).to have_selector('#tab-issues li.issuable-row', count: 4)
   end
 
-  step 'I click link to remove milestone' do
-    confirm_modal_if_present { click_link 'Delete' }
+  step 'I click button to remove milestone' do
+    click_button 'Delete'
+  end
+
+  step 'I confirm in modal' do
+    click_button 'Delete milestone'
   end
 
   step 'I should see no milestones' do

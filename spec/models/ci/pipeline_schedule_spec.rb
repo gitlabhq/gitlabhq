@@ -12,7 +12,6 @@ describe Ci::PipelineSchedule do
   it { is_expected.to respond_to(:cron_timezone) }
   it { is_expected.to respond_to(:description) }
   it { is_expected.to respond_to(:next_run_at) }
-  it { is_expected.to respond_to(:deleted_at) }
 
   describe 'validations' do
     it 'does not allow invalid cron patters' do

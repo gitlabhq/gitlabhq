@@ -537,7 +537,8 @@
     .form-group
       = f.label :repository_storages, 'Storage paths for new projects', class: 'control-label col-sm-2'
       .col-sm-10
-        = f.select :repository_storages, repository_storages_options_for_select, {include_hidden: false}, multiple: true, class: 'form-control'
+        = f.select :repository_storages, repository_storages_options_for_select(@application_setting.repository_storages),
+          {include_hidden: false}, multiple: true, class: 'form-control'
         .help-block
           Manage repository storage paths. Learn more in the
           = succeed "." do
@@ -773,6 +774,22 @@
           The default value (1) is a reasonable choice for the majority of GitLab
           installations. Set to 0 to completely disable polling.
           = link_to icon('question-circle'), help_page_path('administration/polling')
+
+  %fieldset
+    %legend Performance optimization
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :authorized_keys_enabled do
+            = f.check_box :authorized_keys_enabled
+            Write to "authorized_keys" file
+          .help-block
+            By default, we write to the "authorized_keys" file to support Git
+            over SSH without additional configuration. GitLab can be optimized
+            to authenticate SSH keys via the database file. Only uncheck this
+            if you have configured your OpenSSH server to use the
+            AuthorizedKeysCommand. Click on the help icon for more details.
+            = link_to icon('question-circle'), help_page_path('administration/operations/fast_ssh_key_lookup')
 
   %fieldset
     %legend User and IP Rate Limits

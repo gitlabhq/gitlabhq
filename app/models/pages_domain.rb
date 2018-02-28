@@ -27,7 +27,7 @@ class PagesDomain < ActiveRecord::Base
   def url
     return unless domain
 
-    if certificate
+    if certificate.present?
       "https://#{domain}"
     else
       "http://#{domain}"

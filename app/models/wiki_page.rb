@@ -107,7 +107,10 @@ class WikiPage
 
   # The processed/formatted content of this page.
   def formatted_content
-    @attributes[:formatted_content] ||= @page&.formatted_data
+    # Assuming @page exists, nil formatted_data means we didn't load it
+    # before hand (i.e. page was fetched by Gitaly), so we fetch it separately.
+    # If the page was fetched by Gollum, formatted_data would've been a String.
+    @attributes[:formatted_content] ||= @page&.formatted_data || @wiki.page_formatted_data(@page)
   end
 
   # The markup format for the page.

@@ -30,7 +30,7 @@
           %li CI variables
           %li Any encrypted tokens
     %p
-      Once the exported file is ready, you will receive a notification email with a download link.
+      Once the exported file is ready, you will receive a notification email with a download link, or you can download it from this page.
     - if project.export_project_path
       = link_to 'Download export',  download_export_project_path(project),
               rel: 'nofollow', download: '', method: :get, class: "btn btn-default"

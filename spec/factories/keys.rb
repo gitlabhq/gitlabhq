@@ -15,10 +15,6 @@ FactoryBot.define do
       factory :another_deploy_key, class: 'DeployKey'
     end
 
-    factory :write_access_key, class: 'DeployKey' do
-      can_push true
-    end
-
     factory :rsa_key_2048 do
       key do
         <<~KEY.delete("\n")

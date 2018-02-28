@@ -15,7 +15,7 @@ module Gitlab
           @conflicts ||= begin
             @target_repository.gitaly_migrate(:conflicts_list_conflict_files) do |is_enabled|
               if is_enabled
-                gitaly_conflicts_client(@target_repository).list_conflict_files
+                gitaly_conflicts_client(@target_repository).list_conflict_files.to_a
               else
                 rugged_list_conflict_files
               end

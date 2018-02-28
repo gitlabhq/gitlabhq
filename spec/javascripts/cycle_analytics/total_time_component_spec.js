@@ -23,7 +23,7 @@ describe('Total time component', () => {
         },
       });
 
-      expect(vm.$el.textContent.trim()).toEqual('3 days 4 hrs');
+      expect(vm.$el.textContent.trim().replace(/\s\s+/g, ' ')).toEqual('3 days 4 hrs');
     });
 
     it('should render information for hours and minutes', () => {
@@ -34,7 +34,7 @@ describe('Total time component', () => {
         },
       });
 
-      expect(vm.$el.textContent.trim()).toEqual('4 hrs 35 mins');
+      expect(vm.$el.textContent.trim().replace(/\s\s+/g, ' ')).toEqual('4 hrs 35 mins');
     });
 
     it('should render information for seconds', () => {
@@ -44,7 +44,7 @@ describe('Total time component', () => {
         },
       });
 
-      expect(vm.$el.textContent.trim()).toEqual('45 s');
+      expect(vm.$el.textContent.trim().replace(/\s\s+/g, ' ')).toEqual('45 s');
     });
   });
 

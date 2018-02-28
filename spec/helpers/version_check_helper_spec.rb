@@ -27,7 +27,7 @@ describe VersionCheckHelper do
       end
 
       it 'should have a VersionCheck url as the src' do
-        expect(@image_tag).to match(/src="https:\/\/version\.host\.com\/check\.svg\?gitlab_info=xxx"/)
+        expect(@image_tag).to match(%r{src="https://version\.host\.com/check\.svg\?gitlab_info=xxx"})
       end
     end
   end

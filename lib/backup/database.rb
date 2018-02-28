@@ -31,6 +31,7 @@ module Backup
             pgsql_args << "-n"
             pgsql_args << Gitlab.config.backup.pg_schema
           end
+
           spawn('pg_dump', *pgsql_args, config['database'], out: compress_wr)
         end
       compress_wr.close

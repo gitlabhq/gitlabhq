@@ -5,17 +5,32 @@ Enterprise Edition (look for the [`CE Upstream` merge requests]).
 
 This merge is done automatically in a
 [scheduled pipeline](https://gitlab.com/gitlab-org/release-tools/-/jobs/43201679).
-If a merge is already in progress, the job [doesn't create a new one](https://gitlab.com/gitlab-org/release-tools/-/jobs/43157687).
 
-**If you are pinged in a `CE Upstream` merge request to resolve a conflict,
-please resolve the conflict as soon as possible or ask someone else to do it!**
+## What to do if you are pinged in a `CE Upstream` merge request to resolve a conflict?
 
->**Note:**
-It's ok to resolve more conflicts than the one that you are asked to resolve. In
-that case, it's a good habit to ask for a double-check on your resolution by
-someone who is familiar with the code you touched.
+1. Please resolve the conflict as soon as possible or ask someone else to do it
+  - It's ok to resolve more conflicts than the one that you are asked to resolve.
+    In that case, it's a good habit to ask for a double-check on your resolution
+    by someone who is familiar with the code you touched.
+1. Once you have resolved your conflicts, push to the branch (no force-push)
+1. Assign the merge request to the next person that has to resolve a conflict
+1. If all conflicts are resolved after your resolution is pushed, keep the merge
+  request assigned to you: **you are now responsible for the merge request to be
+  green**
+1. If you need any help, you can ping the current [release managers], or ask in
+  the `#ce-to-ee` Slack channel
+
+A few notes about the automatic CE->EE merge job:
+
+- If a merge is already in progress, the job
+  [doesn't create a new one](https://gitlab.com/gitlab-org/release-tools/-/jobs/43157687).
+- If there is nothing to merge (i.e. EE is up-to-date with CE), the job doesn't
+  create a new one
+- The job posts messages to the `#ce-to-ee` Slack channel to inform what's the
+  current CE->EE merge status (e.g. "A new MR has been created", "A MR is still pending")
 
 [`CE Upstream` merge requests]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests?label_name%5B%5D=CE+upstream
+[release managers]: https://about.gitlab.com/release-managers/
 
 ## Always merge EE merge requests before their CE counterparts
 
@@ -61,7 +76,7 @@ against EE.
 1. Tries to apply it to current EE `master`
 1. If it applies cleanly, the job succeeds
 
-In the case where the job fails, it means you should create a `ee-<ce_branch>`
+In the case where the job fails, it means you should create an `ee-<ce_branch>`
 or `<ce_branch>-ee` branch, push it to EE and open a merge request against EE
 `master`.
 At this point if you retry the failing job in your CE merge request, it should

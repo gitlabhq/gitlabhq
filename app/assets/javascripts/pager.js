@@ -1,4 +1,5 @@
 import { getParameterByName } from '~/lib/utils/common_utils';
+import axios from './lib/utils/axios_utils';
 import { removeParams } from './lib/utils/url_utility';
 
 const ENDLESS_SCROLL_BOTTOM_PX = 400;
@@ -22,24 +23,22 @@ export default {
 
   getOld() {
     this.loading.show();
-    $.ajax({
-      type: 'GET',
-      url: this.url,
-      data: `limit=${this.limit}&offset=${this.offset}`,
-      dataType: 'json',
-      error: () => this.loading.hide(),
-      success: (data) => {
-        this.append(data.count, this.prepareData(data.html));
-        this.callback();
-
-        // keep loading until we've filled the viewport height
-        if (!this.disable && !this.isScrollable()) {
-          this.getOld();
-        } else {
-          this.loading.hide();
-        }
+    axios.get(this.url, {
+      params: {
+        limit: this.limit,
+        offset: this.offset,
       },
-    });
+    }).then(({ data }) => {
+      this.append(data.count, this.prepareData(data.html));
+      this.callback();
+
+      // keep loading until we've filled the viewport height
+      if (!this.disable && !this.isScrollable()) {
+        this.getOld();
+      } else {
+        this.loading.hide();
+      }
+    }).catch(() => this.loading.hide());
   },
 
   append(count, html) {

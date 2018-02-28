@@ -13,7 +13,7 @@ shared_examples 'renames child namespaces' do |type|
   end
 end
 
-describe Gitlab::Database::RenameReservedPathsMigration::V1, :truncate do
+describe Gitlab::Database::RenameReservedPathsMigration::V1, :delete do
   let(:subject) { FakeRenameReservedPathMigrationV1.new }
 
   before do

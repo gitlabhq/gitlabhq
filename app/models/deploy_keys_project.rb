@@ -1,8 +1,14 @@
 class DeployKeysProject < ActiveRecord::Base
   belongs_to :project
-  belongs_to :deploy_key
+  belongs_to :deploy_key, inverse_of: :deploy_keys_projects
 
-  validates :deploy_key_id, presence: true
+  scope :without_project_deleted,  -> { joins(:project).where(projects: { pending_delete: false }) }
+  scope :in_project, ->(project) { where(project: project) }
+  scope :with_write_access, -> { where(can_push: true) }
+
+  accepts_nested_attributes_for :deploy_key
+
+  validates :deploy_key, presence: true
   validates :deploy_key_id, uniqueness: { scope: [:project_id], message: "already exists in project" }
   validates :project_id, presence: true
 

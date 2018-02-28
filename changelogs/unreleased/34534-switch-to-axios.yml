@@ -1,5 +1,0 @@
----
-title: Fix some POST/DELETE requests in IE by switching some bundles to Axios for Ajax requests
-merge_request: 15951
-author:
-type: fixed

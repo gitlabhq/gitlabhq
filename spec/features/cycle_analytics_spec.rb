@@ -113,6 +113,7 @@ feature 'Cycle Analytics', :js do
 
   context "as a guest" do
     before do
+      project.add_developer(user)
       project.add_guest(guest)
 
       allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return([issue])

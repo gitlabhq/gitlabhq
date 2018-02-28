@@ -20,7 +20,7 @@ module TestEnv
     'improve/awesome'                    => '5937ac0',
     'merged-target'                      => '21751bf',
     'markdown'                           => '0ed8c6c',
-    'lfs'                                => 'be93687',
+    'lfs'                                => '55bc176',
     'master'                             => 'b83d6e3',
     'merge-test'                         => '5937ac0',
     "'test'"                             => 'e56497b',
@@ -88,10 +88,6 @@ module TestEnv
 
     # Create repository for FactoryBot.create(:forked_project_with_submodules)
     setup_forked_repo
-  end
-
-  def cleanup
-    stop_gitaly
   end
 
   def disable_mailer
@@ -163,6 +159,8 @@ module TestEnv
 
     spawn_script = Rails.root.join('scripts/gitaly-test-spawn').to_s
     @gitaly_pid = Bundler.with_original_env { IO.popen([spawn_script], &:read).to_i }
+    Kernel.at_exit { stop_gitaly }
+
     wait_gitaly
   end
 
@@ -309,7 +307,7 @@ module TestEnv
 
       # Before we used Git clone's --mirror option, bare repos could end up
       # with missing refs, clearing them and retrying should fix the issue.
-      cleanup && clean_gitlab_test_path && init unless reset.call
+      clean_gitlab_test_path && init unless reset.call
     end
   end
 
@@ -325,6 +323,7 @@ module TestEnv
     if component_needs_update?(install_dir, version)
       # Cleanup the component entirely to ensure we start fresh
       FileUtils.rm_rf(install_dir)
+
       unless system('rake', task)
         raise ComponentFailedToInstallError
       end

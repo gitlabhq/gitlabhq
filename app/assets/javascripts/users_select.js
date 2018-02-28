@@ -492,7 +492,7 @@ function UsersSelect(currentUser, els, options = {}) {
         renderRow: function(user) {
           var avatar, img, listClosingTags, listWithName, listWithUserName, username;
           username = user.username ? "@" + user.username : "";
-          avatar = user.avatar_url ? user.avatar_url : false;
+          avatar = user.avatar_url ? user.avatar_url : gon.default_avatar_url;
 
           let selected = false;
 
@@ -513,9 +513,7 @@ function UsersSelect(currentUser, els, options = {}) {
           if (user.beforeDivider != null) {
             `<li><a href='#' class='${selected === true ? 'is-active' : ''}'>${_.escape(user.name)}</a></li>`;
           } else {
-            if (avatar) {
-              img = "<img src='" + avatar + "' class='avatar avatar-inline' width='32' />";
-            }
+            img = "<img src='" + avatar + "' class='avatar avatar-inline' width='32' />";
           }
 
           return `

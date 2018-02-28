@@ -12,6 +12,7 @@ class MetricsController < ActionController::Base
                                           )
                  "# Metrics are disabled, see: #{help_page}\n"
                end
+
     render text: response, content_type: 'text/plain; version=0.0.4'
   end
 

@@ -45,24 +45,26 @@
   <canvas
     class="pdf-page"
     ref="canvas"
-    :data-page="number" />
+    :data-page="number"
+  >
+  </canvas>
 </template>
 
 <style>
-.pdf-page {
-  margin: 8px auto 0 auto;
-  border-top: 1px #ddd solid;
-  border-bottom: 1px #ddd solid;
-  width: 100%;
-}
+  .pdf-page {
+    margin: 8px auto 0 auto;
+    border-top: 1px #ddd solid;
+    border-bottom: 1px #ddd solid;
+    width: 100%;
+  }
 
-.pdf-page:first-child {
-  margin-top: 0px;
-  border-top: 0px;
-}
+  .pdf-page:first-child {
+    margin-top: 0px;
+    border-top: 0px;
+  }
 
-.pdf-page:last-child {
-  margin-bottom: 0px;
-  border-bottom: 0px;
-}
+  .pdf-page:last-child {
+    margin-bottom: 0px;
+    border-bottom: 0px;
+  }
 </style>

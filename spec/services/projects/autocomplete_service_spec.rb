@@ -93,26 +93,27 @@ describe Projects::AutocompleteService do
     let(:user) { create(:user) }
     let(:group) { create(:group) }
     let(:project) { create(:project, group: group) }
-    let!(:group_milestone) { create(:milestone, group: group) }
-    let!(:project_milestone) { create(:milestone, project: project) }
+    let!(:group_milestone1) { create(:milestone, group: group, due_date: '2017-01-01', title: 'Second Title') }
+    let!(:group_milestone2) { create(:milestone, group: group, due_date: '2017-01-01', title: 'First Title') }
+    let!(:project_milestone) { create(:milestone, project: project, due_date: '2016-01-01') }
 
     let(:milestone_titles) { described_class.new(project, user).milestones.map(&:title) }
 
-    it 'includes project and group milestones' do
-      expect(milestone_titles).to eq([group_milestone.title, project_milestone.title])
+    it 'includes project and group milestones and sorts them correctly' do
+      expect(milestone_titles).to eq([project_milestone.title, group_milestone2.title, group_milestone1.title])
     end
 
     it 'does not include closed milestones' do
-      group_milestone.close
+      group_milestone1.close
 
-      expect(milestone_titles).to eq([project_milestone.title])
+      expect(milestone_titles).to eq([project_milestone.title, group_milestone2.title])
     end
 
     it 'does not include milestones from other projects in the group' do
       other_project = create(:project, group: group)
       project_milestone.update!(project: other_project)
 
-      expect(milestone_titles).to eq([group_milestone.title])
+      expect(milestone_titles).to eq([group_milestone2.title, group_milestone1.title])
     end
   end
 end

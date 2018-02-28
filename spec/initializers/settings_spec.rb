@@ -24,7 +24,7 @@ describe Settings do
         expect(described_class.host_without_www('http://foo.com')).to eq 'foo.com'
         expect(described_class.host_without_www('http://www.foo.com')).to eq 'foo.com'
         expect(described_class.host_without_www('http://secure.foo.com')).to eq 'secure.foo.com'
-        expect(described_class.host_without_www('http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon')).to eq 'gravatar.com'
+        expect(described_class.host_without_www('https://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon')).to eq 'gravatar.com'
 
         expect(described_class.host_without_www('https://foo.com')).to eq 'foo.com'
         expect(described_class.host_without_www('https://www.foo.com')).to eq 'foo.com'

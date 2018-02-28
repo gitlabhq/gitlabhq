@@ -55,11 +55,12 @@ describe MergeRequests::RefreshService do
 
       before do
         allow(refresh_service).to receive(:execute_hooks)
-        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
-        reload_mrs
       end
 
       it 'executes hooks with update action' do
+        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+        reload_mrs
+
         expect(refresh_service).to have_received(:execute_hooks)
           .with(@merge_request, 'update', old_rev: @oldrev)
 
@@ -71,6 +72,26 @@ describe MergeRequests::RefreshService do
         expect(@fork_merge_request.notes).to be_empty
         expect(@build_failed_todo).to be_done
         expect(@fork_build_failed_todo).to be_done
+      end
+
+      context 'when source branch ref does not exists' do
+        before do
+          DeleteBranchService.new(@project, @user).execute(@merge_request.source_branch)
+        end
+
+        it 'closes MRs without source branch ref' do
+          expect { refresh_service.execute(@oldrev, @newrev, 'refs/heads/master') }
+            .to change { @merge_request.reload.state }
+            .from('opened')
+            .to('closed')
+
+          expect(@fork_merge_request.reload).to be_open
+        end
+
+        it 'does not change the merge request diff' do
+          expect { refresh_service.execute(@oldrev, @newrev, 'refs/heads/master') }
+            .not_to change { @merge_request.reload.merge_request_diff }
+        end
       end
     end
 

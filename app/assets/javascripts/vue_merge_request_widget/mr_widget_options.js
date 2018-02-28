@@ -1,4 +1,4 @@
-import Project from '~/project';
+import Project from '~/pages/projects/project';
 import SmartInterval from '~/smart_interval';
 import Flash from '../flash';
 import {
@@ -257,7 +257,8 @@ export default {
         <mr-widget-related-links
           v-if="shouldRenderRelatedLinks"
           :state="mr.state"
-          :related-links="mr.relatedLinks" />
+          :related-links="mr.relatedLinks"
+          />
       </div>
       <div
         class="mr-widget-footer"

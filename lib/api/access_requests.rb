@@ -24,7 +24,7 @@ module API
           access_requesters = AccessRequestsFinder.new(source).execute!(current_user)
           access_requesters = paginate(access_requesters.includes(:user))
 
-          present access_requesters.map(&:user), with: Entities::AccessRequester, source: source
+          present access_requesters, with: Entities::AccessRequester
         end
 
         desc "Requests access for the authenticated user to a #{source_type}." do
@@ -36,7 +36,7 @@ module API
           access_requester = source.request_access(current_user)
 
           if access_requester.persisted?
-            present access_requester.user, with: Entities::AccessRequester, access_requester: access_requester
+            present access_requester, with: Entities::AccessRequester
           else
             render_validation_error!(access_requester)
           end
@@ -56,7 +56,7 @@ module API
           member = ::Members::ApproveAccessRequestService.new(source, current_user, declared_params).execute
 
           status :created
-          present member.user, with: Entities::Member, member: member
+          present member, with: Entities::Member
         end
 
         desc 'Denies an access request for the given user.' do

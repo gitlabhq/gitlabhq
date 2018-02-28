@@ -18,7 +18,7 @@ describe('Multi-file store file actions', () => {
       oldGetLastCommitData = store._actions.getLastCommitData; // eslint-disable-line
       store._actions.getLastCommitData = [getLastCommitDataSpy]; // eslint-disable-line
 
-      localFile = file();
+      localFile = file('testFile');
       localFile.active = true;
       localFile.opened = true;
       localFile.parentTreeUrl = 'parentTreeUrl';
@@ -81,7 +81,7 @@ describe('Multi-file store file actions', () => {
     });
 
     it('sets next file as active', (done) => {
-      const f = file();
+      const f = file('otherfile');
       store.state.openFiles.push(f);
 
       expect(f.active).toBeFalsy();
@@ -119,7 +119,7 @@ describe('Multi-file store file actions', () => {
     });
 
     it('calls scrollToTab', (done) => {
-      store.dispatch('setFileActive', file())
+      store.dispatch('setFileActive', file('setThisActive'))
         .then(() => {
           expect(scrollToTabSpy).toHaveBeenCalled();
 
@@ -128,7 +128,7 @@ describe('Multi-file store file actions', () => {
     });
 
     it('sets the file active', (done) => {
-      const localFile = file();
+      const localFile = file('activeFile');
 
       store.dispatch('setFileActive', localFile)
         .then(() => {
@@ -139,7 +139,7 @@ describe('Multi-file store file actions', () => {
     });
 
     it('returns early if file is already active', (done) => {
-      const localFile = file();
+      const localFile = file('earlyActive');
       localFile.active = true;
 
       store.dispatch('setFileActive', localFile)
@@ -151,11 +151,11 @@ describe('Multi-file store file actions', () => {
     });
 
     it('sets current active file to not active', (done) => {
-      const localFile = file();
+      const localFile = file('currentActive');
       localFile.active = true;
       store.state.openFiles.push(localFile);
 
-      store.dispatch('setFileActive', file())
+      store.dispatch('setFileActive', file('newActive'))
         .then(() => {
           expect(localFile.active).toBeFalsy();
 
@@ -166,7 +166,7 @@ describe('Multi-file store file actions', () => {
     it('resets location.hash for line highlighting', (done) => {
       location.hash = 'test';
 
-      store.dispatch('setFileActive', file())
+      store.dispatch('setFileActive', file('otherActive'))
         .then(() => {
           expect(location.hash).not.toBe('test');
 
@@ -176,7 +176,7 @@ describe('Multi-file store file actions', () => {
   });
 
   describe('getFileData', () => {
-    let localFile = file();
+    let localFile;
 
     beforeEach(() => {
       spyOn(service, 'getFileData').and.returnValue(Promise.resolve({
@@ -194,8 +194,15 @@ describe('Multi-file store file actions', () => {
         }),
       }));
 
-      localFile = file();
+      localFile = file('newCreate');
       localFile.url = 'getFileDataURL';
+    });
+
+    afterEach(() => {
+      store.dispatch('closeFile', {
+        file: localFile,
+        force: true,
+      });
     });
 
     it('calls the service', (done) => {
@@ -268,7 +275,7 @@ describe('Multi-file store file actions', () => {
     beforeEach(() => {
       spyOn(service, 'getRawFileData').and.returnValue(Promise.resolve('raw'));
 
-      tmpFile = file();
+      tmpFile = file('tmpFile');
     });
 
     it('calls getRawFileData service method', (done) => {
@@ -294,7 +301,7 @@ describe('Multi-file store file actions', () => {
     let tmpFile;
 
     beforeEach(() => {
-      tmpFile = file();
+      tmpFile = file('tmpFile');
     });
 
     it('updates file content', (done) => {

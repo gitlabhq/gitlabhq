@@ -76,9 +76,9 @@ module API
 
       def present_projects(projects, options = {})
         projects = reorder_projects(projects)
-        projects = projects.with_statistics if params[:statistics]
-        projects = projects.with_issues_enabled if params[:with_issues_enabled]
+        projects = projects.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
         projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
+        projects = projects.with_statistics if params[:statistics]
         projects = paginate(projects)
 
         if current_user
@@ -154,6 +154,7 @@ module API
           if project.errors[:limit_reached].present?
             error!(project.errors[:limit_reached], 403)
           end
+
           render_validation_error!(project)
         end
       end

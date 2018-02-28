@@ -17,6 +17,22 @@ describe Gitlab::Utils do
     end
   end
 
+  describe '.remove_line_breaks' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:original, :expected) do
+      "foo\nbar\nbaz"     | "foobarbaz"
+      "foo\r\nbar\r\nbaz" | "foobarbaz"
+      "foobar"            | "foobar"
+    end
+
+    with_them do
+      it "replace line breaks with an empty string" do
+        expect(described_class.remove_line_breaks(original)).to eq(expected)
+      end
+    end
+  end
+
   describe '.to_boolean' do
     it 'accepts booleans' do
       expect(to_boolean(true)).to be(true)

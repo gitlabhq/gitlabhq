@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import DropLab from '~/droplab/drop_lab';
 import FilteredSearchContainer from './container';
 

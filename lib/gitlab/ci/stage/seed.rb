@@ -2,6 +2,8 @@ module Gitlab
   module Ci
     module Stage
       class Seed
+        include ::Gitlab::Utils::StrongMemoize
+
         attr_reader :pipeline
 
         delegate :project, to: :pipeline
@@ -50,7 +52,9 @@ module Gitlab
         private
 
         def protected_ref?
-          @protected_ref ||= project.protected_for?(pipeline.ref)
+          strong_memoize(:protected_ref) do
+            project.protected_for?(pipeline.ref)
+          end
         end
       end
     end

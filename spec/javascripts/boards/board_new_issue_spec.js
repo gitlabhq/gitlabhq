@@ -58,7 +58,7 @@ describe('Issue boards new issue form', () => {
 
   afterEach(() => {
     vm.$destroy();
-    mock.reset();
+    mock.restore();
   });
 
   it('calls submit if submit button is clicked', (done) => {

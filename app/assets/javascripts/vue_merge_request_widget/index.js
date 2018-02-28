@@ -2,6 +2,9 @@ import {
   Vue,
   mrWidgetOptions,
 } from './dependencies';
+import Translate from '../vue_shared/translate';
+
+Vue.use(Translate);
 
 document.addEventListener('DOMContentLoaded', () => {
   gl.mrWidgetData.gitlabLogo = gon.gitlab_logo;

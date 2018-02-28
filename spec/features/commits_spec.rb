@@ -194,7 +194,7 @@ describe 'Commits' do
     end
 
     it 'includes the committed_date for each commit' do
-      commits = project.repository.commits(branch_name)
+      commits = project.repository.commits(branch_name, limit: 40)
 
       commits.each do |commit|
         expect(page).to have_content("authored #{commit.authored_date.strftime("%b %d, %Y")}")

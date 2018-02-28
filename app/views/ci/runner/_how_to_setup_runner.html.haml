@@ -8,7 +8,7 @@
       = (_("(checkout the %{link} for information on how to install it).") % { link: link }).html_safe
     %li
       = _("Specify the following URL during the Runner setup:")
-      %code= root_url(only_path: false)
+      %code#coordinator_address= root_url(only_path: false)
     %li
       = _("Use the following registration token during setup:")
       %code#registration_token= registration_token

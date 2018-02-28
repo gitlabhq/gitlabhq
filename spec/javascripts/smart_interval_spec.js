@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import SmartInterval from '~/smart_interval';
 
 describe('SmartInterval', function () {

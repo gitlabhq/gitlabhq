@@ -164,6 +164,10 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         expect(saved_project_json['services'].first['type']).to eq('CustomIssueTrackerService')
       end
 
+      it 'saves the properties for a service' do
+        expect(saved_project_json['services'].first['properties']).to eq('one' => 'value')
+      end
+
       it 'has project feature' do
         project_feature = saved_project_json['project_feature']
         expect(project_feature).not_to be_empty
@@ -279,7 +283,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
            commit_id: ci_build.pipeline.sha)
 
     create(:event, :created, target: milestone, project: project, author: user)
-    create(:service, project: project, type: 'CustomIssueTrackerService', category: 'issue_tracker')
+    create(:service, project: project, type: 'CustomIssueTrackerService', category: 'issue_tracker', properties: { one: 'value' })
 
     create(:project_custom_attribute, project: project)
     create(:project_custom_attribute, project: project)

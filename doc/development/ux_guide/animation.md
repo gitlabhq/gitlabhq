@@ -27,7 +27,7 @@ View the [interactive example](http://codepen.io/awhildy/full/GNyEvM/) here.
 
 ### Dropdowns
 
-The dropdown menu should feel like it is appearing from the triggering element. Combining a position shift `400ms cubic-bezier(0.23, 1, 0.32, 1)` with a opacity animation `200ms linear` on the second half of the motion achieves this affect.
+The dropdown menu should feel like it is appearing from the triggering element. Combining a position shift `400ms cubic-bezier(0.23, 1, 0.32, 1)` with an opacity animation `200ms linear` on the second half of the motion achieves this affect.
 
 View the [interactive example](http://codepen.io/awhildy/full/jVLJpb/) here.
 

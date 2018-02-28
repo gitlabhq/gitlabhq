@@ -12,7 +12,7 @@ module Gitlab
         expose_attribute :noteable_id, :noteable_type, :author, :note,
                          :created_at, :updated_at, :github_id
 
-        NOTEABLE_TYPE_REGEX = /\/(?<type>(pull|issues))\/(?<iid>\d+)/i
+        NOTEABLE_TYPE_REGEX = %r{/(?<type>(pull|issues))/(?<iid>\d+)}i
 
         # Builds a note from a GitHub API response.
         #

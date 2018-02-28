@@ -14,7 +14,7 @@ feature 'Multi-file editor new file', :js do
 
     wait_for_requests
 
-    click_link('Multi Edit')
+    click_link('Web IDE')
 
     wait_for_requests
   end

@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe 'Projects > Merge requests > User lists merge requests' do
+describe 'Merge requests > User lists merge requests' do
   include MergeRequestHelpers
   include SortingHelper
 

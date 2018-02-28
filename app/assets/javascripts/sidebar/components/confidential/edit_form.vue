@@ -1,26 +1,25 @@
 <script>
-import editFormButtons from './edit_form_buttons.vue';
+  import editFormButtons from './edit_form_buttons.vue';
 
-export default {
-  props: {
-    isConfidential: {
-      required: true,
-      type: Boolean,
+  export default {
+    components: {
+      editFormButtons,
     },
-    toggleForm: {
-      required: true,
-      type: Function,
+    props: {
+      isConfidential: {
+        required: true,
+        type: Boolean,
+      },
+      toggleForm: {
+        required: true,
+        type: Function,
+      },
+      updateConfidentialAttribute: {
+        required: true,
+        type: Function,
+      },
     },
-    updateConfidentialAttribute: {
-      required: true,
-      type: Function,
-    },
-  },
-
-  components: {
-    editFormButtons,
-  },
-};
+  };
 </script>
 
 <template>

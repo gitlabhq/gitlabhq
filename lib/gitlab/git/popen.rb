@@ -19,6 +19,8 @@ module Gitlab
         cmd_output = ""
         cmd_status = 0
         Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
+          stdout.set_encoding(Encoding::ASCII_8BIT)
+
           yield(stdin) if block_given?
           stdin.close
 

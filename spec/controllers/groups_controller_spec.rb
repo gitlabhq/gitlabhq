@@ -85,6 +85,30 @@ describe GroupsController do
     end
   end
 
+  describe 'GET #activity' do
+    render_views
+
+    before do
+      sign_in(user)
+      project
+    end
+
+    context 'as json' do
+      it 'includes all projects in event feed' do
+        3.times do
+          project = create(:project, group: group)
+          create(:event, project: project)
+        end
+
+        get :activity, id: group.to_param, format: :json
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['count']).to eq(3)
+        expect(assigns(:projects).limit_value).to be_nil
+      end
+    end
+  end
+
   describe 'POST #create' do
     context 'when creating subgroups', :nested_groups do
       [true, false].each do |can_create_group_status|

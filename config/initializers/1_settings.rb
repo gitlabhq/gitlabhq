@@ -68,6 +68,7 @@ class Settings < Settingslogic
         end
         values.delete_if { |value| value.nil? }
       end
+
       values
     end
 
@@ -78,6 +79,7 @@ class Settings < Settingslogic
       if current.is_a? String
         value = modul.const_get(current.upcase) rescue default
       end
+
       value
     end
 
@@ -108,7 +110,7 @@ class Settings < Settingslogic
       url = "http://#{url}" unless url.start_with?('http')
 
       # Get rid of the path so that we don't even have to encode it
-      url_without_path = url.sub(%r{(https?://[^\/]+)/?.*}, '\1')
+      url_without_path = url.sub(%r{(https?://[^/]+)/?.*}, '\1')
 
       URI.parse(url_without_path).host
     end
@@ -376,7 +378,7 @@ Settings.mattermost['host'] = nil unless Settings.mattermost.enabled
 #
 Settings['gravatar'] ||= Settingslogic.new({})
 Settings.gravatar['enabled']      = true if Settings.gravatar['enabled'].nil?
-Settings.gravatar['plain_url']  ||= 'http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
+Settings.gravatar['plain_url']  ||= 'https://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
 Settings.gravatar['ssl_url']    ||= 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
 Settings.gravatar['host']         = Settings.host_without_www(Settings.gravatar['plain_url'])
 
@@ -495,10 +497,10 @@ end
 # repository_downloads_path value.
 #
 repositories_storages          = Settings.repositories.storages.values
-repository_downloads_path      = Settings.gitlab['repository_downloads_path'].to_s.gsub(/\/$/, '')
+repository_downloads_path      = Settings.gitlab['repository_downloads_path'].to_s.gsub(%r{/$}, '')
 repository_downloads_full_path = File.expand_path(repository_downloads_path, Settings.gitlab['user_home'])
 
-if repository_downloads_path.blank? || repositories_storages.any? { |rs| [repository_downloads_path, repository_downloads_full_path].include?(rs['path'].gsub(/\/$/, '')) }
+if repository_downloads_path.blank? || repositories_storages.any? { |rs| [repository_downloads_path, repository_downloads_full_path].include?(rs['path'].gsub(%r{/$}, '')) }
   Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path'], 'cache/archive')
 end
 

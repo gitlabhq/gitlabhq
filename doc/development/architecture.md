@@ -133,8 +133,6 @@ Usage: /etc/init.d/postgresql {start|stop|restart|reload|force-reload|status} [v
 
 ### Log locations of the services
 
-Note: `/home/git/` is shorthand for `/home/git`.
-
 gitlabhq (includes Unicorn and Sidekiq logs)
 
 - `/home/git/gitlab/log/` contains `application.log`, `production.log`, `sidekiq.log`, `unicorn.stdout.log`, `githost.log` and `unicorn.stderr.log` normally.

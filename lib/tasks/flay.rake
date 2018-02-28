@@ -1,6 +1,6 @@
 desc 'Code duplication analyze via flay'
 task :flay do
-  output = `bundle exec flay --mass 35 app/ lib/gitlab/`
+  output = `bundle exec flay --mass 35 app/ lib/gitlab/ 2> #{File::NULL}`
 
   if output.include? "Similar code found"
     puts output

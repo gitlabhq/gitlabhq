@@ -7,7 +7,7 @@
 .top-area
   = render 'shared/issuable/nav', type: :issues
   .nav-controls
-    = link_to params.merge(rss_url_options), class: 'btn has-tooltip', title: 'Subscribe' do
+    = link_to params.merge(rss_url_options), class: 'btn has-tooltip', data: { container: 'body' }, title: 'Subscribe' do
       = icon('rss')
     = render 'shared/new_project_item_select', path: 'issues/new', label: "New issue", with_feature_enabled: 'issues', type: :issues
 

@@ -179,13 +179,15 @@ describe Issues::MoveService do
              { system: true, note: 'Some system note' },
              { system: false, note: 'Some comment 2' }]
           end
-
+          let(:award_names) { %w(thumbsup thumbsdown facepalm) }
           let(:notes_contents) { notes_params.map { |n| n[:note] } }
 
           before do
             note_params = { noteable: old_issue, project: old_project, author: author }
-            notes_params.each do |note|
-              create(:note, note_params.merge(note))
+            notes_params.each_with_index do |note, index|
+              new_note = create(:note, note_params.merge(note))
+              award_emoji_params = { awardable: new_note, name: award_names[index] }
+              create(:award_emoji, award_emoji_params)
             end
           end
 
@@ -197,6 +199,10 @@ describe Issues::MoveService do
 
           it 'rewrites existing notes in valid order' do
             expect(all_notes.pluck(:note).first(3)).to eq notes_contents
+          end
+
+          it 'creates new emojis for the new notes' do
+            expect(all_notes.map(&:award_emoji).to_a.flatten.map(&:name)).to eq award_names
           end
 
           it 'adds a system note about move after rewritten notes' do
@@ -291,9 +297,11 @@ describe Issues::MoveService do
       end
 
       context 'project issue hooks' do
-        let(:hook) { create(:project_hook, project: old_project, issues_events: true) }
+        let!(:hook) { create(:project_hook, project: old_project, issues_events: true) }
 
         it 'executes project issue hooks' do
+          allow_any_instance_of(WebHookService).to receive(:execute)
+
           # Ideally, we'd test that `WebHookWorker.jobs.size` increased by 1,
           # but since the entire spec run takes place in a transaction, we never
           # actually get to the `after_commit` hook that queues these jobs.

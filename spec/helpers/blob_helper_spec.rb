@@ -22,6 +22,13 @@ describe BlobHelper do
       expect(result).to eq(%[<pre class="code highlight"><code><span id="LC1" class="line" lang="">:type "assem"))</span></code></pre>])
     end
 
+    it 'returns plaintext for long blobs' do
+      stub_const('Blob::MAXIMUM_TEXT_HIGHLIGHT_SIZE', 1)
+      result = helper.highlight(blob_name, blob_content)
+
+      expect(result).to eq(%[<pre class="code highlight"><code><span id="LC1" class="line" lang="">(make-pathname :defaults name</span>\n<span id="LC2" class="line" lang="">:type "assem"))</span></code></pre>])
+    end
+
     it 'highlights single block' do
       expected = %Q[<pre class="code highlight"><code><span id="LC1" class="line" lang="common_lisp"><span class="p">(</span><span class="nb">make-pathname</span> <span class="ss">:defaults</span> <span class="nv">name</span></span>
 <span id="LC2" class="line" lang="common_lisp"><span class="ss">:type</span> <span class="s">"assem"</span><span class="p">))</span></span></code></pre>]

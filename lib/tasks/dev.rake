@@ -7,4 +7,9 @@ namespace :dev do
     Rake::Task["gitlab:setup"].invoke
     Rake::Task["gitlab:shell:setup"].invoke
   end
+
+  desc "GitLab | Eager load application"
+  task load: :environment do
+    Rails.application.eager_load!
+  end
 end

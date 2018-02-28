@@ -263,5 +263,66 @@ describe MergeRequests::CreateService do
         expect(issue_ids).to match_array([first_issue.id, second_issue.id])
       end
     end
+
+    context 'when source and target projects are different' do
+      let(:target_project) { create(:project) }
+
+      let(:opts) do
+        {
+          title: 'Awesome merge_request',
+          source_branch: 'feature',
+          target_branch: 'master',
+          target_project_id: target_project.id
+        }
+      end
+
+      context 'when user can not access source project' do
+        before do
+          target_project.add_developer(assignee)
+          target_project.add_master(user)
+        end
+
+        it 'raises an error' do
+          expect { described_class.new(project, user, opts).execute }
+            .to raise_error Gitlab::Access::AccessDeniedError
+        end
+      end
+
+      context 'when user can not access target project' do
+        before do
+          target_project.add_developer(assignee)
+          target_project.add_master(user)
+        end
+
+        it 'raises an error' do
+          expect { described_class.new(project, user, opts).execute }
+            .to raise_error Gitlab::Access::AccessDeniedError
+        end
+      end
+    end
+
+    context 'when user sets source project id' do
+      let(:another_project) { create(:project) }
+
+      let(:opts) do
+        {
+          title: 'Awesome merge_request',
+          source_branch: 'feature',
+          target_branch: 'master',
+          source_project_id: another_project.id
+        }
+      end
+
+      before do
+        project.add_developer(assignee)
+        project.add_master(user)
+      end
+
+      it 'ignores source_project_id' do
+        merge_request = described_class.new(project, user, opts).execute
+
+        expect(merge_request.source_project_id).to eq(project.id)
+      end
+    end
   end
 end

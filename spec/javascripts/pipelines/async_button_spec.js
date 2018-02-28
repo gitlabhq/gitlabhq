@@ -13,7 +13,7 @@ describe('Pipelines Async Button', () => {
       propsData: {
         endpoint: '/foo',
         title: 'Foo',
-        icon: 'fa fa-foo',
+        icon: 'repeat',
         cssClass: 'bar',
       },
     }).$mount();
@@ -23,8 +23,8 @@ describe('Pipelines Async Button', () => {
     expect(component.$el.tagName).toEqual('BUTTON');
   });
 
-  it('should render the provided icon', () => {
-    expect(component.$el.querySelector('i').getAttribute('class')).toContain('fa fa-foo');
+  it('should render svg icon', () => {
+    expect(component.$el.querySelector('svg')).not.toBeNull();
   });
 
   it('should render the provided title', () => {

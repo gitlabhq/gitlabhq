@@ -1,7 +1,7 @@
 module Gitlab
   module Git
     class WikiPage
-      attr_reader :url_path, :title, :format, :path, :version, :raw_data, :name, :text_data, :historical
+      attr_reader :url_path, :title, :format, :path, :version, :raw_data, :name, :text_data, :historical, :formatted_data
 
       # This class is meant to be serializable so that it can be constructed
       # by Gitaly and sent over the network to GitLab.
@@ -21,6 +21,7 @@ module Gitlab
         @raw_data = gollum_page.raw_data
         @name = gollum_page.name
         @historical = gollum_page.historical?
+        @formatted_data = gollum_page.formatted_data if gollum_page.is_a?(Gollum::Page)
 
         @version = version
       end

@@ -47,6 +47,14 @@ describe RepositoryForkWorker do
       perform!
     end
 
+    it 'protects the default branch' do
+      expect_fork_repository.and_return(true)
+
+      perform!
+
+      expect(fork_project.protected_branches.first.name).to eq(fork_project.default_branch)
+    end
+
     it 'flushes various caches' do
       expect_fork_repository.and_return(true)
 

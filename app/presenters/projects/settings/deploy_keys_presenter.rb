@@ -7,7 +7,7 @@ module Projects
       delegate :size, to: :available_public_keys, prefix: true
 
       def new_key
-        @key ||= DeployKey.new
+        @key ||= DeployKey.new.tap { |dk| dk.deploy_keys_projects.build }
       end
 
       def enabled_keys

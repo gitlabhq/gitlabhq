@@ -4,7 +4,7 @@
   .limit-container-width{ class: container_class }
     .avatar-container.s70.project-avatar
       = project_icon(@project, alt: @project.name, class: 'avatar s70 avatar-tile')
-    %h1.project-title
+    %h1.project-title.qa-project-name
       = @project.name
       %span.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@project) }
         = visibility_level_icon(@project.visibility_level, fw: false)

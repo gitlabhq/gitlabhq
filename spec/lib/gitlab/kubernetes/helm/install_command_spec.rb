@@ -100,6 +100,25 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
         is_expected.to eq(command)
       end
     end
+
+    context 'when chart values file is present' do
+      let(:install_command) { described_class.new(prometheus.name, chart: prometheus.chart, chart_values_file: prometheus.chart_values_file) }
+      let(:command) do
+        <<~MSG.chomp
+        set -eo pipefail
+        apk add -U ca-certificates openssl >/dev/null
+        wget -q -O - https://kubernetes-helm.storage.googleapis.com/helm-v2.7.0-linux-amd64.tar.gz | tar zxC /tmp >/dev/null
+        mv /tmp/linux-amd64/helm /usr/bin/
+
+        helm init --client-only >/dev/null
+        helm install #{prometheus.chart} --name #{prometheus.name} --namespace #{namespace.name} -f /data/helm/#{prometheus.name}/config/values.yaml >/dev/null
+        MSG
+      end
+
+      it 'should return appropriate command' do
+        is_expected.to eq(command)
+      end
+    end
   end
 
   describe "#pod_name" do

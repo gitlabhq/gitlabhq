@@ -96,12 +96,12 @@ module ApplicationSettingsHelper
     ]
   end
 
-  def repository_storages_options_for_select
+  def repository_storages_options_for_select(selected)
     options = Gitlab.config.repositories.storages.map do |name, storage|
       ["#{name} - #{storage['path']}", name]
     end
 
-    options_for_select(options, @application_setting.repository_storages)
+    options_for_select(options, selected)
   end
 
   def sidekiq_queue_options_for_select
@@ -146,6 +146,7 @@ module ApplicationSettingsHelper
       :after_sign_up_text,
       :akismet_api_key,
       :akismet_enabled,
+      :authorized_keys_enabled,
       :auto_devops_enabled,
       :circuitbreaker_access_retries,
       :circuitbreaker_check_interval,
@@ -200,6 +201,7 @@ module ApplicationSettingsHelper
       :metrics_sample_interval,
       :metrics_timeout,
       :password_authentication_enabled_for_web,
+      :password_authentication_enabled_for_git,
       :performance_bar_allowed_group_id,
       :performance_bar_enabled,
       :plantuml_enabled,

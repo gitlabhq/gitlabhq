@@ -97,6 +97,7 @@ module API
           attrs = declared_params(include_missing: false)
 
           UpdateSnippetService.new(nil, current_user, snippet, attrs).execute
+
           if snippet.persisted?
             present snippet, with: ::API::Entities::PersonalSnippet
           else

@@ -20,15 +20,15 @@
   import userAvatarLink from '../user_avatar/user_avatar_link.vue';
 
   export default {
-    name: 'placeholderNote',
+    name: 'PlaceholderNote',
+    components: {
+      userAvatarLink,
+    },
     props: {
       note: {
         type: Object,
         required: true,
       },
-    },
-    components: {
-      userAvatarLink,
     },
     computed: {
       ...mapGetters([
@@ -46,7 +46,7 @@
           :link-href="getUserData.path"
           :img-src="getUserData.avatar_url"
           :img-size="40"
-          />
+        />
       </div>
       <div
         :class="{ discussion: !note.individual_note }"
@@ -54,14 +54,14 @@
         <div class="note-header">
           <div class="note-header-info">
             <a :href="getUserData.path">
-              <span class="hidden-xs">{{getUserData.name}}</span>
-              <span class="note-headline-light">@{{getUserData.username}}</span>
+              <span class="hidden-xs">{{ getUserData.name }}</span>
+              <span class="note-headline-light">@{{ getUserData.username }}</span>
             </a>
           </div>
         </div>
         <div class="note-body">
           <div class="note-text">
-            <p>{{note.body}}</p>
+            <p>{{ note.body }}</p>
           </div>
         </div>
       </div>

@@ -1,32 +1,32 @@
 <script>
-import { s__ } from '../../locale';
-import projectsListItem from './projects_list_item.vue';
+  import { s__ } from '../../locale';
+  import projectsListItem from './projects_list_item.vue';
 
-export default {
-  components: {
-    projectsListItem,
-  },
-  props: {
-    projects: {
-      type: Array,
-      required: true,
+  export default {
+    components: {
+      projectsListItem,
     },
-    localStorageFailed: {
-      type: Boolean,
-      required: true,
+    props: {
+      projects: {
+        type: Array,
+        required: true,
+      },
+      localStorageFailed: {
+        type: Boolean,
+        required: true,
+      },
     },
-  },
-  computed: {
-    isListEmpty() {
-      return this.projects.length === 0;
+    computed: {
+      isListEmpty() {
+        return this.projects.length === 0;
+      },
+      listEmptyMessage() {
+        return this.localStorageFailed ?
+          s__('ProjectsDropdown|This feature requires browser localStorage support') :
+          s__('ProjectsDropdown|Projects you visit often will appear here');
+      },
     },
-    listEmptyMessage() {
-      return this.localStorageFailed ?
-        s__('ProjectsDropdown|This feature requires browser localStorage support') :
-        s__('ProjectsDropdown|Projects you visit often will appear here');
-    },
-  },
-};
+  };
 </script>
 
 <template>
@@ -40,7 +40,7 @@ export default {
         class="section-empty"
         v-if="isListEmpty"
       >
-        {{listEmptyMessage}}
+        {{ listEmptyMessage }}
       </li>
       <projects-list-item
         v-else

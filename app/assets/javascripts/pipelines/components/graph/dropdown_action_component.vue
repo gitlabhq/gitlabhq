@@ -7,6 +7,13 @@
    * TODO: Remove UJS from here and use an async request instead.
    */
   export default {
+    components: {
+      icon,
+    },
+
+    directives: {
+      tooltip,
+    },
     props: {
       tooltipText: {
         type: String,
@@ -28,14 +35,6 @@
         required: true,
       },
     },
-
-    components: {
-      icon,
-    },
-
-    directives: {
-      tooltip,
-    },
   };
 </script>
 <template>
@@ -47,7 +46,8 @@
     rel="nofollow"
     class="ci-action-icon-wrapper js-ci-status-icon"
     data-container="body"
-    aria-label="Job's action">
-    <icon :name="actionIcon"/>
+    aria-label="Job's action"
+  >
+    <icon :name="actionIcon" />
   </a>
 </template>

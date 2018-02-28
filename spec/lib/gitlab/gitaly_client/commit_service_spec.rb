@@ -131,6 +131,29 @@ describe Gitlab::GitalyClient::CommitService do
     end
   end
 
+  describe '#commit_count' do
+    before do
+      expect_any_instance_of(Gitaly::CommitService::Stub)
+        .to receive(:count_commits)
+        .with(gitaly_request_with_path(storage_name, relative_path),
+              kind_of(Hash))
+        .and_return([])
+    end
+
+    it 'sends a commit_count message' do
+      client.commit_count(revision)
+    end
+
+    context 'with UTF-8 params strings' do
+      let(:revision) { "branch\u011F" }
+      let(:path) { "foo/\u011F.txt" }
+
+      it 'handles string encodings correctly' do
+        client.commit_count(revision, path: path)
+      end
+    end
+  end
+
   describe '#find_commit' do
     let(:revision) { '4b825dc642cb6eb9a060e54bf8d69288fbee4904' }
     it 'sends an RPC request' do

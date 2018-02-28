@@ -45,7 +45,7 @@ describe('iPython notebook renderer', () => {
     });
 
     afterEach(() => {
-      mock.reset();
+      mock.restore();
     });
 
     it('does not show loading icon', () => {
@@ -96,7 +96,7 @@ describe('iPython notebook renderer', () => {
     });
 
     afterEach(() => {
-      mock.reset();
+      mock.restore();
     });
 
     it('does not show loading icon', () => {
@@ -127,7 +127,7 @@ describe('iPython notebook renderer', () => {
     });
 
     afterEach(() => {
-      mock.reset();
+      mock.restore();
     });
 
     it('does not show loading icon', () => {

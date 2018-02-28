@@ -6,7 +6,7 @@ module QA
         # Run test suite against any GitLab instance where mattermost is enabled,
         # including staging and on-premises installation.
         #
-        class Mattermost < Scenario::Entrypoint
+        class Mattermost < Test::Instance
           tags :core, :mattermost
 
           def perform(address, mattermost, *files)

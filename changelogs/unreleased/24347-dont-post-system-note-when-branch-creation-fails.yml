@@ -1,5 +1,0 @@
----
-title: Fix when branch creation fails don't post system note
-merge_request:
-author: Mateusz Bajorski
-type: fixed

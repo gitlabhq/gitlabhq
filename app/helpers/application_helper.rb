@@ -89,7 +89,7 @@ module ApplicationHelper
   end
 
   def default_avatar
-    'no_avatar.png'
+    asset_path('no_avatar.png')
   end
 
   def last_commit(project)

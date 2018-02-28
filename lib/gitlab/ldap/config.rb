@@ -42,6 +42,7 @@ module Gitlab
         else
           self.class.invalid_provider(provider)
         end
+
         @options = config_for(@provider) # Use @provider, not provider
       end
 

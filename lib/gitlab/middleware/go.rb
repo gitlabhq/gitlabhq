@@ -56,12 +56,12 @@ module Gitlab
       end
 
       def strip_url(url)
-        url.gsub(/\Ahttps?:\/\//, '')
+        url.gsub(%r{\Ahttps?://}, '')
       end
 
       def project_path(request)
         path_info = request.env["PATH_INFO"]
-        path_info.sub!(/^\//, '')
+        path_info.sub!(%r{^/}, '')
 
         project_path_match = "#{path_info}/".match(PROJECT_PATH_REGEX)
         return unless project_path_match

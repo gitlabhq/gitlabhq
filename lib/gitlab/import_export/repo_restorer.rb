@@ -13,7 +13,7 @@ module Gitlab
       def restore
         return true unless File.exist?(@path_to_bundle)
 
-        git_clone_bundle(repo_path: @project.repository.path_to_repo, bundle_path: @path_to_bundle)
+        @project.repository.create_from_bundle(@path_to_bundle)
       rescue => e
         @shared.error(e)
         false

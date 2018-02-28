@@ -69,10 +69,17 @@ describe('issue_note_form component', () => {
       });
 
       describe('enter', () => {
-        it('should submit note', () => {
+        it('should save note when cmd+enter is pressed', () => {
           spyOn(vm, 'handleUpdate').and.callThrough();
           vm.$el.querySelector('textarea').value = 'Foo';
           vm.$el.querySelector('textarea').dispatchEvent(keyboardDownEvent(13, true));
+
+          expect(vm.handleUpdate).toHaveBeenCalled();
+        });
+        it('should save note when ctrl+enter is pressed', () => {
+          spyOn(vm, 'handleUpdate').and.callThrough();
+          vm.$el.querySelector('textarea').value = 'Foo';
+          vm.$el.querySelector('textarea').dispatchEvent(keyboardDownEvent(13, false, true));
 
           expect(vm.handleUpdate).toHaveBeenCalled();
         });

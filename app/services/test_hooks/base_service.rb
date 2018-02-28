@@ -9,7 +9,7 @@ module TestHooks
     end
 
     def execute
-      trigger_key = hook.class::TRIGGERS.key(trigger.to_sym)
+      trigger_key = hook.class.triggers.key(trigger.to_sym)
       trigger_data_method = "#{trigger}_data"
 
       if trigger_key.nil? || !self.respond_to?(trigger_data_method, true)

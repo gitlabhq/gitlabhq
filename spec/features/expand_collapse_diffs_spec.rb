@@ -112,13 +112,6 @@ feature 'Expand and collapse diffs', :js do
         wait_for_requests
       end
 
-      it 'makes a request to get the content' do
-        ajax_uris = evaluate_script('ajaxUris')
-
-        expect(ajax_uris).not_to be_empty
-        expect(ajax_uris.first).to include('large_diff.md')
-      end
-
       it 'shows the diff content' do
         expect(large_diff).to have_selector('.code')
         expect(large_diff).not_to have_selector('.nothing-here-block')

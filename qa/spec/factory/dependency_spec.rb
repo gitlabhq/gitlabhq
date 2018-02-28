@@ -54,6 +54,19 @@ describe QA::Factory::Dependency do
 
         expect(factory).to have_received(:mydep=).with(dependency)
       end
+
+      context 'when receives a caller factory as block argument' do
+        let(:dependency) { QA::Factory::Base }
+
+        it 'calls given block with dependency factory and caller factory' do
+          allow_any_instance_of(QA::Factory::Base).to receive(:fabricate!).and_return(factory)
+          allow(QA::Factory::Product).to receive(:populate!).and_return(spy('any'))
+
+          subject.build!
+
+          expect(block).to have_received(:call).with(an_instance_of(QA::Factory::Base), factory)
+        end
+      end
     end
   end
 end

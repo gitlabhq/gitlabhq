@@ -31,9 +31,10 @@ describe API::Jobs do
   describe 'GET /projects/:id/jobs' do
     let(:query) { Hash.new }
 
-    before do
-      job
-      get api("/projects/#{project.id}/jobs", api_user), query
+    before do |example|
+      unless example.metadata[:skip_before_request]
+        get api("/projects/#{project.id}/jobs", api_user), query
+      end
     end
 
     context 'authorized user' do
@@ -56,6 +57,23 @@ describe API::Jobs do
         expect(json_job['pipeline']['ref']).to eq job.pipeline.ref
         expect(json_job['pipeline']['sha']).to eq job.pipeline.sha
         expect(json_job['pipeline']['status']).to eq job.pipeline.status
+      end
+
+      it 'avoids N+1 queries', :skip_before_request do
+        first_build = create(:ci_build, :artifacts, pipeline: pipeline)
+        first_build.runner = create(:ci_runner)
+        first_build.user = create(:user)
+        first_build.save
+
+        control_count = ActiveRecord::QueryRecorder.new { go }.count
+
+        second_pipeline = create(:ci_empty_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
+        second_build = create(:ci_build, :artifacts, pipeline: second_pipeline)
+        second_build.runner = create(:ci_runner)
+        second_build.user = create(:user)
+        second_build.save
+
+        expect { go }.not_to exceed_query_limit(control_count)
       end
 
       context 'filter project with one scope element' do
@@ -89,6 +107,10 @@ describe API::Jobs do
       it 'does not return project jobs' do
         expect(response).to have_gitlab_http_status(401)
       end
+    end
+
+    def go
+      get api("/projects/#{project.id}/jobs", api_user), query
     end
   end
 
@@ -336,37 +358,11 @@ describe API::Jobs do
         end
       end
     end
-
-    context 'authorized by job_token' do
-      let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user) }
-
-      before do
-        get api("/projects/#{project.id}/jobs/#{job.id}/artifacts"), job_token: job.token
-      end
-
-      context 'user is developer' do
-        let(:api_user) { user }
-
-        it_behaves_like 'downloads artifact'
-      end
-
-      context 'when artifacts are stored remotely' do
-        let(:job) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline) }
-
-        it 'returns location redirect' do
-          expect(response).to have_http_status(302)
-        end
-      end
-    end
-
-    it 'does not return job artifacts if not uploaded' do
-      expect(response).to have_gitlab_http_status(404)
-    end
   end
 
   describe 'GET /projects/:id/artifacts/:ref_name/download?job=name' do
     let(:api_user) { reporter }
-    let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
+    let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user) }
 
     before do
       stub_artifacts_object_storage(licensed: :skip)

@@ -76,7 +76,11 @@ describe 'gitlab:gitaly namespace rake task' do
         end
 
         context 'when Rails.env is test' do
-          let(:command) { %w[make BUNDLE_FLAGS=--no-deployment] }
+          let(:command) do
+            %W[make
+               BUNDLE_FLAGS=--no-deployment
+               BUNDLE_PATH=#{Bundler.bundle_path}]
+          end
 
           before do
             allow(Rails.env).to receive(:test?).and_return(true)

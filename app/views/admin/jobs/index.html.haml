@@ -9,7 +9,12 @@
 
     .nav-controls
       - if @all_builds.running_or_pending.any?
-        = link_to 'Cancel all', cancel_all_admin_jobs_path, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
+        #stop-jobs-modal
+
+        %button#stop-jobs-button.btn.btn-danger{ data: { toggle: 'modal',
+          target: '#stop-jobs-modal',
+          url: cancel_all_admin_jobs_path } }
+          = s_('AdminArea|Stop all jobs')
 
   .row-content-block.second-block
     #{(@scope || 'all').capitalize} jobs

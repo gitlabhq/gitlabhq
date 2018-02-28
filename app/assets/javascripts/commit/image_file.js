@@ -94,7 +94,7 @@ export default class ImageFile {
     });
     return [maxWidth, maxHeight];
   }
-
+  // eslint-disable-next-line
   views = {
     'two-up': function() {
       return $('.two-up.view .wrap', this.file).each((function(_this) {

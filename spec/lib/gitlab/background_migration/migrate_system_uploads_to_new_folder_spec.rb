@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::MigrateSystemUploadsToNewFolder do
+describe Gitlab::BackgroundMigration::MigrateSystemUploadsToNewFolder, :delete do
   let(:migration) { described_class.new }
 
   before do
@@ -8,7 +8,7 @@ describe Gitlab::BackgroundMigration::MigrateSystemUploadsToNewFolder do
   end
 
   describe '#perform' do
-    it 'renames the path of system-uploads', :truncate do
+    it 'renames the path of system-uploads' do
       upload = create(:upload, model: create(:project), path: 'uploads/system/project/avatar.jpg')
 
       migration.perform('uploads/system/', 'uploads/-/system/')

@@ -1,6 +1,8 @@
 /* eslint-disable promise/catch-or-return */
 
 import * as commonUtils from '~/lib/utils/common_utils';
+import axios from '~/lib/utils/axios_utils';
+import MockAdapter from 'axios-mock-adapter';
 
 describe('common_utils', () => {
   describe('parseUrl', () => {
@@ -413,37 +415,48 @@ describe('common_utils', () => {
 
   describe('setCiStatusFavicon', () => {
     const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/-/jobs/1/status.json`;
+    let mock;
 
     beforeEach(() => {
       const favicon = document.createElement('link');
       favicon.setAttribute('id', 'favicon');
       document.body.appendChild(favicon);
+      mock = new MockAdapter(axios);
     });
 
     afterEach(() => {
+      mock.restore();
       document.body.removeChild(document.getElementById('favicon'));
     });
 
-    it('should reset favicon in case of error', () => {
-      const favicon = document.getElementById('favicon');
-      spyOn($, 'ajax').and.callFake(function (options) {
-        options.error();
-        expect(favicon.getAttribute('href')).toEqual('null');
-      });
+    it('should reset favicon in case of error', (done) => {
+      mock.onGet(BUILD_URL).networkError();
 
-      commonUtils.setCiStatusFavicon(BUILD_URL);
+      commonUtils.setCiStatusFavicon(BUILD_URL)
+        .then(() => {
+          const favicon = document.getElementById('favicon');
+          expect(favicon.getAttribute('href')).toEqual('null');
+          done();
+        })
+        // Error is already caught in catch() block of setCiStatusFavicon,
+        // It won't throw another error for us to catch
+        .catch(done.fail);
     });
 
-    it('should set page favicon to CI status favicon based on provided status', () => {
+    it('should set page favicon to CI status favicon based on provided status', (done) => {
       const FAVICON_PATH = '//icon_status_success';
-      const favicon = document.getElementById('favicon');
 
-      spyOn($, 'ajax').and.callFake(function (options) {
-        options.success({ favicon: FAVICON_PATH });
-        expect(favicon.getAttribute('href')).toEqual(FAVICON_PATH);
+      mock.onGet(BUILD_URL).reply(200, {
+        favicon: FAVICON_PATH,
       });
 
-      commonUtils.setCiStatusFavicon(BUILD_URL);
+      commonUtils.setCiStatusFavicon(BUILD_URL)
+        .then(() => {
+          const favicon = document.getElementById('favicon');
+          expect(favicon.getAttribute('href')).toEqual(FAVICON_PATH);
+          done();
+        })
+        .catch(done.fail);
     });
   });
 

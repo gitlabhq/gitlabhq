@@ -31,7 +31,7 @@ module Gitlab
           storages << { name: 'test_second_storage', path: Rails.root.join('tmp', 'tests', 'second_storage').to_s }
         end
 
-        config = { socket_path: address.sub(%r{\Aunix:}, ''), storage: storages }
+        config = { socket_path: address.sub(/\Aunix:/, ''), storage: storages }
         config[:auth] = { token: 'secret' } if Rails.env.test?
         config[:'gitaly-ruby'] = { dir: File.join(gitaly_dir, 'ruby') } if gitaly_ruby
         config[:'gitlab-shell'] = { dir: Gitlab.config.gitlab_shell.path }

@@ -68,6 +68,12 @@ describe API::Helpers do
           end
 
           it { is_expected.to eq(user) }
+
+          it 'sets the environment with data of the current user' do
+            subject
+
+            expect(env[API::Helpers::API_USER_ENV]).to eq({ user_id: subject.id, username: subject.username })
+          end
         end
 
         context "HEAD request" do

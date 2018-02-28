@@ -203,6 +203,7 @@ class ProjectsController < Projects::ApplicationController
     else
       flash[:alert] = _("Project export could not be deleted.")
     end
+
     redirect_to(edit_project_path(@project))
   end
 
@@ -402,6 +403,6 @@ class ProjectsController < Projects::ApplicationController
     # to
     #   localhost/group/project
     #
-    redirect_to request.original_url.sub(/\.git\/?\Z/, '') if params[:format] == 'git'
+    redirect_to request.original_url.sub(%r{\.git/?\Z}, '') if params[:format] == 'git'
   end
 end

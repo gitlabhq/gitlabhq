@@ -64,8 +64,22 @@ module Gitlab
             include LegacyValidationHelpers
 
             def validate_each(record, attribute, value)
-              unless validate_string(value)
+              if validate_string(value)
+                validate_path(record, attribute, value)
+              else
                 record.errors.add(attribute, 'should be a string or symbol')
+              end
+            end
+
+            private
+
+            def validate_path(record, attribute, value)
+              path = CGI.unescape(value.to_s)
+
+              if path.include?('/')
+                record.errors.add(attribute, 'cannot contain the "/" character')
+              elsif path == '.' || path == '..'
+                record.errors.add(attribute, 'cannot be "." or ".."')
               end
             end
           end

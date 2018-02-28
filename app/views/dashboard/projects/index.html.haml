@@ -7,9 +7,8 @@
 - page_title    "Projects"
 - header_title  "Projects", dashboard_projects_path
 
-= render "projects/last_push"
-
 %div{ class: container_class }
+  = render "projects/last_push"
   - if show_projects?(@projects, params)
     = render 'dashboard/projects_head'
     = render 'nav'
