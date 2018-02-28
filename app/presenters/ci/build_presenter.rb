@@ -1,5 +1,12 @@
 module Ci
   class BuildPresenter < Gitlab::View::Presenter::Delegated
+
+    TIMEOUT_SOURCES = {
+        unknown_timeout_source: nil,
+        project_timeout_source: 'project',
+        runner_timeout_source: 'runner'
+    }.freeze
+
     presents :build
 
     def erased_by_user?
@@ -16,6 +23,13 @@ module Ci
       if auto_canceled?
         "Job is redundant and is auto-canceled by Pipeline ##{auto_canceled_by_id}"
       end
+    end
+
+    def timeout_source
+      return unless build.timeout_source?
+
+      TIMEOUT_SOURCES[build.timeout_source.to_sym] ||
+          build.timeout_source
     end
 
     def trigger_variables

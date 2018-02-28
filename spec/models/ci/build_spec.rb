@@ -2046,20 +2046,18 @@ describe Ci::Build do
     end
 
     shared_examples 'saves data on transition' do
-      it 'saves used_timeout and timeout_source on transition' do
-        expect(job.used_timeout).to be_nil
-        expect(job.timeout_source).to be_nil
+      it 'saves used_timeout' do
+        expect { job.run! }.to change { job.reload.used_timeout }.from(nil).to(expected_timeout)
+      end
 
-        job.run!
-
-        expect(job.used_timeout).to eq(expected_timeout)
-        expect(job.timeout_source).to eq(expected_timeout_source)
+      it 'saves timeout_source' do
+        expect { job.run! }.to change { job.reload.timeout_source }.from('unknown_timeout_source').to(expected_timeout_source)
       end
     end
 
     context 'when runner timeout overrides project timeout' do
       let(:expected_timeout) { 900 }
-      let(:expected_timeout_source) { 'Runner' }
+      let(:expected_timeout_source) { 'runner_timeout_source' }
 
       before do
         runner.maximum_job_timeout = 900
@@ -2071,7 +2069,7 @@ describe Ci::Build do
 
     context "when runner timeout doesn't override project timeout" do
       let(:expected_timeout) { 1800 }
-      let(:expected_timeout_source) { 'Project' }
+      let(:expected_timeout_source) { 'project_timeout_source' }
 
       before do
         runner.maximum_job_timeout = 3600

@@ -5,6 +5,6 @@ class AddUsedTimeoutAndTimeoutSourceColumnsToCiBuilds < ActiveRecord::Migration
 
   def change
     add_column :ci_builds, :used_timeout, :integer
-    add_column :ci_builds, :timeout_source, :string
+    add_column :ci_builds, :timeout_source, :integer
   end
 end

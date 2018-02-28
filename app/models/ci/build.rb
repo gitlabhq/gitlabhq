@@ -93,6 +93,12 @@ module Ci
 
     chronic_duration_attr_reader :used_timeout_human_readable, :used_timeout
 
+    enum timeout_source: {
+        unknown_timeout_source: nil,
+        project_timeout_source: 1,
+        runner_timeout_source: 2
+    }
+
     class << self
       # This is needed for url_for to work,
       # as the controller is JobsController
@@ -123,10 +129,6 @@ module Ci
       end
 
       after_transition pending: :running do |build|
-        build.used_timeout = build.timeout
-        build.timeout_source = build.timeout < build.project.build_timeout ? 'runner' : 'project'
-        build.save!
-
         build.run_after_commit do
           BuildHooksWorker.perform_async(id)
         end
@@ -159,6 +161,11 @@ module Ci
 
       before_transition any => [:running] do |build|
         build.validates_dependencies! unless Feature.enabled?('ci_disable_validates_dependencies')
+      end
+
+      before_transition pending: :running do |build|
+        build.used_timeout = build.timeout
+        build.timeout_source = build.timeout < build.project.build_timeout ? :runner_timeout_source : :project_timeout_source
       end
     end
 

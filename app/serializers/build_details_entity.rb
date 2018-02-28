@@ -7,7 +7,7 @@ class BuildDetailsEntity < JobEntity
 
   expose :timeout, if: -> (*) { !build.used_timeout.nil? } do |build|
     { value: build.used_timeout_human_readable,
-      source: build.timeout_source }
+      source: build.present.timeout_source }
   end
 
   expose :erased_by, if: -> (*) { build.erased? }, using: UserEntity
