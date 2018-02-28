@@ -367,7 +367,7 @@ skip the download step.
 
 Using the `include` keyword, you can allow the inclusion of external YAML files.
 
-In the following example, the content of`.before-script-template.yml` will be
+In the following example, the content of `.before-script-template.yml` will be
 automatically fetched and evaluated along with the content of `.gitlab-ci.yml`:
 
 ```yaml
@@ -424,12 +424,18 @@ include:
     your configuration file is. In other words, when using a **local file**, make
     sure that both `.gitlab-ci.yml` and the local file are on the same branch.
 
+    NOTE: **Note:**
+    We don't support the inclusion of local files through Git submodules paths.
+
 - **remote** in a different location, accessed using HTTP/HTTPS, referenced
   using the full URL. For example:
 
     ```yaml
     include: 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-template.yml'
     ```
+
+    NOTE: **Note:**
+    The remote file must be publicly accessible through a simple GET request, as we don't support authentication schemas in the remote URL.
 
 ---
 
@@ -491,6 +497,9 @@ In this case, the variables `POSTGRES_USER`, `POSTGRES_PASSWORD` and
 `POSTGRES_DB` along with the `production` job defined in
 `autodevops-template.yml` will be overridden by the ones defined in
 `.gitlab-ci.yml`.
+
+NOTE: **Note:**
+Momentarily the [CI Lint](https://gitlab.com/ci/lint) does not support the `include` keyword.
 
 ## Jobs
 
