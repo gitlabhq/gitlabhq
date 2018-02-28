@@ -30,7 +30,7 @@ module Audit
       when :remove
         "Removed #{value}"
       when :failed_login
-        "Failed to login with #{Gitlab::OAuth::Provider.label_for(value).upcase} authentication"
+        "Failed to login with #{Gitlab::Auth::OAuth::Provider.label_for(value).upcase} authentication"
       when :custom_message
         value
       else

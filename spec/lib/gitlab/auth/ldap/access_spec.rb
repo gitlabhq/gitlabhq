@@ -19,14 +19,14 @@ describe Gitlab::Auth::LDAP::Access do
 
   describe '#find_ldap_user' do
     it 'finds a user by dn first' do
-      expect(Gitlab::LDAP::Person).to receive(:find_by_dn).and_return(:ldap_user)
+      expect(Gitlab::Auth::LDAP::Person).to receive(:find_by_dn).and_return(:ldap_user)
 
       access.find_ldap_user
     end
 
     it 'finds a user by email if the email came from LDAP' do
-      expect(Gitlab::LDAP::Person).to receive(:find_by_dn).and_return(nil)
-      expect(Gitlab::LDAP::Person).to receive(:find_by_email)
+      expect(Gitlab::Auth::LDAP::Person).to receive(:find_by_dn).and_return(nil)
+      expect(Gitlab::Auth::LDAP::Person).to receive(:find_by_email)
 
       access.find_ldap_user
     end
@@ -196,7 +196,7 @@ describe Gitlab::Auth::LDAP::Access do
     before do
       allow(access).to(
         receive_messages(
-          ldap_user: Gitlab::LDAP::Person.new(entry, user.ldap_identity.provider)
+          ldap_user: Gitlab::Auth::LDAP::Person.new(entry, user.ldap_identity.provider)
         )
       )
     end
@@ -240,18 +240,18 @@ describe Gitlab::Auth::LDAP::Access do
     end
 
     before do
-      allow(access).to receive_messages(ldap_user: Gitlab::LDAP::Person.new(entry, user.ldap_identity.provider))
+      allow(access).to receive_messages(ldap_user: Gitlab::Auth::LDAP::Person.new(entry, user.ldap_identity.provider))
     end
 
     it "adds a Kerberos identity if it is in Active Directory but not in GitLab" do
-      allow_any_instance_of(EE::Gitlab::LDAP::Person).to receive_messages(kerberos_principal: "mylogin@FOO.COM")
+      allow_any_instance_of(EE::Gitlab::Auth::LDAP::Person).to receive_messages(kerberos_principal: "mylogin@FOO.COM")
 
       expect { access.update_kerberos_identity }.to change(user.identities.where(provider: :kerberos), :count).from(0).to(1)
       expect(user.identities.where(provider: "kerberos").last.extern_uid).to eq("mylogin@FOO.COM")
     end
 
     it "updates existing Kerberos identity in GitLab if Active Directory has a different one" do
-      allow_any_instance_of(EE::Gitlab::LDAP::Person).to receive_messages(kerberos_principal: "otherlogin@BAR.COM")
+      allow_any_instance_of(EE::Gitlab::Auth::LDAP::Person).to receive_messages(kerberos_principal: "otherlogin@BAR.COM")
       user.identities.build(provider: "kerberos", extern_uid: "mylogin@FOO.COM").save
 
       expect { access.update_kerberos_identity }.not_to change(user.identities.where(provider: "kerberos"), :count)
@@ -259,7 +259,7 @@ describe Gitlab::Auth::LDAP::Access do
     end
 
     it "does not remove Kerberos identities from GitLab if they are none in the LDAP provider" do
-      allow_any_instance_of(EE::Gitlab::LDAP::Person).to receive_messages(kerberos_principal: nil)
+      allow_any_instance_of(EE::Gitlab::Auth::LDAP::Person).to receive_messages(kerberos_principal: nil)
       user.identities.build(provider: "kerberos", extern_uid: "otherlogin@BAR.COM").save
 
       expect { access.update_kerberos_identity }.not_to change(user.identities.where(provider: "kerberos"), :count)
@@ -267,7 +267,7 @@ describe Gitlab::Auth::LDAP::Access do
     end
 
     it "does not modify identities in GitLab if they are no kerberos principal in the LDAP provider" do
-      allow_any_instance_of(EE::Gitlab::LDAP::Person).to receive_messages(kerberos_principal: nil)
+      allow_any_instance_of(EE::Gitlab::Auth::LDAP::Person).to receive_messages(kerberos_principal: nil)
 
       expect { access.update_kerberos_identity }.not_to change(user.identities, :count)
     end
@@ -281,18 +281,18 @@ describe Gitlab::Auth::LDAP::Access do
     end
 
     before do
-      allow_any_instance_of(Gitlab::LDAP::Config).to receive_messages(sync_ssh_keys: ssh_key_attribute_name)
+      allow_any_instance_of(Gitlab::Auth::LDAP::Config).to receive_messages(sync_ssh_keys: ssh_key_attribute_name)
       allow(access).to receive_messages(sync_ssh_keys?: true)
     end
 
     it "adds a SSH key if it is in LDAP but not in gitlab" do
-      allow_any_instance_of(Gitlab::LDAP::Adapter).to receive(:user) { Gitlab::LDAP::Person.new(entry, 'ldapmain') }
+      allow_any_instance_of(Gitlab::Auth::LDAP::Adapter).to receive(:user) { Gitlab::Auth::LDAP::Person.new(entry, 'ldapmain') }
 
       expect { access.update_ssh_keys }.to change(user.keys, :count).from(0).to(1)
     end
 
     it "adds a SSH key and give it a proper name" do
-      allow_any_instance_of(Gitlab::LDAP::Adapter).to receive(:user) { Gitlab::LDAP::Person.new(entry, 'ldapmain') }
+      allow_any_instance_of(Gitlab::Auth::LDAP::Adapter).to receive(:user) { Gitlab::Auth::LDAP::Person.new(entry, 'ldapmain') }
 
       access.update_ssh_keys
       expect(user.keys.last.title).to match(/LDAP/)
@@ -301,7 +301,7 @@ describe Gitlab::Auth::LDAP::Access do
 
     it "does not add a SSH key if it is invalid" do
       entry = Net::LDAP::Entry.from_single_ldif_string("dn: cn=foo, dc=bar, dc=com\n#{ssh_key_attribute_name}: I am not a valid key")
-      allow_any_instance_of(Gitlab::LDAP::Adapter).to receive(:user) { Gitlab::LDAP::Person.new(entry, 'ldapmain') }
+      allow_any_instance_of(Gitlab::Auth::LDAP::Adapter).to receive(:user) { Gitlab::Auth::LDAP::Person.new(entry, 'ldapmain') }
 
       expect { access.update_ssh_keys }.not_to change(user.keys, :count)
     end
@@ -313,14 +313,14 @@ describe Gitlab::Auth::LDAP::Access do
 
       it "removes a SSH key if it is no longer in LDAP" do
         entry = Net::LDAP::Entry.from_single_ldif_string("dn: cn=foo, dc=bar, dc=com\n#{ssh_key_attribute_name}:\n")
-        allow_any_instance_of(Gitlab::LDAP::Adapter).to receive(:user) { Gitlab::LDAP::Person.new(entry, 'ldapmain') }
+        allow_any_instance_of(Gitlab::Auth::LDAP::Adapter).to receive(:user) { Gitlab::Auth::LDAP::Person.new(entry, 'ldapmain') }
 
         expect { access.update_ssh_keys }.to change(user.keys, :count).from(1).to(0)
       end
 
       it "removes a SSH key if the ldap attribute was removed" do
         entry = Net::LDAP::Entry.from_single_ldif_string("dn: cn=foo, dc=bar, dc=com")
-        allow_any_instance_of(Gitlab::LDAP::Adapter).to receive(:user) { Gitlab::LDAP::Person.new(entry, 'ldapmain') }
+        allow_any_instance_of(Gitlab::Auth::LDAP::Adapter).to receive(:user) { Gitlab::Auth::LDAP::Person.new(entry, 'ldapmain') }
 
         expect { access.update_ssh_keys }.to change(user.keys, :count).from(1).to(0)
       end
@@ -331,7 +331,7 @@ describe Gitlab::Auth::LDAP::Access do
     let(:entry) { Net::LDAP::Entry.new }
 
     before do
-      allow(access).to receive_messages(ldap_user: Gitlab::LDAP::Person.new(entry, user.ldap_identity.provider))
+      allow(access).to receive_messages(ldap_user: Gitlab::Auth::LDAP::Person.new(entry, user.ldap_identity.provider))
     end
 
     it "does not update email if email attribute is not set" do
@@ -361,7 +361,7 @@ describe Gitlab::Auth::LDAP::Access do
     let(:person_with_memberof) do
       entry['memberof'] = ['CN=Group1,CN=Users,DC=The dc,DC=com',
                            'CN=Group2,CN=Builtin,DC=The dc,DC=com']
-      Gitlab::LDAP::Person.new(entry, provider)
+      Gitlab::Auth::LDAP::Person.new(entry, provider)
     end
 
     it 'triggers a sync for all groups found in `memberof`' do
@@ -379,7 +379,7 @@ describe Gitlab::Auth::LDAP::Access do
 
     it "doesn't continue when there is no `memberOf` param" do
       allow(access).to receive(:ldap_user)
-                         .and_return(Gitlab::LDAP::Person.new(entry, provider))
+                         .and_return(Gitlab::Auth::LDAP::Person.new(entry, provider))
 
       expect(LdapGroupLink).not_to receive(:where)
       expect(LdapGroupSyncWorker).not_to receive(:perform_async)
@@ -404,7 +404,7 @@ describe Gitlab::Auth::LDAP::Access do
     it 'updates the external UID if it changed in the entry' do
       entry = ldap_user_entry('another uid')
       provider = user.ldap_identity.provider
-      person = Gitlab::LDAP::Person.new(entry, provider)
+      person = Gitlab::Auth::LDAP::Person.new(entry, provider)
 
       allow(access).to receive(:ldap_user).and_return(person)
 

@@ -71,7 +71,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       continue_login_process
     end
-  rescue Gitlab::Auth::OAuth::SignupDisabledError
+  rescue Gitlab::Auth::OAuth::User::SignupDisabledError
     handle_signup_error
   end
 

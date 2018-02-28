@@ -180,15 +180,7 @@ describe Gitlab::Auth::LDAP::User do
 
   describe 'blocking' do
     def configure_block(value)
-<<<<<<< HEAD:spec/lib/gitlab/ldap/user_spec.rb
       stub_ldap_config(block_auto_created_users: value)
-||||||| parent of 50a70efd118... Moved o_auth/saml/ldap modules under gitlab/auth
-      allow_any_instance_of(Gitlab::LDAP::Config)
-          .to receive(:block_auto_created_users).and_return(value)
-=======
-      allow_any_instance_of(Gitlab::Auth::LDAP::Config)
-          .to receive(:block_auto_created_users).and_return(value)
->>>>>>> 50a70efd118... Moved o_auth/saml/ldap modules under gitlab/auth:spec/lib/gitlab/auth/ldap/user_spec.rb
     end
 
     context 'signup' do
