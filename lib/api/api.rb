@@ -134,6 +134,7 @@ module API
     mount ::API::MergeRequests
     mount ::API::Namespaces
     mount ::API::Notes
+    mount ::API::Discussions
     mount ::API::NotificationSettings
     mount ::API::PagesDomains
     mount ::API::Pipelines
