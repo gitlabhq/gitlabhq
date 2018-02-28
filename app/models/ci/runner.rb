@@ -50,7 +50,7 @@ module Ci
       ref_protected: 1
     }
 
-    cached_attr_reader :version, :revision, :platform, :architecture, :contacted_at
+    cached_attr_reader :version, :revision, :platform, :architecture, :contacted_at, :ip_address
 
     # Searches for runners matching the given query.
     #
@@ -158,7 +158,7 @@ module Ci
     end
 
     def update_cached_info(values)
-      values = values&.slice(:version, :revision, :platform, :architecture) || {}
+      values = values&.slice(:version, :revision, :platform, :architecture, :ip_address) || {}
       values[:contacted_at] = Time.now
 
       cache_attributes(values)

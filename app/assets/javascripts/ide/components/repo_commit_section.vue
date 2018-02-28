@@ -1,9 +1,16 @@
 <script>
+<<<<<<< HEAD
 import { mapState, mapActions, mapGetters } from 'vuex';
 import tooltip from '~/vue_shared/directives/tooltip';
 import icon from '~/vue_shared/components/icon.vue';
 import modal from '~/vue_shared/components/modal.vue';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
+=======
+import { mapGetters, mapState, mapActions } from 'vuex';
+import tooltip from '~/vue_shared/directives/tooltip';
+import icon from '~/vue_shared/components/icon.vue';
+import modal from '~/vue_shared/components/modal.vue';
+>>>>>>> upstream/master
 import commitFilesList from './commit_sidebar/list.vue';
 
 import * as consts from 'ee/ide/stores/modules/commit/constants'; // eslint-disable-line import/first

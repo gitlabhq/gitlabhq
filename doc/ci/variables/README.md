@@ -56,6 +56,9 @@ future GitLab releases.**
 | **CI_RUNNER_DESCRIPTION**       | 8.10   | 0.5    | The description of the runner as saved in GitLab |
 | **CI_RUNNER_ID**                | 8.10   | 0.5    | The unique id of runner being used |
 | **CI_RUNNER_TAGS**              | 8.10   | 0.5    | The defined runner tags |
+| **CI_RUNNER_VERSION**           | all    | 10.6   | GitLab Runner version that is executing the current job |
+| **CI_RUNNER_REVISION**          | all    | 10.6   | GitLab Runner revision that is executing the current job |
+| **CI_RUNNER_EXECUTABLE_ARCH**   | all    | 10.6   | The OS/architecture of the GitLab Runner executable (note that this is not necessarily the same as the environment of the executor) |
 | **CI_PIPELINE_ID**              | 8.10   | 0.5    | The unique id of the current pipeline that GitLab CI uses internally |
 | **CI_PIPELINE_SOURCE**          | 9.3    | all    | ([Premium]) The variable indicates how the pipeline was triggered, possible options are: push, web, trigger, schedule, api, pipeline |
 | **CI_PIPELINE_TRIGGERED**       | all    | all    | The flag to indicate that job was [triggered] |
