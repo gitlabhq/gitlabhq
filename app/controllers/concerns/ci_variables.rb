@@ -9,7 +9,7 @@ module CiVariables
         next unless variable
 
         params['variables_attributes'].delete(variable)
-        params['variables_attributes'].find { |var| var['key'] == variable['key'] }['id'] = variable['id']
+        params['variables_attributes'].find(variable.merge('id' => '', '_destroy' => '')).each { |var| var['id'] = variable['id'] }
       end
     end
     params
