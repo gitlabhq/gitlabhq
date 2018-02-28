@@ -1,0 +1,5 @@
+---
+title: Upgrade Ruby to 2.3.5 to include security patches
+merge_request: 15099
+author:
+type: security

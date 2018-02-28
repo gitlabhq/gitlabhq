@@ -25,7 +25,7 @@ describe Projects::PipelinesSettingsController do
       let(:params) { { enabled: '', domain: 'mepmep.md' } }
 
       it 'redirects to the settings page' do
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(302)
         expect(flash[:notice]).to eq("Pipelines settings for '#{project.name}' were successfully updated.")
       end
 

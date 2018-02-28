@@ -9,7 +9,7 @@ You can see GitLab's keyboard shortcuts by using 'shift + ?'
 | <kbd>n</kbd> | Main navigation |
 | <kbd>s</kbd> | Focus search |
 | <kbd>f</kbd> | Focus filter |
-| <kbd>p b</kbd> | Show/hide the Performance Bar |
+| <kbd>p</kbd> + <kbd>b</kbd> | Show/hide the Performance Bar |
 | <kbd>?</kbd> | Show/hide this dialog |
 | <kbd>⌘</kbd> + <kbd>shift</kbd> + <kbd>p</kbd> | Toggle markdown preview |
 | <kbd>↑</kbd> | Edit last comment (when focused on an empty textarea) |

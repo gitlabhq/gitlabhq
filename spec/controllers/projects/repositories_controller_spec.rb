@@ -35,7 +35,7 @@ describe Projects::RepositoriesController do
         it "renders Not Found" do
           get :archive, namespace_id: project.namespace, project_id: project, ref: "master", format: "zip"
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
     end

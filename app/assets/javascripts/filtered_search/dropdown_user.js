@@ -1,6 +1,5 @@
-/* global Flash */
-
-import AjaxFilter from '~/droplab/plugins/ajax_filter';
+import Flash from '../flash';
+import AjaxFilter from '../droplab/plugins/ajax_filter';
 import './filtered_search_dropdown';
 import { addClassIfElementExists } from '../lib/utils/dom_utils';
 

@@ -1,0 +1,5 @@
+---
+title: Fix flash errors showing up on a non configured prometheus integration
+merge_request: 35652
+author:
+type: fixed

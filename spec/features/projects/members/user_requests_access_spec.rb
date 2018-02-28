@@ -60,7 +60,7 @@ feature 'Projects > Members > User requests access', :js do
 
     expect(project.requesters.exists?(user_id: user)).to be_truthy
 
-    click_link 'Withdraw Access Request'
+    accept_confirm { click_link 'Withdraw Access Request' }
 
     expect(project.requesters.exists?(user_id: user)).to be_falsey
     expect(page).to have_content 'Your access request to the project has been withdrawn.'

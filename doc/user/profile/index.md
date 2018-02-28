@@ -52,7 +52,7 @@ You can edit your account settings by navigating from the up-right corner menu b
 From there, you can:
 
 - Update your personal information
-- Manage [private tokens](../../api/README.md#private-tokens), email tokens, [2FA](account/two_factor_authentication.md)
+- Manage [2FA](account/two_factor_authentication.md)
 - Change your username and [delete your account](account/delete_account.md)
 - Manage applications that can
 [use GitLab as an OAuth provider](../../integration/oauth_provider.md#introduction-to-oauth)

@@ -16,7 +16,7 @@ describe Groups::LabelsController do
 
       post :toggle_subscription, group_id: group.to_param, id: label.to_param
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
   end
 end

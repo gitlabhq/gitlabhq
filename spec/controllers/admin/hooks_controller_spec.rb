@@ -20,7 +20,7 @@ describe Admin::HooksController do
 
       post :create, hook: hook_params
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
       expect(SystemHook.all.size).to eq(1)
       expect(SystemHook.first).to have_attributes(hook_params)
     end

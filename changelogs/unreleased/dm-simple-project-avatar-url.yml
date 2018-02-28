@@ -1,5 +1,0 @@
----
-title: Expose avatar_url when requesting list of projects from API with simple=true
-merge_request:
-author:
-type: added

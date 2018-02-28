@@ -51,6 +51,13 @@ module Gitlab
       self.num_running(job_ids).zero?
     end
 
+    # Returns true if the given job is running
+    #
+    # job_id - The Sidekiq job ID to check.
+    def self.running?(job_id)
+      num_running([job_id]) > 0
+    end
+
     # Returns the number of jobs that are running.
     #
     # job_ids - The Sidekiq job IDs to check.

@@ -31,12 +31,12 @@ There are three methods to enable the use of `docker build` and `docker run` dur
 The simplest approach is to install GitLab Runner in `shell` execution mode.
 GitLab Runner then executes job scripts as the `gitlab-runner` user.
 
-1. Install [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/#installation).
+1. Install [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/#installation).
 
 1. During GitLab Runner installation select `shell` as method of executing job scripts or use command:
 
     ```bash
-    sudo gitlab-ci-multi-runner register -n \
+    sudo gitlab-runner register -n \
       --url https://gitlab.com/ \
       --registration-token REGISTRATION_TOKEN \
       --executor shell \
@@ -93,7 +93,7 @@ In order to do that, follow the steps:
    mode:
 
     ```bash
-    sudo gitlab-ci-multi-runner register -n \
+    sudo gitlab-runner register -n \
       --url https://gitlab.com/ \
       --registration-token REGISTRATION_TOKEN \
       --executor docker \
@@ -178,7 +178,7 @@ In order to do that, follow the steps:
 1. Register GitLab Runner from the command line to use `docker` and share `/var/run/docker.sock`:
 
     ```bash
-    sudo gitlab-ci-multi-runner register -n \
+    sudo gitlab-runner register -n \
       --url https://gitlab.com/ \
       --registration-token REGISTRATION_TOKEN \
       --executor docker \

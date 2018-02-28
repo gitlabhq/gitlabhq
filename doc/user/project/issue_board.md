@@ -166,12 +166,26 @@ board itself.
 
 ![Remove issue from list](img/issue_boards_remove_issue.png)
 
-## Re-ordering an issue in a list
+## Issue ordering in a list
 
-> Introduced in GitLab 9.0.
+When visiting a board, issues appear ordered in any list. You are able to change
+that order simply by dragging and dropping the issues. The changed order will be saved
+to the system so that anybody who visits the same board later will see the reordering,
+with some exceptions.
 
-Issues can be re-ordered inside of lists. This is as simple as dragging and dropping
-an issue into the order you want.
+The first time a given issue appears in any board (i.e. the first time a user
+loads a board containing that issue), it will be ordered with 
+respect to other issues in that list according to [Priority order][label-priority].
+At that point, that issue will be assigned a relative order value by the system
+representing its relative order with respect to the other issues in the list. Any time
+you drag-and-drop reorder that issue, its relative order value will change accordingly.
+Also, any time that issue appears in any board when it is loaded by a user,
+the updated relative order value will be used for the ordering. (It's only the first
+time an issue appears that it takes from the Priority order mentioned above.) This means that
+if issue `A` is drag-and-drop reordered to be above issue `B` by any user in
+a given board inside your GitLab instance, any time those two issues are subsequently
+loaded in any board in the same instance (could be a different project board or a different group board, for example), 
+that ordering will be maintained.
 
 ## Filtering issues
 

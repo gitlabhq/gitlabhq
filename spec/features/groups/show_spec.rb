@@ -24,4 +24,35 @@ feature 'Group show page' do
 
     it_behaves_like "an autodiscoverable RSS feed without an RSS token"
   end
+
+  context 'subgroup support' do
+    let(:user) { create(:user) }
+
+    before do
+      group.add_owner(user)
+      sign_in(user)
+    end
+
+    context 'when subgroups are supported', :js, :nested_groups do
+      before do
+        allow(Group).to receive(:supports_nested_groups?) { true }
+        visit path
+      end
+
+      it 'allows creating subgroups' do
+        expect(page).to have_css("li[data-text='New subgroup']", visible: false)
+      end
+    end
+
+    context 'when subgroups are not supported' do
+      before do
+        allow(Group).to receive(:supports_nested_groups?) { false }
+        visit path
+      end
+
+      it 'allows creating subgroups' do
+        expect(page).not_to have_selector("li[data-text='New subgroup']", visible: false)
+      end
+    end
+  end
 end

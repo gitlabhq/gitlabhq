@@ -238,6 +238,7 @@ class Service < ActiveRecord::Base
       kubernetes
       mattermost_slash_commands
       mattermost
+      packagist
       pipelines_email
       pivotaltracker
       prometheus

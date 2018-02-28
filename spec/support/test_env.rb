@@ -182,6 +182,8 @@ module TestEnv
     return unless @gitaly_pid
 
     Process.kill('KILL', @gitaly_pid)
+  rescue Errno::ESRCH
+    # The process can already be gone if the test run was INTerrupted.
   end
 
   def setup_factory_repo

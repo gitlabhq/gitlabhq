@@ -1,5 +1,5 @@
 <script>
-  import { statusIconEntityMap } from '../ci_status_icons';
+  import icon from '../../vue_shared/components/icon.vue';
 
   /**
    * Renders CI icon based on API response shared between all places where it is used.
@@ -30,11 +30,11 @@
       },
     },
 
-    computed: {
-      statusIconSvg() {
-        return statusIconEntityMap[this.status.icon];
-      },
+    components: {
+      icon,
+    },
 
+    computed: {
       cssClass() {
         const status = this.status.group;
         return `ci-status-icon ci-status-icon-${status} js-ci-status-icon-${status}`;
@@ -44,7 +44,8 @@
 </script>
 <template>
   <span
-    :class="cssClass"
-    v-html="statusIconSvg">
+    :class="cssClass">
+    <icon
+      :name="status.icon"/>
   </span>
 </template>

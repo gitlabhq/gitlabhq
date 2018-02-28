@@ -1,7 +1,4 @@
-
-window.gl = window.gl || {};
-
-class CILintEditor {
+export default class CILintEditor {
   constructor() {
     this.editor = window.ace.edit('ci-editor');
     this.textarea = document.querySelector('#content');
@@ -13,5 +10,3 @@ class CILintEditor {
     });
   }
 }
-
-gl.CILintEditor = CILintEditor;

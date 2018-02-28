@@ -1,6 +1,5 @@
 /* eslint-disable class-methods-use-this */
-/* global Flash */
-
+import Flash from '../flash';
 import FileTemplateTypeSelector from './template_selectors/type_selector';
 import BlobCiYamlSelector from './template_selectors/ci_yaml_selector';
 import DockerfileSelector from './template_selectors/dockerfile_selector';

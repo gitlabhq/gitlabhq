@@ -36,7 +36,7 @@ describe API::Jobs do
 
     context 'authorized user' do
       it 'returns project jobs' do
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
       end
@@ -60,7 +60,7 @@ describe API::Jobs do
         let(:query) { { 'scope' => 'pending' } }
 
         it do
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(json_response).to be_an Array
         end
       end
@@ -69,7 +69,7 @@ describe API::Jobs do
         let(:query) { { scope: %w(pending running) } }
 
         it do
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(json_response).to be_an Array
         end
       end
@@ -77,7 +77,7 @@ describe API::Jobs do
       context 'respond 400 when scope contains invalid state' do
         let(:query) { { scope: %w(unknown running) } }
 
-        it { expect(response).to have_http_status(400) }
+        it { expect(response).to have_gitlab_http_status(400) }
       end
     end
 
@@ -85,7 +85,7 @@ describe API::Jobs do
       let(:api_user) { nil }
 
       it 'does not return project jobs' do
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end
@@ -100,7 +100,7 @@ describe API::Jobs do
 
     context 'authorized user' do
       it 'returns pipeline jobs' do
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
       end
@@ -124,7 +124,7 @@ describe API::Jobs do
         let(:query) { { 'scope' => 'pending' } }
 
         it do
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(json_response).to be_an Array
         end
       end
@@ -133,7 +133,7 @@ describe API::Jobs do
         let(:query) { { scope: %w(pending running) } }
 
         it do
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(json_response).to be_an Array
         end
       end
@@ -141,7 +141,7 @@ describe API::Jobs do
       context 'respond 400 when scope contains invalid state' do
         let(:query) { { scope: %w(unknown running) } }
 
-        it { expect(response).to have_http_status(400) }
+        it { expect(response).to have_gitlab_http_status(400) }
       end
 
       context 'jobs in different pipelines' do
@@ -158,7 +158,7 @@ describe API::Jobs do
       let(:api_user) { nil }
 
       it 'does not return jobs' do
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end
@@ -170,8 +170,18 @@ describe API::Jobs do
 
     context 'authorized user' do
       it 'returns specific job data' do
-        expect(response).to have_http_status(200)
-        expect(json_response['name']).to eq('test')
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['id']).to eq(job.id)
+        expect(json_response['status']).to eq(job.status)
+        expect(json_response['stage']).to eq(job.stage)
+        expect(json_response['name']).to eq(job.name)
+        expect(json_response['ref']).to eq(job.ref)
+        expect(json_response['tag']).to eq(job.tag)
+        expect(json_response['coverage']).to eq(job.coverage)
+        expect(Time.parse(json_response['created_at'])).to be_like_time(job.created_at)
+        expect(Time.parse(json_response['started_at'])).to be_like_time(job.started_at)
+        expect(Time.parse(json_response['finished_at'])).to be_like_time(job.finished_at)
+        expect(json_response['duration']).to eq(job.duration)
       end
 
       it 'returns pipeline data' do
@@ -189,7 +199,7 @@ describe API::Jobs do
       let(:api_user) { nil }
 
       it 'does not return specific job data' do
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end
@@ -213,7 +223,7 @@ describe API::Jobs do
 
             get_artifact_file(artifact)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end
         end
 
@@ -225,7 +235,7 @@ describe API::Jobs do
 
             get_artifact_file(artifact)
 
-            expect(response).to have_http_status(403)
+            expect(response).to have_gitlab_http_status(403)
           end
         end
 
@@ -237,7 +247,7 @@ describe API::Jobs do
 
             get_artifact_file(artifact)
 
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
       end
@@ -250,7 +260,7 @@ describe API::Jobs do
 
           get_artifact_file(artifact)
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(response.headers)
             .to include('Content-Type' => 'application/json',
                         'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
@@ -262,7 +272,7 @@ describe API::Jobs do
       it 'does not return job artifact file' do
         get_artifact_file('some/artifact')
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -314,7 +324,7 @@ describe API::Jobs do
     end
 
     it 'does not return job artifacts if not uploaded' do
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
   end
 
@@ -340,7 +350,7 @@ describe API::Jobs do
 
       it 'does not find a resource in a private project' do
         expect(project).to be_private
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -352,13 +362,13 @@ describe API::Jobs do
       end
 
       it 'gives 403' do
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
     context 'non-existing job' do
       shared_examples 'not found' do
-        it { expect(response).to have_http_status(:not_found) }
+        it { expect(response).to have_gitlab_http_status(:not_found) }
       end
 
       context 'has no such ref' do
@@ -437,7 +447,7 @@ describe API::Jobs do
 
     context 'authorized user' do
       it 'returns specific job trace' do
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response.body).to eq(job.trace.raw)
       end
     end
@@ -446,7 +456,7 @@ describe API::Jobs do
       let(:api_user) { nil }
 
       it 'does not return specific job trace' do
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end
@@ -459,7 +469,7 @@ describe API::Jobs do
     context 'authorized user' do
       context 'user with :update_build persmission' do
         it 'cancels running or pending job' do
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(project.builds.first.status).to eq('canceled')
         end
       end
@@ -468,7 +478,7 @@ describe API::Jobs do
         let(:api_user) { reporter }
 
         it 'does not cancel job' do
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
         end
       end
     end
@@ -477,7 +487,7 @@ describe API::Jobs do
       let(:api_user) { nil }
 
       it 'does not cancel job' do
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end
@@ -492,7 +502,7 @@ describe API::Jobs do
     context 'authorized user' do
       context 'user with :update_build permission' do
         it 'retries non-running job' do
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(project.builds.first.status).to eq('canceled')
           expect(json_response['status']).to eq('pending')
         end
@@ -502,7 +512,7 @@ describe API::Jobs do
         let(:api_user) { reporter }
 
         it 'does not retry job' do
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
         end
       end
     end
@@ -511,7 +521,7 @@ describe API::Jobs do
       let(:api_user) { nil }
 
       it 'does not retry job' do
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end
@@ -525,7 +535,7 @@ describe API::Jobs do
       let(:job) { create(:ci_build, :trace, :artifacts, :success, project: project, pipeline: pipeline) }
 
       it 'erases job content' do
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(job).not_to have_trace
         expect(job.artifacts_file.exists?).to be_falsy
         expect(job.artifacts_metadata.exists?).to be_falsy
@@ -543,7 +553,7 @@ describe API::Jobs do
       let(:job) { create(:ci_build, :trace, project: project, pipeline: pipeline) }
 
       it 'responds with forbidden' do
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
   end
@@ -560,7 +570,7 @@ describe API::Jobs do
       end
 
       it 'keeps artifacts' do
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(job.reload.artifacts_expire_at).to be_nil
       end
     end
@@ -569,7 +579,7 @@ describe API::Jobs do
       let(:job) { create(:ci_build, project: project, pipeline: pipeline) }
 
       it 'responds with not found' do
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -584,7 +594,7 @@ describe API::Jobs do
 
       context 'when user is authorized to trigger a manual action' do
         it 'plays the job' do
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(json_response['user']['id']).to eq(user.id)
           expect(json_response['id']).to eq(job.id)
           expect(job.reload).to be_pending
@@ -597,7 +607,7 @@ describe API::Jobs do
 
           it 'does not trigger a manual action' do
             expect(job.reload).to be_manual
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
 
@@ -606,7 +616,7 @@ describe API::Jobs do
 
           it 'does not trigger a manual action' do
             expect(job.reload).to be_manual
-            expect(response).to have_http_status(403)
+            expect(response).to have_gitlab_http_status(403)
           end
         end
       end
@@ -614,7 +624,7 @@ describe API::Jobs do
 
     context 'on a non-playable job' do
       it 'returns a status code 400, Bad Request' do
-        expect(response).to have_http_status 400
+        expect(response).to have_gitlab_http_status 400
         expect(response.body).to match("Unplayable Job")
       end
     end

@@ -11,7 +11,7 @@ describe Gitlab::GithubImport::WikiFormatter do
 
   describe '#disk_path' do
     it 'appends .wiki to project path' do
-      expect(wiki.disk_path).to eq project.disk_path + '.wiki'
+      expect(wiki.disk_path).to eq project.wiki.disk_path
     end
   end
 

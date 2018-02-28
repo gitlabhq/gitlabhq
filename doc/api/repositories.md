@@ -85,7 +85,7 @@ GET /projects/:id/repository/blobs/:sha
 Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
-- `sha` (required) - The commit or branch name
+- `sha` (required) - The blob SHA
 
 ## Raw blob content
 

@@ -1,0 +1,5 @@
+---
+title: Update participants and subscriptions button in issuable sidebar to be async
+merge_request: 14836
+author:
+type: changed

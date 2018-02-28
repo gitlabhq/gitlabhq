@@ -30,7 +30,6 @@ describe('Job details header', () => {
           email: 'foo@bar.com',
           avatar_url: 'link',
         },
-        retry_path: 'path',
         new_issue_path: 'path',
       },
       isLoading: false,
@@ -47,12 +46,6 @@ describe('Job details header', () => {
     expect(
       vm.$el.querySelector('.header-main-content').textContent.replace(/\s+/g, ' ').trim(),
     ).toEqual('failed Job #123 triggered 3 weeks ago by Foo');
-  });
-
-  it('should render retry link', () => {
-    expect(
-      vm.$el.querySelector('.js-retry-button').getAttribute('href'),
-    ).toEqual(props.job.retry_path);
   });
 
   it('should render new issue link', () => {

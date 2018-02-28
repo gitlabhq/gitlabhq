@@ -6,16 +6,8 @@ module Gitlab
         if Database.postgresql?
           'information_schema.role_table_grants'
         else
-          'mysql.user'
+          'information_schema.schema_privileges'
         end
-
-      def self.scope_to_current_user
-        if Database.postgresql?
-          where('grantee = user')
-        else
-          where("CONCAT(User, '@', Host) = current_user()")
-        end
-      end
 
       # Returns true if the current user can create and execute triggers on the
       # given table.
@@ -23,11 +15,27 @@ module Gitlab
         priv =
           if Database.postgresql?
             where(privilege_type: 'TRIGGER', table_name: table)
+              .where('grantee = user')
           else
-            where(Trigger_priv: 'Y')
+            queries = [
+              Grant.select(1)
+                .from('information_schema.user_privileges')
+                .where("PRIVILEGE_TYPE = 'SUPER'")
+                .where("GRANTEE = CONCAT('\\'', REPLACE(CURRENT_USER(), '@', '\\'@\\''), '\\'')"),
+
+              Grant.select(1)
+                .from('information_schema.schema_privileges')
+                .where("PRIVILEGE_TYPE = 'TRIGGER'")
+                .where('TABLE_SCHEMA = ?', Gitlab::Database.database_name)
+                .where("GRANTEE = CONCAT('\\'', REPLACE(CURRENT_USER(), '@', '\\'@\\''), '\\'')")
+            ]
+
+            union = SQL::Union.new(queries).to_sql
+
+            Grant.from("(#{union}) privs")
           end
 
-        priv.scope_to_current_user.any?
+        priv.any?
       end
     end
   end

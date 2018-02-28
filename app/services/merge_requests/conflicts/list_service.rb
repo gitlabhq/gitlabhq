@@ -23,13 +23,13 @@ module MergeRequests
           # when there are no conflict files.
           conflicts.files.each(&:lines)
           @conflicts_can_be_resolved_in_ui = conflicts.files.length > 0
-        rescue Rugged::OdbError, Gitlab::Conflict::Parser::UnresolvableError, Gitlab::Conflict::FileCollection::ConflictSideMissing
+        rescue Rugged::OdbError, Gitlab::Git::Conflict::Parser::UnresolvableError, Gitlab::Git::Conflict::Resolver::ConflictSideMissing
           @conflicts_can_be_resolved_in_ui = false
         end
       end
 
       def conflicts
-        @conflicts ||= Gitlab::Conflict::FileCollection.read_only(merge_request)
+        @conflicts ||= Gitlab::Conflict::FileCollection.new(merge_request)
       end
     end
   end

@@ -18,4 +18,8 @@ class TreeRootEntity < Grape::Entity
 
     project_tree_path(request.project, File.join(request.ref, parent_tree_path))
   end
+
+  expose :last_commit_path do |tree|
+    logs_file_project_ref_path(request.project, request.ref, tree.path)
+  end
 end

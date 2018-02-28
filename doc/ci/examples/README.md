@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # GitLab CI Examples
 
 A collection of `.gitlab-ci.yml` files is maintained at the [GitLab CI Yml project][gitlab-ci-templates].

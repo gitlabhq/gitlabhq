@@ -33,24 +33,29 @@ namespace :gitlab do
       backup.unpack
 
       unless backup.skipped?('db')
-        unless ENV['force'] == 'yes'
-          warning = <<-MSG.strip_heredoc
-            Before restoring the database we recommend removing all existing
-            tables to avoid future upgrade problems. Be aware that if you have
-            custom tables in the GitLab database these tables and all data will be
-            removed.
-          MSG
-          puts warning.color(:red)
-          ask_to_continue
-          puts 'Removing all tables. Press `Ctrl-C` within 5 seconds to abort'.color(:yellow)
-          sleep(5)
+        begin
+          unless ENV['force'] == 'yes'
+            warning = <<-MSG.strip_heredoc
+              Before restoring the database, we will remove all existing
+              tables to avoid future upgrade problems. Be aware that if you have
+              custom tables in the GitLab database these tables and all data will be
+              removed.
+            MSG
+            puts warning.color(:red)
+            ask_to_continue
+            puts 'Removing all tables. Press `Ctrl-C` within 5 seconds to abort'.color(:yellow)
+            sleep(5)
+          end
+          # Drop all tables Load the schema to ensure we don't have any newer tables
+          # hanging out from a failed upgrade
+          $progress.puts 'Cleaning the database ... '.color(:blue)
+          Rake::Task['gitlab:db:drop_tables'].invoke
+          $progress.puts 'done'.color(:green)
+          Rake::Task['gitlab:backup:db:restore'].invoke
+        rescue Gitlab::TaskAbortedByUserError
+          puts "Quitting...".color(:red)
+          exit 1
         end
-        # Drop all tables Load the schema to ensure we don't have any newer tables
-        # hanging out from a failed upgrade
-        $progress.puts 'Cleaning the database ... '.color(:blue)
-        Rake::Task['gitlab:db:drop_tables'].invoke
-        $progress.puts 'done'.color(:green)
-        Rake::Task['gitlab:backup:db:restore'].invoke
       end
 
       Rake::Task['gitlab:backup:repo:restore'].invoke unless backup.skipped?('repositories')

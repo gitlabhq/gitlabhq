@@ -1,0 +1,5 @@
+---
+title: Fix webhooks recent deliveries
+merge_request: 15146
+author: Alexander Randa (@randaalex)
+type: fixed

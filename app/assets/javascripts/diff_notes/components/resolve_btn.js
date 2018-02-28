@@ -1,9 +1,9 @@
 /* eslint-disable comma-dangle, object-shorthand, func-names, quote-props, no-else-return, camelcase, max-len */
 /* global CommentsStore */
 /* global ResolveService */
-/* global Flash */
 
 import Vue from 'vue';
+import Flash from '../../flash';
 
 const ResolveBtn = Vue.extend({
   props: {

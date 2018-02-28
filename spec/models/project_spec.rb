@@ -24,6 +24,7 @@ describe Project do
     it { is_expected.to have_one(:slack_service) }
     it { is_expected.to have_one(:microsoft_teams_service) }
     it { is_expected.to have_one(:mattermost_service) }
+    it { is_expected.to have_one(:packagist_service) }
     it { is_expected.to have_one(:pushover_service) }
     it { is_expected.to have_one(:asana_service) }
     it { is_expected.to have_many(:boards) }
@@ -78,6 +79,7 @@ describe Project do
     it { is_expected.to have_many(:pipeline_schedules) }
     it { is_expected.to have_many(:members_and_requesters) }
     it { is_expected.to have_one(:cluster) }
+    it { is_expected.to have_many(:custom_attributes).class_name('ProjectCustomAttribute') }
 
     context 'after initialized' do
       it "has a project_feature" do
@@ -272,6 +274,12 @@ describe Project do
       it 'allows a reserved group name' do
         parent = create(:group)
         project = build(:project, path: 'avatar', namespace: parent)
+
+        expect(project).to be_valid
+      end
+
+      it 'allows a path ending in a period' do
+        project = build(:project, path: 'foo.')
 
         expect(project).to be_valid
       end
@@ -874,7 +882,7 @@ describe Project do
     let(:project) { create(:project) }
 
     context 'when avatar file is uploaded' do
-      let(:project) { create(:project, :with_avatar) }
+      let(:project) { create(:project, :public, :with_avatar) }
       let(:avatar_path) { "/uploads/-/system/project/avatar/#{project.id}/dk.png" }
       let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
 
@@ -1761,6 +1769,21 @@ describe Project do
     it { expect(project.gitea_import?).to be true }
   end
 
+  describe '#ancestors_upto', :nested_groups do
+    let(:parent) { create(:group) }
+    let(:child) { create(:group, parent: parent) }
+    let(:child2) { create(:group, parent: child) }
+    let(:project) { create(:project, namespace: child2) }
+
+    it 'returns all ancestors when no namespace is given' do
+      expect(project.ancestors_upto).to contain_exactly(child2, child, parent)
+    end
+
+    it 'includes ancestors upto but excluding the given ancestor' do
+      expect(project.ancestors_upto(parent)).to contain_exactly(child2, child)
+    end
+  end
+
   describe '#lfs_enabled?' do
     let(:project) { create(:project) }
 
@@ -1905,6 +1928,20 @@ describe Project do
         other_project = build_stubbed(:project)
 
         expect(forked_project.in_fork_network_of?(other_project)).to be_falsy
+      end
+    end
+
+    describe '#fork_source' do
+      let!(:second_fork) { fork_project(forked_project) }
+
+      it 'returns the direct source if it exists' do
+        expect(second_fork.fork_source).to eq(forked_project)
+      end
+
+      it 'returns the root of the fork network when the directs source was deleted' do
+        forked_project.destroy
+
+        expect(second_fork.fork_source).to eq(project)
       end
     end
   end
@@ -2178,6 +2215,12 @@ describe Project do
     it { expect(project.parent).to eq(project.namespace) }
   end
 
+  describe '#parent_id' do
+    let(:project) { create(:project) }
+
+    it { expect(project.parent_id).to eq(project.namespace_id) }
+  end
+
   describe '#parent_changed?' do
     let(:project) { create(:project) }
 
@@ -2431,6 +2474,7 @@ describe Project do
   context 'legacy storage' do
     let(:project) { create(:project, :repository) }
     let(:gitlab_shell) { Gitlab::Shell.new }
+    let(:project_storage) { project.send(:storage) }
 
     before do
       allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
@@ -2472,7 +2516,7 @@ describe Project do
 
     describe '#hashed_storage?' do
       it 'returns false' do
-        expect(project.hashed_storage?).to be_falsey
+        expect(project.hashed_storage?(:repository)).to be_falsey
       end
     end
 
@@ -2524,6 +2568,30 @@ describe Project do
         subject { project.rename_repo }
 
         it { expect { subject }.to raise_error(StandardError) }
+      end
+
+      context 'gitlab pages' do
+        before do
+          expect(project_storage).to receive(:rename_repo) { true }
+        end
+
+        it 'moves pages folder to new location' do
+          expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project)
+
+          project.rename_repo
+        end
+      end
+
+      context 'attachments' do
+        before do
+          expect(project_storage).to receive(:rename_repo) { true }
+        end
+
+        it 'moves uploads folder to new location' do
+          expect_any_instance_of(Gitlab::UploadsTransfer).to receive(:rename_project)
+
+          project.rename_repo
+        end
       end
     end
 
@@ -2584,8 +2652,14 @@ describe Project do
     end
 
     describe '#hashed_storage?' do
-      it 'returns true' do
-        expect(project.hashed_storage?).to be_truthy
+      it 'returns true if rolled out' do
+        expect(project.hashed_storage?(:attachments)).to be_truthy
+      end
+
+      it 'returns false when not rolled out yet' do
+        project.storage_version = 1
+
+        expect(project.hashed_storage?(:attachments)).to be_falsey
       end
     end
 
@@ -2628,10 +2702,6 @@ describe Project do
           .to receive(:execute_hooks_for)
             .with(project, :rename)
 
-        expect_any_instance_of(Gitlab::UploadsTransfer)
-          .to receive(:rename_project)
-            .with('foo', project.path, project.namespace.full_path)
-
         expect(project).to receive(:expire_caches_before_rename)
 
         expect(project).to receive(:expires_full_path_cache)
@@ -2651,6 +2721,32 @@ describe Project do
         subject { project.rename_repo }
 
         it { expect { subject }.to raise_error(StandardError) }
+      end
+
+      context 'gitlab pages' do
+        it 'moves pages folder to new location' do
+          expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project)
+
+          project.rename_repo
+        end
+      end
+
+      context 'attachments' do
+        it 'keeps uploads folder location unchanged' do
+          expect_any_instance_of(Gitlab::UploadsTransfer).not_to receive(:rename_project)
+
+          project.rename_repo
+        end
+
+        context 'when not rolled out' do
+          let(:project) { create(:project, :repository, storage_version: 1) }
+
+          it 'moves pages folder to new location' do
+            expect_any_instance_of(Gitlab::UploadsTransfer).to receive(:rename_project)
+
+            project.rename_repo
+          end
+        end
       end
     end
 

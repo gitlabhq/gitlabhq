@@ -58,6 +58,18 @@ For example, in French we translate `you` as the informal `tu`.
 You can refer to other translated strings and notes in the glossary to assist determining a
 suitable level of formality.
 
+### Inclusive language
+
+[Diversity] is one of GitLab's values.
+We ask you to avoid translations which exclude people based on their gender or ethnicity.
+In languages which distinguish between a male and female form,
+use both or choose a neutral formulation.
+
+For example in German, the word "user" can be translated into "Benutzer" (male) or "Benutzerin" (female).
+Therefore "create a new user" would translate into "Benutzer(in) anlegen".
+
+[Diversity]: https://about.gitlab.com/handbook/values/#diversity
+
 ### Updating the glossary
 
 To propose additions to the glossary please

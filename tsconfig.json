@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "strict": true,
+    "module": "es2015",
+    "moduleResolution": "node"
+  }
+}

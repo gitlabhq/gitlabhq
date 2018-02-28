@@ -112,10 +112,6 @@ module SharedProject
   # Visibility of archived project
   # ----------------------------------------
 
-  step 'archived project "Archive"' do
-    create(:project, :archived, :public, :repository, name: 'Archive')
-  end
-
   step 'I should not see project "Archive"' do
     project = Project.find_by(name: "Archive")
     expect(page).not_to have_content project.name_with_namespace
@@ -124,11 +120,6 @@ module SharedProject
   step 'I should see project "Archive"' do
     project = Project.find_by(name: "Archive")
     expect(page).to have_content project.name_with_namespace
-  end
-
-  step 'project "Archive" has comments' do
-    project = Project.find_by(name: "Archive")
-    2.times { create(:note_on_issue, project: project) }
   end
 
   # ----------------------------------------
@@ -207,15 +198,6 @@ module SharedProject
 
   step 'public empty project "Empty Public Project"' do
     create :project_empty_repo, :public, name: "Empty Public Project"
-  end
-
-  step 'project "Community" has comments' do
-    project = Project.find_by(name: "Community")
-    2.times { create(:note_on_issue, project: project) }
-  end
-
-  step 'trending projects are refreshed' do
-    TrendingProject.refresh!
   end
 
   step 'project "Shop" has labels: "bug", "feature", "enhancement"' do

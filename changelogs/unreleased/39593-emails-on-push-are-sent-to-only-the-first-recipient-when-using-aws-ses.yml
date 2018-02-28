@@ -1,0 +1,5 @@
+---
+title: Only set Auto-Submitted header once for emails on push
+merge_request:
+author:
+type: fixed

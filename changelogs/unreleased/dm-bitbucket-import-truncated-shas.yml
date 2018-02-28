@@ -1,6 +1,0 @@
----
-title: Fix bug that caused merge requests with diff notes imported from Bitbucket
-  to raise errors
-merge_request:
-author:
-type: fixed

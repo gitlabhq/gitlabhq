@@ -1,5 +1,5 @@
 <script>
-/* global Flash */
+import Flash from '../../../flash';
 import editForm from './edit_form.vue';
 
 export default {

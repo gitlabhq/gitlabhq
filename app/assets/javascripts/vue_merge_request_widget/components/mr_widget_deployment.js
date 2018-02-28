@@ -1,6 +1,5 @@
-/* global Flash */
-
 import '~/lib/utils/datetime_utility';
+import Flash from '../../flash';
 import MemoryUsage from './mr_widget_memory_usage';
 import StatusIcon from './mr_widget_status_icon';
 import MRWidgetService from '../services/mr_widget_service';

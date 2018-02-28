@@ -21,7 +21,7 @@ feature 'Project settings > Merge Requests', :js do
 
         within('.sharing-permissions-form') do
           find('.project-feature-controls[data-for="project[project_feature_attributes][merge_requests_access_level]"] .project-feature-toggle').click
-          click_on('Save changes')
+          find('input[value="Save changes"]').send_keys(:return)
         end
 
         expect(page).not_to have_content('Only allow merge requests to be merged if the pipeline succeeds')
@@ -41,7 +41,7 @@ feature 'Project settings > Merge Requests', :js do
 
         within('.sharing-permissions-form') do
           find('.project-feature-controls[data-for="project[project_feature_attributes][builds_access_level]"] .project-feature-toggle').click
-          click_on('Save changes')
+          find('input[value="Save changes"]').send_keys(:return)
         end
 
         expect(page).to have_content('Only allow merge requests to be merged if the pipeline succeeds')
@@ -62,7 +62,7 @@ feature 'Project settings > Merge Requests', :js do
 
       within('.sharing-permissions-form') do
         find('.project-feature-controls[data-for="project[project_feature_attributes][merge_requests_access_level]"] .project-feature-toggle').click
-        click_on('Save changes')
+        find('input[value="Save changes"]').send_keys(:return)
       end
 
       expect(page).to have_content('Only allow merge requests to be merged if the pipeline succeeds')

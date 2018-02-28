@@ -39,14 +39,6 @@ describe SystemCheck::App::GitUserDefaultSSHConfigCheck do
 
       it { is_expected.to eq(expected_result) }
     end
-
-    it 'skips GitLab read-only instances' do
-      stub_user
-      stub_home_dir
-      allow(Gitlab::Database).to receive(:read_only?).and_return(true)
-
-      is_expected.to be_truthy
-    end
   end
 
   describe '#check?' do

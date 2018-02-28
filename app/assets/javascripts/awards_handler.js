@@ -1,8 +1,8 @@
 /* eslint-disable class-methods-use-this */
-/* global Flash */
 import _ from 'underscore';
 import Cookies from 'js-cookie';
 import { isInIssuePage, updateTooltipTitle } from './lib/utils/common_utils';
+import Flash from './flash';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
 const transitionEndEventString = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';

@@ -34,7 +34,6 @@ feature 'Repository settings' do
 
         visit project_settings_repository_path(project)
 
-        expect(page.status_code).to eq(200)
         expect(page).to have_content('private_deploy_key')
         expect(page).to have_content('public_deploy_key')
       end
@@ -86,7 +85,7 @@ feature 'Repository settings' do
         project.deploy_keys << private_deploy_key
         visit project_settings_repository_path(project)
 
-        find('li', text: private_deploy_key.title).click_button('Remove')
+        accept_confirm { find('li', text: private_deploy_key.title).click_button('Remove') }
 
         expect(page).not_to have_content(private_deploy_key.title)
       end

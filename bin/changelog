@@ -28,6 +28,7 @@ class ChangelogOptionParser
     Type.new('deprecated', 'New deprecation'),
     Type.new('removed', 'Feature removal'),
     Type.new('security', 'Security fix'),
+    Type.new('performance', 'Performance improvement'),
     Type.new('other', 'Other')
   ].freeze
   TYPES_OFFSET = 1

@@ -8,13 +8,13 @@ describe API::CircuitBreakers do
     it 'returns a 401 for anonymous users' do
       get api('/circuit_breakers/repository_storage')
 
-      expect(response).to have_http_status(401)
+      expect(response).to have_gitlab_http_status(401)
     end
 
     it 'returns a 403 for users' do
       get api('/circuit_breakers/repository_storage', user)
 
-      expect(response).to have_http_status(403)
+      expect(response).to have_gitlab_http_status(403)
     end
 
     it 'returns an Array of storages' do
@@ -24,7 +24,7 @@ describe API::CircuitBreakers do
 
       get api('/circuit_breakers/repository_storage', admin)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_kind_of(Array)
       expect(json_response.first['storage_name']).to eq('broken')
       expect(json_response.first['failing_on_hosts']).to eq(['web01'])
@@ -39,7 +39,7 @@ describe API::CircuitBreakers do
 
         get api('/circuit_breakers/repository_storage/failing', admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_kind_of(Array)
       end
     end
@@ -51,7 +51,7 @@ describe API::CircuitBreakers do
 
       delete api('/circuit_breakers/repository_storage', admin)
 
-      expect(response).to have_http_status(204)
+      expect(response).to have_gitlab_http_status(204)
     end
   end
 end

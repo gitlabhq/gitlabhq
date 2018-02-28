@@ -1,6 +1,0 @@
----
-title: Ensure no exception is raised when Raven tries to get the current user in API
-  context
-merge_request: 14580
-author:
-type: fixed

@@ -28,6 +28,12 @@ will be allowed to display the Performance Bar.
 Make sure _Enable the Performance Bar_ is checked and hit
 **Save** to save the changes.
 
+Once the Performance Bar is enabled, you will need to press the [<kbd>p</kbd> +
+<kbd>b</kbd> keyboard shortcut](../../../workflow/shortcuts.md) to actually
+display it.
+
+You can toggle the Bar using the same shortcut.
+
 ---
 
 ![GitLab Performance Bar Admin Settings](img/performance_bar_configuration_settings.png)

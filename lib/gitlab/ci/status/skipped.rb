@@ -11,7 +11,7 @@ module Gitlab
         end
 
         def icon
-          'icon_status_skipped'
+          'status_skipped'
         end
 
         def favicon

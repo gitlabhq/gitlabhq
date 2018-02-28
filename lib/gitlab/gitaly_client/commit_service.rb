@@ -18,7 +18,7 @@ module Gitlab
 
         response = GitalyClient.call(@repository.storage, :commit_service, :list_files, request)
         response.flat_map do |msg|
-          msg.paths.map { |d| d.dup.force_encoding(Encoding::UTF_8) }
+          msg.paths.map { |d| EncodingHelper.encode!(d.dup) }
         end
       end
 

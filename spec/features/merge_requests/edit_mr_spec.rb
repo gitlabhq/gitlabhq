@@ -66,6 +66,7 @@ feature 'Edit Merge Request' do
     end
 
     def get_textarea_height
+      find('#merge_request_description')
       page.evaluate_script('document.getElementById("merge_request_description").offsetHeight')
     end
   end

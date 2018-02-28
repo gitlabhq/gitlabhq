@@ -1,5 +1,14 @@
+/*
+ * This is a modified version of https://github.com/peek/peek/blob/master/app/assets/javascripts/peek.js
+ *
+ * - Removed the dependency on jquery.tipsy
+ * - Removed the initializeTipsy and toggleBar functions
+ * - Customized updatePerformanceBar to handle SQL queries report specificities
+ * - Changed /peek/results to /-/peek/results
+ * - Removed the keypress, pjax:end, page:change, and turbolinks:load handlers
+ */
 (function($) {
-  var fetchRequestResults, getRequestId, peekEnabled, toggleBar, updatePerformanceBar;
+  var fetchRequestResults, getRequestId, peekEnabled, updatePerformanceBar;
   getRequestId = function() {
     return $('#peek').data('request-id');
   };
@@ -41,22 +50,6 @@
     });
     return $(document).trigger('peek:render', [getRequestId(), results]);
   };
-  toggleBar = function(event) {
-    var wrapper;
-    if ($(event.target).is(':input')) {
-      return;
-    }
-    if (event.which === 96 && !event.metaKey) {
-      wrapper = $('#peek');
-      if (wrapper.hasClass('disabled')) {
-        wrapper.removeClass('disabled');
-        return document.cookie = "peek=true; path=/";
-      } else {
-        wrapper.addClass('disabled');
-        return document.cookie = "peek=false; path=/";
-      }
-    }
-  };
   fetchRequestResults = function() {
     return $.ajax('/-/peek/results', {
       data: {
@@ -68,7 +61,6 @@
       error: function(xhr, textStatus, error) {}
     });
   };
-  $(document).on('keypress', toggleBar);
   $(document).on('peek:update', fetchRequestResults);
   return $(function() {
     if (peekEnabled()) {

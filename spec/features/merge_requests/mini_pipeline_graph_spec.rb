@@ -52,10 +52,12 @@ feature 'Mini Pipeline Graph', :js do
     end
 
     it 'should expand when hovered' do
+      find('.mini-pipeline-graph-dropdown-toggle')
       before_width = evaluate_script("$('.mini-pipeline-graph-dropdown-toggle:visible').outerWidth();")
 
       toggle.hover
 
+      find('.mini-pipeline-graph-dropdown-toggle')
       after_width = evaluate_script("$('.mini-pipeline-graph-dropdown-toggle:visible').outerWidth();")
 
       expect(before_width).to be < after_width
@@ -90,7 +92,7 @@ feature 'Mini Pipeline Graph', :js do
     end
 
     it 'should close when toggle is clicked again' do
-      toggle.trigger('click')
+      toggle.click
 
       expect(toggle.find(:xpath, '..')).not_to have_selector('.mini-pipeline-graph-dropdown-menu')
     end

@@ -60,6 +60,7 @@ describe 'User creates files' do
       end
 
       it 'creates and commit a new file', :js do
+        find('#editor')
         execute_script("ace.edit('editor').setValue('*.rbca')")
         fill_in(:file_name, with: 'not_a_file.md')
         fill_in(:commit_message, with: 'New commit message', visible: true)
@@ -75,6 +76,7 @@ describe 'User creates files' do
       end
 
       it 'creates and commit a new file with new lines at the end of file', :js do
+        find('#editor')
         execute_script('ace.edit("editor").setValue("Sample\n\n\n")')
         fill_in(:file_name, with: 'not_a_file.md')
         fill_in(:commit_message, with: 'New commit message', visible: true)
@@ -86,6 +88,7 @@ describe 'User creates files' do
 
         find('.js-edit-blob').click
 
+        find('#editor')
         expect(evaluate_script('ace.edit("editor").getValue()')).to eq("Sample\n\n\n")
       end
 
@@ -94,6 +97,7 @@ describe 'User creates files' do
 
         expect(page).to have_selector('.file-editor')
 
+        find('#editor')
         execute_script("ace.edit('editor').setValue('*.rbca')")
         fill_in(:commit_message, with: 'New commit message', visible: true)
         click_button('Commit changes')
@@ -108,6 +112,7 @@ describe 'User creates files' do
       it 'creates and commit a new file specifying a new branch', :js do
         expect(page).to have_selector('.file-editor')
 
+        find('#editor')
         execute_script("ace.edit('editor').setValue('*.rbca')")
         fill_in(:file_name, with: 'not_a_file.md')
         fill_in(:commit_message, with: 'New commit message', visible: true)
@@ -136,6 +141,7 @@ describe 'User creates files' do
 
         expect(page).to have_selector('.file-editor')
 
+        find('#editor')
         execute_script("ace.edit('editor').setValue('*.rbca')")
 
         fill_in(:file_name, with: 'not_a_file.md')

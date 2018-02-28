@@ -1,6 +1,3 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, max-len, one-var, one-var-declaration-per-line, quotes, prefer-template, newline-per-chained-call, comma-dangle, new-cap, no-else-return, consistent-return */
-/* global notes */
-
 /* Developer beware! Do not add logic to showButton or hideButton
  * that will force a reflow. Doing so will create a signficant performance
  * bottleneck for pages with large diffs. For a comprehensive list of what
@@ -20,8 +17,10 @@ const DIFF_EXPANDED_CLASS = 'diff-expanded';
 
 export default {
   init($diffFile) {
-    /* Caching is used only when the following members are *true*. This is because there are likely to be
-     * differently configured versions of diffs in the same session. However if these values are true, they
+    /* Caching is used only when the following members are *true*.
+     * This is because there are likely to be
+     * differently configured versions of diffs in the same session.
+     * However if these values are true, they
      * will be true in all cases */
 
     if (!this.userCanCreateNote) {

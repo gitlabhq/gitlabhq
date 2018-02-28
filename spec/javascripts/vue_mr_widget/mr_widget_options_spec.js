@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 import mrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import notify from '~/lib/utils/notify';
@@ -121,24 +120,28 @@ describe('mrWidgetOptions', () => {
 
     describe('initPolling', () => {
       it('should call SmartInterval', () => {
-        spyOn(gl, 'SmartInterval').and.returnValue({
-          resume() {},
-          stopTimer() {},
-        });
+        spyOn(vm, 'checkStatus').and.returnValue(Promise.resolve());
+        jasmine.clock().install();
         vm.initPolling();
 
+        expect(vm.checkStatus).not.toHaveBeenCalled();
+
+        jasmine.clock().tick(10000);
+
         expect(vm.pollingInterval).toBeDefined();
-        expect(gl.SmartInterval).toHaveBeenCalled();
+        expect(vm.checkStatus).toHaveBeenCalled();
+
+        jasmine.clock().uninstall();
       });
     });
 
     describe('initDeploymentsPolling', () => {
       it('should call SmartInterval', () => {
-        spyOn(gl, 'SmartInterval');
+        spyOn(vm, 'fetchDeployments').and.returnValue(Promise.resolve());
         vm.initDeploymentsPolling();
 
         expect(vm.deploymentsInterval).toBeDefined();
-        expect(gl.SmartInterval).toHaveBeenCalled();
+        expect(vm.fetchDeployments).toHaveBeenCalled();
       });
     });
 
@@ -310,28 +313,6 @@ describe('mrWidgetOptions', () => {
 
         vm.stopPolling();
         expect(vm.pollingInterval.stopTimer).toHaveBeenCalled();
-      });
-    });
-
-    describe('createService', () => {
-      it('should instantiate a Service', () => {
-        const endpoints = {
-          mergePath: '/nice/path',
-          mergeCheckPath: '/nice/path',
-          cancelAutoMergePath: '/nice/path',
-          removeWIPPath: '/nice/path',
-          sourceBranchPath: '/nice/path',
-          ciEnvironmentsStatusPath: '/nice/path',
-          statusPath: '/nice/path',
-          mergeActionsContentPath: '/nice/path',
-        };
-
-        const serviceInstance = vm.createService(endpoints);
-        const isInstanceOfMRService = serviceInstance instanceof MRWidgetService;
-        expect(isInstanceOfMRService).toBe(true);
-        Object.keys(serviceInstance).forEach((key) => {
-          expect(serviceInstance[key]).toBeDefined();
-        });
       });
     });
   });

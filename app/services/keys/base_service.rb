@@ -4,6 +4,7 @@ module Keys
 
     def initialize(user, params)
       @user, @params = user, params
+      @ip_address = @params.delete(:ip_address)
     end
 
     def notification_service

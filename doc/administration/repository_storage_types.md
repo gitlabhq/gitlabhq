@@ -25,7 +25,10 @@ Any change in the URL will need to be reflected on disk (when groups / users or 
 of load in big installations, and can be even worst if they are using any type of network based filesystem.
 
 Last, for GitLab Geo, this storage type means we have to synchronize the disk state, replicate renames in the correct
-order or we may end-up with wrong repository or missing data temporarily.   
+order or we may end-up with wrong repository or missing data temporarily.
+
+This pattern also exists in other objects stored in GitLab, like issue Attachments, GitLab Pages artifacts, 
+Docker Containers for the integrated Registry, etc.
 
 ## Hashed Storage
 
@@ -67,3 +70,23 @@ To migrate your existing projects to the new storage type, check the specific [r
 [ce-28283]: https://gitlab.com/gitlab-org/gitlab-ce/issues/28283
 [rake tasks]: raketasks/storage.md#migrate-existing-projects-to-hashed-storage
 [storage-paths]: repository_storage_types.md
+
+### Hashed Storage coverage
+
+We are incrementally moving every storable object in GitLab to the Hashed Storage pattern. You can check the current
+coverage status below.
+
+Note that things stored in an S3 compatible endpoint will not have the downsides mentioned earlier, if they are not
+prefixed with `#{namespace}/#{project_name}`, which is true for CI Cache and LFS Objects.
+
+| Storable Object | Legacy Storage | Hashed Storage | S3 Compatible | GitLab Version | 
+| ----------------| -------------- | -------------- | ------------- | -------------- |
+| Repository      | Yes            | Yes            | -             | 10.0           |
+| Attachments     | Yes            | Yes            | -             | 10.2           |
+| Avatars         | Yes            | No             | -             | -              | 
+| Pages           | Yes            | No             | -             | -              |
+| Docker Registry | Yes            | No             | -             | -              |
+| CI Build Logs   | No             | No             | -             | -              | 
+| CI Artifacts    | No             | No             | -             | -              | 
+| CI Cache        | No             | No             | Yes           | -              |
+| LFS Objects     | Yes            | No             | Yes (EEP)     | -              | 

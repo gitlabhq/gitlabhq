@@ -40,16 +40,16 @@
     @media (max-width: $screen-xs-max) {
       width: 100%;
     }
-  }
 
-  .person .spark {
-    display: block;
-    background: $stat-graph-common-bg;
-    width: 100%;
-  }
+    .spark {
+      display: block;
+      background: $stat-graph-common-bg;
+      width: 100%;
+    }
 
-  .person .area-contributor {
-    fill: $stat-graph-orange-fill;
+    .area-contributor {
+      fill: $stat-graph-orange-fill;
+    }
   }
 }
 

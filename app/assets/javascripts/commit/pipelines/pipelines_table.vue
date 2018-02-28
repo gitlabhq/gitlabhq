@@ -25,6 +25,11 @@
         type: String,
         required: true,
       },
+      viewType: {
+        type: String,
+        required: false,
+        default: 'child',
+      },
     },
     mixins: [
       pipelinesMixin,
@@ -110,6 +115,7 @@
         :pipelines="state.pipelines"
         :update-graph-dropdown="updateGraphDropdown"
         :auto-devops-help-path="autoDevopsHelpPath"
+        :view-type="viewType"
         />
     </div>
   </div>

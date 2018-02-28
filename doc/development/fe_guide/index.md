@@ -54,7 +54,8 @@ or make changes to our frontend development guidelines.
 
 ---
 
-## [Testing](testing.md)
+## [Testing](../testing_guide/frontend_testing.md)
+
 How we write frontend tests, run the GitLab test suite, and debug test related
 issues.
 
@@ -69,6 +70,9 @@ Common JavaScript design patterns in GitLab's codebase.
 Vue specific design patterns and practices.
 
 ---
+
+## [Vue Resource](vue_resource.md)
+Vue resource specific practices and gotchas.
 
 ## [Icons](icons.md)
 How we use SVG for our Icons.
@@ -101,6 +105,10 @@ Frontend security practices.
 
 ## [Accessibility](accessibility.md)
 Our accessibility standards and resources.
+
+## [Internationalization (i18n) and Translations](../i18n/externalization.md)
+Frontend internationalization support is described in [this document](../i18n/).
+The [externalization part of the guide](../i18n/externalization.md) explains the helpers/methods available.
 
 
 [rails]: http://rubyonrails.org/

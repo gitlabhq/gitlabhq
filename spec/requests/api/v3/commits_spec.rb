@@ -19,7 +19,7 @@ describe API::V3::Commits do
         commit = project.repository.commit
         get v3_api("/projects/#{project.id}/repository/commits", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['id']).to eq(commit.id)
         expect(json_response.first['committer_name']).to eq(commit.committer_name)
@@ -30,7 +30,7 @@ describe API::V3::Commits do
     context "unauthorized user" do
       it "does not return project commits" do
         get v3_api("/projects/#{project.id}/repository/commits")
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
@@ -69,7 +69,7 @@ describe API::V3::Commits do
       it "returns an invalid parameter error message" do
         get v3_api("/projects/#{project.id}/repository/commits?since=invalid-date", user)
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
         expect(json_response['error']).to eq('since is invalid')
       end
     end
@@ -92,13 +92,13 @@ describe API::V3::Commits do
     it 'returns a 403 unauthorized for user without permissions' do
       post v3_api(url, user2)
 
-      expect(response).to have_http_status(403)
+      expect(response).to have_gitlab_http_status(403)
     end
 
     it 'returns a 400 bad request if no params are given' do
       post v3_api(url, user)
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
     end
 
     describe 'create' do
@@ -133,7 +133,7 @@ describe API::V3::Commits do
       it 'a new file in project repo' do
         post v3_api(url, user), valid_c_params
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq(message)
         expect(json_response['committer_name']).to eq(user.name)
         expect(json_response['committer_email']).to eq(user.email)
@@ -142,7 +142,7 @@ describe API::V3::Commits do
       it 'returns a 400 bad request if file exists' do
         post v3_api(url, user), invalid_c_params
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
 
       context 'with project path containing a dot in URL' do
@@ -152,7 +152,7 @@ describe API::V3::Commits do
         it 'a new file in project repo' do
           post v3_api(url, user), valid_c_params
 
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
         end
       end
     end
@@ -187,14 +187,14 @@ describe API::V3::Commits do
       it 'an existing file in project repo' do
         post v3_api(url, user), valid_d_params
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq(message)
       end
 
       it 'returns a 400 bad request if file does not exist' do
         post v3_api(url, user), invalid_d_params
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
     end
 
@@ -232,14 +232,14 @@ describe API::V3::Commits do
       it 'an existing file in project repo' do
         post v3_api(url, user), valid_m_params
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq(message)
       end
 
       it 'returns a 400 bad request if file does not exist' do
         post v3_api(url, user), invalid_m_params
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
     end
 
@@ -275,14 +275,14 @@ describe API::V3::Commits do
       it 'an existing file in project repo' do
         post v3_api(url, user), valid_u_params
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq(message)
       end
 
       it 'returns a 400 bad request if file does not exist' do
         post v3_api(url, user), invalid_u_params
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
     end
 
@@ -348,14 +348,14 @@ describe API::V3::Commits do
       it 'are commited as one in project repo' do
         post v3_api(url, user), valid_mo_params
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq(message)
       end
 
       it 'return a 400 bad request if there are any issues' do
         post v3_api(url, user), invalid_mo_params
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
     end
   end
@@ -365,7 +365,7 @@ describe API::V3::Commits do
       it "returns a commit by sha" do
         get v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['id']).to eq(project.repository.commit.id)
         expect(json_response['title']).to eq(project.repository.commit.title)
         expect(json_response['stats']['additions']).to eq(project.repository.commit.stats.additions)
@@ -375,13 +375,13 @@ describe API::V3::Commits do
 
       it "returns a 404 error if not found" do
         get v3_api("/projects/#{project.id}/repository/commits/invalid_sha", user)
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it "returns nil for commit without CI" do
         get v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['status']).to be_nil
       end
 
@@ -391,7 +391,7 @@ describe API::V3::Commits do
 
         get v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['status']).to eq(pipeline.status)
       end
 
@@ -400,7 +400,7 @@ describe API::V3::Commits do
 
         get v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['status']).to eq("created")
       end
     end
@@ -408,7 +408,7 @@ describe API::V3::Commits do
     context "unauthorized user" do
       it "does not return the selected commit" do
         get v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}")
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end
@@ -419,7 +419,7 @@ describe API::V3::Commits do
 
       it "returns the diff of the selected commit" do
         get v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/diff", user)
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
 
         expect(json_response).to be_an Array
         expect(json_response.length).to be >= 1
@@ -428,14 +428,14 @@ describe API::V3::Commits do
 
       it "returns a 404 error if invalid commit" do
         get v3_api("/projects/#{project.id}/repository/commits/invalid_sha/diff", user)
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
     context "unauthorized user" do
       it "does not return the diff of the selected commit" do
         get v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/diff")
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end
@@ -444,7 +444,7 @@ describe API::V3::Commits do
     context 'authorized user' do
       it 'returns merge_request comments' do
         get v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user)
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(2)
         expect(json_response.first['note']).to eq('a comment on a commit')
@@ -453,14 +453,14 @@ describe API::V3::Commits do
 
       it 'returns a 404 error if merge_request_id not found' do
         get v3_api("/projects/#{project.id}/repository/commits/1234ab/comments", user)
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
     context 'unauthorized user' do
       it 'does not return the diff of the selected commit' do
         get v3_api("/projects/#{project.id}/repository/commits/1234ab/comments")
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end
@@ -472,7 +472,7 @@ describe API::V3::Commits do
       it 'cherry picks a commit' do
         post v3_api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user), branch: 'master'
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq(master_pickable_commit.title)
         expect(json_response['message']).to eq(master_pickable_commit.cherry_pick_message(user))
         expect(json_response['author_name']).to eq(master_pickable_commit.author_name)
@@ -482,7 +482,7 @@ describe API::V3::Commits do
       it 'returns 400 if commit is already included in the target branch' do
         post v3_api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user), branch: 'markdown'
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
         expect(json_response['message']).to include('Sorry, we cannot cherry-pick this commit automatically.')
       end
 
@@ -492,35 +492,35 @@ describe API::V3::Commits do
 
         post v3_api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user2), branch: protected_branch.name
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
         expect(json_response['message']).to eq('You are not allowed to push into this branch')
       end
 
       it 'returns 400 for missing parameters' do
         post v3_api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user)
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
         expect(json_response['error']).to eq('branch is missing')
       end
 
       it 'returns 404 if commit is not found' do
         post v3_api("/projects/#{project.id}/repository/commits/abcd0123/cherry_pick", user), branch: 'master'
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq('404 Commit Not Found')
       end
 
       it 'returns 404 if branch is not found' do
         post v3_api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user), branch: 'foo'
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq('404 Branch Not Found')
       end
 
       it 'returns 400 for missing parameters' do
         post v3_api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user)
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
         expect(json_response['error']).to eq('branch is missing')
       end
     end
@@ -529,7 +529,7 @@ describe API::V3::Commits do
       it 'does not cherry pick the commit' do
         post v3_api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick"), branch: 'master'
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end
@@ -538,7 +538,7 @@ describe API::V3::Commits do
     context 'authorized user' do
       it 'returns comment' do
         post v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user), note: 'My comment'
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['note']).to eq('My comment')
         expect(json_response['path']).to be_nil
         expect(json_response['line']).to be_nil
@@ -548,7 +548,7 @@ describe API::V3::Commits do
       it 'returns the inline comment' do
         post v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user), note: 'My comment', path: project.repository.commit.raw_diffs.first.new_path, line: 1, line_type: 'new'
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['note']).to eq('My comment')
         expect(json_response['path']).to eq(project.repository.commit.raw_diffs.first.new_path)
         expect(json_response['line']).to eq(1)
@@ -557,19 +557,19 @@ describe API::V3::Commits do
 
       it 'returns 400 if note is missing' do
         post v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user)
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
 
       it 'returns 404 if note is attached to non existent commit' do
         post v3_api("/projects/#{project.id}/repository/commits/1234ab/comments", user), note: 'My comment'
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
     context 'unauthorized user' do
       it 'does not return the diff of the selected commit' do
         post v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments")
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end

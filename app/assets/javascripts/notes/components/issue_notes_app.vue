@@ -1,14 +1,14 @@
 <script>
-  /* global Flash */
   import { mapGetters, mapActions } from 'vuex';
+  import Flash from '../../flash';
   import store from '../stores/';
   import * as constants from '../constants';
   import issueNote from './issue_note.vue';
   import issueDiscussion from './issue_discussion.vue';
-  import issueSystemNote from './issue_system_note.vue';
+  import systemNote from '../../vue_shared/components/notes/system_note.vue';
   import issueCommentForm from './issue_comment_form.vue';
-  import placeholderNote from './issue_placeholder_note.vue';
-  import placeholderSystemNote from './issue_placeholder_system_note.vue';
+  import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
+  import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
   export default {
@@ -37,7 +37,7 @@
     components: {
       issueNote,
       issueDiscussion,
-      issueSystemNote,
+      systemNote,
       issueCommentForm,
       loadingIcon,
       placeholderNote,
@@ -68,7 +68,7 @@
           }
           return placeholderNote;
         } else if (note.individual_note) {
-          return note.notes[0].system ? issueSystemNote : issueNote;
+          return note.notes[0].system ? systemNote : issueNote;
         }
 
         return issueDiscussion;

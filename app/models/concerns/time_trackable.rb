@@ -9,7 +9,7 @@ module TimeTrackable
   extend ActiveSupport::Concern
 
   included do
-    attr_reader :time_spent, :time_spent_user
+    attr_reader :time_spent, :time_spent_user, :spent_at
 
     alias_method :time_spent?, :time_spent
 
@@ -24,6 +24,7 @@ module TimeTrackable
   def spend_time(options)
     @time_spent = options[:duration]
     @time_spent_user = options[:user]
+    @spent_at = options[:spent_at]
     @original_total_time_spent = nil
 
     return if @time_spent == 0
@@ -55,7 +56,11 @@ module TimeTrackable
   end
 
   def add_or_subtract_spent_time
-    timelogs.new(time_spent: time_spent, user: @time_spent_user)
+    timelogs.new(
+      time_spent: time_spent,
+      user: @time_spent_user,
+      spent_at: @spent_at
+    )
   end
 
   def check_negative_time_spent

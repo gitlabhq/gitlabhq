@@ -205,6 +205,7 @@ class Projects::BlobController < Projects::ApplicationController
     tree_path = path_segments.join('/')
 
     render json: json.merge(
+      id: @blob.id,
       path: blob.path,
       name: blob.name,
       extension: blob.extension,

@@ -56,29 +56,34 @@ that, login with an Admin account and do following:
 With PlantUML integration enabled and configured, we can start adding diagrams to
 our AsciiDoc snippets, wikis and repos using delimited blocks:
 
-```
-[plantuml, format="png", id="myDiagram", width="200px"]
---
-Bob->Alice : hello
-Alice -> Bob : Go Away
---
-```
+- **Markdown**
 
-And in Markdown using fenced code blocks:
+      ```plantuml
+      Bob -> Alice : hello
+      Alice -> Bob : Go Away
+      ```
 
-    ```plantuml
-    Bob -> Alice : hello
+- **AsciiDoc**
+
+    ```
+    [plantuml, format="png", id="myDiagram", width="200px"]
+    --
+    Bob->Alice : hello
     Alice -> Bob : Go Away
+    --
     ```
 
-And in reStructuredText using a directive:
+- **reStructuredText**
 
-```
-.. plantuml::
+    ```
+    .. plantuml::
+       :caption: Caption with **bold** and *italic*
 
-   Bob -> Alice: hello
-   Alice -> Bob: Go Away
-```
+       Bob -> Alice: hello
+       Alice -> Bob: Go Away
+    ```
+
+    You can also use the `uml::` directive for compatibility with [sphinxcontrib-plantuml](https://pypi.python.org/pypi/sphinxcontrib-plantuml), but please note that we currently only support the `caption` option.
 
 The above blocks will be converted to an HTML img tag with source pointing to the
 PlantUML instance. If the PlantUML server is correctly configured, this should

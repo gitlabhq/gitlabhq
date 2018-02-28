@@ -139,7 +139,7 @@ describe 'Filter issues', :js do
         input_filtered_search('label:none')
 
         expect_tokens([label_token('none', false)])
-        expect_issues_list_count(8)
+        expect_issues_list_count(4)
         expect_filtered_search_input_empty
       end
 

@@ -22,7 +22,7 @@ describe 'Edit Project Settings' do
           # disable by clicking toggle
           toggle_feature_off("project[project_feature_attributes][#{tool_name}_access_level]")
           page.within('.sharing-permissions') do
-            click_button 'Save changes'
+            find('input[value="Save changes"]').click
           end
           wait_for_requests
           expect(page).not_to have_selector(".shortcuts-#{shortcut_name}")
@@ -30,7 +30,7 @@ describe 'Edit Project Settings' do
           # re-enable by clicking toggle again
           toggle_feature_on("project[project_feature_attributes][#{tool_name}_access_level]")
           page.within('.sharing-permissions') do
-            click_button 'Save changes'
+            find('input[value="Save changes"]').click
           end
           wait_for_requests
           expect(page).to have_selector(".shortcuts-#{shortcut_name}")

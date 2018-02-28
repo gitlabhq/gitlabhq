@@ -1,9 +1,13 @@
-## Contributor license agreement
+## Developer Certificate of Origin + License
 
-By submitting code as an individual you agree to the
-[individual contributor license agreement](doc/legal/individual_contributor_license_agreement.md).
-By submitting code as an entity you agree to the
-[corporate contributor license agreement](doc/legal/corporate_contributor_license_agreement.md).
+By contributing to GitLab B.V., You accept and agree to the following terms and
+conditions for Your present and future Contributions submitted to GitLab B.V.
+Except for the license granted herein to GitLab B.V. and recipients of software
+distributed by GitLab B.V., You reserve all right, title, and interest in and to
+Your Contributions. All Contributions are subject to the following DCO + License
+terms.
+
+[DCO + License](https://gitlab.com/gitlab-org/dco/blob/master/README.md)
 
 _This notice should stay as the first item in the CONTRIBUTING.md file._
 
@@ -21,10 +25,10 @@ _This notice should stay as the first item in the CONTRIBUTING.md file._
 - [Workflow labels](#workflow-labels)
   - [Type labels (~"feature proposal", ~bug, ~customer, etc.)](#type-labels-feature-proposal-bug-customer-etc)
   - [Subject labels (~wiki, ~"container registry", ~ldap, ~api, etc.)](#subject-labels-wiki-container-registry-ldap-api-etc)
-  - [Team labels (~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.)](#team-labels-ci-discussion-edge-platform-etc)
+  - [Team labels (~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.)](#team-labels-cicd-discussion-edge-platform-etc)
   - [Priority labels (~Deliverable and ~Stretch)](#priority-labels-deliverable-and-stretch)
   - [Label for community contributors (~"Accepting Merge Requests")](#label-for-community-contributors-accepting-merge-requests)
-- [Implement design & UI elements](#implement-design--ui-elements)
+- [Implement design & UI elements](#implement-design-ui-elements)
 - [Issue tracker](#issue-tracker)
   - [Issue triaging](#issue-triaging)
   - [Feature proposals](#feature-proposals)
@@ -100,8 +104,7 @@ the remaining issues on the GitHub issue tracker.
 
 ## I want to contribute!
 
-If you want to contribute to GitLab, but are not sure where to start,
-look for [issues with the label `Accepting Merge Requests` and small weight][accepting-mrs-weight].
+If you want to contribute to GitLab, [issues with the label `Accepting Merge Requests` and small weight][accepting-mrs-weight] is a great place to start. Issues with a lower weight (1 or 2) are deemed suitable for beginners.
 These issues will be of reasonable size and challenge, for anyone to start
 contributing to GitLab.
 
@@ -296,9 +299,9 @@ might be edited to make them small and simple.
 
 Please submit Feature Proposals using the ['Feature Proposal' issue template](.gitlab/issue_templates/Feature Proposal.md) provided on the issue tracker.
 
-For changes in the interface, it is helpful to include a mockup. Issues that add to, or change, the interface should 
-be given the ~"UX" label. This will allow the UX team to provide input and guidance. You may 
-need to ask one of the [core team] members to add the label, if you do not have permissions to do it by yourself. 
+For changes in the interface, it is helpful to include a mockup. Issues that add to, or change, the interface should
+be given the ~"UX" label. This will allow the UX team to provide input and guidance. You may
+need to ask one of the [core team] members to add the label, if you do not have permissions to do it by yourself.
 
 If you want to create something yourself, consider opening an issue first to
 discuss whether it is interesting to include this in GitLab.
@@ -658,7 +661,7 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [license-finder-doc]: doc/development/licensing.md
 [GitLab Inc engineering workflow]: https://about.gitlab.com/handbook/engineering/workflow/#labelling-issues
 [polling-etag]: https://docs.gitlab.com/ce/development/polling.html
-[testing]: doc/development/testing.md
+[testing]: doc/development/testing_guide/index.md
 
 [^1]: Please note that specs other than JavaScript specs are considered backend
       code.

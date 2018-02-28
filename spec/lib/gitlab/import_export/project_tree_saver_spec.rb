@@ -77,6 +77,10 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         expect(saved_project_json['issues'].first['notes']).not_to be_empty
       end
 
+      it 'has issue assignees' do
+        expect(saved_project_json['issues'].first['issue_assignees']).not_to be_empty
+      end
+
       it 'has author on issue comments' do
         expect(saved_project_json['issues'].first['notes'].first['author']).not_to be_empty
       end
@@ -162,6 +166,10 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         expect(project_feature["issues_access_level"]).to eq(ProjectFeature::DISABLED)
         expect(project_feature["wiki_access_level"]).to eq(ProjectFeature::ENABLED)
         expect(project_feature["builds_access_level"]).to eq(ProjectFeature::PRIVATE)
+      end
+
+      it 'has custom attributes' do
+        expect(saved_project_json['custom_attributes'].count).to eq(2)
       end
 
       it 'does not complain about non UTF-8 characters in MR diffs' do
@@ -274,6 +282,9 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
 
     create(:event, :created, target: milestone, project: project, author: user)
     create(:service, project: project, type: 'CustomIssueTrackerService', category: 'issue_tracker')
+
+    create(:project_custom_attribute, project: project)
+    create(:project_custom_attribute, project: project)
 
     project
   end

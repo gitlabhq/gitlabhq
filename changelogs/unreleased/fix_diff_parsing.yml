@@ -1,0 +1,5 @@
+---
+title: Fix diff parser so it tolerates to diff special markers in the content
+merge_request:
+author:
+type: fixed

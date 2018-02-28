@@ -1,0 +1,5 @@
+---
+title: Case insensitive search for branches
+merge_request: 14995
+author: George Andrinopoulos
+type: fixed

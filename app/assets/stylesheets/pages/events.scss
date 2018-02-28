@@ -85,7 +85,7 @@
       }
 
       pre {
-        border: none;
+        border: 0;
         background: $gray-light;
         border-radius: 0;
         color: $events-pre-color;
@@ -128,14 +128,14 @@
     }
   }
 
-  &:last-child { border: none; }
+  &:last-child { border: 0; }
 
   .event_commits {
     li {
       &.commit {
         background: transparent;
         padding: 0;
-        border: none;
+        border: 0;
 
         .commit-row-title {
           font-size: $gl-font-size;

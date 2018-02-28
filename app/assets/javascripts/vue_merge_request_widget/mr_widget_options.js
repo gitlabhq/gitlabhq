@@ -1,5 +1,5 @@
-/* global Flash */
-
+import SmartInterval from '~/smart_interval';
+import Flash from '../flash';
 import {
   WidgetHeader,
   WidgetMergeHelp,
@@ -82,7 +82,7 @@ export default {
       return new MRWidgetService(endpoints);
     },
     checkStatus(cb) {
-      this.service.checkStatus()
+      return this.service.checkStatus()
         .then(res => res.json())
         .then((res) => {
           this.handleNotification(res);
@@ -98,7 +98,7 @@ export default {
         });
     },
     initPolling() {
-      this.pollingInterval = new gl.SmartInterval({
+      this.pollingInterval = new SmartInterval({
         callback: this.checkStatus,
         startingInterval: 10000,
         maxInterval: 30000,
@@ -107,7 +107,7 @@ export default {
       });
     },
     initDeploymentsPolling() {
-      this.deploymentsInterval = new gl.SmartInterval({
+      this.deploymentsInterval = new SmartInterval({
         callback: this.fetchDeployments,
         startingInterval: 30000,
         maxInterval: 120000,
@@ -122,7 +122,7 @@ export default {
       }
     },
     fetchDeployments() {
-      this.service.fetchDeployments()
+      return this.service.fetchDeployments()
         .then(res => res.json())
         .then((res) => {
           if (res.length) {

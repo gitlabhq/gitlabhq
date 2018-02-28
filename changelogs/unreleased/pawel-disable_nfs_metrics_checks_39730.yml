@@ -1,0 +1,5 @@
+---
+title: Remove Filesystem check metrics that use too much CPU to handle requests
+merge_request:
+author:
+type: performance

@@ -29,7 +29,8 @@ In addition to that you will be able to filter issues or merge requests by group
 
 ## Milestone promotion
 
-You will be able to promote a project milestone to a group milestone [in the future](https://gitlab.com/gitlab-org/gitlab-ce/issues/35833).
+Project milestones can be promoted to group milestones if its project belongs to a group. When a milestone is promoted all other milestones across the group projects with the same title will be merged into it, which means all milestone's children like issues, merge requests and boards will be moved into the new promoted milestone.
+The promote button can be found in the milestone view or milestones list.
 
 ## Special milestone filters
 

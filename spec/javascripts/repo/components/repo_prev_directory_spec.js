@@ -1,43 +1,45 @@
 import Vue from 'vue';
+import store from '~/repo/stores';
 import repoPrevDirectory from '~/repo/components/repo_prev_directory.vue';
+import { resetStore } from '../helpers';
 
 describe('RepoPrevDirectory', () => {
-  function createComponent(propsData) {
+  let vm;
+  const parentLink = 'parent';
+  function createComponent() {
     const RepoPrevDirectory = Vue.extend(repoPrevDirectory);
 
-    return new RepoPrevDirectory({
-      propsData,
-    }).$mount();
+    const comp = new RepoPrevDirectory({
+      store,
+    });
+
+    comp.$store.state.parentTreeUrl = parentLink;
+
+    return comp.$mount();
   }
 
-  it('renders a prev dir link', () => {
-    const prevUrl = 'prevUrl';
-    const vm = createComponent({
-      prevUrl,
-    });
-    const link = vm.$el.querySelector('a');
-
-    spyOn(vm, 'linkClicked');
-
-    expect(link.href).toMatch(`/${prevUrl}`);
-    expect(link.textContent).toEqual('..');
-
-    link.click();
-
-    expect(vm.linkClicked).toHaveBeenCalledWith(prevUrl);
+  beforeEach(() => {
+    vm = createComponent();
   });
 
-  describe('methods', () => {
-    describe('linkClicked', () => {
-      const vm = jasmine.createSpyObj('vm', ['$emit']);
+  afterEach(() => {
+    vm.$destroy();
 
-      it('$emits linkclicked with file obj', () => {
-        const file = {};
+    resetStore(vm.$store);
+  });
 
-        repoPrevDirectory.methods.linkClicked.call(vm, file);
+  it('renders a prev dir link', () => {
+    const link = vm.$el.querySelector('a');
 
-        expect(vm.$emit).toHaveBeenCalledWith('linkclicked', file);
-      });
-    });
+    expect(link.href).toMatch(`/${parentLink}`);
+    expect(link.textContent).toEqual('...');
+  });
+
+  it('clicking row triggers getTreeData', () => {
+    spyOn(vm, 'getTreeData');
+
+    vm.$el.querySelector('td').click();
+
+    expect(vm.getTreeData).toHaveBeenCalledWith({ endpoint: parentLink });
   });
 });

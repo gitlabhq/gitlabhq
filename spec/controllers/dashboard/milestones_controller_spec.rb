@@ -32,7 +32,7 @@ describe Dashboard::MilestonesController do
     it 'shows milestone page' do
       view_milestone
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
   end
 end

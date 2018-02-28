@@ -22,7 +22,7 @@ export default {
     details_path: '/root/ci-mock/-/jobs/4757',
     favicon: '/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico',
     action: {
-      icon: 'icon_action_retry',
+      icon: 'retry',
       title: 'Retry',
       path: '/root/ci-mock/-/jobs/4757/retry',
       method: 'post',

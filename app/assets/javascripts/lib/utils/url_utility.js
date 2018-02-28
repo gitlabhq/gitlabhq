@@ -85,7 +85,7 @@ w.gl.utils.getLocationHash = function(url) {
   return hashIndex === -1 ? null : url.substring(hashIndex + 1);
 };
 
-w.gl.utils.refreshCurrentPage = () => gl.utils.visitUrl(document.location.href);
+w.gl.utils.refreshCurrentPage = () => gl.utils.visitUrl(window.location.href);
 
 // eslint-disable-next-line import/prefer-default-export
 export function visitUrl(url, external = false) {
@@ -96,7 +96,7 @@ export function visitUrl(url, external = false) {
     otherWindow.opener = null;
     otherWindow.location = url;
   } else {
-    document.location.href = url;
+    window.location.href = url;
   }
 }
 

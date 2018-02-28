@@ -6,31 +6,33 @@ module Gitlab
   module FileDetector
     PATTERNS = {
       # Project files
-      readme: /\Areadme/i,
-      changelog: /\A(changelog|history|changes|news)/i,
-      license: /\A(licen[sc]e|copying)(\..+|\z)/i,
-      contributing: /\Acontributing/i,
+      readme: /\Areadme[^\/]*\z/i,
+      changelog: /\A(changelog|history|changes|news)[^\/]*\z/i,
+      license: /\A(licen[sc]e|copying)(\.[^\/]+)?\z/i,
+      contributing: /\Acontributing[^\/]*\z/i,
       version: 'version',
       avatar: /\Alogo\.(png|jpg|gif)\z/,
+      issue_template: /\A\.gitlab\/issue_templates\/[^\/]+\.md\z/,
+      merge_request_template: /\A\.gitlab\/merge_request_templates\/[^\/]+\.md\z/,
 
       # Configuration files
       gitignore: '.gitignore',
       koding: '.koding.yml',
       gitlab_ci: '.gitlab-ci.yml',
-      route_map: 'route-map.yml',
+      route_map: '.gitlab/route-map.yml',
 
       # Dependency files
-      cartfile: /\ACartfile/,
+      cartfile: /\ACartfile[^\/]*\z/,
       composer_json: 'composer.json',
       gemfile: /\A(Gemfile|gems\.rb)\z/,
       gemfile_lock: 'Gemfile.lock',
-      gemspec: /\.gemspec\z/,
+      gemspec: /\A[^\/]*\.gemspec\z/,
       godeps_json: 'Godeps.json',
       package_json: 'package.json',
       podfile: 'Podfile',
-      podspec_json: /\.podspec\.json\z/,
-      podspec: /\.podspec\z/,
-      requirements_txt: /requirements\.txt\z/,
+      podspec_json: /\A[^\/]*\.podspec\.json\z/,
+      podspec: /\A[^\/]*\.podspec\z/,
+      requirements_txt: /\A[^\/]*requirements\.txt\z/,
       yarn_lock: 'yarn.lock'
     }.freeze
 
@@ -63,13 +65,11 @@ module Gitlab
     #     type_of('README.md') # => :readme
     #     type_of('VERSION') # => :version
     def self.type_of(path)
-      name = File.basename(path)
-
       PATTERNS.each do |type, search|
         did_match = if search.is_a?(Regexp)
-                      name =~ search
+                      path =~ search
                     else
-                      name.casecmp(search) == 0
+                      path.casecmp(search) == 0
                     end
 
         return type if did_match

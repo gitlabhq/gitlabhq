@@ -1,76 +1,44 @@
 <script>
-const RepoLoadingFile = {
-  props: {
-    loading: {
-      type: Object,
-      required: false,
-      default: {},
-    },
-    hasFiles: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    isMini: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-  },
+  import { mapGetters } from 'vuex';
+  import skeletonLoadingContainer from '../../vue_shared/components/skeleton_loading_container.vue';
 
-  computed: {
-    showGhostLines() {
-      return this.loading.tree && !this.hasFiles;
+  export default {
+    components: {
+      skeletonLoadingContainer,
     },
-  },
-
-  methods: {
-    lineOfCode(n) {
-      return `skeleton-line-${n}`;
+    computed: {
+      ...mapGetters([
+        'isCollapsed',
+      ]),
     },
-  },
-};
-
-export default RepoLoadingFile;
+  };
 </script>
 
 <template>
   <tr
-    v-if="showGhostLines"
-    class="loading-file">
-    <td>
-      <div
-        class="animation-container animation-container-small">
-        <div
-          v-for="n in 6"
-          :key="n"
-          :class="lineOfCode(n)">
-        </div>
-      </div>
+    class="loading-file"
+    aria-label="Loading files"
+  >
+    <td class="multi-file-table-col-name">
+      <skeleton-loading-container
+        :small="true"
+      />
     </td>
+    <template v-if="!isCollapsed">
+      <td
+        class="hidden-sm hidden-xs">
+        <skeleton-loading-container
+          :small="true"
+        />
+      </td>
 
-    <td
-      v-if="!isMini"
-      class="hidden-sm hidden-xs">
-      <div class="animation-container">
-        <div
-          v-for="n in 6"
-          :key="n"
-          :class="lineOfCode(n)">
-        </div>
-      </div>
-    </td>
-
-    <td
-      v-if="!isMini"
-      class="hidden-xs">
-      <div class="animation-container animation-container-small">
-        <div
-          v-for="n in 6"
-          :key="n"
-          :class="lineOfCode(n)">
-        </div>
-      </div>
-    </td>
+      <td
+        class="hidden-xs">
+        <skeleton-loading-container
+          class="animation-container-right"
+          :small="true"
+        />
+      </td>
+    </template>
   </tr>
 </template>

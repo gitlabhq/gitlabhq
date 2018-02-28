@@ -14,6 +14,8 @@ class Email < ActiveRecord::Base
   devise :confirmable
   self.reconfirmable = false  # currently email can't be changed, no need to reconfirm
 
+  delegate :username, to: :user
+
   def email=(value)
     write_attribute(:email, value.downcase.strip)
   end

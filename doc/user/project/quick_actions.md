@@ -32,7 +32,7 @@ do.
 | `/wip`                     | Toggle the Work In Progress status |
 | <code>/estimate &lt;1w 3d 2h 14m&gt;</code> | Set time estimate |
 | `/remove_estimate`       | Remove estimated time |
-| <code>/spend &lt;1h 30m &#124; -1h 5m&gt;</code> | Add or subtract spent time |
+| <code>/spend &lt;time(1h 30m &#124; -1h 5m)&gt; &lt;date(YYYY-MM-DD)&gt;</code> | Add or subtract spent time; optionally, specify the date that time was spent on |
 | `/remove_time_spent`       | Remove time spent |
 | `/target_branch <Branch Name>` | Set target branch for current merge request |
 | `/award :emoji:`  | Toggle award for :emoji: |

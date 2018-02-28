@@ -65,9 +65,9 @@ feature 'Top Plus Menu', :js do
       visit project_path(project)
 
       page.within '.header-content' do
-        find('.header-new-dropdown-toggle').trigger('click')
+        find('.header-new-dropdown-toggle').click
         expect(page).to have_selector('.header-new.dropdown.open', count: 1)
-        find('.header-new-project-snippet a').trigger('click')
+        find('.header-new-project-snippet a').click
       end
 
       expect(page).to have_content('New Snippet')
@@ -87,9 +87,9 @@ feature 'Top Plus Menu', :js do
       visit group_path(group)
 
       page.within '.header-content' do
-        find('.header-new-dropdown-toggle').trigger('click')
+        find('.header-new-dropdown-toggle').click
         expect(page).to have_selector('.header-new.dropdown.open', count: 1)
-        find('.header-new-group-project a').trigger('click')
+        find('.header-new-group-project a').click
       end
 
       expect(page).to have_content('Project path')
@@ -155,7 +155,7 @@ feature 'Top Plus Menu', :js do
 
   def click_topmenuitem(item_name)
     page.within '.header-content' do
-      find('.header-new-dropdown-toggle').trigger('click')
+      find('.header-new-dropdown-toggle').click
       expect(page).to have_selector('.header-new.dropdown.open', count: 1)
       click_link item_name
     end

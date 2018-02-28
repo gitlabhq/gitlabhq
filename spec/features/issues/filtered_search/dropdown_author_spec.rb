@@ -51,9 +51,11 @@ describe 'Dropdown author', :js do
     end
 
     it 'should show loading indicator when opened' do
-      filtered_search.set('author:')
+      slow_requests do
+        filtered_search.set('author:')
 
-      expect(page).to have_css('#js-dropdown-author .filter-dropdown-loading', visible: true)
+        expect(page).to have_css('#js-dropdown-author .filter-dropdown-loading', visible: true)
+      end
     end
 
     it 'should hide loading indicator when loaded' do

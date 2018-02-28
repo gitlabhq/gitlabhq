@@ -6,7 +6,7 @@
     .context-header
       = link_to group_path(@group), title: @group.name do
         .avatar-container.s40.group-avatar
-          = image_tag group_icon(@group), class: "avatar s40 avatar-tile"
+          = group_icon(@group, class: "avatar s40 avatar-tile")
         .sidebar-context-title
           = @group.name
     %ul.sidebar-top-level-items

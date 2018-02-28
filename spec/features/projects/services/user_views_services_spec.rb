@@ -21,5 +21,6 @@ describe 'User views services' do
     expect(page).to have_content('JetBrains TeamCity')
     expect(page).to have_content('Asana')
     expect(page).to have_content('Irker (IRC gateway)')
+    expect(page).to have_content('Packagist')
   end
 end

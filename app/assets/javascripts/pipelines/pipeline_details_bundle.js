@@ -1,6 +1,5 @@
-/* global Flash */
-
 import Vue from 'vue';
+import Flash from '../flash';
 import PipelinesMediator from './pipeline_details_mediatior';
 import pipelineGraph from './components/graph/graph_component.vue';
 import pipelineHeader from './components/header_component.vue';

@@ -1,9 +1,8 @@
 /* eslint-disable no-new, class-methods-use-this */
-/* global Flash */
 /* global notes */
 
 import Cookies from 'js-cookie';
-import './flash';
+import Flash from './flash';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import initChangesDropdown from './init_changes_dropdown';
 import bp from './breakpoints';
@@ -12,8 +11,8 @@ import {
   handleLocationHash,
   isMetaClick,
 } from './lib/utils/common_utils';
-
 import initDiscussionTab from './image_diff/init_discussion_tab';
+import Diff from './diff';
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -68,6 +67,10 @@ import initDiscussionTab from './image_diff/init_discussion_tab';
   class MergeRequestTabs {
 
     constructor({ action, setUrl, stubLocation } = {}) {
+      const mergeRequestTabs = document.querySelector('.js-tabs-affix');
+      const navbar = document.querySelector('.navbar-gitlab');
+      const paddingTop = 16;
+
       this.diffsLoaded = false;
       this.pipelinesLoaded = false;
       this.commitsLoaded = false;
@@ -77,6 +80,11 @@ import initDiscussionTab from './image_diff/init_discussion_tab';
       this.setCurrentAction = this.setCurrentAction.bind(this);
       this.tabShown = this.tabShown.bind(this);
       this.showTab = this.showTab.bind(this);
+      this.stickyTop = navbar ? navbar.offsetHeight - paddingTop : 0;
+
+      if (mergeRequestTabs) {
+        this.stickyTop += mergeRequestTabs.offsetHeight;
+      }
 
       if (stubLocation) {
         location = stubLocation;
@@ -279,7 +287,7 @@ import initDiscussionTab from './image_diff/init_discussion_tab';
           const $container = $('#diffs');
           $container.html(data.html);
 
-          initChangesDropdown();
+          initChangesDropdown(this.stickyTop);
 
           if (typeof gl.diffNotesCompileComponents !== 'undefined') {
             gl.diffNotesCompileComponents();
@@ -293,7 +301,7 @@ import initDiscussionTab from './image_diff/init_discussion_tab';
           }
           this.diffsLoaded = true;
 
-          new gl.Diff();
+          new Diff();
           this.scrollToElement('#diffs');
 
           $('.diff-file').each((i, el) => {

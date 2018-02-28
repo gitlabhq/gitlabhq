@@ -8,7 +8,7 @@
       %li.todos-pending{ class: active_when(params[:state].blank? || params[:state] == 'pending') }>
         = link_to todos_filter_path(state: 'pending') do
           %span
-            To do
+            Todos
           %span.badge
             = number_with_delimiter(todos_pending_count)
       %li.todos-done{ class: active_when(params[:state] == 'done') }>

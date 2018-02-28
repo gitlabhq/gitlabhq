@@ -56,13 +56,13 @@ shared_examples 'user login request with unique ip limit' do |success_status = 2
     end
 
     it 'allows user authenticating from the same ip' do
-      expect(request_from_ip('ip')).to have_http_status(success_status)
-      expect(request_from_ip('ip')).to have_http_status(success_status)
+      expect(request_from_ip('ip')).to have_gitlab_http_status(success_status)
+      expect(request_from_ip('ip')).to have_gitlab_http_status(success_status)
     end
 
     it 'blocks user authenticating from two distinct ips' do
-      expect(request_from_ip('ip')).to have_http_status(success_status)
-      expect(request_from_ip('ip2')).to have_http_status(403)
+      expect(request_from_ip('ip')).to have_gitlab_http_status(success_status)
+      expect(request_from_ip('ip2')).to have_gitlab_http_status(403)
     end
   end
 end

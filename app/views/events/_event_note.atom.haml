@@ -1,2 +1,2 @@
 %div{ xmlns: "http://www.w3.org/1999/xhtml" }
-  = markdown(note.note, pipeline: :atom, project: note.project, author: note.author)
+  = markdown_field(note, :note)

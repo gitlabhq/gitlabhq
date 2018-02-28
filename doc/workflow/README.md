@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # Workflow
 
 - [Automatic issue closing](../user/project/issues/automatic_issue_closing.md)

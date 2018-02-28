@@ -1,0 +1,5 @@
+---
+title: Support show-all-refs for git over HTTP
+merge_request: 14834
+author:
+type: added

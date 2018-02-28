@@ -119,6 +119,8 @@ module API
     end
 
     resource :projects do
+      include CustomAttributesEndpoints
+
       desc 'Get a list of visible projects for authenticated user' do
         success Entities::BasicProjectDetails
       end

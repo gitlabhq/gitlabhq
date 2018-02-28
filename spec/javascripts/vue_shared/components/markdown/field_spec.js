@@ -1,6 +1,12 @@
 import Vue from 'vue';
 import fieldComponent from '~/vue_shared/components/markdown/field.vue';
 
+function assertMarkdownTabs(isWrite, writeLink, previewLink, vm) {
+  expect(writeLink.parentNode.classList.contains('active')).toEqual(isWrite);
+  expect(previewLink.parentNode.classList.contains('active')).toEqual(!isWrite);
+  expect(vm.$el.querySelector('.md-preview').style.display).toEqual(isWrite ? 'none' : '');
+}
+
 describe('Markdown field component', () => {
   let vm;
 
@@ -39,19 +45,23 @@ describe('Markdown field component', () => {
 
     describe('markdown preview', () => {
       let previewLink;
+      let writeLink;
 
       beforeEach(() => {
         spyOn(Vue.http, 'post').and.callFake(() => new Promise((resolve) => {
-          resolve({
-            json() {
-              return {
-                body: '<p>markdown preview</p>',
-              };
-            },
+          setTimeout(() => {
+            resolve({
+              json() {
+                return {
+                  body: '<p>markdown preview</p>',
+                };
+              },
+            });
           });
         }));
 
-        previewLink = vm.$el.querySelector('.nav-links li:nth-child(2) a');
+        previewLink = vm.$el.querySelector('.nav-links .js-preview-link');
+        writeLink = vm.$el.querySelector('.nav-links .js-write-link');
       });
 
       it('sets preview link as active', (done) => {
@@ -102,6 +112,23 @@ describe('Markdown field component', () => {
 
           done();
         }, 0);
+      });
+
+      it('clicking already active write or preview link does nothing', (done) => {
+        writeLink.click();
+        Vue.nextTick()
+          .then(() => assertMarkdownTabs(true, writeLink, previewLink, vm))
+          .then(() => writeLink.click())
+          .then(() => Vue.nextTick())
+          .then(() => assertMarkdownTabs(true, writeLink, previewLink, vm))
+          .then(() => previewLink.click())
+          .then(() => Vue.nextTick())
+          .then(() => assertMarkdownTabs(false, writeLink, previewLink, vm))
+          .then(() => previewLink.click())
+          .then(() => Vue.nextTick())
+          .then(() => assertMarkdownTabs(false, writeLink, previewLink, vm))
+          .then(done)
+          .catch(done.fail);
       });
     });
 

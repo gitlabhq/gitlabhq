@@ -5,29 +5,27 @@ default-case, prefer-template, consistent-return, no-alert, no-return-assign,
 no-param-reassign, prefer-arrow-callback, no-else-return, comma-dangle, no-new,
 brace-style, no-lonely-if, vars-on-top, no-unused-vars, no-sequences, no-shadow,
 newline-per-chained-call, no-useless-escape, class-methods-use-this */
-/* global Flash */
-/* global Autosave */
+
 /* global ResolveService */
 /* global mrRefreshWidgetUrl */
 
 import $ from 'jquery';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
-import autosize from 'vendor/autosize';
-import Dropzone from 'dropzone';
+import Autosize from 'autosize';
 import 'vendor/jquery.caret'; // required by jquery.atwho
 import 'vendor/jquery.atwho';
 import AjaxCache from '~/lib/utils/ajax_cache';
+import Flash from './flash';
 import CommentTypeToggle from './comment_type_toggle';
+import GLForm from './gl_form';
 import loadAwardsHandler from './awards_handler';
-import './autosave';
-import './dropzone_input';
+import Autosave from './autosave';
 import TaskList from './task_list';
 import { ajaxPost, isInViewport, getPagePath, scrollToElement, isMetaKey } from './lib/utils/common_utils';
 import imageDiffHelper from './image_diff/helpers/index';
 
-window.autosize = autosize;
-window.Dropzone = Dropzone;
+window.autosize = Autosize;
 
 function normalizeNewlines(str) {
   return str.replace(/\r\n/g, '\n');
@@ -354,7 +352,7 @@ export default class Notes {
             Object.keys(noteEntity.commands_changes).length > 0) {
           $notesList.find('.system-note.being-posted').remove();
         }
-        this.addFlash(noteEntity.errors.commands_only, 'notice', this.parentTimeline);
+        this.addFlash(noteEntity.errors.commands_only, 'notice', this.parentTimeline.get(0));
         this.refresh();
       }
       return;
@@ -415,8 +413,9 @@ export default class Notes {
       return;
     }
     this.note_ids.push(noteEntity.id);
+
     form = $form || $(`.js-discussion-note-form[data-discussion-id="${noteEntity.discussion_id}"]`);
-    row = form.closest('tr');
+    row = (form.length || !noteEntity.discussion_line_code) ? form.closest('tr') : $(`#${noteEntity.discussion_line_code}`);
 
     if (noteEntity.on_image) {
       row = form;
@@ -557,7 +556,7 @@ export default class Notes {
    */
   setupNoteForm(form) {
     var textarea, key;
-    new gl.GLForm(form, this.enableGFM);
+    this.glForm = new GLForm(form, this.enableGFM);
     textarea = form.find('.js-note-text');
     key = [
       'Note',
@@ -593,7 +592,7 @@ export default class Notes {
     } else if ($form.hasClass('js-discussion-note-form')) {
       formParentTimeline = $form.closest('.discussion-notes').find('.notes');
     }
-    return this.addFlash('Your comment could not be submitted! Please check your network connection and try again.', 'alert', formParentTimeline);
+    return this.addFlash('Your comment could not be submitted! Please check your network connection and try again.', 'alert', formParentTimeline.get(0));
   }
 
   updateNoteError($parentTimeline) {
@@ -1152,7 +1151,7 @@ export default class Notes {
     var targetId = $originalContentEl.data('target-id');
     var targetType = $originalContentEl.data('target-type');
 
-    new gl.GLForm($editForm.find('form'), this.enableGFM);
+    this.glForm = new GLForm($editForm.find('form'), this.enableGFM);
 
     $editForm.find('form')
       .attr('action', postUrl)
@@ -1213,13 +1212,13 @@ export default class Notes {
   }
 
   addFlash(...flashParams) {
-    this.flashInstance = new Flash(...flashParams);
+    this.flashContainer = new Flash(...flashParams);
   }
 
   clearFlash() {
-    if (this.flashInstance && this.flashInstance.flashContainer) {
-      this.flashInstance.flashContainer.hide();
-      this.flashInstance = null;
+    if (this.flashContainer) {
+      this.flashContainer.style.display = 'none';
+      this.flashContainer = null;
     }
   }
 
@@ -1257,7 +1256,7 @@ export default class Notes {
   }
 
   static checkMergeRequestStatus() {
-    if (getPagePath(1) === 'merge_requests') {
+    if (getPagePath(1) === 'merge_requests' && gl.mrWidget) {
       gl.mrWidget.checkStatus();
     }
   }
@@ -1282,10 +1281,12 @@ export default class Notes {
    * Get data from Form attributes to use for saving/submitting comment.
    */
   getFormData($form) {
+    const content = $form.find('.js-note-text').val();
     return {
       formData: $form.serialize(),
-      formContent: _.escape($form.find('.js-note-text').val()),
+      formContent: _.escape(content),
       formAction: $form.attr('action'),
+      formContentOriginal: content,
     };
   }
 
@@ -1417,7 +1418,7 @@ export default class Notes {
     const isMainForm = $form.hasClass('js-main-target-form');
     const isDiscussionForm = $form.hasClass('js-discussion-note-form');
     const isDiscussionResolve = $submitBtn.hasClass('js-comment-resolve-button');
-    const { formData, formContent, formAction } = this.getFormData($form);
+    const { formData, formContent, formAction, formContentOriginal } = this.getFormData($form);
     let noteUniqueId;
     let systemNoteUniqueId;
     let hasQuickActions = false;
@@ -1576,7 +1577,7 @@ export default class Notes {
           $form = $notesContainer.parent().find('form');
         }
 
-        $form.find('.js-note-text').val(formContent);
+        $form.find('.js-note-text').val(formContentOriginal);
         this.reenableTargetFormSubmitButton(e);
         this.addNoteError($form);
       });

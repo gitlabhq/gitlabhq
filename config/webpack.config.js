@@ -84,6 +84,7 @@ var config = {
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
     test:                 './test.js',
     two_factor_auth:      './two_factor_auth.js',
+    users:                './users/index.js',
     performance_bar:      './performance_bar.js',
     webpack_runtime:      './webpack.js',
   },
@@ -105,6 +106,10 @@ var config = {
       {
         test: /\.vue$/,
         loader: 'vue-loader',
+      },
+      {
+        test: /\.ts$/,
+        loader: 'ts-loader',
       },
       {
         test: /\.svg$/,
@@ -215,7 +220,9 @@ var config = {
       name: 'common_d3',
       chunks: [
         'graphs',
+        'graphs_show',
         'monitoring',
+        'users',
       ],
     }),
 
@@ -233,7 +240,7 @@ var config = {
         from: path.join(ROOT_PATH, `node_modules/monaco-editor/${IS_PRODUCTION ? 'min' : 'dev'}/vs`),
         to: 'monaco-editor/vs',
         transform: function(content, path) {
-          if (/\.js$/.test(path) && !/worker/i.test(path)) {
+          if (/\.js$/.test(path) && !/worker/i.test(path) && !/typescript/i.test(path)) {
             return (
               '(function(){\n' +
               'var define = this.define, require = this.require;\n' +
@@ -249,7 +256,7 @@ var config = {
   ],
 
   resolve: {
-    extensions: ['.js'],
+    extensions: ['.js', '.ts'],
     alias: {
       '~':              path.join(ROOT_PATH, 'app/assets/javascripts'),
       'emojis':         path.join(ROOT_PATH, 'fixtures/emojis'),

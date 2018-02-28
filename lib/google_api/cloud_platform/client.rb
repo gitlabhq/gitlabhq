@@ -3,7 +3,6 @@ require 'google/apis/container_v1'
 module GoogleApi
   module CloudPlatform
     class Client < GoogleApi::Auth
-      DEFAULT_MACHINE_TYPE = 'n1-standard-1'.freeze
       SCOPE = 'https://www.googleapis.com/auth/cloud-platform'.freeze
       LEAST_TOKEN_LIFE_TIME = 10.minutes
 

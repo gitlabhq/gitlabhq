@@ -78,8 +78,9 @@ describe MergeRequests::UpdateService, :mailer do
       end
 
       it 'executes hooks with update action' do
-        expect(service).to have_received(:execute_hooks)
-                               .with(@merge_request, 'update')
+        expect(service)
+          .to have_received(:execute_hooks)
+                .with(@merge_request, 'update', old_labels: [], old_assignees: [user3])
       end
 
       it 'sends email to user2 about assign of new merge request and email to user3 about merge request unassignment' do
@@ -126,10 +127,10 @@ describe MergeRequests::UpdateService, :mailer do
       end
 
       it 'creates system note about discussion lock' do
-        note = find_note('locked this issue')
+        note = find_note('locked this merge request')
 
         expect(note).not_to be_nil
-        expect(note.note).to eq 'locked this issue'
+        expect(note.note).to eq 'locked this merge request'
       end
 
       context 'when not including source branch removal options' do

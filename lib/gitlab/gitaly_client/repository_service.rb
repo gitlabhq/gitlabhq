@@ -58,6 +58,13 @@ module Gitlab
         request = Gitaly::CreateRepositoryRequest.new(repository: @gitaly_repo)
         GitalyClient.call(@storage, :repository_service, :create_repository, request)
       end
+
+      def has_local_branches?
+        request = Gitaly::HasLocalBranchesRequest.new(repository: @gitaly_repo)
+        response = GitalyClient.call(@storage, :repository_service, :has_local_branches, request)
+
+        response.value
+      end
     end
   end
 end

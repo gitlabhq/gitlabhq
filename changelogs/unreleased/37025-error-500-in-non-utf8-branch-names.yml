@@ -1,4 +1,0 @@
----
-title: Fixed non-UTF-8 valid branch names from causing an error.
-merge_request: 14090
-type: fixed

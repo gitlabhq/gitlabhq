@@ -23,6 +23,7 @@ describe('Pipelines Table', () => {
         propsData: {
           pipelines: [],
           autoDevopsHelpPath: 'foo',
+          viewType: 'root',
         },
       }).$mount();
     });
@@ -49,6 +50,7 @@ describe('Pipelines Table', () => {
         propsData: {
           pipelines: [],
           autoDevopsHelpPath: 'foo',
+          viewType: 'root',
         },
       }).$mount();
       expect(component.$el.querySelectorAll('.commit.gl-responsive-table-row').length).toEqual(0);
@@ -61,6 +63,7 @@ describe('Pipelines Table', () => {
         propsData: {
           pipelines: [pipeline],
           autoDevopsHelpPath: 'foo',
+          viewType: 'root',
         },
       }).$mount();
 

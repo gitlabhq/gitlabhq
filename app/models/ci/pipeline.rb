@@ -249,9 +249,7 @@ module Ci
     end
 
     def commit
-      @commit ||= project.commit(sha)
-    rescue
-      nil
+      @commit ||= project.commit_by(oid: sha)
     end
 
     def branch?

@@ -3,7 +3,7 @@
 > **Notes:**
 > - This feature was [introduced][ee-80] in GitLab EE 8.3.
 > - Custom CNAMEs with TLS support were [introduced][ee-173] in GitLab EE 8.5.
-> - GitLab Pages [were ported][ce-14605] to Community Edition in GitLab 8.17.
+> - GitLab Pages [was ported][ce-14605] to Community Edition in GitLab 8.17.
 > - This document is about the user guide. To learn how to enable GitLab Pages
 >   across your GitLab instance, visit the [administrator documentation](../../../administration/pages/index.md).
 
@@ -174,7 +174,7 @@ job, the contents of the `public` directory will be served by GitLab Pages.
 
 #### How `.gitlab-ci.yml` looks like when the static content is in your repository
 
-Supposedly your repository contained the following files:
+Supposed your repository contained the following files:
 
 ```
 ├── index.html
@@ -419,7 +419,7 @@ You can only create the highest level group website.
 ## Redirects in GitLab Pages
 
 Since you cannot use any custom server configuration files, like `.htaccess` or
-any `.conf` file for that matter, if you want to redirect a web page to another
+any `.conf` file, if you want to redirect a page to another
 location, you can use the [HTTP meta refresh tag][metarefresh].
 
 Some static site generators provide plugins for that functionality so that you
@@ -434,7 +434,7 @@ Sure. All you need to do is download the artifacts archive from the job page.
 
 ### Can I use GitLab Pages if my project is private?
 
-Yes. GitLab Pages don't care whether you set your project's visibility level
+Yes. GitLab Pages doesn't care whether you set your project's visibility level
 to private, internal or public.
 
 ### Do I need to create a user/group website before creating a project website?

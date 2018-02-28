@@ -22,7 +22,7 @@ describe ContainerTagEntity do
   end
 
   it 'exposes required informations'  do
-    expect(subject).to include(:name, :location, :revision, :total_size, :created_at)
+    expect(subject).to include(:name, :location, :revision, :short_revision, :total_size, :created_at)
   end
 
   context 'when user can manage repositories' do

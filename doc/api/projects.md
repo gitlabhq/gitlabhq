@@ -192,6 +192,12 @@ GET /projects
 ]
 ```
 
+You can filter by [custom attributes](custom_attributes.md) with:
+
+```
+GET /projects?custom_attributes[key]=value&custom_attributes[other_key]=other_value
+```
+
 ## List user projects
 
 Get a list of visible projects for the given user. When accessed without

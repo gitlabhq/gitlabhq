@@ -20,6 +20,7 @@ feature 'Editing file blob', :js do
     def edit_and_commit
       wait_for_requests
       find('.js-edit-blob').click
+      find('#editor')
       execute_script('ace.edit("editor").setValue("class NextFeature\nend\n")')
       click_button 'Commit changes'
     end

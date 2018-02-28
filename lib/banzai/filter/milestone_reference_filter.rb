@@ -56,7 +56,7 @@ module Banzai
       end
 
       def find_milestone_with_finder(project, params)
-        finder_params = { project_ids: [project.id], order: nil }
+        finder_params = { project_ids: [project.id], order: nil, state: 'all' }
 
         # We don't support IID lookups for group milestones, because IIDs can
         # clash between group and project milestones.

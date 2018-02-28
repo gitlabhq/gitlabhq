@@ -28,7 +28,7 @@ const defaultValuesComponent = {
   currentDataIndex: 0,
 };
 
-const timeSeries = createTimeSeries(convertedMetrics[0].queries[0],
+const timeSeries = createTimeSeries(convertedMetrics[0].queries,
   defaultValuesComponent.graphWidth, defaultValuesComponent.graphHeight,
   defaultValuesComponent.graphHeightOffset);
 

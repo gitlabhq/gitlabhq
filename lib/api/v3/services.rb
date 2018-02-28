@@ -395,6 +395,26 @@ module API
             desc: 'The Slack token'
           }
         ],
+        'packagist' => [
+          {
+            required: true,
+            name: :username,
+            type: String,
+            desc: 'The username'
+          },
+          {
+            required: true,
+            name: :token,
+            type: String,
+            desc: 'The Packagist API token'
+          },
+          {
+            required: false,
+            name: :server,
+            type: String,
+            desc: 'The server'
+          }
+        ],
         'pipelines-email' => [
           {
             required: true,

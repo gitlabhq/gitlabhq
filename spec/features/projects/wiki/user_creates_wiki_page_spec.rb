@@ -77,14 +77,14 @@ describe 'User creates wiki page' do
 
           [stem]
           ++++
-          \sqrt{4} = 2
+          \\sqrt{4} = 2
           ++++
 
           another part
 
           [latexmath]
           ++++
-          \beta_x \gamma
+          \\beta_x \\gamma
           ++++
 
           stem:[2+2] is 4

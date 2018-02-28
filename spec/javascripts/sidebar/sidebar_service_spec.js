@@ -7,6 +7,7 @@ describe('Sidebar service', () => {
     Vue.http.interceptors.push(Mock.sidebarMockInterceptor);
     this.service = new SidebarService({
       endpoint: '/gitlab-org/gitlab-shell/issues/5.json',
+      toggleSubscriptionEndpoint: '/gitlab-org/gitlab-shell/issues/5/toggle_subscription',
       moveIssueEndpoint: '/gitlab-org/gitlab-shell/issues/5/move',
       projectsAutocompleteEndpoint: '/autocomplete/projects?project_id=15',
     });
@@ -23,6 +24,7 @@ describe('Sidebar service', () => {
         expect(resp).toBeDefined();
         done();
       })
+      .then(done)
       .catch(done.fail);
   });
 
@@ -30,8 +32,8 @@ describe('Sidebar service', () => {
     this.service.update('issue[assignee_ids]', [1])
       .then((resp) => {
         expect(resp).toBeDefined();
-        done();
       })
+      .then(done)
       .catch(done.fail);
   });
 
@@ -39,8 +41,8 @@ describe('Sidebar service', () => {
     this.service.getProjectsAutocomplete()
       .then((resp) => {
         expect(resp).toBeDefined();
-        done();
       })
+      .then(done)
       .catch(done.fail);
   });
 
@@ -48,8 +50,17 @@ describe('Sidebar service', () => {
     this.service.moveIssue(123)
       .then((resp) => {
         expect(resp).toBeDefined();
-        done();
       })
+      .then(done)
+      .catch(done.fail);
+  });
+
+  it('toggles the subscription', (done) => {
+    this.service.toggleSubscription()
+      .then((resp) => {
+        expect(resp).toBeDefined();
+      })
+      .then(done)
       .catch(done.fail);
   });
 });

@@ -60,7 +60,9 @@ module Github
         project.repository.set_import_remote_as_mirror('github')
         project.repository.add_remote_fetch_config('github', '+refs/pull/*/head:refs/merge-requests/*/head')
         fetch_remote(forced: true)
-      rescue Gitlab::Git::Repository::NoRepository, Gitlab::Shell::Error => e
+      rescue Gitlab::Git::Repository::NoRepository,
+             Gitlab::Git::RepositoryMirroring::RemoteError,
+             Gitlab::Shell::Error => e
         error(:project, repo_url, e.message)
         raise Github::RepositoryFetchError
       end
@@ -74,7 +76,7 @@ module Github
     def fetch_wiki_repository
       return if project.wiki.repository_exists?
 
-      wiki_path = "#{project.disk_path}.wiki"
+      wiki_path = project.wiki.disk_path
       gitlab_shell.import_repository(project.repository_storage_path, wiki_path, wiki_url)
     rescue Gitlab::Shell::Error => e
       # GitHub error message when the wiki repo has not been created,
@@ -161,7 +163,6 @@ module Github
               iid: pull_request.iid,
               title: pull_request.title,
               description: description,
-              ref_fetched: true,
               source_project: pull_request.source_project,
               source_branch: pull_request.source_branch_name,
               source_branch_sha: pull_request.source_branch_sha,

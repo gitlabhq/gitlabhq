@@ -1,23 +1,37 @@
 import Vue from 'vue';
+import store from '~/repo/stores';
 import repoPreview from '~/repo/components/repo_preview.vue';
-import RepoStore from '~/repo/stores/repo_store';
+import { file, resetStore } from '../helpers';
 
 describe('RepoPreview', () => {
+  let vm;
+
   function createComponent() {
+    const f = file();
     const RepoPreview = Vue.extend(repoPreview);
 
-    return new RepoPreview().$mount();
+    const comp = new RepoPreview({
+      store,
+    });
+
+    f.active = true;
+    f.html = 'test';
+
+    comp.$store.state.openFiles.push(f);
+
+    return comp.$mount();
   }
 
-  it('renders a div with the activeFile html', () => {
-    const activeFile = {
-      html: '<p class="file-content">html</p>',
-    };
-    RepoStore.activeFile = activeFile;
+  afterEach(() => {
+    vm.$destroy();
 
-    const vm = createComponent();
+    resetStore(vm.$store);
+  });
+
+  it('renders a div with the activeFile html', () => {
+    vm = createComponent();
 
     expect(vm.$el.tagName).toEqual('DIV');
-    expect(vm.$el.innerHTML).toContain(activeFile.html);
+    expect(vm.$el.innerHTML).toContain('test');
   });
 });

@@ -50,7 +50,7 @@ feature 'test coverage badge' do
     scenario 'user requests test coverage badge image' do
       show_test_coverage_badge
 
-      expect(page).to have_http_status(404)
+      expect(page).to have_gitlab_http_status(404)
     end
   end
 

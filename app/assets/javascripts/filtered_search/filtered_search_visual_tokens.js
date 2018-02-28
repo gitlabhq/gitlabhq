@@ -1,5 +1,5 @@
 import AjaxCache from '../lib/utils/ajax_cache';
-import '../flash'; /* global Flash */
+import Flash from '../flash';
 import FilteredSearchContainer from './container';
 import UsersCache from '../lib/utils/users_cache';
 
@@ -38,21 +38,14 @@ class FilteredSearchVisualTokens {
   }
 
   static createVisualTokenElementHTML(canEdit = true) {
-    let removeTokenMarkup = '';
-    if (canEdit) {
-      removeTokenMarkup = `
-        <div class="remove-token" role="button">
-          <i class="fa fa-close"></i>
-        </div>
-      `;
-    }
-
     return `
-      <div class="selectable" role="button">
+      <div class="${canEdit ? 'selectable' : 'hidden'}" role="button">
         <div class="name"></div>
         <div class="value-container">
           <div class="value"></div>
-          ${removeTokenMarkup}
+          <div class="remove-token" role="button">
+            <i class="fa fa-close"></i>
+          </div>
         </div>
       </div>
     `;
@@ -123,8 +116,8 @@ class FilteredSearchVisualTokens {
         /* eslint-disable no-param-reassign */
         tokenValueContainer.dataset.originalValue = tokenValue;
         tokenValueElement.innerHTML = `
-          <img class="avatar s20" src="${user.avatar_url}" alt="${user.name}'s avatar">
-          ${user.name}
+          <img class="avatar s20" src="${user.avatar_url}" alt="">
+          ${_.escape(user.name)}
         `;
         /* eslint-enable no-param-reassign */
       })

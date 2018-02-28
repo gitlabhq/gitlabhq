@@ -52,7 +52,7 @@ feature 'Dashboard Todos' do
       end
 
       it 'updates todo count' do
-        expect(page).to have_content 'To do 0'
+        expect(page).to have_content 'Todos 0'
         expect(page).to have_content 'Done 1'
       end
 
@@ -81,7 +81,7 @@ feature 'Dashboard Todos' do
       end
 
       it 'updates todo count' do
-        expect(page).to have_content 'To do 1'
+        expect(page).to have_content 'Todos 1'
         expect(page).to have_content 'Done 0'
       end
     end
@@ -200,7 +200,7 @@ feature 'Dashboard Todos' do
       end
 
       it 'updates todo count' do
-        expect(page).to have_content 'To do 1'
+        expect(page).to have_content 'Todos 1'
         expect(page).to have_content 'Done 0'
       end
     end
@@ -252,11 +252,11 @@ feature 'Dashboard Todos' do
     describe 'mark all as done', :js do
       before do
         visit dashboard_todos_path
-        find('.js-todos-mark-all').trigger('click')
+        find('.js-todos-mark-all').click
       end
 
       it 'shows "All done" message!' do
-        expect(page).to have_content 'To do 0'
+        expect(page).to have_content 'Todos 0'
         expect(page).to have_content "You're all done!"
         expect(page).not_to have_selector('.gl-pagination')
       end
@@ -283,7 +283,7 @@ feature 'Dashboard Todos' do
       it 'updates todo count' do
         mark_all_and_undo
 
-        expect(page).to have_content 'To do 2'
+        expect(page).to have_content 'Todos 2'
         expect(page).to have_content 'Done 0'
       end
 
@@ -309,9 +309,9 @@ feature 'Dashboard Todos' do
       end
 
       def mark_all_and_undo
-        find('.js-todos-mark-all').trigger('click')
+        find('.js-todos-mark-all').click
         wait_for_requests
-        find('.js-todos-undo-all').trigger('click')
+        find('.js-todos-undo-all').click
         wait_for_requests
       end
     end

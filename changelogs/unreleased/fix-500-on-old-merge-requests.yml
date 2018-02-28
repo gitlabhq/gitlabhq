@@ -1,0 +1,5 @@
+---
+title: Fix 500 errors caused by empty diffs in some discussions
+merge_request: 14945
+author: Alexander Popov
+type: fixed

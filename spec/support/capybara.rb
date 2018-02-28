@@ -1,25 +1,25 @@
 # rubocop:disable Style/GlobalVars
 require 'capybara/rails'
 require 'capybara/rspec'
-require 'capybara/poltergeist'
 require 'capybara-screenshot/rspec'
+require 'selenium-webdriver'
 
 # Give CI some extra time
 timeout = (ENV['CI'] || ENV['CI_SERVER']) ? 60 : 30
 
-Capybara.javascript_driver = :poltergeist
-Capybara.register_driver :poltergeist do |app|
-  Capybara::Poltergeist::Driver.new(
-    app,
-    js_errors: true,
-    timeout: timeout,
-    window_size: [1366, 768],
-    url_whitelist: %w[localhost 127.0.0.1],
-    url_blacklist: %w[.mp4 .png .gif .avi .bmp .jpg .jpeg],
-    phantomjs_options: [
-      '--load-images=yes'
-    ]
+Capybara.javascript_driver = :chrome
+Capybara.register_driver :chrome do |app|
+  extra_args = []
+  extra_args << 'headless' unless ENV['CHROME_HEADLESS'] =~ /^(false|no|0)$/i
+
+  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
+    chromeOptions: {
+      'args' => %w[no-sandbox disable-gpu --window-size=1240,1400] + extra_args
+    }
   )
+
+  Capybara::Selenium::Driver
+    .new(app, browser: :chrome, desired_capabilities: capabilities)
 end
 
 Capybara.default_max_wait_time = timeout
@@ -27,6 +27,10 @@ Capybara.ignore_hidden_elements = true
 
 # Keep only the screenshots generated from the last failing test suite
 Capybara::Screenshot.prune_strategy = :keep_last_run
+# From https://github.com/mattheworiordan/capybara-screenshot/issues/84#issuecomment-41219326
+Capybara::Screenshot.register_driver(:chrome) do |driver, path|
+  driver.browser.save_screenshot(path)
+end
 
 RSpec.configure do |config|
   config.before(:context, :js) do
@@ -37,13 +41,23 @@ RSpec.configure do |config|
   end
 
   config.before(:example, :js) do
+    session = Capybara.current_session
+
     allow(Gitlab::Application.routes).to receive(:default_url_options).and_return(
-      host: Capybara.current_session.server.host,
-      port: Capybara.current_session.server.port,
+      host: session.server.host,
+      port: session.server.port,
       protocol: 'http')
+
+    # reset window size between tests
+    unless session.current_window.size == [1240, 1400]
+      session.current_window.resize_to(1240, 1400) rescue nil
+    end
   end
 
   config.after(:example, :js) do |example|
+    # prevent localstorage from introducing side effects based on test order
+    execute_script("localStorage.clear();")
+
     # capybara/rspec already calls Capybara.reset_sessions! in an `after` hook,
     # but `block_and_wait_for_requests_complete` is called before it so by
     # calling it explicitely here, we prevent any new requests from being fired

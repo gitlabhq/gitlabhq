@@ -1,5 +1,0 @@
----
-title: Fix `rake gitlab:incoming_email:check` and make it report the actual error
-merge_request: 14423
-author:
-type: fixed

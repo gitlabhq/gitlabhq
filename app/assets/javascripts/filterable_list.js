@@ -6,10 +6,11 @@ import _ from 'underscore';
  */
 
 export default class FilterableList {
-  constructor(form, filter, holder) {
+  constructor(form, filter, holder, filterInputField = 'filter_groups') {
     this.filterForm = form;
     this.listFilterElement = filter;
     this.listHolderElement = holder;
+    this.filterInputField = filterInputField;
     this.isBusy = false;
   }
 
@@ -32,10 +33,10 @@ export default class FilterableList {
   onFilterInput() {
     const $form = $(this.filterForm);
     const queryData = {};
-    const filterGroupsParam = $form.find('[name="filter_groups"]').val();
+    const filterGroupsParam = $form.find(`[name="${this.filterInputField}"]`).val();
 
     if (filterGroupsParam) {
-      queryData.filter_groups = filterGroupsParam;
+      queryData[this.filterInputField] = filterGroupsParam;
     }
 
     this.filterResults(queryData);

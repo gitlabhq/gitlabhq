@@ -13,7 +13,7 @@ describe API::V3::Services do
       it "deletes #{service}" do
         delete v3_api("/projects/#{project.id}/services/#{dashed_service}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         project.send(service_method).reload
         expect(project.send(service_method).activated?).to be_falsey
       end

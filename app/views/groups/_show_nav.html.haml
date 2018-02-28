@@ -1,8 +1,0 @@
-%ul.nav-links
-  = nav_link(page: group_path(@group)) do
-    = link_to group_path(@group) do
-      Projects
-  - if Group.supports_nested_groups?
-    = nav_link(page: subgroups_group_path(@group)) do
-      = link_to subgroups_group_path(@group) do
-        Subgroups

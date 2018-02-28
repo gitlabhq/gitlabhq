@@ -1,0 +1,5 @@
+---
+title: Add a latest_merge_request_diff_id column to merge_requests
+merge_request: 15035
+author:
+type: performance

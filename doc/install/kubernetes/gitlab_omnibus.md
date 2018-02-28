@@ -1,7 +1,6 @@
 # GitLab-Omnibus Helm Chart
 > **Note:**
-* This Helm chart is in beta, while [additional features](https://gitlab.com/charts/charts.gitlab.io/issues/68) are being worked on.
-* GitLab is working on a [cloud native set of Charts](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) which will eventually replace these.
+* This Helm chart is in beta, and will be deprecated by the [cloud native GitLab chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md).
 * These charts have been tested on Google Container Engine and Azure Container Service. Other Kubernetes installations may work as well, if not please [open an issue](https://gitlab.com/charts/charts.gitlab.io/issues).
 
 This work is based partially on: https://github.com/lwolf/kubernetes-gitlab/. GitLab would like to thank Sergey Nuzhdin for his work.
@@ -11,6 +10,8 @@ For more information on available GitLab Helm Charts, please see our [overview](
 ## Introduction
 
 This chart provides an easy way to get started with GitLab, provisioning an installation with nearly all functionality enabled. SSL is automatically provisioned via [Let's Encrypt](https://letsencrypt.org/).
+
+This Helm chart is in beta, and will be deprecated by the [cloud native GitLab chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) once available. Due to the difficulty in supporting upgrades, migrating will require exporting data out of this instance and importing it into the new deployment.
 
 The deployment includes:
 
@@ -23,9 +24,8 @@ The deployment includes:
 
 ### Limitations
 
-* This chart is suited for small to medium size deployments, because [High Availability](https://docs.gitlab.com/ee/administration/high_availability/) and [Geo](https://docs.gitlab.com/ee/gitlab-geo/README.html) will not be supported.
-* It is in beta. Additional features to support production deployments, like backups, are [in development](https://gitlab.com/charts/charts.gitlab.io/issues/68). Once completed, this chart will be generally available.
-* A new generation of [cloud native charts](index.md#upcoming-cloud-native-helm-charts) is in development, and will eventually deprecate these. Due to the difficulty in supporting upgrades to the new architecture, migrating will require exporting data out of this instance and importing it into the new deployment. We do not expect these to be production ready before the second half of 2018.
+* This chart is in beta, and suited for small to medium size deployments. [High Availability](https://docs.gitlab.com/ee/administration/high_availability/) and [Geo](https://docs.gitlab.com/ee/gitlab-geo/README.html) are not supported.
+* A new generation [cloud native GitLab chart](index.md#cloud-native-gitlab-chart) is in development, and will deprecate this chart. Due to the difficulty in supporting upgrades to the new architecture, migrating will require exporting data out of this instance and importing it into the new deployment. We plan to release the new chart in beta by the end of 2017.
 
 For more information on available GitLab Helm Charts, please see our [overview](index.md#chart-overview).
 

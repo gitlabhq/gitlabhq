@@ -292,6 +292,12 @@
   }
 }
 
+.btn-align-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .btn-group {
   &.btn-grouped {
     @include btn-with-margin;
@@ -299,7 +305,7 @@
 }
 
 .btn-clipboard {
-  border: none;
+  border: 0;
   padding: 0 5px;
 }
 

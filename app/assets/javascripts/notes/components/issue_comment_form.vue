@@ -1,9 +1,9 @@
 <script>
-  /* global Flash, Autosave */
   import { mapActions, mapGetters } from 'vuex';
   import _ from 'underscore';
-  import autosize from 'vendor/autosize';
-  import '../../autosave';
+  import Autosize from 'autosize';
+  import Flash from '../../flash';
+  import Autosave from '../../autosave';
   import TaskList from '../../task_list';
   import * as constants from '../constants';
   import eventHub from '../event_hub';
@@ -145,7 +145,7 @@
                   Flash(
                     'Something went wrong while adding your comment. Please try again.',
                     'alert',
-                    $(this.$refs.commentForm),
+                    this.$refs.commentForm,
                   );
                 }
               } else {
@@ -160,7 +160,7 @@
               this.isSubmitting = false;
               this.discard(false);
               const msg = 'Your comment could not be submitted! Please check your network connection and try again.';
-              Flash(msg, 'alert', $(this.$el));
+              Flash(msg, 'alert', this.$el);
               this.note = noteData.data.note.note; // Restore textarea content.
               this.removePlaceholderNotes();
             });
@@ -219,7 +219,7 @@
       },
       resizeTextarea() {
         this.$nextTick(() => {
-          autosize.update(this.$refs.textarea);
+          Autosize.update(this.$refs.textarea);
         });
       },
     },

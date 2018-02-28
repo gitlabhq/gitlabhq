@@ -61,7 +61,7 @@ shared_examples 'issuable record that supports quick actions in its description 
     context 'with a note containing commands' do
       it 'creates a note without the commands and interpret the commands accordingly' do
         assignee = create(:user, username: 'bob')
-        write_note("Awesome!\n/assign @bob\n/label ~bug\n/milestone %\"ASAP\"")
+        write_note("Awesome!\n\n/assign @bob\n\n/label ~bug\n\n/milestone %\"ASAP\"")
 
         expect(page).to have_content 'Awesome!'
         expect(page).not_to have_content '/assign @bob'
@@ -82,7 +82,7 @@ shared_examples 'issuable record that supports quick actions in its description 
     context 'with a note containing only commands' do
       it 'does not create a note but interpret the commands accordingly' do
         assignee = create(:user, username: 'bob')
-        write_note("/assign @bob\n/label ~bug\n/milestone %\"ASAP\"")
+        write_note("/assign @bob\n\n/label ~bug\n\n/milestone %\"ASAP\"")
 
         expect(page).not_to have_content '/assign @bob'
         expect(page).not_to have_content '/label ~bug'

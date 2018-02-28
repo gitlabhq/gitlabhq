@@ -28,7 +28,7 @@ import '~/lib/utils/common_utils';
     preloadFixtures('merge_requests/diff_comment.html.raw');
     beforeEach(function(done) {
       loadFixtures('merge_requests/diff_comment.html.raw');
-      $('body').data('page', 'projects:merge_requests:show');
+      $('body').attr('data-page', 'projects:merge_requests:show');
       loadAwardsHandler(true).then((obj) => {
         awardsHandler = obj;
         spyOn(awardsHandler, 'postEmoji').and.callFake((button, url, emoji, cb) => cb());
@@ -54,6 +54,9 @@ import '~/lib/utils/common_utils';
     afterEach(function() {
       // restore original url root value
       gon.relative_url_root = urlRoot;
+
+      // Undo what we did to the shared <body>
+      $('body').removeAttr('data-page');
 
       awardsHandler.destroy();
     });

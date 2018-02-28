@@ -1,0 +1,5 @@
+---
+title: Add system hooks user_rename and group_rename
+merge_request: 15123
+author:
+type: changed

@@ -13,7 +13,7 @@ describe 'User manages subscription', :js do
   end
 
   it 'toggles subscription' do
-    subscribe_button = find('.issuable-subscribe-button span')
+    subscribe_button = find('.js-issuable-subscribe-button')
 
     expect(subscribe_button).to have_content('Subscribe')
 

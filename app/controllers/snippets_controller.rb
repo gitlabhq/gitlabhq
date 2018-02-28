@@ -4,6 +4,7 @@ class SnippetsController < ApplicationController
   include SpammableActions
   include SnippetsActions
   include RendersBlob
+  include PreviewMarkdown
 
   before_action :snippet, only: [:show, :edit, :destroy, :update, :raw]
 
@@ -85,17 +86,6 @@ class SnippetsController < ApplicationController
     @snippet.destroy
 
     redirect_to snippets_path, status: 302
-  end
-
-  def preview_markdown
-    result = PreviewMarkdownService.new(@project, current_user, params).execute
-
-    render json: {
-      body: view_context.markdown(result[:text], skip_project_check: true),
-      references: {
-        users: result[:users]
-      }
-    }
   end
 
   protected

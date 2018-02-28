@@ -4,8 +4,17 @@ module Gitlab
       module ForkedStorageCheck
         extend self
 
-        def storage_available?(path, timeout_seconds = 5)
-          status = timeout_check(path, timeout_seconds)
+        def storage_available?(path, timeout_seconds = 5, retries = 1)
+          partial_timeout = timeout_seconds / retries
+          status = timeout_check(path, partial_timeout)
+
+          # If the status check did not succeed the first time, we retry a few
+          # more times to avoid one-off failures
+          current_attempts = 1
+          while current_attempts < retries && !status.success?
+            status = timeout_check(path, partial_timeout)
+            current_attempts += 1
+          end
 
           status.success?
         end

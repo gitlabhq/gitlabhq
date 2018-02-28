@@ -5,8 +5,7 @@ import '~/merge_request_tabs';
 import '~/commit/pipelines/pipelines_bundle';
 import '~/breakpoints';
 import '~/lib/utils/common_utils';
-import '~/diff';
-import '~/files_comment_button';
+import Diff from '~/diff';
 import '~/notes';
 import 'vendor/jquery.scrollTo';
 
@@ -225,7 +224,7 @@ import 'vendor/jquery.scrollTo';
       describe('with "Side-by-side"/parallel diff view', () => {
         beforeEach(function () {
           this.class.diffViewType = () => 'parallel';
-          gl.Diff.prototype.diffViewType = () => 'parallel';
+          Diff.prototype.diffViewType = () => 'parallel';
         });
 
         it('maintains `container-limited` for pipelines tab', function (done) {
@@ -277,7 +276,7 @@ import 'vendor/jquery.scrollTo';
     describe('loadDiff', function () {
       beforeEach(() => {
         loadFixtures('merge_requests/diff_comment.html.raw');
-        spyOn(window.gl.utils, 'getPagePath').and.returnValue('merge_requests');
+        $('body').attr('data-page', 'projects:merge_requests:show');
         window.gl.ImageFile = () => {};
         window.notes = new Notes('', []);
         spyOn(window.notes, 'toggleDiffNote').and.callThrough();
@@ -286,6 +285,9 @@ import 'vendor/jquery.scrollTo';
       afterEach(() => {
         delete window.gl.ImageFile;
         delete window.notes;
+
+        // Undo what we did to the shared <body>
+        $('body').removeAttr('data-page');
       });
 
       it('requires an absolute pathname', function () {

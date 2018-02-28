@@ -15,6 +15,8 @@ class Projects::BranchesController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         @refs_pipelines = @project.pipelines.latest_successful_for_refs(@branches.map(&:name))
+        @merged_branch_names =
+          repository.merged_branch_names(@branches.map(&:name))
         # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37429
         Gitlab::GitalyClient.allow_n_plus_1_calls do
           @max_commits = @branches.reduce(0) do |memo, branch|

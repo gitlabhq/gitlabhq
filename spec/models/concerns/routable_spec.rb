@@ -134,6 +134,7 @@ describe Group, 'Routable' do
 
     context 'with RequestStore active', :request_store do
       it 'does not load the route table more than once' do
+        group.expires_full_path_cache
         expect(group).to receive(:uncached_full_path).once.and_call_original
 
         3.times { group.full_path }

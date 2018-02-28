@@ -1,6 +1,5 @@
-/* global Flash */
-
 import 'deckar01-task_list';
+import Flash from './flash';
 
 export default class TaskList {
   constructor(options = {}) {

@@ -1,0 +1,5 @@
+---
+title: Fix issues with forked projects of which the source was deleted
+merge_request: 15150
+author:
+type: fixed

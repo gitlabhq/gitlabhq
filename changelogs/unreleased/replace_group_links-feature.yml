@@ -1,5 +1,0 @@
----
-title: Replace project/group_links.feature spinach test with an rspec analog
-merge_request: 14169
-author: Vitaliy @blackst0ne Klachkov
-type: other

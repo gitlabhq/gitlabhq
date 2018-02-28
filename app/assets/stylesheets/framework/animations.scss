@@ -198,6 +198,13 @@ a {
     height: 12px;
   }
 
+  &.animation-container-right {
+    .skeleton-line-2 {
+      left: 0;
+      right: 150px;
+    }
+  }
+
   &::before {
     animation-duration: 1s;
     animation-fill-mode: forwards;

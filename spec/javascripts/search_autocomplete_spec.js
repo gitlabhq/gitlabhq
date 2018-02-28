@@ -3,10 +3,9 @@
 import '~/gl_dropdown';
 import '~/search_autocomplete';
 import '~/lib/utils/common_utils';
-import 'vendor/fuzzaldrin-plus';
 
 (function() {
-  var addBodyAttributes, assertLinks, dashboardIssuesPath, dashboardMRsPath, groupIssuesPath, groupMRsPath, groupName, mockDashboardOptions, mockGroupOptions, mockProjectOptions, projectIssuesPath, projectMRsPath, projectName, userId, widget;
+  var assertLinks, dashboardIssuesPath, dashboardMRsPath, groupIssuesPath, groupMRsPath, groupName, mockDashboardOptions, mockGroupOptions, mockProjectOptions, projectIssuesPath, projectMRsPath, projectName, userId, widget;
   var userName = 'root';
 
   widget = null;
@@ -29,27 +28,37 @@ import 'vendor/fuzzaldrin-plus';
 
   groupName = 'Gitlab Org';
 
-  // Add required attributes to body before starting the test.
-  // section would be dashboard|group|project
-  addBodyAttributes = function(section) {
-    var $body;
-    if (section == null) {
-      section = 'dashboard';
-    }
-    $body = $('body');
+  const removeBodyAttributes = function() {
+    const $body = $('body');
+
     $body.removeAttr('data-page');
     $body.removeAttr('data-project');
     $body.removeAttr('data-group');
+  };
+
+  // Add required attributes to body before starting the test.
+  // section would be dashboard|group|project
+  const addBodyAttributes = function(section) {
+    if (section == null) {
+      section = 'dashboard';
+    }
+
+    const $body = $('body');
+    removeBodyAttributes();
     switch (section) {
       case 'dashboard':
-        return $body.data('page', 'root:index');
+        return $body.attr('data-page', 'root:index');
       case 'group':
-        $body.data('page', 'groups:show');
+        $body.attr('data-page', 'groups:show');
         return $body.data('group', 'gitlab-org');
       case 'project':
-        $body.data('page', 'projects:show');
+        $body.attr('data-page', 'projects:show');
         return $body.data('project', 'gitlab-ce');
     }
+  };
+
+  const disableProjectIssues = function() {
+    document.querySelector('.js-search-project-options').setAttribute('data-issues-disabled', true);
   };
 
   // Mock `gl` object in window for dashboard specific page. App code will need it.
@@ -86,18 +95,20 @@ import 'vendor/fuzzaldrin-plus';
 
   assertLinks = function(list, issuesPath, mrsPath) {
     var a1, a2, a3, a4, issuesAssignedToMeLink, issuesIHaveCreatedLink, mrsAssignedToMeLink, mrsIHaveCreatedLink;
-    issuesAssignedToMeLink = issuesPath + "/?assignee_username=" + userName;
-    issuesIHaveCreatedLink = issuesPath + "/?author_username=" + userName;
+    if (issuesPath) {
+      issuesAssignedToMeLink = issuesPath + "/?assignee_username=" + userName;
+      issuesIHaveCreatedLink = issuesPath + "/?author_username=" + userName;
+      a1 = "a[href='" + issuesAssignedToMeLink + "']";
+      a2 = "a[href='" + issuesIHaveCreatedLink + "']";
+      expect(list.find(a1).length).toBe(1);
+      expect(list.find(a1).text()).toBe('Issues assigned to me');
+      expect(list.find(a2).length).toBe(1);
+      expect(list.find(a2).text()).toBe("Issues I've created");
+    }
     mrsAssignedToMeLink = mrsPath + "/?assignee_username=" + userName;
     mrsIHaveCreatedLink = mrsPath + "/?author_username=" + userName;
-    a1 = "a[href='" + issuesAssignedToMeLink + "']";
-    a2 = "a[href='" + issuesIHaveCreatedLink + "']";
     a3 = "a[href='" + mrsAssignedToMeLink + "']";
     a4 = "a[href='" + mrsIHaveCreatedLink + "']";
-    expect(list.find(a1).length).toBe(1);
-    expect(list.find(a1).text()).toBe('Issues assigned to me');
-    expect(list.find(a2).length).toBe(1);
-    expect(list.find(a2).text()).toBe("Issues I've created");
     expect(list.find(a3).length).toBe(1);
     expect(list.find(a3).text()).toBe('Merge requests assigned to me');
     expect(list.find(a4).length).toBe(1);
@@ -108,7 +119,7 @@ import 'vendor/fuzzaldrin-plus';
     preloadFixtures('static/search_autocomplete.html.raw');
     beforeEach(function() {
       loadFixtures('static/search_autocomplete.html.raw');
-      widget = new gl.SearchAutocomplete;
+
       // Prevent turbolinks from triggering within gl_dropdown
       spyOn(window.gl.utils, 'visitUrl').and.returnValue(true);
 
@@ -120,6 +131,8 @@ import 'vendor/fuzzaldrin-plus';
     });
 
     afterEach(function() {
+      // Undo what we did to the shared <body>
+      removeBodyAttributes();
       window.gon = {};
     });
     it('should show Dashboard specific dropdown menu', function() {
@@ -145,6 +158,14 @@ import 'vendor/fuzzaldrin-plus';
       widget.searchInput.triggerHandler('focus');
       list = widget.wrap.find('.dropdown-menu').find('ul');
       return assertLinks(list, projectIssuesPath, projectMRsPath);
+    });
+    it('should show only Project mergeRequest dropdown menu items when project issues are disabled', function() {
+      addBodyAttributes('project');
+      disableProjectIssues();
+      mockProjectOptions();
+      widget.searchInput.triggerHandler('focus');
+      const list = widget.wrap.find('.dropdown-menu').find('ul');
+      assertLinks(list, null, projectMRsPath);
     });
     it('should not show category related menu if there is text in the input', function() {
       var link, list;

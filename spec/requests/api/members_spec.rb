@@ -35,7 +35,7 @@ describe API::Members do
 
             get api("/#{source_type.pluralize}/#{source.id}/members", user)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
             expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(json_response.size).to eq(2)
@@ -49,7 +49,7 @@ describe API::Members do
 
         get api("/#{source_type.pluralize}/#{source.id}/members", developer)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(2)
@@ -59,7 +59,7 @@ describe API::Members do
       it 'finds members with query string' do
         get api("/#{source_type.pluralize}/#{source.id}/members", developer), query: master.username
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.count).to eq(1)
@@ -81,7 +81,7 @@ describe API::Members do
               user = public_send(type)
               get api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", user)
 
-              expect(response).to have_http_status(200)
+              expect(response).to have_gitlab_http_status(200)
               # User attributes
               expect(json_response['id']).to eq(developer.id)
               expect(json_response['name']).to eq(developer.name)
@@ -116,7 +116,7 @@ describe API::Members do
               post api("/#{source_type.pluralize}/#{source.id}/members", user),
                    user_id: access_requester.id, access_level: Member::MASTER
 
-              expect(response).to have_http_status(403)
+              expect(response).to have_gitlab_http_status(403)
             end
           end
         end
@@ -129,7 +129,7 @@ describe API::Members do
               post api("/#{source_type.pluralize}/#{source.id}/members", master),
                    user_id: access_requester.id, access_level: Member::MASTER
 
-              expect(response).to have_http_status(201)
+              expect(response).to have_gitlab_http_status(201)
             end.to change { source.members.count }.by(1)
             expect(source.requesters.count).to eq(0)
             expect(json_response['id']).to eq(access_requester.id)
@@ -142,7 +142,7 @@ describe API::Members do
             post api("/#{source_type.pluralize}/#{source.id}/members", master),
                  user_id: stranger.id, access_level: Member::DEVELOPER, expires_at: '2016-08-05'
 
-            expect(response).to have_http_status(201)
+            expect(response).to have_gitlab_http_status(201)
           end.to change { source.members.count }.by(1)
           expect(json_response['id']).to eq(stranger.id)
           expect(json_response['access_level']).to eq(Member::DEVELOPER)
@@ -154,28 +154,28 @@ describe API::Members do
         post api("/#{source_type.pluralize}/#{source.id}/members", master),
              user_id: master.id, access_level: Member::MASTER
 
-        expect(response).to have_http_status(409)
+        expect(response).to have_gitlab_http_status(409)
       end
 
       it 'returns 400 when user_id is not given' do
         post api("/#{source_type.pluralize}/#{source.id}/members", master),
              access_level: Member::MASTER
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
 
       it 'returns 400 when access_level is not given' do
         post api("/#{source_type.pluralize}/#{source.id}/members", master),
              user_id: stranger.id
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
 
       it 'returns 400  when access_level is not valid' do
         post api("/#{source_type.pluralize}/#{source.id}/members", master),
              user_id: stranger.id, access_level: 1234
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
     end
   end
@@ -197,7 +197,7 @@ describe API::Members do
               put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", user),
                   access_level: Member::MASTER
 
-              expect(response).to have_http_status(403)
+              expect(response).to have_gitlab_http_status(403)
             end
           end
         end
@@ -208,7 +208,7 @@ describe API::Members do
           put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", master),
               access_level: Member::MASTER, expires_at: '2016-08-05'
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(json_response['id']).to eq(developer.id)
           expect(json_response['access_level']).to eq(Member::MASTER)
           expect(json_response['expires_at']).to eq('2016-08-05')
@@ -219,20 +219,20 @@ describe API::Members do
         put api("/#{source_type.pluralize}/#{source.id}/members/123", master),
             access_level: Member::MASTER
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it 'returns 400 when access_level is not given' do
         put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", master)
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
 
       it 'returns 400  when access level is not valid' do
         put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", master),
             access_level: 1234
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
     end
   end
@@ -250,7 +250,7 @@ describe API::Members do
               user = public_send(type)
               delete api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", user)
 
-              expect(response).to have_http_status(403)
+              expect(response).to have_gitlab_http_status(403)
             end
           end
         end
@@ -261,7 +261,7 @@ describe API::Members do
           expect do
             delete api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", developer)
 
-            expect(response).to have_http_status(204)
+            expect(response).to have_gitlab_http_status(204)
           end.to change { source.members.count }.by(-1)
         end
       end
@@ -272,7 +272,7 @@ describe API::Members do
             expect do
               delete api("/#{source_type.pluralize}/#{source.id}/members/#{access_requester.id}", master)
 
-              expect(response).to have_http_status(404)
+              expect(response).to have_gitlab_http_status(404)
             end.not_to change { source.requesters.count }
           end
         end
@@ -281,7 +281,7 @@ describe API::Members do
           expect do
             delete api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", master)
 
-            expect(response).to have_http_status(204)
+            expect(response).to have_gitlab_http_status(204)
           end.to change { source.members.count }.by(-1)
         end
 
@@ -293,7 +293,7 @@ describe API::Members do
       it 'returns 404 if member does not exist' do
         delete api("/#{source_type.pluralize}/#{source.id}/members/123", master)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -344,7 +344,7 @@ describe API::Members do
         post api("/projects/#{project.id}/members", master),
              user_id: stranger.id, access_level: Member::OWNER
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end.to change { project.members.count }.by(0)
     end
   end

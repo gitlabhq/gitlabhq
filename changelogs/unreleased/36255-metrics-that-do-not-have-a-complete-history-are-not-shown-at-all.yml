@@ -1,5 +1,0 @@
----
-title: Allow prometheus graphs to correctly handle NaN values
-merge_request: 14741
-author:
-type: fixed

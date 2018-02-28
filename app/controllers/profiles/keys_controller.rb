@@ -11,10 +11,10 @@ class Profiles::KeysController < Profiles::ApplicationController
   end
 
   def create
-    @key = Keys::CreateService.new(current_user, key_params).execute
+    @key = Keys::CreateService.new(current_user, key_params.merge(ip_address: request.remote_ip)).execute
 
     if @key.persisted?
-      redirect_to_profile_key_path
+      redirect_to profile_key_path(@key)
     else
       @keys = current_user.keys.select(&:persisted?)
       render :index
@@ -48,12 +48,6 @@ class Profiles::KeysController < Profiles::ApplicationController
     else
       return render_404
     end
-  end
-
-  protected
-
-  def redirect_to_profile_key_path
-    redirect_to profile_key_path(@key)
   end
 
   private

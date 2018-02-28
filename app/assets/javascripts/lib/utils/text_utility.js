@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-param-reassign, no-cond-assign, quotes, one-var, one-var-declaration-per-line, operator-assignment, no-else-return, prefer-template, prefer-arrow-callback, no-empty, max-len, consistent-return, no-unused-vars, no-return-assign, max-len, vars-on-top */
+/* eslint-disable import/prefer-default-export, func-names, space-before-function-paren, wrap-iife, no-var, no-param-reassign, no-cond-assign, quotes, one-var, one-var-declaration-per-line, operator-assignment, no-else-return, prefer-template, prefer-arrow-callback, no-empty, max-len, consistent-return, no-unused-vars, no-return-assign, max-len, vars-on-top */
 
 import 'vendor/latinise';
 
@@ -13,9 +13,17 @@ if ((base = w.gl).text == null) {
 gl.text.addDelimiter = function(text) {
   return text ? text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : text;
 };
-gl.text.highCountTrim = function(count) {
+
+/**
+ * Returns '99+' for numbers bigger than 99.
+ *
+ * @param {Number} count
+ * @return {Number|String}
+ */
+export function highCountTrim(count) {
   return count > 99 ? '99+' : count;
-};
+}
+
 gl.text.randomString = function() {
   return Math.random().toString(36).substring(7);
 };

@@ -1,6 +1,5 @@
 /* eslint-disable func-names, object-shorthand, prefer-arrow-callback */
-/* global Dropzone */
-
+import Dropzone from 'dropzone';
 import '../lib/utils/url_utility';
 import { HIDDEN_CLASS } from '../lib/utils/constants';
 import csrf from '../lib/utils/csrf';

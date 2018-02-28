@@ -12,6 +12,12 @@ module Gitlab
       # blob data should use load_all_data!.
       MAX_DATA_DISPLAY_SIZE = 10.megabytes
 
+      # These limits are used as a heuristic to ignore files which can't be LFS
+      # pointers. The format of these is described in
+      # https://github.com/git-lfs/git-lfs/blob/master/docs/spec.md#the-pointer
+      LFS_POINTER_MIN_SIZE = 120.bytes
+      LFS_POINTER_MAX_SIZE = 200.bytes
+
       attr_accessor :name, :path, :size, :data, :mode, :id, :commit_id, :loaded_size, :binary
 
       class << self
@@ -30,16 +36,7 @@ module Gitlab
             if is_enabled
               Gitlab::GitalyClient::BlobService.new(repository).get_blob(oid: sha, limit: MAX_DATA_DISPLAY_SIZE)
             else
-              blob = repository.lookup(sha)
-
-              next unless blob.is_a?(Rugged::Blob)
-
-              new(
-                id: blob.oid,
-                size: blob.size,
-                data: blob.content(MAX_DATA_DISPLAY_SIZE),
-                binary: blob.binary?
-              )
+              rugged_raw(repository, sha, limit: MAX_DATA_DISPLAY_SIZE)
             end
           end
         end
@@ -59,8 +56,23 @@ module Gitlab
           end
         end
 
+        # Find LFS blobs given an array of sha ids
+        # Returns array of Gitlab::Git::Blob
+        # Does not guarantee blob data will be set
+        def batch_lfs_pointers(repository, blob_ids)
+          blob_ids.lazy
+                  .select { |sha| possible_lfs_blob?(repository, sha) }
+                  .map { |sha| rugged_raw(repository, sha, limit: LFS_POINTER_MAX_SIZE) }
+                  .select(&:lfs_pointer?)
+                  .force
+        end
+
         def binary?(data)
           EncodingHelper.detect_libgit2_binary?(data)
+        end
+
+        def size_could_be_lfs?(size)
+          size.between?(LFS_POINTER_MIN_SIZE, LFS_POINTER_MAX_SIZE)
         end
 
         private
@@ -167,6 +179,29 @@ module Gitlab
             end
           end
         end
+
+        def rugged_raw(repository, sha, limit:)
+          blob = repository.lookup(sha)
+
+          return unless blob.is_a?(Rugged::Blob)
+
+          new(
+            id: blob.oid,
+            size: blob.size,
+            data: blob.content(limit),
+            binary: blob.binary?
+          )
+        end
+
+        # Efficient lookup to determine if object size
+        # and type make it a possible LFS blob without loading
+        # blob content into memory with repository.lookup(sha)
+        def possible_lfs_blob?(repository, sha)
+          object_header = repository.rugged.read_header(sha)
+
+          object_header[:type] == :blob &&
+            size_could_be_lfs?(object_header[:len])
+        end
       end
 
       def initialize(options)
@@ -226,7 +261,7 @@ module Gitlab
       # size
       # see https://github.com/github/git-lfs/blob/v1.1.0/docs/spec.md#the-pointer
       def lfs_pointer?
-        has_lfs_version_key? && lfs_oid.present? && lfs_size.present?
+        self.class.size_could_be_lfs?(size) && has_lfs_version_key? && lfs_oid.present? && lfs_size.present?
       end
 
       def lfs_oid

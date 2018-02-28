@@ -1,6 +1,5 @@
-/* global Flash */
-import '~/flash';
 import Visibility from 'visibilityjs';
+import Flash from '../../flash';
 import Poll from '../../lib/utils/poll';
 import emptyState from '../components/empty_state.vue';
 import errorState from '../components/error_state.vue';

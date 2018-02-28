@@ -1,5 +1,0 @@
----
-title: Display whether branch has been merged when deleting protected branch
-merge_request: 14220
-author:
-type: changed

@@ -1,8 +1,10 @@
 class ProjectsController < Projects::ApplicationController
   include IssuableCollections
   include ExtractsPath
+  include PreviewMarkdown
 
   before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
+  before_action :redirect_git_extension, only: [:show]
   before_action :project, except: [:index, :new, :create]
   before_action :repository, except: [:index, :new, :create]
   before_action :assign_ref_vars, only: [:show], if: :repo_exists?
@@ -124,7 +126,7 @@ class ProjectsController < Projects::ApplicationController
     return access_denied! unless can?(current_user, :remove_project, @project)
 
     ::Projects::DestroyService.new(@project, current_user, {}).async_execute
-    flash[:alert] = _("Project '%{project_name}' will be deleted.") % { project_name: @project.name_with_namespace }
+    flash[:notice] = _("Project '%{project_name}' is in the process of being deleted.") % { project_name: @project.name_with_namespace }
 
     redirect_to dashboard_projects_path, status: 302
   rescue Projects::DestroyService::DestroyError => ex
@@ -258,18 +260,6 @@ class ProjectsController < Projects::ApplicationController
     render json: options.to_json
   end
 
-  def preview_markdown
-    result = PreviewMarkdownService.new(@project, current_user, params).execute
-
-    render json: {
-      body: view_context.markdown(result[:text]),
-      references: {
-        users: result[:users],
-        commands: view_context.markdown(result[:commands])
-      }
-    }
-  end
-
   private
 
   # Render project landing depending of which features are available
@@ -285,7 +275,8 @@ class ProjectsController < Projects::ApplicationController
         @project_wiki = @project.wiki
         @wiki_home = @project_wiki.find_page('home', params[:version_id])
       elsif @project.feature_available?(:issues, current_user)
-        @issues = issues_collection.page(params[:page])
+        @finder_type = IssuesFinder
+        @issues = issuables_collection.page(params[:page])
         @collection_type = 'Issue'
         @issuable_meta_data = issuable_meta_data(@issues, @collection_type)
       end
@@ -310,6 +301,8 @@ class ProjectsController < Projects::ApplicationController
     @events = EventCollection
       .new(projects, offset: params[:offset].to_i, filter: event_filter)
       .to_a
+
+    Events::RenderService.new(current_user).execute(@events, atom_request: request.format.atom?)
   end
 
   def project_params
@@ -399,5 +392,14 @@ class ProjectsController < Projects::ApplicationController
 
   def project_export_enabled
     render_404 unless current_application_settings.project_export_enabled?
+  end
+
+  def redirect_git_extension
+    # Redirect from
+    #   localhost/group/project.git
+    # to
+    #   localhost/group/project
+    #
+    redirect_to request.original_url.sub(/\.git\/?\Z/, '') if params[:format] == 'git'
   end
 end

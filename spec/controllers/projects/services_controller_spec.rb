@@ -19,7 +19,7 @@ describe Projects::ServicesController do
 
         put :test, namespace_id: project.namespace, project_id: project, id: service.to_param
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 

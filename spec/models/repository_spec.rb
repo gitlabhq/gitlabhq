@@ -299,6 +299,24 @@ describe Repository do
 
       it { is_expected.to be_falsey }
     end
+
+    context 'when pre-loaded merged branches are provided' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:branch, :pre_loaded, :expected) do
+        'not-merged-branch' | ['branch-merged']     | false
+        'branch-merged'     | ['not-merged-branch'] | false
+        'branch-merged'     | ['branch-merged']     | true
+        'not-merged-branch' | ['not-merged-branch'] | false
+        'master'            | ['master']            | false
+      end
+
+      with_them do
+        subject { repository.merged_to_root_ref?(branch, pre_loaded) }
+
+        it { is_expected.to eq(expected) }
+      end
+    end
   end
 
   describe '#can_be_merged?' do
@@ -1286,21 +1304,31 @@ describe Repository do
 
     let(:message) { 'Test \r\n\r\n message' }
 
-    it 'merges the code and returns the commit id' do
-      expect(merge_commit).to be_present
-      expect(repository.blob_at(merge_commit.id, 'files/ruby/feature.rb')).to be_present
+    shared_examples '#merge' do
+      it 'merges the code and returns the commit id' do
+        expect(merge_commit).to be_present
+        expect(repository.blob_at(merge_commit.id, 'files/ruby/feature.rb')).to be_present
+      end
+
+      it 'sets the `in_progress_merge_commit_sha` flag for the given merge request' do
+        merge_commit_id = merge(repository, user, merge_request, message)
+
+        expect(merge_request.in_progress_merge_commit_sha).to eq(merge_commit_id)
+      end
+
+      it 'removes carriage returns from commit message' do
+        merge_commit_id = merge(repository, user, merge_request, message)
+
+        expect(repository.commit(merge_commit_id).message).to eq(message.delete("\r"))
+      end
     end
 
-    it 'sets the `in_progress_merge_commit_sha` flag for the given merge request' do
-      merge_commit_id = merge(repository, user, merge_request, message)
-
-      expect(merge_request.in_progress_merge_commit_sha).to eq(merge_commit_id)
+    context 'with gitaly' do
+      it_behaves_like '#merge'
     end
 
-    it 'removes carriage returns from commit message' do
-      merge_commit_id = merge(repository, user, merge_request, message)
-
-      expect(repository.commit(merge_commit_id).message).to eq(message.delete("\r"))
+    context 'without gitaly', :skip_gitaly_mock do
+      it_behaves_like '#merge'
     end
 
     def merge(repository, user, merge_request, message)
@@ -1509,7 +1537,9 @@ describe Repository do
         :gitignore,
         :koding,
         :gitlab_ci,
-        :avatar
+        :avatar,
+        :issue_template,
+        :merge_request_template
       ])
 
       repository.after_change_head
@@ -2098,19 +2128,41 @@ describe Repository do
   end
 
   describe '#cache_method_output', :use_clean_rails_memory_store_caching do
+    let(:fallback) { 10 }
+
     context 'with a non-existing repository' do
-      let(:value) do
-        repository.cache_method_output(:cats, fallback: 10) do
-          raise Rugged::ReferenceError
+      let(:project) { create(:project) } # No repository
+
+      subject do
+        repository.cache_method_output(:cats, fallback: fallback) do
+          repository.cats_call_stub
         end
       end
 
-      it 'returns a fallback value' do
-        expect(value).to eq(10)
+      it 'returns the fallback value' do
+        expect(subject).to eq(fallback)
+      end
+
+      it 'avoids calling the original method' do
+        expect(repository).not_to receive(:cats_call_stub)
+
+        subject
+      end
+    end
+
+    context 'with a method throwing a non-existing-repository error' do
+      subject do
+        repository.cache_method_output(:cats, fallback: fallback) do
+          raise Gitlab::Git::Repository::NoRepository
+        end
+      end
+
+      it 'returns the fallback value' do
+        expect(subject).to eq(fallback)
       end
 
       it 'does not cache the data' do
-        value
+        subject
 
         expect(repository.instance_variable_defined?(:@cats)).to eq(false)
         expect(repository.send(:cache).exist?(:cats)).to eq(false)
@@ -2223,6 +2275,46 @@ describe Repository do
         expect(repository.ancestor?(nil, commit.id)).to eq(false)
         expect(repository.ancestor?(ancestor.id, nil)).to eq(false)
         expect(repository.ancestor?(nil, nil)).to eq(false)
+      end
+    end
+  end
+
+  describe 'commit cache' do
+    set(:project) { create(:project, :repository) }
+
+    it 'caches based on SHA' do
+      # Gets the commit oid, and warms the cache
+      oid = project.commit.id
+
+      expect(Gitlab::Git::Commit).not_to receive(:find).once
+
+      project.commit_by(oid: oid)
+    end
+
+    it 'caches nil values' do
+      expect(Gitlab::Git::Commit).to receive(:find).once
+
+      project.commit_by(oid: '1' * 40)
+      project.commit_by(oid: '1' * 40)
+    end
+  end
+
+  describe '#raw_repository' do
+    subject { repository.raw_repository }
+
+    it 'returns a Gitlab::Git::Repository representation of the repository' do
+      expect(subject).to be_a(Gitlab::Git::Repository)
+      expect(subject.relative_path).to eq(project.disk_path + '.git')
+      expect(subject.gl_repository).to eq("project-#{project.id}")
+    end
+
+    context 'with a wiki repository' do
+      let(:repository) { project.wiki.repository }
+
+      it 'creates a Gitlab::Git::Repository with the proper attributes' do
+        expect(subject).to be_a(Gitlab::Git::Repository)
+        expect(subject.relative_path).to eq(project.disk_path + '.wiki.git')
+        expect(subject.gl_repository).to eq("wiki-#{project.id}")
       end
     end
   end

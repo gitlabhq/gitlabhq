@@ -208,6 +208,39 @@ describe Banzai::Filter::UserReferenceFilter do
     end
   end
 
+  context 'in group context' do
+    let(:group) { create(:group) }
+    let(:group_member) { create(:user) }
+
+    before do
+      group.add_developer(group_member)
+    end
+
+    let(:context) { { author: group_member, project: nil, group: group } }
+
+    it 'supports a special @all mention' do
+      reference = User.reference_prefix + 'all'
+      doc = reference_filter("Hey #{reference}", context)
+
+      expect(doc.css('a').length).to eq(1)
+      expect(doc.css('a').first.attr('href')).to eq urls.group_url(group)
+    end
+
+    it 'supports mentioning a single user' do
+      reference = group_member.to_reference
+      doc = reference_filter("Hey #{reference}", context)
+
+      expect(doc.css('a').first.attr('href')).to eq urls.user_url(group_member)
+    end
+
+    it 'supports mentioning a group' do
+      reference = group.to_reference
+      doc = reference_filter("Hey #{reference}", context)
+
+      expect(doc.css('a').first.attr('href')).to eq urls.user_url(group)
+    end
+  end
+
   describe '#namespaces' do
     it 'returns a Hash containing all Namespaces' do
       document = Nokogiri::HTML.fragment("<p>#{user.to_reference}</p>")

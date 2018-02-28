@@ -216,12 +216,9 @@ body {
             color: $theme-gray-900;
           }
 
-          &.active > a {
+          &.active > a,
+          &.active > a:hover {
             color: $white-light;
-
-            &:hover {
-              color: $white-light;
-            }
           }
         }
       }

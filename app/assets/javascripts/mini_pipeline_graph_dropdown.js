@@ -1,5 +1,5 @@
 /* eslint-disable no-new */
-/* global Flash */
+import Flash from './flash';
 
 /**
  * In each pipelines table we have a mini pipeline graph for each pipeline.

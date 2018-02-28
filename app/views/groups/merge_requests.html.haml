@@ -15,11 +15,4 @@
 
   = render 'shared/issuable/search_bar', type: :merge_requests
 
-  .row-content-block.second-block
-    Only merge requests from
-    %strong= @group.name
-    group are listed here.
-    - if current_user
-      To see all merge requests you should visit #{link_to 'dashboard', merge_requests_dashboard_path} page.
-
   = render 'shared/merge_requests'

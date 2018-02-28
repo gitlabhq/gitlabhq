@@ -1,4 +1,4 @@
-# SSH
+# GitLab and SSH keys
 
 Git is a distributed version control system, which means you can work locally
 but you can also share or "push" your changes to other servers.
@@ -114,7 +114,7 @@ custom name continue onto the next step.
 
     If you manually copied your public SSH key make sure you copied the entire
     key starting with `ssh-rsa` and ending with your email.
-    
+
 1. Optionally you can test your setup by running `ssh -T git@example.com`
    (replacing `example.com` with your GitLab domain) and verifying that you
    receive a `Welcome to GitLab` message.
@@ -172,7 +172,7 @@ dummy user account.
 If you are a project master or owner, you can add a deploy key in the
 project settings under the section 'Repository'. Specify a title for the new
 deploy key and paste a public SSH key. After this, the machine that uses
-the corresponding private SSH key has read-only or read-write (if enabled) 
+the corresponding private SSH key has read-only or read-write (if enabled)
 access to the project.
 
 You can't add the same deploy key twice using the form.
@@ -232,7 +232,7 @@ something is wrong with your SSH setup.
 
 - Ensure that you generated your SSH key pair correctly and added the public SSH
   key to your GitLab profile
-- Try manually registering your private SSH key using `ssh-agent` as documented 
+- Try manually registering your private SSH key using `ssh-agent` as documented
   earlier in this document
 - Try to debug the connection by running `ssh -Tv git@example.com`
   (replacing `example.com` with your GitLab domain)

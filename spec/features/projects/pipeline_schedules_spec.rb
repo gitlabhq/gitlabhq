@@ -54,7 +54,7 @@ feature 'Pipeline Schedules', :js do
         end
 
         it 'deletes the pipeline' do
-          click_link 'Delete'
+          accept_confirm { click_link 'Delete' }
 
           expect(page).not_to have_css(".pipeline-schedule-table-row")
         end

@@ -22,6 +22,11 @@
         }
       }
     }
+
+    svg {
+      width: 136px;
+      height: 136px;
+    }
   }
 
   .col-headers {
@@ -75,7 +80,7 @@
   .panel {
     .content-block {
       padding: 24px 0;
-      border-bottom: none;
+      border-bottom: 0;
       position: relative;
 
       @media (max-width: $screen-xs-max) {
@@ -155,11 +160,6 @@
     }
   }
 
-  .landing svg {
-    width: 136px;
-    height: 136px;
-  }
-
   .fa-spinner {
     font-size: 28px;
     position: relative;
@@ -222,11 +222,11 @@
       }
 
       &:first-child {
-        border-top: none;
+        border-top: 0;
       }
 
       &:last-child {
-        border-bottom: none;
+        border-bottom: 0;
       }
 
       .stage-nav-item-cell {
@@ -290,7 +290,7 @@
     border-bottom: 1px solid $gray-darker;
 
     &:last-child {
-      border-bottom: none;
+      border-bottom: 0;
       margin-bottom: 0;
     }
 

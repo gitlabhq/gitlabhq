@@ -82,7 +82,7 @@ describe 'Project variables', :js do
 
   it 'deletes variable' do
     page.within('.variables-table') do
-      click_on 'Remove'
+      accept_confirm { click_on 'Remove' }
     end
 
     expect(page).not_to have_selector('variables-table')

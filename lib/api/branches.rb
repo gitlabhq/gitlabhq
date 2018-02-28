@@ -8,6 +8,16 @@ module API
 
     before { authorize! :download_code, user_project }
 
+    helpers do
+      def find_branch!(branch_name)
+        begin
+          user_project.repository.find_branch(branch_name) || not_found!('Branch')
+        rescue Gitlab::Git::CommandError
+          render_api_error!('The branch refname is invalid', 400)
+        end
+      end
+    end
+
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
@@ -19,12 +29,11 @@ module API
         use :pagination
       end
       get ':id/repository/branches' do
-        branches = ::Kaminari.paginate_array(user_project.repository.branches.sort_by(&:name))
+        repository = user_project.repository
+        branches = ::Kaminari.paginate_array(repository.branches.sort_by(&:name))
+        merged_branch_names = repository.merged_branch_names(branches.map(&:name))
 
-        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37442
-        Gitlab::GitalyClient.allow_n_plus_1_calls do
-          present paginate(branches), with: Entities::Branch, project: user_project
-        end
+        present paginate(branches), with: Entities::Branch, project: user_project, merged_branch_names: merged_branch_names
       end
 
       resource ':id/repository/branches/:branch', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
@@ -38,8 +47,7 @@ module API
           user_project.repository.branch_exists?(params[:branch]) ? status(204) : status(404)
         end
         get do
-          branch = user_project.repository.find_branch(params[:branch])
-          not_found!('Branch') unless branch
+          branch = find_branch!(params[:branch])
 
           present branch, with: Entities::Branch, project: user_project
         end
@@ -60,8 +68,7 @@ module API
       put ':id/repository/branches/:branch/protect', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         authorize_admin_project
 
-        branch = user_project.repository.find_branch(params[:branch])
-        not_found!('Branch') unless branch
+        branch = find_branch!(params[:branch])
 
         protected_branch = user_project.protected_branches.find_by(name: branch.name)
 
@@ -96,8 +103,7 @@ module API
       put ':id/repository/branches/:branch/unprotect', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         authorize_admin_project
 
-        branch = user_project.repository.find_branch(params[:branch])
-        not_found!("Branch") unless branch
+        branch = find_branch!(params[:branch])
         protected_branch = user_project.protected_branches.find_by(name: branch.name)
         protected_branch&.destroy
 
@@ -133,8 +139,7 @@ module API
       delete ':id/repository/branches/:branch', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         authorize_push_project
 
-        branch = user_project.repository.find_branch(params[:branch])
-        not_found!('Branch') unless branch
+        branch = find_branch!(params[:branch])
 
         commit = user_project.repository.commit(branch.dereferenced_target)
 

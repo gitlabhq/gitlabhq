@@ -7,6 +7,8 @@ module Storage
         raise Gitlab::UpdatePathError.new('Namespace cannot be moved, because at least one project has tags in container registry')
       end
 
+      expires_full_path_cache
+
       # Move the namespace directory in all storage paths used by member projects
       repository_storage_paths.each do |repository_storage_path|
         # Ensure old directory exists before moving it

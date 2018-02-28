@@ -5,12 +5,14 @@ module Gitlab
     # This middleware is intended to be used as a server-side middleware.
     class SidekiqMiddleware
       def call(worker, message, queue)
-        trans = Transaction.new("#{worker.class.name}#perform")
+        trans = BackgroundTransaction.new(worker.class)
 
         begin
           # Old gitlad-shell messages don't provide enqueued_at/created_at attributes
           trans.set(:sidekiq_queue_duration, Time.now.to_f - (message['enqueued_at'] || message['created_at'] || 0))
           trans.run { yield }
+
+          worker.metrics_tags.each { |tag, value| trans.add_tag(tag, value) } if worker.respond_to?(:metrics_tags)
         rescue Exception => error # rubocop: disable Lint/RescueException
           trans.add_event(:sidekiq_exception)
 

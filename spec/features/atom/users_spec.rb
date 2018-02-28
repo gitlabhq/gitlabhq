@@ -4,9 +4,11 @@ describe "User Feed"  do
   describe "GET /" do
     let!(:user) { create(:user) }
 
-    context 'user atom feed via private token' do
+    context 'user atom feed via personal access token' do
       it "renders user atom feed" do
-        visit user_path(user, :atom, private_token: user.private_token)
+        personal_access_token = create(:personal_access_token, user: user)
+
+        visit user_path(user, :atom, private_token: personal_access_token.token)
         expect(body).to have_selector('feed title')
       end
     end

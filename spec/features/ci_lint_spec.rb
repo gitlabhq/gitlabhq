@@ -10,6 +10,7 @@ describe 'CI Lint', :js do
       visit ci_lint_path
       # Ace editor updates a hidden textarea and it happens asynchronously
       # `sleep 0.1` is actually needed here because of this
+      find('#ci-editor')
       execute_script("ace.edit('ci-editor').setValue(" + yaml_content.to_json + ");")
       sleep 0.1
       click_on 'Validate'

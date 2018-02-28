@@ -31,12 +31,12 @@ class TodoService
     mark_pending_todos_as_done(issue, current_user)
   end
 
-  # When we destroy an issue we should:
+  # When we destroy an issuable we should:
   #
   #  * refresh the todos count cache for the current user
   #
-  def destroy_issue(issue, current_user)
-    destroy_issuable(issue, current_user)
+  def destroy_issuable(issuable, user)
+    user.update_todos_count_cache
   end
 
   # When we reassign an issue we should:
@@ -70,14 +70,6 @@ class TodoService
   #
   def close_merge_request(merge_request, current_user)
     mark_pending_todos_as_done(merge_request, current_user)
-  end
-
-  # When we destroy a merge request we should:
-  #
-  #  * refresh the todos count cache for the current user
-  #
-  def destroy_merge_request(merge_request, current_user)
-    destroy_issuable(merge_request, current_user)
   end
 
   # When we reassign a merge request we should:
@@ -232,10 +224,6 @@ class TodoService
     return if toggling_tasks?(issuable)
 
     create_mention_todos(issuable.project, issuable, author, nil, skip_users)
-  end
-
-  def destroy_issuable(issuable, user)
-    user.update_todos_count_cache
   end
 
   def toggling_tasks?(issuable)

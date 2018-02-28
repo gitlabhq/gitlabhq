@@ -67,7 +67,7 @@ describe MarkupHelper do
 
     describe 'without redacted attribute' do
       it 'renders the markdown value' do
-        expect(Banzai).to receive(:render_field).with(commit, attribute).and_call_original
+        expect(Banzai).to receive(:render_field).with(commit, attribute, {}).and_call_original
 
         helper.markdown_field(commit, attribute)
       end
@@ -252,38 +252,141 @@ describe MarkupHelper do
   end
 
   describe '#first_line_in_markdown' do
-    it 'truncates Markdown properly' do
-      text = "@#{user.username}, can you look at this?\nHello world\n"
-      actual = first_line_in_markdown(text, 100, project: project)
+    shared_examples_for 'common markdown examples' do
+      let(:project_base) { build(:project, :repository) }
 
-      doc = Nokogiri::HTML.parse(actual)
+      it 'displays inline code' do
+        object = create_object('Text with `inline code`')
+        expected = 'Text with <code>inline code</code>'
 
-      # Make sure we didn't create invalid markup
-      expect(doc.errors).to be_empty
+        expect(first_line_in_markdown(object, attribute, 100, project: project)).to match(expected)
+      end
 
-      # Leading user link
-      expect(doc.css('a').length).to eq(1)
-      expect(doc.css('a')[0].attr('href')).to eq user_path(user)
-      expect(doc.css('a')[0].text).to eq "@#{user.username}"
+      it 'truncates the text with multiple paragraphs' do
+        object = create_object("Paragraph 1\n\nParagraph 2")
+        expected = 'Paragraph 1...'
 
-      expect(doc.content).to eq "@#{user.username}, can you look at this?..."
+        expect(first_line_in_markdown(object, attribute, 100, project: project)).to match(expected)
+      end
+
+      it 'displays the first line of a code block' do
+        object = create_object("```\nCode block\nwith two lines\n```")
+        expected = %r{<pre.+><code><span class="line">Code block\.\.\.</span>\n</code></pre>}
+
+        expect(first_line_in_markdown(object, attribute, 100, project: project)).to match(expected)
+      end
+
+      it 'truncates a single long line of text' do
+        text = 'The quick brown fox jumped over the lazy dog twice' # 50 chars
+        object = create_object(text * 4)
+        expected = (text * 2).sub(/.{3}/, '...')
+
+        expect(first_line_in_markdown(object, attribute, 150, project: project)).to match(expected)
+      end
+
+      it 'preserves a link href when link text is truncated' do
+        text = 'The quick brown fox jumped over the lazy dog' # 44 chars
+        input = "#{text}#{text}#{text} " # 133 chars
+        link_url = 'http://example.com/foo/bar/baz' # 30 chars
+        input << link_url
+        object = create_object(input)
+        expected_link_text = 'http://example...</a>'
+
+        expect(first_line_in_markdown(object, attribute, 150, project: project)).to match(link_url)
+        expect(first_line_in_markdown(object, attribute, 150, project: project)).to match(expected_link_text)
+      end
+
+      it 'preserves code color scheme' do
+        object = create_object("```ruby\ndef test\n  'hello world'\nend\n```")
+        expected = "\n<pre class=\"code highlight js-syntax-highlight ruby\">" \
+          "<code><span class=\"line\"><span class=\"k\">def</span> <span class=\"nf\">test</span>...</span>\n" \
+          "</code></pre>"
+
+        expect(first_line_in_markdown(object, attribute, 150, project: project)).to eq(expected)
+      end
+
+      it 'preserves data-src for lazy images' do
+        object = create_object("![ImageTest](/uploads/test.png)")
+        image_url = "data-src=\".*/uploads/test.png\""
+
+        expect(first_line_in_markdown(object, attribute, 150, project: project)).to match(image_url)
+      end
+
+      context 'labels formatting' do
+        let(:label_title) { 'this should be ~label_1' }
+
+        def create_and_format_label(project)
+          create(:label, title: 'label_1', project: project)
+          object = create_object(label_title, project: project)
+
+          first_line_in_markdown(object, attribute, 150, project: project)
+        end
+
+        it 'preserves style attribute for a label that can be accessed by current_user' do
+          project = create(:project, :public)
+
+          expect(create_and_format_label(project)).to match(/span class=.*style=.*/)
+        end
+
+        it 'does not style a label that can not be accessed by current_user' do
+          project = create(:project, :private)
+
+          expect(create_and_format_label(project)).to eq("<p>#{label_title}</p>")
+        end
+      end
+
+      it 'truncates Markdown properly' do
+        object = create_object("@#{user.username}, can you look at this?\nHello world\n")
+        actual = first_line_in_markdown(object, attribute, 100, project: project)
+
+        doc = Nokogiri::HTML.parse(actual)
+
+        # Make sure we didn't create invalid markup
+        expect(doc.errors).to be_empty
+
+        # Leading user link
+        expect(doc.css('a').length).to eq(1)
+        expect(doc.css('a')[0].attr('href')).to eq user_path(user)
+        expect(doc.css('a')[0].text).to eq "@#{user.username}"
+
+        expect(doc.content).to eq "@#{user.username}, can you look at this?..."
+      end
+
+      it 'truncates Markdown with emoji properly' do
+        object = create_object("foo :wink:\nbar :grinning:")
+        actual = first_line_in_markdown(object, attribute, 100, project: project)
+
+        doc = Nokogiri::HTML.parse(actual)
+
+        # Make sure we didn't create invalid markup
+        # But also account for the 2 errors caused by the unknown `gl-emoji` elements
+        expect(doc.errors.length).to eq(2)
+
+        expect(doc.css('gl-emoji').length).to eq(2)
+        expect(doc.css('gl-emoji')[0].attr('data-name')).to eq 'wink'
+        expect(doc.css('gl-emoji')[1].attr('data-name')).to eq 'grinning'
+
+        expect(doc.content).to eq "foo 😉\nbar 😀"
+      end
     end
 
-    it 'truncates Markdown with emoji properly' do
-      text = "foo :wink:\nbar :grinning:"
-      actual = first_line_in_markdown(text, 100, project: project)
+    context 'when the asked attribute can be redacted' do
+      include_examples 'common markdown examples' do
+        let(:attribute) { :note }
+        def create_object(title, project: project_base)
+          build(:note, note: title, project: project)
+        end
+      end
+    end
 
-      doc = Nokogiri::HTML.parse(actual)
-
-      # Make sure we didn't create invalid markup
-      # But also account for the 2 errors caused by the unknown `gl-emoji` elements
-      expect(doc.errors.length).to eq(2)
-
-      expect(doc.css('gl-emoji').length).to eq(2)
-      expect(doc.css('gl-emoji')[0].attr('data-name')).to eq 'wink'
-      expect(doc.css('gl-emoji')[1].attr('data-name')).to eq 'grinning'
-
-      expect(doc.content).to eq "foo 😉\nbar 😀"
+    context 'when the asked attribute can not be redacted' do
+      include_examples 'common markdown examples' do
+        let(:attribute) { :body }
+        def create_object(title, project: project_base)
+          issue = build(:issue, title: title)
+          build(:todo, :done, project: project_base, author: user, target: issue)
+        end
+      end
     end
   end
 

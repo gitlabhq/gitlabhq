@@ -1,5 +1,5 @@
 /* eslint-disable no-new */
-/* global Flash */
+import Flash from './flash';
 import DropLab from './droplab/drop_lab';
 import ISetter from './droplab/plugins/input_setter';
 

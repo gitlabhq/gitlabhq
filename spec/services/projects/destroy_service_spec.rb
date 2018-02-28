@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::DestroyService do
+  include ProjectForksHelper
+
   let!(:user) { create(:user) }
   let!(:project) { create(:project, :repository, namespace: user.namespace) }
   let!(:path) { project.repository.path_to_repo }
@@ -209,6 +211,21 @@ describe Projects::DestroyService do
           expect(destroy_project(project, user)).to be false
         end
       end
+    end
+  end
+
+  context 'for a forked project with LFS objects' do
+    let(:forked_project) { fork_project(project, user) }
+
+    before do
+      project.lfs_objects << create(:lfs_object)
+      forked_project.forked_project_link.destroy
+      forked_project.reload
+    end
+
+    it 'destroys the fork' do
+      expect { destroy_project(forked_project, user) }
+        .not_to raise_error
     end
   end
 

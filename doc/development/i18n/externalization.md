@@ -180,15 +180,43 @@ aren't in the message with id `1 pipeline`.
 
 ## Working with special content
 
+
+### Just marking content for parsing
+
+- In Ruby/HAML:
+
+    ```ruby
+    _('Subscribe')
+    ```
+
+- In JavaScript:
+
+    ```js
+    import { __ } from '../../../locale';
+    const label = __('Subscribe');
+    ```
+
+
+Sometimes there are some dynamic translations that can't be found by the
+parser when running `bundle exec rake gettext:find`. For these scenarios you can
+use the [`_N` method](https://github.com/grosser/gettext_i18n_rails/blob/c09e38d481e0899ca7d3fc01786834fa8e7aab97/Readme.md#unfound-translations-with-rake-gettextfind).
+
+There is also and alternative method to [translate messages from validation errors](https://github.com/grosser/gettext_i18n_rails/blob/c09e38d481e0899ca7d3fc01786834fa8e7aab97/Readme.md#option-a).
+
 ### Interpolation
 
 - In Ruby/HAML:
 
     ```ruby
-    _("Hello %{name}") % { name: 'Joe' }
+    _("Hello %{name}") % { name: 'Joe' } => 'Hello Joe'
     ```
 
-- In JavaScript: Not supported at this moment.
+- In JavaScript:
+
+    ```js
+    import { __, sprintf } from '../../../locale';
+    sprintf(__('Hello %{username}'), { username: 'Joe' }) => 'Hello Joe'
+    ```
 
 ### Plurals
 
@@ -233,14 +261,6 @@ Sometimes you need to add some context to the text that you want to translate
     ```js
     s__('OpenedNDaysAgo|Opened')
     ```
-
-### Just marking content for parsing
-
-Sometimes there are some dynamic translations that can't be found by the
-parser when running `bundle exec rake gettext:find`. For these scenarios you can
-use the [`_N` method](https://github.com/grosser/gettext_i18n_rails/blob/c09e38d481e0899ca7d3fc01786834fa8e7aab97/Readme.md#unfound-translations-with-rake-gettextfind).
-
-There is also and alternative method to [translate messages from validation errors](https://github.com/grosser/gettext_i18n_rails/blob/c09e38d481e0899ca7d3fc01786834fa8e7aab97/Readme.md#option-a).
 
 ## Adding a new language
 

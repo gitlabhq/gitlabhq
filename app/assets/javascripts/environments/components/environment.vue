@@ -1,6 +1,6 @@
 <script>
-/* global Flash */
 import Visibility from 'visibilityjs';
+import Flash from '../../flash';
 import EnvironmentsService from '../services/environments_service';
 import environmentTable from './environments_table.vue';
 import EnvironmentsStore from '../stores/environments_store';

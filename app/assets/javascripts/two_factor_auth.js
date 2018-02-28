@@ -1,4 +1,5 @@
-/* global U2FRegister */
+import U2FRegister from './u2f/register';
+
 document.addEventListener('DOMContentLoaded', () => {
   const twoFactorNode = document.querySelector('.js-two-factor-auth');
   const skippable = twoFactorNode.dataset.twoFactorSkippable === 'true';

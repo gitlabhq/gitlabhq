@@ -1,0 +1,5 @@
+---
+title: Returns a ssh url for go-get=1
+merge_request: 14990
+author: gvieira37
+type: fixed

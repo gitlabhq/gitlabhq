@@ -1,7 +1,7 @@
 module Gitlab
   module Git
     class WikiFile
-      attr_reader :mime_type, :raw_data, :name
+      attr_reader :mime_type, :raw_data, :name, :path
 
       # This class is meant to be serializable so that it can be constructed
       # by Gitaly and sent over the network to GitLab.
@@ -13,6 +13,7 @@ module Gitlab
         @mime_type = gollum_file.mime_type
         @raw_data = gollum_file.raw_data
         @name = gollum_file.name
+        @path = gollum_file.path
       end
     end
   end

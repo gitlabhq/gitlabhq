@@ -26,7 +26,11 @@ module Gitlab
           @relations.map { |rel| rel.reorder(nil).to_sql }.reject(&:blank?)
         end
 
-        fragments.join("\n#{union_keyword}\n")
+        if fragments.any?
+          fragments.join("\n#{union_keyword}\n")
+        else
+          'NULL'
+        end
       end
 
       def union_keyword

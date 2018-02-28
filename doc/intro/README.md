@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # Get started with GitLab
 
 ## Organize

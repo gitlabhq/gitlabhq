@@ -162,13 +162,19 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
       items = [
         {
           header: "" + name
-        }, {
+        }
+      ];
+      const issueItems = [
+        {
           text: 'Issues assigned to me',
           url: issuesPath + "/?assignee_username=" + userName
         }, {
           text: "Issues I've created",
           url: issuesPath + "/?author_username=" + userName
-        }, 'separator', {
+        }
+      ];
+      const mergeRequestItems = [
+        {
           text: 'Merge requests assigned to me',
           url: mrPath + "/?assignee_username=" + userName
         }, {
@@ -176,6 +182,11 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
           url: mrPath + "/?author_username=" + userName
         }
       ];
+      if (options.issuesDisabled) {
+        items = items.concat(mergeRequestItems);
+      } else {
+        items = items.concat(...issueItems, 'separator', ...mergeRequestItems);
+      }
       if (!name) {
         items.splice(0, 1);
       }
@@ -408,6 +419,7 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
       gl.projectOptions[projectPath] = {
         name: $projectOptionsDataEl.data('name'),
         issuesPath: $projectOptionsDataEl.data('issues-path'),
+        issuesDisabled: $projectOptionsDataEl.data('issues-disabled'),
         mrPath: $projectOptionsDataEl.data('mr-path')
       };
     }

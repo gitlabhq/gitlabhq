@@ -2,6 +2,7 @@ class GroupsController < Groups::ApplicationController
   include IssuesAction
   include MergeRequestsAction
   include ParamsBackwardCompatibility
+  include PreviewMarkdown
 
   respond_to :html
 
@@ -45,15 +46,11 @@ class GroupsController < Groups::ApplicationController
   end
 
   def show
-    setup_projects
-
     respond_to do |format|
-      format.html
-
-      format.json do
-        render json: {
-          html: view_to_html_string("dashboard/projects/_projects", locals: { projects: @projects })
-        }
+      format.html do
+        @has_children = GroupDescendantsFinder.new(current_user: current_user,
+                                                   parent_group: @group,
+                                                   params: params).has_children?
       end
 
       format.atom do
@@ -61,13 +58,6 @@ class GroupsController < Groups::ApplicationController
         render layout: 'xml.atom'
       end
     end
-  end
-
-  def subgroups
-    return not_found unless Group.supports_nested_groups?
-
-    @nested_groups = GroupsFinder.new(current_user, parent: group).execute
-    @nested_groups = @nested_groups.search(params[:filter_groups]) if params[:filter_groups].present?
   end
 
   def activity
@@ -105,20 +95,6 @@ class GroupsController < Groups::ApplicationController
   end
 
   protected
-
-  def setup_projects
-    set_non_archived_param
-    params[:sort] ||= 'latest_activity_desc'
-    @sort = params[:sort]
-
-    options = {}
-    options[:only_owned] = true if params[:shared] == '0'
-    options[:only_shared] = true if params[:shared] == '1'
-
-    @projects = GroupProjectsFinder.new(params: params, group: group, options: options, current_user: current_user).execute
-    @projects = @projects.includes(:namespace)
-    @projects = @projects.page(params[:page]) if params[:name].blank?
-  end
 
   def authorize_create_group!
     allowed = if params[:parent_id].present?
@@ -165,9 +141,22 @@ class GroupsController < Groups::ApplicationController
   end
 
   def load_events
+    params[:sort] ||= 'latest_activity_desc'
+
+    options = {}
+    options[:only_owned] = true if params[:shared] == '0'
+    options[:only_shared] = true if params[:shared] == '1'
+
+    @projects = GroupProjectsFinder.new(params: params, group: group, options: options, current_user: current_user)
+                  .execute
+                  .includes(:namespace)
+                  .page(params[:page])
+
     @events = EventCollection
       .new(@projects, offset: params[:offset].to_i, filter: event_filter)
       .to_a
+
+    Events::RenderService.new(current_user).execute(@events, atom_request: request.format.atom?)
   end
 
   def user_actions

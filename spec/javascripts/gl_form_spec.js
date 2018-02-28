@@ -1,18 +1,11 @@
-import autosize from 'vendor/autosize';
-import '~/gl_form';
+import Autosize from 'autosize';
+import GLForm from '~/gl_form';
 import '~/lib/utils/text_utility';
 import '~/lib/utils/common_utils';
 
-window.autosize = autosize;
+window.autosize = Autosize;
 
 describe('GLForm', () => {
-  const global = window.gl || (window.gl = {});
-  const GLForm = global.GLForm;
-
-  it('should be defined in the global scope', () => {
-    expect(GLForm).toBeDefined();
-  });
-
   describe('when instantiated', function () {
     beforeEach((done) => {
       this.form = $('<form class="gfm-form"><textarea class="js-gfm-input"></form>');

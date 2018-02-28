@@ -20,11 +20,13 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I should see that I am subscribed' do
-    expect(find('.issuable-subscribe-button span')).to have_content 'Unsubscribe'
+    wait_for_requests
+    expect(find('.js-issuable-subscribe-button span')).to have_content 'Unsubscribe'
   end
 
   step 'I should see that I am unsubscribed' do
-    expect(find('.issuable-subscribe-button span')).to have_content 'Subscribe'
+    wait_for_requests
+    expect(find('.js-issuable-subscribe-button span')).to have_content 'Subscribe'
   end
 
   step 'I click link "Closed"' do

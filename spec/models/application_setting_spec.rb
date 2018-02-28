@@ -114,6 +114,30 @@ describe ApplicationSetting do
       it { expect(setting.repository_storages).to eq(['default']) }
     end
 
+    context 'circuitbreaker settings' do
+      [:circuitbreaker_backoff_threshold,
+       :circuitbreaker_failure_count_threshold,
+       :circuitbreaker_failure_wait_time,
+       :circuitbreaker_failure_reset_time,
+       :circuitbreaker_storage_timeout].each do |field|
+        it "Validates #{field} as number" do
+          is_expected.to validate_numericality_of(field)
+                           .only_integer
+                           .is_greater_than_or_equal_to(0)
+        end
+      end
+
+      it 'requires the `backoff_threshold` to be lower than the `failure_count_threshold`' do
+        setting.circuitbreaker_failure_count_threshold = 10
+        setting.circuitbreaker_backoff_threshold = 15
+        failure_message = "The circuitbreaker backoff threshold should be lower "\
+                          "than the failure count threshold"
+
+        expect(setting).not_to be_valid
+        expect(setting.errors[:circuitbreaker_backoff_threshold]).to include(failure_message)
+      end
+    end
+
     context 'repository storages' do
       before do
         storages = {
@@ -206,6 +230,31 @@ describe ApplicationSetting do
 
         expect(described_class.current).to eq(:last)
       end
+    end
+
+    context 'when an ApplicationSetting is not yet present' do
+      it 'does not cache nil object' do
+        # when missing settings a nil object is returned, but not cached
+        allow(described_class).to receive(:last).and_return(nil).twice
+        expect(described_class.current).to be_nil
+
+        # when the settings are set the method returns a valid object
+        allow(described_class).to receive(:last).and_return(:last)
+        expect(described_class.current).to eq(:last)
+
+        # subsequent calls get everything from cache
+        expect(described_class.current).to eq(:last)
+      end
+    end
+  end
+
+  context 'restrict creating duplicates' do
+    before do
+      described_class.create_from_defaults
+    end
+
+    it 'raises an record creation violation if already created' do
+      expect { described_class.create_from_defaults }.to raise_error(ActiveRecord::RecordNotUnique)
     end
   end
 

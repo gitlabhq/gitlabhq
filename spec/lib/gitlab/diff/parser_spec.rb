@@ -143,4 +143,21 @@ eos
     it { expect(parser.parse([])).to eq([]) }
     it { expect(parser.parse(nil)).to eq([]) }
   end
+
+  describe 'tolerates special diff markers in a content' do
+    it "counts lines correctly" do
+      diff = <<~END
+        --- a/test
+        +++ b/test
+        @@ -1,2 +1,2 @@
+        +ipsum
+        +++ b
+        -ipsum
+      END
+
+      lines = parser.parse(diff.lines).to_a
+
+      expect(lines.size).to eq(3)
+    end
+  end
 end

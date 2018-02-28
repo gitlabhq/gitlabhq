@@ -1,6 +1,8 @@
 class IssueEntity < IssuableEntity
-  include RequestAwareEntity
+  include TimeTrackableEntity
 
+  expose :state
+  expose :deleted_at
   expose :branch_name
   expose :confidential
   expose :discussion_locked

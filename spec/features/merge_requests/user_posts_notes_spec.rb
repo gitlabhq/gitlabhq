@@ -141,7 +141,7 @@ describe 'Merge requests > User posts notes', :js do
       end
 
       it 'removes the attachment div and resets the edit form' do
-        find('.js-note-attachment-delete').click
+        accept_confirm { find('.js-note-attachment-delete').click }
         is_expected.not_to have_css('.note-attachment')
         is_expected.not_to have_css('.current-note-edit-form')
         wait_for_requests

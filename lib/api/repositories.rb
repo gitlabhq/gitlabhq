@@ -57,7 +57,7 @@ module API
 
       desc 'Get raw blob contents from the repository'
       params do
-        requires :sha, type: String, desc: 'The commit, branch name, or tag name'
+        requires :sha, type: String, desc: 'The commit hash'
       end
       get ':id/repository/blobs/:sha/raw' do
         assign_blob_vars!
@@ -67,7 +67,7 @@ module API
 
       desc 'Get a blob from the repository'
       params do
-        requires :sha, type: String, desc: 'The commit, branch name, or tag name'
+        requires :sha, type: String, desc: 'The commit hash'
       end
       get ':id/repository/blobs/:sha' do
         assign_blob_vars!

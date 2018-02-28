@@ -3,11 +3,11 @@ class MergeRequest < ActiveRecord::Base
   include Issuable
   include Noteable
   include Referable
-  include Sortable
   include IgnorableColumn
-  include CreatedAtFilterable
+  include TimeTrackable
 
-  ignore_column :locked_at
+  ignore_column :locked_at,
+                :ref_fetched
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
@@ -119,6 +119,8 @@ class MergeRequest < ActiveRecord::Base
 
   after_save :keep_around_commit
 
+  acts_as_paranoid
+
   def self.reference_prefix
     '!'
   end
@@ -177,6 +179,10 @@ class MergeRequest < ActiveRecord::Base
 
   def self.wip_title(title)
     work_in_progress?(title) ? title : "WIP: #{title}"
+  end
+
+  def hook_attrs
+    Gitlab::HookData::MergeRequestBuilder.new(self).build
   end
 
   # Returns a Hash of attributes to be used for Twitter card metadata
@@ -392,7 +398,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def merge_ongoing?
-    !!merge_jid && !merged?
+    # While the MergeRequest is locked, it should present itself as 'merge ongoing'.
+    # The unlocking process is handled by StuckMergeJobsWorker scheduled in Cron.
+    return true if locked?
+
+    !!merge_jid && !merged? && Gitlab::SidekiqStatus.running?(merge_jid)
   end
 
   def closed_without_fork?
@@ -415,7 +425,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def create_merge_request_diff
-    fetch_ref
+    fetch_ref!
 
     # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37435
     Gitlab::GitalyClient.allow_n_plus_1_calls do
@@ -587,24 +597,6 @@ class MergeRequest < ActiveRecord::Base
     !discussions_to_be_resolved?
   end
 
-  def hook_attrs
-    attrs = {
-      source: source_project.try(:hook_attrs),
-      target: target_project.hook_attrs,
-      last_commit: nil,
-      work_in_progress: work_in_progress?,
-      total_time_spent: total_time_spent,
-      human_total_time_spent: human_total_time_spent,
-      human_time_estimate: human_time_estimate
-    }
-
-    if diff_head_commit
-      attrs[:last_commit] = diff_head_commit.hook_attrs
-    end
-
-    attributes.merge!(attrs)
-  end
-
   def for_fork?
     target_project != source_project
   end
@@ -689,13 +681,13 @@ class MergeRequest < ActiveRecord::Base
   def source_branch_exists?
     return false unless self.source_project
 
-    self.source_project.repository.branch_names.include?(self.source_branch)
+    self.source_project.repository.branch_exists?(self.source_branch)
   end
 
   def target_branch_exists?
     return false unless self.target_project
 
-    self.target_project.repository.branch_names.include?(self.target_branch)
+    self.target_project.repository.branch_exists?(self.target_branch)
   end
 
   def merge_commit_message(include_description: false)
@@ -818,27 +810,12 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  def fetch_ref
-    write_ref
-    update_column(:ref_fetched, true)
+  def fetch_ref!
+    target_project.repository.fetch_source_branch!(source_project.repository, source_branch, ref_path)
   end
 
   def ref_path
     "refs/#{Repository::REF_MERGE_REQUEST}/#{iid}/head"
-  end
-
-  def ref_fetched?
-    super ||
-      begin
-        computed_value = project.repository.ref_exists?(ref_path)
-        update_column(:ref_fetched, true) if computed_value
-
-        computed_value
-      end
-  end
-
-  def ensure_ref_fetched
-    fetch_ref unless ref_fetched?
   end
 
   def in_locked_state
@@ -888,7 +865,7 @@ class MergeRequest < ActiveRecord::Base
   #
   def all_commit_shas
     if persisted?
-      column_shas = MergeRequestDiffCommit.where(merge_request_diff: merge_request_diffs).pluck('DISTINCT(sha)')
+      column_shas = MergeRequestDiffCommit.where(merge_request_diff: merge_request_diffs).limit(10_000).pluck('sha')
       serialised_shas = merge_request_diffs.where.not(st_commits: nil).flat_map(&:commit_shas)
 
       (column_shas + serialised_shas).uniq
@@ -981,11 +958,5 @@ class MergeRequest < ActiveRecord::Base
     return false if project.team.max_member_access(author_id) > Gitlab::Access::GUEST
 
     project.merge_requests.merged.where(author_id: author_id).empty?
-  end
-
-  private
-
-  def write_ref
-    target_project.repository.fetch_source_branch(source_project.repository, source_branch, ref_path)
   end
 end

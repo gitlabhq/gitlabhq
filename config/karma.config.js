@@ -67,14 +67,5 @@ module.exports = function(config) {
     karmaConfig.customLaunchers.ChromeHeadlessCustom.flags.push('--enable-logging', '--v=1');
   }
 
-  if (process.env.DEBUG) {
-    karmaConfig.logLevel = config.LOG_DEBUG;
-    process.env.CHROME_LOG_FILE = process.env.CHROME_LOG_FILE || 'chrome_debug.log';
-  }
-
-  if (process.env.CHROME_LOG_FILE) {
-    karmaConfig.customLaunchers.ChromeHeadlessCustom.flags.push('--enable-logging', '--v=1');
-  }
-
   config.set(karmaConfig);
 };

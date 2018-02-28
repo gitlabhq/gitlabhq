@@ -1,0 +1,5 @@
+---
+title: Make Prometheus metrics endpoint return empty response when metrics are disabled
+merge_request: 14490
+author:
+type: changed

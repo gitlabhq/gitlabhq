@@ -63,7 +63,7 @@ feature 'Master creates tag' do
         expect(ref_input.value).to eq 'master'
         expect(find('.dropdown-toggle-text')).to have_content 'master'
 
-        find('.js-branch-select').trigger('click')
+        find('.js-branch-select').click
 
         expect(find('.dropdown-menu')).to have_content 'empty-branch'
       end

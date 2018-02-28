@@ -80,6 +80,6 @@ end
 
 def submit_time(quick_action)
   fill_in 'note[note]', with: quick_action
-  find('.js-comment-submit-button').trigger('click')
+  find('.js-comment-submit-button').click
   wait_for_requests
 end

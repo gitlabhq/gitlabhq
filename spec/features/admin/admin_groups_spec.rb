@@ -152,7 +152,7 @@ feature 'Admin Groups' do
         expect(page).to have_content('Developer')
       end
 
-      find(:css, 'li', text: current_user.name).find(:css, 'a.btn-remove').click
+      accept_confirm { find(:css, 'li', text: current_user.name).find(:css, 'a.btn-remove').click }
 
       visit group_group_members_path(group)
 
