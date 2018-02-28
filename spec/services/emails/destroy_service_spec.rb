@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Emails::DestroyService, services: true do
+describe Emails::DestroyService do
   let!(:user) { create(:user) }
   let!(:email) { create(:email, user: user) }
 

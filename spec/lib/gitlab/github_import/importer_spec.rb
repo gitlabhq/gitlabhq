@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::GithubImport::Importer, lib: true do
+describe Gitlab::GithubImport::Importer do
   shared_examples 'Gitlab::GithubImport::Importer#execute' do
     let(:expected_not_called) { [] }
 
@@ -207,7 +207,7 @@ describe Gitlab::GithubImport::Importer, lib: true do
     end
   end
 
-  let(:project) { create(:project, :wiki_disabled, import_url: "#{repo_root}/octocat/Hello-World.git") }
+  let(:project) { create(:project, :repository, :wiki_disabled, import_url: "#{repo_root}/octocat/Hello-World.git") }
   let(:octocat) { double(id: 123456, login: 'octocat', email: 'octocat@example.com') }
   let(:credentials) { { user: 'joe' } }
 

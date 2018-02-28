@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'rake_helper'
 
-describe SystemCheck::SimpleExecutor, lib: true do
+describe SystemCheck::SimpleExecutor do
   class SimpleCheck < SystemCheck::BaseCheck
     set_name 'my simple check'
 

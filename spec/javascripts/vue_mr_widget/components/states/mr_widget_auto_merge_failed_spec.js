@@ -24,8 +24,8 @@ describe('MRWidgetAutoMergeFailed', () => {
 
     it('should have correct elements', () => {
       expect(vm.$el.classList.contains('mr-widget-body')).toBeTruthy();
-      expect(vm.$el.querySelector('button').getAttribute('disabled')).toBeTruthy();
-      expect(vm.$el.innerText).toContain('This merge request failed to be merged automatically.');
+      expect(vm.$el.querySelector('button').getAttribute('disabled')).toBeFalsy();
+      expect(vm.$el.innerText).toContain('This merge request failed to be merged automatically');
       expect(vm.$el.innerText).toContain(mergeError);
     });
   });

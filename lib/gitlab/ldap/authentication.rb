@@ -42,7 +42,7 @@ module Gitlab
       end
 
       def adapter
-        OmniAuth::LDAP::Adaptor.new(config.options.symbolize_keys)
+        OmniAuth::LDAP::Adaptor.new(config.omniauth_options)
       end
 
       def config

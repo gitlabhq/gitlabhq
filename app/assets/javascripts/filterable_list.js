@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 /**
  * Makes search request for content when user types a value in the search input.
  * Updates the html content of the page with the received one.

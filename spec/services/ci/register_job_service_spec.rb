@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 module Ci
-  describe RegisterJobService, services: true do
-    let!(:project) { FactoryGirl.create :empty_project, shared_runners_enabled: false }
+  describe RegisterJobService do
+    let!(:project) { FactoryGirl.create :project, shared_runners_enabled: false }
     let!(:pipeline) { FactoryGirl.create :ci_pipeline, project: project }
     let!(:pending_build) { FactoryGirl.create :ci_build, pipeline: pipeline }
     let!(:shared_runner) { FactoryGirl.create(:ci_runner, is_shared: true) }
@@ -72,9 +72,9 @@ module Ci
         end
 
         context 'for multiple builds' do
-          let!(:project2) { create :empty_project, shared_runners_enabled: true }
+          let!(:project2) { create :project, shared_runners_enabled: true }
           let!(:pipeline2) { create :ci_pipeline, project: project2 }
-          let!(:project3) { create :empty_project, shared_runners_enabled: true }
+          let!(:project3) { create :project, shared_runners_enabled: true }
           let!(:pipeline3) { create :ci_pipeline, project: project3 }
           let!(:build1_project1) { pending_build }
           let!(:build2_project1) { FactoryGirl.create :ci_build, pipeline: pipeline }

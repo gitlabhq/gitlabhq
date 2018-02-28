@@ -24,7 +24,7 @@ require 'erb'
 #
 # See the MarkdownFeature class for setup details.
 
-describe 'GitLab Markdown', feature: true do
+describe 'GitLab Markdown' do
   include Capybara::Node::Matchers
   include MarkupHelper
   include MarkdownMatchers
@@ -100,7 +100,7 @@ describe 'GitLab Markdown', feature: true do
       end
 
       it 'permits img elements' do
-        expect(doc).to have_selector('img[src*="smile.png"]')
+        expect(doc).to have_selector('img[data-src*="smile.png"]')
       end
 
       it 'permits br elements' do

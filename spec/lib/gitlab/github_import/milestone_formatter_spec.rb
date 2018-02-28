@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Gitlab::GithubImport::MilestoneFormatter, lib: true do
-  let(:project) { create(:empty_project) }
+describe Gitlab::GithubImport::MilestoneFormatter do
+  let(:project) { create(:project) }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
   let(:base_data) do

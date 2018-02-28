@@ -54,8 +54,7 @@
 .settings-content {
   max-height: 1px;
   overflow-y: scroll;
-  margin-right: -20px;
-  padding-right: 130px;
+  padding-right: 110px;
   animation: collapseMaxHeight 300ms ease-out;
 
   &.expanded {
@@ -86,6 +85,23 @@
     height: 1px;
     overflow: hidden;
     margin-top: 20px;
+  }
+
+  .sub-section {
+    margin-bottom: 32px;
+    padding: 16px;
+    border: 1px solid $border-color;
+    background-color: $gray-light;
+  }
+
+  .bs-callout,
+  .checkbox:first-child,
+  .help-block {
+    margin-top: 0;
+  }
+
+  .label-light {
+    margin-bottom: 0;
   }
 }
 

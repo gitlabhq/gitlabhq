@@ -7,4 +7,4 @@
     = nav_link(path: 'commit#pipelines') do
       = link_to pipelines_project_commit_path(@project, @commit.id) do
         Pipelines
-        %span.badge= @commit.pipelines.size
+        %span.badge.js-pipelines-mr-count= @commit.pipelines.size

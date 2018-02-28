@@ -1,6 +1,6 @@
 # InputSetter
 
-`InputSetter` is a plugin that allows for udating DOM out of the scope of droplab when a list item is clicked.
+`InputSetter` is a plugin that allows for updating DOM out of the scope of droplab when a list item is clicked.
 
 ## Usage
 

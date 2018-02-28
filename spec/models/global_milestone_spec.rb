@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe GlobalMilestone, models: true do
+describe GlobalMilestone do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:group) { create(:group) }
-  let(:project1) { create(:empty_project, group: group) }
-  let(:project2) { create(:empty_project, path: 'gitlab-ci', group: group) }
-  let(:project3) { create(:empty_project, path: 'cookbook-gitlab', group: group) }
+  let(:project1) { create(:project, group: group) }
+  let(:project2) { create(:project, path: 'gitlab-ci', group: group) }
+  let(:project3) { create(:project, path: 'cookbook-gitlab', group: group) }
 
   describe '.build_collection' do
     let(:milestone1_due_date) { 2.weeks.from_now.to_date }
@@ -72,7 +72,7 @@ describe GlobalMilestone, models: true do
         project3
       ]
 
-      @global_milestones = GlobalMilestone.build_collection(projects, {})
+      @global_milestones = described_class.build_collection(projects, {})
     end
 
     it 'has all project milestones' do
@@ -106,7 +106,7 @@ describe GlobalMilestone, models: true do
       it 'returns the quantity of global milestones in each possible state' do
         expected_count = { opened: 1, closed: 2, all: 2 }
 
-        count = GlobalMilestone.states_count(Project.all)
+        count = described_class.states_count(Project.all)
 
         expect(count).to eq(expected_count)
       end
@@ -120,7 +120,7 @@ describe GlobalMilestone, models: true do
       it 'returns 0 as the quantity of global milestones in each state' do
         expected_count = { opened: 0, closed: 0, all: 0 }
 
-        count = GlobalMilestone.states_count(Project.all)
+        count = described_class.states_count(Project.all)
 
         expect(count).to eq(expected_count)
       end
@@ -141,7 +141,7 @@ describe GlobalMilestone, models: true do
         ]
       milestones_relation = Milestone.where(id: milestones.map(&:id))
 
-      @global_milestone = GlobalMilestone.new(milestone1_project1.title, milestones_relation)
+      @global_milestone = described_class.new(milestone1_project1.title, milestones_relation)
     end
 
     it 'has exactly one group milestone' do
@@ -157,7 +157,7 @@ describe GlobalMilestone, models: true do
     let(:milestone) { create(:milestone, title: "git / test", project: project1) }
 
     it 'strips out slashes and spaces' do
-      global_milestone = GlobalMilestone.new(milestone.title, Milestone.where(id: milestone.id))
+      global_milestone = described_class.new(milestone.title, Milestone.where(id: milestone.id))
 
       expect(global_milestone.safe_title).to eq('git-test')
     end
@@ -171,7 +171,7 @@ describe GlobalMilestone, models: true do
           create(:active_milestone, title: title),
           create(:closed_milestone, title: title)
         ]
-        global_milestone = GlobalMilestone.new(title, milestones)
+        global_milestone = described_class.new(title, milestones)
 
         expect(global_milestone.state).to eq('active')
       end
@@ -184,7 +184,7 @@ describe GlobalMilestone, models: true do
           create(:closed_milestone, title: title),
           create(:closed_milestone, title: title)
         ]
-        global_milestone = GlobalMilestone.new(title, milestones)
+        global_milestone = described_class.new(title, milestones)
 
         expect(global_milestone.state).to eq('closed')
       end

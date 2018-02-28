@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::CrossProjectReference, lib: true do
+describe Banzai::CrossProjectReference do
   include described_class
 
   describe '#project_from_ref' do

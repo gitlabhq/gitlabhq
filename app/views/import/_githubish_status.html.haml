@@ -25,7 +25,7 @@
           %td
             = provider_project_link(provider, project.import_source)
           %td
-            = link_to project.path_with_namespace, [project.namespace.becomes(Namespace), project]
+            = link_to project.full_path, [project.namespace.becomes(Namespace), project]
           %td.job-status
             - if project.import_status == 'finished'
               %span

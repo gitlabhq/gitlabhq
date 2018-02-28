@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Diff::DiffRefs, lib: true do
+describe Gitlab::Diff::DiffRefs do
   let(:project) { create(:project, :repository) }
 
   describe '#compare_in' do

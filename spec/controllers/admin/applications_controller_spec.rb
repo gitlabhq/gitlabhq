@@ -28,13 +28,16 @@ describe Admin::ApplicationsController do
 
   describe 'POST #create' do
     it 'creates the application' do
+      create_params = attributes_for(:application, trusted: true)
+
       expect do
-        post :create, doorkeeper_application: attributes_for(:application)
+        post :create, doorkeeper_application: create_params
       end.to change { Doorkeeper::Application.count }.by(1)
 
       application = Doorkeeper::Application.last
 
       expect(response).to redirect_to(admin_application_path(application))
+      expect(application).to have_attributes(create_params.except(:uid, :owner_type))
     end
 
     it 'renders the application form on errors' do
@@ -49,10 +52,12 @@ describe Admin::ApplicationsController do
 
   describe 'PATCH #update' do
     it 'updates the application' do
-      patch :update, id: application.id, doorkeeper_application: { redirect_uri: 'http://example.com/' }
+      patch :update, id: application.id, doorkeeper_application: { redirect_uri: 'http://example.com/', trusted: true }
+
+      application.reload
 
       expect(response).to redirect_to(admin_application_path(application))
-      expect(application.reload.redirect_uri).to eq 'http://example.com/'
+      expect(application).to have_attributes(redirect_uri: 'http://example.com/', trusted: true)
     end
 
     it 'renders the application form on errors' do

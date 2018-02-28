@@ -1,5 +1,7 @@
 - @no_container = true
 - page_title "Cycle Analytics"
+- if show_new_nav?
+  - add_to_breadcrumbs("Project", project_path(@project))
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('common_vue')
   = page_specific_javascript_bundle_tag('cycle_analytics')
@@ -9,8 +11,8 @@
 #cycle-analytics{ class: container_class, "v-cloak" => "true", data: { request_path: project_cycle_analytics_path(@project) } }
   - if @cycle_analytics_no_data
     .landing.content-block{ "v-if" => "!isOverviewDialogDismissed" }
-      %button.dismiss-button{ type: 'button', 'aria-label': 'Dismiss Cycle Analytics introduction box' }
-        = icon("times", "@click" => "dismissOverviewDialog()")
+      %button.dismiss-button{ type: 'button', 'aria-label': 'Dismiss Cycle Analytics introduction box', "@click" => "dismissOverviewDialog()" }
+        = icon("times")
       .svg-container
         = custom_icon('icon_cycle_analytics_splash')
       .inner-content

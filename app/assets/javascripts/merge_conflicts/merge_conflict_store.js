@@ -175,7 +175,7 @@ import Cookies from 'js-cookie';
 
     getConflictsCountText() {
       const count = this.getConflictsCount();
-      const text = count ? 'conflicts' : 'conflict';
+      const text = count > 1 ? 'conflicts' : 'conflict';
 
       return `${count} ${text}`;
     },

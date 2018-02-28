@@ -142,7 +142,8 @@ module SystemNoteService
   #
   # Returns the created Note object
   def change_milestone(noteable, project, author, milestone)
-    body = milestone.nil? ? 'removed milestone' : "changed milestone to #{milestone.to_reference(project)}"
+    format = milestone&.is_group_milestone? ? :name : :iid
+    body = milestone.nil? ? 'removed milestone' : "changed milestone to #{milestone.to_reference(project, format: format)}"
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'milestone'))
   end
@@ -550,6 +551,44 @@ module SystemNoteService
     body = "moved #{direction} #{cross_reference}"
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'moved'))
+  end
+
+  # Called when a Noteable has been marked as a duplicate of another Issue
+  #
+  # noteable        - Noteable object
+  # project         - Project owning noteable
+  # author          - User performing the change
+  # canonical_issue - Issue that this is a duplicate of
+  #
+  # Example Note text:
+  #
+  #   "marked this issue as a duplicate of #1234"
+  #
+  #   "marked this issue as a duplicate of other_project#5678"
+  #
+  # Returns the created Note object
+  def mark_duplicate_issue(noteable, project, author, canonical_issue)
+    body = "marked this issue as a duplicate of #{canonical_issue.to_reference(project)}"
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'duplicate'))
+  end
+
+  # Called when a Noteable has been marked as the canonical Issue of a duplicate
+  #
+  # noteable        - Noteable object
+  # project         - Project owning noteable
+  # author          - User performing the change
+  # duplicate_issue - Issue that was a duplicate of this
+  #
+  # Example Note text:
+  #
+  #   "marked #1234 as a duplicate of this issue"
+  #
+  #   "marked other_project#5678 as a duplicate of this issue"
+  #
+  # Returns the created Note object
+  def mark_canonical_issue_of_duplicate(noteable, project, author, duplicate_issue)
+    body = "marked #{duplicate_issue.to_reference(project)} as a duplicate of this issue"
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'duplicate'))
   end
 
   private

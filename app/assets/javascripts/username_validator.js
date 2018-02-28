@@ -1,5 +1,7 @@
 /* eslint-disable comma-dangle, consistent-return, class-methods-use-this, arrow-parens, no-param-reassign, max-len */
 
+import _ from 'underscore';
+
 const debounceTimeoutDuration = 1000;
 const invalidInputClass = 'gl-field-error-outline';
 const successInputClass = 'gl-field-success-outline';

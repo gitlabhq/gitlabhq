@@ -15,7 +15,7 @@ describe TodosHelper do
   end
 
   describe '#todo_projects_options' do
-    let(:projects) { create_list(:empty_project, 3) }
+    let(:projects) { create_list(:project, 3) }
     let(:user)     { create(:user) }
 
     it 'returns users authorised projects in json format' do

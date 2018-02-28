@@ -2,7 +2,7 @@ require('spec_helper')
 
 describe Projects::ProjectMembersController do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, :public, :access_requestable) }
+  let(:project) { create(:project, :public, :access_requestable) }
 
   describe 'GET index' do
     it 'should have the project_members address with a 200 status code' do
@@ -158,7 +158,7 @@ describe Projects::ProjectMembersController do
       end
 
       context 'and is an owner' do
-        let(:project) { create(:empty_project, namespace: user.namespace) }
+        let(:project) { create(:project, namespace: user.namespace) }
 
         before do
           project.team << [user, :master]
@@ -261,7 +261,7 @@ describe Projects::ProjectMembersController do
   end
 
   describe 'POST apply_import' do
-    let(:another_project) { create(:empty_project, :private) }
+    let(:another_project) { create(:project, :private) }
     let(:member) { create(:user) }
 
     before do

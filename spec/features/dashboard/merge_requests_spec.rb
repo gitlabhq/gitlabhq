@@ -2,11 +2,12 @@ require 'spec_helper'
 
 feature 'Dashboard Merge Requests' do
   include FilterItemSelectHelper
+  include SortingHelper
 
   let(:current_user) { create :user }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
-  let(:public_project) { create(:empty_project, :public, :repository) }
+  let(:public_project) { create(:project, :public, :repository) }
   let(:forked_project) { Projects::ForkService.new(public_project, current_user).execute }
 
   before do
@@ -15,7 +16,7 @@ feature 'Dashboard Merge Requests' do
   end
 
   context 'new merge request dropdown' do
-    let(:project_with_disabled_merge_requests) { create(:empty_project, :merge_requests_disabled) }
+    let(:project_with_disabled_merge_requests) { create(:project, :merge_requests_disabled) }
 
     before do
       project_with_disabled_merge_requests.add_master(current_user)
@@ -108,6 +109,22 @@ feature 'Dashboard Merge Requests' do
       expect(page).to have_content(assigned_merge_request.title)
       expect(page).to have_content(assigned_merge_request_from_fork.title)
       expect(page).to have_content(other_merge_request.title)
+    end
+
+    it 'shows sorted merge requests' do
+      sorting_by('Oldest updated')
+
+      visit merge_requests_dashboard_path(assignee_id: current_user.id)
+
+      expect(find('.issues-filters')).to have_content('Oldest updated')
+    end
+
+    it 'keeps sorting merge requests after visiting Projects MR page' do
+      sorting_by('Oldest updated')
+
+      visit project_merge_requests_path(project)
+
+      expect(find('.issues-filters')).to have_content('Oldest updated')
     end
   end
 end

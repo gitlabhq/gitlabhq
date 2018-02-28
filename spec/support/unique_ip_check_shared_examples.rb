@@ -1,7 +1,9 @@
 shared_context 'unique ips sign in limit' do
   include StubENV
   before(:each) do
-    Gitlab::Redis.with(&:flushall)
+    Gitlab::Redis::Cache.with(&:flushall)
+    Gitlab::Redis::Queues.with(&:flushall)
+    Gitlab::Redis::SharedState.with(&:flushall)
   end
 
   before do

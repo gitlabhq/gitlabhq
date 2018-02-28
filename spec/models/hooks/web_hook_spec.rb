@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe WebHook, models: true do
+describe WebHook do
   let(:hook) { build(:project_hook) }
 
   describe 'associations' do

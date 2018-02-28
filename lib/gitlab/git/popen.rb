@@ -1,3 +1,5 @@
+# Gitaly note: JV: no RPC's here.
+
 require 'open3'
 
 module Gitlab

@@ -60,7 +60,7 @@ describe IssuablesHelper do
       end
     end
 
-    describe 'counter caching based on issuable type and params', :caching do
+    describe 'counter caching based on issuable type and params', :use_clean_rails_memory_store_caching do
       let(:params) do
         {
           scope: 'created-by-me',
@@ -244,5 +244,25 @@ describe IssuablesHelper do
 
     it { expect(helper.updated_at_by(unedited_issuable)).to eq({}) }
     it { expect(helper.updated_at_by(edited_issuable)).to eq(edited_updated_at_by) }
+
+    context 'when updated by a deleted user' do
+      let(:edited_updated_at_by) do
+        {
+          updatedAt: edited_issuable.updated_at.to_time.iso8601,
+          updatedBy: {
+            name: User.ghost.name,
+            path: user_path(User.ghost)
+          }
+        }
+      end
+
+      before do
+        user.destroy
+      end
+
+      it 'returns "Ghost user" as edited_by' do
+        expect(helper.updated_at_by(edited_issuable.reload)).to eq(edited_updated_at_by)
+      end
+    end
   end
 end

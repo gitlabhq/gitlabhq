@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-feature 'Environment', :feature do
-  given(:project) { create(:empty_project) }
+feature 'Environment' do
+  given(:project) { create(:project) }
   given(:user) { create(:user) }
   given(:role) { :developer }
 
@@ -205,7 +205,7 @@ feature 'Environment', :feature do
   end
 
   feature 'auto-close environment when branch is deleted' do
-    given(:project) { create(:project) }
+    given(:project) { create(:project, :repository) }
 
     given!(:environment) do
       create(:environment, :with_review_app, project: project,

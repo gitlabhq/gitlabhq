@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Gitlab::SlashCommands::Command, service: true do
-  let(:project) { create(:empty_project) }
+describe Gitlab::SlashCommands::Command do
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
 
   describe '#execute' do
@@ -11,7 +11,7 @@ describe Gitlab::SlashCommands::Command, service: true do
 
     context 'when no command is available' do
       let(:params) { { text: 'issue show 1' } }
-      let(:project) { create(:empty_project, has_external_issue_tracker: true) }
+      let(:project) { create(:project, has_external_issue_tracker: true) }
 
       it 'displays 404 messages' do
         expect(subject[:response_type]).to be(:ephemeral)
@@ -80,7 +80,7 @@ describe Gitlab::SlashCommands::Command, service: true do
 
           it 'returns error' do
             expect(subject[:response_type]).to be(:ephemeral)
-            expect(subject[:text]).to include('Too many actions defined')
+            expect(subject[:text]).to include("Couldn't find a deployment manual action.")
           end
         end
       end

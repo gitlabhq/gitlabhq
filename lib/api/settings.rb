@@ -20,58 +20,6 @@ module API
       success Entities::ApplicationSetting
     end
     params do
-      # CE
-      at_least_one_of_ce = [
-        :admin_notification_email,
-        :after_sign_out_path,
-        :after_sign_up_text,
-        :akismet_enabled,
-        :container_registry_token_expire_delay,
-        :default_artifacts_expire_in,
-        :default_branch_protection,
-        :default_group_visibility,
-        :default_project_visibility,
-        :default_projects_limit,
-        :default_snippet_visibility,
-        :disabled_oauth_sign_in_sources,
-        :domain_blacklist_enabled,
-        :domain_whitelist,
-        :email_author_in_body,
-        :enabled_git_access_protocol,
-        :gravatar_enabled,
-        :help_page_hide_commercial_content,
-        :help_page_text,
-        :help_page_support_url,
-        :home_page_url,
-        :housekeeping_enabled,
-        :html_emails_enabled,
-        :import_sources,
-        :koding_enabled,
-        :max_artifacts_size,
-        :max_attachment_size,
-        :max_pages_size,
-        :metrics_enabled,
-        :plantuml_enabled,
-        :polling_interval_multiplier,
-        :recaptcha_enabled,
-        :repository_checks_enabled,
-        :repository_storage,
-        :require_two_factor_authentication,
-        :restricted_visibility_levels,
-        :send_user_confirmation_email,
-        :sentry_enabled,
-        :clientside_sentry_enabled,
-        :session_expire_delay,
-        :shared_runners_enabled,
-        :sidekiq_throttling_enabled,
-        :sign_in_text,
-        :signin_enabled,
-        :signup_enabled,
-        :terminal_max_session_time,
-        :user_default_external,
-        :user_oauth_applications,
-        :version_check_enabled
-      ]
       optional :default_branch_protection, type: Integer, values: [0, 1, 2], desc: 'Determine if developers can push to master'
       optional :default_project_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default project visibility'
       optional :default_snippet_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default snippet visibility'
@@ -95,7 +43,9 @@ module API
         requires :domain_blacklist, type: String, desc: 'Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com'
       end
       optional :after_sign_up_text, type: String, desc: 'Text shown after sign up'
-      optional :signin_enabled, type: Boolean, desc: 'Flag indicating if sign in is enabled'
+      optional :password_authentication_enabled, type: Boolean, desc: 'Flag indicating if password authentication is enabled'
+      optional :signin_enabled, type: Boolean, desc: 'Flag indicating if password authentication is enabled'
+      mutually_exclusive :password_authentication_enabled, :signin_enabled
       optional :require_two_factor_authentication, type: Boolean, desc: 'Require all users to setup Two-factor authentication'
       given require_two_factor_authentication: ->(val) { val } do
         requires :two_factor_grace_period, type: Integer, desc: 'Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication'
@@ -148,7 +98,7 @@ module API
       given clientside_sentry_enabled: ->(val) { val } do
         requires :clientside_sentry_dsn, type: String, desc: 'Clientside Sentry Data Source Name'
       end
-      optional :repository_storage, type: String, desc: 'Storage paths for new projects'
+      optional :repository_storages, type: Array[String], desc: 'Storage paths for new projects'
       optional :repository_checks_enabled, type: Boolean, desc: "GitLab will periodically run 'git fsck' in all project and wiki repositories to look for silent disk corruption issues."
       optional :koding_enabled, type: Boolean, desc: 'Enable Koding'
       given koding_enabled: ->(val) { val } do
@@ -171,10 +121,15 @@ module API
       optional :terminal_max_session_time, type: Integer, desc: 'Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time.'
       optional :polling_interval_multiplier, type: BigDecimal, desc: 'Interval multiplier used by endpoints that perform polling. Set to 0 to disable polling.'
 
-      at_least_one_of(*at_least_one_of_ce)
+      optional(*::ApplicationSettingsHelper.visible_attributes)
+      at_least_one_of(*::ApplicationSettingsHelper.visible_attributes)
     end
     put "application/settings" do
       attrs = declared_params(include_missing: false)
+
+      if attrs.has_key?(:signin_enabled)
+        attrs[:password_authentication_enabled] = attrs.delete(:signin_enabled)
+      end
 
       if current_settings.update_attributes(attrs)
         present current_settings, with: Entities::ApplicationSetting

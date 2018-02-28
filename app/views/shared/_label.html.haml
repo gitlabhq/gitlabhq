@@ -76,11 +76,3 @@
       = link_to destroy_label_path(label), title: "Delete", class: 'btn btn-transparent btn-action remove-row', method: :delete, data: {confirm: label_deletion_confirm_text(label), toggle: "tooltip"} do
         %span.sr-only Delete
         = icon('trash-o')
-
-  - if current_user
-    - if can_subscribe_to_label_in_different_levels?(label)
-      :javascript
-        new gl.GroupLabelSubscription('##{dom_id(label)} .label-subscription');
-    - else
-      :javascript
-        new gl.ProjectLabelSubscription('##{dom_id(label)} .label-subscription');

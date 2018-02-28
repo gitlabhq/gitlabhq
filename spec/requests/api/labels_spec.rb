@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe API::Labels do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
+  let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
   let!(:label1) { create(:label, title: 'label1', project: project) }
   let!(:priority_label) { create(:label, title: 'bug', project: project, priority: 3) }
 

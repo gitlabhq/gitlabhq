@@ -3,10 +3,10 @@ import BlobViewer from '~/blob/viewer/index';
 
 describe('Blob viewer', () => {
   let blob;
-  preloadFixtures('blob/show.html.raw');
+  preloadFixtures('snippets/show.html.raw');
 
   beforeEach(() => {
-    loadFixtures('blob/show.html.raw');
+    loadFixtures('snippets/show.html.raw');
     $('#modal-upload-blob').remove();
 
     blob = new BlobViewer();

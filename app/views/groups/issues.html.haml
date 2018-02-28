@@ -1,19 +1,30 @@
 - page_title "Issues"
+- group_issues_exists = group_issues(@group).exists?
 = render "head_issues"
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, params.merge(rss_url_options), title: "#{@group.name} issues")
 
-- if group_issues(@group).exists?
+- content_for :page_specific_javascripts do
+  = webpack_bundle_tag 'common_vue'
+  = webpack_bundle_tag 'filtered_search'
+
+- if show_new_nav? && group_issues_exists
+  - content_for :breadcrumbs_extra do
+    = link_to params.merge(rss_url_options), class: 'btn btn-default append-right-10' do
+      = icon('rss')
+    = render 'shared/new_project_item_select', path: 'issues/new', label: "New issue"
+
+- if group_issues_exists
   .top-area
     = render 'shared/issuable/nav', type: :issues
-    .nav-controls
+    .nav-controls{ class: ("visible-xs" if show_new_nav?) }
       = link_to params.merge(rss_url_options), class: 'btn' do
         = icon('rss')
         %span.icon-label
           Subscribe
       = render 'shared/new_project_item_select', path: 'issues/new', label: "New issue"
 
-  = render 'shared/issuable/filter', type: :issues
+  = render 'shared/issuable/search_bar', type: :issues
 
   .row-content-block.second-block
     Only issues from the

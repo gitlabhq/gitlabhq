@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::SlashCommands::Presenters::IssueShow do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:issue) { create(:issue, project: project) }
   let(:attachment) { subject[:attachments].first }
 

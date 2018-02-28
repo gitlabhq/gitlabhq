@@ -1,0 +1,10 @@
+%p
+  Hi #{@user.name}!
+%p
+  A new GPG key was added to your account:
+%p
+  Fingerprint:
+  %code= @gpg_key.fingerprint
+%p
+  If this key was added in error, you can remove it under
+  = link_to "GPG Keys", profile_gpg_keys_url

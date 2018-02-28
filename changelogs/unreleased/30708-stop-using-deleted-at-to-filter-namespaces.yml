@@ -1,4 +1,0 @@
----
-title: Removes deleted_at and pending_delete occurrences in Project related queries
-merge_request: 12091
-author:

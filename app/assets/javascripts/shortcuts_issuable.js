@@ -3,6 +3,7 @@
 /* global ShortcutsNavigation */
 /* global sidebar */
 
+import _ from 'underscore';
 import 'mousetrap';
 import './shortcuts_navigation';
 
@@ -58,7 +59,7 @@ import './shortcuts_navigation';
       });
       // If replyField already has some content, add a newline before our quote
       separator = replyField.val().trim() !== "" && "\n\n" || '';
-      replyField.val(function(_, current) {
+      replyField.val(function(a, current) {
         return current + separator + quote.join('') + "\n";
       });
 

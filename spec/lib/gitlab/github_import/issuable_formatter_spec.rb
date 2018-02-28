@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::GithubImport::IssuableFormatter, lib: true do
+describe Gitlab::GithubImport::IssuableFormatter do
   let(:raw_data) do
     double(number: 42)
   end

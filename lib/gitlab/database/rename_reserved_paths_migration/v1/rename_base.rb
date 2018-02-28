@@ -145,7 +145,7 @@ module Gitlab
 
           def track_rename(type, old_path, new_path)
             key = redis_key_for_type(type)
-            Gitlab::Redis.with do |redis|
+            Gitlab::Redis::SharedState.with do |redis|
               redis.lpush(key, [old_path, new_path].to_json)
               redis.expire(key, 2.weeks.to_i)
             end
@@ -155,7 +155,7 @@ module Gitlab
           def reverts_for_type(type)
             key = redis_key_for_type(type)
 
-            Gitlab::Redis.with do |redis|
+            Gitlab::Redis::SharedState.with do |redis|
               failed_reverts = []
 
               while rename_info = redis.lpop(key)

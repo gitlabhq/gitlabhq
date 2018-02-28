@@ -24,6 +24,10 @@ module Mattermost
       json_response session.post(path, options)
     end
 
+    def delete(session, path, options)
+      json_response session.delete(path, options)
+    end
+
     def session_get(path, options = {})
       with_session do |session|
         get(session, path, options)
@@ -33,6 +37,12 @@ module Mattermost
     def session_post(path, options = {})
       with_session do |session|
         post(session, path, options)
+      end
+    end
+
+    def session_delete(path, options = {})
+      with_session do |session|
+        delete(session, path, options)
       end
     end
 

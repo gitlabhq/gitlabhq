@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe AfterBranchDeleteService, services: true do
+describe AfterBranchDeleteService do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:service) { described_class.new(project, user) }

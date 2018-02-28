@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Profile > Chat', feature: true do
+feature 'Profile > Chat' do
   given(:user) { create(:user) }
   given(:service) { create(:service) }
 

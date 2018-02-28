@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe MergeRequestDiffCommit, type: :model do
+describe MergeRequestDiffCommit do
   let(:merge_request) { create(:merge_request) }
   subject { merge_request.commits.first }
 

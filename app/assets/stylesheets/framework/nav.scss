@@ -182,20 +182,18 @@
       }
     }
 
+    &.nav-controls-new-nav {
+      > .dropdown {
+        margin-right: 0;
+      }
+    }
+
     > .btn-grouped {
       float: none;
     }
 
     .icon-label {
       display: none;
-    }
-
-    .btn,
-    .dropdown,
-    .dropdown-toggle,
-    input,
-    form {
-      height: 35px;
     }
 
     input {
@@ -253,7 +251,6 @@
 
       // Applies on /dashboard/issues
       .project-item-select-holder {
-        display: block;
         margin: 0;
       }
     }
@@ -283,6 +280,31 @@
   pre {
     width: 100%;
   }
+}
+
+.project-item-select-holder.btn-group {
+  display: flex;
+  max-width: 350px;
+  overflow: hidden;
+
+  @media(max-width: $screen-xs-max) {
+    width: 100%;
+    max-width: none;
+  }
+
+  .new-project-item-link {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .new-project-item-select-button {
+    width: 32px;
+  }
+}
+
+.new-project-item-select-button .fa-caret-down {
+  margin-left: 2px;
 }
 
 .layout-nav {
@@ -325,7 +347,7 @@
       position: absolute;
       top: 7px;
       right: 15px;
-      z-index: 2;
+      z-index: 300;
 
       li.active {
         font-weight: bold;
@@ -347,6 +369,10 @@
       }
     }
   }
+}
+
+.with-performance-bar .layout-nav {
+  margin-top: $header-height + $performance-bar-height;
 }
 
 .scrolling-tabs-container {
@@ -438,6 +464,22 @@
 
       &.affix {
         top: $header-height;
+      }
+    }
+  }
+}
+
+.with-performance-bar .page-with-layout-nav {
+  .right-sidebar {
+    top: ($header-height + 1) * 2 + $performance-bar-height;
+  }
+
+  &.page-with-sub-nav {
+    .right-sidebar {
+      top: ($header-height + 1) * 3 + $performance-bar-height;
+
+      &.affix {
+        top: $header-height + $performance-bar-height;
       }
     }
   }

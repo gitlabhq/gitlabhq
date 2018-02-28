@@ -70,7 +70,7 @@ describe Ci::API::Runners do
     end
 
     context 'when project token is provided' do
-      let(:project) { FactoryGirl.create(:empty_project) }
+      let(:project) { FactoryGirl.create(:project) }
 
       before do
         post ci_api("/runners/register"), token: project.runners_token

@@ -49,7 +49,7 @@ describe('MRWidgetMissingBranch', () => {
       expect(el.classList.contains('mr-widget-body')).toBeTruthy();
       expect(el.querySelector('button').getAttribute('disabled')).toBeTruthy();
       expect(content).toContain('source branch does not exist.');
-      expect(content).toContain('Please restore the source branch or use a different source branch.');
+      expect(content).toContain('Please restore it or use a different source branch');
     });
   });
 });

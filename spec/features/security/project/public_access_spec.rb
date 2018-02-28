@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe "Public Project Access", feature: true  do
+describe "Public Project Access"  do
   include AccessMatchers
 
-  set(:project) { create(:project, :public) }
+  set(:project) { create(:project, :public, :repository) }
 
   describe "Project should be public" do
     describe '#public?' do

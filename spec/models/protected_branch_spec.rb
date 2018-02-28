@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ProtectedBranch, models: true do
+describe ProtectedBranch do
   subject { build_stubbed(:protected_branch) }
 
   describe 'Associations' do
@@ -101,17 +101,17 @@ describe ProtectedBranch, models: true do
         production = create(:protected_branch, name: "production")
         staging = create(:protected_branch, name: "staging")
 
-        expect(ProtectedBranch.matching("production")).to include(production)
-        expect(ProtectedBranch.matching("production")).not_to include(staging)
+        expect(described_class.matching("production")).to include(production)
+        expect(described_class.matching("production")).not_to include(staging)
       end
 
       it "accepts a list of protected branches to search from, so as to avoid a DB call" do
         production = build(:protected_branch, name: "production")
         staging = build(:protected_branch, name: "staging")
 
-        expect(ProtectedBranch.matching("production")).to be_empty
-        expect(ProtectedBranch.matching("production", protected_refs: [production, staging])).to include(production)
-        expect(ProtectedBranch.matching("production", protected_refs: [production, staging])).not_to include(staging)
+        expect(described_class.matching("production")).to be_empty
+        expect(described_class.matching("production", protected_refs: [production, staging])).to include(production)
+        expect(described_class.matching("production", protected_refs: [production, staging])).not_to include(staging)
       end
     end
 
@@ -120,17 +120,17 @@ describe ProtectedBranch, models: true do
         production = create(:protected_branch, name: "production/*")
         staging = create(:protected_branch, name: "staging/*")
 
-        expect(ProtectedBranch.matching("production/some-branch")).to include(production)
-        expect(ProtectedBranch.matching("production/some-branch")).not_to include(staging)
+        expect(described_class.matching("production/some-branch")).to include(production)
+        expect(described_class.matching("production/some-branch")).not_to include(staging)
       end
 
       it "accepts a list of protected branches to search from, so as to avoid a DB call" do
         production = build(:protected_branch, name: "production/*")
         staging = build(:protected_branch, name: "staging/*")
 
-        expect(ProtectedBranch.matching("production/some-branch")).to be_empty
-        expect(ProtectedBranch.matching("production/some-branch", protected_refs: [production, staging])).to include(production)
-        expect(ProtectedBranch.matching("production/some-branch", protected_refs: [production, staging])).not_to include(staging)
+        expect(described_class.matching("production/some-branch")).to be_empty
+        expect(described_class.matching("production/some-branch", protected_refs: [production, staging])).to include(production)
+        expect(described_class.matching("production/some-branch", protected_refs: [production, staging])).not_to include(staging)
       end
     end
   end
@@ -142,51 +142,51 @@ describe ProtectedBranch, models: true do
       it 'returns true when the branch matches a protected branch via direct match' do
         create(:protected_branch, project: project, name: "foo")
 
-        expect(ProtectedBranch.protected?(project, 'foo')).to eq(true)
+        expect(described_class.protected?(project, 'foo')).to eq(true)
       end
 
       it 'returns true when the branch matches a protected branch via wildcard match' do
         create(:protected_branch, project: project, name: "production/*")
 
-        expect(ProtectedBranch.protected?(project, 'production/some-branch')).to eq(true)
+        expect(described_class.protected?(project, 'production/some-branch')).to eq(true)
       end
 
       it 'returns false when the branch does not match a protected branch via direct match' do
-        expect(ProtectedBranch.protected?(project, 'foo')).to eq(false)
+        expect(described_class.protected?(project, 'foo')).to eq(false)
       end
 
       it 'returns false when the branch does not match a protected branch via wildcard match' do
         create(:protected_branch, project: project, name: "production/*")
 
-        expect(ProtectedBranch.protected?(project, 'staging/some-branch')).to eq(false)
+        expect(described_class.protected?(project, 'staging/some-branch')).to eq(false)
       end
     end
 
     context "new project" do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
 
       it 'returns false when default_protected_branch is unprotected' do
         stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
 
-        expect(ProtectedBranch.protected?(project, 'master')).to be false
+        expect(described_class.protected?(project, 'master')).to be false
       end
 
       it 'returns false when default_protected_branch lets developers push' do
         stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
 
-        expect(ProtectedBranch.protected?(project, 'master')).to be false
+        expect(described_class.protected?(project, 'master')).to be false
       end
 
       it 'returns true when default_branch_protection does not let developers push but let developer merge branches' do
         stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
 
-        expect(ProtectedBranch.protected?(project, 'master')).to be true
+        expect(described_class.protected?(project, 'master')).to be true
       end
 
       it 'returns true when default_branch_protection is in full protection' do
         stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_FULL)
 
-        expect(ProtectedBranch.protected?(project, 'master')).to be true
+        expect(described_class.protected?(project, 'master')).to be true
       end
     end
   end

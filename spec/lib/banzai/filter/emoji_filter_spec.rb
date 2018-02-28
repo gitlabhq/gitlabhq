@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::EmojiFilter, lib: true do
+describe Banzai::Filter::EmojiFilter do
   include FilterSpecHelper
 
   before do

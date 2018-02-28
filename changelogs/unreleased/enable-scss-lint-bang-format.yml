@@ -1,0 +1,4 @@
+---
+title: Enable BangFormat in scss-lint [ci skip]
+merge_request: 12815
+author: Takuya Noguchi

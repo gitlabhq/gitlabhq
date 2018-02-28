@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project shortcuts', feature: true do
+feature 'Project shortcuts' do
   let(:project) { create(:project, name: 'Victorialand') }
   let(:user) { create(:user) }
 

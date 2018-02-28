@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Gitlab::DependencyLinker::GodepsJsonLinker, lib: true do
+describe Gitlab::DependencyLinker::GodepsJsonLinker do
   describe '.support?' do
     it 'supports Godeps.json' do
       expect(described_class.support?('Godeps.json')).to be_truthy

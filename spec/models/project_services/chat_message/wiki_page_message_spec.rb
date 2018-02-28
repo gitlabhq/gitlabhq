@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ChatMessage::WikiPageMessage, models: true do
+describe ChatMessage::WikiPageMessage do
   subject { described_class.new(args) }
 
   let(:args) do

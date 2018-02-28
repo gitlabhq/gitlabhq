@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::PagesDomainsController do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let!(:pages_domain) { create(:pages_domain, project: project) }
 
   let(:request_params) do

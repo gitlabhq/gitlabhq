@@ -1,7 +1,7 @@
 const stateToComponentMap = {
   merged: 'mr-widget-merged',
   closed: 'mr-widget-closed',
-  locked: 'mr-widget-locked',
+  merging: 'mr-widget-merging',
   conflicts: 'mr-widget-conflicts',
   missingBranch: 'mr-widget-missing-branch',
   workInProgress: 'mr-widget-wip',
@@ -20,7 +20,7 @@ const stateToComponentMap = {
 };
 
 const statesToShowHelpWidget = [
-  'locked',
+  'merging',
   'conflicts',
   'workInProgress',
   'readyToMerge',

@@ -1,5 +1,7 @@
 - page_title "UI Development Kit", "Help"
 - lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed fermentum nisi sapien, non consequat lectus aliquam ultrices. Suspendisse sodales est euismod nunc condimentum, a consectetur diam ornare."
+- content_for :page_specific_javascripts do
+  = webpack_bundle_tag('ui_development_kit')
 
 .gitlab-ui-dev-kit
   %h1 GitLab UI development kit
@@ -407,29 +409,6 @@
           .dropdown-content
           .dropdown-loading
             = icon('spinner spin')
-    :javascript
-      $('#js-project-dropdown').glDropdown({
-        data: function (term, callback) {
-          Api.projects(term, { order_by: 'last_activity_at' }, function (data) {
-            callback(data);
-          });
-        },
-        text: function (project) {
-          return project.name_with_namespace || project.name;
-        },
-        selectable: true,
-        fieldName: "author_id",
-        filterable: true,
-        search: {
-          fields: ['name_with_namespace']
-        },
-        id: function (data) {
-          return data.id;
-        },
-        isSelected: function (data) {
-          return data.id === 2;
-        }
-      })
 
   .example
     %div
@@ -525,7 +504,7 @@
   %h4
     %code .file-holder
 
-  - blob = Snippet.new(content: "Wow\nSuch\nFile")
+  - blob = Snippet.new(content: "Wow\nSuch\nFile").blob
   .example
     .file-holder
       .js-file-title.file-title

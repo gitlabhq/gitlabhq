@@ -78,7 +78,7 @@ describe MergeRequests::GetUrlsService do
     end
 
     context 'pushing to existing branch and merge request is reopened' do
-      let!(:merge_request) { create(:merge_request, :reopened, source_project: project, source_branch: source_branch) }
+      let!(:merge_request) { create(:merge_request, :opened, source_project: project, source_branch: source_branch) }
       let(:changes) { existing_branch_changes }
       it_behaves_like 'show_merge_request_url'
     end

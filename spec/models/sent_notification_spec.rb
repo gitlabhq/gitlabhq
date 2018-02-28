@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SentNotification, model: true do
+describe SentNotification do
   describe 'validation' do
     describe 'note validity' do
       context "when the project doesn't match the noteable's project" do
@@ -21,7 +21,7 @@ describe SentNotification, model: true do
       end
 
       context "when the noteable project and discussion project match" do
-        let(:project) { create(:project) }
+        let(:project) { create(:project, :repository) }
         let(:issue) { create(:issue, project: project) }
         let(:discussion_id) { create(:note, project: project, noteable: issue).discussion_id }
         subject { build(:sent_notification, project: project, noteable: issue, in_reply_to_discussion_id: discussion_id) }
@@ -38,7 +38,7 @@ describe SentNotification, model: true do
     let(:issue) { create(:issue) }
 
     it 'creates a new SentNotification' do
-      expect { described_class.record(issue, user.id) }.to change { SentNotification.count }.by(1)
+      expect { described_class.record(issue, user.id) }.to change { described_class.count }.by(1)
     end
   end
 
@@ -47,7 +47,7 @@ describe SentNotification, model: true do
     let(:note) { create(:diff_note_on_merge_request) }
 
     it 'creates a new SentNotification' do
-      expect { described_class.record_note(note, user.id) }.to change { SentNotification.count }.by(1)
+      expect { described_class.record_note(note, user.id) }.to change { described_class.count }.by(1)
     end
   end
 
@@ -128,7 +128,7 @@ describe SentNotification, model: true do
     end
 
     context 'for commit' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
       let(:commit) { project.commit }
       subject { described_class.record(commit, project.creator.id) }
 

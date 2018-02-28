@@ -123,6 +123,7 @@ module API
 
         authorize! :destroy_personal_snippet, snippet
 
+        status 204
         snippet.destroy
       end
 

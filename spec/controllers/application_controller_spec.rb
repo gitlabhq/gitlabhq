@@ -30,6 +30,15 @@ describe ApplicationController do
       expect(controller).not_to receive(:redirect_to)
       controller.send(:check_password_expiration)
     end
+
+    it 'does not redirect if the user is over their password expiry but sign-in is disabled' do
+      stub_application_setting(password_authentication_enabled: false)
+      user.password_expires_at = Time.new(2002)
+      allow(controller).to receive(:current_user).and_return(user)
+      expect(controller).not_to receive(:redirect_to)
+
+      controller.send(:check_password_expiration)
+    end
   end
 
   describe "#authenticate_user_from_token!" do
@@ -96,6 +105,30 @@ describe ApplicationController do
         expect(response.status).not_to eq(200)
         expect(response.body).not_to eq('authenticated')
       end
+    end
+  end
+
+  describe 'rescue from Gitlab::Git::Storage::Inaccessible' do
+    controller(described_class) do
+      def index
+        raise Gitlab::Git::Storage::Inaccessible.new('broken', 100)
+      end
+    end
+
+    it 'renders a 503 when storage is not available' do
+      sign_in(create(:user))
+
+      get :index
+
+      expect(response.status).to eq(503)
+    end
+
+    it 'renders includes a Retry-After header' do
+      sign_in(create(:user))
+
+      get :index
+
+      expect(response.headers['Retry-After']).to eq(100)
     end
   end
 

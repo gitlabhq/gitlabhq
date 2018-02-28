@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Feature, lib: true do
+describe Feature do
   describe '.get' do
     let(:feature) { double(:feature) }
     let(:key) { 'my_feature' }

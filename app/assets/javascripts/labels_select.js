@@ -1,8 +1,9 @@
 /* eslint-disable no-useless-return, func-names, space-before-function-paren, wrap-iife, no-var, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, no-unused-vars, one-var-declaration-per-line, prefer-template, no-new, consistent-return, object-shorthand, comma-dangle, no-shadow, no-param-reassign, brace-style, vars-on-top, quotes, no-lonely-if, no-else-return, dot-notation, no-empty, no-return-assign, camelcase, prefer-spread */
 /* global Issuable */
 /* global ListLabel */
-
+import _ from 'underscore';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
+import DropdownUtils from './filtered_search/dropdown_utils';
 
 (function() {
   this.LabelsSelect = (function() {
@@ -218,18 +219,7 @@ import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
               }
             }
             if (label.duplicate) {
-              spacing = 100 / label.color.length;
-              // Reduce the colors to 4
-              label.color = label.color.filter(function(color, i) {
-                return i < 4;
-              });
-              color = _.map(label.color, function(color, i) {
-                var percentFirst, percentSecond;
-                percentFirst = Math.floor(spacing * i);
-                percentSecond = Math.floor(spacing * (i + 1));
-                return color + " " + percentFirst + "%," + color + " " + percentSecond + "% ";
-              }).join(',');
-              color = "linear-gradient(" + color + ")";
+              color = gl.DropdownUtils.duplicateLabelColor(label.color);
             }
             else {
               if (label.color != null) {

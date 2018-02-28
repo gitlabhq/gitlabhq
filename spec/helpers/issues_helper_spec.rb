@@ -1,14 +1,14 @@
 require "spec_helper"
 
 describe IssuesHelper do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:issue) { create :issue, project: project }
   let(:ext_project) { create :redmine_project }
 
   describe "url_for_issue" do
     let(:issues_url) { ext_project.external_issue_tracker.issues_url}
     let(:ext_expected) { issues_url.gsub(':id', issue.iid.to_s).gsub(':project_id', ext_project.id.to_s) }
-    let(:int_expected) { polymorphic_path([@project.namespace, project, issue]) }
+    let(:int_expected) { polymorphic_path([@project.namespace, @project, issue]) }
 
     it "returns internal path if used internal tracker" do
       @project = project
@@ -20,6 +20,12 @@ describe IssuesHelper do
       @project = ext_project
 
       expect(url_for_issue(issue.iid)).to match(ext_expected)
+    end
+
+    it "returns path to internal issue when internal option passed" do
+      @project = ext_project
+
+      expect(url_for_issue(issue.iid, ext_project, internal: true)).to match(int_expected)
     end
 
     it "returns empty string if project nil" do

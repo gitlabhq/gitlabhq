@@ -7,6 +7,11 @@ storing data in a single JSON column the data is stored in a separate table.
 
 ## When To Use Background Migrations
 
+>**Note:**
+When adding background migrations _you must_ make sure they are announced in the
+monthly release post along with an estimate of how long it will take to complete
+the migrations.
+
 In the vast majority of cases you will want to use a regular Rails migration
 instead. Background migrations should _only_ be used when migrating _data_ in
 tables that have so many rows this process would take hours when performed in a
@@ -30,6 +35,18 @@ run it's possible for new versions to be deployed while they are still running.
 It's also possible for different migrations to be executed at the same time.
 This means that different background migrations should not migrate data in a
 way that would cause conflicts.
+
+## Idempotence
+
+Background migrations are executed in a context of a Sidekiq process.
+Usual Sidekiq rules apply, especially the rule that jobs should be small
+and idempotent.
+
+See [Sidekiq best practices guidelines](https://github.com/mperham/sidekiq/wiki/Best-Practices)
+for more details.
+
+Make sure that in case that your migration job is going to be retried data
+integrity is guarateed.
 
 ## How It Works
 
@@ -78,6 +95,10 @@ BackgroundMigrationWorker.perform_bulk_in(5.minutes, jobs)
 ```
 
 ## Cleaning Up
+
+>**Note:**
+Cleaning up any remaining background migrations _must_ be done in either a major
+or minor release, you _must not_ do this in a patch release.
 
 Because background migrations can take a long time you can't immediately clean
 things up after scheduling them. For example, you can't drop a column that's
@@ -212,3 +233,27 @@ end
 This migration will then process any jobs for the ExtractServicesUrl migration
 and continue once all jobs have been processed. Once done you can safely remove
 the `services.properties` column.
+
+## Testing
+
+It is required to write tests for background migrations' scheduling migration
+(either a regular migration or a post deployment migration), background
+migration itself and a cleanup migration. You can use the `:migration` RSpec
+tag when testing a regular / post deployment migration.
+See [README][migrations-readme].
+
+When you do that, keep in mind that `before` and `after` RSpec hooks are going
+to migrate you database down and up, which can result in other background
+migrations being called. That means that using `spy` test doubles with
+`have_received` is encouraged, instead of using regular test doubles, because
+your expectations defined in a `it` block can conflict with what is being
+called in RSpec hooks. See [gitlab-org/gitlab-ce#35351][issue-rspec-hooks]
+for more details.
+
+## Best practices
+
+1. Make sure that background migration jobs are idempotent.
+1. Make sure that tests you write are not false positives.
+
+[migrations-readme]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/migrations/README.md
+[issue-rspec-hooks]: https://gitlab.com/gitlab-org/gitlab-ce/issues/35351

@@ -104,40 +104,51 @@
 }
 
 .confidential-issue-warning {
-  background-color: $gray-normal;
-  border-radius: 3px;
+  color: $orange-600;
+  background-color: $orange-50;
+  border-radius: $border-radius-default $border-radius-default 0 0;
+  border: 1px solid $border-gray-normal;
   padding: 3px 12px;
   margin: auto;
-  margin-top: 0;
-  text-align: center;
-  font-size: 12px;
   align-items: center;
+}
 
-  @media (max-width: $screen-md-max) {
-    // On smaller devices the warning becomes the fourth item in the list,
-    // rather than centering, and grows to span the full width of the
-    // comment area.
-    order: 4;
-    margin: 6px auto;
-    width: 100%;
-  }
-
+.confidential-value {
   .fa {
-    margin-right: 8px;
+    background-color: inherit;
   }
+}
+
+.confidential-warning-message {
+  line-height: 1.5;
+  padding: 16px;
+
+  .confidential-warning-message-actions {
+    display: flex;
+
+    button {
+      flex-grow: 1;
+    }
+  }
+}
+
+.not-confidential {
+  padding: 0;
+  border-top: none;
 }
 
 .right-sidebar-expanded {
-  .confidential-issue-warning {
-    // When the sidebar is open the warning becomes the fourth item in the list,
-    // rather than centering, and grows to span the full width of the
-    // comment area.
-    order: 4;
-    margin: 6px auto;
-    width: 100%;
+  .md-area {
+    border-radius: 0;
+    border-top: none;
   }
 }
 
+.right-sidebar-collapsed {
+  .confidential-issue-warning {
+    border-bottom: none;
+  }
+}
 
 .discussion-form {
   padding: $gl-padding-top $gl-padding $gl-padding;

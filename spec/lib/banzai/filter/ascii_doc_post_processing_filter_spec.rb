@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::AsciiDocPostProcessingFilter, lib: true do
+describe Banzai::Filter::AsciiDocPostProcessingFilter do
   include FilterSpecHelper
 
   it "adds class for elements with data-math-style" do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DiffViewer::Base, model: true do
+describe DiffViewer::Base do
   include FakeBlobHelpers
 
   let(:project) { create(:project, :repository) }

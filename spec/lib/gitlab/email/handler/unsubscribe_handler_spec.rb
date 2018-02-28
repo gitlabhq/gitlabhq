@@ -1,7 +1,7 @@
 require 'spec_helper'
 require_relative '../email_shared_blocks'
 
-describe Gitlab::Email::Handler::UnsubscribeHandler, lib: true do
+describe Gitlab::Email::Handler::UnsubscribeHandler do
   include_context :email_shared_context
 
   before do
@@ -10,7 +10,7 @@ describe Gitlab::Email::Handler::UnsubscribeHandler, lib: true do
   end
 
   let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub(mail_key, "#{mail_key}+unsubscribe") }
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:user) { create(:user) }
   let(:noteable) { create(:issue, project: project) }
 

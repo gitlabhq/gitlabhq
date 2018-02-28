@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Diff::InlineDiffMarkdownMarker, lib: true do
+describe Gitlab::Diff::InlineDiffMarkdownMarker do
   describe '#mark' do
     let(:raw) { "abc 'def'" }
     let(:inline_diffs) { [2..5] }

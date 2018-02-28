@@ -1,5 +1,5 @@
 .dropdown-page-two.dropdown-new-label
-  = dropdown_title("Create new label", back: true)
+  = dropdown_title("Create new label", options: { back: true })
   = dropdown_content do
     .dropdown-labels-error.js-label-error
     %input#new_label_name.default-dropdown-input{ type: "text", placeholder: "Name new label" }

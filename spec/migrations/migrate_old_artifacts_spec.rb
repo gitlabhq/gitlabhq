@@ -16,9 +16,9 @@ describe MigrateOldArtifacts do
   end
 
   context 'with migratable data' do
-    let(:project1) { create(:empty_project, ci_id: 2) }
-    let(:project2) { create(:empty_project, ci_id: 3) }
-    let(:project3) { create(:empty_project) }
+    let(:project1) { create(:project, ci_id: 2) }
+    let(:project2) { create(:project, ci_id: 3) }
+    let(:project3) { create(:project) }
 
     let(:pipeline1) { create(:ci_empty_pipeline, project: project1) }
     let(:pipeline2) { create(:ci_empty_pipeline, project: project2) }

@@ -2,7 +2,6 @@ class MergeRequestEntity < IssuableEntity
   include RequestAwareEntity
 
   expose :in_progress_merge_commit_sha
-  expose :locked_at
   expose :merge_commit_sha
   expose :merge_error
   expose :merge_params
@@ -32,6 +31,7 @@ class MergeRequestEntity < IssuableEntity
   expose :head_pipeline, with: PipelineDetailsEntity, as: :pipeline
 
   # Booleans
+  expose :merge_ongoing?, as: :merge_ongoing
   expose :work_in_progress?, as: :work_in_progress
   expose :source_branch_exists?, as: :source_branch_exists
   expose :mergeable_discussions_state?, as: :mergeable_discussions_state
@@ -95,6 +95,10 @@ class MergeRequestEntity < IssuableEntity
   #
   expose :target_branch_commits_path do |merge_request|
     presenter(merge_request).target_branch_commits_path
+  end
+
+  expose :target_branch_tree_path do |merge_request|
+    presenter(merge_request).target_branch_tree_path
   end
 
   expose :new_blob_path do |merge_request|

@@ -72,7 +72,7 @@ describe('MRWidgetReadyToMerge', () => {
       const withDesc = 'Include description in commit message';
       const withoutDesc = "Don't include description in commit message";
 
-      it('should return message wit description', () => {
+      it('should return message with description', () => {
         expect(vm.commitMessageLinkTitle).toEqual(withDesc);
       });
 

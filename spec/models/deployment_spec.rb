@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Deployment, models: true do
+describe Deployment do
   subject { build(:deployment) }
 
   it { is_expected.to belong_to(:project) }
@@ -91,7 +91,7 @@ describe Deployment, models: true do
   end
 
   describe '#additional_metrics' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:deployment) { create(:deployment, project: project) }
 
     subject { deployment.additional_metrics }

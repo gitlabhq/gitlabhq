@@ -1,6 +1,7 @@
 - @no_container = true
 - container_class = !fluid_layout && diff_view == :inline ? 'container-limited' : ''
 - limited_container_width = fluid_layout ? '' : 'limit-container-width'
+- @content_class = limited_container_width
 - page_title        "#{@commit.title} (#{@commit.short_id})", "Commits"
 - page_description  @commit.description
 = render "projects/commits/head"

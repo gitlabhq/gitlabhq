@@ -9,7 +9,7 @@ feature 'Groups Merge Requests Empty States' do
   end
 
   context 'group has a project' do
-    let(:project) { create(:empty_project, namespace: group) }
+    let(:project) { create(:project, namespace: group) }
 
     before do
       project.add_master(user)
@@ -38,7 +38,7 @@ feature 'Groups Merge Requests Empty States' do
 
       it 'should show a new merge request button' do
         within '.empty-state' do
-          expect(page).to have_content('New merge request')
+          expect(page).to have_content('create merge request')
         end
       end
 
@@ -63,7 +63,7 @@ feature 'Groups Merge Requests Empty States' do
 
     it 'should not show a new merge request button' do
       within '.empty-state' do
-        expect(page).not_to have_link('New merge request')
+        expect(page).not_to have_link('create merge request')
       end
     end
   end

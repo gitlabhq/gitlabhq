@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Banzai::ReferenceParser::CommitParser, lib: true do
+describe Banzai::ReferenceParser::CommitParser do
   include ReferenceParserHelpers
 
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:user) { create(:user) }
   subject { described_class.new(project, user) }
   let(:link) { empty_html_link }

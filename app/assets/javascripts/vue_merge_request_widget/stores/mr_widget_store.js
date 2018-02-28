@@ -48,6 +48,7 @@ export default class MergeRequestStore {
     this.sourceBranchLink = data.source_branch_with_namespace_link;
     this.mergeError = data.merge_error;
     this.targetBranchPath = data.target_branch_commits_path;
+    this.targetBranchTreePath = data.target_branch_tree_path;
     this.conflictResolutionPath = data.conflict_resolution_path;
     this.cancelAutoMergePath = data.cancel_merge_when_pipeline_succeeds_path;
     this.removeWIPPath = data.remove_wip_path;
@@ -64,7 +65,7 @@ export default class MergeRequestStore {
     this.mergeCheckPath = data.merge_check_path;
     this.mergeActionsContentPath = data.commit_change_content_path;
     this.isRemovingSourceBranch = this.isRemovingSourceBranch || false;
-    this.isOpen = data.state === 'opened' || data.state === 'reopened' || false;
+    this.isOpen = data.state === 'opened';
     this.hasMergeableDiscussionsState = data.mergeable_discussions_state === false;
     this.canRemoveSourceBranch = currentUser.can_remove_source_branch || false;
     this.canMerge = !!data.merge_path;
@@ -72,6 +73,7 @@ export default class MergeRequestStore {
     this.canCancelAutomaticMerge = !!data.cancel_merge_when_pipeline_succeeds_path;
     this.hasSHAChanged = this.sha !== data.diff_head_sha;
     this.canBeMerged = data.can_be_merged || false;
+    this.mergeOngoing = data.merge_ongoing;
 
     // Cherry-pick and Revert actions related
     this.canCherryPickInCurrentMR = currentUser.can_cherry_pick_on_current_merge_request || false;
@@ -93,6 +95,11 @@ export default class MergeRequestStore {
   }
 
   setState(data) {
+    if (this.mergeOngoing) {
+      this.state = 'merging';
+      return;
+    }
+
     if (this.isOpen) {
       this.state = getStateKey.call(this, data);
     } else {
@@ -102,9 +109,6 @@ export default class MergeRequestStore {
           break;
         case 'closed':
           this.state = 'closed';
-          break;
-        case 'locked':
-          this.state = 'locked';
           break;
         default:
           this.state = null;

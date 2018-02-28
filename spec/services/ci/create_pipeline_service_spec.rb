@@ -1,21 +1,28 @@
 require 'spec_helper'
 
-describe Ci::CreatePipelineService, :services do
+describe Ci::CreatePipelineService do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:admin) }
+  let(:ref_name) { 'refs/heads/master' }
 
   before do
     stub_ci_pipeline_to_return_yaml_file
   end
 
   describe '#execute' do
-    def execute_service(source: :push, after: project.commit.id, message: 'Message', ref: 'refs/heads/master')
+    def execute_service(
+      source: :push,
+      after: project.commit.id,
+      message: 'Message',
+      ref: ref_name,
+      trigger_request: nil)
       params = { ref: ref,
                  before: '00000000',
                  after: after,
                  commits: [{ message: message }] }
 
-      described_class.new(project, user, params).execute(source)
+      described_class.new(project, user, params).execute(
+        source, trigger_request: trigger_request)
     end
 
     context 'valid params' do
@@ -40,7 +47,7 @@ describe Ci::CreatePipelineService, :services do
 
       it 'increments the prometheus counter' do
         expect(Gitlab::Metrics).to receive(:counter)
-          .with(:pipelines_created_count, "Pipelines created count")
+          .with(:pipelines_created_total, "Counter of pipelines created")
           .and_call_original
 
         pipeline
@@ -68,7 +75,7 @@ describe Ci::CreatePipelineService, :services do
         end
 
         context 'when merge request target project is different from source project' do
-          let!(:target_project) { create(:project) }
+          let!(:target_project) { create(:project, :repository) }
           let!(:forked_project_link) { create(:forked_project_link, forked_to_project: project, forked_from_project: target_project) }
 
           it 'updates head pipeline for merge request' do
@@ -319,6 +326,224 @@ describe Ci::CreatePipelineService, :services do
           expect(result).to be_persisted
         end.not_to change { Environment.count }
       end
+    end
+
+    context 'when builds with auto-retries are configured' do
+      before do
+        config = YAML.dump(rspec: { script: 'rspec', retry: 2 })
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'correctly creates builds with auto-retry value configured' do
+        pipeline = execute_service
+
+        expect(pipeline).to be_persisted
+        expect(pipeline.builds.find_by(name: 'rspec').retries_max).to eq 2
+      end
+    end
+
+    shared_examples 'when ref is protected' do
+      let(:user) { create(:user) }
+
+      context 'when user is developer' do
+        before do
+          project.add_developer(user)
+        end
+
+        it 'does not create a pipeline' do
+          expect(execute_service).not_to be_persisted
+          expect(Ci::Pipeline.count).to eq(0)
+        end
+      end
+
+      context 'when user is master' do
+        before do
+          project.add_master(user)
+        end
+
+        it 'creates a pipeline' do
+          expect(execute_service).to be_persisted
+          expect(Ci::Pipeline.count).to eq(1)
+        end
+      end
+
+      context 'when trigger belongs to no one' do
+        let(:user) {}
+        let(:trigger_request) { create(:ci_trigger_request) }
+
+        it 'does not create a pipeline' do
+          expect(execute_service(trigger_request: trigger_request))
+            .not_to be_persisted
+          expect(Ci::Pipeline.count).to eq(0)
+        end
+      end
+
+      context 'when trigger belongs to a developer' do
+        let(:user) {}
+
+        let(:trigger_request) do
+          create(:ci_trigger_request).tap do |request|
+            user = create(:user)
+            project.add_developer(user)
+            request.trigger.update(owner: user)
+          end
+        end
+
+        it 'does not create a pipeline' do
+          expect(execute_service(trigger_request: trigger_request))
+            .not_to be_persisted
+          expect(Ci::Pipeline.count).to eq(0)
+        end
+      end
+
+      context 'when trigger belongs to a master' do
+        let(:user) {}
+
+        let(:trigger_request) do
+          create(:ci_trigger_request).tap do |request|
+            user = create(:user)
+            project.add_master(user)
+            request.trigger.update(owner: user)
+          end
+        end
+
+        it 'does not create a pipeline' do
+          expect(execute_service(trigger_request: trigger_request))
+            .to be_persisted
+          expect(Ci::Pipeline.count).to eq(1)
+        end
+      end
+    end
+
+    context 'when ref is a protected branch' do
+      before do
+        create(:protected_branch, project: project, name: 'master')
+      end
+
+      it_behaves_like 'when ref is protected'
+    end
+
+    context 'when ref is a protected tag' do
+      let(:ref_name) { 'refs/tags/v1.0.0' }
+
+      before do
+        create(:protected_tag, project: project, name: '*')
+      end
+
+      it_behaves_like 'when ref is protected'
+    end
+
+    context 'when ref is not protected' do
+      context 'when trigger belongs to no one' do
+        let(:user) {}
+        let(:trigger_request) { create(:ci_trigger_request) }
+
+        it 'creates a pipeline' do
+          expect(execute_service(trigger_request: trigger_request))
+            .to be_persisted
+          expect(Ci::Pipeline.count).to eq(1)
+        end
+      end
+    end
+  end
+
+  describe '#allowed_to_create?' do
+    let(:user) { create(:user) }
+    let(:project) { create(:project, :repository) }
+    let(:ref) { 'master' }
+
+    subject do
+      described_class.new(project, user, ref: ref)
+        .send(:allowed_to_create?, user)
+    end
+
+    context 'when user is a developer' do
+      before do
+        project.add_developer(user)
+      end
+
+      it { is_expected.to be_truthy }
+
+      context 'when the branch is protected' do
+        let!(:protected_branch) do
+          create(:protected_branch, project: project, name: ref)
+        end
+
+        it { is_expected.to be_falsey }
+
+        context 'when developers are allowed to merge' do
+          let!(:protected_branch) do
+            create(:protected_branch,
+                   :developers_can_merge,
+                   project: project,
+                   name: ref)
+          end
+
+          it { is_expected.to be_truthy }
+        end
+      end
+
+      context 'when the tag is protected' do
+        let(:ref) { 'v1.0.0' }
+
+        let!(:protected_tag) do
+          create(:protected_tag, project: project, name: ref)
+        end
+
+        it { is_expected.to be_falsey }
+
+        context 'when developers are allowed to create the tag' do
+          let!(:protected_tag) do
+            create(:protected_tag,
+                   :developers_can_create,
+                   project: project,
+                   name: ref)
+          end
+
+          it { is_expected.to be_truthy }
+        end
+      end
+    end
+
+    context 'when user is a master' do
+      before do
+        project.add_master(user)
+      end
+
+      it { is_expected.to be_truthy }
+
+      context 'when the branch is protected' do
+        let!(:protected_branch) do
+          create(:protected_branch, project: project, name: ref)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when the tag is protected' do
+        let(:ref) { 'v1.0.0' }
+
+        let!(:protected_tag) do
+          create(:protected_tag, project: project, name: ref)
+        end
+
+        it { is_expected.to be_truthy }
+
+        context 'when no one can create the tag' do
+          let!(:protected_tag) do
+            create(:protected_tag,
+                   :no_one_can_create,
+                   project: project,
+                   name: ref)
+          end
+
+          it { is_expected.to be_falsey }
+        end
+      end
+    end
+
+    context 'when owner cannot create pipeline' do
+      it { is_expected.to be_falsey }
     end
   end
 end

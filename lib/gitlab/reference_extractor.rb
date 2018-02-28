@@ -33,7 +33,12 @@ module Gitlab
 
     def issues
       if project && project.jira_tracker?
-        @references[:external_issue] ||= references(:external_issue)
+        if project.issues_enabled?
+          @references[:all_issues] ||= references(:external_issue) + references(:issue)
+        else
+          @references[:external_issue] ||= references(:external_issue) +
+            references(:issue).select { |i| i.project_id != project.id }
+        end
       else
         @references[:issue] ||= references(:issue)
       end

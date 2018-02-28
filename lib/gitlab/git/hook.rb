@@ -1,3 +1,7 @@
+# Gitaly note: JV: looks like this is only used by GitHooksService in
+# app/services. We shouldn't bother migrating this until we know how
+# GitHooksService will be migrated.
+
 module Gitlab
   module Git
     class Hook

@@ -16,7 +16,7 @@ export default {
       <a
         data-toggle="modal"
         href="#modal_merge_info">
-        command line.
+        command line
       </a>
     </section>
   `,

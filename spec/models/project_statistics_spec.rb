@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-describe ProjectStatistics, models: true do
-  let(:project) { create :empty_project }
+describe ProjectStatistics do
+  let(:project) { create :project }
   let(:statistics) { project.statistics }
 
   describe 'constants' do

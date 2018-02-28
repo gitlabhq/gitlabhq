@@ -8,6 +8,7 @@ import BlobFileDropzone from '../blob/blob_file_dropzone';
 $(() => {
   const editBlobForm = $('.js-edit-blob-form');
   const uploadBlobForm = $('.js-upload-blob-form');
+  const deleteBlobForm = $('.js-delete-blob-form');
 
   if (editBlobForm.length) {
     const urlRoot = editBlobForm.data('relative-url-root');
@@ -29,5 +30,9 @@ $(() => {
       uploadBlobForm.find('.js-commit-message'),
       '.btn-upload-file',
     );
+  }
+
+  if (deleteBlobForm.length) {
+    new NewCommitForm(deleteBlobForm);
   }
 });

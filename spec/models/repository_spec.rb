@@ -6,6 +6,7 @@ describe Repository, models: true do
 
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
+  let(:broken_repository) { create(:project, :broken_storage).repository }
   let(:user) { create(:user) }
 
   let(:commit_options) do
@@ -27,12 +28,27 @@ describe Repository, models: true do
   let(:author_email) { 'user@example.org' }
   let(:author_name) { 'John Doe' }
 
+  def expect_to_raise_storage_error
+    expect { yield }.to raise_error do |exception|
+      storage_exceptions = [Gitlab::Git::Storage::Inaccessible, Gitlab::Git::CommandError, GRPC::Unavailable]
+      expect(exception.class).to be_in(storage_exceptions)
+    end
+  end
+
   describe '#branch_names_contains' do
     subject { repository.branch_names_contains(sample_commit.id) }
 
     it { is_expected.to include('master') }
     it { is_expected.not_to include('feature') }
     it { is_expected.not_to include('fix') }
+
+    describe 'when storage is broken', broken_storage: true  do
+      it 'should raise a storage error' do
+        expect_to_raise_storage_error do
+          broken_repository.branch_names_contains(sample_commit.id)
+        end
+      end
+    end
   end
 
   describe '#tag_names_contains' do
@@ -139,24 +155,60 @@ describe Repository, models: true do
   end
 
   describe '#last_commit_for_path' do
-    subject { repository.last_commit_for_path(sample_commit.id, '.gitignore').id }
+    shared_examples 'getting last commit for path' do
+      subject { repository.last_commit_for_path(sample_commit.id, '.gitignore').id }
 
-    it { is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8') }
+      it { is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8') }
+
+      describe 'when storage is broken', broken_storage: true  do
+        it 'should raise a storage error' do
+          expect_to_raise_storage_error do
+            broken_repository.last_commit_id_for_path(sample_commit.id, '.gitignore')
+          end
+        end
+      end
+    end
+
+    context 'when Gitaly feature last_commit_for_path is enabled' do
+      it_behaves_like 'getting last commit for path'
+    end
+
+    context 'when Gitaly feature last_commit_for_path is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'getting last commit for path'
+    end
   end
 
   describe '#last_commit_id_for_path' do
-    subject { repository.last_commit_id_for_path(sample_commit.id, '.gitignore') }
+    shared_examples 'getting last commit ID for path' do
+      subject { repository.last_commit_id_for_path(sample_commit.id, '.gitignore') }
 
-    it "returns last commit id for a given path" do
-      is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8')
+      it "returns last commit id for a given path" do
+        is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8')
+      end
+
+      it "caches last commit id for a given path" do
+        cache = repository.send(:cache)
+        key = "last_commit_id_for_path:#{sample_commit.id}:#{Digest::SHA1.hexdigest('.gitignore')}"
+
+        expect(cache).to receive(:fetch).with(key).and_return('c1acaa5')
+        is_expected.to eq('c1acaa5')
+      end
+
+      describe 'when storage is broken', broken_storage: true  do
+        it 'should raise a storage error' do
+          expect_to_raise_storage_error do
+            broken_repository.last_commit_for_path(sample_commit.id, '.gitignore').id
+          end
+        end
+      end
     end
 
-    it "caches last commit id for a given path" do
-      cache = repository.send(:cache)
-      key = "last_commit_id_for_path:#{sample_commit.id}:#{Digest::SHA1.hexdigest('.gitignore')}"
+    context 'when Gitaly feature last_commit_for_path is enabled' do
+      it_behaves_like 'getting last commit ID for path'
+    end
 
-      expect(cache).to receive(:fetch).with(key).and_return('c1acaa5')
-      is_expected.to eq('c1acaa5')
+    context 'when Gitaly feature last_commit_for_path is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'getting last commit ID for path'
     end
   end
 
@@ -182,19 +234,37 @@ describe Repository, models: true do
   end
 
   describe '#find_commits_by_message' do
-    it 'returns commits with messages containing a given string' do
-      commit_ids = repository.find_commits_by_message('submodule').map(&:id)
+    shared_examples 'finding commits by message' do
+      it 'returns commits with messages containing a given string' do
+        commit_ids = repository.find_commits_by_message('submodule').map(&:id)
 
-      expect(commit_ids).to include('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
-      expect(commit_ids).to include('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
-      expect(commit_ids).to include('cfe32cf61b73a0d5e9f13e774abde7ff789b1660')
-      expect(commit_ids).not_to include('913c66a37b4a45b9769037c55c2d238bd0942d2e')
+        expect(commit_ids).to include(
+          '5937ac0a7beb003549fc5fd26fc247adbce4a52e',
+          '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9',
+          'cfe32cf61b73a0d5e9f13e774abde7ff789b1660'
+        )
+        expect(commit_ids).not_to include('913c66a37b4a45b9769037c55c2d238bd0942d2e')
+      end
+
+      it 'is case insensitive' do
+        commit_ids = repository.find_commits_by_message('SUBMODULE').map(&:id)
+
+        expect(commit_ids).to include('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
+      end
     end
 
-    it 'is case insensitive' do
-      commit_ids = repository.find_commits_by_message('SUBMODULE').map(&:id)
+    context 'when Gitaly commits_by_message feature is enabled' do
+      it_behaves_like 'finding commits by message'
+    end
 
-      expect(commit_ids).to include('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
+    context 'when Gitaly commits_by_message feature is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'finding commits by message'
+    end
+
+    describe 'when storage is broken', broken_storage: true  do
+      it 'should raise a storage error' do
+        expect_to_raise_storage_error { broken_repository.find_commits_by_message('s') }
+      end
     end
   end
 
@@ -300,7 +370,7 @@ describe Repository, models: true do
     end
 
     context "when committing to another project" do
-      let(:forked_project) { create(:project) }
+      let(:forked_project) { create(:project, :repository) }
 
       it "creates a fork and commit to the forked project" do
         expect do
@@ -515,10 +585,18 @@ describe Repository, models: true do
     end
 
     it 'properly handles query when repo is empty' do
-      repository = create(:empty_project).repository
+      repository = create(:project).repository
       results = repository.search_files_by_content('test', 'master')
 
       expect(results).to match_array([])
+    end
+
+    describe 'when storage is broken', broken_storage: true  do
+      it 'should raise a storage error' do
+        expect_to_raise_storage_error do
+          broken_repository.search_files_by_content('feature', 'master')
+        end
+      end
     end
 
     describe 'result' do
@@ -543,11 +621,27 @@ describe Repository, models: true do
     end
 
     it 'properly handles query when repo is empty' do
-      repository = create(:empty_project).repository
+      repository = create(:project).repository
 
       results = repository.search_files_by_name('test', 'master')
 
       expect(results).to match_array([])
+    end
+
+    describe 'when storage is broken', broken_storage: true  do
+      it 'should raise a storage error' do
+        expect_to_raise_storage_error { broken_repository.search_files_by_name('files', 'master') }
+      end
+    end
+  end
+
+  describe '#fetch_ref' do
+    describe 'when storage is broken', broken_storage: true  do
+      it 'should raise a storage error' do
+        path = broken_repository.path_to_repo
+
+        expect_to_raise_storage_error { broken_repository.fetch_ref(path, '1', '2') }
+      end
     end
   end
 
@@ -561,7 +655,7 @@ describe Repository, models: true do
     end
   end
 
-  describe "#changelog", caching: true do
+  describe "#changelog", :use_clean_rails_memory_store_caching do
     it 'accepts changelog' do
       expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('changelog')])
 
@@ -593,7 +687,7 @@ describe Repository, models: true do
     end
   end
 
-  describe "#license_blob", caching: true do
+  describe "#license_blob", :use_clean_rails_memory_store_caching do
     before do
       repository.delete_file(
         user, 'LICENSE', message: 'Remove LICENSE', branch_name: 'master')
@@ -638,7 +732,7 @@ describe Repository, models: true do
     end
   end
 
-  describe '#license_key', caching: true do
+  describe '#license_key', :use_clean_rails_memory_store_caching do
     before do
       repository.delete_file(user, 'LICENSE',
         message: 'Remove LICENSE', branch_name: 'master')
@@ -703,7 +797,7 @@ describe Repository, models: true do
     end
   end
 
-  describe "#gitlab_ci_yml", caching: true do
+  describe "#gitlab_ci_yml", :use_clean_rails_memory_store_caching do
     it 'returns valid file' do
       files = [TestBlob.new('file'), TestBlob.new('.gitlab-ci.yml'), TestBlob.new('copying')]
       expect(repository.tree).to receive(:blobs).and_return(files)
@@ -942,7 +1036,7 @@ describe Repository, models: true do
       end
 
       it 'expires creation and branch cache' do
-        empty_repository = create(:empty_project, :empty_repo).repository
+        empty_repository = create(:project, :empty_repo).repository
 
         expect(empty_repository).to receive(:expire_exists_cache)
         expect(empty_repository).to receive(:expire_root_ref_cache)
@@ -956,21 +1050,31 @@ describe Repository, models: true do
     end
   end
 
-  describe '#exists?' do
+  shared_examples 'repo exists check' do
     it 'returns true when a repository exists' do
       expect(repository.exists?).to eq(true)
     end
 
-    it 'returns false when a repository does not exist' do
-      allow(repository).to receive(:refs_directory_exists?).and_return(false)
+    it 'returns false if no full path can be constructed' do
+      allow(repository).to receive(:full_path).and_return(nil)
 
       expect(repository.exists?).to eq(false)
     end
 
-    it 'returns false when there is no namespace' do
-      allow(repository).to receive(:path_with_namespace).and_return(nil)
+    context 'with broken storage', broken_storage: true do
+      it 'should raise a storage error' do
+        expect_to_raise_storage_error { broken_repository.exists? }
+      end
+    end
+  end
 
-      expect(repository.exists?).to eq(false)
+  describe '#exists?' do
+    context 'when repository_exists is disabled' do
+      it_behaves_like 'repo exists check'
+    end
+
+    context 'when repository_exists is enabled', skip_gitaly_mock: true do
+      it_behaves_like 'repo exists check'
     end
   end
 
@@ -1611,7 +1715,7 @@ describe Repository, models: true do
     end
   end
 
-  describe '#contribution_guide', caching: true do
+  describe '#contribution_guide', :use_clean_rails_memory_store_caching do
     it 'returns and caches the output' do
       expect(repository).to receive(:file_on_head)
         .with(:contributing)
@@ -1625,7 +1729,7 @@ describe Repository, models: true do
     end
   end
 
-  describe '#gitignore', caching: true do
+  describe '#gitignore', :use_clean_rails_memory_store_caching do
     it 'returns and caches the output' do
       expect(repository).to receive(:file_on_head)
         .with(:gitignore)
@@ -1638,7 +1742,7 @@ describe Repository, models: true do
     end
   end
 
-  describe '#koding_yml', caching: true do
+  describe '#koding_yml', :use_clean_rails_memory_store_caching do
     it 'returns and caches the output' do
       expect(repository).to receive(:file_on_head)
         .with(:koding)
@@ -1651,7 +1755,7 @@ describe Repository, models: true do
     end
   end
 
-  describe '#readme', caching: true do
+  describe '#readme', :use_clean_rails_memory_store_caching do
     context 'with a non-existing repository' do
       it 'returns nil' do
         allow(repository).to receive(:tree).with(:head).and_return(nil)
@@ -1800,7 +1904,7 @@ describe Repository, models: true do
   end
 
   describe '#commit_count_for_ref' do
-    let(:project) { create :empty_project }
+    let(:project) { create :project }
 
     context 'with a non-existing repository' do
       it 'returns 0' do
@@ -1822,7 +1926,7 @@ describe Repository, models: true do
     end
   end
 
-  describe '#cache_method_output', caching: true do
+  describe '#cache_method_output', :use_clean_rails_memory_store_caching do
     context 'with a non-existing repository' do
       let(:value) do
         repository.cache_method_output(:cats, fallback: 10) do

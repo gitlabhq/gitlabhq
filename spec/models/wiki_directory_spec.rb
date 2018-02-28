@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe WikiDirectory, models: true do
+RSpec.describe WikiDirectory do
   describe 'validations' do
     subject { build(:wiki_directory) }
 
@@ -10,7 +10,7 @@ RSpec.describe WikiDirectory, models: true do
   describe '#initialize' do
     context 'when there are pages' do
       let(:pages) { [build(:wiki_page)] }
-      let(:directory) { WikiDirectory.new('/path_up_to/dir', pages) }
+      let(:directory) { described_class.new('/path_up_to/dir', pages) }
 
       it 'sets the slug attribute' do
         expect(directory.slug).to eq('/path_up_to/dir')
@@ -22,7 +22,7 @@ RSpec.describe WikiDirectory, models: true do
     end
 
     context 'when there are no pages' do
-      let(:directory) { WikiDirectory.new('/path_up_to/dir') }
+      let(:directory) { described_class.new('/path_up_to/dir') }
 
       it 'sets the slug attribute' do
         expect(directory.slug).to eq('/path_up_to/dir')

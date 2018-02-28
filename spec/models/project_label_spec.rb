@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ProjectLabel, models: true do
+describe ProjectLabel do
   describe 'relationships' do
     it { is_expected.to belong_to(:project) }
   end
@@ -10,7 +10,7 @@ describe ProjectLabel, models: true do
 
     context 'validates if title must not exist at group level' do
       let(:group) { create(:group, name: 'gitlab-org') }
-      let(:project) { create(:empty_project, group: group) }
+      let(:project) { create(:project, group: group) }
 
       before do
         create(:group_label, group: group, title: 'Bug')
@@ -33,7 +33,7 @@ describe ProjectLabel, models: true do
       end
 
       it 'does not returns error if project does not belong to group' do
-        another_project = create(:empty_project)
+        another_project = create(:project)
         label = described_class.new(project: another_project, title: 'Bug')
 
         label.valid?
@@ -66,7 +66,7 @@ describe ProjectLabel, models: true do
 
   describe '#subject' do
     it 'aliases project to subject' do
-      subject = described_class.new(project: build(:empty_project))
+      subject = described_class.new(project: build(:project))
 
       expect(subject.subject).to be(subject.project)
     end
@@ -100,19 +100,19 @@ describe ProjectLabel, models: true do
     end
 
     context 'cross project reference' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
 
       context 'using name' do
         it 'returns cross reference with label name' do
           expect(label.to_reference(project, format: :name))
-            .to eq %Q(#{label.project.path_with_namespace}~"#{label.name}")
+            .to eq %Q(#{label.project.full_path}~"#{label.name}")
         end
       end
 
       context 'using id' do
         it 'returns cross reference with label id' do
           expect(label.to_reference(project, format: :id))
-            .to eq %Q(#{label.project.path_with_namespace}~#{label.id})
+            .to eq %Q(#{label.project.full_path}~#{label.id})
         end
       end
     end

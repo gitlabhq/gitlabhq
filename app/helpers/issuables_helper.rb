@@ -235,7 +235,7 @@ module IssuablesHelper
 
   def issuables_count_for_state(issuable_type, state, finder: nil)
     finder ||= public_send("#{issuable_type}_finder")
-    cache_key = finder.state_counter_cache_key(state)
+    cache_key = finder.state_counter_cache_key
 
     @counts ||= {}
     @counts[cache_key] ||= Rails.cache.fetch(cache_key, expires_in: 2.minutes) do
@@ -353,5 +353,15 @@ module IssuablesHelper
     }.tap do |params|
       params[:format] = :json if issuable.is_a?(Issue)
     end
+  end
+
+  def issuable_sidebar_options(issuable, can_edit_issuable)
+    {
+      endpoint: "#{issuable_json_path(issuable)}?basic=true",
+      editable: can_edit_issuable,
+      currentUser: current_user.as_json(only: [:username, :id, :name], methods: :avatar_url),
+      rootPath: root_path,
+      fullPath: @project.full_path
+    }
   end
 end

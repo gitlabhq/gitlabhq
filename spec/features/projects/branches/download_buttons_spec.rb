@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-feature 'Download buttons in branches page', feature: true do
+feature 'Download buttons in branches page' do
   given(:user) { create(:user) }
   given(:role) { :developer }
   given(:status) { 'success' }
-  given(:project) { create(:project) }
+  given(:project) { create(:project, :repository) }
 
   given(:pipeline) do
     create(:ci_pipeline,

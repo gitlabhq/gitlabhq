@@ -9,7 +9,7 @@ describe Admin::UsersController do
   end
 
   describe 'DELETE #user with projects' do
-    let(:project) { create(:empty_project, namespace: user.namespace) }
+    let(:project) { create(:project, namespace: user.namespace) }
     let!(:issue) { create(:issue, author: user) }
 
     before do

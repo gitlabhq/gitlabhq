@@ -57,7 +57,7 @@ module Gitlab
       metadata = yield(metadata) if block_given?
       stub(service, storage).send(rpc, request, metadata)
     end
-  
+
     def self.request_metadata(storage)
       encoded_token = Base64.strict_encode64(token(storage).to_s)
       { metadata: { 'authorization' => "Bearer #{encoded_token}" } }
@@ -86,8 +86,8 @@ module Gitlab
       feature.enabled?
     end
 
-    def self.migrate(feature)
-      is_enabled  = feature_enabled?(feature)
+    def self.migrate(feature, status: MigrationStatus::OPT_IN)
+      is_enabled  = feature_enabled?(feature, status: status)
       metric_name = feature.to_s
       metric_name += "_gitaly" if is_enabled
 

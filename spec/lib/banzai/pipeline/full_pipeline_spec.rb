@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Banzai::Pipeline::FullPipeline do
   describe 'References' do
-    let(:project) { create(:empty_project, :public) }
+    let(:project) { create(:project, :public) }
     let(:issue)   { create(:issue, project: project) }
 
     it 'handles markdown inside a reference' do

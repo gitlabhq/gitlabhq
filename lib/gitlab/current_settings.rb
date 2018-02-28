@@ -25,7 +25,7 @@ module Gitlab
     def cached_application_settings
       begin
         ::ApplicationSetting.cached
-      rescue ::Redis::BaseError, ::Errno::ENOENT
+      rescue ::Redis::BaseError, ::Errno::ENOENT, ::Errno::EADDRNOTAVAIL
         # In case Redis isn't running or the Redis UNIX socket file is not available
       end
     end
@@ -33,12 +33,7 @@ module Gitlab
     def uncached_application_settings
       return fake_application_settings unless connect_to_db?
 
-      # This loads from the database into the cache, so handle Redis errors
-      begin
-        db_settings = ::ApplicationSetting.current
-      rescue ::Redis::BaseError, ::Errno::ENOENT
-        # In case Redis isn't running or the Redis UNIX socket file is not available
-      end
+      db_settings = ::ApplicationSetting.current
 
       # If there are pending migrations, it's possible there are columns that
       # need to be added to the application settings. To prevent Rake tasks

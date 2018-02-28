@@ -79,26 +79,12 @@ module Gitlab
         @new_content_sha = refs&.head_sha
       end
 
-      def new_content_commit
-        return @new_content_commit if defined?(@new_content_commit)
-
-        sha = new_content_commit
-        @new_content_commit = repository.commit(sha) if sha
-      end
-
       def old_content_sha
         return if new_file?
         return @old_content_sha if defined?(@old_content_sha)
 
         refs = diff_refs || fallback_diff_refs
         @old_content_sha = refs&.base_sha
-      end
-
-      def old_content_commit
-        return @old_content_commit if defined?(@old_content_commit)
-
-        sha = old_content_sha
-        @old_content_commit = repository.commit(sha) if sha
       end
 
       def new_blob
@@ -121,10 +107,6 @@ module Gitlab
 
       def content_sha
         new_content_sha || old_content_sha
-      end
-
-      def content_commit
-        new_content_commit || old_content_commit
       end
 
       def blob

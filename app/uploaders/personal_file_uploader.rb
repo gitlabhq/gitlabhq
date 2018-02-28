@@ -3,6 +3,10 @@ class PersonalFileUploader < FileUploader
     File.join(CarrierWave.root, model_path(model))
   end
 
+  def self.base_dir
+    File.join(root_dir, 'system')
+  end
+
   private
 
   def secure_url

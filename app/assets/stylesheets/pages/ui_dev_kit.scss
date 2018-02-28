@@ -5,13 +5,13 @@
   }
 
   .example {
+    padding: 15px;
+    border: 1px dashed $ui-dev-kit-example-border;
+    margin-bottom: 15px;
+
     &::before {
       content: "Example";
       color: $ui-dev-kit-example-color;
     }
-
-    padding: 15px;
-    border: 1px dashed $ui-dev-kit-example-border;
-    margin-bottom: 15px;
   }
 }

@@ -50,10 +50,13 @@ class ProjectsController < Projects::ApplicationController
     respond_to do |format|
       if result[:status] == :success
         flash[:notice] = _("Project '%{project_name}' was successfully updated.") % { project_name: @project.name }
+
         format.html do
           redirect_to(edit_project_path(@project))
         end
       else
+        flash[:alert] = result[:message]
+
         format.html { render 'edit' }
       end
 
@@ -217,21 +220,34 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def refs
-    branches = BranchesFinder.new(@repository, params).execute.map(&:name)
+    find_refs = params['find']
 
-    options = {
-      s_('RefSwitcher|Branches') => branches.take(100)
-    }
+    find_branches = true
+    find_tags = true
+    find_commits = true
 
-    unless @repository.tag_count.zero?
-      tags = TagsFinder.new(@repository, params).execute.map(&:name)
+    unless find_refs.nil?
+      find_branches = find_refs.include?('branches')
+      find_tags = find_refs.include?('tags')
+      find_commits = find_refs.include?('commits')
+    end
 
-      options[s_('RefSwitcher|Tags')] = tags.take(100)
+    options = {}
+
+    if find_branches
+      branches = BranchesFinder.new(@repository, params).execute.take(100).map(&:name)
+      options[s_('RefSwitcher|Branches')] = branches
+    end
+
+    if find_tags && @repository.tag_count.nonzero?
+      tags = TagsFinder.new(@repository, params).execute.take(100).map(&:name)
+
+      options[s_('RefSwitcher|Tags')] = tags
     end
 
     # If reference is commit id - we should add it to branch/tag selectbox
     ref = Addressable::URI.unescape(params[:ref])
-    if ref && options.flatten(2).exclude?(ref) && ref =~ /\A[0-9a-zA-Z]{6,52}\z/
+    if find_commits && ref && options.flatten(2).exclude?(ref) && ref =~ /\A[0-9a-zA-Z]{6,52}\z/
       options['Commits'] = [ref]
     end
 
@@ -293,10 +309,10 @@ class ProjectsController < Projects::ApplicationController
 
   def project_params
     params.require(:project)
-      .permit(project_params_ce)
+      .permit(project_params_attributes)
   end
 
-  def project_params_ce
+  def project_params_attributes
     [
       :avatar,
       :build_allow_git_fetch,
@@ -321,6 +337,7 @@ class ProjectsController < Projects::ApplicationController
       :runners_token,
       :tag_list,
       :visibility_level,
+      :template_name,
 
       project_feature_attributes: %i[
         builds_access_level

@@ -11,7 +11,7 @@ describe MembersHelper do
 
   describe '#remove_member_message' do
     let(:requester) { create(:user) }
-    let(:project) { create(:empty_project, :public, :access_requestable) }
+    let(:project) { create(:project, :public, :access_requestable) }
     let(:project_member) { build(:project_member, project: project) }
     let(:project_member_invite) { build(:project_member, project: project).tap { |m| m.generate_invite_token! } }
     let(:project_member_request) { project.request_access(requester) }
@@ -32,7 +32,7 @@ describe MembersHelper do
 
   describe '#remove_member_title' do
     let(:requester) { create(:user) }
-    let(:project) { create(:empty_project, :public, :access_requestable) }
+    let(:project) { create(:project, :public, :access_requestable) }
     let(:project_member) { build(:project_member, project: project) }
     let(:project_member_request) { project.request_access(requester) }
     let(:group) { create(:group, :access_requestable) }
@@ -46,7 +46,7 @@ describe MembersHelper do
   end
 
   describe '#leave_confirmation_message' do
-    let(:project) { build_stubbed(:empty_project) }
+    let(:project) { build_stubbed(:project) }
     let(:group) { build_stubbed(:group) }
     let(:user) { build_stubbed(:user) }
 

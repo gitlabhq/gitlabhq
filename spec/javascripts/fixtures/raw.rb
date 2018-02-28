@@ -4,7 +4,7 @@ describe 'Raw files', '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
-  let(:project) { create(:project, namespace: namespace, path: 'raw-project') }
+  let(:project) { create(:project, :repository, namespace: namespace, path: 'raw-project') }
 
   before(:all) do
     clean_frontend_fixtures('blob/notebook/')

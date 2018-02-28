@@ -42,13 +42,20 @@ class FilteredSearchDropdownManager {
       milestone: {
         reference: null,
         gl: 'DropdownNonUser',
-        extraArguments: [`${this.baseEndpoint}/milestones.json`, '%'],
+        extraArguments: {
+          endpoint: `${this.baseEndpoint}/milestones.json`,
+          symbol: '%',
+        },
         element: this.container.querySelector('#js-dropdown-milestone'),
       },
       label: {
         reference: null,
         gl: 'DropdownNonUser',
-        extraArguments: [`${this.baseEndpoint}/labels.json`, '~'],
+        extraArguments: {
+          endpoint: `${this.baseEndpoint}/labels.json`,
+          symbol: '~',
+          preprocessing: gl.DropdownUtils.duplicateLabelPreprocessing,
+        },
         element: this.container.querySelector('#js-dropdown-label'),
       },
       hint: {
@@ -97,13 +104,19 @@ class FilteredSearchDropdownManager {
     let forceShowList = false;
 
     if (!mappingKey.reference) {
-      const dl = this.droplab;
-      const defaultArguments =
-        [null, dl, element, this.filteredSearchInput, this.filteredSearchTokenKeys, key];
-      const glArguments = defaultArguments.concat(mappingKey.extraArguments || []);
+      const defaultArguments = {
+        droplab: this.droplab,
+        dropdown: element,
+        input: this.filteredSearchInput,
+        tokenKeys: this.filteredSearchTokenKeys,
+        filter: key,
+      };
+      const extraArguments = mappingKey.extraArguments || {};
+      const glArguments = Object.assign({}, defaultArguments, extraArguments);
 
       // Passing glArguments to `new gl[glClass](<arguments>)`
-      mappingKey.reference = new (Function.prototype.bind.apply(gl[glClass], glArguments))();
+      mappingKey.reference =
+        new (Function.prototype.bind.apply(gl[glClass], [null, glArguments]))();
     }
 
     if (firstLoad) {
@@ -154,7 +167,7 @@ class FilteredSearchDropdownManager {
       // Eg. token = 'label:'
 
       const split = lastToken.split(':');
-      const dropdownName = split[0].split(' ').last();
+      const dropdownName = _.last(split[0].split(' '));
       this.loadDropdown(split.length > 1 ? dropdownName : '');
     } else if (lastToken) {
       // Token has been initialized into an object because it has a value

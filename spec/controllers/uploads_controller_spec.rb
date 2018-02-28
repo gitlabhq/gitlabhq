@@ -102,7 +102,7 @@ describe UploadsController do
           subject
 
           expect(response.body).to match '\"alt\":\"rails_sample\"'
-          expect(response.body).to match "\"url\":\"/uploads/temp"
+          expect(response.body).to match "\"url\":\"/uploads/system/temp"
         end
 
         it 'does not create an Upload record' do
@@ -119,7 +119,7 @@ describe UploadsController do
           subject
 
           expect(response.body).to match '\"alt\":\"doc_sample.txt\"'
-          expect(response.body).to match "\"url\":\"/uploads/temp"
+          expect(response.body).to match "\"url\":\"/uploads/system/temp"
         end
 
         it 'does not create an Upload record' do
@@ -131,7 +131,7 @@ describe UploadsController do
 
   describe "GET show" do
     context 'Content-Disposition security measures' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
 
       context 'for PNG files' do
         it 'returns Content-Disposition: inline' do
@@ -203,7 +203,7 @@ describe UploadsController do
     end
 
     context "when viewing a project avatar" do
-      let!(:project) { create(:empty_project, avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")) }
+      let!(:project) { create(:project, avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")) }
 
       context "when the project is public" do
         before do

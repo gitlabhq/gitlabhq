@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Projects::PipelineSchedulesController do
   include AccessMatchersForController
 
-  set(:project) { create(:empty_project, :public) }
+  set(:project) { create(:project, :public) }
   let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
 
   describe 'GET #index' do

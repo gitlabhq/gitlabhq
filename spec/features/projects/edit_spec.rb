@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Project edit', feature: true, js: true do
+feature 'Project edit', js: true do
   let(:user)    { create(:user) }
   let(:project) { create(:project) }
 

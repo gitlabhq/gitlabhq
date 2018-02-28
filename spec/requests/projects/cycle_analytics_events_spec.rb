@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'cycle analytics events', api: true do
+describe 'cycle analytics events' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, public_builds: false) }
   let(:issue) {  create(:issue, project: project, created_at: 2.days.ago) }

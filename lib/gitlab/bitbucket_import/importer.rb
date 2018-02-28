@@ -61,7 +61,7 @@ module Gitlab
       def import_wiki
         return if project.wiki.repository_exists?
 
-        path_with_namespace = "#{project.path_with_namespace}.wiki"
+        path_with_namespace = "#{project.full_path}.wiki"
         import_url = project.import_url.sub(/\.git\z/, ".git/wiki")
         gitlab_shell.import_repository(project.repository_storage_path, path_with_namespace, import_url)
       rescue StandardError => e

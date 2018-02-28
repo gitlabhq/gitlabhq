@@ -10,5 +10,3 @@
     - if @project.external_import?
       %p.monospace git clone --bare #{@project.safe_import_url}
     %p Please wait while we import the repository for you. Refresh at will.
-    :javascript
-      new ProjectImport();

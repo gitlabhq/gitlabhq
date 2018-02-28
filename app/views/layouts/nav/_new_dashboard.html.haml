@@ -3,7 +3,7 @@
     = link_to dashboard_projects_path, title: 'Projects', class: 'dashboard-shortcuts-projects' do
       Projects
 
-  = nav_link(controller: [:groups, 'groups/milestones', 'groups/group_members']) do
+  = nav_link(controller: ['dashboard/groups', 'explore/groups']) do
     = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups', title: 'Groups' do
       Groups
 

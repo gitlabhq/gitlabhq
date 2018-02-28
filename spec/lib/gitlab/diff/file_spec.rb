@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Diff::File, lib: true do
+describe Gitlab::Diff::File do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }
@@ -44,14 +44,6 @@ describe Gitlab::Diff::File, lib: true do
       expect(diff).to receive(:collapsed?).and_return(false)
 
       expect(diff_file.collapsed?).to eq(false)
-    end
-  end
-
-  describe '#old_content_commit' do
-    it 'returns base commit' do
-      old_content_commit = diff_file.old_content_commit
-
-      expect(old_content_commit.id).to eq('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
     end
   end
 

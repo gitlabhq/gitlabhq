@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe Users::DestroyService, services: true do
+describe Users::DestroyService do
   describe "Deletes a user and all their personal projects" do
     let!(:user)      { create(:user) }
     let!(:admin)     { create(:admin) }
     let!(:namespace) { create(:namespace, owner: user) }
-    let!(:project)   { create(:empty_project, namespace: namespace) }
+    let!(:project)   { create(:project, namespace: namespace) }
     let(:service)    { described_class.new(admin) }
 
     context 'no options are given' do
@@ -66,7 +66,7 @@ describe Users::DestroyService, services: true do
     end
 
     context "a deleted user's merge_requests" do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
 
       before do
         project.add_developer(user)

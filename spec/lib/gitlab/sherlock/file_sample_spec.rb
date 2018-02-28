@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Sherlock::FileSample, lib: true do
+describe Gitlab::Sherlock::FileSample do
   let(:sample) { described_class.new(__FILE__, [], 150.4, 2) }
 
   describe '#id' do

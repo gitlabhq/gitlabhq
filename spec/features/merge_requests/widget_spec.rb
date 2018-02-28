@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-describe 'Merge request', :feature, :js do
+describe 'Merge request', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }
 
   before do
@@ -200,7 +200,7 @@ describe 'Merge request', :feature, :js do
   end
 
   context 'user can merge into source project but cannot push to fork', js: true do
-    let(:fork_project) { create(:project, :public) }
+    let(:fork_project) { create(:project, :public, :repository) }
     let(:user2) { create(:user) }
 
     before do
@@ -217,6 +217,19 @@ describe 'Merge request', :feature, :js do
 
     it 'user cannot remove source branch' do
       expect(page).to have_field('remove-source-branch-input', disabled: true)
+    end
+  end
+
+  context 'ongoing merge process' do
+    it 'shows Merging state' do
+      allow_any_instance_of(MergeRequest).to receive(:merge_ongoing?).and_return(true)
+
+      visit project_merge_request_path(project, merge_request)
+
+      wait_for_requests
+
+      expect(page).not_to have_button('Merge')
+      expect(page).to have_content('This merge request is in the process of being merged')
     end
   end
 end

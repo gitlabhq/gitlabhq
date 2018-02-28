@@ -142,19 +142,19 @@ describe('MRWidgetMerged', () => {
       expect(el.querySelector('.js-mr-widget-author')).toBeDefined();
       expect(el.innerText).toContain('The changes were merged into');
       expect(el.innerText).toContain(targetBranch);
-      expect(el.innerText).toContain('The source branch has been removed.');
+      expect(el.innerText).toContain('The source branch has been removed');
       expect(el.innerText).toContain('Revert');
       expect(el.innerText).toContain('Cherry-pick');
-      expect(el.innerText).not.toContain('You can remove source branch now.');
-      expect(el.innerText).not.toContain('The source branch is being removed.');
+      expect(el.innerText).not.toContain('You can remove source branch now');
+      expect(el.innerText).not.toContain('The source branch is being removed');
     });
 
     it('should not show source branch removed text', (done) => {
       vm.mr.sourceBranchRemoved = false;
 
       Vue.nextTick(() => {
-        expect(el.innerText).toContain('You can remove source branch now.');
-        expect(el.innerText).not.toContain('The source branch has been removed.');
+        expect(el.innerText).toContain('You can remove source branch now');
+        expect(el.innerText).not.toContain('The source branch has been removed');
         done();
       });
     });
@@ -164,9 +164,9 @@ describe('MRWidgetMerged', () => {
       vm.mr.sourceBranchRemoved = false;
 
       Vue.nextTick(() => {
-        expect(el.innerText).toContain('The source branch is being removed.');
-        expect(el.innerText).not.toContain('You can remove source branch now.');
-        expect(el.innerText).not.toContain('The source branch has been removed.');
+        expect(el.innerText).toContain('The source branch is being removed');
+        expect(el.innerText).not.toContain('You can remove source branch now');
+        expect(el.innerText).not.toContain('The source branch has been removed');
         done();
       });
     });

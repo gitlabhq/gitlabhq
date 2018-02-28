@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe EnvironmentSerializer do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   let(:json) do
     described_class
@@ -39,7 +39,7 @@ describe EnvironmentSerializer do
   end
 
   context 'when there is a collection of objects provided' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:resource) { create_list(:environment, 2) }
 
     it 'contains important elements of environment' do

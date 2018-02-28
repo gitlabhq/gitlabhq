@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Conflict::File, lib: true do
+describe Gitlab::Conflict::File do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:rugged) { repository.rugged }
@@ -10,7 +10,7 @@ describe Gitlab::Conflict::File, lib: true do
   let(:index) { rugged.merge_commits(our_commit, their_commit) }
   let(:conflict) { index.conflicts.last }
   let(:merge_file_result) { index.merge_file('files/ruby/regex.rb') }
-  let(:conflict_file) { Gitlab::Conflict::File.new(merge_file_result, conflict, merge_request: merge_request) }
+  let(:conflict_file) { described_class.new(merge_file_result, conflict, merge_request: merge_request) }
 
   describe '#resolve_lines' do
     let(:section_keys) { conflict_file.sections.map { |section| section[:id] }.compact }
@@ -220,7 +220,7 @@ end
 FILE
       end
 
-      let(:conflict_file) { Gitlab::Conflict::File.new({ data: file }, conflict, merge_request: merge_request) }
+      let(:conflict_file) { described_class.new({ data: file }, conflict, merge_request: merge_request) }
       let(:sections) { conflict_file.sections }
 
       it 'sets the correct match line headers' do

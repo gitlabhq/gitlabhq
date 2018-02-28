@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, object-shorthand, func-names, quote-props, no-else-return, camelcase, no-new, max-len */
+/* eslint-disable comma-dangle, object-shorthand, func-names, quote-props, no-else-return, camelcase, max-len */
 /* global CommentsStore */
 /* global ResolveService */
 /* global Flash */
@@ -64,8 +64,6 @@ const ResolveBtn = Vue.extend({
       });
     },
     resolve: function () {
-      const errorFlashMsg = 'An error occurred when trying to resolve a comment. Please try again.';
-
       if (!this.canResolve) return;
 
       let promise;
@@ -79,24 +77,20 @@ const ResolveBtn = Vue.extend({
           .resolve(this.noteId);
       }
 
-      promise.then((response) => {
-        this.loading = false;
+      promise
+        .then(resp => resp.json())
+        .then((data) => {
+          this.loading = false;
 
-        if (response.status === 200) {
-          const data = response.json();
           const resolved_by = data ? data.resolved_by : null;
 
           CommentsStore.update(this.discussionId, this.noteId, !this.isResolved, resolved_by);
           this.discussion.updateHeadline(data);
           gl.mrWidget.checkStatus();
-        } else {
-          new Flash(errorFlashMsg);
-        }
 
-        this.updateTooltip();
-      }).catch(() => {
-        new Flash(errorFlashMsg);
-      });
+          this.updateTooltip();
+        })
+        .catch(() => new Flash('An error occurred when trying to resolve a comment. Please try again.'));
     }
   },
   mounted: function () {

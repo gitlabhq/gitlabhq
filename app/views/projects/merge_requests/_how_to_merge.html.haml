@@ -1,3 +1,6 @@
+- content_for :page_specific_javascripts do
+  = webpack_bundle_tag('how_to_merge')
+
 #modal_merge_info.modal
   .modal-dialog
     .modal-content
@@ -50,14 +53,3 @@
           = succeed '.' do
             You can also checkout merge requests locally by
             = link_to 'following these guidelines', help_page_path('user/project/merge_requests/index.md', anchor: "checkout-merge-requests-locally"), target: '_blank', rel: 'noopener noreferrer'
-
-:javascript
-  $(function(){
-    var modal = $('#modal_merge_info').modal({modal: true, show:false});
-    $('.how_to_merge_link').bind("click", function(){
-      modal.show();
-    });
-    $('.modal-header .close').bind("click", function(){
-      modal.hide();
-    })
-  })

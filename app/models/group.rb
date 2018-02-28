@@ -2,7 +2,6 @@ require 'carrierwave/orm/activerecord'
 
 class Group < Namespace
   include Gitlab::ConfigHelper
-  include Gitlab::VisibilityLevel
   include AccessRequestable
   include Avatarable
   include Referable
@@ -103,10 +102,6 @@ class Group < Namespace
     full_name
   end
 
-  def visibility_level_field
-    :visibility_level
-  end
-
   def visibility_level_allowed_by_projects
     allowed_by_projects = self.projects.where('visibility_level > ?', self.visibility_level).none?
 
@@ -172,10 +167,14 @@ class Group < Namespace
   end
 
   def has_owner?(user)
+    return false unless user
+
     members_with_parents.owners.where(user_id: user).any?
   end
 
   def has_master?(user)
+    return false unless user
+
     members_with_parents.masters.where(user_id: user).any?
   end
 
@@ -217,7 +216,7 @@ class Group < Namespace
   end
 
   def members_with_parents
-    GroupMember.non_request.where(source_id: ancestors.pluck(:id).push(id))
+    GroupMember.active.where(source_id: ancestors.pluck(:id).push(id)).where.not(user_id: nil)
   end
 
   def users_with_parents

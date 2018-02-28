@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::GithubImport::ProjectCreator, lib: true do
+describe Gitlab::GithubImport::ProjectCreator do
   let(:user) { create(:user) }
   let(:namespace) { create(:group, owner: user) }
 

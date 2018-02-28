@@ -108,7 +108,7 @@ describe BlobHelper do
   context 'viewer related' do
     include FakeBlobHelpers
 
-    let(:project) { build(:empty_project, lfs_enabled: true) }
+    let(:project) { build(:project, lfs_enabled: true) }
 
     before do
       allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)

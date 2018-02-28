@@ -1,5 +1,6 @@
 class Commit
   extend ActiveModel::Naming
+  extend Gitlab::Cache::RequestCache
 
   include ActiveModel::Conversion
   include Noteable
@@ -169,19 +170,9 @@ class Commit
   end
 
   def author
-    if RequestStore.active?
-      key = "commit_author:#{author_email.downcase}"
-      # nil is a valid value since no author may exist in the system
-      if RequestStore.store.key?(key)
-        @author = RequestStore.store[key]
-      else
-        @author = find_author_by_any_email
-        RequestStore.store[key] = @author
-      end
-    else
-      @author ||= find_author_by_any_email
-    end
+    User.find_by_any_email(author_email.downcase)
   end
+  request_cache(:author) { author_email.downcase }
 
   def committer
     @committer ||= User.find_by_any_email(committer_email.downcase)
@@ -242,6 +233,14 @@ class Commit
 
     @statuses[ref] = pipelines.latest_status(ref)
   end
+
+  def signature
+    return @signature if defined?(@signature)
+
+    @signature = gpg_commit.signature
+  end
+
+  delegate :has_signature?, to: :gpg_commit
 
   def revert_branch_name
     "revert-#{short_id}"
@@ -322,7 +321,7 @@ class Commit
 
   def raw_diffs(*args)
     if Gitlab::GitalyClient.feature_enabled?(:commit_raw_diffs)
-      Gitlab::GitalyClient::Commit.new(project.repository).diff_from_parent(self, *args)
+      Gitlab::GitalyClient::CommitService.new(project.repository).diff_from_parent(self, *args)
     else
       raw.diffs(*args)
     end
@@ -331,7 +330,7 @@ class Commit
   def raw_deltas
     @deltas ||= Gitlab::GitalyClient.migrate(:commit_deltas) do |is_enabled|
       if is_enabled
-        Gitlab::GitalyClient::Commit.new(project.repository).commit_deltas(self)
+        Gitlab::GitalyClient::CommitService.new(project.repository).commit_deltas(self)
       else
         raw.deltas
       end
@@ -368,10 +367,6 @@ class Commit
     end
   end
 
-  def find_author_by_any_email
-    User.find_by_any_email(author_email.downcase)
-  end
-
   def repo_changes
     changes = { added: [], modified: [], removed: [] }
 
@@ -394,5 +389,9 @@ class Commit
 
   def merged_merge_request_no_cache(user)
     MergeRequestsFinder.new(user, project_id: project.id).find_by(merge_commit_sha: id) if merge_commit?
+  end
+
+  def gpg_commit
+    @gpg_commit ||= Gitlab::Gpg::Commit.new(self)
   end
 end

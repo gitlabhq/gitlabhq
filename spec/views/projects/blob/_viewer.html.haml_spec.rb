@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe 'projects/blob/_viewer.html.haml', :view do
+describe 'projects/blob/_viewer.html.haml' do
   include FakeBlobHelpers
 
-  let(:project) { build(:empty_project) }
+  let(:project) { build(:project) }
 
   let(:viewer_class) do
     Class.new(BlobViewer::Base) do

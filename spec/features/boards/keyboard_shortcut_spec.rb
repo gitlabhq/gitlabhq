@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-describe 'Issue Boards shortcut', feature: true, js: true do
-  let(:project) { create(:empty_project) }
+describe 'Issue Boards shortcut', js: true do
+  let(:project) { create(:project) }
 
   before do
     create(:board, project: project)

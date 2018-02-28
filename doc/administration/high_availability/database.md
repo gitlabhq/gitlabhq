@@ -97,9 +97,12 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
     Enter new password:
     Enter it again:
     ```
-
-1. Enable the `pg_trgm` extension:
+1. Exit from editing `template1` prompt by typing `\q` and Enter.
+1. Enable the `pg_trgm` extension within the `gitlabhq_production` database:
+    
     ```
+    gitlab-psql -d gitlabhq_production
+    
     CREATE EXTENSION pg_trgm;
 
     # Output:

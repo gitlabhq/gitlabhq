@@ -3,7 +3,6 @@ SimpleCovEnv.start!
 
 ENV["RAILS_ENV"] ||= 'test'
 ENV["IN_MEMORY_APPLICATION_SETTINGS"] = 'true'
-# ENV['prometheus_multiproc_dir'] = 'tmp/prometheus_multiproc_dir_test'
 
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
@@ -50,7 +49,7 @@ RSpec.configure do |config|
   config.include SearchHelpers, type: :feature
   config.include WaitForRequests, :js
   config.include StubConfiguration
-  config.include EmailHelpers, type: :mailer
+  config.include EmailHelpers, :mailer, type: :mailer
   config.include TestEnv
   config.include ActiveJob::TestHelper
   config.include ActiveSupport::Testing::TimeHelpers
@@ -59,6 +58,8 @@ RSpec.configure do |config|
   config.include ApiHelpers, :api
   config.include Gitlab::Routing, type: :routing
   config.include MigrationsHelpers, :migration
+  config.include StubFeatureFlags
+  config.include StubENV
 
   config.infer_spec_type_from_file_location!
 
@@ -76,6 +77,13 @@ RSpec.configure do |config|
     TestEnv.cleanup
   end
 
+  config.before(:example) do
+    # Skip pre-receive hook check so we can use the web editor and merge.
+    allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
+    # Enable all features by default for testing
+    allow(Feature).to receive(:enabled?) { true }
+  end
+
   config.before(:example, :request_store) do
     RequestStore.begin!
   end
@@ -85,36 +93,54 @@ RSpec.configure do |config|
     RequestStore.clear!
   end
 
+  config.before(:example, :mailer) do
+    reset_delivered_emails!
+  end
+
   if ENV['CI']
     config.around(:each) do |ex|
       ex.run_with_retry retry: 2
     end
   end
 
-  config.around(:each, :caching) do |example|
+  config.around(:each, :use_clean_rails_memory_store_caching) do |example|
     caching_store = Rails.cache
-    Rails.cache = ActiveSupport::Cache::MemoryStore.new if example.metadata[:caching]
+    Rails.cache = ActiveSupport::Cache::MemoryStore.new
+
     example.run
+
     Rails.cache = caching_store
   end
 
-  config.around(:each, :redis) do |example|
-    Gitlab::Redis.with(&:flushall)
+  config.around(:each, :clean_gitlab_redis_cache) do |example|
+    Gitlab::Redis::Cache.with(&:flushall)
+
+    example.run
+
+    Gitlab::Redis::Cache.with(&:flushall)
+  end
+
+  config.around(:each, :clean_gitlab_redis_shared_state) do |example|
+    Gitlab::Redis::SharedState.with(&:flushall)
     Sidekiq.redis(&:flushall)
 
     example.run
 
-    Gitlab::Redis.with(&:flushall)
+    Gitlab::Redis::SharedState.with(&:flushall)
     Sidekiq.redis(&:flushall)
   end
 
   config.before(:example, :migration) do
     ActiveRecord::Migrator
       .migrate(migrations_paths, previous_migration.version)
+
+    reset_column_in_migration_models
   end
 
   config.after(:example, :migration) do
     ActiveRecord::Migrator.migrate(migrations_paths)
+
+    reset_column_in_migration_models
   end
 
   config.around(:each, :nested_groups) do |example|
@@ -131,3 +157,10 @@ FactoryGirl::SyntaxRunner.class_eval do
 end
 
 ActiveRecord::Migration.maintain_test_schema!
+
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
+end

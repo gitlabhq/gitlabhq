@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Prometheus::AdditionalMetricsParser, lib: true do
+describe Gitlab::Prometheus::AdditionalMetricsParser do
   include Prometheus::MetricBuilders
 
   let(:parser_error_class) { Gitlab::Prometheus::ParsingError }

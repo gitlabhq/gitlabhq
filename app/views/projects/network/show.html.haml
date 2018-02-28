@@ -1,6 +1,9 @@
+- breadcrumb_title "Graph"
 - page_title "Graph", @ref
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('network')
+- if show_new_nav?
+  - add_to_breadcrumbs("Repository", project_tree_path(@project))
 = render "projects/commits/head"
 = render "head"
 %div{ class: container_class }

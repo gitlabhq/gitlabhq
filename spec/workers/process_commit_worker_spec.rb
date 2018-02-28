@@ -33,7 +33,7 @@ describe ProcessCommitWorker do
     end
 
     context 'when commit already exists in upstream project' do
-      let(:forked) { create(:project, :public) }
+      let(:forked) { create(:project, :public, :repository) }
 
       it 'does not process commit message' do
         create(:forked_project_link, forked_to_project: forked, forked_from_project: project)

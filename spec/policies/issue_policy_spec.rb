@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe IssuePolicy, models: true do
+describe IssuePolicy do
   let(:guest) { create(:user) }
   let(:author) { create(:user) }
   let(:assignee) { create(:user) }
@@ -14,7 +14,7 @@ describe IssuePolicy, models: true do
 
   context 'a private project' do
     let(:non_member) { create(:user) }
-    let(:project) { create(:empty_project, :private) }
+    let(:project) { create(:project, :private) }
     let(:issue) { create(:issue, project: project, assignees: [assignee], author: author) }
     let(:issue_no_assignee) { create(:issue, project: project) }
 
@@ -109,7 +109,7 @@ describe IssuePolicy, models: true do
   end
 
   context 'a public project' do
-    let(:project) { create(:empty_project, :public) }
+    let(:project) { create(:project, :public) }
     let(:issue) { create(:issue, project: project, assignees: [assignee], author: author) }
     let(:issue_no_assignee) { create(:issue, project: project) }
 

@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+gitaly_dir = 'tmp/tests/gitaly'
+args = %W[#{gitaly_dir}/gitaly #{gitaly_dir}/config.toml]
+
+# Print the PID of the spawned process
+puts spawn(*args, [:out, :err] => 'log/gitaly-test.log')

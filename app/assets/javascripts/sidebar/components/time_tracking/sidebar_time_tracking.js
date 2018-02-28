@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 import '~/smart_interval';
 
 import timeTracker from './time_tracker';

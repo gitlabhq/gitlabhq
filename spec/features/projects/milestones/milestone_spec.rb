@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Project milestone', :feature do
+feature 'Project milestone' do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, name: 'test', namespace: user.namespace) }
+  let(:project) { create(:project, name: 'test', namespace: user.namespace) }
   let(:milestone) { create(:milestone, project: project) }
 
   before do

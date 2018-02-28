@@ -9,7 +9,7 @@ describe StuckImportJobsWorker do
   end
 
   describe 'long running import' do
-    let(:project) { create(:empty_project, import_jid: '123', import_status: 'started') }
+    let(:project) { create(:project, import_jid: '123', import_status: 'started') }
 
     before do
       allow(Gitlab::SidekiqStatus).to receive(:completed_jids).and_return(['123'])
@@ -21,7 +21,7 @@ describe StuckImportJobsWorker do
   end
 
   describe 'running import' do
-    let(:project) { create(:empty_project, import_jid: '123', import_status: 'started') }
+    let(:project) { create(:project, import_jid: '123', import_status: 'started') }
 
     before do
       allow(Gitlab::SidekiqStatus).to receive(:completed_jids).and_return([])

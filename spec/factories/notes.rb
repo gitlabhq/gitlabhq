@@ -4,7 +4,7 @@ include ActionDispatch::TestProcess
 
 FactoryGirl.define do
   factory :note do
-    project factory: :empty_project
+    project
     note { generate(:title) }
     author
     on_issue

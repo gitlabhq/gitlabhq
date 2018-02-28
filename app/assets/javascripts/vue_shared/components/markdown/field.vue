@@ -44,9 +44,8 @@
               text: this.$slots.textarea[0].elm.value,
             },
           )
-          .then((res) => {
-            const data = res.json();
-
+          .then(resp => resp.json())
+          .then((data) => {
             this.markdownPreviewLoading = false;
             this.markdownPreview = data.body;
 

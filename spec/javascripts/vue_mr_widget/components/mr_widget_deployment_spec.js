@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import deploymentComponent from '~/vue_merge_request_widget/components/mr_widget_deployment';
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
-import { statusIconEntityMap } from '~/vue_shared/ci_status_icons';
 
 const deploymentMockData = [
   {
@@ -10,6 +9,7 @@ const deploymentMockData = [
     url: '/root/acets-review-apps/environments/15',
     stop_url: '/root/acets-review-apps/environments/15/stop',
     metrics_url: '/root/acets-review-apps/environments/15/deployments/1/metrics',
+    metrics_monitoring_url: '/root/acets-review-apps/environments/15/metrics',
     external_url: 'http://diplo.',
     external_url_formatted: 'diplo.',
     deployed_at: '2017-03-22T22:44:42.258Z',
@@ -39,15 +39,6 @@ describe('MRWidgetDeployment', () => {
 
       expect(service.type instanceof Object).toBeTruthy();
       expect(service.required).toBeTruthy();
-    });
-  });
-
-  describe('computed', () => {
-    describe('svg', () => {
-      it('should have the proper SVG icon', () => {
-        const vm = createComponent(deploymentMockData);
-        expect(vm.svg).toEqual(statusIconEntityMap.icon_status_success);
-      });
     });
   });
 

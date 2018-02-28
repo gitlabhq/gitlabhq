@@ -149,7 +149,9 @@ class Milestone < ActiveRecord::Base
   end
 
   ##
-  # Returns the String necessary to reference this Milestone in Markdown
+  # Returns the String necessary to reference this Milestone in Markdown. Group
+  # milestones only support name references, and do not support cross-project
+  # references.
   #
   # format - Symbol format to use (default: :iid, optional: :name)
   #
@@ -161,12 +163,16 @@ class Milestone < ActiveRecord::Base
   #   Milestone.first.to_reference(same_namespace_project)   # => "gitlab-ce%1"
   #
   def to_reference(from_project = nil, format: :iid, full: false)
-    return if is_group_milestone?
+    return if is_group_milestone? && format != :name
 
     format_reference = milestone_format_reference(format)
     reference = "#{self.class.reference_prefix}#{format_reference}"
 
-    "#{project.to_reference(from_project, full: full)}#{reference}"
+    if project
+      "#{project.to_reference(from_project, full: full)}#{reference}"
+    else
+      reference
+    end
   end
 
   def reference_link_text(from_project = nil)

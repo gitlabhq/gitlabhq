@@ -3,9 +3,13 @@ require 'spec_helper'
 describe Projects::JobsController do
   include ApiHelpers
 
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:user) { create(:user) }
+
+  before do
+    stub_not_protect_default_branch
+  end
 
   describe 'GET index' do
     context 'when scope is pending' do

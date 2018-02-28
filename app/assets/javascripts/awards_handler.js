@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
 /* global Flash */
-
+import _ from 'underscore';
 import Cookies from 'js-cookie';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';

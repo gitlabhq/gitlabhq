@@ -232,7 +232,7 @@ describe API::V3::Users do
 
   describe 'GET /users/:id/events' do
     let(:user) { create(:user) }
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:note) { create(:note_on_issue, note: 'What an awesome day!', project: project) }
 
     before do
@@ -276,7 +276,7 @@ describe API::V3::Users do
       end
 
       context 'when there are multiple events from different projects' do
-        let(:second_note) { create(:note_on_issue, project: create(:empty_project)) }
+        let(:second_note) { create(:note_on_issue, project: create(:project)) }
         let(:third_note) { create(:note_on_issue, project: project) }
 
         before do

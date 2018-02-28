@@ -7,8 +7,6 @@ RSpec.shared_examples 'updating mentions' do |service_class|
   end
 
   def update_mentionable(opts)
-    reset_delivered_emails!
-
     perform_enqueued_jobs do
       service_class.new(project, user, opts).execute(mentionable)
     end

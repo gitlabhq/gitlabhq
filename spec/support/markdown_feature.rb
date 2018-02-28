@@ -23,7 +23,7 @@ class MarkdownFeature
   # Direct references ----------------------------------------------------------
 
   def project
-    @project ||= create(:project, :repository).tap do |project|
+    @project ||= create(:project, :repository, group: group).tap do |project|
       project.team << [user, :master]
     end
   end
@@ -73,6 +73,10 @@ class MarkdownFeature
 
   def milestone
     @milestone ||= create(:milestone, name: 'next goal', project: project)
+  end
+
+  def group_milestone
+    @group_milestone ||= create(:milestone, name: 'group-milestone', group: group)
   end
 
   # Cross-references -----------------------------------------------------------

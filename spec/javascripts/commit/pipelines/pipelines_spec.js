@@ -85,6 +85,41 @@ describe('Pipelines table in Commits and Merge requests', () => {
         }, 0);
       });
     });
+
+    describe('pipeline badge counts', () => {
+      const pipelinesResponse = (request, next) => {
+        next(request.respondWith(JSON.stringify([pipeline]), {
+          status: 200,
+        }));
+      };
+
+      beforeEach(() => {
+        Vue.http.interceptors.push(pipelinesResponse);
+      });
+
+      afterEach(() => {
+        Vue.http.interceptors = _.without(Vue.http.interceptors, pipelinesResponse);
+        this.component.$destroy();
+      });
+
+      it('should receive update-pipelines-count event', (done) => {
+        const element = document.createElement('div');
+        document.body.appendChild(element);
+
+        element.addEventListener('update-pipelines-count', (event) => {
+          expect(event.detail.pipelines).toEqual([pipeline]);
+          done();
+        });
+
+        this.component = new PipelinesTable({
+          propsData: {
+            endpoint: 'endpoint',
+            helpPagePath: 'foo',
+          },
+        }).$mount();
+        element.appendChild(this.component.$el);
+      });
+    });
   });
 
   describe('unsuccessfull request', () => {

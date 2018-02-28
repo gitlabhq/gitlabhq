@@ -1,7 +1,7 @@
 .js-pipeline-schedule-form {
   .dropdown-select,
   .dropdown-menu-toggle {
-    width: 100%!important;
+    width: 100% !important;
   }
 
   .gl-field-error {
@@ -96,12 +96,12 @@
   }
 
   &:last-child {
-    & .pipeline-variable-row-remove-button {
+    .pipeline-variable-row-remove-button {
       display: none;
     }
 
     @media (max-width: $screen-sm-max) {
-      & .pipeline-variable-value-input {
+      .pipeline-variable-value-input {
         margin-right: $pipeline-variable-remove-button-width;
       }
     }
@@ -137,6 +137,7 @@
 }
 
 .pipeline-variable-row-remove-button {
+  @include transition(color);
   flex-shrink: 0;
   display: flex;
   justify-content: center;
@@ -147,7 +148,6 @@
   background: transparent;
   border: 0;
   color: $gl-text-color-secondary;
-  @include transition(color);
 
   &:hover,
   &:focus {

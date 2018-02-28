@@ -29,7 +29,7 @@ module Ci
           if result.valid?
             if result.build
               Gitlab::Metrics.add_event(:build_found,
-                                        project: result.build.project.path_with_namespace)
+                                        project: result.build.project.full_path)
 
               present result.build, with: Entities::BuildDetails
             else
@@ -64,7 +64,7 @@ module Ci
           build.trace.set(params[:trace]) if params[:trace]
 
           Gitlab::Metrics.add_event(:update_build,
-                                    project: build.project.path_with_namespace)
+                                    project: build.project.full_path)
 
           case params[:state].to_s
           when 'success'

@@ -272,7 +272,7 @@ constraints(ProjectUrlConstrainer.new) do
       namespace :registry do
         resources :repository, only: [] do
           resources :tags, only: [:destroy],
-                           constraints: { id: Gitlab::Regex.container_registry_reference_regex }
+                           constraints: { id: Gitlab::Regex.container_registry_tag_regex }
         end
       end
 
@@ -379,7 +379,9 @@ constraints(ProjectUrlConstrainer.new) do
         collection do
           scope '*ref', constraints: { ref: Gitlab::PathRegex.git_reference_regex } do
             constraints format: /svg/ do
-              get :build
+              # Keep around until 10.0, see gitlab-org/gitlab-ce#35307
+              get :build, to: "badges#pipeline"
+              get :pipeline
               get :coverage
             end
           end

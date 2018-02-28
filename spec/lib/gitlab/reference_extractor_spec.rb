@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe Gitlab::ReferenceExtractor, lib: true do
-  let(:project) { create(:empty_project) }
+describe Gitlab::ReferenceExtractor do
+  let(:project) { create(:project) }
 
   before do
     project.team << [project.creator, :developer]
   end
 
-  subject { Gitlab::ReferenceExtractor.new(project, project.creator) }
+  subject { described_class.new(project, project.creator) }
 
   it 'accesses valid user objects' do
     @u_foo = create(:user, username: 'foo')
@@ -183,16 +183,39 @@ describe Gitlab::ReferenceExtractor, lib: true do
 
   context 'with an external issue tracker' do
     let(:project) { create(:jira_project) }
+    let(:issue)   { create(:issue, project: project) }
 
-    it 'returns JIRA issues for a JIRA-integrated project' do
-      subject.analyze('JIRA-123 and FOOBAR-4567')
-      expect(subject.issues).to eq [ExternalIssue.new('JIRA-123', project),
-                                    ExternalIssue.new('FOOBAR-4567', project)]
+    context 'when GitLab issues are enabled' do
+      it 'returns both JIRA and internal issues' do
+        subject.analyze("JIRA-123 and FOOBAR-4567 and #{issue.to_reference}")
+        expect(subject.issues).to eq [ExternalIssue.new('JIRA-123', project),
+                                      ExternalIssue.new('FOOBAR-4567', project),
+                                      issue]
+      end
+
+      it 'returns only JIRA issues if the internal one does not exists' do
+        subject.analyze("JIRA-123 and FOOBAR-4567 and #999")
+        expect(subject.issues).to eq [ExternalIssue.new('JIRA-123', project),
+                                      ExternalIssue.new('FOOBAR-4567', project)]
+      end
+    end
+
+    context 'when GitLab issues are disabled' do
+      before do
+        project.issues_enabled = false
+        project.save!
+      end
+
+      it 'returns only JIRA issues' do
+        subject.analyze("JIRA-123 and FOOBAR-4567 and #{issue.to_reference}")
+        expect(subject.issues).to eq [ExternalIssue.new('JIRA-123', project),
+                                      ExternalIssue.new('FOOBAR-4567', project)]
+      end
     end
   end
 
   context 'with a project with an underscore' do
-    let(:other_project) { create(:empty_project, path: 'test_project') }
+    let(:other_project) { create(:project, path: 'test_project') }
     let(:issue) { create(:issue, project: other_project) }
 
     before do

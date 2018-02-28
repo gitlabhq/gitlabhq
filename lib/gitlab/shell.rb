@@ -1,3 +1,6 @@
+# Gitaly note: JV: two sets of straightforward RPC's. 1 Hard RPC: fork_repository.
+# SSH key operations are not part of Gitaly so will never be migrated.
+
 require 'securerandom'
 
 module Gitlab
@@ -68,6 +71,7 @@ module Gitlab
     # Ex.
     #   add_repository("/path/to/storage", "gitlab/gitlab-ci")
     #
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
     def add_repository(storage, name)
       gitlab_shell_fast_execute([gitlab_shell_projects_path,
                                  'add-project', storage, "#{name}.git"])
@@ -81,6 +85,7 @@ module Gitlab
     # Ex.
     #   import_repository("/path/to/storage", "gitlab/gitlab-ci", "https://github.com/randx/six.git")
     #
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
     def import_repository(storage, name, url)
       # Timeout should be less than 900 ideally, to prevent the memory killer
       # to silently kill the process without knowing we are timing out here.
@@ -99,12 +104,25 @@ module Gitlab
     # Ex.
     #   fetch_remote("gitlab/gitlab-ci", "upstream")
     #
-    def fetch_remote(storage, name, remote, forced: false, no_tags: false)
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
+    def fetch_remote(storage, name, remote, ssh_auth: nil, forced: false, no_tags: false)
       args = [gitlab_shell_projects_path, 'fetch-remote', storage, "#{name}.git", remote, "#{Gitlab.config.gitlab_shell.git_timeout}"]
       args << '--force' if forced
       args << '--no-tags' if no_tags
 
-      gitlab_shell_fast_execute_raise_error(args)
+      vars = {}
+
+      if ssh_auth&.ssh_import?
+        if ssh_auth.ssh_key_auth? && ssh_auth.ssh_private_key.present?
+          vars['GITLAB_SHELL_SSH_KEY'] = ssh_auth.ssh_private_key
+        end
+
+        if ssh_auth.ssh_known_hosts.present?
+          vars['GITLAB_SHELL_KNOWN_HOSTS'] = ssh_auth.ssh_known_hosts
+        end
+      end
+
+      gitlab_shell_fast_execute_raise_error(args, vars)
     end
 
     # Move repository
@@ -115,6 +133,7 @@ module Gitlab
     # Ex.
     #   mv_repository("/path/to/storage", "gitlab/gitlab-ci", "randx/gitlab-ci-new")
     #
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
     def mv_repository(storage, path, new_path)
       gitlab_shell_fast_execute([gitlab_shell_projects_path, 'mv-project',
                                  storage, "#{path}.git", "#{new_path}.git"])
@@ -129,6 +148,7 @@ module Gitlab
     # Ex.
     #  fork_repository("/path/to/forked_from/storage", "gitlab/gitlab-ci", "/path/to/forked_to/storage", "randx")
     #
+    # Gitaly note: JV: not easy to migrate because this involves two Gitaly servers, not one.
     def fork_repository(forked_from_storage, path, forked_to_storage, fork_namespace)
       gitlab_shell_fast_execute([gitlab_shell_projects_path, 'fork-project',
                                  forked_from_storage, "#{path}.git", forked_to_storage,
@@ -143,6 +163,7 @@ module Gitlab
     # Ex.
     #   remove_repository("/path/to/storage", "gitlab/gitlab-ci")
     #
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
     def remove_repository(storage, name)
       gitlab_shell_fast_execute([gitlab_shell_projects_path,
                                  'rm-project', storage, "#{name}.git"])
@@ -194,6 +215,7 @@ module Gitlab
     # Ex.
     #   add_namespace("/path/to/storage", "gitlab")
     #
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/385
     def add_namespace(storage, name)
       path = full_path(storage, name)
       FileUtils.mkdir_p(path, mode: 0770) unless exists?(storage, name)
@@ -207,6 +229,7 @@ module Gitlab
     # Ex.
     #   rm_namespace("/path/to/storage", "gitlab")
     #
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/385
     def rm_namespace(storage, name)
       FileUtils.rm_r(full_path(storage, name), force: true)
     end
@@ -216,6 +239,7 @@ module Gitlab
     # Ex.
     #   mv_namespace("/path/to/storage", "gitlab", "gitlabhq")
     #
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/385
     def mv_namespace(storage, old_name, new_name)
       return false if exists?(storage, new_name) || !exists?(storage, old_name)
 
@@ -241,6 +265,7 @@ module Gitlab
     #   exists?(storage, 'gitlab')
     #   exists?(storage, 'gitlab/cookies.git')
     #
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/385
     def exists?(storage, dir_name)
       File.exist?(full_path(storage, dir_name))
     end
@@ -280,15 +305,15 @@ module Gitlab
       false
     end
 
-    def gitlab_shell_fast_execute_raise_error(cmd)
-      output, status = gitlab_shell_fast_execute_helper(cmd)
+    def gitlab_shell_fast_execute_raise_error(cmd, vars = {})
+      output, status = gitlab_shell_fast_execute_helper(cmd, vars)
 
       raise Error, output unless status.zero?
       true
     end
 
-    def gitlab_shell_fast_execute_helper(cmd)
-      vars = ENV.to_h.slice(*GITLAB_SHELL_ENV_VARS)
+    def gitlab_shell_fast_execute_helper(cmd, vars = {})
+      vars.merge!(ENV.to_h.slice(*GITLAB_SHELL_ENV_VARS))
 
       # Don't pass along the entire parent environment to prevent gitlab-shell
       # from wasting I/O by searching through GEM_PATH

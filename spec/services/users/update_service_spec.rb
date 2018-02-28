@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Users::UpdateService, services: true do
+describe Users::UpdateService do
   let(:user) { create(:user) }
 
   describe '#execute' do

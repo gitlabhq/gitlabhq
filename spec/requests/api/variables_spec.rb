@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::Variables do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
-  let!(:project) { create(:empty_project, creator_id: user.id) }
+  let!(:project) { create(:project, creator_id: user.id) }
   let!(:master) { create(:project_member, :master, user: user, project: project) }
   let!(:developer) { create(:project_member, :developer, user: user2, project: project) }
   let!(:variable) { create(:ci_variable, project: project) }

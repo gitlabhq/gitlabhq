@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe NotesFinder do
   let(:user) { create :user }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   before do
     project.team << [user, :master]
@@ -43,7 +43,7 @@ describe NotesFinder do
 
     context 'on restricted projects' do
       let(:project) do
-        create(:empty_project,
+        create(:project,
                :public,
                :issues_private,
                :snippets_private,
@@ -156,7 +156,7 @@ describe NotesFinder do
   end
 
   describe '.search' do
-    let(:project) { create(:empty_project, :public) }
+    let(:project) { create(:project, :public) }
     let(:note) { create(:note_on_issue, note: 'WoW', project: project) }
 
     it 'returns notes with matching content' do

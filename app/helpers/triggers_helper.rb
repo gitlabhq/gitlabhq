@@ -8,6 +8,6 @@ module TriggersHelper
   end
 
   def service_trigger_url(service)
-    "#{Settings.gitlab.url}/api/v3/projects/#{service.project_id}/services/#{service.to_param}/trigger"
+    "#{Settings.gitlab.url}/api/v4/projects/#{service.project_id}/services/#{service.to_param}/trigger"
   end
 end

@@ -47,10 +47,6 @@ module GitlabRoutingHelper
     project_pipeline_path(pipeline.project, pipeline.id, *args)
   end
 
-  def milestone_path(entity, *args)
-    project_milestone_path(entity.project, entity, *args)
-  end
-
   def issue_url(entity, *args)
     project_issue_url(entity.project, entity, *args)
   end

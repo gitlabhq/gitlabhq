@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Archived Project', feature: true do
+RSpec.describe 'Dashboard Archived Project' do
   let(:user) { create :user }
   let(:project) { create :project}
   let(:archived_project) { create(:project, :archived) }

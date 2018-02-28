@@ -195,7 +195,7 @@ module ProjectsHelper
       controller.controller_name,
       controller.action_name,
       current_application_settings.cache_key,
-      'v2.4'
+      'v2.5'
     ]
 
     key << pipeline_status_cache_key(project.pipeline_status) if project.pipeline_status.has_status?
@@ -214,15 +214,35 @@ module ProjectsHelper
 
   def show_no_password_message?
     cookies[:hide_no_password_message].blank? && !current_user.hide_no_password &&
-      ( current_user.require_password? || current_user.require_personal_access_token? )
+      ( current_user.require_password_creation? || current_user.require_personal_access_token_creation_for_git_auth? )
   end
 
   def link_to_set_password
-    if current_user.require_password?
+    if current_user.require_password_creation?
       link_to s_('SetPasswordToCloneLink|set a password'), edit_profile_password_path
     else
       link_to s_('CreateTokenToCloneLink|create a personal access token'), profile_personal_access_tokens_path
     end
+  end
+
+  # Returns true if any projects are present.
+  #
+  # If the relation has a LIMIT applied we'll cast the relation to an Array
+  # since repeated any? checks would otherwise result in multiple COUNT queries
+  # being executed.
+  #
+  # If no limit is applied we'll just issue a COUNT since the result set could
+  # be too large to load into memory.
+  def any_projects?(projects)
+    if projects.limit_value
+      projects.to_a.any?
+    else
+      projects.except(:offset).any?
+    end
+  end
+
+  def has_projects_or_name?(projects, params)
+    !!(params[:name] || any_projects?(projects))
   end
 
   private
@@ -398,7 +418,7 @@ module ProjectsHelper
     if project
       import_path = "/Home/Stacks/import"
 
-      repo = project.path_with_namespace
+      repo = project.full_path
       branch ||= project.default_branch
       sha ||= project.commit.short_id
 
@@ -458,7 +478,7 @@ module ProjectsHelper
 
   def readme_cache_key
     sha = @project.commit.try(:sha) || 'nil'
-    [@project.path_with_namespace, sha, "readme"].join('-')
+    [@project.full_path, sha, "readme"].join('-')
   end
 
   def current_ref
@@ -517,5 +537,13 @@ module ProjectsHelper
     return [] if current_user.admin?
 
     current_application_settings.restricted_visibility_levels || []
+  end
+
+  def find_file_path
+    return unless @project && !@project.empty_repo?
+
+    ref = @ref || @project.repository.root_ref
+
+    project_find_file_path(@project, ref)
   end
 end

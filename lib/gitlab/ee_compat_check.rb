@@ -181,8 +181,6 @@ module Gitlab
     end
 
     def find_merge_base_with_master(branch:)
-      return if merge_base_found?
-
       # Start with (Math.exp(3).to_i = 20) until (Math.exp(6).to_i = 403)
       # In total we go (20 + 54 + 148 + 403 = 625) commits deeper
       depth = 20
@@ -235,6 +233,10 @@ module Gitlab
 
     def patch_name_from_branch(branch_name)
       branch_name.parameterize << '.patch'
+    end
+
+    def patch_url
+      "https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/#{ENV['CI_JOB_ID']}/artifacts/raw/ee_compat_check/patches/#{ce_patch_name}"
     end
 
     def step(desc, cmd = nil)
@@ -303,14 +305,11 @@ module Gitlab
 
         2. Apply your branch's patch to EE
 
-          # In the CE repo
-          $ git fetch origin master
-          $ git diff --binary origin/master...HEAD -- > #{ce_branch}.patch
-
           # In the EE repo
           $ git fetch origin master
           $ git checkout -b #{ee_branch_prefix} origin/master
-          $ git apply --3way path/to/#{ce_branch}.patch
+          $ wget #{patch_url}
+          $ git apply --3way #{ce_patch_name}
 
           At this point you might have conflicts such as:
 
@@ -324,7 +323,7 @@ module Gitlab
           If the patch couldn't be applied cleanly, use the following command:
 
           # In the EE repo
-          $ git apply --reject path/to/#{ce_branch}.patch
+          $ git apply --reject #{ce_patch_name}
 
           This option makes git apply the parts of the patch that are applicable,
           and leave the rejected hunks in corresponding `.rej` files.
@@ -337,7 +336,7 @@ module Gitlab
           # In the EE repo
           $ git push origin #{ee_branch_prefix}
 
-        ⚠️ Also, don't forget to create a new merge request on gitlab-ce and
+        ⚠️ Also, don't forget to create a new merge request on gitlab-ee and
         cross-link it with the CE merge request.
 
         Once this is done, you can retry this failed build, and it should pass.

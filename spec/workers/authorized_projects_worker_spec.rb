@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe AuthorizedProjectsWorker do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   describe '.bulk_perform_and_wait' do
     it 'schedules the ids and waits for the jobs to complete' do

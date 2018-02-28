@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::UrlSanitizer, lib: true do
+describe Gitlab::UrlSanitizer do
   let(:credentials) { { user: 'blah', password: 'password' } }
   let(:url_sanitizer) do
     described_class.new("https://github.com/me/project.git", credentials: credentials)

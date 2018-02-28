@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe GitHooksService, services: true do
+describe GitHooksService do
   include RepoHelpers
 
   let(:user)    { create(:user) }
   let(:project) { create(:project, :repository) }
-  let(:service) { GitHooksService.new }
+  let(:service) { described_class.new }
 
   before do
     @blankrev = Gitlab::Git::BLANK_SHA

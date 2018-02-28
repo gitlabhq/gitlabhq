@@ -1,28 +1,4 @@
-.panel.panel-default.protected-branches-list
-  - if @protected_branches.empty?
-    .panel-heading
-      %h3.panel-title
-        Protected branch (#{@protected_branches.size})
-    %p.settings-message.text-center
-      There are currently no protected branches, protect a branch with the form above.
-  - else
-    - can_admin_project = can?(current_user, :admin_project, @project)
+- can_admin_project = can?(current_user, :admin_project, @project)
 
-    %table.table.table-bordered
-      %colgroup
-        %col{ width: "25%" }
-        %col{ width: "30%" }
-        %col{ width: "25%" }
-        %col{ width: "20%" }
-      %thead
-        %tr
-          %th Protected branch (#{@protected_branches.size})
-          %th Last commit
-          %th Allowed to merge
-          %th Allowed to push
-          - if can_admin_project
-            %th
-      %tbody
-        = render partial: 'projects/protected_branches/protected_branch', collection: @protected_branches, locals: { can_admin_project: can_admin_project}
-
-    = paginate @protected_branches, theme: 'gitlab'
+= render layout: 'projects/protected_branches/shared/branches_list', locals: { can_admin_project: can_admin_project } do
+  = render partial: 'projects/protected_branches/protected_branch', collection: @protected_branches, locals: { can_admin_project: can_admin_project}

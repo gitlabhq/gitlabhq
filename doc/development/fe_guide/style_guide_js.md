@@ -11,7 +11,7 @@ See [our current .eslintrc][eslintrc] for specific rules and patterns.
 
 #### ESlint
 
-1. **Never** disable eslint rules unless you have a good reason.  
+1. **Never** disable eslint rules unless you have a good reason.
 You may see a lot of legacy files with `/* eslint-disable some-rule, some-other-rule */`
 at the top, but legacy files are a special case.  Any time you develop a new feature or
 refactor an existing one, you should abide by the eslint rules.
@@ -100,26 +100,44 @@ followed by any global declarations, then a blank newline prior to any imports o
     export default Foo;
   ```
 
-1. Relative paths: Unless you are writing a test, always reference other scripts using
-relative paths instead of `~`
-  * In **app/assets/javascripts**:
+1. Relative paths: when importing a module in the same directory, a child
+directory, or an immediate parent directory prefer relative paths.  When
+importing a module which is two or more levels up, prefer either `~/` or `ee/`
+.
 
-    ```javascript
-      // bad
-      import Foo from '~/foo'
+In **app/assets/javascripts/my-feature/subdir**:
 
-      // good
-      import Foo from '../foo';
-    ```
-  * In **spec/javascripts**:
+``` javascript
+// bad
+import Foo from '~/my-feature/foo';
+import Bar from '~/my-feature/subdir/bar';
+import Bin from '~/my-feature/subdir/lib/bin';
 
-    ```javascript
-      // bad
-      import Foo from '../../app/assets/javascripts/foo'
+// good
+import Foo from '../foo';
+import Bar from './bar';
+import Bin from './lib/bin';
+```
 
-      // good
-      import Foo from '~/foo';
-    ```
+In **spec/javascripts**:
+
+``` javascript
+// bad
+import Foo from '../../app/assets/javascripts/my-feature/foo';
+
+// good
+import Foo from '~/my-feature/foo';
+```
+
+When referencing an **EE component**:
+
+``` javascript
+// bad
+import Foo from '../../../../../ee/app/assets/javascripts/my-feature/ee-foo';
+
+// good
+import Foo from 'ee/my-feature/foo';
+```
 
 1. Avoid using IIFE. Although we have a lot of examples of files which wrap their
 contents in IIFEs (immediately-invoked function expressions),
@@ -447,6 +465,7 @@ A forEach will cause side effects, it will be mutating the array being iterated.
   1. `name`
   1. `props`
   1. `mixins`
+  1. `directives`
   1. `data`
   1. `components`
   1. `computedProps`
@@ -464,7 +483,7 @@ A forEach will cause side effects, it will be mutating the array being iterated.
 
 #### Vue and Boostrap
 1. Tooltips: Do not rely on `has-tooltip` class name for Vue components
-  ```javascript
+  ```javascript
     // bad
     <span
       class="has-tooltip"

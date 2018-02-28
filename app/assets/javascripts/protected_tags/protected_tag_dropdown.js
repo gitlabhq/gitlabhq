@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 export default class ProtectedTagDropdown {
   /**
    * @param {Object} options containing

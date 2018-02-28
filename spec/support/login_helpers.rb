@@ -1,4 +1,8 @@
+require_relative 'devise_helpers'
+
 module LoginHelpers
+  include DeviseHelpers
+
   # Internal: Log in as a specific user or a new user of a specific role
   #
   # user_or_role - User object, or a role to create (e.g., :admin, :user)
@@ -62,7 +66,7 @@ module LoginHelpers
     visit new_user_session_path
     expect(page).to have_content('Sign in with')
 
-    check 'Remember Me' if remember_me
+    check 'remember_me' if remember_me
 
     click_link "oauth-login-#{provider}"
   end
@@ -106,7 +110,7 @@ module LoginHelpers
   end
 
   def stub_omniauth_saml_config(messages)
-    Rails.application.env_config['devise.mapping'] = Devise.mappings[:user]
+    set_devise_mapping(context: Rails.application)
     Rails.application.routes.disable_clear_and_finalize = true
     Rails.application.routes.draw do
       post '/users/auth/saml' => 'omniauth_callbacks#saml'

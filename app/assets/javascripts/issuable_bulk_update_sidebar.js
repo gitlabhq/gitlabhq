@@ -86,7 +86,20 @@ export default class IssuableBulkUpdateSidebar {
     this.toggleCheckboxDisplay(enable);
 
     if (enable) {
+      this.initAffix();
       SidebarHeightManager.init();
+    }
+  }
+
+  initAffix() {
+    if (!this.$sidebar.hasClass('affix-top')) {
+      const offsetTop = $('.scrolling-tabs-container').outerHeight() + $('.sub-nav-scroll').outerHeight();
+
+      this.$sidebar.affix({
+        offset: {
+          top: offsetTop,
+        },
+      });
     }
   }
 

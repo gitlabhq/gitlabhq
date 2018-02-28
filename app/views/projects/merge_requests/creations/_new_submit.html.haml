@@ -17,7 +17,7 @@
   = f.hidden_field :target_project_id
   = f.hidden_field :target_branch
 
-.mr-compare.merge-request
+.mr-compare.merge-request.js-merge-request-new-submit{ 'data-mr-submit-action': "#{j params[:tab].presence || 'new'}" }
   - if @commits.empty?
     .commits-empty
       %h4
@@ -50,8 +50,3 @@
 
   .mr-loading-status
     = spinner
-
-:javascript
-  var merge_request = new MergeRequest({
-    action: "#{j params[:tab].presence || 'new'}",
-  });

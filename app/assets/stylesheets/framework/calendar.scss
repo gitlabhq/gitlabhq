@@ -45,6 +45,7 @@
   margin-top: -23px;
   float: right;
   font-size: 12px;
+  direction: ltr;
 }
 
 .pika-single.gitlab-theme {
@@ -93,7 +94,7 @@
 
   .is-selected .pika-day,
   .pika-day:hover,
-  .is-today .pika-day:hover {
+  .is-today .pika-day {
     background: $gl-primary;
     color: $white-light;
     box-shadow: none;

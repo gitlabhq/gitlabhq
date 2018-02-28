@@ -24,7 +24,7 @@
   opacity: 0;
   transform: scale(.2);
   transform-origin: 0 -45px;
-  transition: .3s cubic-bezier(.67,.06,.19,1.44);
+  transition: .3s cubic-bezier(.67, .06, .19, 1.44);
   transition-property: transform, opacity;
 
   &.is-aligned-right {
@@ -231,11 +231,11 @@
 
   .award-control-icon-positive,
   .award-control-icon-super-positive {
+    @include transition(opacity, transform);
     position: absolute;
     left: 10px;
     bottom: 6px;
     opacity: 0;
-    @include transition(opacity, transform);
   }
 
   .award-control-text {

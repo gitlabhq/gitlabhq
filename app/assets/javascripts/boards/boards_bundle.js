@@ -2,6 +2,7 @@
 /* global BoardService */
 /* global Flash */
 
+import _ from 'underscore';
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 import FilteredSearchBoards from './filtered_search_boards';
@@ -81,8 +82,9 @@ $(() => {
     mounted () {
       Store.disabled = this.disabled;
       gl.boardService.all()
+        .then(response => response.json())
         .then((resp) => {
-          resp.json().forEach((board) => {
+          resp.forEach((board) => {
             const list = Store.addList(board, this.defaultAvatar);
 
             if (list.type === 'closed') {
@@ -97,7 +99,8 @@ $(() => {
 
           Store.addBlankState();
           this.loading = false;
-        }).catch(() => new Flash('An error occurred. Please try again.'));
+        })
+        .catch(() => new Flash('An error occurred. Please try again.'));
     },
     methods: {
       updateTokens() {

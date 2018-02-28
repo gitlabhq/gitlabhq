@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Tooltips on .timeago dates', feature: true, js: true do
+feature 'Tooltips on .timeago dates', js: true do
   let(:user)            { create(:user) }
   let(:project)         { create(:project, name: 'test', namespace: user.namespace) }
   let(:created_date)    { Date.yesterday.to_time }

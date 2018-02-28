@@ -16,37 +16,43 @@ describe API::Users do
       it "returns authorization error when the `username` parameter is not passed" do
         get api("/users")
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
 
       it "returns the user when a valid `username` parameter is passed" do
-        user = create(:user)
-
         get api("/users"), username: user.username
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
         expect(json_response[0]['id']).to eq(user.id)
         expect(json_response[0]['username']).to eq(user.username)
       end
 
-      it "returns authorization error when the `username` parameter refers to an inaccessible user" do
-        user = create(:user)
-
-        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
-
-        get api("/users"), username: user.username
-
-        expect(response).to have_http_status(403)
-      end
-
       it "returns an empty response when an invalid `username` parameter is passed" do
         get api("/users"), username: 'invalid'
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(0)
+      end
+
+      context "when public level is restricted" do
+        before do
+          stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
+        end
+
+        it "returns authorization error when the `username` parameter refers to an inaccessible user" do
+          get api("/users"), username: user.username
+
+          expect(response).to have_gitlab_http_status(403)
+        end
+
+        it "returns authorization error when the `username` parameter is not passed" do
+          get api("/users")
+
+          expect(response).to have_gitlab_http_status(403)
+        end
       end
     end
 
@@ -55,17 +61,22 @@ describe API::Users do
       context "when public level is restricted" do
         before do
           stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
-          allow_any_instance_of(API::Helpers).to receive(:authenticate!).and_return(true)
         end
 
-        it "renders 403" do
-          get api("/users")
-          expect(response).to have_http_status(403)
+        context 'when authenticate as a regular user' do
+          it "renders 200" do
+            get api("/users", user)
+
+            expect(response).to have_gitlab_http_status(200)
+          end
         end
 
-        it "renders 404" do
-          get api("/users/#{user.id}")
-          expect(response).to have_http_status(404)
+        context 'when authenticate as an admin' do
+          it "renders 200" do
+            get api("/users", admin)
+
+            expect(response).to have_gitlab_http_status(200)
+          end
         end
       end
 
@@ -943,11 +954,11 @@ describe API::Users do
           expect(response).to have_http_status(403)
         end
 
-        it 'returns initial current user without private token when sudo not defined' do
+        it 'returns initial current user without private token but with is_admin when sudo not defined' do
           get api("/user?private_token=#{admin_personal_access_token}")
 
           expect(response).to have_http_status(200)
-          expect(response).to match_response_schema('public_api/v4/user/public')
+          expect(response).to match_response_schema('public_api/v4/user/admin')
           expect(json_response['id']).to eq(admin.id)
         end
       end
@@ -961,11 +972,11 @@ describe API::Users do
           expect(json_response['id']).to eq(user.id)
         end
 
-        it 'returns initial current user without private token when sudo not defined' do
+        it 'returns initial current user without private token but with is_admin when sudo not defined' do
           get api("/user?private_token=#{admin.private_token}")
 
           expect(response).to have_http_status(200)
-          expect(response).to match_response_schema('public_api/v4/user/public')
+          expect(response).to match_response_schema('public_api/v4/user/admin')
           expect(json_response['id']).to eq(admin.id)
         end
       end
@@ -1313,7 +1324,7 @@ describe API::Users do
     end
   end
 
-  context "user activities", :redis do
+  context "user activities", :clean_gitlab_redis_shared_state do
     let!(:old_active_user) { create(:user, last_activity_on: Time.utc(2000, 1, 1)) }
     let!(:newly_active_user) { create(:user, last_activity_on: 2.days.ago.midday) }
 

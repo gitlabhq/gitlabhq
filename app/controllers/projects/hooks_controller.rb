@@ -9,6 +9,10 @@ class Projects::HooksController < Projects::ApplicationController
 
   layout "project_settings"
 
+  def index
+    redirect_to project_settings_integrations_path(@project)
+  end
+
   def create
     @hook = @project.hooks.new(hook_params)
     @hook.save
@@ -33,13 +37,9 @@ class Projects::HooksController < Projects::ApplicationController
   end
 
   def test
-    if !@project.empty_repo?
-      status, message = TestHookService.new.execute(hook, current_user)
+    result = TestHooks::ProjectService.new(hook, current_user, params[:trigger]).execute
 
-      set_hook_execution_notice(status, message)
-    else
-      flash[:alert] = 'Hook execution failed. Ensure the project has commits.'
-    end
+    set_hook_execution_notice(result)
 
     redirect_back_or_default(default: { action: 'index' })
   end

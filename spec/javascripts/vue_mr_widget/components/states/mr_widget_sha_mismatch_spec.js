@@ -10,7 +10,7 @@ describe('MRWidgetSHAMismatch', () => {
     it('should have correct elements', () => {
       expect(vm.$el.classList.contains('mr-widget-body')).toBeTruthy();
       expect(vm.$el.querySelector('button').getAttribute('disabled')).toBeTruthy();
-      expect(vm.$el.innerText).toContain('The source branch HEAD has recently changed. Please reload the page and review the changes before merging.');
+      expect(vm.$el.innerText).toContain('The source branch HEAD has recently changed. Please reload the page and review the changes before merging');
     });
   });
 });

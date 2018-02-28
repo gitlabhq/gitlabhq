@@ -238,12 +238,6 @@ describe('Issue card component', () => {
   });
 
   describe('labels', () => {
-    it('does not render any', () => {
-      expect(
-        component.$el.querySelector('.label'),
-      ).toBeNull();
-    });
-
     describe('exists', () => {
       beforeEach((done) => {
         component.issue.addLabel(label1);
@@ -251,16 +245,21 @@ describe('Issue card component', () => {
         Vue.nextTick(() => done());
       });
 
-      it('does not render list label', () => {
+      it('renders list label', () => {
         expect(
           component.$el.querySelectorAll('.label').length,
-        ).toBe(1);
+        ).toBe(2);
       });
 
       it('renders label', () => {
+        const nodes = [];
+        component.$el.querySelectorAll('.label').forEach((label) => {
+          nodes.push(label.title);
+        });
+
         expect(
-          component.$el.querySelector('.label').textContent,
-        ).toContain(label1.title);
+          nodes.includes(label1.description),
+        ).toBe(true);
       });
 
       it('sets label description as title', () => {
@@ -270,9 +269,14 @@ describe('Issue card component', () => {
       });
 
       it('sets background color of button', () => {
+        const nodes = [];
+        component.$el.querySelectorAll('.label').forEach((label) => {
+          nodes.push(label.style.backgroundColor);
+        });
+
         expect(
-          component.$el.querySelector('.label').style.backgroundColor,
-        ).toContain(label1.color);
+          nodes.includes(label1.color),
+        ).toBe(true);
       });
     });
   });

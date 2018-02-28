@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-feature 'Projects > Members > Sorting', feature: true do
+feature 'Projects > Members > Sorting' do
   let(:master)    { create(:user, name: 'John Doe') }
   let(:developer) { create(:user, name: 'Mary Jane', last_sign_in_at: 5.days.ago) }
-  let(:project)   { create(:empty_project, namespace: master.namespace, creator: master) }
+  let(:project)   { create(:project, namespace: master.namespace, creator: master) }
 
   background do
     create(:project_member, :developer, user: developer, project: project, created_at: 3.days.ago)
@@ -67,7 +67,7 @@ feature 'Projects > Members > Sorting', feature: true do
     expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Name, descending')
   end
 
-  scenario 'sorts by recent sign in', :redis do
+  scenario 'sorts by recent sign in', :clean_gitlab_redis_shared_state do
     visit_members_list(sort: :recent_sign_in)
 
     expect(first_member).to include(master.name)
@@ -75,7 +75,7 @@ feature 'Projects > Members > Sorting', feature: true do
     expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Recent sign in')
   end
 
-  scenario 'sorts by oldest sign in', :redis do
+  scenario 'sorts by oldest sign in', :clean_gitlab_redis_shared_state do
     visit_members_list(sort: :oldest_sign_in)
 
     expect(first_member).to include(developer.name)

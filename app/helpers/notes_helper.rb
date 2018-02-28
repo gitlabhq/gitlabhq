@@ -62,7 +62,11 @@ module NotesHelper
   def link_to_reply_discussion(discussion, line_type = nil)
     return unless current_user
 
-    data = { discussion_id: discussion.reply_id, line_type: line_type }
+    data = {
+      discussion_id: discussion.reply_id,
+      discussion_project_id: discussion.project&.id,
+      line_type: line_type
+    }
 
     button_tag 'Reply...', class: 'btn btn-text-field js-discussion-reply-button',
                            data: data, title: 'Add a reply'
@@ -129,5 +133,15 @@ module NotesHelper
     else
       can?(current_user, :create_note, @project)
     end
+  end
+
+  def initial_notes_data(autocomplete)
+    {
+      notesUrl: notes_url,
+      notesIds: @notes.map(&:id),
+      now: Time.now.to_i,
+      diffView: diff_view,
+      autocomplete: autocomplete
+    }
   end
 end

@@ -1,3 +1,4 @@
+import statusIcon from '../mr_widget_status_icon';
 import eventHub from '../../event_hub';
 
 export default {
@@ -38,39 +39,40 @@ export default {
       }
     },
   },
+  components: {
+    statusIcon,
+  },
   template: `
-    <div class="mr-widget-body">
-      <button
-        class="btn btn-success btn-small"
-        disabled="true"
-        type="button">
-        Merge
-      </button>
-      <span
-        v-if="!isRefreshing"
-        class="bold danger">
-        <span
-          class="has-error-message"
-          v-if="mr.mergeError">
-          {{mr.mergeError}}
+    <div class="mr-widget-body media">
+      <template v-if="isRefreshing">
+        <status-icon status="loading" />
+        <span class="media-body bold js-refresh-label">
+          Refreshing now
         </span>
-        <span v-else>Merge failed.</span>
-        <span
-          :class="{ 'has-custom-error': mr.mergeError }">
-          Refreshing in {{timerText}} to show the updated status...
-        </span>
-        <button
-          @click="refresh"
-          class="btn btn-default btn-xs js-refresh-button"
-          type="button">
-          Refresh now
-        </button>
-      </span>
-      <span
-        v-if="isRefreshing"
-        class="bold js-refresh-label">
-        Refreshing now...
-      </span>
+      </template>
+      <template v-else>
+        <status-icon status="failed" showDisabledButton />
+        <div class="media-body space-children">
+          <span class="bold">
+            <span
+              class="has-error-message"
+              v-if="mr.mergeError">
+              {{mr.mergeError}}.
+            </span>
+            <span v-else>Merge failed.</span>
+            <span
+              :class="{ 'has-custom-error': mr.mergeError }">
+              Refreshing in {{timerText}} to show the updated status...
+            </span>
+          </span>
+          <button
+            @click="refresh"
+            class="btn btn-default btn-xs js-refresh-button"
+            type="button">
+            Refresh now
+          </button>
+        </div>
+      </template>
     </div>
   `,
 };

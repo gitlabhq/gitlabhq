@@ -1,4 +1,0 @@
----
-title: Fix CI/CD status in case there are only allowed to failed jobs in the pipeline
-merge_request: 11166
-author:

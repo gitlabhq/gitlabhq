@@ -1,4 +1,0 @@
----
-title: Defer project destroys within a namespace in Groups::DestroyService#async_execute
-merge_request:
-author:

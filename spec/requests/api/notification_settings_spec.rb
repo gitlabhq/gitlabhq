@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::NotificationSettings do
   let(:user) { create(:user) }
   let!(:group) { create(:group) }
-  let!(:project) { create(:empty_project, :public, creator_id: user.id, namespace: group) }
+  let!(:project) { create(:project, :public, creator_id: user.id, namespace: group) }
 
   describe "GET /notification_settings" do
     it "returns global notification settings for the current user" do
@@ -72,8 +72,8 @@ describe API::NotificationSettings do
 
       expect(response).to have_http_status(200)
       expect(json_response['level']).to eq(user.reload.notification_settings_for(project).level)
-      expect(json_response['events']['new_note']).to eq(true)
-      expect(json_response['events']['new_issue']).to eq(false)
+      expect(json_response['events']['new_note']).to be_truthy
+      expect(json_response['events']['new_issue']).to be_falsey
     end
   end
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ChatName, models: true do
+describe ChatName do
   subject { create(:chat_name) }
 
   it { is_expected.to belong_to(:service) }

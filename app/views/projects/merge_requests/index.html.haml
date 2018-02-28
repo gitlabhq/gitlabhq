@@ -4,7 +4,7 @@
 - new_merge_request_path = project_new_merge_request_path(merge_project) if merge_project
 
 - page_title "Merge Requests"
-- unless @project.default_issues_tracker?
+- unless @project.issues_enabled?
   = content_for :sub_nav do
     = render "projects/merge_requests/head"
 

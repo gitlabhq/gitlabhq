@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'User views files page', feature: true do
+feature 'User views files page' do
   let(:user) { create(:user) }
   let(:project) { create(:forked_project_with_submodules) }
 

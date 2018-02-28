@@ -1,7 +1,7 @@
 module Gitlab
   module GitalyClient
     class Diff
-      FIELDS = %i(from_path to_path old_mode new_mode from_id to_id patch).freeze
+      FIELDS = %i(from_path to_path old_mode new_mode from_id to_id patch overflow_marker collapsed).freeze
 
       attr_accessor(*FIELDS)
 

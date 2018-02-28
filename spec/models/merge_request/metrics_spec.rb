@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequest::Metrics, models: true do
+describe MergeRequest::Metrics do
   subject { create(:merge_request) }
 
   describe "when recording the default set of metrics on merge request save" do

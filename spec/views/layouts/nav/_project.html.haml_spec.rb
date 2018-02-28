@@ -5,7 +5,7 @@ describe 'layouts/nav/_project' do
     before do
       stub_container_registry_config(enabled: true)
 
-      assign(:project, create(:project))
+      assign(:project, create(:project, :repository))
       allow(view).to receive(:current_ref).and_return('master')
 
       allow(view).to receive(:can?).and_return(true)

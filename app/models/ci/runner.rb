@@ -3,7 +3,7 @@ module Ci
     extend Ci::Model
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
-    LAST_CONTACT_TIME = 1.hour.ago
+    ONLINE_CONTACT_TIMEOUT = 1.hour
     AVAILABLE_SCOPES = %w[specific shared active paused online].freeze
     FORM_EDITABLE = %i[description tag_list active run_untagged locked].freeze
 
@@ -19,7 +19,7 @@ module Ci
     scope :shared, ->() { where(is_shared: true) }
     scope :active, ->() { where(active: true) }
     scope :paused, ->() { where(active: false) }
-    scope :online, ->() { where('contacted_at > ?', LAST_CONTACT_TIME) }
+    scope :online, ->() { where('contacted_at > ?', contact_time_deadline) }
     scope :ordered, ->() { order(id: :desc) }
 
     scope :owned_or_shared, ->(project_id) do
@@ -59,6 +59,10 @@ module Ci
       where(t[:token].matches(pattern).or(t[:description].matches(pattern)))
     end
 
+    def self.contact_time_deadline
+      ONLINE_CONTACT_TIMEOUT.ago
+    end
+
     def set_default_values
       self.token = SecureRandom.hex(15) if self.token.blank?
     end
@@ -80,7 +84,7 @@ module Ci
     end
 
     def online?
-      contacted_at && contacted_at > LAST_CONTACT_TIME
+      contacted_at && contacted_at > self.class.contact_time_deadline
     end
 
     def status
@@ -145,7 +149,7 @@ module Ci
     private
 
     def cleanup_runner_queue
-      Gitlab::Redis.with do |redis|
+      Gitlab::Redis::Queues.with do |redis|
         redis.del(runner_queue_key)
       end
     end

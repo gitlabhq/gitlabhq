@@ -69,7 +69,7 @@ so keep in mind that you need at least 4GB available before running GitLab. With
 less memory GitLab will give strange errors during the reconfigure run and 500
 errors during usage.
 
-- 1GB RAM + 3GB of swap is the absolute minimum but we strongly **advise against** this amount of memory. See the unicorn worker section below for more advice.
+- 1GB RAM + 3GB of swap is the absolute minimum but we strongly **advise against** this amount of memory. See the [unicorn worker section below](#unicorn-workers) for more advice.
 - 2GB RAM + 2GB swap supports up to 100 users but it will be very slow
 - **4GB RAM** is the **recommended** memory size for all installations and supports up to 100 users
 - 8GB RAM supports up to 1,000 users

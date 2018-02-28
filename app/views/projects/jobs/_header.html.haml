@@ -1,7 +1,7 @@
 - show_controls = local_assigns.fetch(:show_controls, true)
 - pipeline = @build.pipeline
 
-.content-block.build-header.top-area
+.content-block.build-header.top-area.page-content-header
   .header-content
     = render 'ci/status/badge', status: @build.detailed_status(current_user), link: false, title: @build.status_title
     %strong

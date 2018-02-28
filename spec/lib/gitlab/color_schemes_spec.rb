@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::ColorSchemes, lib: true do
+describe Gitlab::ColorSchemes do
   describe '.body_classes' do
     it 'returns a space-separated list of class names' do
       css = described_class.body_classes

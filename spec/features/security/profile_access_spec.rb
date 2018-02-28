@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Profile access", feature: true  do
+describe "Profile access"  do
   include AccessMatchers
 
   describe "GET /profile/keys" do

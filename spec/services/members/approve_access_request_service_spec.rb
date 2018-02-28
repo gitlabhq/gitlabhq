@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Members::ApproveAccessRequestService, services: true do
+describe Members::ApproveAccessRequestService do
   let(:user) { create(:user) }
   let(:access_requester) { create(:user) }
-  let(:project) { create(:empty_project, :public, :access_requestable) }
+  let(:project) { create(:project, :public, :access_requestable) }
   let(:group) { create(:group, :public, :access_requestable) }
   let(:opts) { {} }
 

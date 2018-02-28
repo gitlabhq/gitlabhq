@@ -77,7 +77,7 @@ class Profiles::PasswordsController < Profiles::ApplicationController
   end
 
   def authorize_change_password!
-    return render_404 if @user.ldap_user?
+    render_404 unless @user.allow_password_authentication?
   end
 
   def user_params

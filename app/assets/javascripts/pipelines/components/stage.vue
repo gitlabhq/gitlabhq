@@ -73,8 +73,9 @@ export default {
 
     fetchJobs() {
       this.$http.get(this.stage.dropdown_path)
-        .then((response) => {
-          this.dropdownContent = response.json().html;
+        .then(response => response.json())
+        .then((data) => {
+          this.dropdownContent = data.html;
           this.isLoading = false;
         })
         .catch(() => {

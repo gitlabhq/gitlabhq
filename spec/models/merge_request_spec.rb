@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequest, models: true do
+describe MergeRequest do
   include RepoHelpers
 
   subject { create(:merge_request) }
@@ -155,13 +155,53 @@ describe MergeRequest, models: true do
       expect { subject.cache_merge_request_closes_issues!(subject.author) }.to change(subject.merge_requests_closing_issues, :count).by(1)
     end
 
-    it 'does not cache issues from external trackers' do
-      subject.project.update_attribute(:has_external_issue_tracker, true)
-      issue  = ExternalIssue.new('JIRA-123', subject.project)
-      commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
-      allow(subject).to receive(:commits).and_return([commit])
+    context 'when both internal and external issue trackers are enabled' do
+      before do
+        subject.project.has_external_issue_tracker = true
+        subject.project.save!
+      end
 
-      expect { subject.cache_merge_request_closes_issues!(subject.author) }.not_to change(subject.merge_requests_closing_issues, :count)
+      it 'does not cache issues from external trackers' do
+        issue  = ExternalIssue.new('JIRA-123', subject.project)
+        commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
+        allow(subject).to receive(:commits).and_return([commit])
+
+        expect { subject.cache_merge_request_closes_issues!(subject.author) }.not_to change(subject.merge_requests_closing_issues, :count)
+      end
+
+      it 'caches an internal issue' do
+        issue  = create(:issue, project: subject.project)
+        commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
+        allow(subject).to receive(:commits).and_return([commit])
+
+        expect { subject.cache_merge_request_closes_issues!(subject.author) }
+          .to change(subject.merge_requests_closing_issues, :count).by(1)
+      end
+    end
+
+    context 'when only external issue tracker enabled' do
+      before do
+        subject.project.has_external_issue_tracker = true
+        subject.project.issues_enabled = false
+        subject.project.save!
+      end
+
+      it 'does not cache issues from external trackers' do
+        issue  = ExternalIssue.new('JIRA-123', subject.project)
+        commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
+        allow(subject).to receive(:commits).and_return([commit])
+
+        expect { subject.cache_merge_request_closes_issues!(subject.author) }.not_to change(subject.merge_requests_closing_issues, :count)
+      end
+
+      it 'does not cache an internal issue' do
+        issue  = create(:issue, project: subject.project)
+        commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
+        allow(subject).to receive(:commits).and_return([commit])
+
+        expect { subject.cache_merge_request_closes_issues!(subject.author) }
+          .not_to change(subject.merge_requests_closing_issues, :count)
+      end
     end
   end
 
@@ -197,7 +237,7 @@ describe MergeRequest, models: true do
   end
 
   describe '#to_reference' do
-    let(:project) { build(:empty_project, name: 'sample-project') }
+    let(:project) { build(:project, name: 'sample-project') }
     let(:merge_request) { build(:merge_request, target_project: project, iid: 1) }
 
     it 'returns a String reference to the object' do
@@ -205,12 +245,12 @@ describe MergeRequest, models: true do
     end
 
     it 'supports a cross-project reference' do
-      another_project = build(:empty_project, name: 'another-project', namespace: project.namespace)
+      another_project = build(:project, name: 'another-project', namespace: project.namespace)
       expect(merge_request.to_reference(another_project)).to eq "sample-project!1"
     end
 
     it 'returns a String reference with the full path' do
-      expect(merge_request.to_reference(full: true)).to eq(project.path_with_namespace + '!1')
+      expect(merge_request.to_reference(full: true)).to eq(project.full_path + '!1')
     end
   end
 
@@ -352,8 +392,8 @@ describe MergeRequest, models: true do
 
   describe '#for_fork?' do
     it 'returns true if the merge request is for a fork' do
-      subject.source_project = build_stubbed(:empty_project, namespace: create(:group))
-      subject.target_project = build_stubbed(:empty_project, namespace: create(:group))
+      subject.source_project = build_stubbed(:project, namespace: create(:group))
+      subject.target_project = build_stubbed(:project, namespace: create(:group))
 
       expect(subject.for_fork?).to be_truthy
     end
@@ -849,7 +889,7 @@ describe MergeRequest, models: true do
   end
 
   describe '#participants' do
-    let(:project) { create(:empty_project, :public) }
+    let(:project) { create(:project, :public) }
 
     let(:mr) do
       create(:merge_request, source_project: project, target_project: project)
@@ -892,7 +932,7 @@ describe MergeRequest, models: true do
   end
 
   describe '#check_if_can_be_merged' do
-    let(:project) { create(:empty_project, only_allow_merge_if_pipeline_succeeds: true) }
+    let(:project) { create(:project, only_allow_merge_if_pipeline_succeeds: true) }
 
     subject { create(:merge_request, source_project: project, merge_status: :unchecked) }
 
@@ -930,7 +970,7 @@ describe MergeRequest, models: true do
   end
 
   describe '#mergeable?' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     subject { create(:merge_request, source_project: project) }
 
@@ -1015,7 +1055,7 @@ describe MergeRequest, models: true do
   end
 
   describe '#mergeable_ci_state?' do
-    let(:project) { create(:empty_project, only_allow_merge_if_pipeline_succeeds: true) }
+    let(:project) { create(:project, only_allow_merge_if_pipeline_succeeds: true) }
     let(:pipeline) { create(:ci_empty_pipeline) }
 
     subject { build(:merge_request, target_project: project) }
@@ -1058,7 +1098,7 @@ describe MergeRequest, models: true do
     end
 
     context 'when merges are not restricted to green builds' do
-      subject { build(:merge_request, target_project: build(:empty_project, only_allow_merge_if_pipeline_succeeds: false)) }
+      subject { build(:merge_request, target_project: build(:project, only_allow_merge_if_pipeline_succeeds: false)) }
 
       context 'and a failed pipeline is associated' do
         before do
@@ -1292,8 +1332,8 @@ describe MergeRequest, models: true do
   end
 
   describe "#source_project_missing?" do
-    let(:project)      { create(:empty_project) }
-    let(:fork_project) { create(:empty_project, forked_from_project: project) }
+    let(:project)      { create(:project) }
+    let(:fork_project) { create(:project, forked_from_project: project) }
     let(:user)         { create(:user) }
     let(:unlink_project) { Projects::UnlinkForkService.new(fork_project, user) }
 
@@ -1329,9 +1369,35 @@ describe MergeRequest, models: true do
     end
   end
 
+  describe '#merge_ongoing?' do
+    it 'returns true when merge process is ongoing for merge_jid' do
+      merge_request = create(:merge_request, merge_jid: 'foo')
+
+      allow(Gitlab::SidekiqStatus).to receive(:num_running).with(['foo']).and_return(1)
+
+      expect(merge_request.merge_ongoing?).to be(true)
+    end
+
+    it 'returns false when no merge process running for merge_jid' do
+      merge_request = build(:merge_request, merge_jid: 'foo')
+
+      allow(Gitlab::SidekiqStatus).to receive(:num_running).with(['foo']).and_return(0)
+
+      expect(merge_request.merge_ongoing?).to be(false)
+    end
+
+    it 'returns false when merge_jid is nil' do
+      merge_request = build(:merge_request, merge_jid: nil)
+
+      expect(Gitlab::SidekiqStatus).not_to receive(:num_running)
+
+      expect(merge_request.merge_ongoing?).to be(false)
+    end
+  end
+
   describe "#closed_without_fork?" do
-    let(:project)      { create(:empty_project) }
-    let(:fork_project) { create(:empty_project, forked_from_project: project) }
+    let(:project)      { create(:project) }
+    let(:fork_project) { create(:project, forked_from_project: project) }
     let(:user)         { create(:user) }
     let(:unlink_project) { Projects::UnlinkForkService.new(fork_project, user) }
 
@@ -1376,9 +1442,9 @@ describe MergeRequest, models: true do
       end
 
       context 'forked project' do
-        let(:project)      { create(:empty_project) }
+        let(:project)      { create(:project) }
         let(:user)         { create(:user) }
-        let(:fork_project) { create(:empty_project, forked_from_project: project, namespace: user.namespace) }
+        let(:fork_project) { create(:project, forked_from_project: project, namespace: user.namespace) }
 
         let!(:merge_request) do
           create(:closed_merge_request,

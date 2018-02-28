@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Banzai::Filter::YamlFrontMatterFilter, lib: true do
+describe Banzai::Filter::YamlFrontMatterFilter do
   include FilterSpecHelper
 
   it 'allows for `encoding:` before the frontmatter' do

@@ -6,18 +6,9 @@ class Projects::CommitsController < Projects::ApplicationController
   before_action :require_non_empty_project
   before_action :assign_ref_vars
   before_action :authorize_download_code!
+  before_action :set_commits
 
   def show
-    @limit, @offset = (params[:limit] || 40).to_i, (params[:offset] || 0).to_i
-    search = params[:search]
-
-    @commits =
-      if search.present?
-        @repository.find_commits_by_message(search, @ref, @path, @limit, @offset)
-      else
-        @repository.commits(@ref, path: @path, limit: @limit, offset: @offset)
-      end
-
     @note_counts = project.notes.where(commit_id: @commits.map(&:id))
       .group(:commit_id).count
 
@@ -36,5 +27,34 @@ class Projects::CommitsController < Projects::ApplicationController
           ref: @ref)
       end
     end
+  end
+
+  def signatures
+    respond_to do |format|
+      format.json do
+        render json: {
+          signatures: @commits.select(&:has_signature?).map do |commit|
+            {
+              commit_sha: commit.sha,
+              html: view_to_html_string('projects/commit/_signature', signature: commit.signature)
+            }
+          end
+        }
+      end
+    end
+  end
+
+  private
+
+  def set_commits
+    @limit, @offset = (params[:limit] || 40).to_i, (params[:offset] || 0).to_i
+    search = params[:search]
+
+    @commits =
+      if search.present?
+        @repository.find_commits_by_message(search, @ref, @path, @limit, @offset)
+      else
+        @repository.commits(@ref, path: @path, limit: @limit, offset: @offset)
+      end
   end
 end

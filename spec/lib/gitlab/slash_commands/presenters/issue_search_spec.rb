@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::SlashCommands::Presenters::IssueSearch do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:message) { subject[:text] }
 
   before do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Gitlab::DependencyLinker::RequirementsTxtLinker, lib: true do
+describe Gitlab::DependencyLinker::RequirementsTxtLinker do
   describe '.support?' do
     it 'supports requirements.txt' do
       expect(described_class.support?('requirements.txt')).to be_truthy

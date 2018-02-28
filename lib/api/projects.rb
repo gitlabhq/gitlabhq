@@ -361,6 +361,7 @@ module API
         authorize! :remove_fork_project, user_project
 
         if user_project.forked?
+          status 204
           user_project.forked_project_link.destroy
         else
           not_modified!
@@ -405,6 +406,7 @@ module API
         link = user_project.project_group_links.find_by(group_id: params[:group_id])
         not_found!('Group Link') unless link
 
+        status 204
         link.destroy
       end
 

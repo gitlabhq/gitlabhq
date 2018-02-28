@@ -76,6 +76,8 @@ module DeclarativePolicy
       @state = State.new
 
       steps_by_score do |step, score|
+        return if !debug && @state.prevented?
+
         passed = nil
         case step.action
         when :enable then
@@ -93,10 +95,7 @@ module DeclarativePolicy
           # been prevented.
           unless @state.prevented?
             passed = step.pass?
-            if passed
-              @state.prevent!
-              return unless debug
-            end
+            @state.prevent! if passed
           end
 
           debug << inspect_step(step, score, passed) if debug
@@ -141,13 +140,14 @@ module DeclarativePolicy
       end
 
       steps = Set.new(@steps)
+      remaining_enablers = steps.count { |s| s.enable? }
 
       loop do
         return if steps.empty?
 
         # if the permission hasn't yet been enabled and we only have
         # prevent steps left, we short-circuit the state here
-        @state.prevent! if !@state.enabled? && steps.all?(&:prevent?)
+        @state.prevent! if !@state.enabled? && remaining_enablers == 0
 
         lowest_score = Float::INFINITY
         next_step = nil
@@ -161,6 +161,8 @@ module DeclarativePolicy
         end
 
         steps.delete(next_step)
+
+        remaining_enablers -= 1 if next_step.enable?
 
         yield next_step, lowest_score
       end

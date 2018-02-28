@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Search Snippets', feature: true do
+feature 'Search Snippets' do
   scenario 'User searches for snippets by title' do
     public_snippet = create(:personal_snippet, :public, title: 'Beginning and Middle')
     private_snippet = create(:personal_snippet, :private, title: 'Middle and End')

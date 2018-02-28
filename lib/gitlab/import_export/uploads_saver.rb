@@ -24,6 +24,7 @@ module Gitlab
       end
 
       def uploads_path
+        # TODO: decide what to do with uploads. We will use UUIDs here too?
         File.join(Rails.root.join('public/uploads'), @project.path_with_namespace)
       end
     end

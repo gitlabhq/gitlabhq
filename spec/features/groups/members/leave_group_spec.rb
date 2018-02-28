@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Groups > Members > Leave group', feature: true do
+feature 'Groups > Members > Leave group' do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
   let(:group) { create(:group) }

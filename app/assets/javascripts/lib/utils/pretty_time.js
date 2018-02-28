@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 (() => {
   /*
    * TODO: Make these methods more configurable (e.g. parseSeconds timePeriodContstraints,

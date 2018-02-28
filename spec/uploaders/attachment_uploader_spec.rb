@@ -5,7 +5,7 @@ describe AttachmentUploader do
 
   describe "#store_dir" do
     it "stores in the system dir" do
-      expect(uploader.store_dir).to start_with("uploads/system/user")
+      expect(uploader.store_dir).to start_with("uploads/-/system/user")
     end
 
     it "uses the old path when using object storage" do

@@ -4,7 +4,7 @@ describe API::Services do
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
   let(:user2) { create(:user) }
-  let(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
+  let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
 
   Service.available_services_names.each do |service|
     describe "PUT /projects/:id/services/#{service.dasherize}" do
@@ -98,7 +98,7 @@ describe API::Services do
   end
 
   describe 'POST /projects/:id/services/:slug/trigger' do
-    let!(:project) { create(:empty_project) }
+    let!(:project) { create(:project) }
 
     describe 'Mattermost Service' do
       let(:service_name) { 'mattermost_slash_commands' }

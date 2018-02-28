@@ -129,14 +129,11 @@
       },
 
       successCallback(resp) {
-        const response = {
-          headers: resp.headers,
-          body: resp.json(),
-        };
-
-        this.store.storeCount(response.body.count);
-        this.store.storePagination(response.headers);
-        this.setCommonData(response.body.pipelines);
+        return resp.json().then((response) => {
+          this.store.storeCount(response.count);
+          this.store.storePagination(resp.headers);
+          this.setCommonData(response.pipelines);
+        });
       },
     },
   };

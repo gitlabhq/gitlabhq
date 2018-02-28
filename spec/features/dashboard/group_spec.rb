@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Group', feature: true do
+RSpec.describe 'Dashboard Group' do
   before do
     sign_in(create(:user))
   end

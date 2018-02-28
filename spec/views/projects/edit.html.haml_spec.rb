@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'projects/edit' do
   include Devise::Test::ControllerHelpers
 
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user) { create(:admin) }
 
   before do

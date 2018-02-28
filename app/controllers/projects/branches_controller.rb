@@ -8,7 +8,7 @@ class Projects::BranchesController < Projects::ApplicationController
   before_action :authorize_push_code!, only: [:new, :create, :destroy, :destroy_all_merged]
 
   def index
-    @sort = params[:sort].presence || sort_value_name
+    @sort = params[:sort].presence || sort_value_recently_updated
     @branches = BranchesFinder.new(@repository, params).execute
     @branches = Kaminari.paginate_array(@branches).page(params[:page])
 

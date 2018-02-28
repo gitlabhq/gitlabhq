@@ -2,11 +2,8 @@ class IssuableBaseService < BaseService
   private
 
   def create_milestone_note(issuable)
-    milestone = issuable.milestone
-    return if milestone && milestone.is_group_milestone?
-
     SystemNoteService.change_milestone(
-      issuable, issuable.project, current_user, milestone)
+      issuable, issuable.project, current_user, issuable.milestone)
   end
 
   def create_labels_note(issuable, old_labels)
@@ -58,6 +55,7 @@ class IssuableBaseService < BaseService
       params.delete(:assignee_ids)
       params.delete(:assignee_id)
       params.delete(:due_date)
+      params.delete(:canonical_issue_id)
     end
 
     filter_assignee(issuable)
@@ -181,9 +179,8 @@ class IssuableBaseService < BaseService
 
     if params.present? && create_issuable(issuable, params, label_ids: label_ids)
       after_create(issuable)
-      issuable.create_cross_references!(current_user)
       execute_hooks(issuable)
-      invalidate_cache_counts(issuable.assignees, issuable)
+      invalidate_cache_counts(issuable, users: issuable.assignees)
     end
 
     issuable
@@ -240,12 +237,12 @@ class IssuableBaseService < BaseService
           old_assignees: old_assignees
         )
 
-        if old_assignees != issuable.assignees
-          new_assignees = issuable.assignees.to_a
-          affected_assignees = (old_assignees + new_assignees) - (old_assignees & new_assignees)
-          invalidate_cache_counts(affected_assignees.compact, issuable)
-        end
+        new_assignees = issuable.assignees.to_a
+        affected_assignees = (old_assignees + new_assignees) - (old_assignees & new_assignees)
 
+        # Don't clear the project cache, because it will be handled by the
+        # appropriate service (close / reopen / merge / etc.).
+        invalidate_cache_counts(issuable, users: affected_assignees.compact, skip_project_cache: true)
         after_update(issuable)
         issuable.create_new_cross_references!(current_user)
         execute_hooks(issuable, 'update')
@@ -287,7 +284,7 @@ class IssuableBaseService < BaseService
       todo_service.mark_todo(issuable, current_user)
     when 'done'
       todo = TodosFinder.new(current_user).execute.find_by(target: issuable)
-      todo_service.mark_todos_as_done([todo], current_user) if todo
+      todo_service.mark_todos_as_done_by_ids(todo, current_user) if todo
     end
   end
 
@@ -339,9 +336,18 @@ class IssuableBaseService < BaseService
     create_labels_note(issuable, old_labels) if issuable.labels != old_labels
   end
 
-  def invalidate_cache_counts(users, issuable)
+  def invalidate_cache_counts(issuable, users: [], skip_project_cache: false)
     users.each do |user|
       user.public_send("invalidate_#{issuable.model_name.singular}_cache_counts")
+    end
+
+    unless skip_project_cache
+      case issuable
+      when Issue
+        IssuesFinder.new(nil, project_id: issuable.project_id).clear_caches!
+      when MergeRequest
+        MergeRequestsFinder.new(nil, project_id: issuable.target_project_id).clear_caches!
+      end
     end
   end
 end

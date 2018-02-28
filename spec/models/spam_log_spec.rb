@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SpamLog, models: true do
+describe SpamLog do
   let(:admin) { create(:admin) }
 
   describe 'associations' do

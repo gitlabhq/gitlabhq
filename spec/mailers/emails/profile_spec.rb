@@ -91,6 +91,36 @@ describe Emails::Profile do
     end
   end
 
+  describe 'user added gpg key' do
+    let(:gpg_key) { create(:gpg_key) }
+
+    subject { Notify.new_gpg_key_email(gpg_key.id) }
+
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'it should not have Gmail Actions links'
+    it_behaves_like 'a user cannot unsubscribe through footer link'
+
+    it 'is sent to the new user' do
+      is_expected.to deliver_to gpg_key.user.email
+    end
+
+    it 'has the correct subject' do
+      is_expected.to have_subject /^GPG key was added to your account$/i
+    end
+
+    it 'contains the new gpg key title' do
+      is_expected.to have_body_text /#{gpg_key.fingerprint}/
+    end
+
+    it 'includes a link to gpg keys page' do
+      is_expected.to have_body_text /#{profile_gpg_keys_path}/
+    end
+
+    context 'with GPG key that does not exist' do
+      it { expect { Notify.new_gpg_key_email('foo') }.not_to raise_error }
+    end
+  end
+
   describe 'user added email' do
     let(:email) { create(:email) }
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ChatTeam, type: :model do
+describe ChatTeam do
   subject { create(:chat_team) }
 
   # Associations

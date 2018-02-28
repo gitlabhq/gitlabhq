@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Gitlab::DependencyLinker::GemfileLinker, lib: true do
+describe Gitlab::DependencyLinker::GemfileLinker do
   describe '.support?' do
     it 'supports Gemfile' do
       expect(described_class.support?('Gemfile')).to be_truthy

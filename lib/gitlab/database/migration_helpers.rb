@@ -140,6 +140,8 @@ module Gitlab
           return add_foreign_key(source, target,
                                  column: column,
                                  on_delete: on_delete)
+        else
+          on_delete = 'SET NULL' if on_delete == :nullify
         end
 
         disable_statement_timeout
@@ -155,7 +157,7 @@ module Gitlab
         ADD CONSTRAINT #{key_name}
         FOREIGN KEY (#{column})
         REFERENCES #{target} (id)
-        #{on_delete ? "ON DELETE #{on_delete}" : ''}
+        #{on_delete ? "ON DELETE #{on_delete.upcase}" : ''}
         NOT VALID;
         EOF
 

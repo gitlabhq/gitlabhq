@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Merge Requests List' do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   background do
     project.team << [user, :developer]

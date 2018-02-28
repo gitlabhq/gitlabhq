@@ -1,19 +1,27 @@
-- breadcrumb_title = @breadcrumb_title || controller.controller_name.humanize
+- breadcrumb_link = breadcrumb_title_link
 - hide_top_links = @hide_top_links || false
 
 %nav.breadcrumbs{ role: "navigation" }
-  .breadcrumbs-container{ class: container_class }
+  .breadcrumbs-container{ class: [container_class, @content_class] }
+    - if defined?(@new_sidebar)
+      = button_tag class: 'toggle-mobile-nav', type: 'button' do
+        %span.sr-only Open sidebar
+        = icon ('bars')
     .breadcrumbs-links.js-title-container
       - unless hide_top_links
         .title
           = link_to "GitLab", root_path
           \/
+          - if content_for?(:header_title_before)
+            = yield :header_title_before
+            \/
           = header_title
       %h2.breadcrumbs-sub-title
         %ul.list-unstyled
-          - if content_for?(:sub_title_before)
-            = yield :sub_title_before
-          %li= link_to breadcrumb_title, request.path
+          - if @breadcrumbs_extra_links
+            - @breadcrumbs_extra_links.each do |extra|
+              %li= link_to extra[:text], extra[:link]
+          %li= link_to @breadcrumb_title, breadcrumb_link
     - if content_for?(:breadcrumbs_extra)
       .breadcrumbs-extra.hidden-xs= yield :breadcrumbs_extra
     = yield :header_content

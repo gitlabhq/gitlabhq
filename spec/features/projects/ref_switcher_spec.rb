@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-feature 'Ref switcher', feature: true, js: true do
+feature 'Ref switcher', js: true do
   let(:user)      { create(:user) }
-  let(:project)   { create(:project, :public) }
+  let(:project)   { create(:project, :public, :repository) }
 
   before do
     project.team << [user, :master]
@@ -19,14 +19,14 @@ feature 'Ref switcher', feature: true, js: true do
       input.set 'binary'
       wait_for_requests
 
-      expect(find('.dropdown-content ul')).to have_selector('li', count: 6)
+      expect(find('.dropdown-content ul')).to have_selector('li', count: 7)
 
       page.within '.dropdown-content ul' do
         input.native.send_keys :enter
       end
     end
 
-    expect(page).to have_title 'binary-encoding'
+    expect(page).to have_title 'add-pdf-text-binary'
   end
 
   it "user selects ref with special characters" do

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Issues::CreateService, services: true do
-  let(:project) { create(:empty_project) }
+describe Issues::CreateService do
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
 
   describe '#execute' do

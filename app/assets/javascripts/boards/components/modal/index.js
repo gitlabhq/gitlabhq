@@ -1,8 +1,8 @@
 /* global ListIssue */
 
 import Vue from 'vue';
-import queryData from '../../utils/query_data';
-import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
+import queryData from '~/boards/utils/query_data';
+import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import './header';
 import './list';
 import './footer';
@@ -88,9 +88,9 @@ gl.issueBoards.IssuesModal = Vue.extend({
       return gl.boardService.getBacklog(queryData(this.filter.path, {
         page: this.page,
         per: this.perPage,
-      })).then((res) => {
-        const data = res.json();
-
+      }))
+      .then(resp => resp.json())
+      .then((data) => {
         if (clearIssues) {
           this.issues = [];
         }

@@ -17,6 +17,7 @@ class Project < ActiveRecord::Base
   include ProjectFeaturesCompatibility
   include SelectForProjectAuthorization
   include Routable
+  include Storage::LegacyProject
 
   extend Gitlab::ConfigHelper
 
@@ -43,9 +44,8 @@ class Project < ActiveRecord::Base
   default_value_for :snippets_enabled, gitlab_config_features.snippets
   default_value_for :only_allow_merge_if_all_discussions_are_resolved, false
 
-  after_create :ensure_dir_exist
+  after_create :ensure_storage_path_exist
   after_create :create_project_feature, unless: :project_feature
-  after_save :ensure_dir_exist, if: :namespace_id_changed?
   after_save :update_project_statistics, if: :namespace_id_changed?
 
   # set last_activity_at to the same as created_at
@@ -67,10 +67,15 @@ class Project < ActiveRecord::Base
 
   after_validation :check_pending_delete
 
+  # Legacy Storage specific hooks
+
+  after_save :ensure_storage_path_exist, if: :namespace_id_changed?
+
   acts_as_taggable
 
   attr_accessor :new_default_branch
   attr_accessor :old_path_with_namespace
+  attr_accessor :template_name
   attr_writer :pipeline_status
 
   alias_attribute :title, :name
@@ -159,7 +164,7 @@ class Project < ActiveRecord::Base
   has_many :todos
   has_many :notification_settings, as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
-  has_one :import_data, class_name: 'ProjectImportData'
+  has_one :import_data, class_name: 'ProjectImportData', inverse_of: :project, autosave: true
   has_one :project_feature
   has_one :statistics, class_name: 'ProjectStatistics'
 
@@ -188,6 +193,7 @@ class Project < ActiveRecord::Base
 
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature
+  accepts_nested_attributes_for :import_data
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :count, to: :forks, prefix: true
@@ -375,7 +381,7 @@ class Project < ActiveRecord::Base
           begin
             Projects::HousekeepingService.new(project).execute
           rescue Projects::HousekeepingService::LeaseTaken => e
-            Rails.logger.info("Could not perform housekeeping for project #{project.path_with_namespace} (#{project.id}): #{e}")
+            Rails.logger.info("Could not perform housekeeping for project #{project.full_path} (#{project.id}): #{e}")
           end
         end
       end
@@ -476,17 +482,19 @@ class Project < ActiveRecord::Base
   end
 
   def repository
-    @repository ||= Repository.new(path_with_namespace, self)
+    @repository ||= Repository.new(full_path, self, disk_path: disk_path)
   end
 
   def container_registry_url
     if Gitlab.config.registry.enabled
-      "#{Gitlab.config.registry.host_port}/#{path_with_namespace.downcase}"
+      "#{Gitlab.config.registry.host_port}/#{full_path.downcase}"
     end
   end
 
   def has_container_registry_tags?
-    container_repositories.to_a.any?(&:has_tags?) ||
+    return @images if defined?(@images)
+
+    @images = container_repositories.to_a.any?(&:has_tags?) ||
       has_root_container_repository_tags?
   end
 
@@ -518,16 +526,16 @@ class Project < ActiveRecord::Base
     job_id =
       if forked?
         RepositoryForkWorker.perform_async(id, forked_from_project.repository_storage_path,
-          forked_from_project.path_with_namespace,
+          forked_from_project.full_path,
           self.namespace.full_path)
       else
         RepositoryImportWorker.perform_async(self.id)
       end
 
     if job_id
-      Rails.logger.info "Import job started for #{path_with_namespace} with job ID #{job_id}"
+      Rails.logger.info "Import job started for #{full_path} with job ID #{job_id}"
     else
-      Rails.logger.error "Import job failed to start for #{path_with_namespace}"
+      Rails.logger.error "Import job failed to start for #{full_path}"
     end
   end
 
@@ -582,8 +590,6 @@ class Project < ActiveRecord::Base
       project_import_data.credentials ||= {}
       project_import_data.credentials = project_import_data.credentials.merge(credentials)
     end
-
-    project_import_data.save
   end
 
   def import?
@@ -688,7 +694,7 @@ class Project < ActiveRecord::Base
   # `from` argument can be a Namespace or Project.
   def to_reference(from = nil, full: false)
     if full || cross_namespace_reference?(from)
-      path_with_namespace
+      full_path
     elsif cross_project_reference?(from)
       path
     end
@@ -712,7 +718,7 @@ class Project < ActiveRecord::Base
     author.ensure_incoming_email_token!
 
     Gitlab::IncomingEmail.reply_address(
-      "#{path_with_namespace}+#{author.incoming_email_token}")
+      "#{full_path}+#{author.incoming_email_token}")
   end
 
   def build_commit_note(commit)
@@ -732,9 +738,11 @@ class Project < ActiveRecord::Base
   end
 
   def get_issue(issue_id, current_user)
-    if default_issues_tracker?
-      IssuesFinder.new(current_user, project_id: id).find_by(iid: issue_id)
-    else
+    issue = IssuesFinder.new(current_user, project_id: id).find_by(iid: issue_id) if issues_enabled?
+
+    if issue
+      issue
+    elsif external_issue_tracker
       ExternalIssue.new(issue_id, self)
     end
   end
@@ -756,7 +764,7 @@ class Project < ActiveRecord::Base
   end
 
   def external_issue_reference_pattern
-    external_issue_tracker.class.reference_pattern
+    external_issue_tracker.class.reference_pattern(only_long: issues_enabled?)
   end
 
   def default_issues_tracker?
@@ -801,10 +809,12 @@ class Project < ActiveRecord::Base
     update_column(:has_external_wiki, services.external_wikis.any?)
   end
 
-  def find_or_initialize_services
+  def find_or_initialize_services(exceptions: [])
     services_templates = Service.where(template: true)
 
-    Service.available_services_names.map do |service_name|
+    available_services_names = Service.available_services_names - exceptions
+
+    available_services_names.map do |service_name|
       service = find_service(services, service_name)
 
       if service
@@ -843,7 +853,7 @@ class Project < ActiveRecord::Base
   end
 
   def ci_service
-    @ci_service ||= ci_services.find_by(active: true)
+    @ci_service ||= ci_services.reorder(nil).find_by(active: true)
   end
 
   def deployment_services
@@ -851,7 +861,7 @@ class Project < ActiveRecord::Base
   end
 
   def deployment_service
-    @deployment_service ||= deployment_services.find_by(active: true)
+    @deployment_service ||= deployment_services.reorder(nil).find_by(active: true)
   end
 
   def monitoring_services
@@ -859,7 +869,7 @@ class Project < ActiveRecord::Base
   end
 
   def monitoring_service
-    @monitoring_service ||= monitoring_services.find_by(active: true)
+    @monitoring_service ||= monitoring_services.reorder(nil).find_by(active: true)
   end
 
   def jira_tracker?
@@ -931,11 +941,11 @@ class Project < ActiveRecord::Base
   end
 
   def repo
-    repository.raw
+    repository.rugged
   end
 
   def url_to_repo
-    gitlab_shell.url_to_repo(path_with_namespace)
+    gitlab_shell.url_to_repo(full_path)
   end
 
   def repo_exists?
@@ -968,56 +978,6 @@ class Project < ActiveRecord::Base
     !group
   end
 
-  def rename_repo
-    path_was = previous_changes['path'].first
-    old_path_with_namespace = File.join(namespace.full_path, path_was)
-    new_path_with_namespace = File.join(namespace.full_path, path)
-
-    Rails.logger.error "Attempting to rename #{old_path_with_namespace} -> #{new_path_with_namespace}"
-
-    expire_caches_before_rename(old_path_with_namespace)
-
-    if has_container_registry_tags?
-      Rails.logger.error "Project #{old_path_with_namespace} cannot be renamed because container registry tags are present!"
-
-      # we currently doesn't support renaming repository if it contains images in container registry
-      raise StandardError.new('Project cannot be renamed, because images are present in its container registry')
-    end
-
-    if gitlab_shell.mv_repository(repository_storage_path, old_path_with_namespace, new_path_with_namespace)
-      # If repository moved successfully we need to send update instructions to users.
-      # However we cannot allow rollback since we moved repository
-      # So we basically we mute exceptions in next actions
-      begin
-        gitlab_shell.mv_repository(repository_storage_path, "#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
-        send_move_instructions(old_path_with_namespace)
-        expires_full_path_cache
-
-        @old_path_with_namespace = old_path_with_namespace
-
-        SystemHooksService.new.execute_hooks_for(self, :rename)
-
-        @repository = nil
-      rescue => e
-        Rails.logger.error "Exception renaming #{old_path_with_namespace} -> #{new_path_with_namespace}: #{e}"
-        # Returning false does not rollback after_* transaction but gives
-        # us information about failing some of tasks
-        false
-      end
-    else
-      Rails.logger.error "Repository could not be renamed: #{old_path_with_namespace} -> #{new_path_with_namespace}"
-
-      # if we cannot move namespace directory we should rollback
-      # db changes in order to prevent out of sync between db and fs
-      raise StandardError.new('repository cannot be renamed')
-    end
-
-    Gitlab::AppLogger.info "Project was renamed: #{old_path_with_namespace} -> #{new_path_with_namespace}"
-
-    Gitlab::UploadsTransfer.new.rename_project(path_was, path, namespace.full_path)
-    Gitlab::PagesTransfer.new.rename_project(path_was, path, namespace.full_path)
-  end
-
   # Expires various caches before a project is renamed.
   def expire_caches_before_rename(old_path)
     repo = Repository.new(old_path, self)
@@ -1042,7 +1002,7 @@ class Project < ActiveRecord::Base
       git_http_url: http_url_to_repo,
       namespace: namespace.name,
       visibility_level: visibility_level,
-      path_with_namespace: path_with_namespace,
+      path_with_namespace: full_path,
       default_branch: default_branch,
       ci_config_path: ci_config_path
     }
@@ -1101,19 +1061,6 @@ class Project < ActiveRecord::Base
 
   def origin_merge_requests
     merge_requests.where(source_project_id: self.id)
-  end
-
-  def create_repository(force: false)
-    # Forked import is handled asynchronously
-    return if forked? && !force
-
-    if gitlab_shell.add_repository(repository_storage_path, path_with_namespace)
-      repository.after_create
-      true
-    else
-      errors.add(:base, 'Failed to create repository via gitlab-shell')
-      false
-    end
   end
 
   def ensure_repository
@@ -1251,7 +1198,7 @@ class Project < ActiveRecord::Base
   end
 
   def pages_path
-    File.join(Settings.pages.path, path_with_namespace)
+    File.join(Settings.pages.path, disk_path)
   end
 
   def public_pages_path
@@ -1259,9 +1206,21 @@ class Project < ActiveRecord::Base
   end
 
   def remove_private_deploy_keys
-    deploy_keys.where(public: false).delete_all
+    exclude_keys_linked_to_other_projects = <<-SQL
+      NOT EXISTS (
+        SELECT 1
+        FROM deploy_keys_projects dkp2
+        WHERE dkp2.deploy_key_id = deploy_keys_projects.deploy_key_id
+        AND dkp2.project_id != deploy_keys_projects.project_id
+      )
+    SQL
+
+    deploy_keys.where(public: false)
+               .where(exclude_keys_linked_to_other_projects)
+               .delete_all
   end
 
+  # TODO: what to do here when not using Legacy Storage? Do we still need to rename and delay removal?
   def remove_pages
     ::Projects::UpdatePagesConfigurationService.new(self).execute
 
@@ -1309,7 +1268,7 @@ class Project < ActiveRecord::Base
   end
 
   def export_path
-    File.join(Gitlab::ImportExport.storage_path, path_with_namespace)
+    File.join(Gitlab::ImportExport.storage_path, disk_path)
   end
 
   def export_project_path
@@ -1321,16 +1280,12 @@ class Project < ActiveRecord::Base
     status.zero?
   end
 
-  def ensure_dir_exist
-    gitlab_shell.add_namespace(repository_storage_path, namespace.full_path)
-  end
-
   def predefined_variables
     [
       { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
       { key: 'CI_PROJECT_NAME', value: path, public: true },
-      { key: 'CI_PROJECT_PATH', value: path_with_namespace, public: true },
-      { key: 'CI_PROJECT_PATH_SLUG', value: path_with_namespace.parameterize, public: true },
+      { key: 'CI_PROJECT_PATH', value: full_path, public: true },
+      { key: 'CI_PROJECT_PATH_SLUG', value: full_path.parameterize, public: true },
       { key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true },
       { key: 'CI_PROJECT_URL', value: web_url, public: true }
     ]
@@ -1384,15 +1339,15 @@ class Project < ActiveRecord::Base
   end
 
   def pushes_since_gc
-    Gitlab::Redis.with { |redis| redis.get(pushes_since_gc_redis_key).to_i }
+    Gitlab::Redis::SharedState.with { |redis| redis.get(pushes_since_gc_redis_shared_state_key).to_i }
   end
 
   def increment_pushes_since_gc
-    Gitlab::Redis.with { |redis| redis.incr(pushes_since_gc_redis_key) }
+    Gitlab::Redis::SharedState.with { |redis| redis.incr(pushes_since_gc_redis_shared_state_key) }
   end
 
   def reset_pushes_since_gc
-    Gitlab::Redis.with { |redis| redis.del(pushes_since_gc_redis_key) }
+    Gitlab::Redis::SharedState.with { |redis| redis.del(pushes_since_gc_redis_shared_state_key) }
   end
 
   def route_map_for(commit_sha)
@@ -1435,6 +1390,7 @@ class Project < ActiveRecord::Base
 
   alias_method :name_with_namespace, :full_name
   alias_method :human_name, :full_name
+  # @deprecated cannot remove yet because it has an index with its name in elasticsearch
   alias_method :path_with_namespace, :full_path
 
   private
@@ -1455,7 +1411,7 @@ class Project < ActiveRecord::Base
     from && self != from
   end
 
-  def pushes_since_gc_redis_key
+  def pushes_since_gc_redis_shared_state_key
     "projects/#{id}/pushes_since_gc"
   end
 
@@ -1489,7 +1445,7 @@ class Project < ActiveRecord::Base
   def pending_delete_twin
     return false unless path
 
-    Project.pending_delete.find_by_full_path(path_with_namespace)
+    Project.pending_delete.find_by_full_path(full_path)
   end
 
   ##

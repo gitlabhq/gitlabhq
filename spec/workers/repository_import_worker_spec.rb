@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe RepositoryImportWorker do
-  let(:project) { create(:empty_project, :import_scheduled) }
+  let(:project) { create(:project, :import_scheduled) }
 
   subject { described_class.new }
 

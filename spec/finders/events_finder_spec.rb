@@ -3,8 +3,8 @@ require 'spec_helper'
 describe EventsFinder do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
-  let(:project1) { create(:empty_project, :private, creator_id: user.id, namespace: user.namespace) }
-  let(:project2) { create(:empty_project, :private, creator_id: user.id, namespace: user.namespace) }
+  let(:project1) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
+  let(:project2) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
   let(:closed_issue) { create(:closed_issue, project: project1, author: user) }
   let(:opened_merge_request) { create(:merge_request, source_project: project2, author: user) }
   let!(:closed_issue_event) { create(:event, project: project1, author: user, target: closed_issue, action: Event::CLOSED, created_at: Date.new(2016, 12, 30)) }

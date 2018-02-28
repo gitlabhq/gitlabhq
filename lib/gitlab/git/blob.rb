@@ -1,3 +1,5 @@
+# Gitaly note: JV: seems to be completely migrated (behind feature flags).
+
 module Gitlab
   module Git
     class Blob
@@ -18,66 +20,7 @@ module Gitlab
             if is_enabled
               find_by_gitaly(repository, sha, path)
             else
-              find_by_rugged(repository, sha, path)
-            end
-          end
-        end
-
-        def find_by_gitaly(repository, sha, path)
-          path = path.sub(/\A\/*/, '')
-          path = '/' if path.empty?
-          name = File.basename(path)
-          entry = Gitlab::GitalyClient::Commit.new(repository).tree_entry(sha, path, MAX_DATA_DISPLAY_SIZE)
-          return unless entry
-
-          case entry.type
-          when :COMMIT
-            new(
-              id: entry.oid,
-              name: name,
-              size: 0,
-              data: '',
-              path: path,
-              commit_id: sha
-            )
-          when :BLOB
-            new(
-              id: entry.oid,
-              name: name,
-              size: entry.size,
-              data: entry.data.dup,
-              mode: entry.mode.to_s(8),
-              path: path,
-              commit_id: sha,
-              binary: binary?(entry.data)
-            )
-          end
-        end
-
-        def find_by_rugged(repository, sha, path)
-          commit = repository.lookup(sha)
-          root_tree = commit.tree
-
-          blob_entry = find_entry_by_path(repository, root_tree.oid, path)
-
-          return nil unless blob_entry
-
-          if blob_entry[:type] == :commit
-            submodule_blob(blob_entry, path, sha)
-          else
-            blob = repository.lookup(blob_entry[:oid])
-
-            if blob
-              new(
-                id: blob.oid,
-                name: blob_entry[:name],
-                size: blob.size,
-                data: blob.content(MAX_DATA_DISPLAY_SIZE),
-                mode: blob_entry[:filemode].to_s(8),
-                path: path,
-                commit_id: sha,
-                binary: blob.binary?
-              )
+              find_by_rugged(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
             end
           end
         end
@@ -85,10 +28,10 @@ module Gitlab
         def raw(repository, sha)
           Gitlab::GitalyClient.migrate(:git_blob_raw) do |is_enabled|
             if is_enabled
-              Gitlab::GitalyClient::Blob.new(repository).get_blob(oid: sha, limit: MAX_DATA_DISPLAY_SIZE)
+              Gitlab::GitalyClient::BlobService.new(repository).get_blob(oid: sha, limit: MAX_DATA_DISPLAY_SIZE)
             else
               blob = repository.lookup(sha)
-    
+
               new(
                 id: blob.oid,
                 size: blob.size,
@@ -106,6 +49,23 @@ module Gitlab
           detect = CharlockHolmes::EncodingDetector.new(8000).detect(data)
           detect && detect[:type] == :binary
         end
+
+        # Returns an array of Blob instances, specified in blob_references as
+        # [[commit_sha, path], [commit_sha, path], ...]. If blob_size_limit < 0 then the
+        # full blob contents are returned. If blob_size_limit >= 0 then each blob will
+        # contain no more than limit bytes in its data attribute.
+        # 
+        # Keep in mind that this method may allocate a lot of memory. It is up
+        # to the caller to limit the number of blobs and blob_size_limit.
+        #
+        def batch(repository, blob_references, blob_size_limit: nil)
+          blob_size_limit ||= MAX_DATA_DISPLAY_SIZE
+          blob_references.map do |sha, path|
+            find_by_rugged(repository, sha, path, limit: blob_size_limit)
+          end
+        end
+
+        private
 
         # Recursive search of blob id by path
         #
@@ -149,6 +109,66 @@ module Gitlab
             commit_id: sha
           )
         end
+
+        def find_by_gitaly(repository, sha, path)
+          path = path.sub(/\A\/*/, '')
+          path = '/' if path.empty?
+          name = File.basename(path)
+          entry = Gitlab::GitalyClient::CommitService.new(repository).tree_entry(sha, path, MAX_DATA_DISPLAY_SIZE)
+          return unless entry
+
+          case entry.type
+          when :COMMIT
+            new(
+              id: entry.oid,
+              name: name,
+              size: 0,
+              data: '',
+              path: path,
+              commit_id: sha
+            )
+          when :BLOB
+            new(
+              id: entry.oid,
+              name: name,
+              size: entry.size,
+              data: entry.data.dup,
+              mode: entry.mode.to_s(8),
+              path: path,
+              commit_id: sha,
+              binary: binary?(entry.data)
+            )
+          end
+        end
+
+        def find_by_rugged(repository, sha, path, limit:)
+          commit = repository.lookup(sha)
+          root_tree = commit.tree
+
+          blob_entry = find_entry_by_path(repository, root_tree.oid, path)
+
+          return nil unless blob_entry
+
+          if blob_entry[:type] == :commit
+            submodule_blob(blob_entry, path, sha)
+          else
+            blob = repository.lookup(blob_entry[:oid])
+
+            if blob
+              new(
+                id: blob.oid,
+                name: blob_entry[:name],
+                size: blob.size,
+                # Rugged::Blob#content is expensive; don't call it if we don't have to.
+                data: limit.zero? ? '' : blob.content(limit),
+                mode: blob_entry[:filemode].to_s(8),
+                path: path,
+                commit_id: sha,
+                binary: blob.binary?
+              )
+            end
+          end
+        end
       end
 
       def initialize(options)
@@ -178,7 +198,7 @@ module Gitlab
         Gitlab::GitalyClient.migrate(:git_blob_load_all_data) do |is_enabled|
           @data = begin
             if is_enabled
-              Gitlab::GitalyClient::Blob.new(repository).get_blob(oid: id, limit: -1).data
+              Gitlab::GitalyClient::BlobService.new(repository).get_blob(oid: id, limit: -1).data
             else
               repository.lookup(id).content
             end

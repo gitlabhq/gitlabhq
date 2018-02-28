@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import '../commons/bootstrap';
 
 // Requires Input behavior
@@ -48,7 +49,9 @@ function hideOrShowHelpBlock(form) {
 
 $(() => {
   const $form = $('form.js-requires-input');
-  $form.requiresInput();
-  hideOrShowHelpBlock($form);
-  $('.select2.js-select-namespace').change(() => hideOrShowHelpBlock($form));
+  if ($form) {
+    $form.requiresInput();
+    hideOrShowHelpBlock($form);
+    $('.select2.js-select-namespace').change(() => hideOrShowHelpBlock($form));
+  }
 });

@@ -2,7 +2,7 @@ require('spec_helper')
 
 describe Projects::TodosController do
   let(:user)          { create(:user) }
-  let(:project)       { create(:empty_project) }
+  let(:project)       { create(:project) }
   let(:issue)         { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, source_project: project) }
 

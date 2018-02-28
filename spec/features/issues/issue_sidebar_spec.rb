@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Issue Sidebar', feature: true do
+feature 'Issue Sidebar' do
   include MobileHelpers
 
   let(:group) { create(:group, :nested) }
@@ -130,8 +130,8 @@ feature 'Issue Sidebar', feature: true do
         it 'adds new label' do
           page.within('.block.labels') do
             fill_in 'new_label_name', with: 'wontfix'
-            page.find(".suggest-colors a", match: :first).click
-            click_button 'Create'
+            page.find('.suggest-colors a', match: :first).trigger('click')
+            page.find('button', text: 'Create').trigger('click')
 
             page.within('.dropdown-page-one') do
               expect(page).to have_content 'wontfix'
@@ -142,8 +142,8 @@ feature 'Issue Sidebar', feature: true do
         it 'shows error message if label title is taken' do
           page.within('.block.labels') do
             fill_in 'new_label_name', with: label.title
-            page.find('.suggest-colors a', match: :first).click
-            click_button 'Create'
+            page.find('.suggest-colors a', match: :first).trigger('click')
+            page.find('button', text: 'Create').trigger('click')
 
             page.within('.dropdown-page-two') do
               expect(page).to have_content 'Title has already been taken'

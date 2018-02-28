@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign, func-names, no-var, camelcase, no-unused-vars, object-shorthand, space-before-function-paren, no-return-assign, comma-dangle, consistent-return, one-var, one-var-declaration-per-line, quotes, prefer-template, prefer-arrow-callback, wrap-iife, max-len */
 /* global IssuableIndex */
-
+import _ from 'underscore';
 import IssuableBulkUpdateSidebar from './issuable_bulk_update_sidebar';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
 

@@ -13,6 +13,7 @@ const Api = {
   dockerfilePath: '/api/:version/templates/dockerfiles/:key',
   issuableTemplatePath: '/:namespace_path/:project_path/templates/:type/:key',
   usersPath: '/api/:version/users.json',
+  commitPath: '/api/:version/projects/:id/repository/commits',
 
   group(groupId, callback) {
     const url = Api.buildUrl(Api.groupPath)
@@ -93,6 +94,21 @@ const Api = {
       dataType: 'json',
     })
       .done(projects => callback(projects));
+  },
+
+  commitMultiple(id, data, callback) {
+    // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
+    const url = Api.buildUrl(Api.commitPath)
+      .replace(':id', id);
+    return $.ajax({
+      url,
+      type: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      data: JSON.stringify(data),
+      dataType: 'json',
+    })
+      .done(commitData => callback(commitData))
+      .fail(message => callback(message.responseJSON));
   },
 
   // Return text for a specific license

@@ -48,7 +48,9 @@ describe Gitlab::Ci::Status::Build::Retryable do
     describe '#has_action?' do
       context 'when user is allowed to update build' do
         before do
-          build.project.team << [user, :developer]
+          stub_not_protect_default_branch
+
+          build.project.add_developer(user)
         end
 
         it { is_expected.to have_action }

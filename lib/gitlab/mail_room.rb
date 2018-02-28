@@ -1,6 +1,6 @@
 require 'yaml'
 require 'json'
-require_relative 'redis' unless defined?(Gitlab::Redis)
+require_relative 'redis/queues' unless defined?(Gitlab::Redis::Queues)
 
 module Gitlab
   module MailRoom
@@ -34,11 +34,11 @@ module Gitlab
         config[:idle_timeout] = 60 if config[:idle_timeout].nil?
 
         if config[:enabled] && config[:address]
-          gitlab_redis = Gitlab::Redis.new(rails_env)
-          config[:redis_url] = gitlab_redis.url
+          gitlab_redis_queues = Gitlab::Redis::Queues.new(rails_env)
+          config[:redis_url] = gitlab_redis_queues.url
 
-          if gitlab_redis.sentinels?
-            config[:sentinels] = gitlab_redis.sentinels
+          if gitlab_redis_queues.sentinels?
+            config[:sentinels] = gitlab_redis_queues.sentinels
           end
         end
 

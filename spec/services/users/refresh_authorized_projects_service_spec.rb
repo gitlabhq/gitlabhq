@@ -3,12 +3,12 @@ require 'spec_helper'
 describe Users::RefreshAuthorizedProjectsService do
   # We're using let! here so that any expectations for the service class are not
   # triggered twice.
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
 
   let(:user) { project.namespace.owner }
   let(:service) { described_class.new(user) }
 
-  describe '#execute', :redis do
+  describe '#execute', :clean_gitlab_redis_shared_state do
     it 'refreshes the authorizations using a lease' do
       expect_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain)
         .and_return('foo')
@@ -28,7 +28,7 @@ describe Users::RefreshAuthorizedProjectsService do
     end
 
     it 'updates the authorized projects of the user' do
-      project2 = create(:empty_project)
+      project2 = create(:project)
       to_remove = user.project_authorizations
         .create!(project: project2, access_level: Gitlab::Access::MASTER)
 
@@ -109,7 +109,7 @@ describe Users::RefreshAuthorizedProjectsService do
     end
 
     context 'projects the user is a member of' do
-      let!(:other_project) { create(:empty_project) }
+      let!(:other_project) { create(:project) }
 
       before do
         other_project.team.add_reporter(user)
@@ -122,7 +122,7 @@ describe Users::RefreshAuthorizedProjectsService do
 
     context 'projects of groups the user is a member of' do
       let(:group) { create(:group) }
-      let!(:other_project) { create(:empty_project, group: group) }
+      let!(:other_project) { create(:project, group: group) }
 
       before do
         group.add_owner(user)
@@ -136,7 +136,7 @@ describe Users::RefreshAuthorizedProjectsService do
     context 'projects of subgroups of groups the user is a member of', :nested_groups do
       let(:group) { create(:group) }
       let(:nested_group) { create(:group, parent: group) }
-      let!(:other_project) { create(:empty_project, group: nested_group) }
+      let!(:other_project) { create(:project, group: nested_group) }
 
       before do
         group.add_master(user)
@@ -149,7 +149,7 @@ describe Users::RefreshAuthorizedProjectsService do
 
     context 'projects shared with groups the user is a member of' do
       let(:group) { create(:group) }
-      let(:other_project) { create(:empty_project) }
+      let(:other_project) { create(:project) }
       let!(:project_group_link) { create(:project_group_link, project: other_project, group: group, group_access: Gitlab::Access::GUEST) }
 
       before do
@@ -164,7 +164,7 @@ describe Users::RefreshAuthorizedProjectsService do
     context 'projects shared with subgroups of groups the user is a member of', :nested_groups do
       let(:group) { create(:group) }
       let(:nested_group) { create(:group, parent: group) }
-      let(:other_project) { create(:empty_project) }
+      let(:other_project) { create(:project) }
       let!(:project_group_link) { create(:project_group_link, project: other_project, group: nested_group, group_access: Gitlab::Access::DEVELOPER) }
 
       before do

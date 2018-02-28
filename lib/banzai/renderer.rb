@@ -132,6 +132,8 @@ module Banzai
     end
 
     def self.cacheless_render(text, context = {})
+      return text.to_s unless text.present?
+
       Gitlab::Metrics.measure(:banzai_cacheless_render) do
         result = render_result(text, context)
 

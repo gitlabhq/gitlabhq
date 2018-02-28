@@ -1,0 +1,413 @@
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity .5s;
+}
+
+.monaco-loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: $black-transparent;
+}
+
+.modal.popup-dialog {
+  display: block;
+  background-color: $black-transparent;
+  z-index: 2100;
+
+  @media (min-width: $screen-md-min) {
+    .modal-dialog {
+      width: 600px;
+      margin: 30px auto;
+    }
+  }
+}
+
+.project-refs-form,
+.project-refs-target-form {
+  display: inline-block;
+
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.commit-message {
+  @include str-truncated(250px);
+}
+
+.editable-mode {
+  display: inline-block;
+}
+
+.blob-viewer[data-type="rich"] {
+  margin: 20px;
+}
+
+.repository-view.tree-content-holder {
+  border: 1px solid $border-color;
+  border-radius: $border-radius-default;
+  color: $almost-black;
+
+  .panel-right {
+    display: inline-block;
+    width: 80%;
+
+    .monaco-editor.vs {
+      .line-numbers {
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      .cursor {
+        display: none !important;
+      }
+    }
+
+    &.edit-mode {
+      .blob-viewer-container {
+        overflow: hidden;
+      }
+
+      .monaco-editor.vs {
+        .cursor {
+          background: $black;
+          border-color: $black;
+          display: block !important;
+        }
+      }
+    }
+
+    .blob-viewer-container {
+      height: calc(100vh - 63px);
+      overflow: auto;
+    }
+
+    #tabs {
+      padding-left: 0;
+      margin-bottom: 0;
+      display: flex;
+      white-space: nowrap;
+      width: 100%;
+      overflow-y: hidden;
+      overflow-x: auto;
+
+      li {
+        animation: swipeRightAppear ease-in 0.1s;
+        animation-iteration-count: 1;
+        transform-origin: 0% 50%;
+        list-style-type: none;
+        background: $gray-normal;
+        display: inline-block;
+        padding: 10px 18px;
+        border-right: 1px solid $white-dark;
+        border-bottom: 1px solid $white-dark;
+        white-space: nowrap;
+
+        &.remove {
+          animation: swipeRightDissapear ease-in 0.1s;
+          animation-iteration-count: 1;
+          transform-origin: 0% 50%;
+
+          a {
+            width: 0;
+          }
+        }
+
+        &.active {
+          background: $white-light;
+          border-bottom: none;
+        }
+
+        a {
+          @include str-truncated(100px);
+          color: $black;
+          display: inline-block;
+          width: 100px;
+          text-align: center;
+          vertical-align: middle;
+
+          &.close {
+            width: auto;
+            font-size: 15px;
+            opacity: 1;
+            margin-right: -6px;
+          }
+        }
+
+        i.fa.fa-times,
+        i.fa.fa-circle {
+          float: right;
+          margin-top: 3px;
+          margin-left: 15px;
+          color: $gray-darkest;
+        }
+
+        i.fa.fa-circle {
+          color: $brand-success;
+        }
+
+        &.tabs-divider {
+          width: 100%;
+          background-color: $white-light;
+          border-right: none;
+          border-top-right-radius: 2px;
+        }
+      }
+    }
+
+    #repo-file-buttons {
+      background-color: $white-light;
+      border-bottom: 1px solid $white-normal;
+      padding: 5px 10px;
+      position: relative;
+      border-top: 1px solid $white-normal;
+      margin-top: -5px;
+    }
+
+    #binary-viewer {
+      height: 80vh;
+      overflow: auto;
+      margin: 0;
+
+      .blob-viewer {
+        padding-top: 20px;
+        padding-left: 20px;
+      }
+
+      .binary-unknown {
+        text-align: center;
+        padding-top: 100px;
+        background: $gray-light;
+        height: 100%;
+        font-size: 17px;
+
+        span {
+          display: block;
+        }
+      }
+    }
+  }
+
+  #commit-area {
+    background: $gray-light;
+    padding: 20px;
+
+    span.help-block {
+      padding-top: 7px;
+      margin-top: 0;
+    }
+  }
+
+  #view-toggler {
+    height: 41px;
+    position: relative;
+    display: block;
+    border-bottom: 1px solid $white-normal;
+    background: $white-light;
+    margin-top: -5px;
+  }
+
+  #binary-viewer {
+    img {
+      max-width: 100%;
+    }
+  }
+
+  #sidebar {
+
+    &.sidebar-mini {
+      display: inline-block;
+      vertical-align: top;
+      width: 20%;
+      border-right: 1px solid $white-normal;
+      height: calc(100vh + 20px);
+      overflow: auto;
+    }
+
+    table {
+      margin-bottom: 0;
+    }
+
+    tr {
+      animation: fadein 0.5s;
+      cursor: pointer;
+
+      &.repo-file-options td {
+        padding: 0;
+        border-top: none;
+        background: $gray-light;
+        width: 100%;
+        display: inline-block;
+
+        &:first-child {
+          border-top-left-radius: 2px;
+        }
+
+        .title {
+          display: inline-block;
+          font-size: 10px;
+          text-transform: uppercase;
+          font-weight: bold;
+          color: $gray-darkest;
+          width: 185px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          vertical-align: middle;
+          padding: 2px 16px;
+        }
+      }
+
+      .fa {
+        margin-right: 5px;
+      }
+
+      td {
+        white-space: nowrap;
+      }
+    }
+
+    a {
+      color: $almost-black;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+
+      li {
+        border-bottom: 1px solid $border-gray-normal;
+        padding: 10px 20px;
+
+        a {
+          color: $almost-black;
+        }
+
+        .fa {
+          font-size: $code_font_size;
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+
+}
+
+.animation-container {
+  background: $repo-editor-grey;
+  height: 40px;
+  overflow: hidden;
+  position: relative;
+
+  &.animation-container-small {
+    height: 12px;
+  }
+
+  &::before {
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: blockTextShine;
+    animation-timing-function: linear;
+    background-image: $repo-editor-linear-gradient;
+    background-repeat: no-repeat;
+    background-size: 800px 45px;
+    content: ' ';
+    display: block;
+    height: 100%;
+    position: relative;
+  }
+
+  div {
+    background: $white-light;
+    height: 6px;
+    left: 0;
+    position: absolute;
+    right: 0;
+  }
+
+  .line-of-code-1 {
+    left: 0;
+    top: 8px;
+  }
+
+  .line-of-code-2 {
+    left: 150px;
+    top: 0;
+    height: 10px;
+  }
+
+  .line-of-code-3 {
+    left: 0;
+    top: 23px;
+  }
+
+  .line-of-code-4 {
+    left: 0;
+    top: 38px;
+  }
+
+  .line-of-code-5 {
+    left: 200px;
+    top: 28px;
+    height: 10px;
+  }
+
+  .line-of-code-6 {
+    top: 14px;
+    left: 230px;
+    height: 10px;
+  }
+}
+
+.render-error {
+  min-height: calc(100vh - 63px);
+
+  p {
+    width: 100%;
+  }
+}
+
+@keyframes blockTextShine {
+  0% {
+    transform: translateX(-468px);
+  }
+
+  100% {
+    transform: translateX(468px);
+  }
+}
+
+@keyframes swipeRightAppear {
+  0% {
+    transform: scaleX(0.00);
+  }
+
+  100% {
+    transform: scaleX(1.00);
+  }
+}
+
+@keyframes swipeRightDissapear {
+  0% {
+    transform: scaleX(1.00);
+  }
+
+  100% {
+    transform: scaleX(0.00);
+  }
+}

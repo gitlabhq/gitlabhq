@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Notes::QuickActionsService, services: true do
+describe Notes::QuickActionsService do
   shared_context 'note on noteable' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
     let(:assignee) { create(:user) }
 
@@ -225,7 +225,7 @@ describe Notes::QuickActionsService, services: true do
 
   context 'CE restriction for issue assignees' do
     describe '/assign' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
       let(:assignee) { create(:user) }
       let(:master) { create(:user) }

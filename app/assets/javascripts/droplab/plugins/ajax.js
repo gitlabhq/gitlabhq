@@ -11,6 +11,16 @@ const Ajax = {
 
     if (!self.destroyed) self.hook.list[config.method].call(self.hook.list, data);
   },
+  preprocessing: function preprocessing(config, data) {
+    let results = data;
+
+    if (config.preprocessing && !data.preprocessed) {
+      results = config.preprocessing(data);
+      AjaxCache.override(config.endpoint, results);
+    }
+
+    return results;
+  },
   init: function init(hook) {
     var self = this;
     self.destroyed = false;
@@ -31,7 +41,8 @@ const Ajax = {
       dynamicList.outerHTML = loadingTemplate.outerHTML;
     }
 
-    AjaxCache.retrieve(config.endpoint)
+    return AjaxCache.retrieve(config.endpoint)
+      .then(self.preprocessing.bind(null, config))
       .then((data) => self._loadData(data, config, self))
       .catch(config.onError);
   },

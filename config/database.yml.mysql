@@ -42,3 +42,4 @@ test: &test
   password:
   # host: localhost
   # socket: /tmp/mysql.sock
+  prepared_statements: false

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Group', feature: true do
+feature 'Group' do
   before do
     sign_in(create(:admin))
   end

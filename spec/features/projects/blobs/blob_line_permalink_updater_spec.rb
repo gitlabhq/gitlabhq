@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Blob button line permalinks (BlobLinePermalinkUpdater)', feature: true, js: true do
+feature 'Blob button line permalinks (BlobLinePermalinkUpdater)', js: true do
   include TreeHelper
 
   let(:project) { create(:project, :public, :repository) }

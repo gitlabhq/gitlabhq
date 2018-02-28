@@ -1,0 +1,29 @@
+# redis://[:password@]host[:port][/db-number][?option=value]
+# more details: http://www.iana.org/assignments/uri-schemes/prov/redis
+development:
+  url: redis://:mynewpassword@localhost:6382/12
+  sentinels:
+    -
+      host: localhost
+      port: 26382 # point to sentinel, not to redis port
+    -
+      host: slave2
+      port: 26382 # point to sentinel, not to redis port
+test:
+  url: redis://:mynewpassword@localhost:6382/12
+  sentinels:
+    -
+      host: localhost
+      port: 26382 # point to sentinel, not to redis port
+    -
+      host: slave2
+      port: 26382 # point to sentinel, not to redis port
+production:
+  url: redis://:mynewpassword@localhost:6382/12
+  sentinels:
+    -
+      host: slave1
+      port: 26382 # point to sentinel, not to redis port
+    -
+      host: slave2
+      port: 26382 # point to sentinel, not to redis port

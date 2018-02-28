@@ -23,11 +23,6 @@ class BoardService {
         url: bulkUpdatePath,
       },
     });
-
-    Vue.http.interceptors.push((request, next) => {
-      request.headers['X-CSRF-Token'] = $.rails.csrfToken();
-      next();
-    });
   }
 
   all () {

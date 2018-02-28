@@ -23,18 +23,3 @@
 
   .prepend-top-default
     = f.submit "Create #{type} token", class: "btn btn-create"
-
-:javascript
-  var $dateField = $('.datepicker');
-  var date = $dateField.val();
-
-  new Pikaday({
-    field: $dateField.get(0),
-    theme: 'gitlab-theme animate-picker',
-    format: 'yyyy-mm-dd',
-    minDate: new Date(),
-    container: $dateField.parent().get(0),
-    onSelect: function(dateText) {
-      $dateField.val(dateFormat(new Date(dateText), 'yyyy-mm-dd'));
-    }
-  });

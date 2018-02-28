@@ -19,7 +19,6 @@
     "human_time_estimate": { "type": ["integer", "null"] },
     "human_total_time_spent": { "type": ["integer", "null"] },
     "in_progress_merge_commit_sha": { "type": ["string", "null"] },
-    "locked_at": { "type": ["string", "null"] },
     "merge_error": { "type": ["string", "null"] },
     "merge_commit_sha": { "type": ["string", "null"] },
     "merge_params": { "type": ["object", "null"] },
@@ -75,6 +74,7 @@
       "additionalProperties": false
     },
     "target_branch_commits_path": { "type": "string" },
+    "target_branch_tree_path": { "type": "string" },
     "source_branch_path": { "type": "string" },
     "conflict_resolution_path": { "type": ["string", "null"] },
     "cancel_merge_when_pipeline_succeeds_path": { "type": "string" },
@@ -93,7 +93,8 @@
     "commit_change_content_path": { "type": "string" },
     "remove_wip_path": { "type": "string" },
     "commits_count": { "type": "integer" },
-    "remove_source_branch": { "type": ["boolean", "null"] }
+    "remove_source_branch": { "type": ["boolean", "null"] },
+    "merge_ongoing": { "type": "boolean" }
   },
   "additionalProperties": false
 }

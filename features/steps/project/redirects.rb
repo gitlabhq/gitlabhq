@@ -4,11 +4,11 @@ class Spinach::Features::ProjectRedirects < Spinach::FeatureSteps
   include SharedProject
 
   step 'public project "Community"' do
-    create(:empty_project, :public, name: 'Community')
+    create(:project, :public, name: 'Community')
   end
 
   step 'private project "Enterprise"' do
-    create(:empty_project, :private, name: 'Enterprise')
+    create(:project, :private, name: 'Enterprise')
   end
 
   step 'I visit project "Community" page' do
@@ -47,7 +47,7 @@ class Spinach::Features::ProjectRedirects < Spinach::FeatureSteps
 
   step 'I should be redirected to "Community" page' do
     project = Project.find_by(name: 'Community')
-    expect(current_path).to eq "/#{project.path_with_namespace}"
+    expect(current_path).to eq "/#{project.full_path}"
     expect(status_code).to eq 200
   end
 
@@ -61,7 +61,7 @@ class Spinach::Features::ProjectRedirects < Spinach::FeatureSteps
 
   step 'I should be redirected to "Enterprise" page' do
     project = Project.find_by(name: 'Enterprise')
-    expect(current_path).to eq "/#{project.path_with_namespace}"
+    expect(current_path).to eq "/#{project.full_path}"
     expect(status_code).to eq 200
   end
 end

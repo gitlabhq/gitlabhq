@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Upload, type: :model do
+describe Upload do
   describe 'assocations' do
     it { is_expected.to belong_to(:model) }
   end

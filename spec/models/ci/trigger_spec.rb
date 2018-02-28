@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Ci::Trigger, models: true do
-  let(:project) { create :empty_project }
+describe Ci::Trigger do
+  let(:project) { create :project }
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }

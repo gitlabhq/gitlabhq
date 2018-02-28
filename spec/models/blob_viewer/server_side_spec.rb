@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe BlobViewer::ServerSide, model: true do
+describe BlobViewer::ServerSide do
   include FakeBlobHelpers
 
-  let(:project) { build(:empty_project) }
+  let(:project) { build(:project) }
 
   let(:viewer_class) do
     Class.new(BlobViewer::Base) do
@@ -25,7 +25,7 @@ describe BlobViewer::ServerSide, model: true do
 
   describe '#render_error' do
     context 'when the blob is stored externally' do
-      let(:project) { build(:empty_project, lfs_enabled: true) }
+      let(:project) { build(:project, lfs_enabled: true) }
 
       let(:blob) { fake_blob(path: 'file.pdf', lfs: true) }
 

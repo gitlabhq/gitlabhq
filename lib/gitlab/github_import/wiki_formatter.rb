@@ -7,8 +7,8 @@ module Gitlab
         @project = project
       end
 
-      def path_with_namespace
-        "#{project.path_with_namespace}.wiki"
+      def disk_path
+        "#{project.disk_path}.wiki"
       end
 
       def import_url

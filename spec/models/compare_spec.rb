@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Compare, models: true do
+describe Compare do
   include RepoHelpers
 
   let(:project) { create(:project, :public, :repository) }

@@ -1,7 +1,13 @@
 require 'spec_helper'
 require 'fileutils'
 
-describe Gitlab::Git::Hook, lib: true do
+describe Gitlab::Git::Hook do
+  before do
+    # We need this because in the spec/spec_helper.rb we define it like this:
+    # allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
+    allow_any_instance_of(described_class).to receive(:trigger).and_call_original
+  end
+
   describe "#trigger" do
     let(:project) { create(:project, :repository) }
     let(:repo_path) { project.repository.path }
@@ -42,7 +48,7 @@ describe Gitlab::Git::Hook, lib: true do
 
           it "returns success with no errors" do
             create_hook(hook_name)
-            hook = Gitlab::Git::Hook.new(hook_name, project)
+            hook = described_class.new(hook_name, project)
             blank = Gitlab::Git::BLANK_SHA
             ref = Gitlab::Git::BRANCH_REF_PREFIX + 'new_branch'
 
@@ -60,7 +66,7 @@ describe Gitlab::Git::Hook, lib: true do
         context "when the hook is unsuccessful" do
           it "returns failure with errors" do
             create_failing_hook(hook_name)
-            hook = Gitlab::Git::Hook.new(hook_name, project)
+            hook = described_class.new(hook_name, project)
             blank = Gitlab::Git::BLANK_SHA
             ref = Gitlab::Git::BRANCH_REF_PREFIX + 'new_branch'
 
@@ -74,7 +80,7 @@ describe Gitlab::Git::Hook, lib: true do
 
     context "when the hook doesn't exist" do
       it "returns success with no errors" do
-        hook = Gitlab::Git::Hook.new('unknown_hook', project)
+        hook = described_class.new('unknown_hook', project)
         blank = Gitlab::Git::BLANK_SHA
         ref = Gitlab::Git::BRANCH_REF_PREFIX + 'new_branch'
 

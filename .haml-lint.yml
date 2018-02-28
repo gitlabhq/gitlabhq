@@ -35,8 +35,20 @@ linters:
   HtmlAttributes:
     enabled: true
 
+  IdNames:
+    enabled: false
+
   ImplicitDiv:
     enabled: true
+
+  InlineJavaScript:
+    enabled: true
+
+  InlineStyles:
+    enabled: false
+
+  InstanceVariables:
+    enabled: false
 
   LeadingCommentSpace:
     enabled: false
@@ -53,6 +65,9 @@ linters:
 
   ObjectReferenceAttributes:
     enabled: true
+
+  RepeatedId:
+    enabled: false
 
   RuboCop:
     enabled: false
@@ -101,3 +116,6 @@ linters:
 
   UnnecessaryStringOutput:
     enabled: true
+
+  ViewLength:
+    enabled: false

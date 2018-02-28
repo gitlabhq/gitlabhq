@@ -3,7 +3,7 @@
 - can_create_note = !@diff_notes_disabled && can?(current_user, :create_note, diffs.project)
 - diff_files = diffs.diff_files
 
-.content-block.oneline-block.files-changed
+.content-block.oneline-block.files-changed.diff-files-changed.js-diff-files-changed
   .inline-parallel-buttons
     - if !diffs_expanded? && diff_files.any? { |diff_file| diff_file.collapsed? }
       = link_to 'Expand all', url_for(params.merge(expanded: 1, format: nil)), class: 'btn btn-default'

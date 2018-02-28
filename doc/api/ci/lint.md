@@ -47,3 +47,5 @@ Example responses:
       "error": "content is missing"
     }
     ```
+
+[ce-5953]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5953

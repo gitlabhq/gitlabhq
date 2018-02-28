@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ImportExportCleanUpService, services: true do
+describe ImportExportCleanUpService do
   describe '#execute' do
     let(:service) { described_class.new }
 

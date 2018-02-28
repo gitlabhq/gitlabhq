@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 feature 'Template type dropdown selector', js: true do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
   before do

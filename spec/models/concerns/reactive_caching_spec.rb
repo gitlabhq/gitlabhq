@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ReactiveCaching, caching: true do
+describe ReactiveCaching, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
 
   class CacheTest

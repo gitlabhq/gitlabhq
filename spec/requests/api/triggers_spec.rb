@@ -13,7 +13,7 @@ describe API::Triggers do
   let!(:trigger_request) { create(:ci_trigger_request, trigger: trigger, created_at: '2015-01-01 12:13:14') }
 
   describe 'POST /projects/:project_id/trigger/pipeline' do
-    let!(:project2) { create(:project) }
+    let!(:project2) { create(:project, :repository) }
     let(:options) do
       {
         token: trigger_token
@@ -22,6 +22,7 @@ describe API::Triggers do
 
     before do
       stub_ci_pipeline_to_return_yaml_file
+      trigger.update(owner: user)
     end
 
     context 'Handles errors' do
@@ -35,12 +36,6 @@ describe API::Triggers do
         post api('/projects/0/trigger/pipeline'), options.merge(ref: 'master')
 
         expect(response).to have_http_status(404)
-      end
-
-      it 'returns unauthorized if token is for different project' do
-        post api("/projects/#{project2.id}/trigger/pipeline"), options.merge(ref: 'master')
-
-        expect(response).to have_http_status(401)
       end
     end
 
@@ -61,7 +56,7 @@ describe API::Triggers do
         post api("/projects/#{project.id}/trigger/pipeline"), options.merge(ref: 'other-branch')
 
         expect(response).to have_http_status(400)
-        expect(json_response['message']).to eq('No pipeline created')
+        expect(json_response['message']).to eq('base' => ["Reference not found"])
       end
 
       context 'Validates variables' do
@@ -87,12 +82,18 @@ describe API::Triggers do
           post api("/projects/#{project.id}/trigger/pipeline"), options.merge(variables: variables, ref: 'master')
 
           expect(response).to have_http_status(201)
-          expect(pipeline.builds.reload.first.trigger_request.variables).to eq(variables)
+          expect(pipeline.variables.map { |v| { v.key => v.value } }.last).to eq(variables)
         end
       end
     end
 
     context 'when triggering a pipeline from a trigger token' do
+      it 'does not leak the presence of project when token is for different project' do
+        post api("/projects/#{project2.id}/ref/master/trigger/pipeline?token=#{trigger_token}"), { ref: 'refs/heads/other-branch' }
+
+        expect(response).to have_http_status(404)
+      end
+
       it 'creates builds from the ref given in the URL, not in the body' do
         expect do
           post api("/projects/#{project.id}/ref/master/trigger/pipeline?token=#{trigger_token}"), { ref: 'refs/heads/other-branch' }

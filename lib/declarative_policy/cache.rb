@@ -21,11 +21,14 @@ module DeclarativePolicy
       private
 
       def id_for(obj)
-        if obj.respond_to?(:id) && obj.id
-          obj.id.to_s
-        else
-          "##{obj.object_id}"
-        end
+        id =
+          begin
+            obj.id
+          rescue NoMethodError
+            nil
+          end
+
+        id || "##{obj.object_id}"
       end
     end
   end

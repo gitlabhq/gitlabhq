@@ -99,8 +99,10 @@ document.addEventListener('DOMContentLoaded', () => {
               page: currentPath,
             }, document.title, currentPath);
 
-            this.updateGroups(response.json());
-            this.updatePagination(response.headers);
+            return response.json().then((data) => {
+              this.updateGroups(data);
+              this.updatePagination(response.headers);
+            });
           })
           .catch(this.handleErrorResponse);
       },
@@ -114,18 +116,19 @@ document.addEventListener('DOMContentLoaded', () => {
       },
       leaveGroup(group, collection) {
         this.service.leaveGroup(group.leavePath)
+          .then(resp => resp.json())
           .then((response) => {
             $.scrollTo(0);
 
             this.store.removeGroup(group, collection);
 
             // eslint-disable-next-line no-new
-            new Flash(response.json().notice, 'notice');
+            new Flash(response.notice, 'notice');
           })
-          .catch((response) => {
+          .catch((error) => {
             let message = 'An error occurred. Please try again.';
 
-            if (response.status === 403) {
+            if (error.status === 403) {
               message = 'Failed to leave the group. Please make sure you are not the only owner';
             }
 

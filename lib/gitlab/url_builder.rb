@@ -52,15 +52,13 @@ module Gitlab
         commit_url(id: object.commit_id, anchor: dom_id(object))
 
       elsif object.for_issue?
-        issue = Issue.find(object.noteable_id)
-        issue_url(issue, anchor: dom_id(object))
+        issue_url(object.noteable, anchor: dom_id(object))
 
       elsif object.for_merge_request?
-        merge_request = MergeRequest.find(object.noteable_id)
-        merge_request_url(merge_request, anchor: dom_id(object))
+        merge_request_url(object.noteable, anchor: dom_id(object))
 
       elsif object.for_snippet?
-        snippet = Snippet.find(object.noteable_id)
+        snippet = object.noteable
 
         if snippet.is_a?(PersonalSnippet)
           snippet_url(snippet, anchor: dom_id(object))

@@ -131,6 +131,7 @@ module API
           note = user_project.notes.find(params[:note_id])
           authorize! :admin_note, note
 
+          status 204
           ::Notes::DestroyService.new(user_project, current_user).execute(note)
         end
       end

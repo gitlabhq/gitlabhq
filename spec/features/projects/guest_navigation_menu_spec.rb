@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'Guest navigation menu' do
-  let(:project) { create(:empty_project, :private, public_builds: false) }
+  let(:project) { create(:project, :private, public_builds: false) }
   let(:guest) { create(:user) }
 
   before do

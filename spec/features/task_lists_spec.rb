@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-feature 'Task Lists', feature: true do
+feature 'Task Lists' do
   include Warden::Test::Helpers
 
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user)    { create(:user) }
   let(:user2)   { create(:user) }
 
@@ -62,7 +62,7 @@ feature 'Task Lists', feature: true do
     visit project_issue_path(project, issue)
   end
 
-  describe 'for Issues', feature: true do
+  describe 'for Issues' do
     describe 'multiple tasks', js: true do
       let!(:issue) { create(:issue, description: markdown, author: user, project: project) }
 

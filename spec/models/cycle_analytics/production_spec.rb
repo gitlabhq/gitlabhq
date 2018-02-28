@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'CycleAnalytics#production', feature: true do
+describe 'CycleAnalytics#production' do
   extend CycleAnalyticsHelpers::TestGeneration
 
   let(:project) { create(:project, :repository) }

@@ -1,0 +1,4 @@
+---
+title: Allow to configure automatic retry of a failed CI/CD job
+merge_request: 12909
+author:

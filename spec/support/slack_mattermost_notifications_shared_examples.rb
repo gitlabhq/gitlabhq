@@ -78,7 +78,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
 
       wiki_page_service = WikiPages::CreateService.new(project, user, opts)
       @wiki_page = wiki_page_service.execute
-      @wiki_page_sample_data = wiki_page_service.hook_data(@wiki_page, 'create')
+      @wiki_page_sample_data = Gitlab::DataBuilder::WikiPage.build(@wiki_page, user, 'create')
     end
 
     it "calls Slack/Mattermost API for push events" do

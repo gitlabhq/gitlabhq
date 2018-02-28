@@ -52,6 +52,15 @@ class ApplicationController < ActionController::Base
     head :forbidden, retry_after: Gitlab::Auth::UniqueIpsLimiter.config.unique_ips_limit_time_window
   end
 
+  rescue_from Gitlab::Git::Storage::Inaccessible, GRPC::Unavailable, Gitlab::Git::CommandError do |exception|
+    Raven.capture_exception(exception) if sentry_enabled?
+    log_exception(exception)
+
+    headers['Retry-After'] = exception.retry_after if exception.respond_to?(:retry_after)
+
+    render_503
+  end
+
   def redirect_back_or_default(default: root_path, options: {})
     redirect_to request.referer.present? ? :back : default, options
   end
@@ -69,6 +78,16 @@ class ApplicationController < ActionController::Base
   end
 
   protected
+
+  def append_info_to_payload(payload)
+    super
+    payload[:remote_ip] = request.remote_ip
+
+    if current_user.present?
+      payload[:user_id] = current_user.id
+      payload[:username] = current_user.username
+    end
+  end
 
   # This filter handles both private tokens and personal access tokens
   def authenticate_user_from_private_token!
@@ -142,6 +161,19 @@ class ApplicationController < ActionController::Base
     head :unprocessable_entity
   end
 
+  def render_503
+    respond_to do |format|
+      format.html do
+        render(
+          file: Rails.root.join("public", "503"),
+          layout: false,
+          status: :service_unavailable
+        )
+      end
+      format.any { head :service_unavailable }
+    end
+  end
+
   def no_cache_headers
     response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
     response.headers["Pragma"] = "no-cache"
@@ -170,7 +202,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_password_expiration
-    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now && !current_user.ldap_user?
+    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now && current_user.allow_password_authentication?
       return redirect_to new_profile_password_path
     end
   end

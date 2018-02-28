@@ -175,7 +175,6 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
     fill_in 'JIRA API URL', with: 'http://jira.example/api'
     fill_in 'Username', with: 'gitlab'
     fill_in 'Password', with: 'gitlab'
-    fill_in 'Project Key', with: 'GITLAB'
     click_button 'Save'
   end
 

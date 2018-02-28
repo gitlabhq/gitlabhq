@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'project owner sees a link to create a license file in empty project', feature: true, js: true do
+feature 'project owner sees a link to create a license file in empty project', js: true do
   let(:project_master) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   background do
     project.team << [project_master, :master]
     sign_in(project_master)

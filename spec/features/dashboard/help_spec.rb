@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Help', feature: true do
+RSpec.describe 'Dashboard Help' do
   before do
     sign_in(create(:user))
   end

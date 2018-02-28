@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projects > Members > Owner cannot leave project', feature: true do
+feature 'Projects > Members > Owner cannot leave project' do
   let(:project) { create(:project) }
 
   background do

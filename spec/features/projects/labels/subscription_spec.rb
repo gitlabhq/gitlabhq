@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-feature 'Labels subscription', feature: true do
+feature 'Labels subscription' do
   let(:user)     { create(:user) }
   let(:group)    { create(:group) }
-  let(:project)  { create(:empty_project, :public, namespace: group) }
+  let(:project)  { create(:project, :public, namespace: group) }
   let!(:bug)     { create(:label, project: project, title: 'bug') }
   let!(:feature) { create(:group_label, group: group, title: 'feature') }
 

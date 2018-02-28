@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UpdateUserActivityWorker, :redis do
+describe UpdateUserActivityWorker, :clean_gitlab_redis_shared_state do
   let(:user_active_2_days_ago) { create(:user, current_sign_in_at: 10.months.ago) }
   let(:user_active_yesterday_1) { create(:user) }
   let(:user_active_yesterday_2) { create(:user) }
@@ -25,7 +25,7 @@ describe UpdateUserActivityWorker, :redis do
     end
   end
 
-  it 'deletes the pairs from Redis' do
+  it 'deletes the pairs from SharedState' do
     data.each { |id, time| Gitlab::UserActivities.record(id, time) }
 
     subject.perform(data)

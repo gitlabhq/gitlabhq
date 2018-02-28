@@ -41,7 +41,7 @@ server up and running for your GitLab instance.
 
 Before we begin, let's understand a few concepts first.
 
-### Static sites
+## Static sites
 
 GitLab Pages only supports static websites, meaning,
 your output files must be HTML, CSS, and JavaScript only.
@@ -51,14 +51,14 @@ CSS, and JS, or use a [Static Site Generator (SSG)](https://www.staticgen.com/)
 to simplify your code and build the static site for you,
 which is highly recommendable and much faster than hardcoding.
 
-#### Further Reading
+### Further reading
 
 - Read through this technical overview on [Static versus Dynamic Websites](https://about.gitlab.com/2016/06/03/ssg-overview-gitlab-pages-part-1-dynamic-x-static/)
 - Understand [how modern Static Site Generators work](https://about.gitlab.com/2016/06/10/ssg-overview-gitlab-pages-part-2/) and what you can add to your static site
 - You can use [any SSG with GitLab Pages](https://about.gitlab.com/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/)
 - Fork an [example project](https://gitlab.com/pages) to build your website based upon
 
-### GitLab Pages domain
+## GitLab Pages domain
 
 If you set up a GitLab Pages project on GitLab.com,
 it will automatically be accessible under a
@@ -73,9 +73,9 @@ Pages wildcard domain. This guide is valid for any GitLab instance,
 you just need to replace Pages wildcard domain on GitLab.com
 (`*.gitlab.io`) with your own.
 
-#### Practical examples
+### Practical examples
 
-**Project Websites:**
+#### Project Websites
 
 - You created a project called `blog` under your username `john`,
 therefore your project URL is `https://gitlab.com/john/blog/`.
@@ -87,15 +87,20 @@ URL is `https://gitlab.com/websites/blog/`. Once you enable
 GitLab Pages for this project, the site will live under
 `https://websites.gitlab.io/blog/`.
 
-**User and Group Websites:**
+#### User and Group Websites
 
 - Under your username, `john`, you created a project called
 `john.gitlab.io`. Your project URL will be `https://gitlab.com/john/john.gitlab.io`.
 Once you enable GitLab Pages for your project, your website
 will be published under `https://john.gitlab.io`.
 - Under your group `websites`, you created a project called
-`websites.gitlab.io`. your project's URL will be `https://gitlab.com/websites/websites.gitlab.io`. Once you enable GitLab Pages for your project,
+`websites.gitlab.io`. your project's URL will be `https://gitlab.com/websites/websites.gitlab.io`.
+Once you enable GitLab Pages for your project,
 your website will be published under `https://websites.gitlab.io`.
+
+>**Note:**
+GitLab Pages [does **not** support subgroups](../../group/subgroups/index.md#limitations).
+You can only create the highest level group website.
 
 **General example:**
 

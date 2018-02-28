@@ -48,7 +48,7 @@ describe CiStatusHelper do
   describe "#pipeline_status_cache_key" do
     it "builds a cache key for pipeline status" do
       pipeline_status = Gitlab::Cache::Ci::ProjectPipelineStatus.new(
-        build(:project),
+        build_stubbed(:project),
         pipeline_info: {
           sha: "123abc",
           status: "success"

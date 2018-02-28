@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe 'Discussion Comments Issue', :feature, :js do
+describe 'Discussion Comments Issue', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:snippet) { create(:project_snippet, :private, project: project, author: user) }
 
   before do

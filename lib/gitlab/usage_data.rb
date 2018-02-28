@@ -27,8 +27,8 @@ module Gitlab
             ci_pipeline_schedules: ::Ci::PipelineSchedule.count,
             deploy_keys: DeployKey.count,
             deployments: Deployment.count,
-            environments: Environment.count,
-            in_review_folder: Environment.in_review_folder.count,
+            environments: ::Environment.count,
+            in_review_folder: ::Environment.in_review_folder.count,
             groups: Group.count,
             issues: Issue.count,
             keys: Key.count,
@@ -39,14 +39,14 @@ module Gitlab
             notes: Note.count,
             pages_domains: PagesDomain.count,
             projects: Project.count,
-            projects_prometheus_active: PrometheusService.active.count,
+            projects_imported_from_github: Project.where(import_type: 'github').count,
             protected_branches: ProtectedBranch.count,
             releases: Release.count,
             snippets: Snippet.count,
             todos: Todo.count,
             uploads: Upload.count,
             web_hooks: WebHook.count
-          }
+          }.merge(services_usage)
         }
       end
 
@@ -62,6 +62,18 @@ module Gitlab
         }
 
         usage_data
+      end
+
+      def services_usage
+        types = {
+          JiraService: :projects_jira_active,
+          SlackService: :projects_slack_notifications_active,
+          SlackSlashCommandsService: :projects_slack_slash_active,
+          PrometheusService: :projects_prometheus_active
+        }
+
+        results = Service.unscoped.where(type: types.keys, active: true).group(:type).count
+        results.each_with_object({}) { |(key, value), response| response[types[key.to_sym]] = value  }
       end
     end
   end

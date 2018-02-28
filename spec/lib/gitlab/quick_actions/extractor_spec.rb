@@ -9,6 +9,11 @@ describe Gitlab::QuickActions::Extractor do
       command(:assign) { }
       command(:labels) { }
       command(:power) { }
+      command(:noop_command)
+      substitution(:substitution) { 'foo' }
+      substitution :shrug do |comment|
+        "#{comment} SHRUG"
+      end
     end.command_definitions
   end
 
@@ -175,6 +180,38 @@ describe Gitlab::QuickActions::Extractor do
 
       expect(commands).to eq [['power', '@user.name %9.10 ~"bar baz.2"']]
       expect(msg).to eq "hello\nworld"
+    end
+
+    it 'does not extract noop commands' do
+      msg = %(hello\nworld\n/reopen\n/noop_command)
+      msg, commands = extractor.extract_commands(msg)
+
+      expect(commands).to eq [['reopen']]
+      expect(msg).to eq "hello\nworld\n/noop_command"
+    end
+
+    it 'extracts and performs substitution commands' do
+      msg = %(hello\nworld\n/reopen\n/substitution)
+      msg, commands = extractor.extract_commands(msg)
+
+      expect(commands).to eq [['reopen'], ['substitution']]
+      expect(msg).to eq "hello\nworld\nfoo"
+    end
+
+    it 'extracts and performs substitution commands' do
+      msg = %(hello\nworld\n/reopen\n/shrug this is great?)
+      msg, commands = extractor.extract_commands(msg)
+
+      expect(commands).to eq [['reopen'], ['shrug', 'this is great?']]
+      expect(msg).to eq "hello\nworld\nthis is great? SHRUG"
+    end
+
+    it 'extracts and performs substitution commands with comments' do
+      msg = %(hello\nworld\n/reopen\n/substitution wow this is a thing.)
+      msg, commands = extractor.extract_commands(msg)
+
+      expect(commands).to eq [['reopen'], ['substitution', 'wow this is a thing.']]
+      expect(msg).to eq "hello\nworld\nfoo"
     end
 
     it 'extracts multiple commands' do

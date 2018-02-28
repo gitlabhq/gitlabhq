@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::MaskSecret, lib: true do
+describe Ci::MaskSecret do
   subject { described_class }
 
   describe '#mask' do

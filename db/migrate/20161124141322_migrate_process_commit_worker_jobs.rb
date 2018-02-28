@@ -16,6 +16,7 @@ class MigrateProcessCommitWorkerJobs < ActiveRecord::Migration
     end
 
     def repository_path
+      # TODO: review if the change from Legacy storage needs to reflect here as well.
       File.join(repository_storage_path, read_attribute(:path_with_namespace) + '.git')
     end
 

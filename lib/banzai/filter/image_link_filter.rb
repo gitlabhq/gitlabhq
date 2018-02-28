@@ -10,7 +10,7 @@ module Banzai
           link = doc.document.create_element(
             'a',
             class: 'no-attachment-icon',
-            href: img['src'],
+            href: img['data-src'] || img['src'],
             target: '_blank',
             rel: 'noopener noreferrer'
           )

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ChatNames::FindUserService, services: true do
+describe ChatNames::FindUserService do
   describe '#execute' do
     let(:service) { create(:service) }
 

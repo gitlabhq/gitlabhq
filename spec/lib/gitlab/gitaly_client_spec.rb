@@ -2,7 +2,7 @@ require 'spec_helper'
 
 # We stub Gitaly in `spec/support/gitaly.rb` for other tests. We don't want
 # those stubs while testing the GitalyClient itself.
-describe Gitlab::GitalyClient, lib: true, skip_gitaly_mock: true do
+describe Gitlab::GitalyClient, skip_gitaly_mock: true do
   describe '.stub' do
     # Notice that this is referring to gRPC "stubs", not rspec stubs
     before do
@@ -16,9 +16,9 @@ describe Gitlab::GitalyClient, lib: true, skip_gitaly_mock: true do
           'default' => { 'gitaly_address' => address }
         })
 
-        expect(Gitaly::Commit::Stub).to receive(:new).with(address, any_args)
+        expect(Gitaly::CommitService::Stub).to receive(:new).with(address, any_args)
 
-        described_class.stub(:commit, 'default')
+        described_class.stub(:commit_service, 'default')
       end
     end
 
@@ -31,9 +31,9 @@ describe Gitlab::GitalyClient, lib: true, skip_gitaly_mock: true do
           'default' => { 'gitaly_address' => prefixed_address }
         })
 
-        expect(Gitaly::Commit::Stub).to receive(:new).with(address, any_args)
+        expect(Gitaly::CommitService::Stub).to receive(:new).with(address, any_args)
 
-        described_class.stub(:commit, 'default')
+        described_class.stub(:commit_service, 'default')
       end
     end
   end

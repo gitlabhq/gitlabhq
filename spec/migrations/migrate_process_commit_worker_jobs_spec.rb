@@ -20,7 +20,7 @@ describe MigrateProcessCommitWorkerJobs do
           .find_including_path(project.id)
 
         expect(migration_project[:path_with_namespace])
-          .to eq(project.path_with_namespace)
+          .to eq(project.full_path)
       end
     end
 
@@ -54,7 +54,7 @@ describe MigrateProcessCommitWorkerJobs do
     end
   end
 
-  describe '#up', :redis do
+  describe '#up', :clean_gitlab_redis_shared_state do
     let(:migration) { described_class.new }
 
     def job_count
@@ -172,7 +172,7 @@ describe MigrateProcessCommitWorkerJobs do
     end
   end
 
-  describe '#down', :redis do
+  describe '#down', :clean_gitlab_redis_shared_state do
     let(:migration) { described_class.new }
 
     def job_count

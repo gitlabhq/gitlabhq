@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Gitlab::LDAP::User, lib: true do
-  let(:ldap_user) { Gitlab::LDAP::User.new(auth_hash) }
+describe Gitlab::LDAP::User do
+  let(:ldap_user) { described_class.new(auth_hash) }
   let(:gl_user) { ldap_user.gl_user }
   let(:info) do
     {
@@ -13,7 +13,7 @@ describe Gitlab::LDAP::User, lib: true do
   let(:auth_hash) do
     OmniAuth::AuthHash.new(uid: 'my-uid', provider: 'ldapmain', info: info)
   end
-  let(:ldap_user_upper_case) { Gitlab::LDAP::User.new(auth_hash_upper_case) }
+  let(:ldap_user_upper_case) { described_class.new(auth_hash_upper_case) }
   let(:info_upper_case) do
     {
       name: 'John',

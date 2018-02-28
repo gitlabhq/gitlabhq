@@ -1,4 +1,0 @@
----
-title: Rollback project repo move if there is an error in Projects::TransferService
-merge_request: 11877
-author:

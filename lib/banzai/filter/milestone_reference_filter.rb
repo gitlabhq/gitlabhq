@@ -8,8 +8,15 @@ module Banzai
         Milestone
       end
 
+      # Links to project milestones contain the IID, but when we're handling
+      # 'regular' references, we need to use the global ID to disambiguate
+      # between group and project milestones.
       def find_object(project, id)
-        project.milestones.find_by(iid: id)
+        find_milestone_with_finder(project, id: id)
+      end
+
+      def find_object_from_link(project, iid)
+        find_milestone_with_finder(project, iid: iid)
       end
 
       def references_in(text, pattern = Milestone.reference_pattern)
@@ -22,7 +29,7 @@ module Banzai
           milestone = find_milestone($~[:project], $~[:namespace], $~[:milestone_iid], $~[:milestone_name])
 
           if milestone
-            yield match, milestone.iid, $~[:project], $~[:namespace], $~
+            yield match, milestone.id, $~[:project], $~[:namespace], $~
           else
             match
           end
@@ -36,7 +43,8 @@ module Banzai
         return unless project
 
         milestone_params = milestone_params(milestone_id, milestone_name)
-        project.milestones.find_by(milestone_params)
+
+        find_milestone_with_finder(project, milestone_params)
       end
 
       def milestone_params(iid, name)
@@ -47,15 +55,27 @@ module Banzai
         end
       end
 
+      def find_milestone_with_finder(project, params)
+        finder_params = { project_ids: [project.id], order: nil }
+
+        # We don't support IID lookups for group milestones, because IIDs can
+        # clash between group and project milestones.
+        if project.group && !params[:iid]
+          finder_params[:group_ids] = [project.group.id]
+        end
+
+        MilestonesFinder.new(finder_params).execute.find_by(params)
+      end
+
       def url_for_object(milestone, project)
-        h = Gitlab::Routing.url_helpers
-        h.project_milestone_url(project, milestone,
-                                        only_path: context[:only_path])
+        Gitlab::Routing
+          .url_helpers
+          .milestone_url(milestone, only_path: context[:only_path])
       end
 
       def object_link_text(object, matches)
         milestone_link = escape_once(super)
-        reference = object.project.to_reference(project)
+        reference = object.project&.to_reference(project)
 
         if reference.present?
           "#{milestone_link} <i>in #{reference}</i>".html_safe

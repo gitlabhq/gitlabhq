@@ -342,7 +342,7 @@ describe('mrWidgetOptions', () => {
       expect(comps['mr-widget-related-links']).toBeDefined();
       expect(comps['mr-widget-merged']).toBeDefined();
       expect(comps['mr-widget-closed']).toBeDefined();
-      expect(comps['mr-widget-locked']).toBeDefined();
+      expect(comps['mr-widget-merging']).toBeDefined();
       expect(comps['mr-widget-failed-to-merge']).toBeDefined();
       expect(comps['mr-widget-wip']).toBeDefined();
       expect(comps['mr-widget-archived']).toBeDefined();

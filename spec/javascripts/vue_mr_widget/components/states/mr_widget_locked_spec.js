@@ -1,10 +1,10 @@
 import Vue from 'vue';
-import lockedComponent from '~/vue_merge_request_widget/components/states/mr_widget_locked';
+import mergingComponent from '~/vue_merge_request_widget/components/states/mr_widget_merging';
 
-describe('MRWidgetLocked', () => {
+describe('MRWidgetMerging', () => {
   describe('props', () => {
     it('should have props', () => {
-      const { mr } = lockedComponent.props;
+      const { mr } = mergingComponent.props;
 
       expect(mr.type instanceof Object).toBeTruthy();
       expect(mr.required).toBeTruthy();
@@ -13,7 +13,7 @@ describe('MRWidgetLocked', () => {
 
   describe('template', () => {
     it('should have correct elements', () => {
-      const Component = Vue.extend(lockedComponent);
+      const Component = Vue.extend(mergingComponent);
       const mr = {
         targetBranchPath: '/branch-path',
         targetBranch: 'branch',
@@ -24,7 +24,7 @@ describe('MRWidgetLocked', () => {
       }).$el;
 
       expect(el.classList.contains('mr-widget-body')).toBeTruthy();
-      expect(el.innerText).toContain('it is locked');
+      expect(el.innerText).toContain('This merge request is in the process of being merged');
       expect(el.innerText).toContain('changes will be merged into');
       expect(el.querySelector('.label-branch a').getAttribute('href')).toEqual(mr.targetBranchPath);
       expect(el.querySelector('.label-branch a').textContent).toContain(mr.targetBranch);

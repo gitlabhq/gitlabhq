@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Help Pages', feature: true do
+describe 'Help Pages' do
   describe 'Get the main help page' do
     shared_examples_for 'help page' do |prefix: ''|
       it 'prefixes links correctly' do

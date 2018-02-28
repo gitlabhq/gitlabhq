@@ -1,0 +1,26 @@
+region: us-east-1
+  metrics:
+    - aws_namespace: AWS/ELB
+      aws_metric_name: RequestCount
+      aws_dimensions: [AvailabilityZone, LoadBalancerName]
+      aws_dimension_select:
+        LoadBalancerName: [gitlab-ha-lb]
+      aws_statistics: [Sum]
+    - aws_namespace: AWS/ELB
+      aws_metric_name: Latency
+      aws_dimensions: [AvailabilityZone, LoadBalancerName]
+      aws_dimension_select:
+        LoadBalancerName: [gitlab-ha-lb]
+      aws_statistics: [Average]
+    - aws_namespace: AWS/ELB
+      aws_metric_name: HTTPCode_Backend_2XX
+      aws_dimensions: [AvailabilityZone, LoadBalancerName]
+      aws_dimension_select:
+        LoadBalancerName: [gitlab-ha-lb]
+      aws_statistics: [Sum]
+    - aws_namespace: AWS/ELB
+      aws_metric_name: HTTPCode_Backend_5XX
+      aws_dimensions: [AvailabilityZone, LoadBalancerName]
+      aws_dimension_select:
+        LoadBalancerName: [gitlab-ha-lb]
+      aws_statistics: [Sum]

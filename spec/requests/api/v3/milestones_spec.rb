@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe API::V3::Milestones do
   let(:user) { create(:user) }
-  let!(:project) { create(:empty_project, namespace: user.namespace ) }
+  let!(:project) { create(:project, namespace: user.namespace ) }
   let!(:closed_milestone) { create(:closed_milestone, project: project) }
   let!(:milestone) { create(:milestone, project: project) }
 
@@ -194,7 +194,7 @@ describe API::V3::Milestones do
     end
 
     describe 'confidential issues' do
-      let(:public_project) { create(:empty_project, :public) }
+      let(:public_project) { create(:project, :public) }
       let(:milestone) { create(:milestone, project: public_project) }
       let(:issue) { create(:issue, project: public_project) }
       let(:confidential_issue) { create(:issue, confidential: true, project: public_project) }

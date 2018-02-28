@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-describe 'New/edit merge request', feature: true, js: true do
-  let!(:project)   { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-  let(:fork_project) { create(:project, forked_from_project: project) }
-  let!(:user)      { create(:user)}
-  let!(:user2)      { create(:user)}
-  let!(:milestone) { create(:milestone, project: project) }
-  let!(:label)     { create(:label, project: project) }
-  let!(:label2)    { create(:label, project: project) }
+describe 'New/edit merge request', :js do
+  let!(:project)     { create(:project, :public, :repository) }
+  let(:fork_project) { create(:project, :repository, forked_from_project: project) }
+  let!(:user)        { create(:user) }
+  let!(:user2)       { create(:user) }
+  let!(:milestone)   { create(:milestone, project: project) }
+  let!(:label)       { create(:label, project: project) }
+  let!(:label2)      { create(:label, project: project) }
 
   before do
     project.team << [user, :master]
@@ -41,7 +41,7 @@ describe 'New/edit merge request', feature: true, js: true do
           expect(page).to have_content user2.name
         end
 
-        click_link 'Assign to me'
+        find('a', text: 'Assign to me').trigger('click')
         expect(find('input[name="merge_request[assignee_id]"]', visible: false).value).to match(user.id.to_s)
         page.within '.js-assignee-search' do
           expect(page).to have_content user.name

@@ -24,8 +24,8 @@ describe Projects::DeployKeysController do
     end
 
     context 'when json requested' do
-      let(:project2) { create(:empty_project, :internal)}
-      let(:project_private) { create(:empty_project, :private)}
+      let(:project2) { create(:project, :internal)}
+      let(:project_private) { create(:project, :private)}
 
       let(:deploy_key_internal) do
         create(:deploy_key, key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQCdMHEHyhRjbhEZVddFn6lTWdgEy5Q6Bz4nwGB76xWZI5YT/1WJOMEW+sL5zYd31kk7sd3FJ5L9ft8zWMWrr/iWXQikC2cqZK24H1xy+ZUmrRuJD4qGAaIVoyyzBL+avL+lF8J5lg6YSw8gwJY/lX64/vnJHUlWw2n5BF8IFOWhiw== dummy@gitlab.com')

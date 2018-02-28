@@ -100,9 +100,9 @@
 }
 
 .table-mobile-header {
+  @include flex-max-width(40);
   color: $gl-text-color-secondary;
   text-align: left;
-  @include flex-max-width(40);
 
   @media (min-width: $screen-md-min) {
     display: none;

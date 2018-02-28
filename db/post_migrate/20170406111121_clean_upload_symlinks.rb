@@ -6,7 +6,7 @@ class CleanUploadSymlinks < ActiveRecord::Migration
   disable_ddl_transaction!
 
   DOWNTIME = false
-  DIRECTORIES_TO_MOVE = %w(user project note group appeareance)
+  DIRECTORIES_TO_MOVE = %w(user project note group appearance)
 
   def up
     return unless file_storage?

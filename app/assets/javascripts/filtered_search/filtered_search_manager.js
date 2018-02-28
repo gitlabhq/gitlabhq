@@ -20,13 +20,13 @@ class FilteredSearchManager {
       allowedKeys: this.filteredSearchTokenKeys.getKeys(),
     });
     this.searchHistoryDropdownElement = document.querySelector('.js-filtered-search-history-dropdown');
-    const projectPath = this.searchHistoryDropdownElement ?
-      this.searchHistoryDropdownElement.dataset.projectFullPath : 'project';
+    const fullPath = this.searchHistoryDropdownElement ?
+      this.searchHistoryDropdownElement.dataset.fullPath : 'project';
     let recentSearchesPagePrefix = 'issue-recent-searches';
     if (this.page === 'merge_requests') {
       recentSearchesPagePrefix = 'merge-request-recent-searches';
     }
-    const recentSearchesKey = `${projectPath}-${recentSearchesPagePrefix}`;
+    const recentSearchesKey = `${fullPath}-${recentSearchesPagePrefix}`;
     this.recentSearchesService = new RecentSearchesService(recentSearchesKey);
   }
 
@@ -367,7 +367,7 @@ class FilteredSearchManager {
       const fragments = searchToken.split(':');
       if (fragments.length > 1) {
         const inputValues = fragments[0].split(' ');
-        const tokenKey = inputValues.last();
+        const tokenKey = _.last(inputValues);
 
         if (inputValues.length > 1) {
           inputValues.pop();

@@ -5,6 +5,10 @@ module Projects
     end
 
     def execute
+      if @params[:template_name]&.present?
+        return ::Projects::CreateFromTemplateService.new(current_user, params).execute
+      end
+
       forked_from_project_id = params.delete(:forked_from_project_id)
       import_data = params.delete(:import_data)
       @skip_wiki = params.delete(:skip_wiki)

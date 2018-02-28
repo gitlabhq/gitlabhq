@@ -1,6 +1,7 @@
 /* eslint-disable comma-dangle, quotes, consistent-return, func-names, array-callback-return, space-before-function-paren, prefer-arrow-callback, max-len, no-unused-expressions, no-sequences, no-underscore-dangle, no-unused-vars, no-param-reassign */
 /* global IssuableIndex */
 /* global Flash */
+import _ from 'underscore';
 
 export default {
   init({ container, form, issues, prefixId } = {}) {

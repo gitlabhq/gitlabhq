@@ -37,7 +37,7 @@ module Gitlab
         rate_limit!(ip, success: result.success?, login: login)
         Gitlab::Auth::UniqueIpsLimiter.limit_user!(result.actor)
 
-        return result if result.success? || current_application_settings.signin_enabled? || Gitlab::LDAP::Config.enabled?
+        return result if result.success? || current_application_settings.password_authentication_enabled? || Gitlab::LDAP::Config.enabled?
 
         # If sign-in is disabled and LDAP is not configured, recommend a
         # personal access token on failed auth attempts
@@ -47,6 +47,10 @@ module Gitlab
       def find_with_user_password(login, password)
         # Avoid resource intensive login checks if password is not provided
         return unless password.present?
+
+        # Nothing to do here if internal auth is disabled and LDAP is
+        # not configured
+        return unless current_application_settings.password_authentication_enabled? || Gitlab::LDAP::Config.enabled?
 
         Gitlab::Auth::UniqueIpsLimiter.limit_user! do
           user = User.by_login(login)
@@ -214,7 +218,8 @@ module Gitlab
       def full_authentication_abilities
         read_authentication_abilities + [
           :push_code,
-          :create_container_image
+          :create_container_image,
+          :admin_container_image
         ]
       end
       alias_method :api_scope_authentication_abilities, :full_authentication_abilities

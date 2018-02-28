@@ -5,12 +5,12 @@ module MergeRequests
 
       if merge_request.reopen
         event_service.reopen_mr(merge_request, current_user)
-        create_note(merge_request)
+        create_note(merge_request, 'reopened')
         notification_service.reopen_mr(merge_request, current_user)
         execute_hooks(merge_request, 'reopen')
         merge_request.reload_diff(current_user)
         merge_request.mark_as_unchecked
-        invalidate_cache_counts(merge_request.assignees, merge_request)
+        invalidate_cache_counts(merge_request, users: merge_request.assignees)
       end
 
       merge_request

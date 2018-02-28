@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'Merge requests > User posts notes', :js do
   include NoteInteractionHelpers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:merge_request) do
     create(:merge_request, source_project: project, target_project: project)
   end

@@ -163,8 +163,18 @@
       td.blame-commit {
         padding: 5px 10px;
         min-width: 400px;
+        max-width: 400px;
         background: $gray-light;
         border-left: 3px solid;
+
+        .commit-row-title {
+          display: flex;
+        }
+
+        .item-title {
+          flex: 1;
+          margin-right: 0.5em;
+        }
       }
 
       @for $i from 0 through 5 {

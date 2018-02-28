@@ -1,17 +1,21 @@
 # GitLab JIRA integration
 
-GitLab can be configured to interact with JIRA. Configuration happens via
-user name and password. Connecting to a JIRA server via CAS is not possible.
+GitLab can be configured to interact with [JIRA], a project management platform.
 
-Each project can be configured to connect to a different JIRA instance, see the
-[configuration](#configuration) section. If you have one JIRA instance you can
-pre-fill the settings page with a default template. To configure the template
-see the [Services Templates][services-templates] document.
+Once your GitLab project is connected to JIRA, you can reference and close the
+issues in JIRA directly from GitLab.
 
-Once the project is connected to JIRA, you can reference and close the issues
-in JIRA directly from GitLab.
+For a use case, check out this article of [How and why to integrate GitLab with
+JIRA](https://www.programmableweb.com/news/how-and-why-to-integrate-gitlab-jira/how-to/2017/04/25).
 
 ## Configuration
+
+Each GitLab project can be configured to connect to a different JIRA instance.
+If you have one JIRA instance you can pre-fill the settings page with a default
+template, see the [Services Templates][services-templates] docs.
+
+Configuration happens via user name and password. Connecting to a JIRA server
+via CAS is not possible.
 
 In order to enable the JIRA service in GitLab, you need to first configure the
 project in JIRA and then enter the correct values in GitLab.
@@ -98,11 +102,11 @@ in the table below.
 | Field | Description |
 | ----- | ----------- |
 | `Web URL` | The base URL to the JIRA instance web interface which is being linked to this GitLab project. E.g., `https://jira.example.com`. |
-| `JIRA API URL` | The base URL to the JIRA instance API. E.g., `https://jira-api.example.com`. This is optional. If not entered, the Web URL value be used. |
+| `JIRA API URL` | The base URL to the JIRA instance API. Web URL value will be used if not set. E.g., `https://jira-api.example.com`. |
 | `Project key` | Put a JIRA project key (in uppercase), e.g. `MARS` in this field. This is only for testing the configuration settings. JIRA integration in GitLab works with _all_ JIRA projects in your JIRA instance. This field will be removed in a future release. |
 | `Username` | The user name created in [configuring JIRA step](#configuring-jira). |
 | `Password` |The password of the user created in [configuring JIRA step](#configuring-jira). |
-| `JIRA issue transition` | This is the ID of a transition that moves issues to a closed state. You can find this number under JIRA workflow administration ([see screenshot](img/jira_workflow_screenshot.png)). **Closing JIRA issues via commits or Merge Requests won't work if you don't set the ID correctly.** |
+| `Transition ID` | This is the ID of a transition that moves issues to a closed state. You can find this number under JIRA workflow administration ([see screenshot](img/jira_workflow_screenshot.png)). **Closing JIRA issues via commits or Merge Requests won't work if you don't set the ID correctly.** |
 
 After saving the configuration, your GitLab project will be able to interact
 with all JIRA projects in your JIRA instance.
@@ -213,3 +217,4 @@ your project needs to close a ticket.
 
 [services-templates]: services_templates.md
 [jira-repo-old-docs]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-13-stable/doc/project_services/jira.md
+[jira]: https://www.atlassian.com/software/jira

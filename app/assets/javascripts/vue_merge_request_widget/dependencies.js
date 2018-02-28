@@ -1,7 +1,7 @@
 /**
  * This file is the centerpiece of an attempt to reduce potential conflicts
  * between the CE and EE versions of the MR widget. EE additions to the MR widget should
- * be contained in the ./vue_merge_request_widget/ee directory, and should **extend**
+ * be contained in the ee/vue_merge_request_widget directory, and should **extend**
  * rather than mutate CE MR Widget code.
  *
  * This file should be the only source of conflicts between EE and CE. EE-only components should
@@ -19,7 +19,7 @@ export { default as WidgetRelatedLinks } from './components/mr_widget_related_li
 export { default as MergedState } from './components/states/mr_widget_merged';
 export { default as FailedToMerge } from './components/states/mr_widget_failed_to_merge';
 export { default as ClosedState } from './components/states/mr_widget_closed';
-export { default as LockedState } from './components/states/mr_widget_locked';
+export { default as MergingState } from './components/states/mr_widget_merging';
 export { default as WipState } from './components/states/mr_widget_wip';
 export { default as ArchivedState } from './components/states/mr_widget_archived';
 export { default as ConflictsState } from './components/states/mr_widget_conflicts';

@@ -1,17 +1,15 @@
 export default {
   methods: {
     saveData(resp) {
-      const response = {
-        headers: resp.headers,
-        body: resp.json(),
-      };
+      const headers = resp.headers;
+      return resp.json().then((response) => {
+        this.isLoading = false;
 
-      this.isLoading = false;
-
-      this.store.storeAvailableCount(response.body.available_count);
-      this.store.storeStoppedCount(response.body.stopped_count);
-      this.store.storeEnvironments(response.body.environments);
-      this.store.setPagination(response.headers);
+        this.store.storeAvailableCount(response.available_count);
+        this.store.storeStoppedCount(response.stopped_count);
+        this.store.storeEnvironments(response.environments);
+        this.store.setPagination(headers);
+      });
     },
   },
 };

@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-describe 'Visual tokens', js: true, feature: true do
+describe 'Visual tokens', js: true do
   include FilteredSearchHelpers
   include WaitForRequests
 
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
   let!(:user) { create(:user, name: 'administrator', username: 'root') }
   let!(:user_rock) { create(:user, name: 'The Rock', username: 'rock') }
   let!(:milestone_nine) { create(:milestone, title: '9.0', project: project) }

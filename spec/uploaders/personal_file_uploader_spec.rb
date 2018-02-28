@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe PersonalFileUploader do
-  let(:uploader) { described_class.new(build_stubbed(:empty_project)) }
+  let(:uploader) { described_class.new(build_stubbed(:project)) }
   let(:snippet) { create(:personal_snippet) }
 
   describe '.absolute_path' do
@@ -10,7 +10,7 @@ describe PersonalFileUploader do
 
       dynamic_segment = "personal_snippet/#{snippet.id}"
 
-      expect(described_class.absolute_path(upload)).to end_with("#{dynamic_segment}/secret/foo.jpg")
+      expect(described_class.absolute_path(upload)).to end_with("/system/#{dynamic_segment}/secret/foo.jpg")
     end
   end
 
@@ -19,7 +19,7 @@ describe PersonalFileUploader do
       uploader = described_class.new(snippet, 'secret')
 
       allow(uploader).to receive(:file).and_return(double(extension: 'txt', filename: 'file_name'))
-      expected_url = "/uploads/personal_snippet/#{snippet.id}/secret/file_name"
+      expected_url = "/uploads/system/personal_snippet/#{snippet.id}/secret/file_name"
 
       expect(uploader.to_h).to eq(
         alt: 'file_name',

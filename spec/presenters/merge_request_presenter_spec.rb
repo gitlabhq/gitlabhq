@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe MergeRequestPresenter do
   let(:resource) { create :merge_request, source_project: project }
-  let(:project) { create :empty_project }
+  let(:project) { create :project }
   let(:user) { create(:user) }
 
   describe '#ci_status' do
@@ -71,7 +71,7 @@ describe MergeRequestPresenter do
   end
 
   describe '#conflict_resolution_path' do
-    let(:project) { create :empty_project }
+    let(:project) { create :project }
     let(:user) { create :user }
     let(:presenter) { described_class.new(resource, current_user: user) }
     let(:path) { presenter.conflict_resolution_path }
@@ -105,7 +105,7 @@ describe MergeRequestPresenter do
   end
 
   context 'issues links' do
-    let(:project) { create(:project, :private, creator: user, namespace: user.namespace) }
+    let(:project) { create(:project, :private, :repository, creator: user, namespace: user.namespace) }
     let(:issue_a) { create(:issue, project: project) }
     let(:issue_b) { create(:issue, project: project) }
 
@@ -332,7 +332,31 @@ describe MergeRequestPresenter do
       end
     end
 
-    context 'when target branch does not exists' do
+    context 'when target branch does not exist' do
+      it 'returns nil' do
+        allow(resource).to receive(:target_branch_exists?) { false }
+
+        is_expected.to be_nil
+      end
+    end
+  end
+
+  describe '#target_branch_tree_path' do
+    subject do
+      described_class.new(resource, current_user: user)
+        .target_branch_tree_path
+    end
+
+    context 'when target branch exists' do
+      it 'returns path' do
+        allow(resource).to receive(:target_branch_exists?) { true }
+
+        is_expected
+          .to eq("/#{resource.target_project.full_path}/tree/#{resource.target_branch}")
+      end
+    end
+
+    context 'when target branch does not exist' do
       it 'returns nil' do
         allow(resource).to receive(:target_branch_exists?) { false }
 
@@ -355,12 +379,25 @@ describe MergeRequestPresenter do
       end
     end
 
-    context 'when source branch does not exists' do
+    context 'when source branch does not exist' do
       it 'returns nil' do
         allow(resource).to receive(:source_branch_exists?) { false }
 
         is_expected.to be_nil
       end
+    end
+  end
+
+  describe '#source_branch_with_namespace_link' do
+    subject do
+      described_class.new(resource, current_user: user).source_branch_with_namespace_link
+    end
+
+    it 'returns link' do
+      allow(resource).to receive(:source_branch_exists?) { true }
+
+      is_expected
+        .to eq("<a href=\"/#{resource.source_project.full_path}/tree/#{resource.source_branch}\">#{resource.source_branch}</a>")
     end
   end
 end

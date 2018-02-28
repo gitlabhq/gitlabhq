@@ -7,7 +7,7 @@ describe Gitlab::PerformanceBar do
       described_class.enabled?(user)
     end
 
-    it 'caches the allowed user IDs in cache', :caching do
+    it 'caches the allowed user IDs in cache', :use_clean_rails_memory_store_caching do
       expect do
         expect(described_class.enabled?(user)).to be_truthy
       end.not_to exceed_query_limit(0)

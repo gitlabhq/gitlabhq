@@ -9,13 +9,13 @@ describe "Runners" do
 
   describe "specific runners" do
     before do
-      @project = FactoryGirl.create :empty_project, shared_runners_enabled: false
+      @project = FactoryGirl.create :project, shared_runners_enabled: false
       @project.team << [user, :master]
 
-      @project2 = FactoryGirl.create :empty_project
+      @project2 = FactoryGirl.create :project
       @project2.team << [user, :master]
 
-      @project3 = FactoryGirl.create :empty_project
+      @project3 = FactoryGirl.create :project
       @project3.team << [user, :developer]
 
       @shared_runner = FactoryGirl.create :ci_runner, :shared
@@ -70,7 +70,7 @@ describe "Runners" do
 
   describe "shared runners" do
     before do
-      @project = FactoryGirl.create :empty_project, shared_runners_enabled: false
+      @project = FactoryGirl.create :project, shared_runners_enabled: false
       @project.team << [user, :master]
       visit runners_path(@project)
     end
@@ -87,7 +87,7 @@ describe "Runners" do
 
     before do
       stub_application_setting(shared_runners_text: shared_runners_text)
-      project = FactoryGirl.create :empty_project, shared_runners_enabled: false
+      project = FactoryGirl.create :project, shared_runners_enabled: false
       project.team << [user, :master]
       visit runners_path(project)
     end
@@ -99,7 +99,7 @@ describe "Runners" do
 
   describe "show page" do
     before do
-      @project = FactoryGirl.create :empty_project
+      @project = FactoryGirl.create :project
       @project.team << [user, :master]
       @specific_runner = FactoryGirl.create :ci_runner
       @project.runners << @specific_runner
@@ -113,7 +113,7 @@ describe "Runners" do
   end
 
   feature 'configuring runners ability to picking untagged jobs' do
-    given(:project) { create(:empty_project) }
+    given(:project) { create(:project) }
     given(:runner) { create(:ci_runner) }
 
     background do

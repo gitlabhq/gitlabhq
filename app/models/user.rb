@@ -47,6 +47,11 @@ class User < ActiveRecord::Base
   devise :lockable, :recoverable, :rememberable, :trackable,
     :validatable, :omniauthable, :confirmable, :registerable
 
+  # devise overrides #inspect, so we manually use the Referable one
+  def inspect
+    referable_inspect
+  end
+
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
   def update_tracked_fields!(request)
@@ -76,6 +81,7 @@ class User < ActiveRecord::Base
     where(type.not_eq('DeployKey').or(type.eq(nil)))
   end, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :deploy_keys, -> { where(type: 'DeployKey') }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :gpg_keys
 
   has_many :emails, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :personal_access_tokens, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -157,6 +163,7 @@ class User < ActiveRecord::Base
   before_save :ensure_authentication_token, :ensure_incoming_email_token
   before_save :ensure_user_rights_and_limits, if: :external_changed?
   after_save :ensure_namespace_correct
+  after_commit :update_invalid_gpg_signatures, on: :update, if: -> { previous_changes.key?('email') }
   after_initialize :set_projects_limit
   after_destroy :post_destroy_hook
 
@@ -314,7 +321,7 @@ class User < ActiveRecord::Base
         table[:name].matches(pattern)
           .or(table[:email].matches(pattern))
           .or(table[:username].matches(pattern))
-      ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, id: :desc)
+      ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, :name)
     end
 
     # searches user by given pattern
@@ -385,9 +392,11 @@ class User < ActiveRecord::Base
     # Return (create if necessary) the ghost user. The ghost user
     # owns records previously belonging to deleted users.
     def ghost
-      unique_internal(where(ghost: true), 'ghost', 'ghost%s@example.com') do |u|
+      email = 'ghost%s@example.com'
+      unique_internal(where(ghost: true), 'ghost', email) do |u|
         u.bio = 'This is a "Ghost User", created to hold all issues authored by users that have since been deleted. This user cannot be removed.'
         u.name = 'Ghost User'
+        u.notification_email = email
       end
     end
   end
@@ -510,6 +519,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def update_invalid_gpg_signatures
+    gpg_keys.each(&:update_invalid_gpg_signatures)
+  end
+
   # Returns the groups a user has access to
   def authorized_groups
     union = Gitlab::SQL::Union
@@ -580,14 +593,18 @@ class User < ActiveRecord::Base
     keys.count == 0 && Gitlab::ProtocolAccess.allowed?('ssh')
   end
 
-  def require_password?
-    password_automatically_set? && !ldap_user? && current_application_settings.signin_enabled?
+  def require_password_creation?
+    password_automatically_set? && allow_password_authentication?
   end
 
-  def require_personal_access_token?
-    return false if current_application_settings.signin_enabled? || ldap_user?
+  def require_personal_access_token_creation_for_git_auth?
+    return false if allow_password_authentication? || ldap_user?
 
     PersonalAccessTokensFinder.new(user: self, impersonation: false, state: 'active').execute.none?
+  end
+
+  def allow_password_authentication?
+    !ldap_user? && current_application_settings.password_authentication_enabled?
   end
 
   def can_change_username?
@@ -615,7 +632,11 @@ class User < ActiveRecord::Base
   end
 
   def projects_limit_left
-    projects_limit - personal_projects.count
+    projects_limit - personal_projects_count
+  end
+
+  def personal_projects_count
+    @personal_projects_count ||= personal_projects.count
   end
 
   def projects_limit_percent
@@ -629,16 +650,14 @@ class User < ActiveRecord::Base
     events = events.where(project_id: project_ids) if project_ids
 
     # Use the latest event that has not been pushed or merged recently
-    events.recent.find do |event|
-      project = Project.find_by_id(event.project_id)
-      next unless project
+    events.includes(:project).recent.find do |event|
+      next unless event.project.repository.branch_exists?(event.branch_name)
 
-      if project.repository.branch_exists?(event.branch_name)
-        merge_requests = MergeRequest.where("created_at >= ?", event.created_at)
-          .where(source_project_id: project.id,
-                 source_branch: event.branch_name)
-        merge_requests.empty?
-      end
+      merge_requests = MergeRequest.where("created_at >= ?", event.created_at)
+        .where(source_project_id: event.project.id,
+               source_branch: event.branch_name)
+
+      merge_requests.empty?
     end
   end
 
@@ -699,7 +718,7 @@ class User < ActiveRecord::Base
   end
 
   def sanitize_attrs
-    %w[name username skype linkedin twitter].each do |attr|
+    %w[username skype linkedin twitter].each do |attr|
       value = public_send(attr)
       public_send("#{attr}=", Sanitize.clean(value)) if value.present?
     end

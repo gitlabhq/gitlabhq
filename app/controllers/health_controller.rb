@@ -1,10 +1,13 @@
 class HealthController < ActionController::Base
   protect_from_forgery with: :exception
-  include RequiresHealthToken
+  include RequiresWhitelistedMonitoringClient
 
   CHECKS = [
     Gitlab::HealthChecks::DbCheck,
-    Gitlab::HealthChecks::RedisCheck,
+    Gitlab::HealthChecks::Redis::RedisCheck,
+    Gitlab::HealthChecks::Redis::CacheCheck,
+    Gitlab::HealthChecks::Redis::QueuesCheck,
+    Gitlab::HealthChecks::Redis::SharedStateCheck,
     Gitlab::HealthChecks::FsShardsCheck
   ].freeze
 

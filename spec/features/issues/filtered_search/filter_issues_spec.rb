@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Filter issues', js: true, feature: true do
+describe 'Filter issues', js: true do
   include Devise::Test::IntegrationHelpers
   include FilteredSearchHelpers
 

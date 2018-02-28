@@ -3,7 +3,7 @@ require 'rails_helper'
 describe GroupsController do
   let(:user) { create(:user) }
   let(:group) { create(:group, :public) }
-  let(:project) { create(:empty_project, namespace: group) }
+  let(:project) { create(:project, namespace: group) }
   let!(:group_member) { create(:group_member, group: group, user: user) }
 
   describe 'GET #index' do

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Projects::UnlinkForkService, services: true do
-  subject { Projects::UnlinkForkService.new(fork_project, user) }
+describe Projects::UnlinkForkService do
+  subject { described_class.new(fork_project, user) }
 
   let(:fork_link) { create(:forked_project_link) }
   let(:fork_project) { fork_link.forked_to_project }

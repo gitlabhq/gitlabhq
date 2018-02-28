@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe Member, models: true do
+describe Member do
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
   end
 
   describe "Validation" do
-    subject { Member.new(access_level: Member::GUEST) }
+    subject { described_class.new(access_level: Member::GUEST) }
 
     it { is_expected.to validate_presence_of(:user) }
     it { is_expected.to validate_presence_of(:source) }
@@ -57,7 +57,7 @@ describe Member, models: true do
 
   describe 'Scopes & finders' do
     before do
-      project = create(:empty_project, :public, :access_requestable)
+      project = create(:project, :public, :access_requestable)
       group = create(:group)
       @owner_user = create(:user).tap { |u| group.add_owner(u) }
       @owner = group.members.find_by(user_id: @owner_user.id)
@@ -516,7 +516,7 @@ describe Member, models: true do
 
   describe "destroying a record", truncate: true do
     it "refreshes user's authorized projects" do
-      project = create(:empty_project, :private)
+      project = create(:project, :private)
       user    = create(:user)
       member  = project.team << [user, :reporter]
 

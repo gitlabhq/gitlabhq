@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Gitlab::ImportExport::MergeRequestParser do
   let(:user) { create(:user) }
-  let!(:project) { create(:project, :test_repo, name: 'test-repo-restorer', path: 'test-repo-restorer') }
-  let(:forked_from_project) { create(:project) }
+  let!(:project) { create(:project, :repository, name: 'test-repo-restorer', path: 'test-repo-restorer') }
+  let(:forked_from_project) { create(:project, :repository) }
   let(:fork_link) { create(:forked_project_link, forked_from_project: project) }
 
   let!(:merge_request) do

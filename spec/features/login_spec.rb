@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Login', feature: true do
+feature 'Login' do
   describe 'initial login after setup' do
     it 'allows the initial admin to create a password' do
       # This behavior is dependent on there only being one user
@@ -41,7 +41,7 @@ feature 'Login', feature: true do
       expect(page).to have_content('Your account has been blocked.')
     end
 
-    it 'does not update Devise trackable attributes', :redis do
+    it 'does not update Devise trackable attributes', :clean_gitlab_redis_shared_state do
       user = create(:user, :blocked)
 
       expect { gitlab_sign_in(user) }.not_to change { user.reload.sign_in_count }
@@ -55,7 +55,7 @@ feature 'Login', feature: true do
       expect(page).to have_content('Invalid Login or password.')
     end
 
-    it 'does not update Devise trackable attributes', :redis do
+    it 'does not update Devise trackable attributes', :clean_gitlab_redis_shared_state do
       expect { gitlab_sign_in(User.ghost) }.not_to change { User.ghost.reload.sign_in_count }
     end
   end

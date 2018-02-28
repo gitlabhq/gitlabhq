@@ -21,29 +21,34 @@ module Gitlab
         from = match[:from]
         to = match[:to]
 
-        actions = find_actions(from, to)
+        action = find_action(from, to)
 
-        if actions.none?
-          Gitlab::SlashCommands::Presenters::Deploy.new(nil).no_actions
-        elsif actions.one?
-          action = play!(from, to, actions.first)
-          Gitlab::SlashCommands::Presenters::Deploy.new(action).present(from, to)
+        if action.nil?
+          Gitlab::SlashCommands::Presenters::Deploy
+            .new(action).action_not_found
         else
-          Gitlab::SlashCommands::Presenters::Deploy.new(actions).too_many_actions
+          deployment = action.play(current_user)
+
+          Gitlab::SlashCommands::Presenters::Deploy
+            .new(deployment).present(from, to)
         end
       end
 
       private
 
-      def play!(from, to, action)
-        action.play(current_user)
-      end
-
-      def find_actions(from, to)
+      def find_action(from, to)
         environment = project.environments.find_by(name: from)
-        return [] unless environment
+        return unless environment
 
-        environment.actions_for(to).select(&:starts_environment?)
+        actions = environment.actions_for(to).select do |action|
+          action.starts_environment?
+        end
+
+        if actions.many?
+          actions.find { |action| action.name == to.to_s }
+        else
+          actions.first
+        end
       end
     end
   end

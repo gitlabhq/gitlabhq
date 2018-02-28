@@ -5,7 +5,6 @@ import '~/lib/utils/datetime_utility';
 import '~/lib/utils/url_utility';
 import '~/build';
 import '~/breakpoints';
-import 'vendor/jquery.nicescroll';
 
 describe('Build', () => {
   const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/-/jobs/1`;

@@ -101,7 +101,7 @@ describe JwtController do
 
       context 'when internal auth is disabled' do
         it 'rejects the authorization attempt with personal access token message' do
-          allow_any_instance_of(ApplicationSetting).to receive(:signin_enabled?) { false }
+          allow_any_instance_of(ApplicationSetting).to receive(:password_authentication_enabled?) { false }
           get '/jwt/auth', parameters, headers
 
           expect(response).to have_http_status(401)

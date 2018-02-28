@@ -153,7 +153,6 @@ module Gitlab
 
       clone_repo(repo, target_dir) unless Dir.exist?(target_dir)
       checkout_version(version, target_dir)
-      reset_to_version(version, target_dir)
     end
 
     def clone_repo(repo, target_dir)
@@ -161,12 +160,8 @@ module Gitlab
     end
 
     def checkout_version(version, target_dir)
-      run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} fetch --quiet])
-      run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} checkout --quiet #{version}])
-    end
-
-    def reset_to_version(version, target_dir)
-      run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} reset --hard #{version}])
+      run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} fetch --quiet origin #{version}])
+      run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} checkout -f --quiet FETCH_HEAD --])
     end
   end
 end

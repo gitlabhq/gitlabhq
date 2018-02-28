@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::OAuth::Provider, lib: true do
+describe Gitlab::OAuth::Provider do
   describe '#config_for' do
     context 'for an LDAP provider' do
       context 'when the provider exists' do

@@ -39,22 +39,3 @@
 - else
   .settings-message.text-center
     This user has no active #{type} Tokens.
-
-%hr
-
-%h5 Inactive #{type} Tokens (#{inactive_tokens.length})
-- if inactive_tokens.present?
-  .table-responsive
-    %table.table.inactive-tokens
-      %thead
-        %tr
-          %th Name
-          %th Created
-      %tbody
-        - inactive_tokens.each do |token|
-          %tr
-            %td= token.name
-            %td= token.created_at.to_date.to_s(:medium)
-- else
-  .settings-message.text-center
-    This user has no inactive #{type} Tokens.

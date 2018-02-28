@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe JiraService, models: true do
+describe JiraService do
   include Gitlab::Routing
 
   describe "Associations" do
@@ -15,7 +15,6 @@ describe JiraService, models: true do
       end
 
       it { is_expected.to validate_presence_of(:url) }
-      it { is_expected.to validate_presence_of(:project_key) }
       it_behaves_like 'issue tracker service URL attribute', :url
     end
 
@@ -30,11 +29,10 @@ describe JiraService, models: true do
     context 'validating urls' do
       let(:service) do
         described_class.new(
-          project: create(:empty_project),
+          project: create(:project),
           active: true,
           username: 'username',
           password: 'test',
-          project_key: 'TEST',
           jira_issue_transition_id: 24,
           url: 'http://jira.test.com'
         )
@@ -76,11 +74,11 @@ describe JiraService, models: true do
   describe '#close_issue' do
     let(:custom_base_url) { 'http://custom_url' }
     let(:user)    { create(:user) }
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:merge_request) { create(:merge_request) }
 
     before do
-      @jira_service = JiraService.new
+      @jira_service = described_class.new
       allow(@jira_service).to receive_messages(
         project_id: project.id,
         project: project,
@@ -88,7 +86,6 @@ describe JiraService, models: true do
         url: 'http://jira.example.com',
         username: 'gitlab_jira_username',
         password: 'gitlab_jira_password',
-        project_key: 'GitLabProject',
         jira_issue_transition_id: "custom-id"
       )
 
@@ -138,7 +135,7 @@ describe JiraService, models: true do
         body: hash_including(
           GlobalID: "GitLab",
           object: {
-            url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/commit/#{merge_request.diff_head_sha}",
+            url: "#{Gitlab.config.gitlab.url}/#{project.full_path}/commit/#{merge_request.diff_head_sha}",
             title: "GitLab: Solved by commit #{merge_request.diff_head_sha}.",
             icon: { title: "GitLab", url16x16: "https://gitlab.com/favicon.ico" },
             status: { resolved: true }
@@ -156,13 +153,22 @@ describe JiraService, models: true do
       expect(WebMock).not_to have_requested(:post, @remote_link_url)
     end
 
+    it "does not send comment or remote links to issues with unknown resolution" do
+      allow_any_instance_of(JIRA::Resource::Issue).to receive(:respond_to?).with(:resolution).and_return(false)
+
+      @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
+
+      expect(WebMock).not_to have_requested(:post, @comment_url)
+      expect(WebMock).not_to have_requested(:post, @remote_link_url)
+    end
+
     it "references the GitLab commit/merge request" do
       stub_config_setting(base_url: custom_base_url)
 
       @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
 
       expect(WebMock).to have_requested(:post, @comment_url).with(
-        body: /#{custom_base_url}\/#{project.path_with_namespace}\/commit\/#{merge_request.diff_head_sha}/
+        body: /#{custom_base_url}\/#{project.full_path}\/commit\/#{merge_request.diff_head_sha}/
       ).once
     end
 
@@ -170,14 +176,14 @@ describe JiraService, models: true do
       stub_config_setting(relative_url_root: '/gitlab')
       stub_config_setting(url: Settings.send(:build_gitlab_url))
 
-      allow(JiraService).to receive(:default_url_options) do
+      allow(described_class).to receive(:default_url_options) do
         { script_name: '/gitlab' }
       end
 
       @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
 
       expect(WebMock).to have_requested(:post, @comment_url).with(
-        body: /#{Gitlab.config.gitlab.url}\/#{project.path_with_namespace}\/commit\/#{merge_request.diff_head_sha}/
+        body: /#{Gitlab.config.gitlab.url}\/#{project.full_path}\/commit\/#{merge_request.diff_head_sha}/
       ).once
     end
 
@@ -196,35 +202,51 @@ describe JiraService, models: true do
         project: create(:project),
         url: 'http://jira.example.com',
         username: 'jira_username',
-        password: 'jira_password',
-        project_key: 'GitLabProject'
+        password: 'jira_password'
       )
     end
 
-    def test_settings(api_url)
-      project_url = "http://#{api_url}/rest/api/2/project/GitLabProject"
+    def test_settings(api_url = nil)
+      api_url ||= 'jira.example.com'
+      test_url = "http://#{api_url}/rest/api/2/serverInfo"
 
-      WebMock.stub_request(:get, project_url).with(basic_auth: %w(jira_username jira_password))
+      WebMock.stub_request(:get, test_url).with(basic_auth: %w(jira_username jira_password)).to_return(body: { url: 'http://url' }.to_json )
 
-      jira_service.test_settings
+      jira_service.test(nil)
     end
 
-    it 'tries to get JIRA project with URL when API URL not set' do
-      test_settings('jira.example.com')
+    context 'when the test succeeds' do
+      it 'tries to get JIRA project with URL when API URL not set' do
+        test_settings('jira.example.com')
+      end
+
+      it 'returns correct result' do
+        expect(test_settings).to eq( { success: true, result: { 'url' => 'http://url' } })
+      end
+
+      it 'tries to get JIRA project with API URL if set' do
+        jira_service.update(api_url: 'http://jira.api.com')
+        test_settings('jira.api.com')
+      end
     end
 
-    it 'tries to get JIRA project with API URL if set' do
-      jira_service.update(api_url: 'http://jira.api.com')
-      test_settings('jira.api.com')
+    context 'when the test fails' do
+      it 'returns result with the error' do
+        test_url = 'http://jira.example.com/rest/api/2/serverInfo'
+        WebMock.stub_request(:get, test_url).with(basic_auth: %w(jira_username jira_password))
+          .to_raise(JIRA::HTTPError.new(double(message: 'Some specific failure.')))
+
+        expect(jira_service.test(nil)).to eq( { success: false, result: 'Some specific failure.' })
+      end
     end
   end
 
   describe "Stored password invalidation" do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     context "when a password was previously set" do
       before do
-        @jira_service = JiraService.create!(
+        @jira_service = described_class.create!(
           project: project,
           properties: {
             url: 'http://jira.example.com/web',
@@ -305,7 +327,7 @@ describe JiraService, models: true do
 
     context 'when no password was previously set' do
       before do
-        @jira_service = JiraService.create(
+        @jira_service = described_class.create(
           project: project,
           properties: {
             url: 'http://jira.example.com/rest/api/2',
@@ -325,7 +347,7 @@ describe JiraService, models: true do
   end
 
   describe 'description and title' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     context 'when it is not set' do
       before do
@@ -360,7 +382,7 @@ describe JiraService, models: true do
   end
 
   describe 'project and issue urls' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     context 'when gitlab.yml was initialized' do
       before do

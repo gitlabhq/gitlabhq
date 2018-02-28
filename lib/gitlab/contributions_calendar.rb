@@ -48,7 +48,7 @@ module Gitlab
     end
 
     def starting_month
-      Date.today.month
+      Date.current.month
     end
 
     private
@@ -66,12 +66,18 @@ module Gitlab
         .select(:id)
 
       conditions = t[:created_at].gteq(date_from.beginning_of_day)
-        .and(t[:created_at].lteq(Date.today.end_of_day))
+        .and(t[:created_at].lteq(Date.current.end_of_day))
         .and(t[:author_id].eq(contributor.id))
 
+      date_interval = if Gitlab::Database.postgresql?
+                        "INTERVAL '#{Time.zone.now.utc_offset} seconds'"
+                      else
+                        "INTERVAL #{Time.zone.now.utc_offset} SECOND"
+                      end
+
       Event.reorder(nil)
-        .select(t[:project_id], t[:target_type], t[:action], 'date(created_at) AS date', 'count(id) as total_amount')
-        .group(t[:project_id], t[:target_type], t[:action], 'date(created_at)')
+        .select(t[:project_id], t[:target_type], t[:action], "date(created_at + #{date_interval}) AS date", 'count(id) as total_amount')
+        .group(t[:project_id], t[:target_type], t[:action], "date(created_at + #{date_interval})")
         .where(conditions)
         .having(t[:project_id].in(Arel::Nodes::SqlLiteral.new(authed_projects.to_sql)))
     end

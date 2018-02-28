@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UserAgentDetail, type: :model do
+describe UserAgentDetail do
   describe '.submittable?' do
     it 'is submittable when not already submitted' do
       detail = build(:user_agent_detail)

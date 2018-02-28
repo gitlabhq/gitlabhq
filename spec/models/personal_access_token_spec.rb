@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe PersonalAccessToken, models: true do
+describe PersonalAccessToken do
   describe '.build' do
     let(:personal_access_token) { build(:personal_access_token) }
     let(:invalid_personal_access_token) { build(:personal_access_token, :invalid) }

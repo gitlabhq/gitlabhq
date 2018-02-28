@@ -1,7 +1,7 @@
 require 'spec_helper'
 require_relative '../../config/initializers/secret_token'
 
-describe 'create_tokens', lib: true do
+describe 'create_tokens' do
   include StubENV
 
   let(:secrets) { ActiveSupport::OrderedOptions.new }

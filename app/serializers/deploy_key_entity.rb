@@ -9,7 +9,7 @@ class DeployKeyEntity < Grape::Entity
   expose :created_at
   expose :updated_at
   expose :projects, using: ProjectEntity do |deploy_key|
-    deploy_key.projects.select { |project| options[:user].can?(:read_project, project) }
+    deploy_key.projects.without_deleted.select { |project| options[:user].can?(:read_project, project) }
   end
   expose :can_edit
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Admin::Users", feature: true do
+describe "Admin::Users" do
   let!(:user) do
     create(:omniauth_user, provider: 'twitter', extern_uid: '123456')
   end
