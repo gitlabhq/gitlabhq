@@ -13,9 +13,4 @@ namespace :plugins do
       end
     end
   end
-
-  desc 'Validate existing plugins'
-  task validate_async: :environment do
-    Gitlab::Plugin.execute_all_async(Gitlab::DataBuilder::Push::SAMPLE_DATA)
-  end
 end

@@ -11,7 +11,8 @@ A plugin will run on each event so it's up to you to filter events or projects w
 
 ## Setup
 
-Plugins must be placed directly into `plugins` directory, subdirectories will be ignored. There is an `example` directory inside `plugins` where you can find some basic examples. 
+Plugins must be placed directly into `plugins` directory, subdirectories will be ignored. 
+There is an `example` directory inside `plugins` where you can find some basic examples. 
 
 Follow the steps below to set up a custom hook:
 
@@ -30,9 +31,15 @@ Follow the steps below to set up a custom hook:
 That's it! Assuming the plugin code is properly implemented the hook will fire
 as appropriate. Plugins file list is updated for each event. There is no need to restart GitLab to apply a new plugin.
 
+If a plugin executes with non-zero exit code or GitLab fails to execute it, a
+message will be logged to `plugin.log`.
+
 ## Validation
 
-Writing own plugin can be tricky and its easier if you can check it without altering the system. We provided a rake task you can use with staging environment to test your plugin before using it in production. The rake task will use a sample data and execute each of plugins. By output you should be able to determine if system sees your plugin and if it was executed without errors.
+Writing own plugin can be tricky and its easier if you can check it without altering the system. 
+We provided a rake task you can use with staging environment to test your plugin before using it in production. 
+The rake task will use a sample data and execute each of plugins. By output you should be able to determine if 
+system sees your plugin and if it was executed without errors.
 
 ```bash
 # Omnibus installations
