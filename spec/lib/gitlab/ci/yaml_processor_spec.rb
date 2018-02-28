@@ -213,6 +213,22 @@ module Gitlab
             end
           end
         end
+
+        context 'when variables policy is specified' do
+          let(:config) do
+            YAML.dump(unit: { script: 'minitest', only: { variables: ['$CI_PIPELINE_SOURCE'] } },
+                      feature: { script: 'spinach', only: { variables: ['$UNDEFINED'] } })
+          end
+
+          let(:pipeline) { create(:ci_empty_pipeline) }
+
+          it 'returns stage seeds only when variables expression is truthy' do
+            seeds = subject.stage_seeds(pipeline)
+
+            expect(seeds.size).to eq 1
+            expect(seeds.first.builds.dig(0, :name)).to eq 'unit'
+          end
+        end
       end
 
       describe "#pipeline_stage_builds" do
@@ -1676,6 +1692,14 @@ module Gitlab
           expect do
             Gitlab::Ci::YamlProcessor.new(config)
           end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec dependencies should be an array of strings")
+        end
+
+        it 'returns errors if pipeline variables expression is invalid' do
+          config = YAML.dump({ rspec: { script: 'test', only: { variables: ['== null'] } } })
+
+          expect { Gitlab::Ci::YamlProcessor.new(config) }
+            .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
+                            'jobs:rspec:only variables invalid expression syntax: equals null')
         end
       end
 
