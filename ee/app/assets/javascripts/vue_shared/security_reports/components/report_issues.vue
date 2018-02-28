@@ -144,7 +144,7 @@
             :size="32"
           />
         </div>
-        <div class="report-block-list-issue-description">
+        <div class="report-block-list-issue-description prepend-top-5 append-bottom-5">
           <div class="report-block-list-issue-description-text append-right-5">
             <template v-if="isStatusSuccess && isTypeQuality">{{ fixedLabel }}</template>
             <template v-if="shouldRenderPriority(issue)">{{ issue.priority }}:</template>
@@ -165,7 +165,7 @@
                 type="button"
                 @click="openDastModal(issue, index)"
                 data-toggle="modal"
-                class="js-modal-dast btn-link btn-blank btn-open-modal break-link"
+                class="js-modal-dast btn-link btn-blank text-left break-link"
                 :data-target="modalTargetId"
               >
                 {{ issue.name }}
@@ -232,7 +232,7 @@
                 :size="32"
               />
             </div>
-            <div class="report-block-list-issue-description">
+            <div class="report-block-list-issue-description prepend-top-5 append-bottom-5">
               <div class="report-block-list-issue-description-text append-right-5">
                 {{ instance.method }}
               </div>

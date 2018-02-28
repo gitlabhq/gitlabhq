@@ -161,7 +161,7 @@ describe('Report issues', () => {
     });
 
     it('opens modal with more information and list of instances', (done) => {
-      vm.$el.querySelector('.js-modal-dast ').click();
+      vm.$el.querySelector('.js-modal-dast').click();
 
       Vue.nextTick(() => {
         expect(vm.$el.querySelector('.modal-title').textContent.trim()).toEqual('Low (Medium): Absence of Anti-CSRF Tokens');

@@ -1,6 +1,6 @@
 .pipeline-tab-content {
   .space-children,
-  .space-children > * {
+  .space-children > span {
     display: flex;
   }
 
@@ -53,11 +53,6 @@
   flex-wrap: wrap;
   display: flex;
   align-self: center;
-  margin: 5px 0px;
-
-  .btn-open-modal {
-    text-align: left;
-  }
 }
 
 .report-block {
