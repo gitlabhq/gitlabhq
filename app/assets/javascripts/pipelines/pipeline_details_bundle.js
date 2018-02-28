@@ -9,7 +9,7 @@ import eventHub from './event_hub';
 
 Vue.use(Translate);
 
-document.addEventListener('DOMContentLoaded', () => {
+export default () => {
   const dataset = document.querySelector('.js-pipeline-details-vue').dataset;
 
   const mediator = new PipelinesMediator({ endpoint: dataset.endpoint });
@@ -70,4 +70,4 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     },
   });
-});
+};

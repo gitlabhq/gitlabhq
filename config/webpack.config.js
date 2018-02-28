@@ -48,7 +48,6 @@ function generateEntries() {
     mr_notes:             './mr_notes/index.js',
     notebook_viewer:      './blob/notebook_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
-    pipelines_details:    './pipelines/pipeline_details_bundle.js',
     protected_branches:   './protected_branches',
     protected_tags:       './protected_tags',
     registry_list:        './registry/index.js',
