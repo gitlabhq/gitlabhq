@@ -1,27 +1,23 @@
 class PersonalFileUploader < FileUploader
-  # Re-Override
-  def self.root
-    options.storage_path
+  def self.dynamic_path_segment(model)
+    File.join(CarrierWave.root, model_path(model))
   end
 
-  def self.base_dir(model)
-    File.join(options.base_dir, model_path_segment(model))
-  end
-
-  def self.model_path_segment(model)
-    return 'temp/' unless model
-
-    File.join(model.class.to_s.underscore, model.id.to_s)
-  end
-
-  # Revert-Override
-  def store_dir
-    File.join(base_dir, dynamic_segment)
+  def self.base_dir
+    File.join(root_dir, '-', 'system')
   end
 
   private
 
   def secure_url
-    File.join('/', base_dir, secret, file.filename)
+    File.join(self.class.model_path(model), secret, file.filename)
+  end
+
+  def self.model_path(model)
+    if model
+      File.join("/#{base_dir}", model.class.to_s.underscore, model.id.to_s)
+    else
+      File.join("/#{base_dir}", 'temp')
+    end
   end
 end

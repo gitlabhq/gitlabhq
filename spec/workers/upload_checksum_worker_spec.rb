@@ -2,31 +2,18 @@ require 'rails_helper'
 
 describe UploadChecksumWorker do
   describe '#perform' do
-    subject { described_class.new }
-
-    context 'without a valid record' do
-      it 'rescues ActiveRecord::RecordNotFound' do
-        expect { subject.perform(999_999) }.not_to raise_error
-      end
+    it 'rescues ActiveRecord::RecordNotFound' do
+      expect { described_class.new.perform(999_999) }.not_to raise_error
     end
 
-    context 'with a valid record' do
-      let(:upload) { create(:user, :with_avatar).avatar.upload }
+    it 'calls calculate_checksum_without_delay and save!' do
+      upload = spy
+      expect(Upload).to receive(:find).with(999_999).and_return(upload)
 
-      before do
-        expect(Upload).to receive(:find).and_return(upload)
-        allow(upload).to receive(:foreground_checksumable?).and_return(false)
-      end
+      described_class.new.perform(999_999)
 
-      it 'calls calculate_checksum!' do
-        expect(upload).to receive(:calculate_checksum!)
-        subject.perform(upload.id)
-      end
-
-      it 'calls save!' do
-        expect(upload).to receive(:save!)
-        subject.perform(upload.id)
-      end
+      expect(upload).to have_received(:calculate_checksum)
+      expect(upload).to have_received(:save!)
     end
   end
 end

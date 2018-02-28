@@ -1,7 +1,13 @@
 class JobArtifactUploader < GitlabUploader
-  extend Workhorse::UploadPath
+  storage :file
 
-  storage_options Gitlab.config.artifacts
+  def self.local_store_path
+    Gitlab.config.artifacts.path
+  end
+
+  def self.artifacts_upload_path
+    File.join(self.local_store_path, 'tmp/uploads/')
+  end
 
   def size
     return super if model.size.nil?
@@ -10,12 +16,24 @@ class JobArtifactUploader < GitlabUploader
   end
 
   def store_dir
-    dynamic_segment
+    default_local_path
+  end
+
+  def cache_dir
+    File.join(self.class.local_store_path, 'tmp/cache')
+  end
+
+  def work_dir
+    File.join(self.class.local_store_path, 'tmp/work')
   end
 
   private
 
-  def dynamic_segment
+  def default_local_path
+    File.join(self.class.local_store_path, default_path)
+  end
+
+  def default_path
     creation_date = model.created_at.utc.strftime('%Y_%m_%d')
 
     File.join(disk_hash[0..1], disk_hash[2..3], disk_hash,

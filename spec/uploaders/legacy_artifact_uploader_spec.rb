@@ -3,22 +3,49 @@ require 'rails_helper'
 describe LegacyArtifactUploader do
   let(:job) { create(:ci_build) }
   let(:uploader) { described_class.new(job, :legacy_artifacts_file) }
-  let(:local_path) { described_class.root }
+  let(:local_path) { Gitlab.config.artifacts.path }
 
-  subject { uploader }
+  describe '.local_store_path' do
+    subject { described_class.local_store_path }
 
-  # TODO: move to Workhorse::UploadPath
-  describe '.workhorse_upload_path' do
-    subject { described_class.workhorse_upload_path }
+    it "delegate to artifacts path" do
+      expect(Gitlab.config.artifacts).to receive(:path)
 
-    it { is_expected.to start_with(local_path) }
-    it { is_expected.to end_with('tmp/uploads') }
+      subject
+    end
   end
 
-  it_behaves_like "builds correct paths",
-                  store_dir: %r[\d{4}_\d{1,2}/\d+/\d+\z],
-                  cache_dir: %r[artifacts/tmp/cache],
-                  work_dir: %r[artifacts/tmp/work]
+  describe '.artifacts_upload_path' do
+    subject { described_class.artifacts_upload_path }
+
+    it { is_expected.to start_with(local_path) }
+    it { is_expected.to end_with('tmp/uploads/') }
+  end
+
+  describe '#store_dir' do
+    subject { uploader.store_dir }
+
+    let(:path) { "#{job.created_at.utc.strftime('%Y_%m')}/#{job.project_id}/#{job.id}" }
+
+    context 'when using local storage' do
+      it { is_expected.to start_with(local_path) }
+      it { is_expected.to end_with(path) }
+    end
+  end
+
+  describe '#cache_dir' do
+    subject { uploader.cache_dir }
+
+    it { is_expected.to start_with(local_path) }
+    it { is_expected.to end_with('/tmp/cache') }
+  end
+
+  describe '#work_dir' do
+    subject { uploader.work_dir }
+
+    it { is_expected.to start_with(local_path) }
+    it { is_expected.to end_with('/tmp/work') }
+  end
 
   describe '#filename' do
     # we need to use uploader, as this makes to use mounter
@@ -42,7 +69,7 @@ describe LegacyArtifactUploader do
 
     subject { uploader.file.path }
 
-    it { is_expected.to start_with("#{uploader.root}") }
+    it { is_expected.to start_with(local_path) }
     it { is_expected.to include("/#{job.created_at.utc.strftime('%Y_%m')}/") }
     it { is_expected.to include("/#{job.project_id}/") }
     it { is_expected.to end_with("ci_build_artifacts.zip") }

@@ -17,12 +17,14 @@ module Gitlab
         false
       end
 
-      def uploads_path
-        FileUploader.absolute_base_dir(@project)
-      end
+      private
 
       def uploads_export_path
         File.join(@shared.export_path, 'uploads')
+      end
+
+      def uploads_path
+        FileUploader.dynamic_path_segment(@project)
       end
     end
   end

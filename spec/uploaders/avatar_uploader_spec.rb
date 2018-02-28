@@ -1,16 +1,18 @@
 require 'spec_helper'
 
 describe AvatarUploader do
-  let(:model) { create(:user, :with_avatar) }
-  let(:uploader) { described_class.new(model, :avatar) }
-  let(:upload) { create(:upload, model: model) }
+  let(:uploader) { described_class.new(build_stubbed(:user)) }
 
-  subject { uploader }
+  describe "#store_dir" do
+    it "stores in the system dir" do
+      expect(uploader.store_dir).to start_with("uploads/-/system/user")
+    end
 
-  it_behaves_like 'builds correct paths',
-                  store_dir: %r[uploads/-/system/user/avatar/],
-                  upload_path: %r[uploads/-/system/user/avatar/],
-                  absolute_path: %r[#{CarrierWave.root}/uploads/-/system/user/avatar/]
+    it "uses the old path when using object storage" do
+      expect(described_class).to receive(:file_storage?).and_return(false)
+      expect(uploader.store_dir).to start_with("uploads/user")
+    end
+  end
 
   describe '#move_to_cache' do
     it 'is false' do

@@ -32,7 +32,14 @@ module UploaderHelper
   def extension_match?(extensions)
     return false unless file
 
-    extension = file.try(:extension) || File.extname(file.path).delete('.')
+    extension =
+      if file.respond_to?(:extension)
+        file.extension
+      else
+        # Not all CarrierWave storages respond to :extension
+        File.extname(file.path).delete('.')
+      end
+
     extensions.include?(extension.downcase)
   end
 end

@@ -145,7 +145,8 @@ describe Projects::ArtifactsController do
       context 'when using local file storage' do
         it_behaves_like 'a valid file' do
           let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
-          let(:archive_path) { JobArtifactUploader.root }
+          let(:store) { ObjectStoreUploader::LOCAL_STORE }
+          let(:archive_path) { JobArtifactUploader.local_store_path }
         end
       end
     end

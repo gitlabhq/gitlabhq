@@ -6,7 +6,5 @@ describe Groups::UploadsController do
     { group_id: model }
   end
 
-  it_behaves_like 'handle uploads' do
-    let(:uploader_class) { NamespaceFileUploader }
-  end
+  it_behaves_like 'handle uploads'
 end

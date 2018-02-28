@@ -1,19 +1,15 @@
 class NamespaceFileUploader < FileUploader
-  # Re-Override
-  def self.root
-    options.storage_path
+  def self.base_dir
+    File.join(root_dir, '-', 'system', 'namespace')
   end
 
-  def self.base_dir(model)
-    File.join(options.base_dir, 'namespace', model_path_segment(model))
+  def self.dynamic_path_segment(model)
+    dynamic_path_builder(model.id.to_s)
   end
 
-  def self.model_path_segment(model)
-    File.join(model.id.to_s)
-  end
+  private
 
-  # Re-Override
-  def store_dir
-    File.join(base_dir, dynamic_segment)
+  def secure_url
+    File.join('/uploads', @secret, file.filename)
   end
 end

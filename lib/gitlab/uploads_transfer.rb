@@ -1,7 +1,7 @@
 module Gitlab
   class UploadsTransfer < ProjectTransfer
     def root_dir
-      FileUploader.root
+      File.join(CarrierWave.root, FileUploader.base_dir)
     end
   end
 end
