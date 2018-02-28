@@ -1429,8 +1429,7 @@ describe Notify do
     it_behaves_like "a user cannot unsubscribe through footer link"
 
     it 'has the correct subject and body' do
-      is_expected.to have_subject("#{project.name} | Pull mirroring paused")
-      is_expected.to have_html_escaped_body_text(project.import_url)
+      is_expected.to have_subject("#{project.name} | Repository mirroring paused")
       is_expected.to have_html_escaped_body_text(project.full_path)
     end
   end

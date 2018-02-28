@@ -24,11 +24,15 @@ module EE
     end
 
     def mirror_was_hard_failed(project)
-      return unless project.mirror_hard_failed?
+      recipients = project.members.owners_and_masters
 
-      recepient = project.mirror_user
+      unless recipients.present?
+        recipients = project.group.members.owners_and_masters
+      end
 
-      mailer.mirror_was_hard_failed_email(project.id, recepient.id).deliver_later
+      recipients.each do |recipient|
+        mailer.mirror_was_hard_failed_email(project.id, recipient.user.id).deliver_later
+      end
     end
   end
 end

@@ -21,7 +21,9 @@ module EE
           end
 
           after_transition started: :failed do |project, _|
-            ::NotificationService.new.mirror_was_hard_failed(project) if project.mirror?
+            if project.mirror? && project.mirror_hard_failed?
+              ::NotificationService.new.mirror_was_hard_failed(project)
+            end
           end
 
           after_transition [:scheduled, :started] => [:finished, :failed] do |project, _|
