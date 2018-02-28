@@ -1,33 +1,33 @@
 'use strict';
 
-var crypto = require('crypto');
-var fs = require('fs');
-var path = require('path');
-var glob = require('glob');
-var webpack = require('webpack');
-var StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
-var CopyWebpackPlugin = require('copy-webpack-plugin');
-var CompressionPlugin = require('compression-webpack-plugin');
-var NameAllModulesPlugin = require('name-all-modules-plugin');
-var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
+const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
+const glob = require('glob');
+const webpack = require('webpack');
+const StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
+const NameAllModulesPlugin = require('name-all-modules-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 
-var ROOT_PATH = path.resolve(__dirname, '..');
-var IS_PRODUCTION = process.env.NODE_ENV === 'production';
-var IS_DEV_SERVER = process.argv.join(' ').indexOf('webpack-dev-server') !== -1;
-var DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
-var DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
-var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
-var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
-var NO_COMPRESSION = process.env.NO_COMPRESSION;
+const ROOT_PATH = path.resolve(__dirname, '..');
+const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+const IS_DEV_SERVER = process.argv.join(' ').indexOf('webpack-dev-server') !== -1;
+const DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
+const DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
+const DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
+const WEBPACK_REPORT = process.env.WEBPACK_REPORT;
+const NO_COMPRESSION = process.env.NO_COMPRESSION;
 
-var autoEntriesCount = 0;
-var watchAutoEntries = [];
+let autoEntriesCount = 0;
+let watchAutoEntries = [];
 
 function generateEntries() {
   // generate automatic entry points
-  var autoEntries = {};
-  var pageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'app/assets/javascripts') });
+  const autoEntries = {};
+  const pageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'app/assets/javascripts') });
   watchAutoEntries = [
     path.join(ROOT_PATH, 'app/assets/javascripts/pages/'),
   ];
@@ -74,7 +74,7 @@ function generateEntries() {
   return Object.assign(manualEntries, autoEntries);
 }
 
-var config = {
+const config = {
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
 
   entry: generateEntries,
@@ -166,7 +166,7 @@ var config = {
     new StatsWriterPlugin({
       filename: 'manifest.json',
       transform: function(data, opts) {
-        var stats = opts.compiler.getStats().toJson({
+        const stats = opts.compiler.getStats().toJson({
           chunkModules: false,
           source: false,
           chunks: false,
