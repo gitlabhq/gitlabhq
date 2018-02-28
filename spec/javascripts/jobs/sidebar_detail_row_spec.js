@@ -37,4 +37,21 @@ describe('Sidebar detail row', () => {
       vm.$el.textContent.replace(/\s+/g, ' ').trim(),
     ).toEqual('this is the title: this is the value');
   });
+
+  it('should not render help when helpUrl not provided', () => {
+    expect(vm.$el.querySelector('.help-button')).toBeUndefined();
+  });
+
+  beforeEach(() => {
+    vm = new SidebarDetailRow({
+      propsData: {
+        helpUrl: 'help url',
+      },
+    }).$mount();
+  });
+
+  it('should render help when helpUrl is provided', () => {
+    expect(vm.$el.querySelector('.help-button a').getAttribute('href')).toEqual('help url');
+  });
+
 });
