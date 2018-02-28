@@ -66,7 +66,7 @@ be set on the primary database. In GitLab 9.4, we have made this setting
 default to 1. You may need to increase this value if you have more Geo
 secondary nodes. Be sure to restart PostgreSQL for this to take
 effect. See the [PostgreSQL replication
-setup](database.md#postgresql-replication) guide for more details.
+setup][database-pg-replication] guide for more details.
 
 #### How do I fix the message, "FATAL:  could not start WAL streaming: ERROR:  replication slot "geo_secondary_my_domain_com" does not exist"?
 
@@ -76,8 +76,8 @@ process](database.md) on the secondary.
 
 #### How do I fix the message, "Command exceeded allowed execution time" when setting up replication?
 
-This may happen while [initiating the replication process](database.md#step-4-initiate-the-replication-process) on the Geo secondary, and indicates that your
-initial dataset is too large to be replicated in the default timeout (30 minutes).
+This may happen while [initiating the replication process][database-start-replication] on the Geo secondary, 
+and indicates that your initial dataset is too large to be replicated in the default timeout (30 minutes).
 
 Re-run `gitlab-ctl replicate-geo-database`, but include a larger value for
 `--backup-timeout`:
@@ -91,8 +91,8 @@ the default thirty minutes. Adjust as required for your installation.
 
 #### How do I fix the message, "PANIC: could not write to file 'pg_xlog/xlogtemp.123': No space left on device"
 
-Determine if you have any unused replication slots in the primary database.  This can cause large amounts of log data to build up in `pg_xlog`.
-Removing the unused slots can reduce the amount of space used in the `pg_xlog`.
+Determine if you have any unused replication slots in the primary database.  This can cause large amounts of 
+log data to build up in `pg_xlog`. Removing the unused slots can reduce the amount of space used in the `pg_xlog`.
 
 1. Start a PostgreSQL console session:
 
@@ -100,7 +100,8 @@ Removing the unused slots can reduce the amount of space used in the `pg_xlog`.
     sudo gitlab-psql gitlabhq_production
     ```
 
-    Note that using `gitlab-rails dbconsole` will not work, because managing replication slots requires superuser permissions.
+    > Note that using `gitlab-rails dbconsole` will not work, because managing replication slots requires 
+      superuser permissions.
 
 2. View your replication slots with
 
@@ -111,9 +112,10 @@ Removing the unused slots can reduce the amount of space used in the `pg_xlog`.
 Slots where `active` is `f` are not active.
 
 - When this slot should be active, because you have a secondary configured using that slot,
-log in to that secondary and check the PostgreSQL logs why the replication is not running.
+  log in to that secondary and check the PostgreSQL logs why the replication is not running.
 
-- If you are no longer using the slot (e.g. you no longer have Geo enabled), you can remove it with in the PostgreSQL console session:
+- If you are no longer using the slot (e.g. you no longer have Geo enabled), you can remove it with in the 
+  PostgreSQL console session:
 
     ```sql
     SELECT pg_drop_replication_slot('name_of_extra_slot');
@@ -139,3 +141,6 @@ sudo gitlab-ctl reconfigure
 
 This will increase the timeout to three hours (10800 seconds). Choose a time
 long enough to accomodate a full clone of your largest repositories.
+
+[database-start-replication]: database.md#step-3-initiate-the-replication-process
+[database-pg-replication]: database.md#postgresql-replication
