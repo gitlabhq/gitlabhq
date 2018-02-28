@@ -46,6 +46,8 @@ class Project < ActiveRecord::Base
 
   delegate :base_dir, :disk_path, :ensure_storage_path_exists, to: :storage
 
+  delegate :group_runners_enabled?, to: :settings
+
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
   default_value_for :resolve_outdated_diff_discussions, false
