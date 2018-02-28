@@ -16,6 +16,7 @@ engines:
     enabled: true
   rubocop:
     enabled: true
+    channel: "gitlab-rubocop-0-52"
 ratings:
   paths:
   - Gemfile.lock

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :pages_domain, class: 'PagesDomain' do
     domain 'my.domain.com'
 

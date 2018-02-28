@@ -8,7 +8,7 @@ feature 'Resolving all open discussions in a merge request from an issue', :js d
 
   describe 'as a user with access to the project' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in user
       visit project_merge_request_path(project, merge_request)
     end
@@ -81,7 +81,7 @@ feature 'Resolving all open discussions in a merge request from an issue', :js d
 
   describe 'as a reporter' do
     before do
-      project.team << [user, :reporter]
+      project.add_reporter(user)
       sign_in user
       visit new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)
     end

@@ -1,6 +1,11 @@
 # Signing commits with GPG
 
-> [Introduced][ce-9546] in GitLab 9.5.
+NOTE: **Note:**
+The term GPG is used for all OpenPGP/PGP/GPG related material and
+implementations.
+
+> - [Introduced][ce-9546] in GitLab 9.5.
+> - Subkeys support was added in GitLab 10.1.
 
 GitLab can show whether a commit is verified or not when signed with a GPG key.
 All you need to do is upload the public GPG key in your profile settings.

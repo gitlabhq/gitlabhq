@@ -26,6 +26,7 @@ class Projects::Clusters::UserController < Projects::ApplicationController
     params.require(:cluster).permit(
       :enabled,
       :name,
+      :environment_scope,
       platform_kubernetes_attributes: [
         :namespace,
         :api_url,

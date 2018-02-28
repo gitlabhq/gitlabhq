@@ -3,22 +3,16 @@
 - page_title "Compare"
 
 %div{ class: container_class }
+  %h3.page-title
+    = _("Compare Git revisions")
   .sub-header-block
-    Compare Git revisions.
-    %br
-    Choose a branch/tag (e.g.
-    = succeed ')' do
+    - example_master = capture do
       %code.ref-name master
-    or enter a commit SHA (e.g.
-    = succeed ')' do
+    - example_sha = capture do
       %code.ref-name 4eedf23
-    to see what's changed or to create a merge request.
+    = (_("Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to see what's changed or to create a merge request.") % { master: example_master, sha: example_sha }).html_safe
     %br
-    Changes are shown as if the
-    %b source
-    revision was being merged into the
-    %b target
-    revision.
+    = (_("Changes are shown as if the <b>source</b> revision was being merged into the <b>target</b> revision.")).html_safe
 
   .prepend-top-20
     = render "form"

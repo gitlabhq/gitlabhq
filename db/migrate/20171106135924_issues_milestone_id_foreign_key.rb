@@ -16,6 +16,7 @@ class IssuesMilestoneIdForeignKey < ActiveRecord::Migration
 
     def self.with_orphaned_milestones
       where('NOT EXISTS (SELECT true FROM milestones WHERE milestones.id = issues.milestone_id)')
+        .where('milestone_id IS NOT NULL')
     end
   end
 

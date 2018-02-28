@@ -1,0 +1,5 @@
+---
+title: Implement checking GCP project billing status in cluster creation form.
+merge_request: 15665
+author:
+type: changed

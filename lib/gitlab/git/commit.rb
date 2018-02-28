@@ -15,8 +15,6 @@ module Gitlab
 
       attr_accessor *SERIALIZE_KEYS # rubocop:disable Lint/AmbiguousOperator
 
-      delegate :tree, to: :rugged_commit
-
       def ==(other)
         return false unless other.is_a?(Gitlab::Git::Commit)
 
@@ -225,6 +223,19 @@ module Gitlab
                   false
                 end
               end
+            end
+          end
+        end
+
+        # Only to be used when the object ids will not necessarily have a
+        # relation to each other. The last 10 commits for a branch for example,
+        # should go through .where
+        def batch_by_oid(repo, oids)
+          repo.gitaly_migrate(:list_commits_by_oid) do |is_enabled|
+            if is_enabled
+              repo.gitaly_commit_client.list_commits_by_oid(oids)
+            else
+              oids.map { |oid| find(repo, oid) }.compact
             end
           end
         end
@@ -437,6 +448,11 @@ module Gitlab
           author: gitaly_commit_author_from_rugged(raw_commit.author),
           committer: gitaly_commit_author_from_rugged(raw_commit.committer)
         )
+      end
+
+      # Is this the same as Blob.find_entry_by_path ?
+      def rugged_tree_entry(path)
+        rugged_commit.tree.path(path)
       end
 
       private

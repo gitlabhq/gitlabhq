@@ -1,5 +1,0 @@
----
-title: Fix acceptance of username for Mattermost service update
-merge_request: 15275
-author:
-type: fixed

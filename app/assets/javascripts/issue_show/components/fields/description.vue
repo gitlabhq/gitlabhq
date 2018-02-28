@@ -53,7 +53,7 @@
       <textarea
         id="issue-description"
         class="note-textarea js-gfm-input js-autosize markdown-area"
-        data-supports-quick-actionss="false"
+        data-supports-quick-actions="false"
         aria-label="Description"
         v-model="formState.description"
         ref="textarea"

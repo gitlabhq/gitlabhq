@@ -6,13 +6,15 @@ module QA
     module Scenario
       extend self
 
-      attr_reader :attributes
+      def attributes
+        @attributes ||= {}
+      end
 
       def define(attribute, value)
-        (@attributes ||= {}).store(attribute.to_sym, value)
+        attributes.store(attribute.to_sym, value)
 
         define_singleton_method(attribute) do
-          @attributes[attribute.to_sym].tap do |value|
+          attributes[attribute.to_sym].tap do |value|
             if value.to_s.empty?
               raise ArgumentError, "Empty `#{attribute}` attribute!"
             end

@@ -26,7 +26,7 @@ describe "Dashboard Feed"  do
       let(:note) { create(:note, noteable: issue, author: user, note: 'Bug confirmed', project: project) }
 
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         issue_event(issue, user)
         note_event(note, user)
         visit dashboard_projects_path(:atom, rss_token: user.rss_token)

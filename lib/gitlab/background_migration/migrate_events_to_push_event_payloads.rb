@@ -128,8 +128,14 @@ module Gitlab
       end
 
       def process_event(event)
-        replicate_event(event)
-        create_push_event_payload(event) if event.push_event?
+        ActiveRecord::Base.transaction do
+          replicate_event(event)
+          create_push_event_payload(event) if event.push_event?
+        end
+      rescue ActiveRecord::InvalidForeignKey => e
+        # A foreign key error means the associated event was removed. In this
+        # case we'll just skip migrating the event.
+        Rails.logger.error("Unable to migrate event #{event.id}: #{e}")
       end
 
       def replicate_event(event)
@@ -137,9 +143,6 @@ module Gitlab
           .with_indifferent_access.except(:title, :data)
 
         EventForMigration.create!(new_attributes)
-      rescue ActiveRecord::InvalidForeignKey
-        # A foreign key error means the associated event was removed. In this
-        # case we'll just skip migrating the event.
       end
 
       def create_push_event_payload(event)
@@ -156,9 +159,6 @@ module Gitlab
           ref: event.trimmed_ref_name,
           commit_title: event.commit_title
         )
-      rescue ActiveRecord::InvalidForeignKey
-        # A foreign key error means the associated event was removed. In this
-        # case we'll just skip migrating the event.
       end
 
       def find_events(start_id, end_id)

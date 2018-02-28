@@ -1,0 +1,5 @@
+---
+title: disables shortcut to issue boards when issues are not enabled
+merge_request: 16020
+author: Christiaan Van den Poel
+type: fixed

@@ -1,5 +1,5 @@
-import mutations from '~/repo/stores/mutations';
-import state from '~/repo/stores/state';
+import mutations from '~/ide/stores/mutations';
+import state from '~/ide/stores/state';
 import { file } from '../helpers';
 
 describe('Multi-file store mutations', () => {
@@ -65,11 +65,11 @@ describe('Multi-file store mutations', () => {
     it('toggles editMode', () => {
       mutations.TOGGLE_EDIT_MODE(localState);
 
-      expect(localState.editMode).toBeTruthy();
+      expect(localState.editMode).toBeFalsy();
 
       mutations.TOGGLE_EDIT_MODE(localState);
 
-      expect(localState.editMode).toBeFalsy();
+      expect(localState.editMode).toBeTruthy();
     });
   });
 
@@ -82,14 +82,6 @@ describe('Multi-file store mutations', () => {
       mutations.TOGGLE_DISCARD_POPUP(localState, false);
 
       expect(localState.discardPopupOpen).toBeFalsy();
-    });
-  });
-
-  describe('SET_COMMIT_REF', () => {
-    it('sets currentRef', () => {
-      mutations.SET_COMMIT_REF(localState, '123');
-
-      expect(localState.currentRef).toBe('123');
     });
   });
 
@@ -107,11 +99,27 @@ describe('Multi-file store mutations', () => {
     });
   });
 
-  describe('SET_PREVIOUS_URL', () => {
-    it('sets previousUrl', () => {
-      mutations.SET_PREVIOUS_URL(localState, 'testing');
+  describe('SET_LEFT_PANEL_COLLAPSED', () => {
+    it('sets left panel collapsed', () => {
+      mutations.SET_LEFT_PANEL_COLLAPSED(localState, true);
 
-      expect(localState.previousUrl).toBe('testing');
+      expect(localState.leftPanelCollapsed).toBeTruthy();
+
+      mutations.SET_LEFT_PANEL_COLLAPSED(localState, false);
+
+      expect(localState.leftPanelCollapsed).toBeFalsy();
+    });
+  });
+
+  describe('SET_RIGHT_PANEL_COLLAPSED', () => {
+    it('sets right panel collapsed', () => {
+      mutations.SET_RIGHT_PANEL_COLLAPSED(localState, true);
+
+      expect(localState.rightPanelCollapsed).toBeTruthy();
+
+      mutations.SET_RIGHT_PANEL_COLLAPSED(localState, false);
+
+      expect(localState.rightPanelCollapsed).toBeFalsy();
     });
   });
 });

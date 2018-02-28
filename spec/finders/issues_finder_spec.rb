@@ -22,9 +22,9 @@ describe IssuesFinder do
     let(:issues) { described_class.new(search_user, params.reverse_merge(scope: scope, state: 'opened')).execute }
 
     before(:context) do
-      project1.team << [user, :master]
-      project2.team << [user, :developer]
-      project2.team << [user2, :developer]
+      project1.add_master(user)
+      project2.add_developer(user)
+      project2.add_developer(user2)
 
       issue1
       issue2

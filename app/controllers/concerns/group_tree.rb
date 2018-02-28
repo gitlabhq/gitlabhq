@@ -1,4 +1,5 @@
 module GroupTree
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def render_group_tree(groups)
     @groups = if params[:filter].present?
                 Gitlab::GroupHierarchy.new(groups.search(params[:filter]))
@@ -20,5 +21,6 @@ module GroupTree
         render json: serializer.represent(@groups)
       end
     end
+    # rubocop:enable Gitlab/ModuleWithInstanceVariables
   end
 end

@@ -140,8 +140,8 @@ class Gitlab::Seeder::CycleAnalytics
         issue.update(milestone: @project.milestones.sample)
       else
         label_name = "#{FFaker::Product.brand}-#{FFaker::Product.brand}-#{rand(1000)}"
-        list_label = FactoryGirl.create(:label, title: label_name, project: issue.project)
-        FactoryGirl.create(:list, board: FactoryGirl.create(:board, project: issue.project), label: list_label)
+        list_label = FactoryBot.create(:label, title: label_name, project: issue.project)
+        FactoryBot.create(:list, board: FactoryBot.create(:board, project: issue.project), label: list_label)
         issue.update(labels: [list_label])
       end
 

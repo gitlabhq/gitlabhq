@@ -1,5 +1,0 @@
----
-title: Add performance logging to UpdateMergeRequestsWorker.
-merge_request: 15360
-author:
-type: performance

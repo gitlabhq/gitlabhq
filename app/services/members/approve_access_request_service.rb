@@ -35,8 +35,17 @@ module Members
     def can_update_access_requester?(access_requester, opts = {})
       access_requester && (
         opts[:force] ||
-        can?(current_user, action_member_permission(:update, access_requester), access_requester)
+        can?(current_user, update_member_permission(access_requester), access_requester)
       )
+    end
+
+    def update_member_permission(member)
+      case member
+      when GroupMember
+        :update_group_member
+      when ProjectMember
+        :update_project_member
+      end
     end
   end
 end

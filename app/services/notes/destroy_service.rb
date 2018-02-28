@@ -1,7 +1,9 @@
 module Notes
   class DestroyService < BaseService
     def execute(note)
-      note.destroy
+      TodoService.new.destroy_target(note) do |note|
+        note.destroy
+      end
     end
   end
 end

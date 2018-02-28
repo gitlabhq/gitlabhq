@@ -34,6 +34,10 @@ variables:
   POSTGRES_ENABLED: "true"
   POSTGRES_DB: $CI_ENVIRONMENT_SLUG
 
+  KUBERNETES_VERSION: 1.8.6
+  HELM_VERSION: 2.6.1
+  CODECLIMATE_VERSION: 0.69.0
+
 stages:
   - build
   - test
@@ -41,6 +45,7 @@ stages:
   - staging
   - canary
   - production
+  - performance
   - cleanup
 
 build:
@@ -83,6 +88,44 @@ codequality:
   artifacts:
     paths: [codeclimate.json]
 
+performance:
+  stage: performance
+  image: 
+    name: sitespeedio/sitespeed.io:6.0.3
+    entrypoint: [""]
+  script:
+    - performance
+  artifacts:
+    paths:
+    - performance.json
+  only:
+    refs:
+      - branches
+    kubernetes: active
+
+sast:
+  image: registry.gitlab.com/gitlab-org/gl-sast:latest
+  variables:
+    POSTGRES_DB: "false"
+  allow_failure: true
+  script:
+    - sast .
+  artifacts:
+    paths: [gl-sast-report.json]
+    
+sast:container:
+  image: docker:latest
+  variables:
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  services:
+    - docker:dind
+  script:
+    - setup_docker
+    - sast_container
+  artifacts:
+    paths: [gl-sast-container-report.json]
+
 review:
   stage: review
   script:
@@ -93,10 +136,13 @@ review:
     - install_tiller
     - create_secret
     - deploy
+    - persist_environment_url
   environment:
     name: review/$CI_COMMIT_REF_NAME
     url: http://$CI_PROJECT_PATH_SLUG-$CI_ENVIRONMENT_SLUG.$AUTO_DEVOPS_DOMAIN
     on_stop: stop_review
+  artifacts:
+    paths: [environment_url.txt]
   only:
     refs:
       - branches
@@ -191,9 +237,12 @@ production:
     - create_secret
     - deploy
     - delete canary
+    - persist_environment_url
   environment:
     name: production
     url: http://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
+  artifacts:
+    paths: [environment_url.txt]
 #  when: manual
   only:
     refs:
@@ -211,6 +260,18 @@ production:
   export CI_APPLICATION_TAG=$CI_COMMIT_SHA
   export CI_CONTAINER_NAME=ci_job_build_${CI_JOB_ID}
   export TILLER_NAMESPACE=$KUBE_NAMESPACE
+  
+  function sast_container() {
+    docker run -d --name db arminc/clair-db:latest
+    docker run -p 6060:6060 --link db:postgres -d --name clair arminc/clair-local-scan:v2.0.1
+    apk add -U wget ca-certificates
+    docker pull ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
+    wget https://github.com/arminc/clair-scanner/releases/download/v6/clair-scanner_linux_386
+    mv clair-scanner_linux_386 clair-scanner
+    chmod +x clair-scanner
+    touch clair-whitelist.yml
+    ./clair-scanner -c http://docker:6060 --ip $(hostname -i) -r gl-sast-container-report.json -l clair.log -w clair-whitelist.yml ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} || true
+  }
 
   function codeclimate() {
     cc_opts="--env CODECLIMATE_CODE="$PWD" \
@@ -218,8 +279,19 @@ production:
              --volume /var/run/docker.sock:/var/run/docker.sock \
              --volume /tmp/cc:/tmp/cc"
 
-    docker run ${cc_opts} codeclimate/codeclimate init
-    docker run ${cc_opts} codeclimate/codeclimate analyze -f json > codeclimate.json
+    docker run ${cc_opts} "codeclimate/codeclimate:${CODECLIMATE_VERSION}" init
+    docker run ${cc_opts} "codeclimate/codeclimate:${CODECLIMATE_VERSION}" analyze -f json > codeclimate.json
+  }
+
+  function sast() {
+    case "$CI_SERVER_VERSION" in
+      *-ee)
+        /app/bin/run "$@"
+        ;;
+      *)
+        echo "GitLab EE is required"
+        ;;
+    esac
   }
 
   function deploy() {
@@ -280,11 +352,11 @@ production:
     apk add glibc-2.23-r3.apk
     rm glibc-2.23-r3.apk
 
-    curl https://kubernetes-helm.storage.googleapis.com/helm-v2.6.1-linux-amd64.tar.gz | tar zx
+    curl "https://kubernetes-helm.storage.googleapis.com/helm-v${HELM_VERSION}-linux-amd64.tar.gz" | tar zx
     mv linux-amd64/helm /usr/bin/
     helm version --client
 
-    curl -L -o /usr/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+    curl -L -o /usr/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBERNETES_VERSION}/bin/linux/amd64/kubectl"
     chmod +x /usr/bin/kubectl
     kubectl version --client
   }
@@ -345,6 +417,13 @@ production:
   }
 
   function build() {
+
+    if [[ -n "$CI_REGISTRY_USER" ]]; then
+      echo "Logging to GitLab Container Registry with CI credentials..."
+      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+      echo ""
+    fi
+
     if [[ -f Dockerfile ]]; then
       echo "Building Dockerfile-based application..."
       docker build -t "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" .
@@ -359,12 +438,6 @@ production:
       docker create --expose 5000 --env PORT=5000 --name="$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" /bin/herokuish procfile start web
       docker commit "$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
       docker rm "$CI_CONTAINER_NAME" >/dev/null
-      echo ""
-    fi
-
-    if [[ -n "$CI_REGISTRY_USER" ]]; then
-      echo "Logging to GitLab Container Registry with CI credentials..."
-      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
       echo ""
     fi
 
@@ -393,6 +466,29 @@ production:
       --docker-email="$GITLAB_USER_EMAIL" \
       -o yaml --dry-run | kubectl replace -n "$KUBE_NAMESPACE" --force -f -
   }
+  
+  function performance() {
+    export CI_ENVIRONMENT_URL=$(cat environment_url.txt)
+    
+    mkdir gitlab-exporter
+    wget -O gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/10-3/index.js
+    
+    mkdir sitespeed-results
+    
+    if [ -f .gitlab-urls.txt ]
+    then
+      sed -i -e 's@^@'"$CI_ENVIRONMENT_URL"'@' .gitlab-urls.txt
+      /start.sh --plugins.add gitlab-exporter --outputFolder sitespeed-results .gitlab-urls.txt
+    else
+      /start.sh --plugins.add gitlab-exporter --outputFolder sitespeed-results $CI_ENVIRONMENT_URL
+    fi
+    
+    mv sitespeed-results/data/performance.json performance.json
+  }
+  
+  function persist_environment_url() {
+      echo $CI_ENVIRONMENT_URL > environment_url.txt
+  }
 
   function delete() {
     track="${1-stable}"
@@ -402,7 +498,9 @@ production:
       name="$name-$track"
     fi
 
-    helm delete "$name" || true
+    if [[ -n "$(helm ls -q "^$name$")" ]]; then
+      helm delete "$name"
+    fi
   }
 
 before_script:

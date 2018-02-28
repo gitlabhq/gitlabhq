@@ -13,7 +13,7 @@ module RuboCop
         def on_send(node)
           return unless in_migration?(node)
 
-          add_offense(node, :selector) if method_name(node) == :add_timestamps
+          add_offense(node, location: :selector) if method_name(node) == :add_timestamps
         end
 
         def method_name(node)

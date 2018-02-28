@@ -1,31 +1,35 @@
 export default class SidebarStore {
-  constructor(store) {
+  constructor(options) {
     if (!SidebarStore.singleton) {
-      const { currentUser, rootPath, editable } = store;
-      this.currentUser = currentUser;
-      this.rootPath = rootPath;
-      this.editable = editable;
-      this.timeEstimate = 0;
-      this.totalTimeSpent = 0;
-      this.humanTimeEstimate = '';
-      this.humanTimeSpent = '';
-      this.assignees = [];
-      this.isFetching = {
-        assignees: true,
-        participants: true,
-        subscriptions: true,
-      };
-      this.isLoading = {};
-      this.autocompleteProjects = [];
-      this.moveToProjectId = 0;
-      this.isLockDialogOpen = false;
-      this.participants = [];
-      this.subscribed = null;
-
-      SidebarStore.singleton = this;
+      this.initSingleton(options);
     }
 
     return SidebarStore.singleton;
+  }
+
+  initSingleton(options) {
+    const { currentUser, rootPath, editable } = options;
+    this.currentUser = currentUser;
+    this.rootPath = rootPath;
+    this.editable = editable;
+    this.timeEstimate = 0;
+    this.totalTimeSpent = 0;
+    this.humanTimeEstimate = '';
+    this.humanTimeSpent = '';
+    this.assignees = [];
+    this.isFetching = {
+      assignees: true,
+      participants: true,
+      subscriptions: true,
+    };
+    this.isLoading = {};
+    this.autocompleteProjects = [];
+    this.moveToProjectId = 0;
+    this.isLockDialogOpen = false;
+    this.participants = [];
+    this.subscribed = null;
+
+    SidebarStore.singleton = this;
   }
 
   setAssigneeData(data) {

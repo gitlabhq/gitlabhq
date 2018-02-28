@@ -8,7 +8,7 @@ describe Gitlab::SlashCommands::IssueShow do
     let(:regex_match) { described_class.match("issue show #{issue.iid}") }
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
     end
 
     subject do

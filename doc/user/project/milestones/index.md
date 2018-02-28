@@ -47,13 +47,15 @@ special options available when filtering by milestone:
   date less than today. Note that this can return results from several
   milestones in the same project.
 
-## Milestone progress statistics
+## Milestone sidebar
 
-Milestone statistics can be viewed in the milestone sidebar. The milestone percentage statistic
-is calculated as; closed and merged merge requests plus all closed issues divided by
+The milestone sidebar shows percentage complete, start date and due date,
+issues, total issue weight, total issue time spent, and merge requests.
+
+The percentage complete is calcualted as: Closed and merged merge requests plus all closed issues divided by
 total merge requests and issues.
 
-![Milestone statistics](img/progress.png)
+![Milestone sidebar](img/sidebar.png)
 
 ## Quick actions
 

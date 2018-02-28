@@ -27,7 +27,7 @@ describe API::V3::Files do
   let(:author_email) { 'user@example.org' }
   let(:author_name) { 'John Doe' }
 
-  before { project.team << [user, :developer] }
+  before { project.add_developer(user) }
 
   describe "GET /projects/:id/repository/files" do
     let(:route) { "/projects/#{project.id}/repository/files" }

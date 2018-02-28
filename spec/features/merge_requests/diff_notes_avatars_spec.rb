@@ -19,7 +19,7 @@ feature 'Diff note avatars', :js do
   let!(:note) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: position) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in user
 
     set_cookie('sidebar_collapsed', 'true')

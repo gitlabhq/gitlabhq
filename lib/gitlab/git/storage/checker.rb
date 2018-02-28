@@ -5,6 +5,8 @@ module Gitlab
         include CircuitBreakerSettings
 
         attr_reader :storage_path, :storage, :hostname, :logger
+        METRICS_MUTEX = Mutex.new
+        STORAGE_TIMING_BUCKETS = [0.1, 0.15, 0.25, 0.33, 0.5, 1, 1.5, 2.5, 5, 10, 15].freeze
 
         def self.check_all(logger = Rails.logger)
           threads = Gitlab.config.repositories.storages.keys.map do |storage_name|
@@ -17,6 +19,17 @@ module Gitlab
             thread.join
             thread[:result]
           end
+        end
+
+        def self.check_histogram
+          @check_histogram ||=
+            METRICS_MUTEX.synchronize do
+              @check_histogram || Gitlab::Metrics.histogram(:circuitbreaker_storage_check_duration_seconds,
+                                                            'Storage check time in seconds',
+                                                            {},
+                                                            STORAGE_TIMING_BUCKETS
+                                                           )
+            end
         end
 
         def initialize(storage, logger = Rails.logger)
@@ -45,7 +58,7 @@ module Gitlab
         end
 
         def check
-          if Gitlab::Git::Storage::ForkedStorageCheck.storage_available?(storage_path, storage_timeout, access_retries)
+          if perform_access_check
             track_storage_accessible
             true
           else
@@ -56,6 +69,15 @@ module Gitlab
         end
 
         private
+
+        def perform_access_check
+          start_time = Gitlab::Metrics::System.monotonic_time
+
+          Gitlab::Git::Storage::ForkedStorageCheck.storage_available?(storage_path, storage_timeout, access_retries)
+        ensure
+          execution_time = Gitlab::Metrics::System.monotonic_time - start_time
+          self.class.check_histogram.observe({ storage: storage }, execution_time)
+        end
 
         def track_storage_inaccessible
           first_failure = current_failure_info.first_failure || Time.now

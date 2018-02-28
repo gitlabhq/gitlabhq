@@ -13,10 +13,7 @@
       = render 'shared/service_settings', form: form, subject: @service
       - if @service.editable?
         .footer-block.row-content-block
-          %button.btn.btn-save{ type: 'submit' }
-            = icon('spinner spin', class: 'hidden js-btn-spinner')
-            %span.js-btn-label
-              Save changes
+          = service_save_button(@service)
           &nbsp;
           - if @service.valid? && @service.activated?
             - unless @service.can_test?

@@ -20,6 +20,8 @@ module Gitlab
       SEARCH_CONTEXT_LINES = 3
       REBASE_WORKTREE_PREFIX = 'rebase'.freeze
       SQUASH_WORKTREE_PREFIX = 'squash'.freeze
+      GITALY_INTERNAL_URL = 'ssh://gitaly/internal.git'.freeze
+      GITLAB_PROJECTS_TIMEOUT = Gitlab.config.gitlab_shell.git_timeout
 
       NoRepository = Class.new(StandardError)
       InvalidBlobName = Class.new(StandardError)
@@ -38,10 +40,32 @@ module Gitlab
           repo = Rugged::Repository.init_at(repo_path, bare)
           repo.close
 
-          if symlink_hooks_to.present?
-            hooks_path = File.join(repo_path, 'hooks')
-            FileUtils.rm_rf(hooks_path)
-            FileUtils.ln_s(symlink_hooks_to, hooks_path)
+          create_hooks(repo_path, symlink_hooks_to) if symlink_hooks_to.present?
+
+          true
+        end
+
+        def create_hooks(repo_path, global_hooks_path)
+          local_hooks_path = File.join(repo_path, 'hooks')
+          real_local_hooks_path = :not_found
+
+          begin
+            real_local_hooks_path = File.realpath(local_hooks_path)
+          rescue Errno::ENOENT
+            # real_local_hooks_path == :not_found
+          end
+
+          # Do nothing if hooks already exist
+          unless real_local_hooks_path == File.realpath(global_hooks_path)
+            if File.exist?(local_hooks_path)
+              # Move the existing hooks somewhere safe
+              FileUtils.mv(
+                local_hooks_path,
+                "#{local_hooks_path}.old.#{Time.now.to_i}")
+            end
+
+            # Create the hooks symlink
+            FileUtils.ln_sf(global_hooks_path, local_hooks_path)
           end
 
           true
@@ -60,7 +84,7 @@ module Gitlab
       # Rugged repo object
       attr_reader :rugged
 
-      attr_reader :storage, :gl_repository, :relative_path
+      attr_reader :gitlab_projects, :storage, :gl_repository, :relative_path
 
       # This initializer method is only used on the client side (gitlab-ce).
       # Gitaly-ruby uses a different initializer.
@@ -70,6 +94,12 @@ module Gitlab
         @gl_repository = gl_repository
 
         storage_path = Gitlab.config.repositories.storages[@storage]['path']
+        @gitlab_projects = Gitlab::Git::GitlabProjects.new(
+          storage_path,
+          relative_path,
+          global_hooks_path: Gitlab.config.gitlab_shell.hooks_path,
+          logger: Rails.logger
+        )
         @path = File.join(storage_path, @relative_path)
         @name = @relative_path.split("/").last
         @attributes = Gitlab::Git::Attributes.new(path)
@@ -103,7 +133,7 @@ module Gitlab
       end
 
       def exists?
-        Gitlab::GitalyClient.migrate(:repository_exists, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
+        Gitlab::GitalyClient.migrate(:repository_exists) do |enabled|
           if enabled
             gitaly_repository_client.exists?
           else
@@ -165,7 +195,7 @@ module Gitlab
       end
 
       def local_branches(sort_by: nil)
-        gitaly_migrate(:local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
+        gitaly_migrate(:local_branches) do |is_enabled|
           if is_enabled
             gitaly_ref_client.local_branches(sort_by: sort_by)
           else
@@ -468,11 +498,13 @@ module Gitlab
       end
 
       def count_commits(options)
+        count_commits_options = process_count_commits_options(options)
+
         gitaly_migrate(:count_commits) do |is_enabled|
           if is_enabled
-            count_commits_by_gitaly(options)
+            count_commits_by_gitaly(count_commits_options)
           else
-            count_commits_by_shelling_out(options)
+            count_commits_by_shelling_out(count_commits_options)
           end
         end
       end
@@ -510,14 +542,21 @@ module Gitlab
       end
 
       # Counts the amount of commits between `from` and `to`.
-      def count_commits_between(from, to)
-        count_commits(ref: "#{from}..#{to}")
+      def count_commits_between(from, to, options = {})
+        count_commits(from: from, to: to, **options)
       end
 
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
       def merge_base_commit(from, to)
-        rugged.merge_base(from, to)
+        gitaly_migrate(:merge_base) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.find_merge_base(from, to)
+          else
+            rugged.merge_base(from, to)
+          end
+        end
       end
+      alias_method :merge_base, :merge_base_commit
 
       # Gitaly note: JV: check gitlab-ee before removing this method.
       def rugged_is_ancestor?(ancestor_id, descendant_id)
@@ -887,30 +926,25 @@ module Gitlab
         end
       end
 
-      def add_remote(remote_name, url)
-        rugged.remotes.create(remote_name, url)
-      rescue Rugged::ConfigError
-        remote_update(remote_name, url: url)
+      # If `mirror_refmap` is present the remote is set as mirror with that mapping
+      def add_remote(remote_name, url, mirror_refmap: nil)
+        gitaly_migrate(:remote_add_remote) do |is_enabled|
+          if is_enabled
+            gitaly_remote_client.add_remote(remote_name, url, mirror_refmap)
+          else
+            rugged_add_remote(remote_name, url, mirror_refmap)
+          end
+        end
       end
 
       def remove_remote(remote_name)
-        # When a remote is deleted all its remote refs are deleted too, but in
-        # the case of mirrors we map its refs (that would usualy go under
-        # [remote_name]/) to the top level namespace. We clean the mapping so
-        # those don't get deleted.
-        if rugged.config["remote.#{remote_name}.mirror"]
-          rugged.config.delete("remote.#{remote_name}.fetch")
+        gitaly_migrate(:remote_remove_remote) do |is_enabled|
+          if is_enabled
+            gitaly_remote_client.remove_remote(remote_name)
+          else
+            rugged_remove_remote(remote_name)
+          end
         end
-
-        rugged.remotes.delete(remote_name)
-        true
-      rescue Rugged::ConfigError
-        false
-      end
-
-      # Returns true if a remote exists.
-      def remote_exists?(name)
-        rugged.remotes[name].present?
       end
 
       # Update the specified remote using the values in the +options+ hash
@@ -1128,12 +1162,14 @@ module Gitlab
         !has_visible_content?
       end
 
-      # Like all public `Gitlab::Git::Repository` methods, this method is part
-      # of `Repository`'s interface through `method_missing`.
-      # `Repository` has its own `fetch_remote` which uses `gitlab-shell` and
-      # takes some extra attributes, so we qualify this method name to prevent confusion.
-      def fetch_remote_without_shell(remote = 'origin')
-        run_git(['fetch', remote]).last.zero?
+      def fetch_repository_as_mirror(repository)
+        gitaly_migrate(:remote_fetch_internal_remote) do |is_enabled|
+          if is_enabled
+            gitaly_remote_client.fetch_internal_remote(repository)
+          else
+            rugged_fetch_repository_as_mirror(repository)
+          end
+        end
       end
 
       def blob_at(sha, path)
@@ -1141,7 +1177,7 @@ module Gitlab
       end
 
       # Items should be of format [[commit_id, path], [commit_id1, path1]]
-      def batch_blobs(items, blob_size_limit: nil)
+      def batch_blobs(items, blob_size_limit: Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE)
         Gitlab::Git::Blob.batch(self, items, blob_size_limit: blob_size_limit)
       end
 
@@ -1175,9 +1211,16 @@ module Gitlab
         rebase_path = worktree_path(REBASE_WORKTREE_PREFIX, rebase_id)
         env = git_env_for_user(user)
 
+        if remote_repository.is_a?(RemoteRepository)
+          env.merge!(remote_repository.fetch_env)
+          remote_repo_path = GITALY_INTERNAL_URL
+        else
+          remote_repo_path = remote_repository.path
+        end
+
         with_worktree(rebase_path, branch, env: env) do
           run_git!(
-            %W(pull --rebase #{remote_repository.path} #{remote_branch}),
+            %W(pull --rebase #{remote_repo_path} #{remote_branch}),
             chdir: rebase_path, env: env
           )
 
@@ -1229,6 +1272,60 @@ module Gitlab
         fresh_worktree?(worktree_path(SQUASH_WORKTREE_PREFIX, squash_id))
       end
 
+      def push_remote_branches(remote_name, branch_names, forced: true)
+        success = @gitlab_projects.push_branches(remote_name, GITLAB_PROJECTS_TIMEOUT, forced, branch_names)
+
+        success || gitlab_projects_error
+      end
+
+      def delete_remote_branches(remote_name, branch_names)
+        success = @gitlab_projects.delete_remote_branches(remote_name, branch_names)
+
+        success || gitlab_projects_error
+      end
+
+      def delete_remote_branches(remote_name, branch_names)
+        success = @gitlab_projects.delete_remote_branches(remote_name, branch_names)
+
+        success || gitlab_projects_error
+      end
+
+      # rubocop:disable Metrics/ParameterLists
+      def multi_action(
+        user, branch_name:, message:, actions:,
+        author_email: nil, author_name: nil,
+        start_branch_name: nil, start_repository: self)
+
+        OperationService.new(user, self).with_branch(
+          branch_name,
+          start_branch_name: start_branch_name,
+          start_repository: start_repository
+        ) do |start_commit|
+          index = Gitlab::Git::Index.new(self)
+          parents = []
+
+          if start_commit
+            index.read_tree(start_commit.rugged_commit.tree)
+            parents = [start_commit.sha]
+          end
+
+          actions.each { |opts| index.apply(opts.delete(:action), opts) }
+
+          committer = user_to_committer(user)
+          author = Gitlab::Git.committer_hash(email: author_email, name: author_name) || committer
+          options = {
+            tree: index.write_tree,
+            message: message,
+            parents: parents,
+            author: author,
+            committer: committer
+          }
+
+          create_commit(options)
+        end
+      end
+      # rubocop:enable Metrics/ParameterLists
+
       def gitaly_repository
         Gitlab::GitalyClient::Util.repository(@storage, @relative_path, @gl_repository)
       end
@@ -1251,6 +1348,14 @@ module Gitlab
 
       def gitaly_operation_client
         @gitaly_operation_client ||= Gitlab::GitalyClient::OperationService.new(self)
+      end
+
+      def gitaly_remote_client
+        @gitaly_remote_client ||= Gitlab::GitalyClient::RemoteService.new(self)
+      end
+
+      def gitaly_conflicts_client(our_commit_oid, their_commit_oid)
+        Gitlab::GitalyClient::ConflictsService.new(self, our_commit_oid, their_commit_oid)
       end
 
       def gitaly_migrate(method, status: Gitlab::GitalyClient::MigrationStatus::OPT_IN, &block)
@@ -1388,6 +1493,26 @@ module Gitlab
           name, sha = line.strip.split(' ', 2)
 
           branches << name if sha != root_sha
+        end
+      end
+
+      def process_count_commits_options(options)
+        if options[:from] || options[:to]
+          ref =
+            if options[:left_right] # Compare with merge-base for left-right
+              "#{options[:from]}...#{options[:to]}"
+            else
+              "#{options[:from]}..#{options[:to]}"
+            end
+
+          options.merge(ref: ref)
+
+        elsif options[:ref] && options[:left_right]
+          from, to = options[:ref].match(/\A([^\.]*)\.{2,3}([^\.]*)\z/)[1..2]
+
+          options.merge(from: from, to: to)
+        else
+          options
         end
       end
 
@@ -1613,19 +1738,59 @@ module Gitlab
       end
 
       def count_commits_by_gitaly(options)
-        gitaly_commit_client.commit_count(options[:ref], options)
+        if options[:left_right]
+          from = options[:from]
+          to = options[:to]
+
+          right_count = gitaly_commit_client
+            .commit_count("#{from}..#{to}", options)
+          left_count = gitaly_commit_client
+            .commit_count("#{to}..#{from}", options)
+
+          [left_count, right_count]
+        else
+          gitaly_commit_client.commit_count(options[:ref], options)
+        end
       end
 
       def count_commits_by_shelling_out(options)
-        cmd = %W[#{Gitlab.config.git.bin_path} --git-dir=#{path} rev-list]
-        cmd << "--after=#{options[:after].iso8601}" if options[:after]
-        cmd << "--before=#{options[:before].iso8601}" if options[:before]
-        cmd += %W[--count #{options[:ref]}]
-        cmd += %W[-- #{options[:path]}] if options[:path].present?
+        cmd = count_commits_shelling_command(options)
 
         raw_output = IO.popen(cmd) { |io| io.read }
 
-        raw_output.to_i
+        process_count_commits_raw_output(raw_output, options)
+      end
+
+      def count_commits_shelling_command(options)
+        cmd = %W[#{Gitlab.config.git.bin_path} --git-dir=#{path} rev-list]
+        cmd << "--after=#{options[:after].iso8601}" if options[:after]
+        cmd << "--before=#{options[:before].iso8601}" if options[:before]
+        cmd << "--max-count=#{options[:max_count]}" if options[:max_count]
+        cmd << "--left-right" if options[:left_right]
+        cmd += %W[--count #{options[:ref]}]
+        cmd += %W[-- #{options[:path]}] if options[:path].present?
+        cmd
+      end
+
+      def process_count_commits_raw_output(raw_output, options)
+        if options[:left_right]
+          result = raw_output.scan(/\d+/).map(&:to_i)
+
+          if result.sum != options[:max_count]
+            result
+          else # Reaching max count, right is not accurate
+            right_option =
+              process_count_commits_options(options
+                .except(:left_right, :from, :to)
+                .merge(ref: options[:to]))
+
+            right = count_commits_by_shelling_out(right_option)
+
+            [result.first, right] # left should be accurate in the first call
+          end
+        else
+          raw_output.to_i
+        end
       end
 
       def gitaly_ls_files(ref)
@@ -1851,7 +2016,7 @@ module Gitlab
       end
 
       def gitaly_fetch_ref(source_repository, source_ref:, target_ref:)
-        args = %W(fetch --no-tags -f ssh://gitaly/internal.git #{source_ref}:#{target_ref})
+        args = %W(fetch --no-tags -f #{GITALY_INTERNAL_URL} #{source_ref}:#{target_ref})
 
         run_git(args, env: source_repository.fetch_env)
       end
@@ -1870,6 +2035,47 @@ module Gitlab
         end
       rescue Rugged::ReferenceError
         raise ArgumentError, 'Invalid merge source'
+      end
+
+      def rugged_add_remote(remote_name, url, mirror_refmap)
+        rugged.remotes.create(remote_name, url)
+
+        set_remote_as_mirror(remote_name, refmap: mirror_refmap) if mirror_refmap
+      rescue Rugged::ConfigError
+        remote_update(remote_name, url: url)
+      end
+
+      def rugged_remove_remote(remote_name)
+        # When a remote is deleted all its remote refs are deleted too, but in
+        # the case of mirrors we map its refs (that would usualy go under
+        # [remote_name]/) to the top level namespace. We clean the mapping so
+        # those don't get deleted.
+        if rugged.config["remote.#{remote_name}.mirror"]
+          rugged.config.delete("remote.#{remote_name}.fetch")
+        end
+
+        rugged.remotes.delete(remote_name)
+        true
+      rescue Rugged::ConfigError
+        false
+      end
+
+      def rugged_fetch_repository_as_mirror(repository)
+        remote_name = "tmp-#{SecureRandom.hex}"
+        repository = RemoteRepository.new(repository) unless repository.is_a?(RemoteRepository)
+
+        add_remote(remote_name, GITALY_INTERNAL_URL, mirror_refmap: :all_refs)
+        fetch_remote(remote_name, env: repository.fetch_env)
+      ensure
+        remove_remote(remote_name)
+      end
+
+      def fetch_remote(remote_name = 'origin', env: nil)
+        run_git(['fetch', remote_name], env: env).last.zero?
+      end
+
+      def gitlab_projects_error
+        raise CommandError, @gitlab_projects.output
       end
     end
   end

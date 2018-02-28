@@ -1,10 +1,10 @@
 /* global monaco */
-import monacoLoader from '~/repo/monaco_loader';
-import editor from '~/repo/lib/editor';
-import ModelManager from '~/repo/lib/common/model_manager';
-import DecorationsController from '~/repo/lib/decorations/controller';
-import DirtyDiffController, { getDiffChangeType, getDecorator } from '~/repo/lib/diff/controller';
-import { computeDiff } from '~/repo/lib/diff/diff';
+import monacoLoader from '~/ide/monaco_loader';
+import editor from '~/ide/lib/editor';
+import ModelManager from '~/ide/lib/common/model_manager';
+import DecorationsController from '~/ide/lib/decorations/controller';
+import DirtyDiffController, { getDiffChangeType, getDecorator } from '~/ide/lib/diff/controller';
+import { computeDiff } from '~/ide/lib/diff/diff';
 import { file } from '../../helpers';
 
 describe('Multi-file editor library dirty diff controller', () => {

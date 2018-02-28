@@ -5,7 +5,7 @@ feature 'User wants to add a Dockerfile file' do
   before do
     user = create(:user)
     project = create(:project, :repository)
-    project.team << [user, :master]
+    project.add_master(user)
 
     sign_in user
 

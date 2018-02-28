@@ -123,7 +123,7 @@ describe Members::ApproveAccessRequestService do
 
     context 'when current user can approve access request to the project' do
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         group.add_owner(user)
       end
 

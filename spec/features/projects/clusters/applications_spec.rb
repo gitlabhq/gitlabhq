@@ -73,7 +73,7 @@ feature 'Clusters Applications', :js do
           before do
             allow(ClusterInstallAppWorker).to receive(:perform_async).and_return(nil)
 
-            create(:cluster_applications_helm, :installed, cluster: cluster)
+            create(:clusters_applications_helm, :installed, cluster: cluster)
 
             page.within('.js-cluster-application-row-ingress') do
               page.find(:css, '.js-cluster-application-install-button').click

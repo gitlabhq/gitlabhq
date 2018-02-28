@@ -1,6 +1,9 @@
 ---
-last_updated: 2017-09-25
+last_updated: 2017-12-28
 ---
+
+CAUTION: **Warning:**
+Kubernetes service integration has been deprecated in GitLab 10.3. If the service is active the cluster information still be editable, however we advised to disable and reconfigure the clusters using the new [Clusters](../clusters/index.md) page. If the service is inactive the fields will be uneditable. Read [GitLab 10.3 release post](https://about.gitlab.com/2017/12/22/gitlab-10-3-released/#kubernetes-integration-service) for more information.
 
 # GitLab Kubernetes / OpenShift integration
 

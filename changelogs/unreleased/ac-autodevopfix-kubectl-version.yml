@@ -1,0 +1,5 @@
+---
+title: Force Auto DevOps kubectl version to 1.8.6
+merge_request: 16218
+author:
+type: fixed

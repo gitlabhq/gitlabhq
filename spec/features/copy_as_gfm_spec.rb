@@ -285,6 +285,102 @@ describe 'Copy as GFM', :js do
       end
 
       verify(
+        'MermaidFilter: mermaid as converted from GFM to HTML',
+
+        <<-GFM.strip_heredoc
+          ```mermaid
+          graph TD;
+            A-->B;
+          ```
+        GFM
+      )
+
+      aggregate_failures('MermaidFilter: mermaid as transformed from HTML to SVG') do
+        gfm = <<-GFM.strip_heredoc
+          ```mermaid
+          graph TD;
+            A-->B;
+          ```
+        GFM
+
+        html = <<-HTML.strip_heredoc
+          <svg id="mermaidChart1" xmlns="http://www.w3.org/2000/svg" height="100%" viewBox="0 0 87.234375 174" style="max-width:87.234375px;" class="mermaid">
+            <style>
+              .mermaid {
+                /* Flowchart variables */
+                /* Sequence Diagram variables */
+                /* Gantt chart variables */
+                /** Section styling */
+                /* Grid and axis */
+                /* Today line */
+                /* Task styling */
+                /* Default task */
+                /* Specific task settings for the sections*/
+                /* Active task */
+                /* Completed task */
+                /* Tasks on the critical line */
+              }
+            </style>
+            <g>
+              <g class="output">
+                <g class="clusters"></g>
+                <g class="edgePaths">
+                  <g class="edgePath" style="opacity: 1;">
+                    <path class="path" d="M33.6171875,52L33.6171875,77L33.6171875,102" marker-end="url(#arrowhead65)" style="fill:none"></path>
+                    <defs>
+                      <marker id="arrowhead65" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto">
+                        <path d="M 0 0 L 10 5 L 0 10 z" class="arrowheadPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path>
+                      </marker>
+                    </defs>
+                  </g>
+                </g>
+                <g class="edgeLabels">
+                  <g class="edgeLabel" style="opacity: 1;" transform="">
+                    <g transform="translate(0,0)" class="label">
+                      <foreignObject width="0" height="0">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">
+                          <span class="edgeLabel"></span>
+                        </div>
+                      </foreignObject>
+                    </g>
+                  </g>
+                </g>
+                <g class="nodes">
+                  <g class="node" id="A" transform="translate(33.6171875,36)" style="opacity: 1;">
+                    <rect rx="0" ry="0" x="-13.6171875" y="-16" width="27.234375" height="32"></rect>
+                    <g class="label" transform="translate(0,0)">
+                      <g transform="translate(-3.6171875,-6)">
+                        <foreignObject width="7.234375" height="12">
+                          <div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">A</div>
+                        </foreignObject>
+                      </g>
+                    </g>
+                  </g>
+                  <g class="node" id="B" transform="translate(33.6171875,118)" style="opacity: 1;">
+                    <rect rx="0" ry="0" x="-13.6171875" y="-16" width="27.234375" height="32">
+                    </rect>
+                    <g class="label" transform="translate(0,0)">
+                      <g transform="translate(-3.6171875,-6)">
+                        <foreignObject width="7.234375" height="12">
+                          <div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">B</div>
+                        </foreignObject>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+              </g>
+            </g>
+            <text class="source" display="none">graph TD;
+            A--&gt;B;
+            </text>
+          </svg>
+        HTML
+
+        output_gfm = html_to_gfm(html)
+        expect(output_gfm.strip).to eq(gfm.strip)
+      end
+
+      verify(
         'SanitizationFilter',
 
         <<-GFM.strip_heredoc

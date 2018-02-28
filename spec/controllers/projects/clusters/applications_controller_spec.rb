@@ -52,7 +52,7 @@ describe Projects::Clusters::ApplicationsController do
 
       context 'when application is already installing' do
         before do
-          create(:cluster_applications_helm, :installing, cluster: cluster)
+          create(:clusters_applications_helm, :installing, cluster: cluster)
         end
 
         it 'returns 400' do

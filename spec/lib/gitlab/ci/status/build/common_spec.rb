@@ -18,7 +18,7 @@ describe Gitlab::Ci::Status::Build::Common do
   describe '#has_details?' do
     context 'when user has access to read build' do
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       it { is_expected.to have_details }

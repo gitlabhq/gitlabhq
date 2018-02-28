@@ -22,3 +22,20 @@ Feature: Project Ff Merge Requests
     Then I should see ff-only merge button
     When I accept this merge request
     Then I should see merged request
+
+  @javascript
+  Scenario: I do rebase before ff-only merge
+    Given ff merge enabled
+    And rebase before merge enabled
+    When I visit merge request page "Bug NS-05"
+    Then I should see rebase button
+    When I press rebase button
+    Then I should see rebase in progress message
+
+  @javascript
+  Scenario: I do rebase before regular merge
+    Given rebase before merge enabled
+    When I visit merge request page "Bug NS-05"
+    Then I should see rebase button
+    When I press rebase button
+    Then I should see rebase in progress message

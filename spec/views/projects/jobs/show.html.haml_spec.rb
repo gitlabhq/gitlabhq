@@ -187,7 +187,7 @@ describe 'projects/jobs/show' do
 
   context 'when incomplete trigger_request is used' do
     before do
-      build.trigger_request = FactoryGirl.build(:ci_trigger_request, trigger: nil)
+      build.trigger_request = FactoryBot.build(:ci_trigger_request, trigger: nil)
     end
 
     it 'test should not render token block' do
@@ -199,7 +199,7 @@ describe 'projects/jobs/show' do
 
   context 'when complete trigger_request is used' do
     before do
-      build.trigger_request = FactoryGirl.build(:ci_trigger_request)
+      build.trigger_request = FactoryBot.build(:ci_trigger_request)
     end
 
     it 'should render token' do

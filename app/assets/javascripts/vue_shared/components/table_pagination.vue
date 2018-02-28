@@ -122,11 +122,17 @@ export default {
 
       return items;
     },
+    showPagination() {
+      return this.pageInfo.totalPages > 1;
+    },
   },
 };
 </script>
 <template>
-  <div class="gl-pagination">
+  <div
+    v-if="showPagination"
+    class="gl-pagination"
+  >
     <ul class="pagination clearfix">
       <li
         v-for="item in getItems"

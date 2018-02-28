@@ -1,5 +1,0 @@
----
-title: OAuth identity lookups case-insensitive
-merge_request: 15312
-author:
-type: fixed

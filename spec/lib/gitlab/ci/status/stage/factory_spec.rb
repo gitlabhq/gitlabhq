@@ -18,7 +18,7 @@ describe Gitlab::Ci::Status::Stage::Factory do
   end
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
   end
 
   context 'when stage has a core status' do

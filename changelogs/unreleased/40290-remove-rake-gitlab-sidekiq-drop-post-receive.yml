@@ -1,5 +1,0 @@
----
-title: Removed unused rake task, 'rake gitlab:sidekiq:drop_post_receive'
-merge_request: 15493
-author:
-type: fixed

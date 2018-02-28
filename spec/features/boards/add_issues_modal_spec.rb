@@ -12,7 +12,7 @@ describe 'Issue Boards add issue modal', :js do
   let!(:issue2) { create(:issue, project: project, title: 'hij', description: 'klm') }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
 
     sign_in(user)
 

@@ -13,8 +13,8 @@ describe "Admin Runners" do
 
     context "when there are runners" do
       before do
-        runner = FactoryGirl.create(:ci_runner, contacted_at: Time.now)
-        FactoryGirl.create(:ci_build, pipeline: pipeline, runner_id: runner.id)
+        runner = FactoryBot.create(:ci_runner, contacted_at: Time.now)
+        FactoryBot.create(:ci_build, pipeline: pipeline, runner_id: runner.id)
         visit admin_runners_path
       end
 
@@ -25,8 +25,8 @@ describe "Admin Runners" do
 
       describe 'search' do
         before do
-          FactoryGirl.create :ci_runner, description: 'runner-foo'
-          FactoryGirl.create :ci_runner, description: 'runner-bar'
+          FactoryBot.create :ci_runner, description: 'runner-foo'
+          FactoryBot.create :ci_runner, description: 'runner-bar'
         end
 
         it 'shows correct runner when description matches' do
@@ -62,11 +62,11 @@ describe "Admin Runners" do
   end
 
   describe "Runner show page" do
-    let(:runner) { FactoryGirl.create :ci_runner }
+    let(:runner) { FactoryBot.create :ci_runner }
 
     before do
-      @project1 = FactoryGirl.create(:project)
-      @project2 = FactoryGirl.create(:project)
+      @project1 = FactoryBot.create(:project)
+      @project2 = FactoryBot.create(:project)
       visit admin_runner_path(runner)
     end
 

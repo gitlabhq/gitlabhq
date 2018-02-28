@@ -20,7 +20,7 @@ describe Projects::TodosController do
       context 'when authorized' do
         before do
           sign_in(user)
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         it 'creates todo for issue' do
@@ -88,7 +88,7 @@ describe Projects::TodosController do
       context 'when authorized' do
         before do
           sign_in(user)
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         it 'creates todo for merge request' do

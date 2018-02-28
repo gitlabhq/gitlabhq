@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :ci_empty_pipeline, class: Ci::Pipeline do
     source :push
     ref 'master'

@@ -6,7 +6,13 @@ module QA
           click_link name
         end
 
+        def filter_by_name(name)
+          fill_in 'Filter by name...', with: name
+        end
+
         def has_subgroup?(name)
+          filter_by_name(name)
+
           page.has_link?(name)
         end
 
@@ -15,6 +21,7 @@ module QA
             find('.dropdown-toggle').click
             find("li[data-value='new-subgroup']").click
           end
+
           find("input[data-action='new-subgroup']").click
         end
 
@@ -23,6 +30,7 @@ module QA
             find('.dropdown-toggle').click
             find("li[data-value='new-project']").click
           end
+
           find("input[data-action='new-project']").click
         end
       end

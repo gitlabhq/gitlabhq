@@ -32,6 +32,11 @@ module API
       end
     end
 
+    # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    # We can't rewrite this with StrongMemoize because `sudo!` would
+    # actually write to `@current_user`, and `sudo?` would immediately
+    # call `current_user` again which reads from `@current_user`.
+    # We should rewrite this in a way that using StrongMemoize is possible
     def current_user
       return @current_user if defined?(@current_user)
 
@@ -45,6 +50,7 @@ module API
 
       @current_user
     end
+    # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
     def sudo?
       initial_current_user != current_user
@@ -63,13 +69,20 @@ module API
     end
 
     def wiki_page
-      page = user_project.wiki.find_page(params[:slug])
+      page = ProjectWiki.new(user_project, current_user).find_page(params[:slug])
 
       page || not_found!('Wiki Page')
     end
 
-    def available_labels
-      @available_labels ||= LabelsFinder.new(current_user, project_id: user_project.id).execute
+    def available_labels_for(label_parent)
+      search_params =
+        if label_parent.is_a?(Project)
+          { project_id: label_parent.id }
+        else
+          { group_id: label_parent.id, only_group_labels: true }
+        end
+
+      LabelsFinder.new(current_user, search_params).execute
     end
 
     def find_user(id)
@@ -135,7 +148,9 @@ module API
     end
 
     def find_project_label(id)
-      label = available_labels.find_by_id(id) || available_labels.find_by_title(id)
+      labels = available_labels_for(user_project)
+      label = labels.find_by_id(id) || labels.find_by_title(id)
+
       label || not_found!('Label')
     end
 
@@ -415,6 +430,7 @@ module API
 
     private
 
+    # rubocop:disable Gitlab/ModuleWithInstanceVariables
     def initial_current_user
       return @initial_current_user if defined?(@initial_current_user)
 
@@ -424,6 +440,7 @@ module API
         unauthorized!
       end
     end
+    # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
     def sudo!
       return unless sudo_identifier
@@ -443,7 +460,7 @@ module API
       sudoed_user = find_user(sudo_identifier)
       not_found!("User with ID or username '#{sudo_identifier}'") unless sudoed_user
 
-      @current_user = sudoed_user
+      @current_user = sudoed_user # rubocop:disable Gitlab/ModuleWithInstanceVariables
     end
 
     def sudo_identifier

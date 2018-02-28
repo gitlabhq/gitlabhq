@@ -62,6 +62,26 @@ describe Projects::UnlinkForkService do
     expect(source.forks_count).to be_zero
   end
 
+  context 'when the source has LFS objects' do
+    let(:lfs_object) { create(:lfs_object) }
+
+    before do
+      lfs_object.projects << project
+    end
+
+    it 'links the fork to the lfs object before unlinking' do
+      subject.execute
+
+      expect(lfs_object.projects).to include(forked_project)
+    end
+
+    it 'does not fail if the lfs objects were already linked' do
+      lfs_object.projects << forked_project
+
+      expect { subject.execute }.not_to raise_error
+    end
+  end
+
   context 'when the original project was deleted' do
     it 'does not fail when the original project is deleted' do
       source = forked_project.forked_from_project

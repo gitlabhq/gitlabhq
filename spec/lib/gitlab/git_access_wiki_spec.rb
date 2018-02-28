@@ -18,7 +18,7 @@ describe Gitlab::GitAccessWiki do
     context 'when user can :create_wiki' do
       before do
         create(:protected_branch, name: 'master', project: project)
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       subject { access.check('git-receive-pack', changes) }
@@ -41,7 +41,7 @@ describe Gitlab::GitAccessWiki do
     subject { access.check('git-upload-pack', '_any') }
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     context 'when wiki feature is enabled' do

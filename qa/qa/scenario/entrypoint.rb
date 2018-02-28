@@ -8,7 +8,6 @@ module QA
       include Bootable
 
       def perform(address, *files)
-        Specs::Config.act { configure_capybara! }
         Runtime::Scenario.define(:gitlab_address, address)
 
         ##

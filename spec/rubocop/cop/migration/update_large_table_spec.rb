@@ -18,7 +18,7 @@ describe RuboCop::Cop::Migration::UpdateLargeTable do
     shared_examples 'large tables' do |update_method|
       described_class::LARGE_TABLES.each do |table|
         it "registers an offense for the #{table} table" do
-          inspect_source(cop, "#{update_method} :#{table}, :column, default: true")
+          inspect_source("#{update_method} :#{table}, :column, default: true")
 
           aggregate_failures do
             expect(cop.offenses.size).to eq(1)
@@ -37,7 +37,7 @@ describe RuboCop::Cop::Migration::UpdateLargeTable do
     end
 
     it 'registers no offense for non-blacklisted tables' do
-      inspect_source(cop, "add_column_with_default :table, :column, default: true")
+      inspect_source("add_column_with_default :table, :column, default: true")
 
       expect(cop.offenses).to be_empty
     end
@@ -45,7 +45,7 @@ describe RuboCop::Cop::Migration::UpdateLargeTable do
     it 'registers no offense for non-blacklisted methods' do
       table = described_class::LARGE_TABLES.sample
 
-      inspect_source(cop, "some_other_method :#{table}, :column, default: true")
+      inspect_source("some_other_method :#{table}, :column, default: true")
 
       expect(cop.offenses).to be_empty
     end
@@ -55,13 +55,13 @@ describe RuboCop::Cop::Migration::UpdateLargeTable do
     let(:table) { described_class::LARGE_TABLES.sample }
 
     it 'registers no offense for add_column_with_default' do
-      inspect_source(cop, "add_column_with_default :#{table}, :column, default: true")
+      inspect_source("add_column_with_default :#{table}, :column, default: true")
 
       expect(cop.offenses).to be_empty
     end
 
     it 'registers no offense for update_column_in_batches' do
-      inspect_source(cop, "add_column_with_default :#{table}, :column, default: true")
+      inspect_source("add_column_with_default :#{table}, :column, default: true")
 
       expect(cop.offenses).to be_empty
     end

@@ -1,5 +1,0 @@
----
-title: Reenable Prometheus metrics, add more control over Prometheus method instrumentation
-merge_request: 15558
-author:
-type: fixed

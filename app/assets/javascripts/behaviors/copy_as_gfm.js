@@ -74,6 +74,18 @@ const gfmRules = {
       return `![${el.dataset.title}](${el.getAttribute('src')})`;
     },
   },
+  MermaidFilter: {
+    'svg.mermaid'(el, text) {
+      const sourceEl = el.querySelector('text.source');
+      if (!sourceEl) return false;
+
+      return `\`\`\`mermaid\n${CopyAsGFM.nodeToGFM(sourceEl)}\n\`\`\``;
+    },
+    'svg.mermaid style, svg.mermaid g'(el, text) {
+      // We don't want to include the content of these elements in the copied text.
+      return '';
+    },
+  },
   MathFilter: {
     'pre.code.math[data-math-style=display]'(el, text) {
       return `\`\`\`math\n${text.trim()}\n\`\`\``;

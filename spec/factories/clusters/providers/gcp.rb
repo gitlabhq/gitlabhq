@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :cluster_provider_gcp, class: Clusters::Providers::Gcp do
     cluster
     gcp_project_id 'test-gcp-project'

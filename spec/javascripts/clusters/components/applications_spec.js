@@ -21,6 +21,7 @@ describe('Applications', () => {
           helm: { title: 'Helm Tiller' },
           ingress: { title: 'Ingress' },
           runner: { title: 'GitLab Runner' },
+          prometheus: { title: 'Prometheus' },
         },
       });
     });
@@ -31,6 +32,10 @@ describe('Applications', () => {
 
     it('renders a row for Ingress', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-ingress')).toBeDefined();
+    });
+
+    it('renders a row for Prometheus', () => {
+      expect(vm.$el.querySelector('.js-cluster-application-row-prometheus')).toBeDefined();
     });
 
     /* * /

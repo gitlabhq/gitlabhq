@@ -8,6 +8,7 @@
 
 = form_for @cluster, url: namespace_project_cluster_path(@project.namespace, @project, @cluster), as: :cluster do |field|
   = form_errors(@cluster)
+
   = field.fields_for :platform_kubernetes, @cluster.platform_kubernetes do |platform_kubernetes_field|
     .form-group
       = platform_kubernetes_field.label :api_url, s_('ClusterIntegration|API URL')

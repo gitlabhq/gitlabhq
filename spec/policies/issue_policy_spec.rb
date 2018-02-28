@@ -19,10 +19,10 @@ describe IssuePolicy do
     let(:issue_no_assignee) { create(:issue, project: project) }
 
     before do
-      project.team << [guest, :guest]
-      project.team << [author, :guest]
-      project.team << [assignee, :guest]
-      project.team << [reporter, :reporter]
+      project.add_guest(guest)
+      project.add_guest(author)
+      project.add_guest(assignee)
+      project.add_reporter(reporter)
 
       group.add_reporter(reporter_from_group_link)
 
@@ -114,8 +114,8 @@ describe IssuePolicy do
     let(:issue_no_assignee) { create(:issue, project: project) }
 
     before do
-      project.team << [guest, :guest]
-      project.team << [reporter, :reporter]
+      project.add_guest(guest)
+      project.add_reporter(reporter)
 
       group.add_reporter(reporter_from_group_link)
 

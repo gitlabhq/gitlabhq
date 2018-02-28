@@ -32,6 +32,43 @@ hide discussions that are no longer relevant.
 Comments and discussions can be resolved by anyone with at least Developer
 access to the project or the author of the merge request.
 
+### Commit discussions in the context of a merge request
+
+> [Introduced][ce-31847] in GitLab 10.3.
+
+For reviewers with commit-based workflow, it may be useful to add discussions to
+specific commit diffs in the context of a merge request. These discussions will
+persist through a commit ID change when:
+
+- force-pushing after a rebase
+- amending a commit
+
+To create a commit diff discussion:
+
+1. Navigate to the merge request **Commits** tab. A list of commits that
+   constitute the merge request will be shown.
+
+    ![Merge request commits tab](img/merge_request_commits_tab.png)
+
+1. Navigate to a specific commit, click on the **Changes** tab (where you
+   will only be presented diffs from the selected commit), and leave a comment.
+
+    ![Commit diff discussion in merge request context](img/commit_comment_mr_context.png)
+
+1. Any discussions created this way will be shown in the merge request's
+   **Discussions** tab and are resolvable.
+
+    ![Merge request Discussions tab](img/commit_comment_mr_discussions_tab.png)
+
+Discussions created this way will only appear in the original merge request
+and not when navigating to that commit under your project's
+**Repository > Commits** page.
+
+TIP: **Tip:**
+When a link of a commit reference is found in a discussion inside a merge
+request, it will be automatically converted to a link in the context of the
+current merge request.
+
 ### Jumping between unresolved discussions
 
 When a merge request has a large number of comments it can be difficult to track
@@ -133,6 +170,15 @@ From now on, any discussions on a diff will be resolved by default if a push
 makes that diff section outdated. Discussions on lines that don't change and
 top-level resolvable discussions are not automatically resolved.
 
+## Commit discussions
+
+You can add comments and discussion threads to a particular commit under your
+project's **Repository > Commits**.
+
+CAUTION: **Attention:**
+Discussions created this way will be lost if the commit ID changes after a
+force push.
+
 ## Threaded discussions
 
 > [Introduced][ce-7527] in GitLab 9.1.
@@ -229,6 +275,7 @@ edit existing comments. Non-team members are restricted from adding or editing c
 [ce-14053]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14053
 [ce-14061]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14061
 [ce-14531]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14531
+[ce-31847]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/31847
 [resolve-discussion-button]: img/resolve_discussion_button.png
 [resolve-comment-button]: img/resolve_comment_button.png
 [discussion-view]: img/discussion_view.png

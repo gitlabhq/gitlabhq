@@ -1,5 +1,0 @@
----
-title: Perform SQL matching of Build&Runner tags to greatly speed-up job picking
-merge_request:
-author:
-type: performance

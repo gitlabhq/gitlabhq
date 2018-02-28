@@ -13,7 +13,7 @@ feature 'Projects > Wiki > User previews markdown changes', :js do
   end
 
   background do
-    project.team << [user, :master]
+    project.add_master(user)
 
     sign_in(user)
 

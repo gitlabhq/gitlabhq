@@ -11,7 +11,7 @@ feature 'User creates a directory', :js do
   let(:user) { create(:user) }
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
     sign_in(user)
     visit project_tree_path(project, 'master')
   end
@@ -63,7 +63,7 @@ feature 'User creates a directory', :js do
 
   context 'when an user does not have write access' do
     before do
-      project2.team << [user, :reporter]
+      project2.add_reporter(user)
       visit(project2_tree_path_root_ref)
     end
 

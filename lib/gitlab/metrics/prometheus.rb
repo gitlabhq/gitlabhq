@@ -4,6 +4,7 @@ module Gitlab
   module Metrics
     module Prometheus
       include Gitlab::CurrentSettings
+      include Gitlab::Utils::StrongMemoize
 
       REGISTRY_MUTEX = Mutex.new
       PROVIDER_MUTEX = Mutex.new
@@ -17,16 +18,18 @@ module Gitlab
       end
 
       def prometheus_metrics_enabled?
-        return @prometheus_metrics_enabled if defined?(@prometheus_metrics_enabled)
-
-        @prometheus_metrics_enabled = prometheus_metrics_enabled_unmemoized
+        strong_memoize(:prometheus_metrics_enabled) do
+          prometheus_metrics_enabled_unmemoized
+        end
       end
 
       def registry
-        return @registry if @registry
-
-        REGISTRY_MUTEX.synchronize do
-          @registry ||= ::Prometheus::Client.registry
+        strong_memoize(:registry) do
+          REGISTRY_MUTEX.synchronize do
+            strong_memoize(:registry) do
+              ::Prometheus::Client.registry
+            end
+          end
         end
       end
 

@@ -273,7 +273,7 @@ describe 'Merge request', :js do
     let(:user2) { create(:user) }
 
     before do
-      project.team << [user2, :master]
+      project.add_master(user2)
       sign_out(:user)
       sign_in(user2)
       merge_request.update(target_project: fork_project)

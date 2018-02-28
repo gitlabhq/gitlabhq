@@ -1,5 +1,6 @@
 <script>
   import actionBtn from './action_btn.vue';
+  import { getTimeago } from '../../lib/utils/datetime_utility';
 
   export default {
     props: {
@@ -21,7 +22,7 @@
     },
     computed: {
       timeagoDate() {
-        return gl.utils.getTimeago().format(this.deployKey.created_at);
+        return getTimeago().format(this.deployKey.created_at);
       },
       editDeployKeyPath() {
         return `${this.endpoint}/${this.deployKey.id}/edit`;

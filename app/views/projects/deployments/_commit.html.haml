@@ -2,7 +2,7 @@
   .branch-commit
     - if deployment.ref
       %span.icon-container
-        = deployment.tag? ? icon('tag') : icon('code-fork')
+        = deployment.tag? ? icon('tag') : sprite_icon('fork', css_class: 'sprite')
       = link_to deployment.ref, project_ref_path(@project, deployment.ref), class: "ref-name"
     .icon-container.commit-icon
       = custom_icon("icon_commit")

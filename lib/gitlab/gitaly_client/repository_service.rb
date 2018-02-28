@@ -1,6 +1,8 @@
 module Gitlab
   module GitalyClient
     class RepositoryService
+      include Gitlab::EncodingHelper
+
       def initialize(repository)
         @repository = repository
         @gitaly_repo = repository.gitaly_repository
@@ -67,6 +69,32 @@ module Gitlab
         response = GitalyClient.call(@storage, :repository_service, :has_local_branches, request, timeout: GitalyClient.fast_timeout)
 
         response.value
+      end
+
+      def find_merge_base(*revisions)
+        request = Gitaly::FindMergeBaseRequest.new(
+          repository: @gitaly_repo,
+          revisions: revisions.map { |r| encode_binary(r) }
+        )
+
+        response = GitalyClient.call(@storage, :repository_service, :find_merge_base, request)
+        response.base.presence
+      end
+
+      def fork_repository(source_repository)
+        request = Gitaly::CreateForkRequest.new(
+          repository: @gitaly_repo,
+          source_repository: source_repository.gitaly_repository
+        )
+
+        GitalyClient.call(
+          @storage,
+          :repository_service,
+          :create_fork,
+          request,
+          remote_storage: source_repository.storage,
+          timeout: GitalyClient.default_timeout
+        )
       end
 
       def fetch_source_branch(source_repository, source_branch, local_ref)

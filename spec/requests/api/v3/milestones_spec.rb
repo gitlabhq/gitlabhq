@@ -6,7 +6,7 @@ describe API::V3::Milestones do
   let!(:closed_milestone) { create(:closed_milestone, project: project) }
   let!(:milestone) { create(:milestone, project: project) }
 
-  before { project.team << [user, :developer] }
+  before { project.add_developer(user) }
 
   describe 'GET /projects/:id/milestones' do
     it 'returns project milestones' do
@@ -161,7 +161,7 @@ describe API::V3::Milestones do
 
   describe 'PUT /projects/:id/milestones/:milestone_id to test observer on close' do
     it 'creates an activity event when an milestone is closed' do
-      expect(Event).to receive(:create)
+      expect(Event).to receive(:create!)
 
       put v3_api("/projects/#{project.id}/milestones/#{milestone.id}", user),
           state_event: 'close'
@@ -200,7 +200,7 @@ describe API::V3::Milestones do
       let(:confidential_issue) { create(:issue, confidential: true, project: public_project) }
 
       before do
-        public_project.team << [user, :developer]
+        public_project.add_developer(user)
         milestone.issues << issue << confidential_issue
       end
 
@@ -215,7 +215,7 @@ describe API::V3::Milestones do
 
       it 'does not return confidential issues to team members with guest role' do
         member = create(:user)
-        project.team << [member, :guest]
+        project.add_guest(member)
 
         get v3_api("/projects/#{public_project.id}/milestones/#{milestone.id}/issues", member)
 

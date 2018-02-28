@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :cluster_platform_kubernetes, class: Clusters::Platforms::Kubernetes do
     cluster
     namespace nil

@@ -36,7 +36,16 @@ module Members
     end
 
     def can_destroy_member?(member)
-      member && can?(current_user, action_member_permission(:destroy, member), member)
+      member && can?(current_user, destroy_member_permission(member), member)
+    end
+
+    def destroy_member_permission(member)
+      case member
+      when GroupMember
+        :destroy_group_member
+      when ProjectMember
+        :destroy_project_member
+      end
     end
   end
 end

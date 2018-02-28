@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from '~/repo/stores';
-import repoFileButtons from '~/repo/components/repo_file_buttons.vue';
+import store from '~/ide/stores';
+import repoFileButtons from '~/ide/components/repo_file_buttons.vue';
 import { file, resetStore } from '../helpers';
 
 describe('RepoFileButtons', () => {

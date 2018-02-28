@@ -11,7 +11,7 @@ describe 'Target branch', :js do
 
   before do
     sign_in user
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   context 'when branch was deleted' do

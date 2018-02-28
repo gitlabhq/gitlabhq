@@ -52,6 +52,20 @@ class Commit
       diffs.reduce(0) { |sum, d| sum + Gitlab::Git::Util.count_lines(d.diff) }
     end
 
+    def order_by(collection:, order_by:, sort:)
+      return collection unless %w[email name commits].include?(order_by)
+      return collection unless %w[asc desc].include?(sort)
+
+      collection.sort do |a, b|
+        operands = [a, b].tap { |o| o.reverse! if sort == 'desc' }
+
+        attr1, attr2 = operands.first.public_send(order_by), operands.second.public_send(order_by) # rubocop:disable PublicSend
+
+        # use case insensitive comparison for string values
+        order_by.in?(%w[email name]) ? attr1.casecmp(attr2) : attr1 <=> attr2
+      end
+    end
+
     # Truncate sha to 8 characters
     def truncate_sha(sha)
       sha[0..MIN_SHA_LENGTH]
@@ -72,6 +86,20 @@ class Commit
     def valid_hash?(key)
       !!(/\A#{COMMIT_SHA_PATTERN}\z/ =~ key)
     end
+
+    def lazy(project, oid)
+      BatchLoader.for({ project: project, oid: oid }).batch do |items, loader|
+        items_by_project = items.group_by { |i| i[:project] }
+
+        items_by_project.each do |project, commit_ids|
+          oids = commit_ids.map { |i| i[:oid] }
+
+          project.repository.commits_by(oids: oids).each do |commit|
+            loader.call({ project: commit.project, oid: commit.id }, commit) if commit
+          end
+        end
+      end
+    end
   end
 
   attr_accessor :raw
@@ -89,7 +117,7 @@ class Commit
   end
 
   def ==(other)
-    (self.class === other) && (raw == other.raw)
+    other.is_a?(self.class) && raw == other.raw
   end
 
   def self.reference_prefix
@@ -210,8 +238,8 @@ class Commit
     notes.includes(:author)
   end
 
-  def method_missing(m, *args, &block)
-    @raw.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
+  def method_missing(method, *args, &block)
+    @raw.__send__(method, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def respond_to_missing?(method, include_private = false)
@@ -343,7 +371,7 @@ class Commit
   #
   # Returns a symbol
   def uri_type(path)
-    entry = @raw.tree.path(path)
+    entry = @raw.rugged_tree_entry(path)
     if entry[:type] == :blob
       blob = ::Blob.decorate(Gitlab::Git::Blob.new(name: entry[:name]), @project)
       blob.image? || blob.video? ? :raw : :blob

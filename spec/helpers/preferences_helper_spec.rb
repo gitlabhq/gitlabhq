@@ -77,15 +77,6 @@ describe PreferencesHelper do
     end
   end
 
-  def stub_user(messages = {})
-    if messages.empty?
-      allow(helper).to receive(:current_user).and_return(nil)
-    else
-      allow(helper).to receive(:current_user)
-        .and_return(double('user', messages))
-    end
-  end
-
   describe '#default_project_view' do
     context 'user not signed in' do
       before do
@@ -124,6 +115,71 @@ describe PreferencesHelper do
           expect(helper.default_project_view).to eq('activity')
         end
       end
+    end
+
+    context 'user signed in' do
+      let(:user) { create(:user, :readme) }
+      let(:project) { create(:project, :public, :repository) }
+
+      before do
+        helper.instance_variable_set(:@project, project)
+        allow(helper).to receive(:current_user).and_return(user)
+      end
+
+      context 'when the user is allowed to see the code' do
+        it 'returns the project view' do
+          allow(helper).to receive(:can?).with(user, :download_code, project).and_return(true)
+
+          expect(helper.default_project_view).to eq('readme')
+        end
+      end
+
+      context 'with wikis enabled and the right policy for the user' do
+        before do
+          project.project_feature.update_attribute(:issues_access_level, 0)
+          allow(helper).to receive(:can?).with(user, :download_code, project).and_return(false)
+        end
+
+        it 'returns wiki if the user has the right policy' do
+          allow(helper).to receive(:can?).with(user, :read_wiki, project).and_return(true)
+
+          expect(helper.default_project_view).to eq('wiki')
+        end
+
+        it 'returns customize_workflow if the user does not have the right policy' do
+          allow(helper).to receive(:can?).with(user, :read_wiki, project).and_return(false)
+
+          expect(helper.default_project_view).to eq('customize_workflow')
+        end
+      end
+
+      context 'with issues as a feature available' do
+        it 'return issues' do
+          allow(helper).to receive(:can?).with(user, :download_code, project).and_return(false)
+          allow(helper).to receive(:can?).with(user, :read_wiki, project).and_return(false)
+
+          expect(helper.default_project_view).to eq('projects/issues/issues')
+        end
+      end
+
+      context 'with no activity, no wikies and no issues' do
+        it 'returns customize_workflow as default' do
+          project.project_feature.update_attribute(:issues_access_level, 0)
+          allow(helper).to receive(:can?).with(user, :download_code, project).and_return(false)
+          allow(helper).to receive(:can?).with(user, :read_wiki, project).and_return(false)
+
+          expect(helper.default_project_view).to eq('customize_workflow')
+        end
+      end
+    end
+  end
+
+  def stub_user(messages = {})
+    if messages.empty?
+      allow(helper).to receive(:current_user).and_return(nil)
+    else
+      allow(helper).to receive(:current_user)
+        .and_return(double('user', messages))
     end
   end
 end

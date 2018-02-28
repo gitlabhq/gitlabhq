@@ -1,0 +1,5 @@
+---
+title: "Fix slash commands dropdown description mis-alignment on Firefox"
+merge_request: 16125
+author: Maurizio De Santis
+type: fixed

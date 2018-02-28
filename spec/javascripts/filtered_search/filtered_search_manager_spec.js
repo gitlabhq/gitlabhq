@@ -1,8 +1,8 @@
+import * as urlUtils from '~/lib/utils/url_utility';
 import * as recentSearchesStoreSrc from '~/filtered_search/stores/recent_searches_store';
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 import RecentSearchesServiceError from '~/filtered_search/services/recent_searches_service_error';
 import RecentSearchesRoot from '~/filtered_search/recent_searches_root';
-import '~/lib/utils/url_utility';
 import '~/lib/utils/common_utils';
 import '~/filtered_search/filtered_search_token_keys';
 import '~/filtered_search/filtered_search_tokenizer';
@@ -162,7 +162,7 @@ describe('Filtered Search Manager', () => {
     it('should search with a single word', (done) => {
       input.value = 'searchTerm';
 
-      spyOn(gl.utils, 'visitUrl').and.callFake((url) => {
+      spyOn(urlUtils, 'visitUrl').and.callFake((url) => {
         expect(url).toEqual(`${defaultParams}&search=searchTerm`);
         done();
       });
@@ -173,7 +173,7 @@ describe('Filtered Search Manager', () => {
     it('should search with multiple words', (done) => {
       input.value = 'awesome search terms';
 
-      spyOn(gl.utils, 'visitUrl').and.callFake((url) => {
+      spyOn(urlUtils, 'visitUrl').and.callFake((url) => {
         expect(url).toEqual(`${defaultParams}&search=awesome+search+terms`);
         done();
       });
@@ -184,7 +184,7 @@ describe('Filtered Search Manager', () => {
     it('should search with special characters', (done) => {
       input.value = '~!@#$%^&*()_+{}:<>,.?/';
 
-      spyOn(gl.utils, 'visitUrl').and.callFake((url) => {
+      spyOn(urlUtils, 'visitUrl').and.callFake((url) => {
         expect(url).toEqual(`${defaultParams}&search=~!%40%23%24%25%5E%26*()_%2B%7B%7D%3A%3C%3E%2C.%3F%2F`);
         done();
       });
@@ -198,7 +198,7 @@ describe('Filtered Search Manager', () => {
         ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
       `);
 
-      spyOn(gl.utils, 'visitUrl').and.callFake((url) => {
+      spyOn(urlUtils, 'visitUrl').and.callFake((url) => {
         expect(url).toEqual(`${defaultParams}&label_name[]=bug`);
         done();
       });
@@ -252,12 +252,14 @@ describe('Filtered Search Manager', () => {
       it('removes last token', () => {
         spyOn(gl.FilteredSearchVisualTokens, 'removeLastTokenPartial').and.callThrough();
         dispatchBackspaceEvent(input, 'keyup');
+        dispatchBackspaceEvent(input, 'keyup');
 
         expect(gl.FilteredSearchVisualTokens.removeLastTokenPartial).toHaveBeenCalled();
       });
 
       it('sets the input', () => {
         spyOn(gl.FilteredSearchVisualTokens, 'getLastTokenPartial').and.callThrough();
+        dispatchDeleteEvent(input, 'keyup');
         dispatchDeleteEvent(input, 'keyup');
 
         expect(gl.FilteredSearchVisualTokens.getLastTokenPartial).toHaveBeenCalled();
@@ -275,6 +277,18 @@ describe('Filtered Search Manager', () => {
       expect(gl.FilteredSearchVisualTokens.removeLastTokenPartial).not.toHaveBeenCalled();
       expect(gl.FilteredSearchVisualTokens.getLastTokenPartial).not.toHaveBeenCalled();
       expect(input.value).toEqual('text');
+    });
+
+    it('does not remove previous token on single backspace press', () => {
+      spyOn(gl.FilteredSearchVisualTokens, 'removeLastTokenPartial').and.callThrough();
+      spyOn(gl.FilteredSearchVisualTokens, 'getLastTokenPartial').and.callThrough();
+
+      input.value = 't';
+      dispatchDeleteEvent(input, 'keyup');
+
+      expect(gl.FilteredSearchVisualTokens.removeLastTokenPartial).not.toHaveBeenCalled();
+      expect(gl.FilteredSearchVisualTokens.getLastTokenPartial).not.toHaveBeenCalled();
+      expect(input.value).toEqual('t');
     });
   });
 

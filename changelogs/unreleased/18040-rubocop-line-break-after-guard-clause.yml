@@ -1,5 +1,0 @@
----
-title: Adds Rubocop rule for line break after guard clause
-merge_request: 15188
-author: Jacopo Beschi @jacopo-beschi
-type: added

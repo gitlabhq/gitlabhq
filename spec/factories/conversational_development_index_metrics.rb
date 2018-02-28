@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :conversational_development_index_metric, class: ConversationalDevelopmentIndex::Metric do
     leader_issues 9.256
     instance_issues 1.234

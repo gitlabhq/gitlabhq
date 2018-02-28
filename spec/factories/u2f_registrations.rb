@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :u2f_registration do
     certificate { FFaker::BaconIpsum.characters(728) }
     key_handle { FFaker::BaconIpsum.characters(86) }

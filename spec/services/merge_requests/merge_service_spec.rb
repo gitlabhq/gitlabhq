@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 describe MergeRequests::MergeService do
-  let(:user) { create(:user) }
-  let(:user2) { create(:user) }
+  set(:user) { create(:user) }
+  set(:user2) { create(:user) }
   let(:merge_request) { create(:merge_request, :simple, author: user2, assignee: user2) }
   let(:project) { merge_request.project }
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :developer]
+    project.add_master(user)
+    project.add_developer(user2)
   end
 
   describe '#execute' do

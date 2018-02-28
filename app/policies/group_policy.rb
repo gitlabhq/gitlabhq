@@ -28,12 +28,18 @@ class GroupPolicy < BasePolicy
   with_options scope: :subject, score: 0
   condition(:request_access_enabled) { @subject.request_access_enabled }
 
-  rule { public_group }      .enable :read_group
+  rule { public_group }.policy do
+    enable :read_group
+    enable :read_list
+    enable :read_label
+  end
+
   rule { logged_in_viewable }.enable :read_group
 
   rule { guest }.policy do
     enable :read_group
     enable :upload_file
+    enable :read_label
   end
 
   rule { admin }             .enable :read_group

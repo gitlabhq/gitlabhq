@@ -6,7 +6,7 @@ describe Projects::MergeRequests::CreationsController do
   let(:fork_project) { create(:forked_project_with_submodules) }
 
   before do
-    fork_project.team << [user, :master]
+    fork_project.add_master(user)
 
     sign_in(user)
   end
@@ -86,7 +86,7 @@ describe Projects::MergeRequests::CreationsController do
       let(:other_project) { create(:project, :repository) }
 
       before do
-        other_project.team << [user, :master]
+        other_project.add_master(user)
       end
 
       context 'when the path exists in the diff' do

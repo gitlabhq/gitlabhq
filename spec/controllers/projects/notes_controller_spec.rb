@@ -32,7 +32,7 @@ describe Projects::NotesController do
 
     before do
       sign_in(user)
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     it 'passes last_fetched_at from headers to NotesFinder' do
@@ -351,7 +351,7 @@ describe Projects::NotesController do
 
     before do
       sign_in(note.author)
-      project.team << [note.author, :developer]
+      project.add_developer(note.author)
     end
 
     it "updates the note" do
@@ -372,7 +372,7 @@ describe Projects::NotesController do
     context 'user is the author of a note' do
       before do
         sign_in(note.author)
-        project.team << [note.author, :developer]
+        project.add_developer(note.author)
       end
 
       it "returns status 200 for html" do
@@ -389,7 +389,7 @@ describe Projects::NotesController do
     context 'user is not the author of a note' do
       before do
         sign_in(user)
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       it "returns status 404" do
@@ -403,7 +403,7 @@ describe Projects::NotesController do
   describe 'POST toggle_award_emoji' do
     before do
       sign_in(user)
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     it "toggles the award emoji" do
@@ -445,7 +445,7 @@ describe Projects::NotesController do
 
       context "when the user is authorized to resolve the note" do
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         context "when the note is not resolvable" do
@@ -506,7 +506,7 @@ describe Projects::NotesController do
 
       context "when the user is authorized to resolve the note" do
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         context "when the note is not resolvable" do

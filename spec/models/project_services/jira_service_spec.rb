@@ -395,6 +395,26 @@ describe JiraService do
     end
   end
 
+  describe 'additional cookies' do
+    let(:project) { create(:project) }
+
+    context 'provides additional cookies to allow basic auth with oracle webgate' do
+      before do
+        @service = project.create_jira_service(
+          active: true, properties: { url: 'http://jira.com' })
+      end
+
+      after do
+        @service.destroy!
+      end
+
+      it 'is initialized' do
+        expect(@service.options[:use_cookies]).to eq(true)
+        expect(@service.options[:additional_cookies]).to eq(["OBBasicAuth=fromDialog"])
+      end
+    end
+  end
+
   describe 'project and issue urls' do
     let(:project) { create(:project) }
 

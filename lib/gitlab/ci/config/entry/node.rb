@@ -90,6 +90,10 @@ module Gitlab
           def self.aspects
             @aspects ||= []
           end
+
+          private
+
+          attr_reader :entries
         end
       end
     end

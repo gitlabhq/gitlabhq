@@ -22,6 +22,7 @@ describe GroupChildEntity do
        avatar_url
        name
        description
+       markdown_description
        visibility
        type
        can_edit
@@ -60,9 +61,10 @@ describe GroupChildEntity do
   end
 
   describe 'for a group', :nested_groups do
+    let(:description) { 'Awesomeness' }
     let(:object) do
       create(:group, :nested, :with_avatar,
-             description: 'Awesomeness')
+             description: description)
     end
 
     before do
@@ -94,6 +96,14 @@ describe GroupChildEntity do
 
     it 'has the correct edit path' do
       expect(json[:edit_path]).to eq(edit_group_path(object))
+    end
+
+    context 'emoji in description' do
+      let(:description) { ':smile:' }
+
+      it 'has the correct markdown_description' do
+        expect(json[:markdown_description]).to eq('<p dir="auto"><gl-emoji title="smiling face with open mouth and smiling eyes" data-name="smile" data-unicode-version="6.0">😄</gl-emoji></p>')
+      end
     end
 
     it_behaves_like 'group child json'

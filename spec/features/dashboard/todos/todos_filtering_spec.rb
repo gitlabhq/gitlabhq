@@ -15,8 +15,8 @@ feature 'Dashboard > User filters todos', :js do
     create(:todo, user: user_1, author: user_2, project: project_1, target: issue, action: 1)
     create(:todo, user: user_1, author: user_1, project: project_2, target: merge_request, action: 2)
 
-    project_1.team << [user_1, :developer]
-    project_2.team << [user_1, :developer]
+    project_1.add_developer(user_1)
+    project_2.add_developer(user_1)
     sign_in(user_1)
     visit dashboard_todos_path
   end
@@ -66,8 +66,8 @@ feature 'Dashboard > User filters todos', :js do
       create(:todo, user: user_1, author: user_3, project: project_1, target: issue, action: 1, state: :done)
       create(:todo, user: user_1, author: user_4, project: project_2, target: merge_request, action: 2, state: :done)
 
-      project_1.team << [user_3, :developer]
-      project_2.team << [user_4, :developer]
+      project_1.add_developer(user_3)
+      project_2.add_developer(user_4)
 
       visit dashboard_todos_path(state: 'done')
 

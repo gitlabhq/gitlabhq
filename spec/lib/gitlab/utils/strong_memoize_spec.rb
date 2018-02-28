@@ -49,4 +49,16 @@ describe Gitlab::Utils::StrongMemoize do
       end
     end
   end
+
+  describe '#clear_memoization' do
+    let(:value) { 'mepmep' }
+
+    it 'removes the instance variable' do
+      object.method_name
+
+      object.clear_memoization(:method_name)
+
+      expect(object.instance_variable_defined?(:@method_name)).to be(false)
+    end
+  end
 end

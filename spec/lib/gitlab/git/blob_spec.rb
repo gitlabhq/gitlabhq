@@ -146,7 +146,7 @@ describe Gitlab::Git::Blob, seed_helper: true do
 
     context 'when sha references a tree' do
       it 'returns nil' do
-        tree = Gitlab::Git::Commit.find(repository, 'master').tree
+        tree = repository.rugged.rev_parse('master^{tree}')
 
         blob = Gitlab::Git::Blob.raw(repository, tree.oid)
 
@@ -202,16 +202,6 @@ describe Gitlab::Git::Blob, seed_helper: true do
     context 'limiting' do
       subject { described_class.batch(repository, blob_references, blob_size_limit: blob_size_limit) }
 
-      context 'default' do
-        let(:blob_size_limit) { nil }
-
-        it 'limits to MAX_DATA_DISPLAY_SIZE' do
-          stub_const('Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE', 100)
-
-          expect(subject.first.data.size).to eq(100)
-        end
-      end
-
       context 'positive' do
         let(:blob_size_limit) { 10 }
 
@@ -221,7 +211,10 @@ describe Gitlab::Git::Blob, seed_helper: true do
       context 'zero' do
         let(:blob_size_limit) { 0 }
 
-        it { expect(subject.first.data).to eq('') }
+        it 'only loads the metadata' do
+          expect(subject.first.size).not_to be(0)
+          expect(subject.first.data).to eq('')
+        end
       end
 
       context 'negative' do
@@ -237,7 +230,7 @@ describe Gitlab::Git::Blob, seed_helper: true do
   end
 
   describe '.batch_lfs_pointers' do
-    let(:tree_object) { Gitlab::Git::Commit.find(repository, 'master').tree }
+    let(:tree_object) { repository.rugged.rev_parse('master^{tree}') }
 
     let(:non_lfs_blob) do
       Gitlab::Git::Blob.find(

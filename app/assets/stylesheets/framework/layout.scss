@@ -24,6 +24,7 @@ body {
 }
 
 .content-wrapper {
+  margin-top: $header-height;
   padding-bottom: 100px;
 }
 
@@ -105,11 +106,11 @@ body {
   }
 }
 
-.page-with-sidebar > .content-wrapper {
+.layout-page > .content-wrapper {
   min-height: calc(100vh - #{$header-height});
 }
 
-.with-performance-bar .page-with-sidebar {
+.with-performance-bar .layout-page {
   margin-top: $header-height + $performance-bar-height;
 }
 

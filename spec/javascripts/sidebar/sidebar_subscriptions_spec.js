@@ -26,11 +26,14 @@ describe('Sidebar Subscriptions', function () {
   });
 
   it('calls the mediator toggleSubscription on event', () => {
-    spyOn(SidebarMediator.prototype, 'toggleSubscription').and.returnValue(Promise.resolve());
-    vm = mountComponent(SidebarSubscriptions, {});
+    const mediator = new SidebarMediator();
+    spyOn(mediator, 'toggleSubscription').and.returnValue(Promise.resolve());
+    vm = mountComponent(SidebarSubscriptions, {
+      mediator,
+    });
 
     eventHub.$emit('toggleSubscription');
 
-    expect(SidebarMediator.prototype.toggleSubscription).toHaveBeenCalled();
+    expect(mediator.toggleSubscription).toHaveBeenCalled();
   });
 });

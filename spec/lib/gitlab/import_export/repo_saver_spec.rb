@@ -9,7 +9,7 @@ describe Gitlab::ImportExport::RepoSaver do
     let(:bundler) { described_class.new(project: project, shared: shared) }
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
     end
 

@@ -5,6 +5,6 @@ module ClusterQueue
   extend ActiveSupport::Concern
 
   included do
-    sidekiq_options queue: :gcp_cluster
+    queue_namespace :gcp_cluster
   end
 end

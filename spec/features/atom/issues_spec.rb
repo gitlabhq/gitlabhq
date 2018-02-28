@@ -9,7 +9,7 @@ describe 'Issues Feed'  do
     let!(:issue)    { create(:issue, author: user, assignees: [assignee], project: project) }
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
       group.add_developer(user)
     end
 

@@ -17,7 +17,7 @@ describe RuboCop::Cop::RSpec::EnvAssignment do
 
   shared_examples 'an offensive ENV#[]= call' do |content|
     it "registers an offense for `#{content}`" do
-      inspect_source(cop, content, source_file)
+      inspect_source(content, source_file)
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.map(&:line)).to eq([1])
@@ -27,7 +27,7 @@ describe RuboCop::Cop::RSpec::EnvAssignment do
 
   shared_examples 'an autocorrected ENV#[]= call' do |content, autocorrected_content|
     it "registers an offense for `#{content}` and autocorrects it to `#{autocorrected_content}`" do
-      autocorrected = autocorrect_source(cop, content, source_file)
+      autocorrected = autocorrect_source(content, source_file)
 
       expect(autocorrected).to eql(autocorrected_content)
     end
@@ -51,7 +51,7 @@ describe RuboCop::Cop::RSpec::EnvAssignment do
 
   context 'outside of a spec file' do
     it "does not register an offense for `#{OFFENSE_CALL_SINGLE_QUOTES_KEY}` in a non-spec file" do
-      inspect_source(cop, OFFENSE_CALL_SINGLE_QUOTES_KEY)
+      inspect_source(OFFENSE_CALL_SINGLE_QUOTES_KEY)
 
       expect(cop.offenses.size).to eq(0)
     end

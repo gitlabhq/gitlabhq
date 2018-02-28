@@ -28,7 +28,7 @@ describe MergeRequests::BuildService do
   end
 
   before do
-    project.team << [user, :guest]
+    project.add_guest(user)
   end
 
   def stub_compare

@@ -82,6 +82,13 @@ describe('Clusters Store', () => {
             requestStatus: null,
             requestReason: null,
           },
+          prometheus: {
+            title: 'Prometheus',
+            status: mockResponseData.applications[3].status,
+            statusReason: mockResponseData.applications[3].status_reason,
+            requestStatus: null,
+            requestReason: null,
+          },
         },
       });
     });

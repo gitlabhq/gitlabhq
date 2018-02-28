@@ -17,7 +17,7 @@ describe 'New issue', :js do
       recaptcha_private_key: 'test private key'
     )
 
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 

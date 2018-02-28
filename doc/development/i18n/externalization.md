@@ -215,6 +215,9 @@ There is also and alternative method to [translate messages from validation erro
     sprintf(__('Hello %{username}'), { username: 'Joe' }) => 'Hello Joe'
     ```
 
+The placeholders should match the code style of the respective source file.
+For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript.
+
 ### Plurals
 
 - In Ruby/HAML:
@@ -258,6 +261,21 @@ Sometimes you need to add some context to the text that you want to translate
     ```js
     s__('OpenedNDaysAgo|Opened')
     ```
+
+### Dates / times
+
+- In JavaScript:
+
+```js
+import { createDateTimeFormat } from '.../locale';
+
+const dateFormat = createDateTimeFormat({ year: 'numeric', month: 'long', day: 'numeric' });
+console.log(dateFormat.format(new Date('2063-04-05'))) // April 5, 2063
+```
+
+This makes use of [`Intl.DateTimeFormat`].
+
+[`Intl.DateTimeFormat`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat
 
 ## Adding a new language
 

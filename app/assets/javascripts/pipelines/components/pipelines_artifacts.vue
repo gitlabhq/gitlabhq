@@ -1,5 +1,6 @@
 <script>
   import tooltip from '../../vue_shared/directives/tooltip';
+  import icon from '../../vue_shared/components/icon.vue';
 
   export default {
     props: {
@@ -10,6 +11,9 @@
     },
     directives: {
       tooltip,
+    },
+    components: {
+      icon,
     },
   };
 </script>
@@ -24,10 +28,9 @@
       data-placement="top"
       data-toggle="dropdown"
       aria-label="Artifacts">
-      <i
-        class="fa fa-download"
-        aria-hidden="true">
-      </i>
+      <icon 
+        name="download">
+      </icon>
       <i
         class="fa fa-caret-down"
         aria-hidden="true">

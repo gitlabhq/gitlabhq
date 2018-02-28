@@ -2,6 +2,7 @@
   import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
   import limitWarning from './limit_warning_component.vue';
   import totalTime from './total_time_component.vue';
+  import icon from '../../vue_shared/components/icon.vue';
 
   export default {
     props: {
@@ -12,6 +13,7 @@
       userAvatarImage,
       totalTime,
       limitWarning,
+      icon,
     },
   };
 </script>
@@ -52,7 +54,10 @@
           </template>
           <template v-else>
             <span class="merge-request-branch" v-if="mergeRequest.branch">
-              <i class= "fa fa-code-fork"></i>
+              <icon
+                name="fork"
+                :size="16">
+              </icon>
               <a :href="mergeRequest.branch.url">{{ mergeRequest.branch.name }}</a>
             </span>
           </template>

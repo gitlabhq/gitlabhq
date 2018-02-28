@@ -66,7 +66,7 @@ module Gitlab
             :gitlab_cache_operation_duration_seconds,
             'Cache access time',
             Transaction::BASE_LABELS.merge({ action: nil }),
-            [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.500, 2.0, 10.0]
+            [0.001, 0.01, 0.1, 1, 10]
           )
         end
 

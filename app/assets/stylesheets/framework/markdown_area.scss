@@ -74,7 +74,7 @@
 }
 
 .md-header-tab {
-  @media(max-width: $screen-xs-max) {
+  @media (max-width: $screen-xs-max) {
     flex: 1;
     width: 100%;
     border-bottom: 1px solid $border-color;
@@ -82,16 +82,23 @@
   }
 }
 
-.md-header-toolbar {
-  margin-left: auto;
+.nav-links {
+  li.md-header-toolbar {
+    margin-left: auto;
+    display: none;
 
-  @media(max-width: $screen-xs-max) {
-    flex: none;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    padding-top: $gl-padding-top;
-    padding-bottom: $gl-padding-top;
+    &.active {
+      display: block;
+
+      @media (max-width: $screen-xs-max) {
+        flex: none;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        padding-top: $gl-padding-top;
+        padding-bottom: $gl-padding-top;
+      }
+    }
   }
 }
 
@@ -175,7 +182,7 @@
   margin-left: $gl-padding;
   margin-right: -5px;
 
-  @media(max-width: $screen-xs-max) {
+  @media (max-width: $screen-xs-max) {
     margin-left: 0;
     margin-right: 0;
   }
@@ -184,6 +191,17 @@
 .atwho-view {
   overflow-y: auto;
   overflow-x: hidden;
+
+  .name,
+  small.aliases,
+  small.params {
+    float: left;
+  }
+
+  small.aliases,
+  small.params {
+    padding: 2px 5px;
+  }
 
   small.description {
     float: right;
@@ -202,6 +220,7 @@
   }
 
   ul > li {
+    @include clearfix;
     white-space: nowrap;
   }
 
@@ -239,7 +258,7 @@
   }
 }
 
-@media(max-width: $screen-xs-max) {
+@media (max-width: $screen-xs-max) {
   .atwho-view-ul {
     width: 350px;
   }

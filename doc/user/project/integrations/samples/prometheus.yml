@@ -94,7 +94,7 @@ spec:
       - name: prometheus
         image: prom/prometheus:latest
         args:
-          - '-config.file=/prometheus-data/prometheus.yml'
+          - '--config.file=/prometheus-data/prometheus.yml'
         ports:
         - name: prometheus
           containerPort: 9090

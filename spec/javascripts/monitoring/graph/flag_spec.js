@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import GraphFlag from '~/monitoring/components/graph/flag.vue';
+import { deploymentData } from '../mock_data';
 
 const createComponent = (propsData) => {
   const Component = Vue.extend(GraphFlag);
@@ -8,11 +9,6 @@ const createComponent = (propsData) => {
     propsData,
   }).$mount();
 };
-
-function getCoordinate(component, selector, coordinate) {
-  const coordinateVal = component.$el.querySelector(selector).getAttribute(coordinate);
-  return parseInt(coordinateVal, 10);
-}
 
 const defaultValuesComponent = {
   currentXCoordinate: 200,
@@ -25,31 +21,111 @@ const defaultValuesComponent = {
   graphHeight: 300,
   graphHeightOffset: 120,
   showFlagContent: true,
+  realPixelRatio: 1,
+  timeSeries: [{
+    values: [{
+      time: new Date('2017-06-04T18:17:33.501Z'),
+      value: '1.49609375',
+    }],
+  }],
+  unitOfDisplay: 'ms',
+  currentDataIndex: 0,
+  legendTitle: 'Average',
+};
+
+const deploymentFlagData = {
+  ...deploymentData[0],
+  ref: deploymentData[0].ref.name,
+  xPos: 10,
+  time: new Date(deploymentData[0].created_at),
 };
 
 describe('GraphFlag', () => {
-  it('has a line and a circle located at the currentXCoordinate and currentYCoordinate', () => {
-    const component = createComponent(defaultValuesComponent);
+  let component;
 
-    expect(getCoordinate(component, '.selected-metric-line', 'x1'))
-      .toEqual(component.currentXCoordinate);
-    expect(getCoordinate(component, '.selected-metric-line', 'x2'))
-      .toEqual(component.currentXCoordinate);
+  it('has a line at the currentXCoordinate', () => {
+    component = createComponent(defaultValuesComponent);
+
+    expect(component.$el.style.left)
+      .toEqual(`${70 + component.currentXCoordinate}px`);
   });
 
-  it('has a SVG with the class rect-text-metric at the currentFlagPosition', () => {
-    const component = createComponent(defaultValuesComponent);
+  describe('Deployment flag', () => {
+    it('shows a deployment flag when deployment data provided', () => {
+      const deploymentFlagComponent = createComponent({
+        ...defaultValuesComponent,
+        deploymentFlagData,
+      });
 
-    const svg = component.$el.querySelector('.rect-text-metric');
-    expect(svg.tagName).toEqual('svg');
-    expect(parseInt(svg.getAttribute('x'), 10)).toEqual(component.currentFlagPosition);
+      expect(
+        deploymentFlagComponent.$el.querySelector('.popover-title'),
+      ).toContainText('Deployed');
+    });
+
+    it('contains the ref when a tag is available', () => {
+      const deploymentFlagComponent = createComponent({
+        ...defaultValuesComponent,
+        deploymentFlagData: {
+          ...deploymentFlagData,
+          sha: 'f5bcd1d9dac6fa4137e2510b9ccd134ef2e84187',
+          tag: true,
+          ref: '1.0',
+        },
+      });
+
+      expect(
+        deploymentFlagComponent.$el.querySelector('.deploy-meta-content'),
+      ).toContainText('f5bcd1d9');
+
+      expect(
+        deploymentFlagComponent.$el.querySelector('.deploy-meta-content'),
+      ).toContainText('1.0');
+    });
+
+    it('does not contain the ref when a tag is unavailable', () => {
+      const deploymentFlagComponent = createComponent({
+        ...defaultValuesComponent,
+        deploymentFlagData: {
+          ...deploymentFlagData,
+          sha: 'f5bcd1d9dac6fa4137e2510b9ccd134ef2e84187',
+          tag: false,
+          ref: '1.0',
+        },
+      });
+
+      expect(
+        deploymentFlagComponent.$el.querySelector('.deploy-meta-content'),
+      ).toContainText('f5bcd1d9');
+
+      expect(
+        deploymentFlagComponent.$el.querySelector('.deploy-meta-content'),
+      ).not.toContainText('1.0');
+    });
   });
 
   describe('Computed props', () => {
-    it('calculatedHeight', () => {
-      const component = createComponent(defaultValuesComponent);
+    beforeEach(() => {
+      component = createComponent(defaultValuesComponent);
+    });
 
-      expect(component.calculatedHeight).toEqual(180);
+    it('formatTime', () => {
+      expect(component.formatTime).toMatch(/\d:17PM/);
+    });
+
+    it('formatDate', () => {
+      expect(component.formatDate).toEqual('Sun, Jun 4');
+    });
+
+    it('cursorStyle', () => {
+      expect(component.cursorStyle).toEqual({
+        top: '20px',
+        left: '270px',
+        height: '180px',
+      });
+    });
+
+    it('flagOrientation', () => {
+      expect(component.flagOrientation).toEqual('left');
     });
   });
 });

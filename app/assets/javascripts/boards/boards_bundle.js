@@ -2,7 +2,6 @@
 
 import _ from 'underscore';
 import Vue from 'vue';
-import VueResource from 'vue-resource';
 import Flash from '../flash';
 import { __ } from '../locale';
 import FilteredSearchBoards from './filtered_search_boards';
@@ -24,8 +23,6 @@ import './components/board_sidebar';
 import './components/new_list_dropdown';
 import './components/modal/index';
 import '../vue_shared/vue_resource_interceptor';
-
-Vue.use(VueResource);
 
 $(() => {
   const $boardApp = document.getElementById('board-app');
@@ -95,14 +92,13 @@ $(() => {
 
       Store.disabled = this.disabled;
       gl.boardService.all()
-        .then(response => response.json())
-        .then((resp) => {
-          resp.forEach((board) => {
+        .then(res => res.data)
+        .then((data) => {
+          data.forEach((board) => {
             const list = Store.addList(board, this.defaultAvatar);
 
             if (list.type === 'closed') {
               list.position = Infinity;
-              list.label = { description: 'Shows all closed issues. Moving an issue to this list closes it' };
             } else if (list.type === 'backlog') {
               list.position = -1;
             }
@@ -113,7 +109,9 @@ $(() => {
           Store.addBlankState();
           this.loading = false;
         })
-        .catch(() => new Flash('An error occurred. Please try again.'));
+        .catch(() => {
+          Flash('An error occurred while fetching the board lists. Please try again.');
+        });
     },
     methods: {
       updateTokens() {
@@ -124,7 +122,7 @@ $(() => {
         if (sidebarInfoEndpoint && newIssue.subscribed === undefined) {
           newIssue.setFetchingState('subscriptions', true);
           BoardService.getIssueInfo(sidebarInfoEndpoint)
-            .then(res => res.json())
+            .then(res => res.data)
             .then((data) => {
               newIssue.setFetchingState('subscriptions', false);
               newIssue.updateData({

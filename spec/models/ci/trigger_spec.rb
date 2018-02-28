@@ -69,7 +69,7 @@ describe Ci::Trigger do
 
       context 'and is member of the project' do
         before do
-          project.team << [owner, :developer]
+          project.add_developer(owner)
         end
 
         it { is_expected.to eq(true) }

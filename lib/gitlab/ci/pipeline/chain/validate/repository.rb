@@ -7,14 +7,11 @@ module Gitlab
             include Chain::Helpers
 
             def perform!
-              unless branch_exists? || tag_exists?
+              unless @command.branch_exists? || @command.tag_exists?
                 return error('Reference not found')
               end
 
-              ## TODO, we check commit in the service, that is why
-              # there is no repository access here.
-              #
-              unless pipeline.sha
+              unless @command.sha
                 return error('Commit not found')
               end
             end

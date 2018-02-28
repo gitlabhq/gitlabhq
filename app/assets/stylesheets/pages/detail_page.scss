@@ -32,8 +32,6 @@
 }
 
 .detail-page-header-actions {
-  @include new-style-dropdown;
-
   align-self: center;
   flex-shrink: 0;
   flex: 0 0 auto;

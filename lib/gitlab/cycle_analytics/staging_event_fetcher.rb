@@ -22,6 +22,10 @@ module Gitlab
 
       private
 
+      def allowed_ids
+        nil
+      end
+
       def serialize(event)
         AnalyticsBuildSerializer.new.represent(event['build'])
       end

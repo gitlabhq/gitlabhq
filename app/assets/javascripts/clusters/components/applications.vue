@@ -67,6 +67,16 @@ export default {
         and send the results back to GitLab.`,
       ));
     },
+    prometheusDescription() {
+      return sprintf(
+        _.escape(s__('ClusterIntegration|Prometheus is an open-source monitoring system with %{gitlabIntegrationLink} to monitor deployed applications.')), {
+          gitlabIntegrationLink: `<a href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html", target="_blank" rel="noopener noreferrer">
+            ${_.escape(s__('ClusterIntegration|Gitlab Integration'))}
+          </a>`,
+        },
+        false,
+      );
+    },
   },
 };
 </script>
@@ -105,6 +115,16 @@ export default {
          :status-reason="applications.ingress.statusReason"
          :request-status="applications.ingress.requestStatus"
          :request-reason="applications.ingress.requestReason"
+       />
+       <application-row
+         id="prometheus"
+         :title="applications.prometheus.title"
+         title-link="https://prometheus.io/docs/introduction/overview/"
+         :description="prometheusDescription"
+         :status="applications.prometheus.status"
+         :status-reason="applications.prometheus.statusReason"
+         :request-status="applications.prometheus.requestStatus"
+         :request-reason="applications.prometheus.requestReason"
        />
         <!-- NOTE: Don't forget to update `clusters.scss` min-height for this block and uncomment `application_spec` tests -->
         <!-- Add GitLab Runner row, all other plumbing is complete -->

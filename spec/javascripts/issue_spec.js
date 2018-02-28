@@ -55,7 +55,7 @@ describe('Issue', function() {
   }
 
   function findElements(isIssueInitiallyOpen) {
-    $boxClosed = $('div.status-box-closed');
+    $boxClosed = $('div.status-box-issue-closed');
     expect($boxClosed).toExist();
     expect($boxClosed).toHaveText('Closed');
 

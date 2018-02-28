@@ -7,7 +7,7 @@ describe API::Environments do
   let!(:environment)  { create(:environment, project: project) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   describe 'GET /projects/:id/environments' do

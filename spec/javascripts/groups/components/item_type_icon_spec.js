@@ -28,12 +28,12 @@ describe('ItemTypeIconComponent', () => {
 
       vm = createComponent(ITEM_TYPE.GROUP, true);
       vm.$mount();
-      expect(vm.$el.querySelector('i.fa.fa-folder-open')).toBeDefined();
+      expect(vm.$el.querySelector('use').getAttribute('xlink:href')).toContain('folder-open');
       vm.$destroy();
 
       vm = createComponent(ITEM_TYPE.GROUP);
       vm.$mount();
-      expect(vm.$el.querySelector('i.fa.fa-folder')).toBeDefined();
+      expect(vm.$el.querySelector('use').getAttribute('xlink:href')).toContain('folder');
       vm.$destroy();
     });
 
@@ -42,12 +42,12 @@ describe('ItemTypeIconComponent', () => {
 
       vm = createComponent(ITEM_TYPE.PROJECT);
       vm.$mount();
-      expect(vm.$el.querySelectorAll('i.fa.fa-bookmark').length).toBe(1);
+      expect(vm.$el.querySelector('use').getAttribute('xlink:href')).toContain('bookmark');
       vm.$destroy();
 
       vm = createComponent(ITEM_TYPE.GROUP);
       vm.$mount();
-      expect(vm.$el.querySelectorAll('i.fa.fa-bookmark').length).toBe(0);
+      expect(vm.$el.querySelector('use').getAttribute('xlink:href')).not.toContain('bookmark');
       vm.$destroy();
     });
   });

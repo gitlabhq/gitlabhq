@@ -6,7 +6,7 @@ feature 'Projects > Members > Groups with access list', :js do
   let(:project) { create(:project, :public) }
 
   background do
-    project.team << [user, :master]
+    project.add_master(user)
     @group_link = create(:project_group_link, project: project, group: group)
 
     sign_in(user)

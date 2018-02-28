@@ -10,7 +10,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   step 'I own project "Delta"' do
     @project = ::Project.find_by(name: "Delta")
     @project ||= create(:project, :repository, name: "Delta", namespace: @user.namespace)
-    @project.team << [@user, :master]
+    @project.add_master(@user)
   end
 
   step 'I should see files from repository in markdown' do

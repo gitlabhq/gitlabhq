@@ -24,7 +24,7 @@ describe Files::UpdateService do
   end
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   describe "#execute" do

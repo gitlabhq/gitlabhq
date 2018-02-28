@@ -111,6 +111,8 @@ describe Projects::ArtifactsController do
   end
 
   describe 'GET raw' do
+    subject { get(:raw, namespace_id: project.namespace, project_id: project, job_id: job, path: path) }
+
     context 'when the file exists' do
       let(:path) { 'ci_artifacts.txt' }
 

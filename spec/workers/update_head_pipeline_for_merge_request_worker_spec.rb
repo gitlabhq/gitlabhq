@@ -22,7 +22,7 @@ describe UpdateHeadPipelineForMergeRequestWorker do
         end
 
         it 'does not update head_pipeline_id' do
-          expect { subject.perform(merge_request.id) }.to raise_error(ArgumentError)
+          expect { subject.perform(merge_request.id) }.not_to raise_error
 
           expect(merge_request.reload.head_pipeline_id).to eq(nil)
         end

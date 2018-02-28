@@ -102,6 +102,26 @@ describe CacheMarkdownField do
     it { expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_VERSION) }
   end
 
+  context 'when a markdown field is set repeatedly to an empty string' do
+    it do
+      expect(thing).to receive(:refresh_markdown_cache).once
+      thing.foo = ''
+      thing.save
+      thing.foo = ''
+      thing.save
+    end
+  end
+
+  context 'when a markdown field is set repeatedly to a string which renders as empty html' do
+    it do
+      expect(thing).to receive(:refresh_markdown_cache).once
+      thing.foo = '[//]: # (This is also a comment.)'
+      thing.save
+      thing.foo = '[//]: # (This is also a comment.)'
+      thing.save
+    end
+  end
+
   context 'a non-markdown field changed' do
     before do
       thing.bar = 'OK'

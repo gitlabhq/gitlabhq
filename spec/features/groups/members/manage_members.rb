@@ -38,6 +38,27 @@ feature 'Groups > Members > Manage members' do
     end
   end
 
+  scenario 'do not disclose email addresses', :js do
+    group.add_owner(user1)
+    create(:user, email: 'undisclosed_email@gitlab.com', name: "Jane 'invisible' Doe")
+
+    visit group_group_members_path(group)
+
+    find('.select2-container').click
+    select_input = find('.select2-input')
+
+    select_input.send_keys('@gitlab.com')
+    wait_for_requests
+
+    expect(page).to have_content('No matches found')
+
+    select_input.native.clear
+    select_input.send_keys('undisclosed_email@gitlab.com')
+    wait_for_requests
+
+    expect(page).to have_content("Jane 'invisible' Doe")
+  end
+
   scenario 'remove user from group', :js do
     group.add_owner(user1)
     group.add_developer(user2)

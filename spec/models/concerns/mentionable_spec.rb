@@ -62,7 +62,7 @@ describe Issue, "Mentionable" do
 
       context 'when the current user can see the issue' do
         before do
-          private_project.team << [user, Gitlab::Access::DEVELOPER]
+          private_project.add_developer(user)
         end
 
         it 'includes the reference' do
@@ -107,7 +107,7 @@ describe Issue, "Mentionable" do
     let(:issues)  { create_list(:issue, 2, project: project, author: author) }
 
     before do
-      project.team << [author, Gitlab::Access::DEVELOPER]
+      project.add_developer(author)
     end
 
     context 'before changes are persisted' do

@@ -9,6 +9,7 @@ class ProjectsController < Projects::ApplicationController
   before_action :repository, except: [:index, :new, :create]
   before_action :assign_ref_vars, only: [:show], if: :repo_exists?
   before_action :tree, only: [:show], if: [:repo_exists?, :project_view_files?]
+  before_action :lfs_blob_ids, only: [:show], if: [:repo_exists?, :project_view_files?]
   before_action :project_export_enabled, only: [:export, :download_export, :remove_export, :generate_new_export]
 
   # Authorize
@@ -272,7 +273,7 @@ class ProjectsController < Projects::ApplicationController
 
       render 'projects/empty' if @project.empty_repo?
     else
-      if @project.wiki_enabled?
+      if can?(current_user, :read_wiki, @project)
         @project_wiki = @project.wiki
         @wiki_home = @project_wiki.find_page('home', params[:version_id])
       elsif @project.feature_available?(:issues, current_user)
@@ -352,7 +353,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def repo_exists?
-    project.repository_exists? && !project.empty_repo? && project.repo
+    project.repository_exists? && !project.empty_repo?
 
   rescue Gitlab::Git::Repository::NoRepository
     project.repository.expire_exists_cache

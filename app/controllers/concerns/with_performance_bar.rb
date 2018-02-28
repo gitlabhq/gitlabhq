@@ -6,6 +6,7 @@ module WithPerformanceBar
   end
 
   def peek_enabled?
+    return true if Rails.env.development?
     return false unless Gitlab::PerformanceBar.enabled?(current_user)
 
     if RequestStore.active?

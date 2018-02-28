@@ -159,7 +159,6 @@
   }
 }
 
-
 /*
  * Last push widget
  */
@@ -181,6 +180,12 @@
 @media (max-width: $screen-xs-max) {
   .event-item {
     padding-left: 0;
+
+    &.event-inline {
+      .event-title {
+        line-height: 20px;
+      }
+    }
 
     .event-title {
       white-space: normal;

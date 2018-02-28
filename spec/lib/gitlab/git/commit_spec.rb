@@ -55,7 +55,6 @@ describe Gitlab::Git::Commit, seed_helper: true do
     it { expect(@commit.parents).to eq(@gitlab_parents) }
     it { expect(@commit.parent_id).to eq(@parents.first.oid) }
     it { expect(@commit.no_commit_message).to eq("--no commit message") }
-    it { expect(@commit.tree).to eq(@tree) }
 
     after do
       # Erase the new commit so other tests get the original repo
@@ -427,6 +426,11 @@ describe Gitlab::Git::Commit, seed_helper: true do
     describe '#deletions' do
       subject { super().deletions }
       it { is_expected.to eq(6) }
+    end
+
+    describe '#total' do
+      subject { super().total }
+      it { is_expected.to eq(17) }
     end
   end
 

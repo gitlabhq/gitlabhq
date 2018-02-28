@@ -2,20 +2,9 @@ require 'spec_helper'
 
 describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
   include TrackUntrackedUploadsHelpers
+  include MigrationsHelpers
 
   let!(:untracked_files_for_uploads) { described_class::UntrackedFile }
-
-  matcher :be_scheduled_migration do |*expected|
-    match do |migration|
-      BackgroundMigrationWorker.jobs.any? do |job|
-        job['args'] == [migration, expected]
-      end
-    end
-
-    failure_message do |migration|
-      "Migration `#{migration}` with args `#{expected.inspect}` not scheduled!"
-    end
-  end
 
   before do
     DatabaseCleaner.clean

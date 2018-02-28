@@ -133,7 +133,7 @@ feature 'Project' do
 
     before do
       sign_in(user)
-      project.team << [user, :master]
+      project.add_master(user)
       visit edit_project_path(project)
     end
 
@@ -151,7 +151,7 @@ feature 'Project' do
     let(:project) { create(:forked_project_with_submodules) }
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in user
       visit project_path(project)
     end
@@ -180,7 +180,7 @@ feature 'Project' do
     let(:project) { create(:project, :repository) }
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in user
       visit project_path(project)
     end

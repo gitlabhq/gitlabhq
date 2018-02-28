@@ -70,7 +70,7 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
 
   describe '#execute' do
     it 'imports the repository and wiki' do
-      expect(repository)
+      expect(project)
         .to receive(:empty_repo?)
         .and_return(true)
 
@@ -93,7 +93,7 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
     end
 
     it 'does not import the repository if it already exists' do
-      expect(repository)
+      expect(project)
         .to receive(:empty_repo?)
         .and_return(false)
 
@@ -115,7 +115,7 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
     end
 
     it 'does not import the wiki if it is disabled' do
-      expect(repository)
+      expect(project)
         .to receive(:empty_repo?)
         .and_return(true)
 
@@ -137,7 +137,7 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
     end
 
     it 'does not import the wiki if the repository could not be imported' do
-      expect(repository)
+      expect(project)
         .to receive(:empty_repo?)
         .and_return(true)
 

@@ -1,5 +1,6 @@
 module NotesActions
   include RendersNotes
+  include Gitlab::Utils::StrongMemoize
   extend ActiveSupport::Concern
 
   included do
@@ -30,6 +31,7 @@ module NotesActions
     render json: notes_json
   end
 
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def create
     create_params = note_params.merge(
       merge_request_diff_head_sha: params[:merge_request_diff_head_sha],
@@ -47,7 +49,9 @@ module NotesActions
       format.html { redirect_back_or_default }
     end
   end
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def update
     @note = Notes::UpdateService.new(project, current_user, note_params).execute(note)
 
@@ -60,6 +64,7 @@ module NotesActions
       format.html { redirect_back_or_default }
     end
   end
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def destroy
     if note.editable?
@@ -138,7 +143,7 @@ module NotesActions
         end
     else
       template = "discussions/_diff_discussion"
-      @fresh_discussion = true
+      @fresh_discussion = true # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
       locals = { discussions: [discussion], on_image: on_image }
     end
@@ -191,7 +196,7 @@ module NotesActions
   end
 
   def noteable
-    @noteable ||= notes_finder.target || @note&.noteable
+    @noteable ||= notes_finder.target || @note&.noteable # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
   def require_noteable!
@@ -211,20 +216,21 @@ module NotesActions
   end
 
   def note_project
-    return @note_project if defined?(@note_project)
-    return nil unless project
+    strong_memoize(:note_project) do
+      return nil unless project
 
-    note_project_id = params[:note_project_id]
+      note_project_id = params[:note_project_id]
 
-    @note_project =
-      if note_project_id.present?
-        Project.find(note_project_id)
-      else
-        project
-      end
+      the_project =
+        if note_project_id.present?
+          Project.find(note_project_id)
+        else
+          project
+        end
 
-    return access_denied! unless can?(current_user, :create_note, @note_project)
+      return access_denied! unless can?(current_user, :create_note, the_project)
 
-    @note_project
+      the_project
+    end
   end
 end

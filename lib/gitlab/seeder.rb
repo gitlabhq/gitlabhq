@@ -8,7 +8,7 @@ end
 module Gitlab
   class Seeder
     def self.quiet
-      mute_mailer unless Rails.env.test?
+      mute_mailer
 
       SeedFu.quiet = true
 

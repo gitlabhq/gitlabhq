@@ -6,14 +6,12 @@
 
 .cluster-applications-table {
   // Wait for the Vue to kick-in and render the applications block
-  min-height: 302px;
+  min-height: 400px;
 }
 
 .clusters-dropdown-menu {
   max-width: 100%;
 }
-
-@include new-style-dropdown('.clusters-dropdown ');
 
 .clusters-container {
   .nav-bar-right {

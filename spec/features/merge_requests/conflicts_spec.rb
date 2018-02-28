@@ -88,7 +88,7 @@ feature 'Merge request conflict resolution', :js do
 
   context 'can be resolved in the UI' do
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
       sign_in(user)
     end
 
@@ -175,7 +175,7 @@ feature 'Merge request conflict resolution', :js do
       let(:merge_request) { create_merge_request(source_branch) }
 
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
         sign_in(user)
 
         visit project_merge_request_path(project, merge_request)

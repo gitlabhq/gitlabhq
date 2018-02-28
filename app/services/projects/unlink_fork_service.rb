@@ -5,7 +5,7 @@ module Projects
 
       if fork_source = @project.fork_source
         fork_source.lfs_objects.find_each do |lfs_object|
-          lfs_object.projects << @project
+          lfs_object.projects << @project unless lfs_object.projects.include?(@project)
         end
 
         refresh_forks_count(fork_source)

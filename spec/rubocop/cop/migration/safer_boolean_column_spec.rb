@@ -32,7 +32,7 @@ describe RuboCop::Cop::Migration::SaferBooleanColumn do
         sources_and_offense.each do |source, offense|
           context "given the source \"#{source}\"" do
             it "registers the offense matching \"#{offense}\"" do
-              inspect_source(cop, source)
+              inspect_source(source)
 
               aggregate_failures do
                 expect(cop.offenses.first.message).to match(offense)
@@ -49,7 +49,7 @@ describe RuboCop::Cop::Migration::SaferBooleanColumn do
         inoffensive_sources.each do |source|
           context "given the source \"#{source}\"" do
             it "registers no offense" do
-              inspect_source(cop, source)
+              inspect_source(source)
 
               aggregate_failures do
                 expect(cop.offenses).to be_empty
@@ -61,14 +61,14 @@ describe RuboCop::Cop::Migration::SaferBooleanColumn do
     end
 
     it 'registers no offense for tables not listed in SMALL_TABLES' do
-      inspect_source(cop, "add_column :large_table, :column, :boolean")
+      inspect_source("add_column :large_table, :column, :boolean")
 
       expect(cop.offenses).to be_empty
     end
 
     it 'registers no offense for non-boolean columns' do
       table = described_class::SMALL_TABLES.sample
-      inspect_source(cop, "add_column :#{table}, :column, :string")
+      inspect_source("add_column :#{table}, :column, :string")
 
       expect(cop.offenses).to be_empty
     end
@@ -77,7 +77,7 @@ describe RuboCop::Cop::Migration::SaferBooleanColumn do
   context 'outside of migration' do
     it 'registers no offense' do
       table = described_class::SMALL_TABLES.sample
-      inspect_source(cop, "add_column :#{table}, :column, :boolean")
+      inspect_source("add_column :#{table}, :column, :boolean")
 
       expect(cop.offenses).to be_empty
     end

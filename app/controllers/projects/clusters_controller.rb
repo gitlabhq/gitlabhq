@@ -8,11 +8,8 @@ class Projects::ClustersController < Projects::ApplicationController
   STATUS_POLLING_INTERVAL = 10_000
 
   def index
-    @scope = params[:scope] || 'all'
-    @clusters = ClustersFinder.new(project, current_user, @scope).execute.page(params[:page])
-    @active_count = ClustersFinder.new(project, current_user, :active).execute.count
-    @inactive_count = ClustersFinder.new(project, current_user, :inactive).execute.count
-    @all_count = @active_count + @inactive_count
+    clusters = ClustersFinder.new(project, current_user, :all).execute
+    @clusters = clusters.page(params[:page]).per(20)
   end
 
   def new
@@ -90,6 +87,7 @@ class Projects::ClustersController < Projects::ApplicationController
     if cluster.managed?
       params.require(:cluster).permit(
         :enabled,
+        :environment_scope,
         platform_kubernetes_attributes: [
           :namespace
         ]
@@ -98,6 +96,7 @@ class Projects::ClustersController < Projects::ApplicationController
       params.require(:cluster).permit(
         :enabled,
         :name,
+        :environment_scope,
         platform_kubernetes_attributes: [
           :api_url,
           :token,

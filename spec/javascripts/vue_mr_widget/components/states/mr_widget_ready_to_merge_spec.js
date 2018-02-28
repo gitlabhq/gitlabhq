@@ -292,8 +292,8 @@ describe('MRWidgetReadyToMerge', () => {
     describe('handleMergeButtonClick', () => {
       const returnPromise = status => new Promise((resolve) => {
         resolve({
-          json() {
-            return { status };
+          data: {
+            status,
           },
         });
       });
@@ -364,8 +364,9 @@ describe('MRWidgetReadyToMerge', () => {
     describe('handleMergePolling', () => {
       const returnPromise = state => new Promise((resolve) => {
         resolve({
-          json() {
-            return { state, source_branch_exists: true };
+          data: {
+            state,
+            source_branch_exists: true,
           },
         });
       });
@@ -422,8 +423,8 @@ describe('MRWidgetReadyToMerge', () => {
     describe('handleRemoveBranchPolling', () => {
       const returnPromise = state => new Promise((resolve) => {
         resolve({
-          json() {
-            return { source_branch_exists: state };
+          data: {
+            source_branch_exists: state,
           },
         });
       });

@@ -15,7 +15,11 @@
         - if variable.id?
           %tr
             %td.variable-key= variable.key
-            %td.variable-value{ "data-value" => variable.value }******
+            %td.variable-value
+              %span.js-secret-value-placeholder
+                = '*' * 6
+              %span.hide.js-secret-value
+                = variable.value
             %td.variable-protected= Gitlab::Utils.boolean_to_yes_no(variable.protected)
             %td.variable-menu
               = link_to variable.edit_path, class: "btn btn-transparent btn-variable-edit" do

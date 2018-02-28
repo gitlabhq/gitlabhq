@@ -14,10 +14,13 @@ const createComponent = () => {
     canRevertInCurrentMR: true,
     canRemoveSourceBranch: true,
     sourceBranchRemoved: true,
-    mergedEvent: {
-      author: {},
-      updatedAt: 'mergedUpdatedAt',
-      formattedUpdatedAt: '',
+    metrics: {
+      mergedBy: {},
+      mergedAt: 'mergedUpdatedAt',
+      readableMergedAt: '',
+      closedBy: {},
+      closedAt: 'mergedUpdatedAt',
+      readableClosedAt: '',
     },
     updatedAt: 'mrUpdatedAt',
     targetBranch,
@@ -111,10 +114,8 @@ describe('MRWidgetMerged', () => {
         spyOn(eventHub, '$emit');
         spyOn(vm.service, 'removeSourceBranch').and.returnValue(new Promise((resolve) => {
           resolve({
-            json() {
-              return {
-                message: 'Branch was removed',
-              };
+            data: {
+              message: 'Branch was removed',
             },
           });
         }));

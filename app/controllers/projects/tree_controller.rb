@@ -26,6 +26,7 @@ class Projects::TreeController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
+        lfs_blob_ids
         @last_commit = @repository.last_commit_for_path(@commit.id, @tree.path) || @commit
       end
 

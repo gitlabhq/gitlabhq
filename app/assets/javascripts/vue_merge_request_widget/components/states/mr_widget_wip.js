@@ -23,9 +23,9 @@ export default {
     removeWIP() {
       this.isMakingRequest = true;
       this.service.removeWIP()
-        .then(res => res.json())
-        .then((res) => {
-          eventHub.$emit('UpdateWidgetData', res);
+        .then(res => res.data)
+        .then((data) => {
+          eventHub.$emit('UpdateWidgetData', data);
           new window.Flash('The merge request can now be merged.', 'notice'); // eslint-disable-line
           $('.merge-request .detail-page-description .title').text(this.mr.title);
         })

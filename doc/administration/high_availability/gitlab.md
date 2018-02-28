@@ -1,6 +1,6 @@
 # Configuring GitLab for HA
 
-Assuming you have already configured a database, Redis, and NFS, you can
+Assuming you have already configured a [database](database.md), [Redis](redis.md), and [NFS](nfs.md), you can
 configure the GitLab application server(s) now. Complete the steps below
 for each GitLab application server in your environment.
 
@@ -48,34 +48,33 @@ for each GitLab application server in your environment.
    data locations. See [NFS documentation](nfs.md) for `/etc/gitlab/gitlab.rb`
    configuration values for various scenarios. The example below assumes you've
    added NFS mounts in the default data locations.
-    
+
     ```ruby
     external_url 'https://gitlab.example.com'
 
     # Prevent GitLab from starting if NFS data mounts are not available
     high_availability['mountpoint'] = '/var/opt/gitlab/git-data'
-    
+
     # Disable components that will not be on the GitLab application server
-    postgresql['enable'] = false
-    redis['enable'] = false
-    
+    roles ['application_role']
+
     # PostgreSQL connection details
     gitlab_rails['db_adapter'] = 'postgresql'
     gitlab_rails['db_encoding'] = 'unicode'
     gitlab_rails['db_host'] = '10.1.0.5' # IP/hostname of database server
     gitlab_rails['db_password'] = 'DB password'
-    
+
     # Redis connection details
     gitlab_rails['redis_port'] = '6379'
     gitlab_rails['redis_host'] = '10.1.0.6' # IP/hostname of Redis server
     gitlab_rails['redis_password'] = 'Redis Password'
     ```
-    
-    > **Note:** To maintain uniformity of links across HA clusters, the `external_url` 
-    on the first application server as well as the additional application 
-    servers should point to the external url that users will use to access GitLab. 
+
+    > **Note:** To maintain uniformity of links across HA clusters, the `external_url`
+    on the first application server as well as the additional application
+    servers should point to the external url that users will use to access GitLab.
     In a typical HA setup, this will be the url of the load balancer which will
-    route traffic to all GitLab application servers in the HA cluster. 
+    route traffic to all GitLab application servers in the HA cluster.
 
 1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
 

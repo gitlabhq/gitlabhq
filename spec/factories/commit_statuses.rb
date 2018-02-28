@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :commit_status, class: CommitStatus do
     name 'default'
     stage 'test'

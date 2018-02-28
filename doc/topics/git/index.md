@@ -61,6 +61,10 @@ We've gathered some resources to help you to get the best from Git with GitLab.
   - [Getting Started with Git LFS](https://about.gitlab.com/2017/01/30/getting-started-with-git-lfs-tutorial/)
   - [Towards a production quality open source Git LFS server](https://about.gitlab.com/2015/08/13/towards-a-production-quality-open-source-git-lfs-server/)
 
+## Troubleshooting
+
+- Learn a few [Git troubleshooting](troubleshooting_git.md) techniques to help you out.
+
 ## General information
 
 - **Articles:**

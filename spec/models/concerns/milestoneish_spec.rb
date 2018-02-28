@@ -24,8 +24,8 @@ describe Milestone, 'Milestoneish' do
   let(:label_3) { create(:label, title: 'label_3', project: project) }
 
   before do
-    project.team << [member, :developer]
-    project.team << [guest, :guest]
+    project.add_developer(member)
+    project.add_guest(guest)
   end
 
   describe '#sorted_issues' do
@@ -189,9 +189,9 @@ describe Milestone, 'Milestoneish' do
 
   describe '#total_issue_time_spent' do
     it 'calculates total issue time spent' do
-      closed_issue_1.spend_time(duration: 300, user: author)
+      closed_issue_1.spend_time(duration: 300, user_id: author.id)
       closed_issue_1.save!
-      closed_issue_2.spend_time(duration: 600, user: assignee)
+      closed_issue_2.spend_time(duration: 600, user_id: assignee.id)
       closed_issue_2.save!
 
       expect(milestone.total_issue_time_spent).to eq(900)

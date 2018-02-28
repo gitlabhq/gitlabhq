@@ -113,4 +113,35 @@ describe('pipeline graph job component', () => {
       component.$el.querySelector('a').classList.contains('css-class-job-name'),
     ).toBe(true);
   });
+
+  describe('status label', () => {
+    it('should not render status label when it is not provided', () => {
+      component = mountComponent(JobComponent, {
+        job: {
+          id: 4256,
+          name: 'test',
+          status: {
+            icon: 'icon_status_success',
+          },
+        },
+      });
+
+      expect(component.$el.querySelector('.js-job-component-tooltip').getAttribute('data-original-title')).toEqual('test');
+    });
+
+    it('should not render status label when it is  provided', () => {
+      component = mountComponent(JobComponent, {
+        job: {
+          id: 4256,
+          name: 'test',
+          status: {
+            icon: 'icon_status_success',
+            label: 'success',
+          },
+        },
+      });
+
+      expect(component.$el.querySelector('.js-job-component-tooltip').getAttribute('data-original-title')).toEqual('test - success');
+    });
+  });
 });

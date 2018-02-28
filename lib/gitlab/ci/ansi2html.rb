@@ -234,7 +234,7 @@ module Gitlab
             # Most terminals show bold colored text in the light color variant
             # Let's mimic that here
             if @style_mask & STYLE_SWITCHES[:bold] != 0
-              fg_color.sub!(/fg-(\w{2,}+)/, 'fg-l-\1')
+              fg_color.sub!(/fg-([a-z]{2,}+)/, 'fg-l-\1')
             end
             css_classes << fg_color
           end

@@ -1,5 +1,0 @@
----
-title: Reduce requests for project forks on show page of projects that have forks
-merge_request: 15663
-author:
-type: performance

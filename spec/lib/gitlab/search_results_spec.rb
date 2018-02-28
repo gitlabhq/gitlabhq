@@ -16,7 +16,7 @@ describe Gitlab::SearchResults do
 
   context 'as a user with access' do
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     describe '#projects_count' do
@@ -50,6 +50,38 @@ describe Gitlab::SearchResults do
       results = described_class.new(user, Project.where(id: forked_project.id), 'foo')
 
       expect(results.objects('merge_requests')).to include merge_request_2
+    end
+
+    describe '#merge_requests' do
+      it 'includes project filter by default' do
+        expect(results).to receive(:project_ids_relation).and_call_original
+
+        results.objects('merge_requests')
+      end
+
+      it 'it skips project filter if default project context is used' do
+        allow(results).to receive(:default_project_filter).and_return(true)
+
+        expect(results).not_to receive(:project_ids_relation)
+
+        results.objects('merge_requests')
+      end
+    end
+
+    describe '#issues' do
+      it 'includes project filter by default' do
+        expect(results).to receive(:project_ids_relation).and_call_original
+
+        results.objects('issues')
+      end
+
+      it 'it skips project filter if default project context is used' do
+        allow(results).to receive(:default_project_filter).and_return(true)
+
+        expect(results).not_to receive(:project_ids_relation)
+
+        results.objects('issues')
+      end
     end
   end
 
@@ -93,8 +125,8 @@ describe Gitlab::SearchResults do
     end
 
     it 'does not list confidential issues for project members with guest role' do
-      project_1.team << [member, :guest]
-      project_2.team << [member, :guest]
+      project_1.add_guest(member)
+      project_2.add_guest(member)
 
       results = described_class.new(member, limit_projects, query)
       issues = results.objects('issues')
@@ -135,8 +167,8 @@ describe Gitlab::SearchResults do
     end
 
     it 'lists confidential issues for project members' do
-      project_1.team << [member, :developer]
-      project_2.team << [member, :developer]
+      project_1.add_developer(member)
+      project_2.add_developer(member)
 
       results = described_class.new(member, limit_projects, query)
       issues = results.objects('issues')

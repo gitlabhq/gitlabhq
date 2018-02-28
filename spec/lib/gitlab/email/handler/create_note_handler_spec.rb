@@ -66,7 +66,7 @@ describe Gitlab::Email::Handler::CreateNoteHandler do
 
       context 'and current user can update noteable' do
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         it 'does not raise an error' do
@@ -99,7 +99,7 @@ describe Gitlab::Email::Handler::CreateNoteHandler do
 
     context 'and current user can update noteable' do
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       it 'post a note and updates the noteable' do

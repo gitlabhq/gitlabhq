@@ -102,7 +102,7 @@ describe ProjectsController do
         render_views
 
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
           project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
         end
 
@@ -437,7 +437,7 @@ describe ProjectsController do
 
     before do
       sign_in(user)
-      project.team << [user, :developer]
+      project.add_developer(user)
       allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
     end
 
@@ -465,7 +465,7 @@ describe ProjectsController do
 
     before do
       sign_in(user)
-      project.team << [user, :developer]
+      project.add_developer(user)
       allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
     end
 

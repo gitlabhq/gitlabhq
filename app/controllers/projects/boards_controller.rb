@@ -2,6 +2,7 @@ class Projects::BoardsController < Projects::ApplicationController
   include BoardsResponses
   include IssuableCollections
 
+  before_action :check_issues_available!
   before_action :authorize_read_board!, only: [:index, :show]
   before_action :assign_endpoint_vars
 

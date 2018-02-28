@@ -8,7 +8,7 @@ feature 'Resolve an open discussion in a merge request by creating an issue' do
 
   describe 'As a user with access to the project' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in user
       visit project_merge_request_path(project, merge_request)
     end
@@ -65,7 +65,7 @@ feature 'Resolve an open discussion in a merge request by creating an issue' do
 
   describe 'as a reporter' do
     before do
-      project.team << [user, :reporter]
+      project.add_reporter(user)
       sign_in user
       visit new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid,
                                             discussion_to_resolve: discussion.id)

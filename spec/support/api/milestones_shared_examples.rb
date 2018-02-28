@@ -258,7 +258,7 @@ shared_examples_for 'group and project milestones' do |route_definition|
         # Add public project to the group in context
         setup_for_group if context_group
 
-        public_project.team << [user, :developer]
+        public_project.add_developer(user)
         milestone.issues << issue << confidential_issue
       end
 
@@ -275,7 +275,7 @@ shared_examples_for 'group and project milestones' do |route_definition|
 
       it 'does not return confidential issues to team members with guest role' do
         member = create(:user)
-        public_project.team << [member, :guest]
+        public_project.add_guest(member)
 
         get api(issues_route, member)
 

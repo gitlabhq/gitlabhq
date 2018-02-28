@@ -39,3 +39,5 @@ do.
 | `/board_move ~column`      | Move issue to column on the board |
 | `/duplicate #issue`        | Closes this issue and marks it as a duplicate of another issue |
 | `/move path/to/project`	     | Moves issue to another project |
+| `/tableflip`	             | Append the comment with `(╯°□°)╯︵ ┻━┻` |
+| `/shrug`	                 | Append the comment with `¯\＿(ツ)＿/¯` |

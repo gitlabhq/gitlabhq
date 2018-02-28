@@ -23,7 +23,7 @@ module QA
 
       def password=(pass)
         @password = pass
-        @uri.password = CGI.escape(pass)
+        @uri.password = CGI.escape(pass).gsub('+', '%20')
       end
 
       def use_default_credentials

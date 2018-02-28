@@ -9,6 +9,7 @@
 .edit-cluster-form.js-edit-cluster-form{ data: { status_path: status_path,
   install_helm_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :helm),
   install_ingress_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :ingress),
+  install_prometheus_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :prometheus),
   toggle_status: @cluster.enabled? ? 'true': 'false',
   cluster_status: @cluster.status_name,
   cluster_status_reason: @cluster.status_reason,
@@ -17,9 +18,9 @@
   .js-cluster-application-notice
     .flash-container
 
-  %section.settings.no-animate.expanded
+  %section.settings.no-animate.expanded#cluster-integration
     = render 'banner'
-    = render 'enabled'
+    = render 'integration_form'
 
   .cluster-applications-table#js-cluster-applications
 
@@ -40,6 +41,6 @@
       %h4= _('Advanced settings')
       %button.btn.js-settings-toggle
         = expanded ? 'Collapse' : 'Expand'
-      %p= s_('ClusterIntegration|Manage cluster integration on your GitLab project')
+      %p= s_("ClusterIntegration|Advanced options on this cluster's integration")
     .settings-content
       = render 'advanced_settings'

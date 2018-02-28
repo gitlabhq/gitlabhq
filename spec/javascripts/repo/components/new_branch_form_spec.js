@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from '~/repo/stores';
-import newBranchForm from '~/repo/components/new_branch_form.vue';
+import store from '~/ide/stores';
+import newBranchForm from '~/ide/components/new_branch_form.vue';
 import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import { resetStore } from '../helpers';
 

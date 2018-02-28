@@ -7,7 +7,7 @@ feature 'Milestone' do
 
   before do
     create(:group_member, group: group, user: user)
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 
@@ -82,9 +82,9 @@ feature 'Milestone' do
       milestone = create(:milestone, project: project, title: 8.7)
       issue1 = create(:issue, project: project, milestone: milestone)
       issue2 = create(:issue, project: project, milestone: milestone)
-      issue1.spend_time(duration: 3600, user: user)
+      issue1.spend_time(duration: 3600, user_id: user.id)
       issue1.save!
-      issue2.spend_time(duration: 7200, user: user)
+      issue2.spend_time(duration: 7200, user_id: user.id)
       issue2.save!
 
       visit project_milestone_path(project, milestone)

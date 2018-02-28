@@ -1,5 +1,5 @@
 import monacoContext from 'monaco-editor/dev/vs/loader';
-import monacoLoader from '~/repo/monaco_loader';
+import monacoLoader from '~/ide/monaco_loader';
 
 describe('MonacoLoader', () => {
   it('calls require.config and exports require', () => {

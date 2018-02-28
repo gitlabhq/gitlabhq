@@ -21,6 +21,7 @@ curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/a
   {
     "domain": "ssl.domain.example",
     "url": "https://ssl.domain.example",
+    "project_id": 1337,
     "certificate": {
       "expired": false,
       "expiration": "2020-04-12T14:32:00.000Z"

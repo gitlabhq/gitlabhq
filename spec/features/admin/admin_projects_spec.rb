@@ -88,7 +88,7 @@ describe "Admin::Projects"  do
 
   describe 'add admin himself to a project' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
     end
 
     it 'adds admin a to a project as developer', :js do
@@ -110,8 +110,8 @@ describe "Admin::Projects"  do
 
   describe 'admin remove himself from a project' do
     before do
-      project.team << [user, :master]
-      project.team << [current_user, :developer]
+      project.add_master(user)
+      project.add_developer(current_user)
     end
 
     it 'removes admin from the project' do

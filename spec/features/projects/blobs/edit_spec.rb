@@ -13,7 +13,7 @@ feature 'Editing file blob', :js do
     let(:role) { :developer }
 
     before do
-      project.team << [user, role]
+      project.add_role(user, role)
       sign_in(user)
     end
 
@@ -55,7 +55,7 @@ feature 'Editing file blob', :js do
         let(:user) { create(:user) }
 
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
           visit project_edit_blob_path(project, tree_join(branch, file_path))
         end
 
@@ -90,7 +90,7 @@ feature 'Editing file blob', :js do
       let(:protected_branch) { 'protected-branch' }
 
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
         project.repository.add_branch(user, protected_branch, 'master')
         create(:protected_branch, project: project, name: protected_branch)
         sign_in(user)
@@ -122,7 +122,7 @@ feature 'Editing file blob', :js do
       let(:user) { create(:user) }
 
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         sign_in(user)
         visit project_edit_blob_path(project, tree_join(branch, file_path))
       end

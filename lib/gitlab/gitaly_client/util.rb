@@ -12,10 +12,16 @@ module Gitlab
           Gitaly::Repository.new(
             storage_name: repository_storage,
             relative_path: relative_path,
-            gl_repository: gl_repository,
+            gl_repository: gl_repository.to_s,
             git_object_directory: git_object_directory.to_s,
             git_alternate_object_directories: git_alternate_object_directories
           )
+        end
+
+        def git_repository(gitaly_repository)
+          Gitlab::Git::Repository.new(gitaly_repository.storage_name,
+                                      gitaly_repository.relative_path,
+                                      gitaly_repository.gl_repository)
         end
 
         def gitlab_tag_from_gitaly_tag(repository, gitaly_tag)

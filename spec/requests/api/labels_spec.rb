@@ -7,7 +7,7 @@ describe API::Labels do
   let!(:priority_label) { create(:label, title: 'bug', project: project, priority: 3) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   describe 'GET /projects/:id/labels' do

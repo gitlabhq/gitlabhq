@@ -8,7 +8,7 @@ describe Dashboard::TodosController do
 
   before do
     sign_in(user)
-    project.team << [user, :developer]
+    project.add_developer(user)
   end
 
   describe 'GET #index' do

@@ -65,6 +65,13 @@ describe Banzai::Filter::TableOfContentsFilter do
         expect(doc.css('h2 a').first.attr('href')).to eq '#one-1'
       end
 
+      it 'prepends a prefix to digits-only ids' do
+        doc = filter(header(1, "123") + header(2, "1.0"))
+
+        expect(doc.css('h1 a').first.attr('href')).to eq '#anchor-123'
+        expect(doc.css('h2 a').first.attr('href')).to eq '#anchor-10'
+      end
+
       it 'supports Unicode' do
         doc = filter(header(1, '한글'))
         expect(doc.css('h1 a').first.attr('id')).to eq 'user-content-한글'

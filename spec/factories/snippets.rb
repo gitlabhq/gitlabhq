@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :snippet do
     author
     title { generate(:title) }

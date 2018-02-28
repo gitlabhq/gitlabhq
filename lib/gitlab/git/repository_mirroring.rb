@@ -17,33 +17,6 @@ module Gitlab
         rugged.config["remote.#{remote_name}.prune"] = true
       end
 
-      def set_remote_refmap(remote_name, refmap)
-        Array(refmap).each_with_index do |refspec, i|
-          refspec = REFMAPS[refspec] || refspec
-
-          # We need multiple `fetch` entries, but Rugged only allows replacing a config, not adding to it.
-          # To make sure we start from scratch, we set the first using rugged, and use `git` for any others
-          if i == 0
-            rugged.config["remote.#{remote_name}.fetch"] = refspec
-          else
-            run_git(%W[config --add remote.#{remote_name}.fetch #{refspec}])
-          end
-        end
-      end
-
-      # Like all_refs public `Gitlab::Git::Repository` methods, this method is part
-      # of `Repository`'s interface through `method_missing`.
-      # `Repository` has its own `fetch_as_mirror` which uses `gitlab-shell` and
-      # takes some extra attributes, so we qualify this method name to prevent confusion.
-      def fetch_as_mirror_without_shell(url)
-        remote_name = "tmp-#{SecureRandom.hex}"
-        add_remote(remote_name, url)
-        set_remote_as_mirror(remote_name)
-        fetch_remote_without_shell(remote_name)
-      ensure
-        remove_remote(remote_name) if remote_name
-      end
-
       def remote_tags(remote)
         # Each line has this format: "dc872e9fa6963f8f03da6c8f6f264d0845d6b092\trefs/tags/v1.10.0\n"
         # We want to convert it to: [{ 'v1.10.0' => 'dc872e9fa6963f8f03da6c8f6f264d0845d6b092' }, ...]
@@ -84,6 +57,20 @@ module Gitlab
       end
 
       private
+
+      def set_remote_refmap(remote_name, refmap)
+        Array(refmap).each_with_index do |refspec, i|
+          refspec = REFMAPS[refspec] || refspec
+
+          # We need multiple `fetch` entries, but Rugged only allows replacing a config, not adding to it.
+          # To make sure we start from scratch, we set the first using rugged, and use `git` for any others
+          if i == 0
+            rugged.config["remote.#{remote_name}.fetch"] = refspec
+          else
+            run_git(%W[config --add remote.#{remote_name}.fetch #{refspec}])
+          end
+        end
+      end
 
       def list_remote_tags(remote)
         tag_list, exit_code, error = nil

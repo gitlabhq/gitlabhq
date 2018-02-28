@@ -1,9 +1,8 @@
-/* global mockBoardService */
 import Vue from 'vue';
 import '~/boards/services/board_service';
 import '~/boards/components/board';
 import '~/boards/models/list';
-import '../mock_data';
+import { mockBoardService } from '../mock_data';
 
 describe('Board component', () => {
   let vm;

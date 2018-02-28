@@ -7,7 +7,7 @@ describe TodosFinder do
     let(:finder)        { described_class }
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     describe '#sort' do

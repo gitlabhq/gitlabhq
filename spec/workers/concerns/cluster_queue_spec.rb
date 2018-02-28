@@ -14,6 +14,6 @@ describe ClusterQueue do
 
   it 'sets a default pipelines queue automatically' do
     expect(worker.sidekiq_options['queue'])
-      .to eq :gcp_cluster
+      .to eq 'gcp_cluster:dummy'
   end
 end

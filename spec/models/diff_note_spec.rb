@@ -112,22 +112,6 @@ describe DiffNote do
     end
   end
 
-  describe "#for_line?" do
-    context "when provided the correct diff line" do
-      it "returns true" do
-        expect(subject.for_line?(subject.diff_line)).to be true
-      end
-    end
-
-    context "when provided a different diff line" do
-      it "returns false" do
-        some_line = subject.diff_file.diff_lines.first
-
-        expect(subject.for_line?(some_line)).to be false
-      end
-    end
-  end
-
   describe "#active?" do
     context "when noteable is a commit" do
       subject { build(:diff_note_on_commit, project: project, position: position) }

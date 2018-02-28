@@ -1,3 +1,4 @@
+import { visitUrl } from '../lib/utils/url_utility';
 import DropLab from '../droplab/drop_lab';
 import ISetter from '../droplab/plugins/input_setter';
 
@@ -54,9 +55,9 @@ export default class NewGroupChild {
 
   onClickNewGroupChildButton(e) {
     if (e.target.dataset.action === NEW_PROJECT) {
-      gl.utils.visitUrl(this.newGroupPath);
+      visitUrl(this.newGroupPath);
     } else if (e.target.dataset.action === NEW_SUBGROUP) {
-      gl.utils.visitUrl(this.subgroupPath);
+      visitUrl(this.subgroupPath);
     }
   }
 }

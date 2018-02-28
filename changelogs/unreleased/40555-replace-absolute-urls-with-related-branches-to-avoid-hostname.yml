@@ -1,6 +1,0 @@
----
-title: Fix related branches/Merge requests failing to load when the hostname setting
-  is changed
-merge_request:
-author:
-type: fixed

@@ -1,0 +1,5 @@
+---
+title: Fix activity inline event line height on mobile
+merge_request: 16121
+author: George Tsiolis
+type: fixed

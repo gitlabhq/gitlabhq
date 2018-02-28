@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :user_custom_attribute do
     user
     sequence(:key) { |n| "key#{n}" }

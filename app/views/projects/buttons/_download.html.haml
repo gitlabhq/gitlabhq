@@ -3,7 +3,7 @@
 - if !project.empty_repo? && can?(current_user, :download_code, project)
   .project-action-button.dropdown.inline>
     %button.btn.has-tooltip{ title: s_('DownloadSource|Download'), 'data-toggle' => 'dropdown', 'aria-label' => s_('DownloadSource|Download') }
-      = icon('download')
+      = sprite_icon('download')
       = icon("caret-down")
       %span.sr-only=  _('Select Archive Format')
     %ul.dropdown-menu.dropdown-menu-align-right{ role: 'menu' }

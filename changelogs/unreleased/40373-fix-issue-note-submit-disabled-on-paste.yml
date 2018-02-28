@@ -1,6 +1,0 @@
----
-title: Fix Issue comment submit button being disabled when pasting content from another
-  GFM note
-merge_request: 15530
-author:
-type: fixed

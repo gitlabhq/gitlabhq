@@ -1,5 +1,0 @@
----
-title: Fetch blobs in bulk when generating diffs
-merge_request:
-author:
-type: performance

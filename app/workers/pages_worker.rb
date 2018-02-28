@@ -1,7 +1,7 @@
 class PagesWorker
   include ApplicationWorker
 
-  sidekiq_options queue: :pages, retry: false
+  sidekiq_options retry: false
 
   def perform(action, *arg)
     send(action, *arg) # rubocop:disable GitlabSecurity/PublicSend

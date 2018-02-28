@@ -1,7 +1,7 @@
 - blob = diff_file.blob
 - old_blob = diff_file.old_blob
-- blob_raw_path = diff_file_blob_raw_path(diff_file)
-- old_blob_raw_path = diff_file_old_blob_raw_path(diff_file)
+- blob_raw_url = diff_file_blob_raw_url(diff_file)
+- old_blob_raw_url = diff_file_old_blob_raw_url(diff_file)
 - click_to_comment = local_assigns.fetch(:click_to_comment, true)
 - diff_view_data = local_assigns.fetch(:diff_view_data, '')
 - class_name = ''
@@ -13,7 +13,7 @@
   .two-up.view
     .wrap
       .frame.deleted
-        = image_tag(old_blob_raw_path, alt: diff_file.old_path, lazy: false)
+        = image_tag(old_blob_raw_url, alt: diff_file.old_path, lazy: false)
       %p.image-info.hide
         %span.meta-filesize= number_to_human_size(old_blob.size)
         |
@@ -23,7 +23,7 @@
         %strong H:
         %span.meta-height
     .wrap
-      = render partial: "projects/diffs/image_diff_frame", locals: { class_name: "added js-image-frame #{class_name}", position: position, note_type: DiffNote.name, image_path: blob_raw_path, alt: diff_file.new_path }
+      = render partial: "projects/diffs/image_diff_frame", locals: { class_name: "added js-image-frame #{class_name}", position: position, note_type: DiffNote.name, image_path: blob_raw_url, alt: diff_file.new_path }
       %p.image-info.hide
         %span.meta-filesize= number_to_human_size(blob.size)
         |
@@ -36,9 +36,9 @@
   .swipe.view.hide
     .swipe-frame
       .frame.deleted
-        = image_tag(old_blob_raw_path, alt: diff_file.old_path, lazy: false)
+        = image_tag(old_blob_raw_url, alt: diff_file.old_path, lazy: false)
       .swipe-wrap
-        = render partial: "projects/diffs/image_diff_frame", locals: { class_name: "added js-image-frame #{class_name}", position: position, note_type: DiffNote.name, image_path: blob_raw_path, alt: diff_file.new_path }
+        = render partial: "projects/diffs/image_diff_frame", locals: { class_name: "added js-image-frame #{class_name}", position: position, note_type: DiffNote.name, image_path: blob_raw_url, alt: diff_file.new_path }
       %span.swipe-bar
         %span.top-handle
         %span.bottom-handle
@@ -46,8 +46,8 @@
   .onion-skin.view.hide
     .onion-skin-frame
       .frame.deleted
-        = image_tag(old_blob_raw_path, alt: diff_file.old_path, lazy: false)
-      = render partial: "projects/diffs/image_diff_frame", locals: { class_name: "added js-image-frame #{class_name}", position: position, note_type: DiffNote.name, image_path: blob_raw_path, alt: diff_file.new_path }
+        = image_tag(old_blob_raw_url, alt: diff_file.old_path, lazy: false)
+      = render partial: "projects/diffs/image_diff_frame", locals: { class_name: "added js-image-frame #{class_name}", position: position, note_type: DiffNote.name, image_path: blob_raw_url, alt: diff_file.new_path }
       .controls
         .transparent
         .drag-track

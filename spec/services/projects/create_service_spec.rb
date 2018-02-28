@@ -252,6 +252,12 @@ describe Projects::CreateService, '#execute' do
     end
   end
 
+  it 'writes project full path to .git/config' do
+    project = create_project(user, opts)
+
+    expect(project.repository.rugged.config['gitlab.fullpath']).to eq project.full_path
+  end
+
   def create_project(user, opts)
     Projects::CreateService.new(user, opts).execute
   end

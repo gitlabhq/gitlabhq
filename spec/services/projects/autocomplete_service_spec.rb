@@ -34,7 +34,7 @@ describe Projects::AutocompleteService do
       end
 
       it 'does not list project confidential issues for project members with guest role' do
-        project.team << [member, :guest]
+        project.add_guest(member)
 
         autocomplete = described_class.new(project, non_member)
         issues = autocomplete.issues.map(&:iid)
@@ -66,7 +66,7 @@ describe Projects::AutocompleteService do
       end
 
       it 'lists project confidential issues for project members' do
-        project.team << [member, :developer]
+        project.add_developer(member)
 
         autocomplete = described_class.new(project, member)
         issues = autocomplete.issues.map(&:iid)

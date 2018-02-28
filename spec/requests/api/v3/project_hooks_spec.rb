@@ -13,8 +13,8 @@ describe API::ProjectHooks, 'ProjectHooks' do
   end
 
   before do
-    project.team << [user, :master]
-    project.team << [user3, :developer]
+    project.add_master(user)
+    project.add_developer(user3)
   end
 
   describe "GET /projects/:id/hooks" do
@@ -205,7 +205,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
     it "returns a 404 if a user attempts to delete project hooks he/she does not own" do
       test_user = create(:user)
       other_project = create(:project)
-      other_project.team << [test_user, :master]
+      other_project.add_master(test_user)
 
       delete v3_api("/projects/#{other_project.id}/hooks/#{hook.id}", test_user)
       expect(response).to have_gitlab_http_status(404)

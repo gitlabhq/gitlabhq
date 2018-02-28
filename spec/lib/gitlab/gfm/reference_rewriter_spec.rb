@@ -10,7 +10,7 @@ describe Gitlab::Gfm::ReferenceRewriter do
   let(:text) { 'some text' }
 
   before do
-    old_project.team << [user, :reporter]
+    old_project.add_reporter(user)
   end
 
   describe '#rewrite' do

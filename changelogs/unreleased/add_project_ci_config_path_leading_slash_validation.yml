@@ -1,6 +1,0 @@
----
-title: Prefer ci_config_path validation for leading slashes instead of sanitizing
-  the input
-merge_request: 15672
-author: Christiaan Van den Poel
-type: other

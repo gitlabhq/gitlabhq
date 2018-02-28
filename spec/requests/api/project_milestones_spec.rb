@@ -7,7 +7,7 @@ describe API::ProjectMilestones do
   let!(:milestone) { create(:milestone, project: project, title: 'version2', description: 'open milestone') }
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
   end
 
   it_behaves_like 'group and project milestones', "/projects/:id/milestones"  do
@@ -16,7 +16,7 @@ describe API::ProjectMilestones do
 
   describe 'PUT /projects/:id/milestones/:milestone_id to test observer on close' do
     it 'creates an activity event when an milestone is closed' do
-      expect(Event).to receive(:create)
+      expect(Event).to receive(:create!)
 
       put api("/projects/#{project.id}/milestones/#{milestone.id}", user),
           state_event: 'close'

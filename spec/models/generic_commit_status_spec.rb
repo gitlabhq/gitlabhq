@@ -43,7 +43,7 @@ describe GenericCommitStatus do
 
     context 'when user has ability to see datails' do
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       it 'details path points to an external URL' do

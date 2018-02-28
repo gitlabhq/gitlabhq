@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "required" : [
+    "name",
+    "email",
+    "commits",
+    "additions",
+    "deletions"
+  ],
+  "properties" : {
+    "name": { "type": "string" },
+    "email": { "type": "string" },
+    "commits": { "type": "integer" },
+    "additions": { "type": "integer" },
+    "deletions": { "type": "integer" }
+  },
+  "additionalProperties": false
+}

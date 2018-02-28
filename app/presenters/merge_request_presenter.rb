@@ -76,6 +76,12 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
+  def rebase_path
+    if !rebase_in_progress? && should_be_rebased? && user_can_push_to_source_branch?
+      rebase_project_merge_request_path(project, merge_request)
+    end
+  end
+
   def target_branch_tree_path
     if target_branch_exists?
       project_tree_path(project, target_branch)
@@ -152,6 +158,10 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     user_can_collaborate_with_project? && can_be_cherry_picked?
   end
 
+  def can_push_to_source_branch?
+    source_branch_exists? && user_can_push_to_source_branch?
+  end
+
   private
 
   def conflicts
@@ -172,6 +182,14 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     issues.map do |issue|
       issue.to_reference(project)
     end.sort.to_sentence
+  end
+
+  def user_can_push_to_source_branch?
+    return false unless source_branch_exists?
+
+    ::Gitlab::UserAccess
+      .new(current_user, project: source_project)
+      .can_push_to_branch?(source_branch)
   end
 
   def user_can_collaborate_with_project?

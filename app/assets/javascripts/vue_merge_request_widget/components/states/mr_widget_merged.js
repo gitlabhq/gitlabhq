@@ -47,9 +47,9 @@ export default {
     removeSourceBranch() {
       this.isMakingRequest = true;
       this.service.removeSourceBranch()
-        .then(res => res.json())
-        .then((res) => {
-          if (res.message === 'Branch was removed') {
+        .then(res => res.data)
+        .then((data) => {
+          if (data.message === 'Branch was removed') {
             eventHub.$emit('MRWidgetUpdateRequested', () => {
               this.isMakingRequest = false;
             });
@@ -68,9 +68,9 @@ export default {
         <div class="space-children">
           <mr-widget-author-and-time
             actionText="Merged by"
-            :author="mr.mergedEvent.author"
-            :date-title="mr.mergedEvent.updatedAt"
-            :date-readable="mr.mergedEvent.formattedUpdatedAt" />
+            :author="mr.metrics.mergedBy"
+            :date-title="mr.metrics.mergedAt"
+            :date-readable="mr.metrics.readableMergedAt" />
           <a
             v-if="mr.canRevertInCurrentMR"
             v-tooltip

@@ -6,7 +6,7 @@ describe Projects::LabelsController do
   let(:user)    { create(:user) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
 
     sign_in(user)
   end

@@ -7,7 +7,7 @@ describe 'cycle analytics events' do
 
   describe 'GET /:namespace/:project/cycle_analytics/events/issues' do
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
 
       3.times do |count|
         Timecop.freeze(Time.now + count.days) do

@@ -12,8 +12,8 @@ describe MergeRequests::FfMergeService do
   let(:project) { merge_request.project }
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :developer]
+    project.add_master(user)
+    project.add_developer(user2)
   end
 
   describe '#execute' do

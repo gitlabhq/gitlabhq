@@ -62,6 +62,25 @@ describe Groups::GroupMembersController do
     end
   end
 
+  describe 'PUT update' do
+    let(:requester) { create(:group_member, :access_request, group: group) }
+
+    before do
+      group.add_owner(user)
+      sign_in(user)
+    end
+
+    Gitlab::Access.options.each do |label, value|
+      it "can change the access level to #{label}" do
+        xhr :put, :update, group_member: { access_level: value },
+                           group_id: group,
+                           id: requester
+
+        expect(requester.reload.human_access).to eq(label)
+      end
+    end
+  end
+
   describe 'DELETE destroy' do
     let(:member) { create(:group_member, :developer, group: group) }
 

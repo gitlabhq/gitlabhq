@@ -8,13 +8,16 @@ describe Gitlab::LDAP::Person do
   before do
     stub_ldap_config(
       options: {
+        'uid'        => 'uid',
         'attributes' => {
-          'name' => 'cn',
-          'email' => %w(mail email userPrincipalName)
+          'name'     => 'cn',
+          'email'    => %w(mail email userPrincipalName),
+          'username' => username_attribute
         }
       }
     )
   end
+  let(:username_attribute) { %w(uid sAMAccountName userid) }
 
   describe '.normalize_dn' do
     subject { described_class.normalize_dn(given) }
@@ -44,6 +47,34 @@ describe Gitlab::LDAP::Person do
     end
   end
 
+  describe '.ldap_attributes' do
+    it 'returns a compact and unique array' do
+      stub_ldap_config(
+        options: {
+          'uid'        => nil,
+          'attributes' => {
+            'name'     => 'cn',
+            'email'    => 'mail',
+            'username' => %w(uid mail memberof)
+          }
+        }
+      )
+      config = Gitlab::LDAP::Config.new('ldapmain')
+      ldap_attributes = described_class.ldap_attributes(config)
+
+      expect(ldap_attributes).to match_array(%w(dn uid cn mail memberof))
+    end
+  end
+
+  describe '.validate_entry' do
+    it 'raises InvalidEntryError' do
+      entry['foo'] = 'bar'
+
+      expect { described_class.new(entry, 'ldapmain') }
+        .to raise_error(Gitlab::LDAP::Person::InvalidEntryError)
+    end
+  end
+
   describe '#name' do
     it 'uses the configured name attribute and handles values as an array' do
       name = 'John Doe'
@@ -69,6 +100,44 @@ describe Gitlab::LDAP::Person do
       person = described_class.new(entry, 'ldapmain')
 
       expect(person.email).to eq([user_principal_name])
+    end
+  end
+
+  describe '#username' do
+    context 'with default uid username attribute' do
+      let(:username_attribute) { 'uid' }
+
+      it 'returns the proper username value' do
+        attr_value = 'johndoe'
+        entry[username_attribute] = attr_value
+        person = described_class.new(entry, 'ldapmain')
+
+        expect(person.username).to eq(attr_value)
+      end
+    end
+
+    context 'with a different username attribute' do
+      let(:username_attribute) { 'sAMAccountName' }
+
+      it 'returns the proper username value' do
+        attr_value = 'johndoe'
+        entry[username_attribute] = attr_value
+        person = described_class.new(entry, 'ldapmain')
+
+        expect(person.username).to eq(attr_value)
+      end
+    end
+
+    context 'with a non-standard username attribute' do
+      let(:username_attribute) { 'mail' }
+
+      it 'returns the proper username value' do
+        attr_value = 'john.doe@example.com'
+        entry[username_attribute] = attr_value
+        person = described_class.new(entry, 'ldapmain')
+
+        expect(person.username).to eq(attr_value)
+      end
     end
   end
 

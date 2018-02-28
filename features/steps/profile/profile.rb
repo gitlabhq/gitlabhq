@@ -165,7 +165,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
     @project = create(:project, :repository, namespace: @group)
     @event   = create(:closed_issue_event, project: @project)
 
-    @project.team << [current_user, :master]
+    @project.add_master(current_user)
   end
 
   step 'I should see groups I belong to' do

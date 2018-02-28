@@ -20,8 +20,8 @@
           - if note.is_a?(DiffNote) && note.on_image?
             - if show_image_comment_badge && note_counter == 0
               -# Only show this for the first comment in the discussion
-              %span.image-comment-badge.inverted
-                = icon('comment-o')
+              %span.image-comment-badge
+                = sprite_icon('image-comment-dark')
             - elsif note_counter == 0
               - counter = badge_counter if local_assigns[:badge_counter]
               - badge_class = "hidden" if @fresh_discussion || counter.nil?

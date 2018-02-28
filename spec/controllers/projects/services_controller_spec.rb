@@ -9,7 +9,7 @@ describe Projects::ServicesController do
 
   before do
     sign_in(user)
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   describe '#test' do
@@ -112,6 +112,42 @@ describe Projects::ServicesController do
           namespace_id: project.namespace, project_id: project, id: service.to_param, service: { active: false }
 
         expect(flash[:notice]).to eq 'HipChat settings saved, but not activated.'
+      end
+    end
+
+    context 'with a deprecated service' do
+      let(:service) { create(:kubernetes_service, project: project) }
+
+      before do
+        put :update,
+          namespace_id: project.namespace, project_id: project, id: service.to_param, service: { namespace: 'updated_namespace' }
+      end
+
+      it 'should not update the service' do
+        service.reload
+        expect(service.namespace).not_to eq('updated_namespace')
+      end
+    end
+  end
+
+  describe "GET #edit" do
+    before do
+      get :edit, namespace_id: project.namespace, project_id: project, id: service_id
+    end
+
+    context 'with approved services' do
+      let(:service_id) { 'jira' }
+
+      it 'should render edit page' do
+        expect(response).to be_success
+      end
+    end
+
+    context 'with a deprecated service' do
+      let(:service_id) { 'kubernetes' }
+
+      it 'should render edit page' do
+        expect(response).to be_success
       end
     end
   end

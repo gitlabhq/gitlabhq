@@ -16,7 +16,7 @@ describe RuboCop::Cop::Migration::HashIndex do
     end
 
     it 'registers an offense when creating a hash index' do
-      inspect_source(cop, 'def change; add_index :table, :column, using: :hash; end')
+      inspect_source('def change; add_index :table, :column, using: :hash; end')
 
       aggregate_failures do
         expect(cop.offenses.size).to eq(1)
@@ -25,7 +25,7 @@ describe RuboCop::Cop::Migration::HashIndex do
     end
 
     it 'registers an offense when creating a concurrent hash index' do
-      inspect_source(cop, 'def change; add_concurrent_index :table, :column, using: :hash; end')
+      inspect_source('def change; add_concurrent_index :table, :column, using: :hash; end')
 
       aggregate_failures do
         expect(cop.offenses.size).to eq(1)
@@ -34,7 +34,7 @@ describe RuboCop::Cop::Migration::HashIndex do
     end
 
     it 'registers an offense when creating a hash index using t.index' do
-      inspect_source(cop, 'def change; t.index :table, :column, using: :hash; end')
+      inspect_source('def change; t.index :table, :column, using: :hash; end')
 
       aggregate_failures do
         expect(cop.offenses.size).to eq(1)
@@ -45,7 +45,7 @@ describe RuboCop::Cop::Migration::HashIndex do
 
   context 'outside of migration' do
     it 'registers no offense' do
-      inspect_source(cop, 'def change; index :table, :column, using: :hash; end')
+      inspect_source('def change; index :table, :column, using: :hash; end')
 
       expect(cop.offenses.size).to eq(0)
     end

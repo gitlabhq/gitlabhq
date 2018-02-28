@@ -24,7 +24,25 @@ export default function renderMermaid($els) {
     });
 
     $els.each((i, el) => {
-      mermaid.init(undefined, el);
+      const source = el.textContent;
+
+      mermaid.init(undefined, el, (id) => {
+        const svg = document.getElementById(id);
+
+        svg.classList.add('mermaid');
+
+        // pre > code > svg
+        svg.closest('pre').replaceWith(svg);
+
+        // We need to add the original source into the DOM to allow Copy-as-GFM
+        // to access it.
+        const sourceEl = document.createElement('text');
+        sourceEl.classList.add('source');
+        sourceEl.setAttribute('display', 'none');
+        sourceEl.textContent = source;
+
+        svg.appendChild(sourceEl);
+      });
     });
   }).catch((err) => {
     Flash(`Can't load mermaid module: ${err}`);

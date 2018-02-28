@@ -18,7 +18,7 @@ feature 'Merge Request closing issues message', :js do
   let(:merge_request_title) { 'Merge Request Title' }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
 
     sign_in user
 

@@ -57,12 +57,12 @@ class GfmAutoComplete {
       displayTpl(value) {
         if (GfmAutoComplete.isLoading(value)) return GfmAutoComplete.Loading.template;
         // eslint-disable-next-line no-template-curly-in-string
-        let tpl = '<li>/${name}';
+        let tpl = '<li><span class="name">/${name}</span>';
         if (value.aliases.length > 0) {
-          tpl += ' <small>(or /<%- aliases.join(", /") %>)</small>';
+          tpl += ' <small class="aliases">(or /<%- aliases.join(", /") %>)</small>';
         }
         if (value.params.length > 0) {
-          tpl += ' <small><%- params.join(" ") %></small>';
+          tpl += ' <small class="params"><%- params.join(" ") %></small>';
         }
         if (value.description !== '') {
           tpl += '<small class="description"><i><%- description %></i></small>';

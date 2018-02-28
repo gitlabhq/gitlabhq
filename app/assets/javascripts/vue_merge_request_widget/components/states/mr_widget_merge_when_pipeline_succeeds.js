@@ -31,9 +31,9 @@ export default {
     cancelAutomaticMerge() {
       this.isCancellingAutoMerge = true;
       this.service.cancelAutomaticMerge()
-        .then(res => res.json())
-        .then((res) => {
-          eventHub.$emit('UpdateWidgetData', res);
+        .then(res => res.data)
+        .then((data) => {
+          eventHub.$emit('UpdateWidgetData', data);
         })
         .catch(() => {
           this.isCancellingAutoMerge = false;
@@ -49,9 +49,9 @@ export default {
 
       this.isRemovingSourceBranch = true;
       this.service.mergeResource.save(options)
-        .then(res => res.json())
-        .then((res) => {
-          if (res.status === 'merge_when_pipeline_succeeds') {
+        .then(res => res.data)
+        .then((data) => {
+          if (data.status === 'merge_when_pipeline_succeeds') {
             eventHub.$emit('MRWidgetUpdateRequested');
           }
         })
@@ -65,10 +65,12 @@ export default {
     <div class="mr-widget-body media">
       <status-icon status="success" />
       <div class="media-body">
-        <h4>
-          Set by
-          <mr-widget-author :author="mr.setToMWPSBy" />
-          to be merged automatically when the pipeline succeeds
+        <h4 class="flex-container-block">
+          <span class="append-right-10">
+            Set by
+            <mr-widget-author :author="mr.setToMWPSBy" />
+            to be merged automatically when the pipeline succeeds
+          </span>
           <a
             v-if="mr.canCancelAutomaticMerge"
             @click.prevent="cancelAutomaticMerge"
@@ -94,8 +96,13 @@ export default {
           <p v-if="mr.shouldRemoveSourceBranch">
             The source branch will be removed
           </p>
-          <p v-else>
-            The source branch will not be removed
+          <p
+            v-else
+            class="flex-container-block"
+          >
+            <span class="append-right-10">
+              The source branch will not be removed
+            </span>
             <a
               v-if="canRemoveSourceBranch"
               :disabled="isRemovingSourceBranch"

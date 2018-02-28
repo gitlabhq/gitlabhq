@@ -21,7 +21,7 @@ let headerHeight = 50;
 
 export const getHeaderHeight = () => headerHeight;
 
-export const isSidebarCollapsed = () => sidebar && sidebar.classList.contains('sidebar-icons-only');
+export const isSidebarCollapsed = () => sidebar && sidebar.classList.contains('sidebar-collapsed-desktop');
 
 export const canShowActiveSubItems = (el) => {
   if (el.classList.contains('active') && !isSidebarCollapsed()) {
@@ -161,13 +161,16 @@ export default () => {
 
   const items = [...sidebar.querySelectorAll('.sidebar-top-level-items > li')];
 
-  sidebar.querySelector('.sidebar-top-level-items').addEventListener('mouseleave', () => {
-    clearTimeout(timeoutId);
+  const topItems = sidebar.querySelector('.sidebar-top-level-items');
+  if (topItems) {
+    sidebar.querySelector('.sidebar-top-level-items').addEventListener('mouseleave', () => {
+      clearTimeout(timeoutId);
 
-    timeoutId = setTimeout(() => {
-      if (currentOpenMenu) hideMenu(currentOpenMenu);
-    }, getHideSubItemsInterval());
-  });
+      timeoutId = setTimeout(() => {
+        if (currentOpenMenu) hideMenu(currentOpenMenu);
+      }, getHideSubItemsInterval());
+    });
+  }
 
   headerHeight = document.querySelector('.nav-sidebar').offsetTop;
 

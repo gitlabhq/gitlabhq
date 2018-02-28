@@ -7,7 +7,7 @@ feature 'Environment' do
 
   background do
     sign_in(user)
-    project.team << [user, role]
+    project.add_role(user, role)
   end
 
   feature 'environment details page' do

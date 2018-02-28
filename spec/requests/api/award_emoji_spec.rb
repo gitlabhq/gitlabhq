@@ -10,7 +10,7 @@ describe API::AwardEmoji do
   set(:note)          { create(:note, project: project, noteable: issue) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   describe "GET /projects/:id/awardable/:awardable_id/award_emoji" do

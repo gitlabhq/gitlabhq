@@ -120,6 +120,10 @@ describe Gitlab::Ci::Ansi2html do
     expect(convert_html("\e[48;5;240mHello")).to eq('<span class="xterm-bg-240">Hello</span>')
   end
 
+  it "can print 256 xterm fg bold colors" do
+    expect(convert_html("\e[38;5;16;1mHello")).to eq('<span class="xterm-fg-16 term-bold">Hello</span>')
+  end
+
   it "can print 256 xterm bg colors on normal magenta foreground" do
     expect(convert_html("\e[48;5;16;35mHello")).to eq('<span class="term-fg-magenta xterm-bg-16">Hello</span>')
   end

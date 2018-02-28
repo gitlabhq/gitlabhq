@@ -35,7 +35,7 @@ module RuboCop
         ].freeze
 
         def_node_matcher :batch_update?, <<~PATTERN
-          (send nil ${:add_column_with_default :update_column_in_batches} $(sym ...) ...)
+          (send nil? ${:add_column_with_default :update_column_in_batches} $(sym ...) ...)
         PATTERN
 
         def on_send(node)
@@ -49,7 +49,7 @@ module RuboCop
 
           return unless LARGE_TABLES.include?(table)
 
-          add_offense(node, :expression, format(MSG, update_method, table))
+          add_offense(node, location: :expression, message: format(MSG, update_method, table))
         end
       end
     end

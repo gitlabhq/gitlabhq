@@ -72,7 +72,7 @@ module Gitlab
       end
 
       def ref_exists?(ref_name)
-        request = Gitaly::RefExistsRequest.new(repository: @gitaly_repo, ref: GitalyClient.encode(ref_name))
+        request = Gitaly::RefExistsRequest.new(repository: @gitaly_repo, ref: encode_binary(ref_name))
         response = GitalyClient.call(@storage, :ref_service, :ref_exists, request)
         response.value
       rescue GRPC::InvalidArgument => e
@@ -82,7 +82,7 @@ module Gitlab
       def find_branch(branch_name)
         request = Gitaly::FindBranchRequest.new(
           repository: @gitaly_repo,
-          name: GitalyClient.encode(branch_name)
+          name: encode_binary(branch_name)
         )
 
         response = GitalyClient.call(@repository.storage, :ref_service, :find_branch, request)
@@ -96,8 +96,8 @@ module Gitlab
       def create_branch(ref, start_point)
         request = Gitaly::CreateBranchRequest.new(
           repository: @gitaly_repo,
-          name: GitalyClient.encode(ref),
-          start_point: GitalyClient.encode(start_point)
+          name: encode_binary(ref),
+          start_point: encode_binary(start_point)
         )
 
         response = GitalyClient.call(@repository.storage, :ref_service, :create_branch, request)
@@ -121,7 +121,7 @@ module Gitlab
       def delete_branch(branch_name)
         request = Gitaly::DeleteBranchRequest.new(
           repository: @gitaly_repo,
-          name: GitalyClient.encode(branch_name)
+          name: encode_binary(branch_name)
         )
 
         GitalyClient.call(@repository.storage, :ref_service, :delete_branch, request)

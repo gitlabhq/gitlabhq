@@ -1,6 +1,5 @@
 <script>
 import Store from '../../stores/sidebar_store';
-import Mediator from '../../sidebar_mediator';
 import eventHub from '../../event_hub';
 import Flash from '../../../flash';
 import { __ } from '../../../locale';
@@ -9,11 +8,15 @@ import subscriptions from './subscriptions.vue';
 export default {
   data() {
     return {
-      mediator: new Mediator(),
       store: new Store(),
     };
   },
-
+  props: {
+    mediator: {
+      type: Object,
+      required: true,
+    },
+  },
   components: {
     subscriptions,
   },

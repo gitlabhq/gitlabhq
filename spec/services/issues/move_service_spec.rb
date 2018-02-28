@@ -20,8 +20,8 @@ describe Issues::MoveService do
 
   shared_context 'user can move issue' do
     before do
-      old_project.team << [user, :reporter]
-      new_project.team << [user, :reporter]
+      old_project.add_reporter(user)
+      new_project.add_reporter(user)
 
       labels = Array.new(2) { |x| "label%d" % (x + 1) }
 
@@ -289,6 +289,18 @@ describe Issues::MoveService do
             .to raise_error(StandardError, /Cannot move issue/)
         end
       end
+
+      context 'project issue hooks' do
+        let(:hook) { create(:project_hook, project: old_project, issues_events: true) }
+
+        it 'executes project issue hooks' do
+          # Ideally, we'd test that `WebHookWorker.jobs.size` increased by 1,
+          # but since the entire spec run takes place in a transaction, we never
+          # actually get to the `after_commit` hook that queues these jobs.
+          expect { move_service.execute(old_issue, new_project) }
+            .not_to raise_error # Sidekiq::Worker::EnqueueFromTransactionError
+        end
+      end
     end
 
     describe 'move permissions' do
@@ -301,7 +313,7 @@ describe Issues::MoveService do
 
       context 'user is reporter only in new project' do
         before do
-          new_project.team << [user, :reporter]
+          new_project.add_reporter(user)
         end
 
         it { expect { move }.to raise_error(StandardError, /permissions/) }
@@ -309,7 +321,7 @@ describe Issues::MoveService do
 
       context 'user is reporter only in old project' do
         before do
-          old_project.team << [user, :reporter]
+          old_project.add_reporter(user)
         end
 
         it { expect { move }.to raise_error(StandardError, /permissions/) }
@@ -317,8 +329,8 @@ describe Issues::MoveService do
 
       context 'user is reporter in one project and guest in another' do
         before do
-          new_project.team << [user, :guest]
-          old_project.team << [user, :reporter]
+          new_project.add_guest(user)
+          old_project.add_reporter(user)
         end
 
         it { expect { move }.to raise_error(StandardError, /permissions/) }
@@ -346,8 +358,8 @@ describe Issues::MoveService do
 
     context 'movable issue with no assigned labels' do
       before do
-        old_project.team << [user, :reporter]
-        new_project.team << [user, :reporter]
+        old_project.add_reporter(user)
+        new_project.add_reporter(user)
 
         labels = Array.new(2) { |x| "label%d" % (x + 1) }
 

@@ -13,7 +13,7 @@ module RuboCop
           return unless in_migration?(node)
 
           node.each_descendant(:send) do |send_node|
-            add_offense(send_node, :selector) if method_name(send_node) == :remove_index
+            add_offense(send_node, location: :selector) if method_name(send_node) == :remove_index
           end
         end
 

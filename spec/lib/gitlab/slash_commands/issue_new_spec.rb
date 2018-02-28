@@ -7,7 +7,7 @@ describe Gitlab::SlashCommands::IssueNew do
     let(:regex_match) { described_class.match("issue create bird is the word") }
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
     end
 
     subject do

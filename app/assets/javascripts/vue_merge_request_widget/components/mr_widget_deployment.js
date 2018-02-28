@@ -1,4 +1,5 @@
-import '~/lib/utils/datetime_utility';
+import { getTimeago } from '~/lib/utils/datetime_utility';
+import { visitUrl } from '../../lib/utils/url_utility';
 import Flash from '../../flash';
 import MemoryUsage from './mr_widget_memory_usage';
 import StatusIcon from './mr_widget_status_icon';
@@ -16,7 +17,7 @@ export default {
   },
   methods: {
     formatDate(date) {
-      return gl.utils.getTimeago().format(date);
+      return getTimeago().format(date);
     },
     hasExternalUrls(deployment = {}) {
       return deployment.external_url && deployment.external_url_formatted;
@@ -33,10 +34,10 @@ export default {
 
       if (isConfirmed) {
         MRWidgetService.stopEnvironment(deployment.stop_url)
-          .then(res => res.json())
-          .then((res) => {
-            if (res.redirect_url) {
-              gl.utils.visitUrl(res.redirect_url);
+          .then(res => res.data)
+          .then((data) => {
+            if (data.redirect_url) {
+              visitUrl(data.redirect_url);
             }
           })
           .catch(() => {

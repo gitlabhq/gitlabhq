@@ -34,6 +34,8 @@ module Storage
       # So we basically we mute exceptions in next actions
       begin
         send_update_instructions
+        write_projects_repository_config
+
         true
       rescue
         # Returning false does not rollback after_* transaction but gives

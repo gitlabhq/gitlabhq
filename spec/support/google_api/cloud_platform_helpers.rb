@@ -10,6 +10,12 @@ module GoogleApi
       request.session[GoogleApi::CloudPlatform::Client.session_key_for_expires_at] = 1.hour.ago.to_i.to_s
     end
 
+    def stub_google_project_billing_status
+      redis_double = double
+      allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis_double)
+      allow(redis_double).to receive(:get).with(CheckGcpProjectBillingWorker.redis_shared_state_key_for('token')).and_return('true')
+    end
+
     def stub_cloud_platform_get_zone_cluster(project_id, zone, cluster_id, **options)
       WebMock.stub_request(:get, cloud_platform_get_zone_cluster_url(project_id, zone, cluster_id))
         .to_return(cloud_platform_response(cloud_platform_cluster_body(options)))

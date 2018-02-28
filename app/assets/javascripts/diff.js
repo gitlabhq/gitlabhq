@@ -1,4 +1,4 @@
-import './lib/utils/url_utility';
+import { getLocationHash } from './lib/utils/url_utility';
 import FilesCommentButton from './files_comment_button';
 import SingleFileDiff from './single_file_diff';
 import imageDiffHelper from './image_diff/helpers/index';
@@ -31,7 +31,7 @@ export default class Diff {
       isBound = true;
     }
 
-    if (gl.utils.getLocationHash()) {
+    if (getLocationHash()) {
       this.highlightSelectedLine();
     }
 
@@ -73,7 +73,7 @@ export default class Diff {
   }
 
   openAnchoredDiff(cb) {
-    const locationHash = gl.utils.getLocationHash();
+    const locationHash = getLocationHash();
     const anchoredDiff = locationHash && locationHash.split('_')[0];
 
     if (!anchoredDiff) return;
@@ -128,7 +128,7 @@ export default class Diff {
   }
   // eslint-disable-next-line class-methods-use-this
   highlightSelectedLine() {
-    const hash = gl.utils.getLocationHash();
+    const hash = getLocationHash();
     const $diffFiles = $('.diff-file');
     $diffFiles.find('.hll').removeClass('hll');
 

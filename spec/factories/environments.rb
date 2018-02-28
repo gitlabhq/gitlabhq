@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :environment, class: Environment do
     sequence(:name) { |n| "environment#{n}" }
 

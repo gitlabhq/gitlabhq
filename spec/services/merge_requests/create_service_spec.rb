@@ -21,8 +21,8 @@ describe MergeRequests::CreateService do
       let(:merge_request) { service.execute }
 
       before do
-        project.team << [user, :master]
-        project.team << [assignee, :developer]
+        project.add_master(user)
+        project.add_developer(assignee)
         allow(service).to receive(:execute_hooks)
       end
 
@@ -148,8 +148,8 @@ describe MergeRequests::CreateService do
         end
 
         before do
-          project.team << [user, :master]
-          project.team << [assignee, :master]
+          project.add_master(user)
+          project.add_master(assignee)
         end
 
         it 'assigns and sets milestone to issuable from command' do
@@ -165,7 +165,7 @@ describe MergeRequests::CreateService do
         let(:assignee) { create(:user) }
 
         before do
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it 'removes assignee_id when user id is invalid' do
@@ -185,7 +185,7 @@ describe MergeRequests::CreateService do
         end
 
         it 'saves assignee when user id is valid' do
-          project.team << [assignee, :master]
+          project.add_master(assignee)
           opts = { title: 'Title', description: 'Description', assignee_id: assignee.id }
 
           merge_request = described_class.new(project, user, opts).execute
@@ -205,7 +205,7 @@ describe MergeRequests::CreateService do
           end
 
           it 'invalidates open merge request counter for assignees when merge request is assigned' do
-            project.team << [assignee, :master]
+            project.add_master(assignee)
 
             described_class.new(project, user, opts).execute
 
@@ -249,8 +249,8 @@ describe MergeRequests::CreateService do
       end
 
       before do
-        project.team << [user, :master]
-        project.team << [assignee, :developer]
+        project.add_master(user)
+        project.add_developer(assignee)
       end
 
       it 'creates a `MergeRequestsClosingIssues` record for each issue' do

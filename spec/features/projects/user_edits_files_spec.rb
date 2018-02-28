@@ -14,7 +14,7 @@ describe 'User edits files' do
 
   context 'when an user has write access' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       visit(project_tree_path_root_ref)
     end
 
@@ -33,7 +33,9 @@ describe 'User edits files' do
       binary_file = File.join(project.repository.root_ref, 'files/images/logo-black.png')
       visit(project_blob_path(project, binary_file))
 
-      expect(page).not_to have_link('edit')
+      page.within '.content' do
+        expect(page).not_to have_link('edit')
+      end
     end
 
     it 'commits an edited file', :js do
@@ -87,7 +89,7 @@ describe 'User edits files' do
 
   context 'when an user does not have write access' do
     before do
-      project2.team << [user, :reporter]
+      project2.add_reporter(user)
       visit(project2_tree_path_root_ref)
     end
 

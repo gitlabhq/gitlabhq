@@ -46,14 +46,16 @@ class Projects::BranchesController < Projects::ApplicationController
     result = CreateBranchService.new(project, current_user)
         .execute(branch_name, ref)
 
-    if params[:issue_iid]
+    success = (result[:status] == :success)
+
+    if params[:issue_iid] && success
       issue = IssuesFinder.new(current_user, project_id: @project.id).find_by(iid: params[:issue_iid])
       SystemNoteService.new_issue_branch(issue, @project, current_user, branch_name) if issue
     end
 
     respond_to do |format|
       format.html do
-        if result[:status] == :success
+        if success
           if redirect_to_autodeploy
             redirect_to url_to_autodeploy_setup(project, branch_name),
               notice: view_context.autodeploy_flash_notice(branch_name)
@@ -67,7 +69,7 @@ class Projects::BranchesController < Projects::ApplicationController
       end
 
       format.json do
-        if result[:status] == :success
+        if success
           render json: { name: branch_name, url: project_tree_url(@project, branch_name) }
         else
           render json: result[:messsage], status: :unprocessable_entity

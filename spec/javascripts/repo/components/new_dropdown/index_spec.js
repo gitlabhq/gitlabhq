@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from '~/repo/stores';
-import newDropdown from '~/repo/components/new_dropdown/index.vue';
+import store from '~/ide/stores';
+import newDropdown from '~/ide/components/new_dropdown/index.vue';
 import { createComponentWithStore } from '../../../helpers/vue_mount_component_helper';
 import { resetStore } from '../../helpers';
 
@@ -10,8 +10,12 @@ describe('new dropdown component', () => {
   beforeEach(() => {
     const component = Vue.extend(newDropdown);
 
-    vm = createComponentWithStore(component, store);
+    vm = createComponentWithStore(component, store, {
+      branch: 'master',
+      path: '',
+    });
 
+    vm.$store.state.currentProjectId = 'abcproject';
     vm.$store.state.path = '';
 
     vm.$mount();
@@ -23,9 +27,10 @@ describe('new dropdown component', () => {
     resetStore(vm.$store);
   });
 
-  it('renders new file and new directory links', () => {
+  it('renders new file, upload and new directory links', () => {
     expect(vm.$el.querySelectorAll('a')[0].textContent.trim()).toBe('New file');
-    expect(vm.$el.querySelectorAll('a')[1].textContent.trim()).toBe('New directory');
+    expect(vm.$el.querySelectorAll('a')[1].textContent.trim()).toBe('Upload file');
+    expect(vm.$el.querySelectorAll('a')[2].textContent.trim()).toBe('New directory');
   });
 
   describe('createNewItem', () => {
@@ -36,7 +41,7 @@ describe('new dropdown component', () => {
     });
 
     it('sets modalType to tree when new directory is clicked', () => {
-      vm.$el.querySelectorAll('a')[1].click();
+      vm.$el.querySelectorAll('a')[2].click();
 
       expect(vm.modalType).toBe('tree');
     });
@@ -52,15 +57,16 @@ describe('new dropdown component', () => {
     });
   });
 
-  describe('toggleModalOpen', () => {
+  describe('hideModal', () => {
+    beforeAll((done) => {
+      vm.openModal = true;
+      Vue.nextTick(done);
+    });
+
     it('closes modal after toggling', (done) => {
-      vm.toggleModalOpen();
+      vm.hideModal();
 
       Vue.nextTick()
-        .then(() => {
-          expect(vm.$el.querySelector('.modal')).not.toBeNull();
-        })
-        .then(vm.toggleModalOpen)
         .then(() => {
           expect(vm.$el.querySelector('.modal')).toBeNull();
         })

@@ -14,7 +14,7 @@ feature 'Merge Request filtering by Milestone' do
   end
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 

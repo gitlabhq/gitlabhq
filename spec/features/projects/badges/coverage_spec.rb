@@ -6,7 +6,7 @@ feature 'test coverage badge' do
 
   context 'when user has access to view badge' do
     background do
-      project.team << [user, :developer]
+      project.add_developer(user)
       sign_in(user)
     end
 

@@ -21,6 +21,8 @@
         hasMetrics: convertPermissionToBoolean(metricsData.hasMetrics),
         documentationPath: metricsData.documentationPath,
         settingsPath: metricsData.settingsPath,
+        tagsPath: metricsData.tagsPath,
+        projectPath: metricsData.projectPath,
         metricsEndpoint: metricsData.additionalMetrics,
         deploymentEndpoint: metricsData.deploymentEndpoint,
         emptyGettingStartedSvgPath: metricsData.emptyGettingStartedSvgPath,
@@ -112,6 +114,8 @@
         :hover-data="hoverData"
         :update-aspect-ratio="updateAspectRatio"
         :deployment-data="store.deploymentData"
+        :project-path="projectPath"
+        :tags-path="tagsPath"
       />
     </graph-group>
   </div>

@@ -5,7 +5,7 @@ feature 'Merge Requests List' do
   let(:project) { create(:project, :repository) }
 
   background do
-    project.team << [user, :developer]
+    project.add_developer(user)
 
     sign_in(user)
   end

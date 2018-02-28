@@ -32,6 +32,7 @@ module Banzai
               .gsub(PUNCTUATION_REGEXP, '') # remove punctuation
               .tr(' ', '-') # replace spaces with dash
               .squeeze('-') # replace multiple dashes with one
+              .gsub(/\A(\d+)\z/, 'anchor-\1') # digits-only hrefs conflict with issue refs
 
             uniq = headers[id] > 0 ? "-#{headers[id]}" : ''
             headers[id] += 1

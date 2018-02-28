@@ -1,7 +1,6 @@
-/* global Sidebar */
 /* eslint-disable no-new */
 import _ from 'underscore';
-import '~/right_sidebar';
+import Sidebar from '~/right_sidebar';
 
 describe('Issuable right sidebar collapsed todo toggle', () => {
   const fixtureName = 'issues/open-issue.html.raw';

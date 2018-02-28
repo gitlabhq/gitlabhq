@@ -9,11 +9,11 @@ describe API::V3::Commits do
   let!(:note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'a comment on a commit') }
   let!(:another_note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'another comment on a commit') }
 
-  before { project.team << [user, :reporter] }
+  before { project.add_reporter(user) }
 
   describe "List repository commits" do
     context "authorized user" do
-      before { project.team << [user2, :reporter] }
+      before { project.add_reporter(user2) }
 
       it "returns project commits" do
         commit = project.repository.commit
@@ -415,7 +415,7 @@ describe API::V3::Commits do
 
   describe "Get the diff of a commit" do
     context "authorized user" do
-      before { project.team << [user2, :reporter] }
+      before { project.add_reporter(user2) }
 
       it "returns the diff of the selected commit" do
         get v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/diff", user)
@@ -487,7 +487,7 @@ describe API::V3::Commits do
       end
 
       it 'returns 400 if you are not allowed to push to the target branch' do
-        project.team << [user2, :developer]
+        project.add_developer(user2)
         protected_branch = create(:protected_branch, project: project, name: 'feature')
 
         post v3_api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user2), branch: protected_branch.name

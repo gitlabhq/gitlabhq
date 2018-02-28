@@ -109,7 +109,7 @@
               API
 %tr
   %td{ colspan: 2, style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#333333;font-size:15px;font-weight:300;line-height:1.4;padding:15px 5px;text-align:center;" }
-    - job_count = @pipeline.statuses.latest.size
+    - job_count = @pipeline.total_size
     - stage_count = @pipeline.stages_count
     successfully completed
     #{job_count} #{'job'.pluralize(job_count)}

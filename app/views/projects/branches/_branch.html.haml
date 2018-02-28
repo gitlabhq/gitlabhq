@@ -8,7 +8,8 @@
 %li{ class: "js-branch-#{branch.name}" }
   %div
     = link_to project_tree_path(@project, branch.name), class: 'item-title str-truncated ref-name' do
-      = icon('code-fork', class: 'append-right-5') + "#{branch.name}"
+      = sprite_icon('fork', size: 12)
+      = branch.name
     &nbsp;
     - if branch.name == @repository.root_ref
       %span.label.label-primary default
@@ -65,16 +66,16 @@
             = icon("trash-o")
 
     - if branch.name != @repository.root_ref
-      .divergence-graph{ title: s_('%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead') % { number_commits_behind: number_commits_behind,
+      .divergence-graph{ title: s_('%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead') % { number_commits_behind: diverging_count_label(number_commits_behind),
         default_branch: @repository.root_ref,
-        number_commits_ahead: number_commits_ahead } }
+        number_commits_ahead: diverging_count_label(number_commits_ahead) } }
         .graph-side
           .bar.bar-behind{ style: "width: #{number_commits_behind * bar_graph_width_factor}%" }
-          %span.count.count-behind= number_commits_behind
+          %span.count.count-behind= diverging_count_label(number_commits_behind)
         .graph-separator
         .graph-side
           .bar.bar-ahead{ style: "width: #{number_commits_ahead * bar_graph_width_factor}%" }
-          %span.count.count-ahead= number_commits_ahead
+          %span.count.count-ahead= diverging_count_label(number_commits_ahead)
 
 
   - if commit

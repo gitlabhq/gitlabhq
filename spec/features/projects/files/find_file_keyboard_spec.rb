@@ -5,7 +5,7 @@ feature 'Find file keyboard shortcuts', :js do
   let(:project) { create(:project, :repository) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in user
 
     visit project_find_file_path(project, project.repository.root_ref)

@@ -14,7 +14,7 @@ describe API::Files do
   let(:author_name) { 'John Doe' }
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
   end
 
   def route(file_path = nil)

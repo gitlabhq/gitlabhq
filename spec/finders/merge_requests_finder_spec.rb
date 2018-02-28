@@ -20,10 +20,10 @@ describe MergeRequestsFinder do
   let!(:merge_request4) { create(:merge_request, :simple, author: user, source_project: project3, target_project: project3) }
 
   before do
-    project1.team << [user, :master]
-    project2.team << [user, :developer]
-    project3.team << [user, :developer]
-    project2.team << [user2, :developer]
+    project1.add_master(user)
+    project2.add_developer(user)
+    project3.add_developer(user)
+    project2.add_developer(user2)
   end
 
   describe "#execute" do

@@ -4,7 +4,7 @@ feature 'list of badges' do
   background do
     user = create(:user)
     project = create(:project, :repository)
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
     visit project_pipelines_settings_path(project)
   end

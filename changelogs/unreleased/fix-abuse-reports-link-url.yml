@@ -1,0 +1,5 @@
+---
+title: Fix abuse reports link url in admin area navbar
+merge_request: 16068
+author: megos
+type: fixed

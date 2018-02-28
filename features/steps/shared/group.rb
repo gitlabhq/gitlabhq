@@ -41,7 +41,7 @@ module SharedGroup
     group.add_user(user, role)
     project ||= create(:project, :repository, namespace: group)
     create(:closed_issue_event, project: project)
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   def owned_group

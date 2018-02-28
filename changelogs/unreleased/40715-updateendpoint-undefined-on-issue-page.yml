@@ -1,5 +1,0 @@
----
-title: Fix updateEndpoint undefined error for issue_show app root
-merge_request: 15698
-author:
-type: fixed

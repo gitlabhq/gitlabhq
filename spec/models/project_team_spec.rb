@@ -291,8 +291,8 @@ describe ProjectTeam do
       group.add_master(master)
       group.add_developer(developer)
 
-      members_project.team << [developer, :developer]
-      members_project.team << [master, :master]
+      members_project.add_developer(developer)
+      members_project.add_master(master)
 
       create(:project_group_link, project: shared_project, group: group)
     end

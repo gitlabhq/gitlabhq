@@ -52,7 +52,7 @@ describe 'Auto deploy' do
   context 'when user configured kubernetes from Integration > Kubernetes' do
     before do
       create :kubernetes_service, project: project
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in user
     end
 
@@ -65,7 +65,7 @@ describe 'Auto deploy' do
   context 'when user configured kubernetes from CI/CD > Clusters' do
     before do
       create(:cluster, :provided_by_gcp, projects: [project])
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in user
     end
 

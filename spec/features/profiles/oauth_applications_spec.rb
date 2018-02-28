@@ -2,12 +2,20 @@ require 'spec_helper'
 
 describe 'Profile > Applications' do
   let(:user) { create(:user) }
+  let(:application) { create(:oauth_application, owner: user) }
 
   before do
     sign_in(user)
   end
 
   describe 'User manages applications', :js do
+    it 'views an application' do
+      visit oauth_application_path(application)
+
+      expect(page).to have_content("Application: #{application.name}")
+      expect(find('.breadcrumbs-sub-title')).to have_link(application.name)
+    end
+
     it 'deletes an application' do
       create(:oauth_application, owner: user)
       visit oauth_applications_path

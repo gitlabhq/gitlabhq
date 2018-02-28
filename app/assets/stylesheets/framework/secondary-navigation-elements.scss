@@ -86,8 +86,6 @@
   }
 
   .nav-controls {
-    @include new-style-dropdown;
-
     display: inline-block;
     float: right;
     text-align: right;

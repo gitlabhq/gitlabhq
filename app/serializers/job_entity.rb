@@ -4,6 +4,8 @@ class JobEntity < Grape::Entity
   expose :id
   expose :name
 
+  expose :started?, as: :started
+
   expose :build_path do |build|
     build.target_url || path_to(:namespace_project_job, build)
   end
