@@ -337,9 +337,9 @@ group :development, :test do
   # Generate Fake data
   gem 'ffaker', '~> 2.4'
 
-  gem 'capybara', '~> 2.15'
-  gem 'capybara-screenshot', '~> 1.0.0'
-  gem 'selenium-webdriver', '~> 3.5'
+  gem 'capybara', '~> 2.18'
+  gem 'capybara-screenshot', '~> 1.0'
+  gem 'selenium-webdriver', '~> 3.9'
 
   gem 'spring', '~> 2.0.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
