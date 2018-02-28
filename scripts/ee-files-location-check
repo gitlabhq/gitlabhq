@@ -2,7 +2,6 @@
 
 WHITELIST = [
   'CHANGELOG-EE.md',
-  'app/assets/javascripts/**/*', # https://gitlab.com/gitlab-org/gitlab-ee/issues/4536
   'config/**/*', # https://gitlab.com/gitlab-org/gitlab-ee/issues/4946
   'doc/**/*', # https://gitlab.com/gitlab-org/gitlab-ee/issues/4948#note_59945483
   'qa/**/*', # https://gitlab.com/gitlab-org/gitlab-ee/issues/4997#note_59764702
@@ -18,14 +17,11 @@ WHITELIST = [
 new_files_in_this_branch_not_at_the_ee_top_level =
   `git diff canonical-ee/master...HEAD --name-status --diff-filter=A -- ./ ':!ee' | cut -f2`.lines.map(&:strip)
 
+ce_repo_url = ENV['CI_REPOSITORY_URL'].sub('gitlab-ee', 'gitlab-ce')
 current_branch = ENV.fetch('CI_COMMIT_REF_NAME', `git rev-parse --abbrev-ref HEAD`).strip
 ce_branch_name = current_branch.sub(/(\Aee\-|\-ee\z)/, '')
 
-`git fetch canonical-ce #{ce_branch_name} --quiet`
-
-unless $?.success?
-  `git fetch canonical-ce 'master' --quiet`
-end
+`git fetch #{ce_repo_url} #{ce_branch_name} --quiet` || `git fetch canonical-ce 'master' --quiet`
 
 ee_specific_files_in_ce_master_not_at_the_ee_top_level =
   `git diff FETCH_HEAD..HEAD --name-status --diff-filter=A -- ./ ':!ee' | cut -f2`.lines.map(&:strip)

@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import reportSummary from '~/pipelines/components/security_reports/sast_report_summary_widget.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
-import { parsedSastIssuesHead } from '../../vue_shared/security_reports/mock_data';
+import reportSummary from 'ee/pipelines/components/security_reports/sast_report_summary_widget.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { parsedSastIssuesHead } from 'spec/vue_shared/security_reports/mock_data';
 
 describe('SAST report summary widget', () => {
   let vm;

@@ -1,6 +1,6 @@
 <script>
   import { mapActions, mapState, mapGetters } from 'vuex';
-  import tooltip from '../../../vue_shared/directives/tooltip';
+  import tooltip from '~/vue_shared/directives/tooltip';
 
   export default {
     directives: {

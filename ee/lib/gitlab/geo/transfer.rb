@@ -70,7 +70,7 @@ module Gitlab
           temp_file.flush
 
           unless response.success?
-            log_error("Unsuccessful download", filename: filename, response_code: response.code, response_msg: response.msg)
+            log_error("Unsuccessful download", filename: filename, response_code: response.code, response_msg: response.msg, url: url)
             return file_size
           end
 
@@ -84,7 +84,7 @@ module Gitlab
           file_size = File.stat(filename).size
           log_info("Successful downloaded", filename: filename, file_size_bytes: file_size)
         rescue StandardError, HTTParty::Error => e
-          log_error("Error downloading file", error: e, filename: filename)
+          log_error("Error downloading file", error: e, filename: filename, url: url)
         ensure
           temp_file.close
           temp_file.unlink

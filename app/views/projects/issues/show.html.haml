@@ -86,7 +86,7 @@
 
   .content-block.emoji-block
     .row
-      .col-sm-8.js-issue-note-awards
+      .col-sm-8.js-noteable-awards
         = render 'award_emoji/awards_block', awardable: @issue, inline: true
       .col-sm-4.new-branch-col
         = render 'new_branch' unless @issue.confidential?

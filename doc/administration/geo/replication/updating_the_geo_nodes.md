@@ -34,7 +34,7 @@ If you do not perform this step, you may find that two-factor authentication
 
 To prevent SSH requests to the newly promoted primary node from failing
 due to SSH host key mismatch when updating the primary domain's DNS record
-you should perform the step to [Manually replicate primary SSH host keys](configuration.md#step-2-manually-replicate-primary-ssh-host-keys) in each
+you should perform the step to [Manually replicate primary SSH host keys][configuration-replicate-ssh] in each
 secondary node.
 
 ## Upgrading to GitLab 10.4
@@ -49,7 +49,7 @@ In GitLab 10.2, synchronizing secondaries over SSH was deprecated. In 10.3,
 support is removed entirely. All installations will switch to the HTTP/HTTPS
 cloning method instead. Before upgrading, ensure that all your Geo nodes are
 configured to use this method and that it works for your installation. In
-particular, ensure that [Git access over HTTP/HTTPS is enabled](configuration.md#step-5-enable-git-access-over-http-https).
+particular, ensure that [Git access over HTTP/HTTPS is enabled][configuration-git-over-http].
 
 Synchronizing repositories over the public Internet using HTTP is insecure, so
 you should ensure that you have HTTPS configured before upgrading. Note that
@@ -63,7 +63,7 @@ Support for TLS-secured PostgreSQL replication has been added. If you are
 currently using PostgreSQL replication across the open internet without an
 external means of securing the connection (e.g., a site-to-site VPN), then you
 should immediately reconfigure your primary and secondary PostgreSQL instances
-according to the [updated instructions](#database.md).
+according to the [updated instructions][database].
 
 If you *are* securing the connections externally and wish to continue doing so,
 ensure you include the new option `--sslmode=prefer` in future invocations of
@@ -96,10 +96,9 @@ secondary if ever promoted to a primary:
 
 ### Hashed Storage
 
->**Warning**
+CAUTION: **Warning:**
 Hashed storage is in **Alpha**. It is considered experimental and not
-production-ready. See [Hashed
-Storage](../../repository_storage_types.md) for more detail.
+production-ready. See [Hashed Storage] for more detail.
 
 If you previously enabled Hashed Storage and migrated all your existing
 projects to Hashed Storage, disabling hashed storage will not migrate projects
@@ -108,19 +107,17 @@ migrated we recommend leaving Hashed Storage enabled.
 
 ## Upgrading to GitLab 10.1
 
->**Warning**
+CAUTION: **Warning:**
 Hashed storage is in **Alpha**. It is considered experimental and not
-production-ready. See [Hashed
-Storage](../../repository_storage_types.md) for more detail.
+production-ready. See [Hashed Storage] for more detail.
 
-[Hashed storage](../../repository_storage_types.md) was introduced
-in GitLab 10.0, and a [migration path](../../raketasks/storage.md)
+[Hashed storage] was introduced in GitLab 10.0, and a [migration path][hashed-migration]
 for existing repositories was added in GitLab 10.1.
 
 ## Upgrading to GitLab 10.0
 
 Since GitLab 10.0, we require all **Geo** systems to [use SSH key lookups via
-the database](../../operations/fast_ssh_key_lookup.md) to avoid having to maintain consistency of the
+the database][ssh-fast-lookup] to avoid having to maintain consistency of the
 `authorized_keys` file for SSH access. Failing to do this will prevent users
 from being able to clone via SSH.
 
@@ -158,10 +155,12 @@ instructions below.
 When in doubt, it does not hurt to do a resync. The easiest way to do this in
 Omnibus is the following:
 
-  1. Install GitLab on the primary server
+  1. Make sure you have Omnibus GitLab on the primary server
   1. Run `gitlab-ctl reconfigure` and `gitlab-ctl restart postgresql`. This will enable replication slots on the primary database.
+  1. Check the steps about defining `postgresql['sql_user_password']`, `gitlab_rails['db_password']`
+  1. Make sure `postgresql['max_replication_slots']` matches the number of secondary Geo Nodes locations 
   1. Install GitLab on the secondary server.
-  1. Re-run the [database replication process](database.md#step-3-initiate-the-replication-process).
+  1. Re-run the [database replication process][database-replication].
 
 ## Special update notes for 9.0.x
 
@@ -255,7 +254,7 @@ is prepended with the relevant node for better clarity:
         ```
 
     1. **[secondary]** Create the `replica.sh` script as described in the
-       [database configuration document](database.md#step-3-initiate-the-replication-process).
+       [database configuration document][database-source-replication].
 
     1. **[secondary]** Run the recovery script using the credentials from the
        previous step:
@@ -315,3 +314,11 @@ and it is required since 10.0.
 1. Repeat this step for every secondary node
 
 [update]: ../../../update/README.md
+[database]: database.md
+[database-replication]: database.md#step-3-initiate-the-replication-process
+[database-source-replication]: database_source.md#step-3-initiate-the-replication-process
+[Hashed Storage]: ../../repository_storage_types.md
+[hashed-migration]: ../../raketasks/storage.md
+[ssh-fast-lookup]: ../../operations/fast_ssh_key_lookup.md
+[configuration-replicate-ssh]: configuration.md#step-2-manually-replicate-primary-ssh-host-keys
+[configuration-git-over-http]: configuration.md#step-6-enable-git-access-over-http-https

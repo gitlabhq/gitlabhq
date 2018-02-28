@@ -1,12 +1,13 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
-import * as consts from '../stores/modules/commit/constants';
-import tooltip from '../../vue_shared/directives/tooltip';
-import icon from '../../vue_shared/components/icon.vue';
-import modal from '../../vue_shared/components/modal.vue';
+import tooltip from '~/vue_shared/directives/tooltip';
+import icon from '~/vue_shared/components/icon.vue';
+import modal from '~/vue_shared/components/modal.vue';
+import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import commitFilesList from './commit_sidebar/list.vue';
-import Actions from './commit_sidebar/actions.vue';
-import LoadingButton from '../../vue_shared/components/loading_button.vue';
+
+import * as consts from 'ee/ide/stores/modules/commit/constants'; // eslint-disable-line import/first
+import Actions from 'ee/ide/components/commit_sidebar/actions.vue'; // eslint-disable-line import/first
 
 export default {
   components: {

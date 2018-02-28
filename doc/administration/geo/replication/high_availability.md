@@ -8,7 +8,7 @@ described, it is possible to adapt these instructions to your needs.
 
 ![Geo HA Diagram](../../img/high_availability/geo-ha-diagram.png)
 
-_[diagram source - gitlab employees only](https://docs.google.com/drawings/d/1z0VlizKiLNXVVVaERFwgsIOuEgjcUqDTWPdQYsE7Z4c/edit)_
+_[diagram source - gitlab employees only][diagram-source]_
 
 The topology above assumes that the primary and secondary Geo clusters
 are located in two separate locations, on their own virtual network
@@ -21,7 +21,7 @@ The only external way to access the two Geo deployments is by HTTPS at
 `gitlab.us.example.com` and `gitlab.eu.example.com` in the example above.
 
 > **Note:** The primary and secondary Geo deployments must be able to
-> communicate to each other over HTTPS.
+  communicate to each other over HTTPS.
 
 ## Redis and PostgreSQL High Availability
 
@@ -33,8 +33,7 @@ The two services will instead be configured such that
 they will each run on a single machine.
 
 For more information about setting up a highly available PostgreSQL cluster and Redis cluster using the omnibus package see the high availability documentation for
-[PostgreSQL](../../high_availability/database.md) and
-[Redis](../../high_availability/redis.md), respectively.
+[PostgreSQL][postgresql-ha] and [Redis][redis-ha], respectively.
 
 From these instructions you will need the following for the examples below:
 * `gitlab_rails['db_password']` for the PostgreSQL "DB password"
@@ -53,18 +52,18 @@ Make sure you have GitLab EE installed using the
 
 On the **primary** backend servers configure the following services:
 
-* [Redis](../../high_availability/redis.md) for high availability.
-* [NFS Server](../../high_availability/nfs.md) for repository, LFS, and upload storage.
-* [PostgreSQL](../../high_availability/database.md) for high availability.
+* [Redis][redis-ha] for high availability.
+* [NFS Server][nfs-ha] for repository, LFS, and upload storage.
+* [PostgreSQL][postgresql-ha] for high availability.
 
 On the **secondary** backend servers configure the following services:
 
-* [Redis](../../high_availability/redis.md) for high availability.
-* [NFS Server](../../high_availability/nfs.md) which will store data that is synchronized from the Geo primary.
+* [Redis][redis-ha] for high availability.
+* [NFS Server][nfs-ha] which will store data that is synchronized from the Geo primary.
 
 ### Step 2: Configure the Postgres services on the Geo Secondary
 
-1. Configure the [secondary Geo PostgreSQL database](database.md)
+1. Configure the [secondary Geo PostgreSQL database][database]
  as a read-only secondary of the primary Geo PostgreSQL database.
 
 1. Configure the Geo tracking database on the secondary server, to do this modify `/etc/gitlab/gitlab.rb`:
@@ -82,7 +81,7 @@ On the **secondary** backend servers configure the following services:
 
 NOTE: **Note:**
 Be sure that other non-postgresql services are disabled by setting `enable` to `false` in
-the [gitlab.rb configuration](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template).
+the [gitlab.rb configuration][gitlab-rb-template].
 
 After making these changes be sure to run `sudo gitlab-ctl reconfigure` so that they take effect.
 
@@ -91,7 +90,7 @@ After making these changes be sure to run `sudo gitlab-ctl reconfigure` so that 
 In this topology there will need to be a load balancers at each geographical location
 to route traffic to the application servers.
 
-See the [Load Balancer for GitLab HA](../../high_availability/load_balancer.md)
+See the [Load Balancer for GitLab HA][load-balancer-ha]
 documentation for more information.
 
 ### Step 4: Configure the Geo Frontend Application Servers
@@ -130,7 +129,8 @@ the addresses of the remote endpoints for PostgreSQL and Redis will need to be s
 On the secondary the remote endpoint for the PostgreSQL Geo database will
 be specified.
 
-1. Edit `/etc/gitlab/gitlab.rb` and ensure the following to disable PostgreSQL and Redis from running locally. Configure the secondary to connect to the Geo tracking database.
+1. Edit `/etc/gitlab/gitlab.rb` and ensure the following to disable PostgreSQL and 
+   Redis from running locally. Configure the secondary to connect to the Geo tracking database.
 
 
     ```ruby
@@ -164,7 +164,7 @@ be specified.
     ```
 
 
-After making these changes [Reconfigure GitLab][] so that they take effect.
+After making these changes [Reconfigure GitLab][gitlab-reconfigure] so that they take effect.
 
 On the primary the following GitLab frontend services will be enabled:
 
@@ -192,5 +192,11 @@ On the secondary the following GitLab frontend services will be enabled:
 Verify these services by running `sudo gitlab-ctl status` on the frontend
 application servers.
 
-[reconfigure GitLab]: ../../restart_gitlab.md#omnibus-gitlab-reconfigure
-[restart GitLab]: ../../restart_gitlab.md#omnibus-gitlab-restart
+[diagram-source]: https://docs.google.com/drawings/d/1z0VlizKiLNXVVVaERFwgsIOuEgjcUqDTWPdQYsE7Z4c/edit
+[gitlab-reconfigure]: ../../restart_gitlab.md#omnibus-gitlab-reconfigure
+[redis-ha]: ../../high_availability/redis.md
+[postgresql-ha]: ../../high_availability/database.md
+[nfs-ha]: ../../high_availability/nfs.md
+[load-balancer-ha]: ../../high_availability/load_balancer.md
+[database]: database.md
+[gitlab-rb-template]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template

@@ -242,9 +242,15 @@ export default class LabelsSelect {
         filterable: true,
         selected: $dropdown.data('selected') || [],
         toggleLabel: function(selected, el) {
+          var $dropdownParent = $dropdown.parent();
+          var $dropdownInputField = $dropdownParent.find('.dropdown-input-field');
           var isSelected = el !== null ? el.hasClass('is-active') : false;
           var title = selected.title;
           var selectedLabels = this.selected;
+
+          if ($dropdownInputField.length && $dropdownInputField.val().length) {
+            $dropdownParent.find('.dropdown-input-clear').trigger('click');
+          }
 
           if (selected.id === 0) {
             this.selected = [];

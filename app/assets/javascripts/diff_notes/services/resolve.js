@@ -8,8 +8,8 @@ window.gl = window.gl || {};
 
 class ResolveServiceClass {
   constructor(root) {
-    this.noteResource = Vue.resource(`${root}/notes{/noteId}/resolve`);
-    this.discussionResource = Vue.resource(`${root}/merge_requests{/mergeRequestId}/discussions{/discussionId}/resolve`);
+    this.noteResource = Vue.resource(`${root}/notes{/noteId}/resolve?html=true`);
+    this.discussionResource = Vue.resource(`${root}/merge_requests{/mergeRequestId}/discussions{/discussionId}/resolve?html=true`);
   }
 
   resolve(noteId) {
@@ -45,6 +45,7 @@ class ResolveServiceClass {
 
         if (gl.mrWidget) gl.mrWidget.checkStatus();
         discussion.updateHeadline(data);
+        document.dispatchEvent(new CustomEvent('refreshVueNotes'));
       })
       .catch(() => new Flash('An error occurred when trying to resolve a discussion. Please try again.'));
   }

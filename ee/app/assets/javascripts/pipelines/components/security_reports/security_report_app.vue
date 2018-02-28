@@ -1,7 +1,7 @@
 <script>
   import ReportSection from 'ee/vue_shared/security_reports/components/report_section.vue';
   import securityMixin from 'ee/vue_shared/security_reports/mixins/security_report_mixin';
-  import LoadingIcon from '../../../vue_shared/components/loading_icon.vue';
+  import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 
   export default {
     name: 'SecurityReportTab',
