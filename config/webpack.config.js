@@ -44,7 +44,6 @@ function generateEntries() {
 
   const manualEntries = {
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
-    cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     environments:         './environments/environments_bundle.js',
     monitoring:           './monitoring/monitoring_bundle.js',
     mr_notes:             './mr_notes/index.js',
@@ -58,7 +57,6 @@ function generateEntries() {
     stl_viewer:           './blob/stl_viewer.js',
     terminal:             './terminal/terminal_bundle.js',
     two_factor_auth:      './two_factor_auth.js',
-
 
     common:               './commons/index.js',
     common_vue:           './vue_shared/vue_resource_interceptor.js',
@@ -223,6 +221,33 @@ const config = {
         .digest('hex');
 
       return `${moduleNames[0]}-${hash.substr(0, 6)}`;
+    }),
+
+    // create cacheable common library bundle for all vue chunks
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'common_vue',
+      chunks: [
+        'boards',
+        'deploy_keys',
+        'environments',
+        'filtered_search',
+        'groups',
+        'monitoring',
+        'mr_notes',
+        'notebook_viewer',
+        'pdf_viewer',
+        'pipelines',
+        'pipelines_details',
+        'registry_list',
+        'ide',
+        'schedule_form',
+        'schedules_index',
+        'sidebar',
+        'vue_merge_request_widget',
+      ],
+      minChunks: function(module, count) {
+        return module.resource && (/vue_shared/).test(module.resource);
+      },
     }),
 
     // create cacheable common library bundles
