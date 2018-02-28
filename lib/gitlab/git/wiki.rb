@@ -59,7 +59,7 @@ module Gitlab
       end
 
       def pages(limit: nil)
-        @repository.gitaly_migrate(:wiki_get_all_pages, status: Gitlab::GitalyClient::MigrationStatus::DISABLED) do |is_enabled|
+        @repository.gitaly_migrate(:wiki_get_all_pages) do |is_enabled|
           if is_enabled
             gitaly_get_all_pages
           else
@@ -68,9 +68,8 @@ module Gitlab
         end
       end
 
-      # Disable because of https://gitlab.com/gitlab-org/gitlab-ce/issues/42039
       def page(title:, version: nil, dir: nil)
-        @repository.gitaly_migrate(:wiki_find_page, status: Gitlab::GitalyClient::MigrationStatus::DISABLED) do |is_enabled|
+        @repository.gitaly_migrate(:wiki_find_page) do |is_enabled|
           if is_enabled
             gitaly_find_page(title: title, version: version, dir: dir)
           else

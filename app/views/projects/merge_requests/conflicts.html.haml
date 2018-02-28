@@ -1,7 +1,5 @@
 - page_title "Merge Conflicts", "#{@merge_request.title} (#{@merge_request.to_reference}", "Merge Requests"
 - content_for :page_specific_javascripts do
-  = webpack_bundle_tag('common_vue')
-  = webpack_bundle_tag('merge_conflicts')
   = page_specific_javascript_tag('lib/ace.js')
 = render "projects/merge_requests/mr_title"
 

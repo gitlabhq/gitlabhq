@@ -44,30 +44,23 @@ function generateEntries() {
 
   const manualEntries = {
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
-    common:               './commons/index.js',
-    common_vue:           './vue_shared/vue_resource_interceptor.js',
-    cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     environments:         './environments/environments_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
     help:                 './help/help.js',
-    merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
     monitoring:           './monitoring/monitoring_bundle.js',
+    mr_notes:             './mr_notes/index.js',
     notebook_viewer:      './blob/notebook_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
     pipelines_details:    './pipelines/pipeline_details_bundle.js',
-    profile:              './profile/profile_bundle.js',
     project_import_gl:    './projects/project_import_gitlab_project.js',
     protected_branches:   './protected_branches',
     protected_tags:       './protected_tags',
     registry_list:        './registry/index.js',
-    sidebar:              './sidebar/sidebar_bundle.js',
-    snippet:              './snippet/snippet_bundle.js',
     sketch_viewer:        './blob/sketch_viewer.js',
     stl_viewer:           './blob/stl_viewer.js',
     terminal:             './terminal/terminal_bundle.js',
     ui_development_kit:   './ui_development_kit.js',
     two_factor_auth:      './two_factor_auth.js',
-
 
     common:               './commons/index.js',
     common_vue:           './vue_shared/vue_resource_interceptor.js',
@@ -239,13 +232,12 @@ var config = {
       name: 'common_vue',
       chunks: [
         'boards',
-        'cycle_analytics',
         'deploy_keys',
         'environments',
         'filtered_search',
         'groups',
-        'merge_conflicts',
         'monitoring',
+        'mr_notes',
         'notebook_viewer',
         'pdf_viewer',
         'pipelines',
@@ -363,7 +355,7 @@ if (IS_DEV_SERVER) {
           callback();
         })
       },
-    },
+    }
   );
   if (DEV_SERVER_LIVERELOAD) {
     config.plugins.push(new webpack.HotModuleReplacementPlugin());

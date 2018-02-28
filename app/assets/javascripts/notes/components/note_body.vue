@@ -41,7 +41,7 @@
       this.initTaskList();
 
       if (this.isEditing) {
-        this.initAutoSave();
+        this.initAutoSave(this.note.noteable_type);
       }
     },
     updated() {
@@ -50,7 +50,7 @@
 
       if (this.isEditing) {
         if (!this.autosave) {
-          this.initAutoSave();
+          this.initAutoSave(this.note.noteable_type);
         } else {
           this.setAutoSave();
         }
