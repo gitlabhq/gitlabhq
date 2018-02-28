@@ -171,6 +171,42 @@ describe API::MergeRequests do
         end
       end
 
+      it 'returns merge requests created before a specific date' do
+        merge_request2 = create(:merge_request, :simple, source_project: project, target_project: project, source_branch: 'feature_1', created_at: Date.new(2000, 1, 1))
+
+        get api('/merge_requests?created_before=2000-01-02T00:00:00.060Z', user)
+
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['id']).to eq(merge_request2.id)
+      end
+
+      it 'returns merge requests created after a specific date' do
+        merge_request2 = create(:merge_request, :simple, source_project: project, target_project: project, source_branch: 'feature_1', created_at: 1.week.from_now)
+
+        get api("/merge_requests?created_after=#{merge_request2.created_at}", user)
+
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['id']).to eq(merge_request2.id)
+      end
+
+      it 'returns merge requests updated before a specific date' do
+        merge_request2 = create(:merge_request, :simple, source_project: project, target_project: project, source_branch: 'feature_1', updated_at: Date.new(2000, 1, 1))
+
+        get api('/merge_requests?updated_before=2000-01-02T00:00:00.060Z', user)
+
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['id']).to eq(merge_request2.id)
+      end
+
+      it 'returns merge requests updated after a specific date' do
+        merge_request2 = create(:merge_request, :simple, source_project: project, target_project: project, source_branch: 'feature_1', updated_at: 1.week.from_now)
+
+        get api("/merge_requests?updated_after=#{merge_request2.updated_at}", user)
+
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['id']).to eq(merge_request2.id)
+      end
+
       context 'search params' do
         before do
           merge_request.update(title: 'Search title', description: 'Search description')

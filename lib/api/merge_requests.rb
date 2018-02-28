@@ -42,6 +42,8 @@ module API
         optional :labels, type: String, desc: 'Comma-separated list of label names'
         optional :created_after, type: DateTime, desc: 'Return merge requests created after the specified time'
         optional :created_before, type: DateTime, desc: 'Return merge requests created before the specified time'
+        optional :updated_after, type: DateTime, desc: 'Return merge requests updated after the specified time'
+        optional :updated_before, type: DateTime, desc: 'Return merge requests updated before the specified time'
         optional :view, type: String, values: %w[simple], desc: 'If simple, returns the `iid`, URL, title, description, and basic state of merge request'
         optional :author_id, type: Integer, desc: 'Return merge requests which are authored by the user with the given ID'
         optional :assignee_id, type: Integer, desc: 'Return merge requests which are assigned to the user with the given ID'
