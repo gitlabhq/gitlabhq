@@ -12,9 +12,14 @@ unless Sidekiq.server?
     config.lograge.logger = ActiveSupport::Logger.new(filename)
     # Add request parameters to log output
     config.lograge.custom_options = lambda do |event|
+      params = event.payload[:params]
+        .except(*%w(controller action format))
+        .each_pair
+        .map { |k, v| { key: k, value: v } }
+
       payload = {
         time: event.time.utc.iso8601(3),
-        params: event.payload[:params].except(*%w(controller action format)),
+        params: params,
         remote_ip: event.payload[:remote_ip],
         user_id: event.payload[:user_id],
         username: event.payload[:username]
