@@ -3,7 +3,7 @@ module CiVariables
 
   def filtered_variables_params
     params = variables_params
-    params['variables_attributes'].group_by { |var| var['key'] }.each_value do |variables|
+    params['variables_attributes'].group_by { |var| [var['key'], var['environment_scope']] }.each_value do |variables|
       if variables.count > 1
         variable = variables.find { |var| var['_destroy'] == 'true' }
         next unless variable
