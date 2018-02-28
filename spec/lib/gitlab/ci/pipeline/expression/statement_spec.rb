@@ -8,13 +8,16 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
   end
 
   before do
-    pipeline.variables.build([key: 'VARIABLE', value: 'my variable'])
+    variables = [{ key: 'PRESENT_VARIABLE', value: 'my variable' },
+                 { key: 'EMPTY_VARIABLE', value: '' }]
+
+    pipeline.variables.build(variables)
   end
 
   describe '.new' do
     context 'when pipeline is not provided' do
       it 'allows to properly initialize the statement' do
-        statement = described_class.new('$VARIABLE')
+        statement = described_class.new('$PRESENT_VARIABLE')
 
         expect(statement.evaluate).to be_nil
       end
@@ -72,7 +75,7 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
       end
 
       context 'when using a single token' do
-        let(:text) { '$VARIABLE' }
+        let(:text) { '$PRESENT_VARIABLE' }
 
         it 'returns a single token instance' do
           expect(subject.parse_tree)
@@ -84,14 +87,17 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
 
   describe '#evaluate' do
     statements = [
-      ['$VARIABLE == "my variable"', true],
-      ["$VARIABLE == 'my variable'", true],
-      ['"my variable" == $VARIABLE', true],
-      ['$VARIABLE == null', false],
-      ['$VAR == null', true],
-      ['null == $VAR', true],
-      ['$VARIABLE', 'my variable'],
-      ['$VAR', nil]
+      ['$PRESENT_VARIABLE == "my variable"', true],
+      ["$PRESENT_VARIABLE == 'my variable'", true],
+      ['"my variable" == $PRESENT_VARIABLE', true],
+      ['$PRESENT_VARIABLE == null', false],
+      ['$EMPTY_VARIABLE == null', false],
+      ['"" == $EMPTY_VARIABLE', true],
+      ['$EMPTY_VARIABLE', ''],
+      ['$UNDEFINED_VARIABLE == null', true],
+      ['null == $UNDEFINED_VARIABLE', true],
+      ['$PRESENT_VARIABLE', 'my variable'],
+      ['$UNDEFINED_VARIABLE', nil]
     ]
 
     statements.each do |expression, value|
@@ -100,6 +106,27 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
 
         it "evaluates to `#{value.inspect}`" do
           expect(subject.evaluate).to eq value
+        end
+      end
+    end
+  end
+
+  describe '#truthful?' do
+    statements = [
+      ['$PRESENT_VARIABLE == "my variable"', true],
+      ["$PRESENT_VARIABLE == 'no match'", false],
+      ['$UNDEFINED_VARIABLE == null', true],
+      ['$PRESENT_VARIABLE', true],
+      ['$UNDEFINED_VARIABLE', false],
+      ['$EMPTY_VARIABLE', false]
+    ]
+
+    statements.each do |expression, value|
+      context "when using expression `#{expression}`" do
+        let(:text) { expression }
+
+        it "returns `#{value.inspect}`" do
+          expect(subject.truthful?).to eq value
         end
       end
     end

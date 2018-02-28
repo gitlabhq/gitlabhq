@@ -38,6 +38,10 @@ module Gitlab
             parse_tree.evaluate(@variables.to_h)
           end
 
+          def truthful?
+            evaluate.present?
+          end
+
           def inspect
             "syntax: #{@lexer.lexemes.join(' ')}"
           end
