@@ -29,8 +29,9 @@ Before proceeding, make sure the following requirements are met:
 - Your associated Google account must have the right privileges to manage
   clusters on GKE. That would mean that a [billing
   account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
-  must be set up and that you have to have permissions to access it.
-- You must have Master [permissions] in order to be able to access the
+  must be set up.
+- You must have a **Compute Admin** [role](https://cloud.google.com/compute/docs/access/iam#compute_admin_role) on Google Cloud Platform.
+- You must have Master [permissions] in the project, in order to be able to access the
   **Kubernetes** page.
 - You must have [Cloud Billing API](https://cloud.google.com/billing/) enabled
 - You must have [Resource Manager
