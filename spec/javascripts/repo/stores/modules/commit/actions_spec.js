@@ -1,10 +1,10 @@
 import store from '~/ide/stores';
 import service from '~/ide/services';
 import router from '~/ide/ide_router';
-import eventHub from '~/ide/eventhub';
-import * as consts from '~/ide/stores/modules/commit/constants';
 import * as urlUtils from '~/lib/utils/url_utility';
-import { resetStore, file } from '../../../helpers';
+import eventHub from 'ee/ide/eventhub';
+import * as consts from 'ee/ide/stores/modules/commit/constants';
+import { resetStore, file } from 'spec/repo/helpers';
 
 describe('IDE commit module actions', () => {
   afterEach(() => {

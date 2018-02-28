@@ -1,8 +1,8 @@
 <script>
   import { mapState } from 'vuex';
-  import icon from '../../vue_shared/components/icon.vue';
-  import tooltip from '../../vue_shared/directives/tooltip';
-  import timeAgoMixin from '../../vue_shared/mixins/timeago';
+  import icon from '~/vue_shared/components/icon.vue';
+  import tooltip from '~/vue_shared/directives/tooltip';
+  import timeAgoMixin from '~/vue_shared/mixins/timeago';
 
   export default {
     components: {

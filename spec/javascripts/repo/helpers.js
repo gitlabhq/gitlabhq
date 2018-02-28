@@ -1,6 +1,6 @@
 import { decorateData } from '~/ide/stores/utils';
 import state from '~/ide/stores/state';
-import commitState from '~/ide/stores/modules/commit/state';
+import commitState from 'ee/ide/stores/modules/commit/state';
 
 export const resetStore = (store) => {
   const newState = {
