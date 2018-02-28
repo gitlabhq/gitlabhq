@@ -28,7 +28,9 @@ class JobArtifactUploader < GitlabUploader
   private
 
   def calc_checksum
-    Digest::SHA256.file(file.path).hexdigest
+    use_file do |file_path|
+      return Digest::SHA256.file(file_path).hexdigest
+    end
   end
 
   def dynamic_segment

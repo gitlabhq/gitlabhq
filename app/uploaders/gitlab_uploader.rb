@@ -71,6 +71,14 @@ class GitlabUploader < CarrierWave::Uploader::Base
     !!model
   end
 
+  ##
+  # ObjectStorage::Concern extends this method for remote files
+  def use_file
+    if file_storage?
+      return yield path
+    end
+  end
+
   private
 
   # Designed to be overridden by child uploaders that have a dynamic path
