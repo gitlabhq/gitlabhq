@@ -1,0 +1,22 @@
+export const SET_ENDPOINT = 'SET_ENDPOINT';
+export const SET_PERMISSIONS = 'SET_RAILS_DATA';
+export const SET_PATHS = 'SET_RAILS_DATA';
+export const SET_VIEW_TYPE = 'SET_VIEW_TYPE';
+export const SET_HAS_CI = 'SET_VIEW_TYPE';
+
+export const SHOW_LOADING = 'SHOW_LOADING';
+export const HIDE_LOADING = 'HIDE_LOADING';
+
+export const SET_HAS_ERROR = 'SET_HAS_ERROR';
+export const SET_IS_MAKING_REQUEST = 'SET_IS_MAKING_REQUEST';
+export const SET_HAS_MADE_REQUEST = 'SET_HAS_MADE_REQUEST';
+export const SET_SHOULD_UPDATE_GRAPH_DROPDOWN = 'SET_SHOULD_UPDATE_GRAPH_DROPDOWN';
+
+export const SET_SCOPE = 'SET_SCOPE';
+export const SET_PAGE = 'SET_PAGE';
+export const SET_REQUEST_DATA = 'SET_REQUEST_DATA';
+
+export const SET_PIPELINES = 'SET_PIPELINES';
+export const SET_PAGINATION = 'SET_PAGINATION';
+export const SET_COUNT = 'SET_COUNT';
+

@@ -269,7 +269,7 @@ export const normalizeCRLFHeaders = (headers) => {
  * @param {Object} paginationInformation
  * @returns {Object}
  */
-export const parseIntPagination = paginationInformation => ({
+export const parseIntPagination = (paginationInformation = {}) => ({
   perPage: parseInt(paginationInformation['X-PER-PAGE'], 10),
   page: parseInt(paginationInformation['X-PAGE'], 10),
   total: parseInt(paginationInformation['X-TOTAL'], 10),
