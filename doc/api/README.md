@@ -40,6 +40,7 @@ following locations:
 - [Group milestones](group_milestones.md)
 - [Namespaces](namespaces.md)
 - [Notes](notes.md) (comments)
+- [Threaded comments](discussions.md)
 - [Notification settings](notification_settings.md)
 - [Open source license templates](templates/licenses.md)
 - [Pages Domains](pages_domains.md)
