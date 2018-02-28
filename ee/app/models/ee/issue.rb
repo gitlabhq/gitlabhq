@@ -1,6 +1,17 @@
 module EE
   module Issue
+    extend ActiveSupport::Concern
     extend ::Gitlab::Utils::Override
+
+    prepended do
+      WEIGHT_RANGE = 1..9
+      WEIGHT_ALL = 'Everything'.freeze
+      WEIGHT_ANY = 'Any Weight'.freeze
+      WEIGHT_NONE = 'No Weight'.freeze
+
+      scope :order_weight_desc, -> { reorder ::Gitlab::Database.nulls_last_order('weight', 'DESC') }
+      scope :order_weight_asc, -> { reorder ::Gitlab::Database.nulls_last_order('weight') }
+    end
 
     # override
     def check_for_spam?
@@ -55,6 +66,27 @@ module EE
 
     def supports_weight?
       project&.feature_available?(:issue_weights)
+    end
+
+    module ClassMethods
+      # override
+      def sort(method, excluded_labels: [])
+        case method.to_s
+        when 'weight'        then order_weight_asc
+        when 'weight_asc'    then order_weight_asc
+        when 'weight_desc'   then order_weight_desc
+        else
+          super
+        end
+      end
+
+      def weight_filter_options
+        WEIGHT_RANGE.to_a
+      end
+
+      def weight_options
+        [WEIGHT_NONE] + WEIGHT_RANGE.to_a
+      end
     end
   end
 end
