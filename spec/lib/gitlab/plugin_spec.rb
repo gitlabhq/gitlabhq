@@ -5,6 +5,9 @@ describe Gitlab::Plugin do
     let(:data) { Gitlab::DataBuilder::Push::SAMPLE_DATA }
     let(:plugin) { Rails.root.join('plugins', 'test.rb') }
     let(:tmp_file) { Tempfile.new('plugin-dump') }
+    let(:result) { described_class.execute(plugin.to_s, data) }
+    let(:success) { result.first }
+    let(:message) { result.last }
 
     let(:plugin_source) do
       <<~EOS
@@ -22,8 +25,6 @@ describe Gitlab::Plugin do
       FileUtils.rm(plugin)
     end
 
-    subject { described_class.execute(plugin.to_s, data) }
-
     context 'successful execution' do
       before do
         File.chmod(0o777, plugin)
@@ -33,17 +34,19 @@ describe Gitlab::Plugin do
         tmp_file.close!
       end
 
-      it { is_expected.to be true }
+      it { expect(success).to be true }
+      it { expect(message).to be_empty }
 
       it 'ensures plugin received data via stdin' do
-        subject
+        result
 
         expect(File.read(tmp_file.path)).to eq(data.to_json)
       end
     end
 
     context 'non-executable' do
-      it { is_expected.to be false }
+      it { expect(success).to be false }
+      it { expect(message).to include('Permission denied') }
     end
 
     context 'non-zero exit' do
@@ -58,7 +61,8 @@ describe Gitlab::Plugin do
         File.chmod(0o777, plugin)
       end
 
-      it { is_expected.to be false }
+      it { expect(success).to be false }
+      it { expect(message).to be_empty }
     end
   end
 end

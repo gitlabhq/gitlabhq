@@ -11,7 +11,7 @@ A plugin will run on each event so it's up to you to filter events or projects w
 
 ## Setup
 
-Plugins must be placed directly into `plugins` directory, subdirectories will be ignored. There is an `example` directory insider `plugins` where you can find some basic examples. 
+Plugins must be placed directly into `plugins` directory, subdirectories will be ignored. There is an `example` directory inside `plugins` where you can find some basic examples. 
 
 Follow the steps below to set up a custom hook:
 
@@ -20,11 +20,12 @@ Follow the steps below to set up a custom hook:
    `/home/git/gitlab/plugins/`. For Omnibus installs the path is
    usually `/opt/gitlab/embedded/service/gitlab-rails/plugins`.
 1. Inside the `plugins` directory, create a file with a name of your choice, but without spaces or special characters.
-1. Make the hook file executable and make sure it's owned by git.
+1. Make the hook file executable and make sure it's owned by the git user.
 1. Write the code to make the plugin function as expected. Plugin can be
    in any language. Ensure the 'shebang' at the top properly reflects the language
    type. For example, if the script is in Ruby the shebang will probably be
    `#!/usr/bin/env ruby`.
+1. The data to the plugin will be provided as JSON on STDIN. It will be exactly same as one for [system hooks]
 
 That's it! Assuming the plugin code is properly implemented the hook will fire
 as appropriate. Plugins file list is updated for each event. There is no need to restart GitLab to apply a new plugin.
