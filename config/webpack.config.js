@@ -44,7 +44,6 @@ function generateEntries() {
 
   const manualEntries = {
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
-    cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     environments:         './environments/environments_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
     help:                 './help/help.js',
@@ -62,7 +61,6 @@ function generateEntries() {
     terminal:             './terminal/terminal_bundle.js',
     ui_development_kit:   './ui_development_kit.js',
     two_factor_auth:      './two_factor_auth.js',
-
 
     common:               './commons/index.js',
     common_vue:           './vue_shared/vue_resource_interceptor.js',
@@ -234,7 +232,6 @@ var config = {
       name: 'common_vue',
       chunks: [
         'boards',
-        'cycle_analytics',
         'deploy_keys',
         'environments',
         'filtered_search',
