@@ -1,4 +1,7 @@
-import '~/pages/projects/issues/show';
+import initShow from '~/pages/projects/issues/show';
 import initSidebarBundle from 'ee/sidebar/sidebar_bundle';
 
-document.addEventListener('DOMContentLoaded', initSidebarBundle);
+document.addEventListener('DOMContentLoaded', () => {
+  initShow();
+  initSidebarBundle();
+});
