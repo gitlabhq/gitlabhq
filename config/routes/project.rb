@@ -112,6 +112,7 @@ constraints(ProjectUrlConstrainer.new) do
 
           post :remove_wip
           post :assign_related_issues
+          get :discussions, format: :json
           post :rebase
 
           scope constraints: { format: nil }, action: :show do
