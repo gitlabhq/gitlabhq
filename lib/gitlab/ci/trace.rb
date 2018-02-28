@@ -94,7 +94,8 @@ module Gitlab
       end
 
       def archive!
-        return if trace_artifact
+        raise 'Already archived' if trace_artifact
+        raise 'Job is not finished yet' unless job.complete?
 
         if current_path
           File.open(current_path) do |stream|

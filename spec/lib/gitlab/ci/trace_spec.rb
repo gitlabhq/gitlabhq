@@ -455,7 +455,7 @@ describe Gitlab::Ci::Trace do
 
     context 'when job does not have trace artifact' do
       context 'when trace file stored in default path' do
-        let!(:build) { create(:ci_build, :trace_live) }
+        let!(:build) { create(:ci_build, :success, :trace_live) }
         let!(:src_path) { trace.read { |s| return s.path } }
         let!(:src_checksum) { Digest::SHA256.file(src_path).digest }
 
@@ -481,7 +481,8 @@ describe Gitlab::Ci::Trace do
         end
       end
 
-      context 'when trace stored in database' do
+      context 'when trace is stored in database' do
+        let(:build) { create(:ci_build, :success) }
         let(:trace_content) { IO.read(expand_fixture_path('trace/sample_trace')) }
         let!(:src_checksum) { Digest::SHA256.digest(trace_content) }
 
@@ -519,8 +520,18 @@ describe Gitlab::Ci::Trace do
 
       it 'does not archive' do
         expect_any_instance_of(Gitlab::Ci::Trace).not_to receive(:archive_stream!)
-        expect { subject }.not_to change { Ci::JobArtifact.count }
+        expect { subject }.to raise_error('Already archived')
         expect(build.job_artifacts_trace.file.exists?).to be_truthy
+      end
+    end
+
+    context 'when job is not finished yet' do
+      let!(:build) { create(:ci_build, :running, :trace_live) }
+
+      it 'does not archive' do
+        expect_any_instance_of(Gitlab::Ci::Trace).not_to receive(:archive_stream!)
+        expect { subject }.to raise_error('Job is not finished yet')
+        expect(build.trace.exist?).to be_truthy
       end
     end
   end
