@@ -13,10 +13,20 @@
       display: inline-block;
     }
 
+    .issuable-meta {
+      .author_link {
+        display: inline-block;
+      }
+
+      .issuable-comments {
+        height: 18px;
+      }
+    }
+
     .icon-merge-request-unmerged {
       height: 13px;
       margin-bottom: 3px;
-     }
+    }
   }
 }
 
@@ -181,11 +191,6 @@ ul.related-merge-requests > li {
 }
 
 .create-mr-dropdown-wrap {
-  .branch-message,
-  .ref-message {
-    display: none;
-  }
-
   .ref::selection {
     color: $placeholder-text-color;
   }
@@ -216,6 +221,17 @@ ul.related-merge-requests > li {
     transform: translateY(0);
     display: none;
     margin-top: 4px;
+
+    // override dropdown item styles
+    .btn.btn-success {
+      @include btn-default;
+      @include btn-green;
+
+      border-style: solid;
+      border-width: 1px;
+      line-height: $line-height-base;
+      width: auto;
+    }
   }
 
   .create-merge-request-dropdown-toggle {
@@ -223,66 +239,6 @@ ul.related-merge-requests > li {
       pointer-events: none;
       color: inherit;
       margin-left: 0;
-    }
-  }
-
-  .droplab-item-ignore {
-    pointer-events: auto;
-  }
-
-  .create-item {
-    cursor: pointer;
-    margin: 0 1px;
-
-    &:hover,
-    &:focus {
-      background-color: $dropdown-item-hover-bg;
-      color: $gl-text-color;
-    }
-  }
-
-  li.divider {
-    margin: 8px 10px;
-  }
-
-  li:not(.divider) {
-    padding: 8px 9px;
-
-    &:last-child {
-      padding-bottom: 8px;
-    }
-
-    &.droplab-item-selected {
-      .icon-container {
-        i {
-          visibility: visible;
-        }
-      }
-
-      .description {
-        display: block;
-      }
-    }
-
-    &.droplab-item-ignore {
-      padding-top: 8px;
-    }
-
-    .icon-container {
-      float: left;
-
-      i {
-        visibility: hidden;
-      }
-    }
-
-    .description {
-      padding-left: 22px;
-    }
-
-    input,
-    span {
-      margin: 4px 0 0;
     }
   }
 }

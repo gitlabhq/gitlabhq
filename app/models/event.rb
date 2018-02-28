@@ -96,10 +96,6 @@ class Event < ActiveRecord::Base
 
   self.inheritance_column = 'action'
 
-  # "data" will be removed in 10.0 but it may be possible that JOINs happen that
-  # include this column, hence we're ignoring it as well.
-  ignore_column :data
-
   class << self
     def model_name
       ActiveModel::Name.new(self, nil, 'event')

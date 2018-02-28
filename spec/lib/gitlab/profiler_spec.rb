@@ -53,6 +53,15 @@ describe Gitlab::Profiler do
       described_class.profile('/', user: user)
     end
 
+    context 'when providing a user without a personal access token' do
+      it 'raises an error' do
+        user = double(:user)
+        allow(user).to receive_message_chain(:personal_access_tokens, :active, :pluck).and_return([])
+
+        expect { described_class.profile('/', user: user) }.to raise_error('Your user must have a personal_access_token')
+      end
+    end
+
     it 'uses the private_token for auth if both it and user are set' do
       user = double(:user)
       user_token = 'user'

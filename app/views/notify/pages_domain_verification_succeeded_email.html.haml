@@ -1,0 +1,13 @@
+%p
+  One of your GitLab Pages custom domains has been successfully verified!
+%p
+  Project: #{link_to @project.human_name, project_url(@project)}
+%p
+  Domain: #{link_to @domain.domain, project_pages_domain_url(@project, @domain)}
+%p
+  This is a notification. No action is required on your part. You can view your
+  content at #{link_to @domain.url, @domain.url}
+%p
+  Please visit
+  = link_to 'these instructions', help_page_url('user/project/pages/getting_started_part_three.md', anchor: 'dns-txt-record')
+  for more information about custom domain verification.

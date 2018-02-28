@@ -30,11 +30,11 @@
         default: 'bottom',
       },
       /**
-      * value could either be number or string
-      * as `memberCount` is always passed as string
-      * while `subgroupCount` & `projectCount`
-      * are always number
-      */
+       * value could either be number or string
+       * as `memberCount` is always passed as string
+       * while `subgroupCount` & `projectCount`
+       * are always number
+       */
       value: {
         type: [Number, String],
         required: false,

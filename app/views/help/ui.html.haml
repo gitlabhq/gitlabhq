@@ -1,7 +1,5 @@
 - page_title "UI Development Kit", "Help"
 - lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed fermentum nisi sapien, non consequat lectus aliquam ultrices. Suspendisse sodales est euismod nunc condimentum, a consectetur diam ornare."
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag('ui_development_kit')
 
 .gitlab-ui-dev-kit
   %h1 GitLab UI development kit
@@ -68,7 +66,7 @@
   .example
     .cover-block
       .avatar-holder
-        = image_tag avatar_icon('admin@example.com', 90), class: "avatar s90", alt: ''
+        = image_tag avatar_icon_for_email('admin@example.com', 90), class: "avatar s90", alt: ''
       .cover-title
         John Smith
 

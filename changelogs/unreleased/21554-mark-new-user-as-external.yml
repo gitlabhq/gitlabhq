@@ -1,5 +1,0 @@
----
-title: Login via OAuth now only marks new users as external
-merge_request: 16672
-author:
-type: fixed

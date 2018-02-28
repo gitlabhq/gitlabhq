@@ -102,12 +102,11 @@
 
 .issuable-show-labels {
   a {
-    margin-right: 5px;
     margin-bottom: 5px;
     display: inline-block;
 
     .color-label {
-      padding: 6px 10px;
+      padding: 4px $grid-size;
       border-radius: $label-border-radius;
     }
 
@@ -197,11 +196,18 @@
       margin-left: 0;
     }
 
+    a.edit-link:not([href]):hover {
+      color: rgba($avatar-border, .2);
+    }
+
+    .lock-edit, // uses same style, different js behaviour
     .edit-link {
+      @extend .btn-blank;
       color: $gl-text-color;
 
-      &:not([href]):hover {
-        color: rgba($avatar-border, .2);
+      &:hover {
+        text-decoration: underline;
+        color: $md-link-color;
       }
     }
   }

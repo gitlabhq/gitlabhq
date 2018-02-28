@@ -1,6 +1,6 @@
 %li.flex-row
   .user-avatar
-    = image_tag avatar_icon(user), class: "avatar", alt: ''
+    = image_tag avatar_icon_for_user(user), class: "avatar", alt: ''
   .row-main-content
     .user-name.row-title.str-truncated-100
       = link_to user.name, [:admin, user]

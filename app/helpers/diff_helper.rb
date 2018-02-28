@@ -160,7 +160,7 @@ module DiffHelper
   end
 
   def diff_file_changed_icon(diff_file)
-    if diff_file.deleted_file? || diff_file.renamed_file?
+    if diff_file.deleted_file?
       "file-deletion"
     elsif diff_file.new_file?
       "file-addition"

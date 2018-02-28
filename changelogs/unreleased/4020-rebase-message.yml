@@ -1,5 +1,0 @@
----
-title: Display user friendly error message if rebase fails.
-merge_request:
-author:
-type: fixed

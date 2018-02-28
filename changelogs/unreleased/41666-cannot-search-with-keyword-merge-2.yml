@@ -1,5 +1,0 @@
----
-title: Only highlight search results under the highlighting size limit
-merge_request: 16462
-author:
-type: performance

@@ -1,5 +1,5 @@
 <script>
-  import Flash from '../../../flash';
+  import Flash from '~/flash';
   import editForm from './edit_form.vue';
   import issuableMixin from '../../../vue_shared/mixins/issuable';
   import Icon from '../../../vue_shared/components/icon.vue';
@@ -53,8 +53,7 @@
           discussion_locked: locked,
         })
         .then(() => location.reload())
-        .catch(() => Flash(this.__(`Something went wrong trying to
-  change the locked state of this ${this.issuableDisplayName}`)));
+        .catch(() => Flash(this.__(`Something went wrong trying to change the locked state of this ${this.issuableDisplayName}`)));
       },
     },
   };
@@ -75,7 +74,7 @@
       {{ sprintf(__('Lock %{issuableDisplayName}'), { issuableDisplayName: issuableDisplayName }) }}
       <button
         v-if="isEditable"
-        class="pull-right lock-edit btn btn-blank"
+        class="pull-right lock-edit"
         type="button"
         @click.prevent="toggleForm"
       >

@@ -314,7 +314,7 @@ class Member < ActiveRecord::Base
   end
 
   def notification_setting
-    @notification_setting ||= user.notification_settings_for(source)
+    @notification_setting ||= user&.notification_settings_for(source)
   end
 
   def notifiable?(type, opts = {})

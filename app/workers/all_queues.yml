@@ -3,6 +3,7 @@
 - cronjob:expire_build_artifacts
 - cronjob:gitlab_usage_ping
 - cronjob:import_export_project_cleanup
+- cronjob:pages_domain_verification_cron
 - cronjob:pipeline_schedule
 - cronjob:prune_old_events
 - cronjob:remove_expired_group_links
@@ -82,6 +83,7 @@
 - new_merge_request
 - new_note
 - pages
+- pages_domain_verification
 - post_receive
 - process_commit
 - project_cache

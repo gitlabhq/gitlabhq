@@ -59,6 +59,8 @@ class User < ActiveRecord::Base
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
   def update_tracked_fields!(request)
+    return if Gitlab::Database.read_only?
+
     update_tracked_fields(request)
 
     lease = Gitlab::ExclusiveLease.new("user_update_tracked_fields:#{id}", timeout: 1.hour.to_i)
@@ -249,7 +251,7 @@ class User < ActiveRecord::Base
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup
       if login = conditions.delete(:login)
-        where(conditions).find_by("lower(username) = :value OR lower(email) = :value", value: login.downcase)
+        where(conditions).find_by("lower(username) = :value OR lower(email) = :value", value: login.downcase.strip)
       else
         find_by(conditions)
       end
@@ -325,8 +327,8 @@ class User < ActiveRecord::Base
       SQL
 
       where(
-        fuzzy_arel_match(:name, query)
-          .or(fuzzy_arel_match(:username, query))
+        fuzzy_arel_match(:name, query, lower_exact_match: true)
+          .or(fuzzy_arel_match(:username, query, lower_exact_match: true))
           .or(arel_table[:email].eq(query))
       ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, :name)
     end
@@ -551,12 +553,17 @@ class User < ActiveRecord::Base
     gpg_keys.each(&:update_invalid_gpg_signatures)
   end
 
-  # Returns the groups a user has access to
+  # Returns the groups a user has access to, either through a membership or a project authorization
   def authorized_groups
     union = Gitlab::SQL::Union
       .new([groups.select(:id), authorized_projects.select(:namespace_id)])
 
     Group.where("namespaces.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+  end
+
+  # Returns the groups a user is a member of, either directly or through a parent group
+  def membership_groups
+    Gitlab::GroupHierarchy.new(groups).base_and_descendants
   end
 
   # Returns a relation of groups the user has access to, including their parent

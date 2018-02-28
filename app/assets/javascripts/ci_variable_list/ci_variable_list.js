@@ -39,7 +39,7 @@ export default class VariableList {
       },
       protected: {
         selector: '.js-ci-variable-input-protected',
-        default: 'true',
+        default: 'false',
       },
       environment_scope: {
         // We can't use a `.js-` class here because
@@ -176,6 +176,10 @@ export default class VariableList {
   toggleEnableRow(isEnabled = true) {
     this.$container.find(this.inputMap.key.selector).attr('disabled', !isEnabled);
     this.$container.find('.js-row-remove-button').attr('disabled', !isEnabled);
+  }
+
+  hideValues() {
+    this.secretValues.updateDom(false);
   }
 
   getAllData() {

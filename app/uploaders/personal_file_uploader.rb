@@ -20,6 +20,12 @@ class PersonalFileUploader < FileUploader
     super
   end
 
+  # model_path_segment does not require a model to be passed, so we can always
+  # generate a path, even when there's no model.
+  def model_valid?
+    true
+  end
+
   # Revert-Override
   def store_dir
     store_dirs[object_store]

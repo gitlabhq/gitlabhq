@@ -198,9 +198,11 @@ module Gitlab
       end
 
       def update_profile
+        clear_user_synced_attributes_metadata
+
         return unless sync_profile_from_provider? || creating_linked_ldap_user?
 
-        metadata = gl_user.user_synced_attributes_metadata || gl_user.build_user_synced_attributes_metadata
+        metadata = gl_user.build_user_synced_attributes_metadata
 
         if sync_profile_from_provider?
           UserSyncedAttributesMetadata::SYNCABLE_ATTRIBUTES.each do |key|
@@ -219,6 +221,10 @@ module Gitlab
           metadata.set_attribute_synced(:email, true)
           metadata.provider = ldap_person.provider
         end
+      end
+
+      def clear_user_synced_attributes_metadata
+        gl_user&.user_synced_attributes_metadata&.destroy
       end
 
       def log

@@ -1,5 +1,0 @@
----
-title: Add unique constraint to trending_projects#project_id.
-merge_request: 16846
-author:
-type: other

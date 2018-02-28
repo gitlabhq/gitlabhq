@@ -59,18 +59,6 @@ describe Gitlab::QueryLimiting::Transaction do
         expect { transaction.act_upon_results }
           .to raise_error(described_class::ThresholdExceededError)
       end
-
-      it 'reports the error in Sentry if raising an error is disabled' do
-        expect(transaction)
-          .to receive(:raise_error?)
-          .and_return(false)
-
-        expect(Raven)
-          .to receive(:capture_exception)
-          .with(an_instance_of(described_class::ThresholdExceededError))
-
-        transaction.act_upon_results
-      end
     end
   end
 

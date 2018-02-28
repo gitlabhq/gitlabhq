@@ -1,0 +1,5 @@
+---
+title: Allows project rename after validation error
+merge_request: 17150
+author:
+type: fixed

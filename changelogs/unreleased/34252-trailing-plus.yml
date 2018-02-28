@@ -1,5 +1,0 @@
----
-title: Allow trailing + on labels in board filters
-merge_request: 16490
-author:
-type: fixed

@@ -2,6 +2,7 @@
 
 import Vue from 'vue';
 import Flash from '../../flash';
+import { __ } from '../../locale';
 import Sidebar from '../../right_sidebar';
 import eventHub from '../../sidebar/event_hub';
 import assigneeTitle from '../../sidebar/components/assignees/assignee_title';
@@ -95,7 +96,7 @@ gl.issueBoards.BoardSidebar = Vue.extend({
         })
         .catch(() => {
           this.loadingAssignees = false;
-          return new Flash('An error occurred while saving assignees');
+          Flash(__('An error occurred while saving assignees'));
         });
     },
   },

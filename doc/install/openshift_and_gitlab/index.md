@@ -1,9 +1,12 @@
-# Getting started with OpenShift Origin 3 and GitLab
+---
+author: Achilleas Pipinellis
+author_gitlab: axil
+level: intermediary
+article_type: tutorial
+date: 2016-06-28
+---
 
-> **[Article Type](../../development/writing_documentation.html#types-of-technical-articles):** tutorial ||
-> **Level:** intermediary ||
-> **Author:** [Achilleas Pipinellis](https://gitlab.com/axil) ||
-> **Publication date:** 2016-06-28
+# Getting started with OpenShift Origin 3 and GitLab
 
 ## Introduction
 

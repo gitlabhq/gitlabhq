@@ -1,6 +1,0 @@
----
-title: Fix version information not showing on help page if commercial content display
-  was disabled.
-merge_request: 16743
-author: 
-type: fixed
