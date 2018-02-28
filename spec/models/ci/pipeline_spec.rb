@@ -1280,6 +1280,28 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#ref_slug' do
+    {
+      'master'                => 'master',
+      '1-foo'                 => '1-foo',
+      'fix/1-foo'             => 'fix-1-foo',
+      'fix-1-foo'             => 'fix-1-foo',
+      'a' * 63                => 'a' * 63,
+      'a' * 64                => 'a' * 63,
+      'FOO'                   => 'foo',
+      '-' + 'a' * 61 + '-'    => 'a' * 61,
+      '-' + 'a' * 62 + '-'    => 'a' * 62,
+      '-' + 'a' * 63 + '-'    => 'a' * 62,
+      'a' * 62 + ' '          => 'a' * 62
+    }.each do |ref, slug|
+      it "transforms #{ref} to #{slug}" do
+        pipeline.ref = ref
+
+        expect(pipeline.ref_slug).to eq(slug)
+      end
+    end
+  end
+
   describe '#execute_hooks' do
     let!(:build_a) { create_build('a', 0) }
     let!(:build_b) { create_build('b', 0) }

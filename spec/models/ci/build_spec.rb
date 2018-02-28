@@ -1245,24 +1245,8 @@ describe Ci::Build do
   end
 
   describe '#ref_slug' do
-    {
-      'master'                => 'master',
-      '1-foo'                 => '1-foo',
-      'fix/1-foo'             => 'fix-1-foo',
-      'fix-1-foo'             => 'fix-1-foo',
-      'a' * 63                => 'a' * 63,
-      'a' * 64                => 'a' * 63,
-      'FOO'                   => 'foo',
-      '-' + 'a' * 61 + '-'    => 'a' * 61,
-      '-' + 'a' * 62 + '-'    => 'a' * 62,
-      '-' + 'a' * 63 + '-'    => 'a' * 62,
-      'a' * 62 + ' '          => 'a' * 62
-    }.each do |ref, slug|
-      it "transforms #{ref} to #{slug}" do
-        build.ref = ref
-
-        expect(build.ref_slug).to eq(slug)
-      end
+    it 'delegates ref_slug method to the pipeline' do
+      expect(build).to delegate_method(:ref_slug).to(:pipeline)
     end
   end
 

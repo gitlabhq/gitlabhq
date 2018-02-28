@@ -473,7 +473,7 @@ module Ci
     end
 
     def predefined_variables
-      pipeline_predefined = [
+      predefined = [
         { key: 'CI', value: 'true', public: true },
         { key: 'GITLAB_CI', value: 'true', public: true },
         { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
@@ -481,10 +481,16 @@ module Ci
         { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true },
         { key: 'CI_PIPELINE_ID', value: id.to_s, public: true },
         { key: 'CI_CONFIG_PATH', value: ci_yaml_file_path, public: true },
-        { key: 'CI_PIPELINE_SOURCE', value: source.to_s, public: true }
+        { key: 'CI_PIPELINE_SOURCE', value: source.to_s, public: true },
+        { key: 'CI_COMMIT_SHA', value: sha, public: true },
+        { key: 'CI_COMMIT_REF_NAME', value: ref, public: true },
+        { key: 'CI_COMMIT_REF_SLUG', value: ref_slug, public: true }
       ]
 
-      Array(project.predefined_variables) + pipeline_predefined
+      predefined.push(key: 'CI_COMMIT_TAG', value: ref, public: true) if tag?
+      predefined.push(key: 'CI_PIPELINE_TRIGGERED', value: 'true', public: true) if variables.any?
+
+      Array(project.predefined_variables) + predefined
     end
 
     def priority_variables
@@ -531,6 +537,18 @@ module Ci
       # rows if there are more than 0 this prevents us from having to run two
       # queries: one to get the count and one to get the rows.
       @latest_builds_with_artifacts ||= builds.latest.with_artifacts.to_a
+    end
+
+    # A slugified version of the ref, suitable for inclusion in URLs and
+    # domain names. Rules:
+    #
+    #   * Lowercased
+    #   * Anything not matching [a-z0-9-] is replaced with a -
+    #   * Maximum length is 63 bytes
+    #   * First/Last Character is not a hyphen
+    #
+    def ref_slug
+      Gitlab::Utils.slugify(ref.to_s)
     end
 
     private

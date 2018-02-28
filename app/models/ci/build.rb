@@ -35,6 +35,7 @@ module Ci
     serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
 
     delegate :name, to: :project, prefix: true
+    delegate :ref_slug, to: :pipeline
 
     validates :coverage, numericality: true, allow_blank: true
     validates :ref, presence: true
@@ -231,17 +232,6 @@ module Ci
 
     def triggered_by?(current_user)
       user == current_user
-    end
-
-    # A slugified version of the build ref, suitable for inclusion in URLs and
-    # domain names. Rules:
-    #
-    #   * Lowercased
-    #   * Anything not matching [a-z0-9-] is replaced with a -
-    #   * Maximum length is 63 bytes
-    #   * First/Last Character is not a hyphen
-    def ref_slug
-      Gitlab::Utils.slugify(ref.to_s)
     end
 
     # Variables whose value does not depend on environment
@@ -541,15 +531,11 @@ module Ci
         { key: 'CI_JOB_NAME', value: name, public: true },
         { key: 'CI_JOB_STAGE', value: stage, public: true },
         { key: 'CI_JOB_TOKEN', value: token, public: false },
-        { key: 'CI_COMMIT_SHA', value: sha, public: true },
-        { key: 'CI_COMMIT_REF_NAME', value: ref, public: true },
-        { key: 'CI_COMMIT_REF_SLUG', value: ref_slug, public: true },
         { key: 'CI_REGISTRY_USER', value: CI_REGISTRY_USER, public: true },
         { key: 'CI_REGISTRY_PASSWORD', value: token, public: false },
         { key: 'CI_REPOSITORY_URL', value: repo_url, public: false }
       ]
 
-      variables << { key: "CI_COMMIT_TAG", value: ref, public: true } if tag?
       variables << { key: "CI_PIPELINE_TRIGGERED", value: 'true', public: true } if trigger_request
       variables << { key: "CI_JOB_MANUAL", value: 'true', public: true } if action?
       variables.concat(legacy_variables)
