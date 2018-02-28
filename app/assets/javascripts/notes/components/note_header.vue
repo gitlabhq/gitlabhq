@@ -34,15 +34,15 @@
         required: false,
         default: false,
       },
-    },
-    data() {
-      return {
-        isExpanded: true,
-      };
+      expanded: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
     computed: {
       toggleChevronClass() {
-        return this.isExpanded ? 'fa-chevron-up' : 'fa-chevron-down';
+        return this.expanded ? 'fa-chevron-up' : 'fa-chevron-down';
       },
       noteTimestampLink() {
         return `#note_${this.noteId}`;
@@ -53,7 +53,6 @@
         'setTargetNoteHash',
       ]),
       handleToggle() {
-        this.isExpanded = !this.isExpanded;
         this.$emit('toggleHandler');
       },
       updateTargetNoteHash() {

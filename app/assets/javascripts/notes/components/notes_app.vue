@@ -11,6 +11,7 @@
   import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
   import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+  import skeletonLoadingContainer from '../../vue_shared/components/notes/skeleton_note.vue';
 
   export default {
     name: 'NotesApp',
@@ -48,7 +49,24 @@
       ...mapGetters([
         'notes',
         'getNotesDataByProp',
+        'discussionCount',
       ]),
+      noteableType() {
+        // FIXME -- @fatihacet Get this from JSON data.
+        const { ISSUE_NOTEABLE_TYPE, MERGE_REQUEST_NOTEABLE_TYPE } = constants;
+
+        return this.noteableData.merge_params ? MERGE_REQUEST_NOTEABLE_TYPE : ISSUE_NOTEABLE_TYPE;
+      },
+      allNotes() {
+        if (this.isLoading) {
+          const totalNotes = parseInt(this.notesData.totalNotes, 10) || 0;
+
+          return new Array(totalNotes).fill({
+            isSkeletonNote: true,
+          });
+        }
+        return this.notes;
+      },
     },
     created() {
       this.setNotesData(this.notesData);
@@ -67,6 +85,10 @@
           this.actionToggleAward({ awardName, noteId });
         });
       }
+      document.addEventListener('refreshVueNotes', this.fetchNotes);
+    },
+    beforeDestroy() {
+      document.removeEventListener('refreshVueNotes', this.fetchNotes);
     },
     methods: {
       ...mapActions({
@@ -81,6 +103,9 @@
         setTargetNoteHash: 'setTargetNoteHash',
       }),
       getComponentName(note) {
+        if (note.isSkeletonNote) {
+          return skeletonLoadingContainer;
+        }
         if (note.isPlaceholderNote) {
           if (note.placeholderType === constants.SYSTEM_NOTE) {
             return placeholderSystemNote;
@@ -109,9 +134,14 @@
           });
       },
       initPolling() {
+        if (this.isPollingInitialized) {
+          return;
+        }
+
         this.setLastFetchedAt(this.getNotesDataByProp('lastFetchedAt'));
 
         this.poll();
+        this.isPollingInitialized = true;
       },
       checkLocationHash() {
         const hash = getLocationHash();
@@ -128,25 +158,20 @@
 
 <template>
   <div id="notes">
-    <div
-      v-if="isLoading"
-      class="js-loading loading">
-      <loading-icon />
-    </div>
-
     <ul
-      v-if="!isLoading"
       id="notes-list"
       class="notes main-notes-list timeline">
 
       <component
-        v-for="note in notes"
+        v-for="note in allNotes"
         :is="getComponentName(note)"
         :note="getComponentData(note)"
         :key="note.id"
       />
     </ul>
 
-    <comment-form />
+    <comment-form
+      :noteable-type="noteableType"
+    />
   </div>
 </template>
