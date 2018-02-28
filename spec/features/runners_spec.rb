@@ -202,7 +202,7 @@ feature 'Runners' do
 
           expect(page).to have_content 'This group does not provide any group Runners yet.'
 
-          expect(page).to have_content 'How to setup a group Runner for a new project'
+          expect(page).to have_content 'Setup a group Runner manually'
           expect(page).not_to have_content 'Ask your group master to setup a group Runner.'
         end
       end
@@ -228,7 +228,7 @@ feature 'Runners' do
 
           expect(page).to have_content 'This group does not provide any group Runners yet.'
 
-          expect(page).not_to have_content 'How to setup a group Runner for a new project'
+          expect(page).not_to have_content 'Setup a group Runner manually'
           expect(page).to have_content 'Ask your group master to setup a group Runner.'
         end
       end
