@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import Assignee from '~/sidebar/components/assignees/assignees';
+import Assignee from '~/sidebar/components/assignees/assignees.vue';
 import UsersMock from './mock_data';
 import UsersMockHelper from '../helpers/user_mock_data_helper';
 
