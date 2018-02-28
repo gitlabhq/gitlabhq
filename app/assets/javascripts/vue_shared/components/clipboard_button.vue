@@ -1,8 +1,8 @@
 <script>
-  import tooltip from '../directives/tooltip';
   /**
    * Falls back to the code used in `copy_to_clipboard.js`
    */
+  import tooltip from '../directives/tooltip';
 
   export default {
     name: 'ClipboardButton',
