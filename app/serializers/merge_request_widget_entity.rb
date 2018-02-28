@@ -30,6 +30,7 @@ class MergeRequestWidgetEntity < IssuableEntity
   expose :can_push_to_source_branch do |merge_request|
     presenter(merge_request).can_push_to_source_branch?
   end
+
   expose :rebase_path do |merge_request|
     presenter(merge_request).rebase_path
   end
@@ -137,7 +138,7 @@ class MergeRequestWidgetEntity < IssuableEntity
   end
 
   expose :new_blob_path do |merge_request|
-    if can?(current_user, :push_code, merge_request.project)
+    if presenter(merge_request).can_push_to_source_branch?
       project_new_blob_path(merge_request.project, merge_request.source_branch)
     end
   end

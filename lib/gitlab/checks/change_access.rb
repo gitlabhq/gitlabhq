@@ -47,7 +47,7 @@ module Gitlab
       protected
 
       def push_checks
-        if user_access.cannot_do_action?(:push_code)
+        if user_access.cannot_do_action?(:push_to_repo)
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:push_code]
         end
       end

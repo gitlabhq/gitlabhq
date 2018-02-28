@@ -307,6 +307,12 @@ class ProjectPolicy < BasePolicy
     enable :update_pipeline
   end
 
+  # A wrapper around `push_code` and `push_single_branch` to avoid several
+  # `push_code`: User can push everything to the repo
+  # `push_single_brach`: User can push to a single branch in the repo
+  # `push_to_repo`: User can push something to this repo.
+  rule { can?(:push_code) | can?(:push_single_branch) }.enable :push_to_repo
+
   private
 
   def team_member?
