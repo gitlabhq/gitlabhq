@@ -69,13 +69,19 @@ export default class PrometheusMetrics {
       }
     });
 
-    this.$monitoredMetricsCount.text(totalMonitoredMetrics);
-    this.showMonitoringMetricsPanelState(PANEL_STATE.LIST);
+    if (totalMonitoredMetrics === 0) {
+      this.$monitoredMetricsEmpty.empty();
+      this.$monitoredMetricsEmpty.append('<p>No common metrics were found</p>');
+      this.showMonitoringMetricsPanelState(PANEL_STATE.EMPTY);
+    } else {
+      this.$monitoredMetricsCount.text(totalMonitoredMetrics);
+      this.showMonitoringMetricsPanelState(PANEL_STATE.LIST);
 
-    if (totalMissingEnvVarMetrics > 0) {
-      this.$missingEnvVarPanel.removeClass('hidden');
-      this.$missingEnvVarPanel.find('.flash-container').off('click');
-      this.$missingEnvVarMetricCount.text(totalMissingEnvVarMetrics);
+      if (totalMissingEnvVarMetrics > 0) {
+        this.$missingEnvVarPanel.removeClass('hidden');
+        this.$missingEnvVarPanel.find('.flash-container').off('click');
+        this.$missingEnvVarMetricCount.text(totalMissingEnvVarMetrics);
+      }
     }
   }
 

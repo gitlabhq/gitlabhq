@@ -2,27 +2,13 @@ import _ from 'underscore';
 import PrometheusMetrics from '~/prometheus_metrics/prometheus_metrics';
 import PANEL_STATE from '~/prometheus_metrics/constants';
 import axios from '~/lib/utils/axios_utils';
-import { spriteIcon } from '~/lib/utils/common_utils';
 
 function customMetricTemplate(metric) {
-  const deleteIcon = spriteIcon('remove');
-  const editIcon = spriteIcon('pencil');
   return `
       <li class="custom-metric">
-        ${metric.group} / ${metric.title}
-        <div
-          class="custom-metric-operation">
-          <a
-            href="${metric.edit_path}">
-            ${editIcon}
-          </a>
-          <a
-            href="#"
-            class='delete-custom-metric'
-            data-metric-id="${metric.id}">
-            ${deleteIcon}
-          </a>
-        </div>
+        <a href="${metric.edit_path}">
+          ${metric.group} / ${metric.title}
+        </a>
       </li>
     `;
 }
