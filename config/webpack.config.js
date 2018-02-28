@@ -56,7 +56,6 @@ function generateEntries() {
     main:                 './main.js',
     ide:                  './ide/index.js',
     raven:                './raven/index.js',
-    test:                 './test.js',
     webpack_runtime:      './webpack.js',
   };
 
