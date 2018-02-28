@@ -1,9 +1,5 @@
 <script>
-<<<<<<< HEAD
   import { mapState, mapActions } from 'vuex';
-=======
-  import { mapGetters, mapState, mapActions } from 'vuex';
->>>>>>> upstream/master
   import icon from '~/vue_shared/components/icon.vue';
   import panelResizer from '~/vue_shared/components/panel_resizer.vue';
   import repoCommitSection from './repo_commit_section.vue';
