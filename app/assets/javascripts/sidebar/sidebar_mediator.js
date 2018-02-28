@@ -7,7 +7,11 @@ export default class SidebarMediator {
   constructor(options) {
     if (!SidebarMediator.singleton) {
       this.store = new Store(options);
-      this.service = new Service(options.endpoint);
+      this.service = new Service({
+        endpoint: options.endpoint,
+        moveIssueEndpoint: options.moveIssueEndpoint,
+        projectsAutocompleteEndpoint: options.projectsAutocompleteEndpoint,
+      });
       SidebarMediator.singleton = this;
     }
 
@@ -26,6 +30,10 @@ export default class SidebarMediator {
     return this.service.update(field, selected.length === 0 ? [0] : selected);
   }
 
+  setMoveToProjectId(projectId) {
+    this.store.setMoveToProjectId(projectId);
+  }
+
   fetch() {
     this.service.get()
       .then(response => response.json())
@@ -34,5 +42,24 @@ export default class SidebarMediator {
         this.store.setTimeTrackingData(data);
       })
       .catch(() => new Flash('Error occured when fetching sidebar data'));
+  }
+
+  fetchAutocompleteProjects(searchTerm) {
+    return this.service.getProjectsAutocomplete(searchTerm)
+      .then(response => response.json())
+      .then((data) => {
+        this.store.setAutocompleteProjects(data);
+        return this.store.autocompleteProjects;
+      });
+  }
+
+  moveIssue() {
+    return this.service.moveIssue(this.store.moveToProjectId)
+      .then(response => response.json())
+      .then((data) => {
+        if (location.pathname !== data.web_url) {
+          gl.utils.visitUrl(data.web_url);
+        }
+      });
   }
 }

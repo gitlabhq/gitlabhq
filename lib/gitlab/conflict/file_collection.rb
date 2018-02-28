@@ -18,7 +18,7 @@ module Gitlab
           new(merge_request, project).tap do |file_collection|
             project
               .repository
-              .with_repo_branch_commit(merge_request.target_project.repository, merge_request.target_branch) do
+              .with_repo_branch_commit(merge_request.target_project.repository.raw_repository, merge_request.target_branch) do
 
               yield file_collection
             end
@@ -77,8 +77,8 @@ EOM
 
       def initialize(merge_request, project)
         @merge_request = merge_request
-        @our_commit = merge_request.source_branch_head.raw.raw_commit
-        @their_commit = merge_request.target_branch_head.raw.raw_commit
+        @our_commit = merge_request.source_branch_head.raw.rugged_commit
+        @their_commit = merge_request.target_branch_head.raw.rugged_commit
         @project = project
       end
     end

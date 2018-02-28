@@ -16,8 +16,8 @@ describe('Markdown field component', () => {
       },
       template: `
         <field-component
-          marodown-preview-url="/preview"
-          markdown-docs="/docs"
+          markdown-preview-path="/preview"
+          markdown-docs-path="/docs"
         >
           <textarea
             slot="textarea"
@@ -92,6 +92,7 @@ describe('Markdown field component', () => {
 
       it('renders GFM with jQuery', (done) => {
         spyOn($.fn, 'renderGFM');
+
         previewLink.click();
 
         setTimeout(() => {
@@ -100,7 +101,7 @@ describe('Markdown field component', () => {
           ).toHaveBeenCalled();
 
           done();
-        });
+        }, 0);
       });
     });
 

@@ -168,6 +168,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
            author: project.users.first,
            description: "# Description header"
           )
+    wait_for_requests
   end
 
   step 'project "Shop" have "Tweet control" open issue' do

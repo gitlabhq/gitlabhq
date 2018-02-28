@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe ContainerRepository do
   let(:group) { create(:group, name: 'group') }
-  let(:project) { create(:project, :repository, path: 'test', group: group) }
+  let(:project) { create(:project, path: 'test', group: group) }
 
   let(:repository) do
     create(:container_repository, name: 'my_image', project: project)

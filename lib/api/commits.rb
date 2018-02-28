@@ -104,7 +104,7 @@ module API
 
         not_found! 'Commit' unless commit
 
-        commit.raw_diffs.to_a
+        present commit.raw_diffs.to_a, with: Entities::RepoDiff
       end
 
       desc "Get a commit's comments" do

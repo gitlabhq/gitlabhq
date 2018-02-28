@@ -2,7 +2,7 @@ class Profiles::KeysController < Profiles::ApplicationController
   skip_before_action :authenticate_user!, only: [:get_keys]
 
   def index
-    @keys = current_user.keys
+    @keys = current_user.keys.order_id_desc
     @key = Key.new
   end
 

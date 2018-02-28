@@ -6,12 +6,6 @@ if Gitlab::LDAP::Config.enabled?
       const_set(server['provider_class'], Class.new(LDAP))
     end
   end
-
-  OmniauthCallbacksController.class_eval do
-    Gitlab::LDAP::Config.available_servers.each do |server|
-      alias_method server['provider_name'], :ldap
-    end
-  end
 end
 
 OmniAuth.config.full_host = Settings.gitlab['base_url']

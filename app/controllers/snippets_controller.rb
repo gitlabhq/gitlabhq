@@ -66,7 +66,7 @@ class SnippetsController < ApplicationController
     @noteable = @snippet
 
     @discussions = @snippet.discussions
-    @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes))
+    @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes), @noteable)
 
     respond_to do |format|
       format.html do

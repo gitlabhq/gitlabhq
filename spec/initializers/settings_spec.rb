@@ -2,6 +2,22 @@ require 'spec_helper'
 require_relative '../../config/initializers/1_settings'
 
 describe Settings do
+  describe '#ldap' do
+    it 'can be accessed with dot syntax all the way down' do
+      expect(Gitlab.config.ldap.servers.main.label).to eq('ldap')
+    end
+
+    # Specifically trying to cause this error discovered in EE when removing the
+    # reassignment of each server element with Settingslogic.
+    #
+    #   `undefined method `label' for #<Hash:0x007fbd18b59c08>`
+    #
+    it 'can be accessed in a very specific way that breaks without reassigning each element with Settingslogic' do
+      server_settings = Gitlab.config.ldap.servers['main']
+      expect(server_settings.label).to eq('ldap')
+    end
+  end
+
   describe '#repositories' do
     it 'assigns the default failure attributes' do
       repository_settings = Gitlab.config.repositories.storages['broken']
@@ -10,6 +26,15 @@ describe Settings do
       expect(repository_settings['failure_wait_time']).to eq(30)
       expect(repository_settings['failure_reset_time']).to eq(1800)
       expect(repository_settings['storage_timeout']).to eq(5)
+    end
+
+    it 'can be accessed with dot syntax all the way down' do
+      expect(Gitlab.config.repositories.storages.broken.failure_count_threshold).to eq(10)
+    end
+
+    it 'can be accessed in a very specific way that breaks without reassigning each element with Settingslogic' do
+      storage_settings = Gitlab.config.repositories.storages['broken']
+      expect(storage_settings.failure_count_threshold).to eq(10)
     end
   end
 

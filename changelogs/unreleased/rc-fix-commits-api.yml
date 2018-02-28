@@ -1,5 +1,0 @@
----
-title: Fix the /projects/:id/repository/commits endpoint to handle dots in the ref
-  name when the project full path contains a `/`
-merge_request: 13370
-author:

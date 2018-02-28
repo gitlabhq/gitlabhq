@@ -21,6 +21,16 @@ describe Ci::Build do
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
 
+  describe 'callbacks' do
+    context 'when running after_create callback' do
+      it 'triggers asynchronous build hooks worker' do
+        expect(BuildHooksWorker).to receive(:perform_async)
+
+        create(:ci_build)
+      end
+    end
+  end
+
   describe '.manual_actions' do
     let!(:manual_but_created) { create(:ci_build, :manual, status: :created, pipeline: pipeline) }
     let!(:manual_but_succeeded) { create(:ci_build, :manual, status: :success, pipeline: pipeline) }
@@ -31,6 +41,32 @@ describe Ci::Build do
     it { is_expected.to include(manual_action) }
     it { is_expected.to include(manual_but_succeeded) }
     it { is_expected.not_to include(manual_but_created) }
+  end
+
+  describe '.ref_protected' do
+    subject { described_class.ref_protected }
+
+    context 'when protected is true' do
+      let!(:job) { create(:ci_build, :protected) }
+
+      it { is_expected.to include(job) }
+    end
+
+    context 'when protected is false' do
+      let!(:job) { create(:ci_build) }
+
+      it { is_expected.not_to include(job) }
+    end
+
+    context 'when protected is nil' do
+      let!(:job) { create(:ci_build) }
+
+      before do
+        job.update_attribute(:protected, nil)
+      end
+
+      it { is_expected.not_to include(job) }
+    end
   end
 
   describe '#actionize' do
@@ -1264,7 +1300,7 @@ describe Ci::Build do
         { key: 'CI_PROJECT_ID', value: project.id.to_s, public: true },
         { key: 'CI_PROJECT_NAME', value: project.path, public: true },
         { key: 'CI_PROJECT_PATH', value: project.full_path, public: true },
-        { key: 'CI_PROJECT_PATH_SLUG', value: project.full_path.parameterize, public: true },
+        { key: 'CI_PROJECT_PATH_SLUG', value: project.full_path_slug, public: true },
         { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true },
         { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
         { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
@@ -1291,8 +1327,12 @@ describe Ci::Build do
 
     context 'when build has user' do
       let(:user_variables) do
-        [{ key: 'GITLAB_USER_ID',    value: user.id.to_s, public: true },
-         { key: 'GITLAB_USER_EMAIL', value: user.email,   public: true }]
+        [
+          { key: 'GITLAB_USER_ID', value: user.id.to_s, public: true },
+          { key: 'GITLAB_USER_EMAIL', value: user.email, public: true },
+          { key: 'GITLAB_USER_LOGIN', value: user.username, public: true },
+          { key: 'GITLAB_USER_NAME', value: user.name, public: true }
+        ]
       end
 
       before do
@@ -1496,10 +1536,12 @@ describe Ci::Build do
 
     context 'when build is for triggers' do
       let(:trigger) { create(:ci_trigger, project: project) }
-      let(:trigger_request) { create(:ci_trigger_request_with_variables, pipeline: pipeline, trigger: trigger) }
+      let(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, trigger: trigger) }
+
       let(:user_trigger_variable) do
-        { key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1', public: false }
+        { key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1', public: false }
       end
+
       let(:predefined_trigger_variable) do
         { key: 'CI_PIPELINE_TRIGGERED', value: 'true', public: true }
       end
@@ -1508,8 +1550,26 @@ describe Ci::Build do
         build.trigger_request = trigger_request
       end
 
-      it { is_expected.to include(user_trigger_variable) }
-      it { is_expected.to include(predefined_trigger_variable) }
+      shared_examples 'returns variables for triggers' do
+        it { is_expected.to include(user_trigger_variable) }
+        it { is_expected.to include(predefined_trigger_variable) }
+      end
+
+      context 'when variables are stored in trigger_request' do
+        before do
+          trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' } )
+        end
+
+        it_behaves_like 'returns variables for triggers'
+      end
+
+      context 'when variables are stored in pipeline_variables' do
+        before do
+          create(:ci_pipeline_variable, pipeline: pipeline, key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1')
+        end
+
+        it_behaves_like 'returns variables for triggers'
+      end
     end
 
     context 'when pipeline has a variable' do
@@ -1670,6 +1730,30 @@ describe Ci::Build do
            pipeline_pre_var,
            build_yaml_var,
            { key: 'secret', value: 'value', public: false }])
+      end
+    end
+
+    context 'when using auto devops' do
+      context 'and is enabled' do
+        before do
+          project.create_auto_devops!(enabled: true, domain: 'example.com')
+        end
+
+        it "includes AUTO_DEVOPS_DOMAIN" do
+          is_expected.to include(
+            { key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true })
+        end
+      end
+
+      context 'and is disabled' do
+        before do
+          project.create_auto_devops!(enabled: false, domain: 'example.com')
+        end
+
+        it "includes AUTO_DEVOPS_DOMAIN" do
+          is_expected.not_to include(
+            { key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true })
+        end
       end
     end
   end

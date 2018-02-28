@@ -66,6 +66,6 @@ class NotificationSetting < ActiveRecord::Base
   alias_method :failed_pipeline?, :failed_pipeline
 
   def event_enabled?(event)
-    respond_to?(event) && !!public_send(event)
+    respond_to?(event) && !!public_send(event) # rubocop:disable GitlabSecurity/PublicSend
   end
 end

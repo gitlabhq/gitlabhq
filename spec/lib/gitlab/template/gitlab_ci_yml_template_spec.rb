@@ -30,12 +30,30 @@ describe Gitlab::Template::GitlabCiYmlTemplate do
     end
   end
 
+  describe '.by_category' do
+    it 'returns sorted results' do
+      result = described_class.by_category('General')
+
+      expect(result).to eq(result.sort)
+    end
+  end
+
   describe '#content' do
     it 'loads the full file' do
       gitignore = subject.new(Rails.root.join('vendor/gitlab-ci-yml/Ruby.gitlab-ci.yml'))
 
       expect(gitignore.name).to eq 'Ruby'
       expect(gitignore.content).to start_with('#')
+    end
+  end
+
+  describe '#<=>' do
+    it 'sorts lexicographically' do
+      one = described_class.new('a.gitlab-ci.yml')
+      other = described_class.new('z.gitlab-ci.yml')
+
+      expect(one.<=>(other)).to be(-1)
+      expect([other, one].sort).to eq([one, other])
     end
   end
 end

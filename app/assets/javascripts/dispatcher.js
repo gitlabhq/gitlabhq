@@ -41,7 +41,6 @@ import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
 import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
-import GroupName from './group_name';
 import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
 import setupProjectEdit from './project_edit';
@@ -74,8 +73,10 @@ import PerformanceBar from './performance_bar';
 import initNotes from './init_notes';
 import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
+import initProjectVisibilitySelector from './project_visibility';
 import GpgBadges from './gpg_badges';
 import UserFeatureHelper from './helpers/user_feature_helper';
+import initChangesDropdown from './init_changes_dropdown';
 
 (function() {
   var Dispatcher;
@@ -97,7 +98,7 @@ import UserFeatureHelper from './helpers/user_feature_helper';
       path = page.split(':');
       shortcut_handler = null;
 
-      $('.js-gfm-input').each((i, el) => {
+      $('.js-gfm-input:not(.js-vue-textarea)').each((i, el) => {
         const gfm = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
         const enableGFM = gl.utils.convertPermissionToBoolean(el.dataset.supportsAutocomplete);
         gfm.setup($(el), {
@@ -159,6 +160,9 @@ import UserFeatureHelper from './helpers/user_feature_helper';
             const filteredSearchManager = new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
             filteredSearchManager.setup();
           }
+          if (page === 'projects:merge_requests:index') {
+            new UserCallout({ setCalloutPerProject: true });
+          }
           const pagePrefix = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';
           IssuableIndex.init(pagePrefix);
 
@@ -170,7 +174,6 @@ import UserFeatureHelper from './helpers/user_feature_helper';
           shortcut_handler = new ShortcutsIssuable();
           new ZenMode();
           initIssuableSidebar();
-          initNotes();
           break;
         case 'dashboard:milestones:index':
           new ProjectSelect();
@@ -183,13 +186,13 @@ import UserFeatureHelper from './helpers/user_feature_helper';
           break;
         case 'dashboard:issues':
         case 'dashboard:merge_requests':
-        case 'groups:merge_requests':
           new ProjectSelect();
           initLegacyFilters();
           break;
         case 'groups:issues':
+        case 'groups:merge_requests':
           if (filteredSearchEnabled) {
-            const filteredSearchManager = new gl.FilteredSearchManager('issues');
+            const filteredSearchManager = new gl.FilteredSearchManager(page === 'groups:issues' ? 'issues' : 'merge_requests');
             filteredSearchManager.setup();
           }
           new ProjectSelect();
@@ -228,6 +231,7 @@ import UserFeatureHelper from './helpers/user_feature_helper';
           break;
         case 'projects:compare:show':
           new gl.Diff();
+          initChangesDropdown();
           break;
         case 'projects:branches:new':
         case 'projects:branches:create':
@@ -320,6 +324,7 @@ import UserFeatureHelper from './helpers/user_feature_helper';
             container: '.js-commit-pipeline-graph',
           }).bindEvents();
           initNotes();
+          initChangesDropdown();
           $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
           break;
         case 'projects:commit:pipelines':
@@ -340,10 +345,14 @@ import UserFeatureHelper from './helpers/user_feature_helper';
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
+          new UserCallout({ setCalloutPerProject: true });
 
           if ($('#tree-slider').length) new TreeView();
           if ($('.blob-viewer').length) new BlobViewer();
           if ($('.project-show-activity').length) new gl.Activities();
+          $('#tree-slider').waitForImages(function() {
+            gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
+          });
           break;
         case 'projects:edit':
           setupProjectEdit();
@@ -355,6 +364,9 @@ import UserFeatureHelper from './helpers/user_feature_helper';
           break;
         case 'projects:pipelines:new':
           new NewBranchForm($('.js-new-pipeline-form'));
+          break;
+        case 'projects:pipelines:index':
+          new UserCallout({ setCalloutPerProject: true });
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
@@ -408,11 +420,12 @@ import UserFeatureHelper from './helpers/user_feature_helper';
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
 
-          if (UserFeatureHelper.isNewRepo()) break;
+          if (UserFeatureHelper.isNewRepoEnabled()) break;
 
           new TreeView();
           new BlobViewer();
           new NewCommitForm($('.js-create-dir-form'));
+          new UserCallout({ setCalloutPerProject: true });
           $('#tree-slider').waitForImages(function() {
             gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
           });
@@ -428,7 +441,7 @@ import UserFeatureHelper from './helpers/user_feature_helper';
           shortcut_handler = true;
           break;
         case 'projects:blob:show':
-          if (UserFeatureHelper.isNewRepo()) break;
+          if (UserFeatureHelper.isNewRepoEnabled()) break;
           new BlobViewer();
           initBlob();
           break;
@@ -483,6 +496,8 @@ import UserFeatureHelper from './helpers/user_feature_helper';
           initSettingsPanels();
           break;
         case 'projects:settings:ci_cd:show':
+          // Initialize expandable settings panels
+          initSettingsPanels();
         case 'groups:settings:ci_cd:show':
           new gl.ProjectVariables();
           break;
@@ -548,9 +563,6 @@ import UserFeatureHelper from './helpers/user_feature_helper';
         case 'root':
           new UserCallout();
           break;
-        case 'groups':
-          new GroupName();
-          break;
         case 'profiles':
           new NotificationsForm();
           new NotificationsDropdown();
@@ -558,7 +570,6 @@ import UserFeatureHelper from './helpers/user_feature_helper';
         case 'projects':
           new Project();
           new ProjectAvatar();
-          new GroupName();
           switch (path[1]) {
             case 'compare':
               new CompareAutocomplete();
@@ -566,9 +577,13 @@ import UserFeatureHelper from './helpers/user_feature_helper';
             case 'edit':
               shortcut_handler = new ShortcutsNavigation();
               new ProjectNew();
+              import(/* webpackChunkName: 'project_permissions' */ './projects/permissions')
+                .then(permissions => permissions.default())
+                .catch(() => {});
               break;
             case 'new':
               new ProjectNew();
+              initProjectVisibilitySelector();
               break;
             case 'show':
               new Star();
@@ -638,7 +653,7 @@ import UserFeatureHelper from './helpers/user_feature_helper';
     return Dispatcher;
   })();
 
-  $(function() {
+  $(window).on('load', function() {
     new Dispatcher();
   });
 }).call(window);

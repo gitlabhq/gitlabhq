@@ -8,6 +8,7 @@ require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'shoulda/matchers'
 require 'rspec/retry'
+require 'rspec-parameterized'
 
 rspec_profiling_is_configured =
   ENV['RSPEC_PROFILING_POSTGRES_URL'].present? ||
@@ -69,7 +70,14 @@ RSpec.configure do |config|
 
   config.raise_errors_for_deprecations!
 
+  if ENV['CI']
+    # This includes the first try, i.e. tests will be run 4 times before failing.
+    config.default_retry_count = 4
+    config.reporter.register_listener(RspecFlaky::Listener.new, :example_passed, :dump_summary)
+  end
+
   config.before(:suite) do
+    Timecop.safe_mode = true
     TestEnv.init
   end
 
@@ -97,9 +105,15 @@ RSpec.configure do |config|
     reset_delivered_emails!
   end
 
-  if ENV['CI']
-    config.around(:each) do |ex|
-      ex.run_with_retry retry: 2
+  # Stub the `ForkedStorageCheck.storage_available?` method unless
+  # `:broken_storage` metadata is defined
+  #
+  # This check can be slow and is unnecessary in a test environment where we
+  # know the storage is available, because we create it at runtime
+  config.before(:example) do |example|
+    unless example.metadata[:broken_storage]
+      allow(Gitlab::Git::Storage::ForkedStorageCheck)
+        .to receive(:storage_available?).and_return(true)
     end
   end
 
@@ -130,17 +144,12 @@ RSpec.configure do |config|
     Sidekiq.redis(&:flushall)
   end
 
-  config.before(:example, :migration) do
-    ActiveRecord::Migrator
-      .migrate(migrations_paths, previous_migration.version)
-
-    reset_column_in_migration_models
+  config.before(:each, :migration) do
+    schema_migrate_down!
   end
 
-  config.after(:example, :migration) do
-    ActiveRecord::Migrator.migrate(migrations_paths)
-
-    reset_column_in_migration_models
+  config.after(:context, :migration) do
+    schema_migrate_up!
   end
 
   config.around(:each, :nested_groups) do |example|

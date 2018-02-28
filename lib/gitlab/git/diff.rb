@@ -116,6 +116,15 @@ module Gitlab
 
           filtered_opts
         end
+
+        # Return a binary diff message like:
+        #
+        # "Binary files a/file/path and b/file/path differ\n"
+        # This is used when we detect that a diff is binary
+        # using CharlockHolmes when Rugged treats it as text.
+        def binary_message(old_path, new_path)
+          "Binary files #{old_path} and #{new_path} differ\n"
+        end
       end
 
       def initialize(raw_diff, expanded: true)
@@ -143,7 +152,7 @@ module Gitlab
         hash = {}
 
         SERIALIZE_KEYS.each do |key|
-          hash[key] = send(key)
+          hash[key] = send(key) # rubocop:disable GitlabSecurity/PublicSend
         end
 
         hash
@@ -190,6 +199,13 @@ module Gitlab
         @collapsed = true
       end
 
+      def json_safe_diff
+        return @diff unless detect_binary?(@diff)
+
+        # the diff is binary, let's make a message for it
+        Diff.binary_message(@old_path, @new_path)
+      end
+
       private
 
       def init_from_rugged(rugged)
@@ -221,7 +237,7 @@ module Gitlab
         raw_diff = hash.symbolize_keys
 
         SERIALIZE_KEYS.each do |key|
-          send(:"#{key}=", raw_diff[key.to_sym])
+          send(:"#{key}=", raw_diff[key.to_sym]) # rubocop:disable GitlabSecurity/PublicSend
         end
       end
 

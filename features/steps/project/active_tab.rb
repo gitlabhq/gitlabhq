@@ -22,25 +22,25 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
   end
 
   step 'I click the "Edit Project"' do
-    page.within '.sub-nav' do
+    page.within '.nav-sidebar' do
       click_link('Edit Project')
     end
   end
 
   step 'I click the "Integrations" tab' do
-    page.within '.sub-nav' do
+    page.within '.nav-sidebar' do
       click_link('Integrations')
     end
   end
 
   step 'I click the "Repository" tab' do
-    page.within '.sub-nav' do
+    page.within '.sidebar-top-level-items > .active' do
       click_link('Repository')
     end
   end
 
   step 'I click the "Activity" tab' do
-    page.within '.sub-nav' do
+    page.within '.sidebar-top-level-items > .active' do
       click_link('Activity')
     end
   end
@@ -72,7 +72,7 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
   end
 
   step 'I click the "Branches" tab' do
-    page.within '.sub-nav' do
+    page.within '.nav-sidebar' do
       click_link('Branches')
     end
   end
@@ -82,7 +82,7 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
   end
 
   step 'I click the "Charts" tab' do
-    page.within '.sub-nav' do
+    page.within('.sidebar-top-level-items > .active') do
       click_link('Charts')
     end
   end
@@ -102,13 +102,13 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
   # Sub Tabs: Issues
 
   step 'I click the "Milestones" sub tab' do
-    page.within('.sub-nav') do
+    page.within('.nav-sidebar') do
       click_link('Milestones')
     end
   end
 
   step 'I click the "Labels" sub tab' do
-    page.within('.sub-nav') do
+    page.within('.nav-sidebar') do
       click_link('Labels')
     end
   end

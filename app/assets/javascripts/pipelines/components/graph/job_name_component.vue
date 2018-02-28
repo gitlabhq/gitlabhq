@@ -26,7 +26,7 @@
   };
 </script>
 <template>
-  <span>
+  <span class="ci-job-name-component">
     <ci-icon
       :status="status" />
 

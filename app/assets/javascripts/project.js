@@ -53,10 +53,6 @@ import Cookies from 'js-cookie';
           return _this.changeProject($(e.currentTarget).val());
         };
       })(this));
-      return $('.js-projects-dropdown-toggle').on('click', function(e) {
-        e.preventDefault();
-        return $('.js-projects-dropdown').select2('open');
-      });
     };
 
     Project.prototype.changeProject = function(url) {
@@ -126,11 +122,11 @@ import Cookies from 'js-cookie';
               var $form = $dropdown.closest('form');
 
               var $visit = $dropdown.data('visit');
-              var shouldVisit = typeof $visit === 'undefined' ? true : $visit;
+              var shouldVisit = $visit ? true : $visit;
               var action = $form.attr('action');
               var divider = action.indexOf('?') === -1 ? '?' : '&';
               if (shouldVisit) {
-                gl.utils.visitUrl(action + '' + divider + '' + $form.serialize());
+                gl.utils.visitUrl(`${action}${divider}${$form.serialize()}`);
               }
             }
           }

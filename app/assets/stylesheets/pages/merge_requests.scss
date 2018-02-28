@@ -174,17 +174,6 @@
     vertical-align: top;
   }
 
-  .mini-pipeline-graph-dropdown-menu .mini-pipeline-graph-dropdown-item {
-    display: flex;
-    align-items: center;
-
-    .ci-status-text,
-    .ci-status-icon {
-      top: 0;
-      margin-right: 10px;
-    }
-  }
-
   .normal {
     line-height: 28px;
   }
@@ -197,7 +186,7 @@
     @extend .ref-name;
 
     color: $gl-text-color;
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
     overflow: hidden;
     word-break: break-all;
 
@@ -228,7 +217,7 @@
   .mr-widget-body {
     h4 {
       float: left;
-      font-weight: 600;
+      font-weight: $gl-font-weight-bold;
       font-size: 14px;
       line-height: inherit;
       margin-top: 0;
@@ -239,7 +228,7 @@
       }
 
       time {
-        font-weight: normal;
+        font-weight: $gl-font-weight-normal;
       }
     }
 
@@ -249,7 +238,7 @@
     }
 
     label {
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
     }
 
     .spacing {
@@ -257,12 +246,12 @@
     }
 
     .bold {
-      font-weight: 600;
+      font-weight: $gl-font-weight-bold;
       color: $gl-gray-light;
     }
 
     .state-label {
-      font-weight: 600;
+      font-weight: $gl-font-weight-bold;
       padding-right: 10px;
     }
 
@@ -291,6 +280,7 @@
 
     .dropdown-toggle {
       .fa {
+        margin-left: 0;
         color: inherit;
       }
     }
@@ -336,7 +326,7 @@
 
       .text {
         span {
-          font-weight: 600;
+          font-weight: $gl-font-weight-bold;
         }
 
         p {
@@ -489,6 +479,8 @@
 }
 
 .mr-source-target {
+  @include new-style-dropdown;
+
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -505,7 +497,7 @@
 .panel-new-merge-request {
   .panel-heading {
     padding: 5px 10px;
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
     line-height: 25px;
   }
 
@@ -610,6 +602,8 @@
 }
 
 .mr-version-controls {
+  @include new-style-dropdown;
+
   position: relative;
   background: $gray-light;
   color: $gl-text-color;
@@ -651,7 +645,7 @@
 }
 
 .merge-request-tabs-holder {
-  top: $header-height;
+  top: $new-navbar-height;
   z-index: 200;
   background-color: $white-light;
   border-bottom: 1px solid $border-color;
@@ -681,7 +675,7 @@
 }
 
 .with-performance-bar .merge-request-tabs-holder {
-  top: $header-height + $performance-bar-height;
+  top: $new-navbar-height + $performance-bar-height;
 }
 
 .merge-request-tabs {
@@ -726,4 +720,8 @@
     margin-right: 10px;
     font-size: 16px;
   }
+}
+
+.merge-request-form {
+  @include new-style-dropdown;
 }

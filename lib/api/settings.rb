@@ -29,6 +29,7 @@ module API
                                 desc: 'Enabled sources for code import during project creation. OmniAuth must be configured for GitHub, Bitbucket, and GitLab.com'
       optional :disabled_oauth_sign_in_sources, type: Array[String], desc: 'Disable certain OAuth sign-in sources'
       optional :enabled_git_access_protocol, type: String, values: %w[ssh http nil], desc: 'Allow only the selected protocols to be used for Git access.'
+      optional :project_export_enabled, type: Boolean, desc: 'Enable project export'
       optional :gravatar_enabled, type: Boolean, desc: 'Flag indicating if the Gravatar service is enabled'
       optional :default_projects_limit, type: Integer, desc: 'The maximum number of personal projects'
       optional :max_attachment_size, type: Integer, desc: 'Maximum attachment size in MB'
@@ -120,6 +121,13 @@ module API
       end
       optional :terminal_max_session_time, type: Integer, desc: 'Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time.'
       optional :polling_interval_multiplier, type: BigDecimal, desc: 'Interval multiplier used by endpoints that perform polling. Set to 0 to disable polling.'
+
+      ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
+        optional :"#{type}_key_restriction",
+                 type: Integer,
+                 values: KeyRestrictionValidator.supported_key_restrictions(type),
+                 desc: "Restrictions on the complexity of uploaded #{type.upcase} keys. A value of #{ApplicationSetting::FORBIDDEN_KEY_VALUE} disables all #{type.upcase} keys."
+      end
 
       optional(*::ApplicationSettingsHelper.visible_attributes)
       at_least_one_of(*::ApplicationSettingsHelper.visible_attributes)

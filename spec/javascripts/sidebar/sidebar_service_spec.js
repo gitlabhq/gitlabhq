@@ -5,7 +5,11 @@ import Mock from './mock_data';
 describe('Sidebar service', () => {
   beforeEach(() => {
     Vue.http.interceptors.push(Mock.sidebarMockInterceptor);
-    this.service = new SidebarService('/gitlab-org/gitlab-shell/issues/5.json');
+    this.service = new SidebarService({
+      endpoint: '/gitlab-org/gitlab-shell/issues/5.json',
+      moveIssueEndpoint: '/gitlab-org/gitlab-shell/issues/5/move',
+      projectsAutocompleteEndpoint: '/autocomplete/projects?project_id=15',
+    });
   });
 
   afterEach(() => {
@@ -19,7 +23,7 @@ describe('Sidebar service', () => {
         expect(resp).toBeDefined();
         done();
       })
-      .catch(() => {});
+      .catch(done.fail);
   });
 
   it('updates the data', (done) => {
@@ -28,6 +32,24 @@ describe('Sidebar service', () => {
         expect(resp).toBeDefined();
         done();
       })
-      .catch(() => {});
+      .catch(done.fail);
+  });
+
+  it('gets projects for autocomplete', (done) => {
+    this.service.getProjectsAutocomplete()
+      .then((resp) => {
+        expect(resp).toBeDefined();
+        done();
+      })
+      .catch(done.fail);
+  });
+
+  it('moves the issue to another project', (done) => {
+    this.service.moveIssue(123)
+      .then((resp) => {
+        expect(resp).toBeDefined();
+        done();
+      })
+      .catch(done.fail);
   });
 });

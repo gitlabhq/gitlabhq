@@ -83,10 +83,7 @@ structure.
 - You need to be an Owner of a group in order to be able to create
   a subgroup. For more information check the [permissions table][permissions].
 - For a list of words that are not allowed to be used as group names see the
-  [`path_regex.rb` file][reserved] under the `TOP_LEVEL_ROUTES`, `PROJECT_WILDCARD_ROUTES` and `GROUP_ROUTES` lists:
-  - `TOP_LEVEL_ROUTES`: are names that are reserved as usernames or top level groups
-  - `PROJECT_WILDCARD_ROUTES`: are names that are reserved for child groups or projects.
-  - `GROUP_ROUTES`: are names that are reserved for all groups or projects.
+  [reserved names][reserved].
 
 To create a subgroup:
 
@@ -175,5 +172,5 @@ Here's a list of what you can't do with subgroups:
 
 [ce-2772]: https://gitlab.com/gitlab-org/gitlab-ce/issues/2772
 [permissions]: ../../permissions.md#group
-[reserved]:  https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/path_regex.rb
+[reserved]:  ../../reserved_names.md
 [issue]: https://gitlab.com/gitlab-org/gitlab-ce/issues/30472#note_27747600

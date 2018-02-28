@@ -56,7 +56,7 @@ module Mentionable
     end
 
     self.class.mentionable_attrs.each do |attr, options|
-      text    = __send__(attr)
+      text    = __send__(attr) # rubocop:disable GitlabSecurity/PublicSend
       options = options.merge(
         cache_key: [self, attr],
         author: author,
@@ -100,7 +100,7 @@ module Mentionable
                         end
 
     self.class.mentionable_attrs.any? do |attr, _|
-      __send__(attr) =~ reference_pattern
+      __send__(attr) =~ reference_pattern # rubocop:disable GitlabSecurity/PublicSend
     end
   end
 

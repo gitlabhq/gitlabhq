@@ -6,27 +6,31 @@ describe StuckCiJobsWorker do
   let(:worker) { described_class.new }
   let(:exclusive_lease_uuid) { SecureRandom.uuid }
 
-  subject do
-    job.reload
-    job.status
-  end
-
   before do
     job.update!(status: status, updated_at: updated_at)
     allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(exclusive_lease_uuid)
   end
 
   shared_examples 'job is dropped' do
-    it 'changes status' do
+    before do
       worker.perform
-      is_expected.to eq('failed')
+      job.reload
+    end
+
+    it "changes status" do
+      expect(job).to be_failed
+      expect(job).to be_stuck_or_timeout_failure
     end
   end
 
   shared_examples 'job is unchanged' do
-    it "doesn't change status" do
+    before do
       worker.perform
-      is_expected.to eq(status)
+      job.reload
+    end
+
+    it "doesn't change status" do
+      expect(job.status).to eq(status)
     end
   end
 

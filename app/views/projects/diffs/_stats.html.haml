@@ -10,7 +10,7 @@
     %strong.cgreen #{sum_added_lines} additions
     and
     %strong.cred #{sum_removed_lines} deletions
-  .diff-stats-additions-deletions-collapsed.pull-right{ "aria-hidden": "true", "aria-describedby": "diff-stats" }
+  .diff-stats-additions-deletions-collapsed.pull-right.hidden-xs.hidden-sm{ "aria-hidden": "true", "aria-describedby": "diff-stats" }
     %strong.cgreen<
       +#{sum_added_lines}
     %strong.cred<
@@ -29,6 +29,6 @@
                   +#{diff_file.added_lines}
                 %span.cred<
                   \-#{diff_file.removed_lines}
-        %li.dropdown-menu-empty-link.hidden
-          %a{ href: "#" }
+        %li.dropdown-menu-empty-item.hidden
+          %a
             No files found.

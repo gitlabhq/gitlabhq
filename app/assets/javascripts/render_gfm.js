@@ -11,7 +11,5 @@
     return this;
   };
 
-  $(document).on('ready load', function() {
-    return $('body').renderGFM();
-  });
+  $(() => $('body').renderGFM());
 }).call(window);

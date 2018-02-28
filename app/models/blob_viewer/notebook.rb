@@ -2,7 +2,7 @@ module BlobViewer
   class Notebook < Base
     include Rich
     include ClientSide
-    
+
     self.partial_name = 'notebook'
     self.extensions = %w(ipynb)
     self.binary = false

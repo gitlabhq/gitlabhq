@@ -2,19 +2,20 @@ import _ from 'underscore';
 
 (() => {
   /*
-   * TODO: Make these methods more configurable (e.g. parseSeconds timePeriodContstraints,
-   * stringifyTime condensed or non-condensed, abbreviateTimelengths)
+   * TODO: Make these methods more configurable (e.g. stringifyTime condensed or
+   * non-condensed, abbreviateTimelengths)
    * */
 
   const utils = window.gl.utils = gl.utils || {};
   const prettyTime = utils.prettyTime = {
     /*
      * Accepts seconds and returns a timeObject { weeks: #, days: #, hours: #, minutes: # }
-     * Seconds can be negative or positive, zero or non-zero.
+     * Seconds can be negative or positive, zero or non-zero. Can be configured for any day
+     * or week length.
     */
-    parseSeconds(seconds) {
-      const DAYS_PER_WEEK = 5;
-      const HOURS_PER_DAY = 8;
+    parseSeconds(seconds, { daysPerWeek = 5, hoursPerDay = 8 } = {}) {
+      const DAYS_PER_WEEK = daysPerWeek;
+      const HOURS_PER_DAY = hoursPerDay;
       const MINUTES_PER_HOUR = 60;
       const MINUTES_PER_WEEK = DAYS_PER_WEEK * HOURS_PER_DAY * MINUTES_PER_HOUR;
       const MINUTES_PER_DAY = HOURS_PER_DAY * MINUTES_PER_HOUR;

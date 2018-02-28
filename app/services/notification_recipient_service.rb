@@ -95,7 +95,7 @@ module NotificationRecipientService
       def add_participants(user)
         return unless target.respond_to?(:participants)
 
-        self << [target.participants(user), :watch]
+        self << [target.participants(user), :participating]
       end
 
       # Get project/group users with CUSTOM notification level

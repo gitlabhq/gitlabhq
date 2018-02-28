@@ -166,7 +166,7 @@ module Gitlab
 
       def remove_branch(name)
         project.repository.delete_branch(name)
-      rescue Rugged::ReferenceError
+      rescue Gitlab::Git::Repository::DeleteBranchFailed
         errors << { type: :remove_branch, name: name }
       end
 
@@ -289,7 +289,7 @@ module Gitlab
 
         opts.last[:page] = current_page(resource_type)
 
-        client.public_send(resource_type, *opts) do |resources|
+        client.public_send(resource_type, *opts) do |resources| # rubocop:disable GitlabSecurity/PublicSend
           yield resources
           increment_page(resource_type)
         end

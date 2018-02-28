@@ -50,7 +50,7 @@ shared_examples_for 'group and project milestones' do |route_definition|
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(2)
-      expect(json_response.map{ |m| m['id'] }).to match_array([closed_milestone.id, other_milestone.id])
+      expect(json_response.map { |m| m['id'] }).to match_array([closed_milestone.id, other_milestone.id])
     end
 
     it 'does not return any milestone if none found' do

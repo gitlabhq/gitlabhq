@@ -1,5 +1,7 @@
 module Users
   class UpdateService < BaseService
+    include NewUserNotifier
+
     def initialize(user, params = {})
       @user = user
       @params = params.dup
@@ -10,7 +12,11 @@ module Users
 
       assign_attributes(&block)
 
+      user_exists = @user.persisted?
+
       if @user.save(validate: validate)
+        notify_new_user(@user, nil) unless user_exists
+
         success
       else
         error(@user.errors.full_messages.uniq.join('. '))
@@ -28,6 +34,10 @@ module Users
     private
 
     def assign_attributes(&block)
+      if @user.user_synced_attributes_metadata
+        params.except!(*@user.user_synced_attributes_metadata.read_only_attributes)
+      end
+
       @user.assign_attributes(params) if params.any?
     end
   end

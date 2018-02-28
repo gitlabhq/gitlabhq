@@ -120,7 +120,7 @@ module Gitlab
       def request(method, *args, &block)
         sleep rate_limit_sleep_time if rate_limit_exceed?
 
-        data = api.send(method, *args)
+        data = api.__send__(method, *args) # rubocop:disable GitlabSecurity/PublicSend
         return data unless data.is_a?(Array)
 
         last_response = api.last_response

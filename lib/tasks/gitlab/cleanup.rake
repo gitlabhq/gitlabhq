@@ -111,7 +111,7 @@ namespace :gitlab do
           next unless id > max_iid
 
           project.deployments.find(id).create_ref
-          rugged.references.delete(ref)
+          project.repository.delete_refs(ref)
         end
       end
     end

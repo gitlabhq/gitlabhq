@@ -5,19 +5,30 @@
 
   export default {
     props: {
-      markdownPreviewUrl: {
+      markdownPreviewPath: {
         type: String,
         required: false,
         default: '',
       },
-      markdownDocs: {
+      markdownDocsPath: {
         type: String,
         required: true,
+      },
+      addSpacingClasses: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
+      quickActionsDocsPath: {
+        type: String,
+        required: false,
       },
     },
     data() {
       return {
         markdownPreview: '',
+        referencedCommands: '',
+        referencedUsers: '',
         markdownPreviewLoading: false,
         previewMarkdown: false,
       };
@@ -26,35 +37,48 @@
       markdownHeader,
       markdownToolbar,
     },
+    computed: {
+      shouldShowReferencedUsers() {
+        const referencedUsersThreshold = 10;
+        return this.referencedUsers.length >= referencedUsersThreshold;
+      },
+    },
     methods: {
       toggleMarkdownPreview() {
         this.previewMarkdown = !this.previewMarkdown;
 
+        /*
+          Can't use `$refs` as the component is technically in the parent component
+          so we access the VNode & then get the element
+        */
+        const text = this.$slots.textarea[0].elm.value;
+
         if (!this.previewMarkdown) {
           this.markdownPreview = '';
-        } else {
+        } else if (text) {
           this.markdownPreviewLoading = true;
-          this.$http.post(
-            this.markdownPreviewUrl,
-            {
-              /*
-                Can't use `$refs` as the component is technically in the parent component
-                so we access the VNode & then get the element
-              */
-              text: this.$slots.textarea[0].elm.value,
-            },
-          )
-          .then(resp => resp.json())
-          .then((data) => {
-            this.markdownPreviewLoading = false;
-            this.markdownPreview = data.body;
-
-            this.$nextTick(() => {
-              $(this.$refs['markdown-preview']).renderGFM();
-            });
-          })
-          .catch(() => new Flash('Error loading markdown preview'));
+          this.$http.post(this.markdownPreviewPath, { text })
+            .then(resp => resp.json())
+            .then((data) => {
+              this.renderMarkdown(data);
+            })
+            .catch(() => new Flash('Error loading markdown preview'));
+        } else {
+          this.renderMarkdown();
         }
+      },
+      renderMarkdown(data = {}) {
+        this.markdownPreviewLoading = false;
+        this.markdownPreview = data.body || 'Nothing to preview.';
+
+        if (data.references) {
+          this.referencedCommands = data.references.commands;
+          this.referencedUsers = data.references.users;
+        }
+
+        this.$nextTick(() => {
+          $(this.$refs['markdown-preview']).renderGFM();
+        });
       },
     },
     mounted() {
@@ -74,7 +98,8 @@
 
 <template>
   <div
-    class="md-area prepend-top-default append-bottom-default js-vue-markdown-field"
+    class="md-area js-vue-markdown-field"
+    :class="{ 'prepend-top-default append-bottom-default': addSpacingClasses }"
     ref="gl-form">
     <markdown-header
       :preview-markdown="previewMarkdown"
@@ -94,7 +119,9 @@
           </i>
         </a>
         <markdown-toolbar
-          :markdown-docs="markdownDocs" />
+          :markdown-docs-path="markdownDocsPath"
+          :quick-actions-docs-path="quickActionsDocsPath"
+          />
       </div>
     </div>
     <div
@@ -108,5 +135,27 @@
         Loading...
       </span>
     </div>
+    <template v-if="previewMarkdown && !markdownPreviewLoading">
+      <div
+        v-if="referencedCommands"
+        v-html="referencedCommands"
+        class="referenced-commands"></div>
+      <div
+        v-if="shouldShowReferencedUsers"
+        class="referenced-users">
+          <span>
+            <i
+              class="fa fa-exclamation-triangle"
+              aria-hidden="true">
+            </i>
+            You are about to add
+            <strong>
+              <span class="js-referenced-users-count">
+                {{referencedUsers.length}}
+              </span>
+            </strong> people to the discussion. Proceed with caution.
+          </span>
+        </div>
+    </template>
   </div>
 </template>

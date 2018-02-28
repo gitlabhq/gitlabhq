@@ -32,7 +32,7 @@ table {
 
       th {
         background-color: $gray-light;
-        font-weight: normal;
+        font-weight: $gl-font-weight-normal;
         border-bottom: none;
 
         &.wide {

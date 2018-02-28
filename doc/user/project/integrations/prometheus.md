@@ -40,7 +40,7 @@ Installing and configuring Prometheus to monitor applications is fairly straight
 ### Configuring Omnibus GitLab Prometheus to monitor Kubernetes deployments
 
 With Omnibus GitLab running inside of Kubernetes, you can leverage the bundled
-version of Prometheus to collect the supported metrics. Once enabled, Prometheus will automatically begin monitoring Kubernetes Nodes and any [annotated Pods](https://prometheus.io/docs/operating/configuration/#<kubernetes_sd_config>). 
+version of Prometheus to collect the supported metrics. Once enabled, Prometheus will automatically begin monitoring Kubernetes Nodes and any [annotated Pods](https://prometheus.io/docs/operating/configuration/#<kubernetes_sd_config>).
 
 1. Read how to configure the bundled Prometheus server in the
    [Administration guide][gitlab-prometheus-k8s-monitor].
@@ -133,6 +133,8 @@ to integrate with.
 Once configured, GitLab will attempt to retrieve performance metrics for any
 environment which has had a successful deployment.
 
+GitLab will automatically scan the Prometheus server for known metrics and attempt to identify the metrics for a particular environment. The supported metrics and scan process is detailed in our [Prometheus Metric Library documentation](prometheus_library/metrics.html).
+
 [Learn more about monitoring environments.](../../../ci/environments.md#monitoring-environments)
 
 ## Determining the performance impact of a merge
@@ -174,7 +176,7 @@ If the "Attempting to load performance data" screen continues to appear, it coul
 [prometheus-docker-image]: https://hub.docker.com/r/prom/prometheus/
 [prometheus-yml]:samples/prometheus.yml
 [gitlab.com-ip-range]: https://gitlab.com/gitlab-com/infrastructure/issues/434
-[ci-environment-slug]: https://docs.gitlab.com/ce/ci/variables/#predefined-variables-environment-variables
+[ci-environment-slug]: ../../../ci/variables/#predefined-variables-environment-variables
 [ce-8935]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8935
 [ce-10408]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10408
 [promgldocs]: ../../../administration/monitoring/prometheus/index.md

@@ -38,6 +38,7 @@ module Ci
     validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
 
+    after_initialize :set_config_source, if: :new_record?
     after_create :keep_around_commits, unless: :importing?
 
     enum source: {
@@ -48,6 +49,12 @@ module Ci
       schedule: 4,
       api: 5,
       external: 6
+    }
+
+    enum config_source: {
+      unknown_source: nil,
+      repository_source: 1,
+      auto_devops_source: 2
     }
 
     state_machine :status, initial: :created do
@@ -304,12 +311,24 @@ module Ci
       @stage_seeds ||= config_processor.stage_seeds(self)
     end
 
+    def has_kubernetes_active?
+      project.kubernetes_service&.active?
+    end
+
     def has_stage_seeds?
       stage_seeds.any?
     end
 
     def has_warnings?
       builds.latest.failed_but_allowed.any?
+    end
+
+    def set_config_source
+      if ci_yaml_from_repo
+        self.config_source = :repository_source
+      elsif implied_ci_yaml_file
+        self.config_source = :auto_devops_source
+      end
     end
 
     def config_processor
@@ -338,11 +357,17 @@ module Ci
     def ci_yaml_file
       return @ci_yaml_file if defined?(@ci_yaml_file)
 
-      @ci_yaml_file = begin
-        project.repository.gitlab_ci_yml_for(sha, ci_yaml_file_path)
-      rescue Rugged::ReferenceError, GRPC::NotFound, GRPC::Internal
-        self.yaml_errors =
-          "Failed to load CI/CD config file at #{ci_yaml_file_path}"
+      @ci_yaml_file =
+        if auto_devops_source?
+          implied_ci_yaml_file
+        else
+          ci_yaml_from_repo
+        end
+
+      if @ci_yaml_file
+        @ci_yaml_file
+      else
+        self.yaml_errors = "Failed to load CI/CD config file for #{sha}"
         nil
       end
     end
@@ -393,7 +418,8 @@ module Ci
     def predefined_variables
       [
         { key: 'CI_PIPELINE_ID', value: id.to_s, public: true },
-        { key: 'CI_CONFIG_PATH', value: ci_yaml_file_path, public: true }
+        { key: 'CI_CONFIG_PATH', value: ci_yaml_file_path, public: true },
+        { key: 'CI_PIPELINE_SOURCE', value: source.to_s, public: true }
       ]
     end
 
@@ -428,6 +454,23 @@ module Ci
     end
 
     private
+
+    def ci_yaml_from_repo
+      return unless project
+      return unless sha
+
+      project.repository.gitlab_ci_yml_for(sha, ci_yaml_file_path)
+    rescue GRPC::NotFound, Rugged::ReferenceError, GRPC::Internal
+      nil
+    end
+
+    def implied_ci_yaml_file
+      return unless project
+
+      if project.auto_devops_enabled?
+        Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content
+      end
+    end
 
     def pipeline_data
       Gitlab::DataBuilder::Pipeline.build(self)

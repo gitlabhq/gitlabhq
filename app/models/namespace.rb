@@ -44,6 +44,10 @@ class Namespace < ActiveRecord::Base
 
   after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 
+  before_create :sync_share_with_group_lock_with_parent
+  before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
+  after_update :force_share_with_group_lock_on_descendants, if: -> { share_with_group_lock_changed? && share_with_group_lock? }
+
   # Legacy Storage specific hooks
 
   after_update :move_dir, if: :path_changed?
@@ -156,10 +160,24 @@ class Namespace < ActiveRecord::Base
       .base_and_ancestors
   end
 
+  def self_and_ancestors
+    return self.class.where(id: id) unless parent_id
+
+    Gitlab::GroupHierarchy
+      .new(self.class.where(id: id))
+      .base_and_ancestors
+  end
+
   # Returns all the descendants of the current namespace.
   def descendants
     Gitlab::GroupHierarchy
       .new(self.class.where(parent_id: id))
+      .base_and_descendants
+  end
+
+  def self_and_descendants
+    Gitlab::GroupHierarchy
+      .new(self.class.where(id: id))
       .base_and_descendants
   end
 
@@ -181,6 +199,10 @@ class Namespace < ActiveRecord::Base
     parent.present?
   end
 
+  def subgroup?
+    has_parent?
+  end
+
   def soft_delete_without_removing_associations
     # We can't use paranoia's `#destroy` since this will hard-delete projects.
     # Project uses `pending_delete` instead of the acts_as_paranoia gem.
@@ -200,5 +222,15 @@ class Namespace < ActiveRecord::Base
     if ancestors.count > Group::NUMBER_OF_ANCESTORS_ALLOWED
       errors.add(:parent_id, "has too deep level of nesting")
     end
+  end
+
+  def sync_share_with_group_lock_with_parent
+    if parent&.share_with_group_lock?
+      self.share_with_group_lock = true
+    end
+  end
+
+  def force_share_with_group_lock_on_descendants
+    descendants.update_all(share_with_group_lock: true)
   end
 end

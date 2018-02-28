@@ -1,6 +1,6 @@
 class ProjectEntity < Grape::Entity
   include RequestAwareEntity
-  
+
   expose :id
   expose :name
 

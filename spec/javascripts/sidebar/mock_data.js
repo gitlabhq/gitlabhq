@@ -66,10 +66,48 @@ const sidebarMockData = {
       },
       labels: [],
     },
+    '/autocomplete/projects?project_id=15': [
+      {
+        'id': 0,
+        'name_with_namespace': 'No project',
+      }, {
+        'id': 20,
+        'name_with_namespace': 'foo / bar',
+      },
+    ],
   },
   'PUT': {
     '/gitlab-org/gitlab-shell/issues/5.json': {
       data: {},
+    },
+  },
+  'POST': {
+    '/gitlab-org/gitlab-shell/issues/5/move': {
+      id: 123,
+      iid: 5,
+      author_id: 1,
+      description: 'some description',
+      lock_version: 5,
+      milestone_id: null,
+      state: 'opened',
+      title: 'some title',
+      updated_by_id: 1,
+      created_at: '2017-06-27T19:54:42.437Z',
+      updated_at: '2017-08-18T03:39:49.222Z',
+      deleted_at: null,
+      time_estimate: 0,
+      total_time_spent: 0,
+      human_time_estimate: null,
+      human_total_time_spent: null,
+      branch_name: null,
+      confidential: false,
+      assignees: [],
+      due_date: null,
+      moved_to_id: null,
+      project_id: 7,
+      milestone: null,
+      labels: [],
+      web_url: '/root/some-project/issues/5',
     },
   },
 };
@@ -77,6 +115,8 @@ const sidebarMockData = {
 export default {
   mediator: {
     endpoint: '/gitlab-org/gitlab-shell/issues/5.json',
+    moveIssueEndpoint: '/gitlab-org/gitlab-shell/issues/5/move',
+    projectsAutocompleteEndpoint: '/autocomplete/projects?project_id=15',
     editable: true,
     currentUser: {
       id: 1,
@@ -85,6 +125,7 @@ export default {
       avatar_url: 'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
     },
     rootPath: '/',
+    fullPath: '/gitlab-org/gitlab-shell',
   },
   time: {
     time_estimate: 3600,

@@ -1,5 +1,5 @@
 - dropdown_toggle_text = @ref || @project.default_branch
-= form_tag nil, method: :get, class: "project-refs-target-form" do
+= form_tag nil, method: :get, style: { display: 'none' }, class: "project-refs-target-form" do
   = hidden_field_tag :destination, destination
   - if defined?(path)
     = hidden_field_tag :path, path

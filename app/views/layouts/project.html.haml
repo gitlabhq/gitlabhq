@@ -1,11 +1,8 @@
 - page_title       @project.name_with_namespace
 - page_description @project.description    unless page_description
 - header_title     project_title(@project) unless header_title
-- if show_new_nav?
-  - nav            "new_project_sidebar"
-  - @new_sidebar    = true
-- else
-  - nav            "project"
+- nav              "project"
+- @left_sidebar    = true
 
 - content_for :project_javascripts do
   - project = @target_project || @project
@@ -13,13 +10,5 @@
     -# haml-lint:disable InlineJavaScript
     :javascript
       window.uploads_path = "#{project_uploads_path(project)}";
-
-- content_for :header_content do
-  .js-dropdown-menu-projects
-    .dropdown-menu.dropdown-select.dropdown-menu-projects
-      = dropdown_title("Go to a project")
-      = dropdown_filter("Search your projects")
-      = dropdown_content
-      = dropdown_loading
 
 = render template: "layouts/application"

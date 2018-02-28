@@ -56,11 +56,10 @@ describe 'User creates files' do
 
         find('.add-to-tree').click
         click_link('New file')
+        expect(page).to have_selector('.file-editor')
       end
 
       it 'creates and commit a new file', js: true do
-        expect(page).to have_selector('.file-editor')
-
         execute_script("ace.edit('editor').setValue('*.rbca')")
         fill_in(:file_name, with: 'not_a_file.md')
         fill_in(:commit_message, with: 'New commit message', visible: true)

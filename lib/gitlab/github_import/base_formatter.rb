@@ -11,7 +11,9 @@ module Gitlab
       end
 
       def create!
-        project.public_send(project_association).find_or_create_by!(find_condition) do |record|
+        association = project.public_send(project_association) # rubocop:disable GitlabSecurity/PublicSend
+
+        association.find_or_create_by!(find_condition) do |record|
           record.attributes = attributes
         end
       end

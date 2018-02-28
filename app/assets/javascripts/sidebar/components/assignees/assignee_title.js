@@ -36,7 +36,7 @@ export default {
       />
       <a
         v-if="editable"
-        class="edit-link pull-right"
+        class="js-sidebar-dropdown-toggle edit-link pull-right"
         href="#"
       >
         Edit

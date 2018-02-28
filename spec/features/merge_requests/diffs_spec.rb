@@ -5,7 +5,7 @@ feature 'Diffs URL', js: true do
   let(:merge_request) { create(:merge_request, source_project: project) }
 
   context 'when visit with */* as accept header' do
-    before(:each) do
+    before do
       page.driver.add_header('Accept', '*/*')
     end
 
@@ -88,7 +88,7 @@ feature 'Diffs URL', js: true do
         visit diffs_project_merge_request_path(project, merge_request)
 
         # Throws `Capybara::Poltergeist::InvalidSelector` if we try to use `#hash` syntax
-        find("[id=\"#{changelog_id}\"] .js-edit-blob").click
+        find("[id=\"#{changelog_id}\"] .js-edit-blob").trigger('click')
 
         expect(page).to have_selector('.js-fork-suggestion-button', count: 1)
         expect(page).to have_selector('.js-cancel-fork-suggestion-button', count: 1)

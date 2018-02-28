@@ -2,9 +2,133 @@ require 'rails_helper'
 
 describe GroupsController do
   let(:user) { create(:user) }
+  let(:admin) { create(:admin) }
   let(:group) { create(:group, :public) }
   let(:project) { create(:project, namespace: group) }
   let!(:group_member) { create(:group_member, group: group, user: user) }
+  let!(:owner) { group.add_owner(create(:user)).user }
+  let!(:master) { group.add_master(create(:user)).user }
+  let!(:developer) { group.add_developer(create(:user)).user }
+  let!(:guest) { group.add_guest(create(:user)).user }
+
+  shared_examples 'member with ability to create subgroups' do
+    it 'renders the new page' do
+      sign_in(member)
+
+      get :new, parent_id: group.id
+
+      expect(response).to render_template(:new)
+    end
+  end
+
+  shared_examples 'member without ability to create subgroups' do
+    it 'renders the 404 page' do
+      sign_in(member)
+
+      get :new, parent_id: group.id
+
+      expect(response).not_to render_template(:new)
+      expect(response.status).to eq(404)
+    end
+  end
+
+  describe 'GET #new' do
+    context 'when creating subgroups', :nested_groups do
+      [true, false].each do |can_create_group_status|
+        context "and can_create_group is #{can_create_group_status}" do
+          before do
+            User.where(id: [admin, owner, master, developer, guest]).update_all(can_create_group: can_create_group_status)
+          end
+
+          [:admin, :owner].each do |member_type|
+            context "and logged in as #{member_type.capitalize}" do
+              it_behaves_like 'member with ability to create subgroups' do
+                let(:member) { send(member_type) }
+              end
+            end
+          end
+
+          [:guest, :developer, :master].each do |member_type|
+            context "and logged in as #{member_type.capitalize}" do
+              it_behaves_like 'member without ability to create subgroups' do
+                let(:member) { send(member_type) }
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+
+  describe 'POST #create' do
+    context 'when creating subgroups', :nested_groups do
+      [true, false].each do |can_create_group_status|
+        context "and can_create_group is #{can_create_group_status}" do
+          context 'and logged in as Owner' do
+            it 'creates the subgroup' do
+              owner.update_attribute(:can_create_group, can_create_group_status)
+              sign_in(owner)
+
+              post :create, group: { parent_id: group.id, path: 'subgroup' }
+
+              expect(response).to be_redirect
+              expect(response.body).to match(%r{http://test.host/#{group.path}/subgroup})
+            end
+          end
+
+          context 'and logged in as Developer' do
+            it 'renders the new template' do
+              developer.update_attribute(:can_create_group, can_create_group_status)
+              sign_in(developer)
+
+              previous_group_count = Group.count
+
+              post :create, group: { parent_id: group.id, path: 'subgroup' }
+
+              expect(response).to render_template(:new)
+              expect(Group.count).to eq(previous_group_count)
+            end
+          end
+        end
+      end
+    end
+
+    context 'when creating a top level group' do
+      before do
+        sign_in(developer)
+      end
+
+      context 'and can_create_group is enabled' do
+        before do
+          developer.update_attribute(:can_create_group, true)
+        end
+
+        it 'creates the Group' do
+          original_group_count = Group.count
+
+          post :create, group: { path: 'subgroup' }
+
+          expect(Group.count).to eq(original_group_count + 1)
+          expect(response).to be_redirect
+        end
+      end
+
+      context 'and can_create_group is disabled' do
+        before do
+          developer.update_attribute(:can_create_group, false)
+        end
+
+        it 'does not create the Group' do
+          original_group_count = Group.count
+
+          post :create, group: { path: 'subgroup' }
+
+          expect(Group.count).to eq(original_group_count)
+          expect(response).to render_template(:new)
+        end
+      end
+    end
+  end
 
   describe 'GET #index' do
     context 'as a user' do

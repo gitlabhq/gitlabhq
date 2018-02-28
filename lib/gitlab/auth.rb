@@ -19,6 +19,8 @@ module Gitlab
     OPTIONAL_SCOPES = (AVAILABLE_SCOPES + OPENID_SCOPES - DEFAULT_SCOPES).freeze
 
     class << self
+      include Gitlab::CurrentSettings
+
       def find_for_git_client(login, password, project:, ip:)
         raise "Must provide an IP for rate limiting" if ip.nil?
 
@@ -47,10 +49,6 @@ module Gitlab
       def find_with_user_password(login, password)
         # Avoid resource intensive login checks if password is not provided
         return unless password.present?
-
-        # Nothing to do here if internal auth is disabled and LDAP is
-        # not configured
-        return unless current_application_settings.password_authentication_enabled? || Gitlab::LDAP::Config.enabled?
 
         Gitlab::Auth::UniqueIpsLimiter.limit_user! do
           user = User.by_login(login)
@@ -101,7 +99,7 @@ module Gitlab
         if Service.available_services_names.include?(underscored_service)
           # We treat underscored_service as a trusted input because it is included
           # in the Service.available_services_names whitelist.
-          service = project.public_send("#{underscored_service}_service")
+          service = project.public_send("#{underscored_service}_service") # rubocop:disable GitlabSecurity/PublicSend
 
           if service && service.activated? && service.valid_token?(password)
             Gitlab::Auth::Result.new(nil, project, :ci, build_authentication_abilities)
@@ -149,7 +147,7 @@ module Gitlab
 
       def abilities_for_scope(scopes)
         scopes.map do |scope|
-          self.public_send(:"#{scope}_scope_authentication_abilities")
+          self.public_send(:"#{scope}_scope_authentication_abilities") # rubocop:disable GitlabSecurity/PublicSend
         end.flatten.uniq
       end
 

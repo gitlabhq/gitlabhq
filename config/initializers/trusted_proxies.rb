@@ -2,7 +2,7 @@
 # as the ActionDispatch::Request object. This is necessary for libraries
 # like rack_attack where they don't use ActionDispatch, and we want them
 # to block/throttle requests on private networks.
-# Rack Attack specific issue: https://github.com/kickstarter/rack-attack/issues/145 
+# Rack Attack specific issue: https://github.com/kickstarter/rack-attack/issues/145
 module Rack
   class Request
     def trusted_proxy?(ip)

@@ -687,6 +687,7 @@ describe API::V3::Projects do
         expect(json_response['wiki_enabled']).to be_present
         expect(json_response['builds_enabled']).to be_present
         expect(json_response['snippets_enabled']).to be_present
+        expect(json_response['resolve_outdated_diff_discussions']).to eq(project.resolve_outdated_diff_discussions)
         expect(json_response['container_registry_enabled']).to be_present
         expect(json_response['created_at']).to be_present
         expect(json_response['last_activity_at']).to be_present
@@ -1002,6 +1003,14 @@ describe API::V3::Projects do
         expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
         expect(project_fork_target.forked_project_link).not_to be_nil
         expect(project_fork_target.forked?).to be_truthy
+      end
+
+      it 'refreshes the forks count cachce' do
+        expect(project_fork_source.forks_count).to be_zero
+
+        post v3_api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
+
+        expect(project_fork_source.forks_count).to eq(1)
       end
 
       it 'fails if forked_from project which does not exist' do

@@ -30,7 +30,7 @@ class CleanupNamespacelessPendingDeleteProjects < ActiveRecord::Migration
   private
 
   def pending_delete_batch
-    connection.exec_query(find_batch).map{ |row| row['id'].to_i }
+    connection.exec_query(find_batch).map { |row| row['id'].to_i }
   end
 
   BATCH_SIZE = 5000

@@ -8,7 +8,17 @@ describe PipelineQueue do
     end
   end
 
-  it 'sets the queue name of a worker' do
-    expect(worker.sidekiq_options['queue'].to_s).to eq('pipeline')
+  it 'sets a default pipelines queue automatically' do
+    expect(worker.sidekiq_options['queue'])
+      .to eq 'pipeline_default'
+  end
+
+  describe '.enqueue_in' do
+    it 'sets a custom sidekiq queue with prefix and group' do
+      worker.enqueue_in(group: :processing)
+
+      expect(worker.sidekiq_options['queue'])
+        .to eq 'pipeline_processing'
+    end
   end
 end

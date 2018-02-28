@@ -20,6 +20,9 @@ module ButtonHelper
   def clipboard_button(data = {})
     css_class = data[:class] || 'btn-clipboard btn-transparent'
     title = data[:title] || 'Copy to clipboard'
+    button_text = data[:button_text] || ''
+    hide_tooltip = data[:hide_tooltip] || false
+    hide_button_icon = data[:hide_button_icon] || false
 
     # This supports code in app/assets/javascripts/copy_to_clipboard.js that
     # works around ClipboardJS limitations to allow the context-specific copy/pasting of plain text or GFM.
@@ -35,17 +38,22 @@ module ButtonHelper
     target = data.delete(:target)
     data[:clipboard_target] = target if target
 
-    data = { toggle: 'tooltip', placement: 'bottom', container: 'body' }.merge(data)
+    unless hide_tooltip
+      data = { toggle: 'tooltip', placement: 'bottom', container: 'body' }.merge(data)
+    end
 
-    content_tag :button,
-      icon('clipboard', 'aria-hidden': 'true'),
+    button_attributes = {
       class: "btn #{css_class}",
       data: data,
       type: :button,
       title: title,
-      aria: {
-        label: title
-      }
+      aria: { label: title }
+    }
+
+    content_tag :button, button_attributes do
+      concat(icon('clipboard', 'aria-hidden': 'true')) unless hide_button_icon
+      concat(button_text)
+    end
   end
 
   def http_clone_button(project, placement = 'right', append_link: true)

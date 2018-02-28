@@ -5,6 +5,7 @@ describe ApplicationSetting do
 
   it { expect(setting).to be_valid }
   it { expect(setting.uuid).to be_present }
+  it { expect(setting).to have_db_column(:auto_devops_enabled) }
 
   describe 'validations' do
     let(:http)  { 'http://example.com' }
@@ -70,6 +71,33 @@ describe ApplicationSetting do
       is_expected.to validate_numericality_of(:max_attachment_size)
         .only_integer
         .is_greater_than(0)
+    end
+
+    context 'key restrictions' do
+      it 'supports all key types' do
+        expect(described_class::SUPPORTED_KEY_TYPES).to contain_exactly(:rsa, :dsa, :ecdsa, :ed25519)
+      end
+
+      it 'does not allow all key types to be disabled' do
+        described_class::SUPPORTED_KEY_TYPES.each do |type|
+          setting["#{type}_key_restriction"] = described_class::FORBIDDEN_KEY_VALUE
+        end
+
+        expect(setting).not_to be_valid
+        expect(setting.errors.messages).to have_key(:allowed_key_types)
+      end
+
+      where(:type) do
+        described_class::SUPPORTED_KEY_TYPES
+      end
+
+      with_them do
+        let(:field) { :"#{type}_key_restriction" }
+
+        it { is_expected.to validate_presence_of(field) }
+        it { is_expected.to allow_value(*KeyRestrictionValidator.supported_key_restrictions(type)).for(field) }
+        it { is_expected.not_to allow_value(128).for(field) }
+      end
     end
 
     it_behaves_like 'an object with email-formated attributes', :admin_notification_email do
@@ -439,6 +467,38 @@ describe ApplicationSetting do
           expect(setting.usage_ping_enabled).to be_truthy
         end
       end
+    end
+  end
+
+  describe '#allowed_key_types' do
+    it 'includes all key types by default' do
+      expect(setting.allowed_key_types).to contain_exactly(*described_class::SUPPORTED_KEY_TYPES)
+    end
+
+    it 'excludes disabled key types' do
+      expect(setting.allowed_key_types).to include(:ed25519)
+
+      setting.ed25519_key_restriction = described_class::FORBIDDEN_KEY_VALUE
+
+      expect(setting.allowed_key_types).not_to include(:ed25519)
+    end
+  end
+
+  describe '#key_restriction_for' do
+    it 'returns the restriction value for recognised types' do
+      setting.rsa_key_restriction = 1024
+
+      expect(setting.key_restriction_for(:rsa)).to eq(1024)
+    end
+
+    it 'allows types to be passed as a string' do
+      setting.rsa_key_restriction = 1024
+
+      expect(setting.key_restriction_for('rsa')).to eq(1024)
+    end
+
+    it 'returns forbidden for unrecognised type' do
+      expect(setting.key_restriction_for(:foo)).to eq(described_class::FORBIDDEN_KEY_VALUE)
     end
   end
 end

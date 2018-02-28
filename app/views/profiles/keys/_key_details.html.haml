@@ -16,6 +16,7 @@
           %strong= @key.last_used_at.try(:to_s, :medium) || 'N/A'
 
   .col-md-8
+    = form_errors(@key, type: 'key') unless @key.valid?
     %p
       %span.light Fingerprint:
       %code.key-fingerprint= @key.fingerprint

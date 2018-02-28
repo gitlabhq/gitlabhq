@@ -90,9 +90,14 @@ module Gitlab
     #
     # Returns an array of completed JIDs
     def self.completed_jids(job_ids)
-      Sidekiq.redis do |redis|
-        job_ids.reject { |jid| redis.exists(key_for(jid)) }
+      statuses = job_status(job_ids)
+
+      completed = []
+      job_ids.zip(statuses).each do |job_id, status|
+        completed << job_id unless status
       end
+
+      completed
     end
 
     def self.key_for(jid)

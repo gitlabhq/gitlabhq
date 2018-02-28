@@ -2,6 +2,7 @@
 import axios from 'axios';
 import Store from '../stores/repo_store';
 import Api from '../../api';
+import Helper from '../helpers/repo_helper';
 
 const RepoService = {
   url: '',
@@ -12,16 +13,9 @@ const RepoService = {
   },
   richExtensionRegExp: /md/,
 
-  checkCurrentBranchIsCommitable() {
-    const url = Store.service.refsUrl;
-    return axios.get(url, { params: {
-      ref: Store.currentBranch,
-      search: Store.currentBranch,
-    } });
-  },
-
   getRaw(url) {
     return axios.get(url, {
+      // Stop Axios from parsing a JSON file into a JS object
       transformResponse: [res => res],
     });
   },
@@ -36,7 +30,7 @@ const RepoService = {
   },
 
   urlIsRichBlob(url = this.url) {
-    const extension = url.split('.').pop();
+    const extension = Helper.getFileExtension(url);
 
     return this.richExtensionRegExp.test(extension);
   },
@@ -71,11 +65,17 @@ const RepoService = {
     return urlArray.join('/');
   },
 
-  commitFiles(payload, cb) {
-    Api.commitMultiple(Store.projectId, payload, (data) => {
-      Flash(`Your changes have been committed. Commit ${data.short_id} with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`, 'notice');
-      cb();
-    });
+  commitFiles(payload) {
+    return Api.commitMultiple(Store.projectId, payload)
+      .then(this.commitFlash);
+  },
+
+  commitFlash(data) {
+    if (data.short_id && data.stats) {
+      window.Flash(`Your changes have been committed. Commit ${data.short_id} with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`, 'notice');
+    } else {
+      window.Flash(data.message);
+    }
   },
 };
 

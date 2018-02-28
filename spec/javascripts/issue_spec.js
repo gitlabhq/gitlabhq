@@ -118,7 +118,7 @@ describe('Issue', function() {
 
         this.$triggeredButton = $btn;
 
-        this.$projectIssuesCounter = $('.issue_counter');
+        this.$projectIssuesCounter = $('.issue_counter').first();
         this.$projectIssuesCounter.text('1,001');
 
         this.issueStateDeferred = new jQuery.Deferred();

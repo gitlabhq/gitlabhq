@@ -11,6 +11,8 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
     before do
       project.team << [user, :master]
       allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
+      allow_any_instance_of(MergeRequest).to receive(:source_branch_sha).and_return('ABCD')
+      allow_any_instance_of(MergeRequest).to receive(:target_branch_sha).and_return('DCBA')
     end
 
     after do
@@ -41,6 +43,14 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
 
       it 'has merge request\'s milestones' do
         expect(saved_project_json['merge_requests'].first['milestone']).not_to be_empty
+      end
+
+      it 'has merge request\'s source branch SHA' do
+        expect(saved_project_json['merge_requests'].first['source_branch_sha']).to eq('ABCD')
+      end
+
+      it 'has merge request\'s target branch SHA' do
+        expect(saved_project_json['merge_requests'].first['target_branch_sha']).to eq('DCBA')
       end
 
       it 'has events' do
@@ -105,6 +115,13 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
 
       it 'has pipeline builds' do
         expect(saved_project_json['pipelines'].first['statuses'].count { |hash| hash['type'] == 'Ci::Build' }).to eq(1)
+      end
+
+      it 'has no when YML attributes but only the DB column' do
+        allow_any_instance_of(Ci::Pipeline).to receive(:ci_yaml_file).and_return(File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml')))
+        expect_any_instance_of(Ci::GitlabCiYamlProcessor).not_to receive(:build_attributes)
+
+        saved_project_json
       end
 
       it 'has pipeline commits' do
@@ -241,15 +258,11 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
     create(:label_priority, label: group_label, priority: 1)
     milestone = create(:milestone, project: project)
     merge_request = create(:merge_request, source_project: project, milestone: milestone)
-    commit_status = create(:commit_status, project: project)
 
-    ci_pipeline = create(:ci_pipeline,
-                         project: project,
-                         sha: merge_request.diff_head_sha,
-                         ref: merge_request.source_branch,
-                         statuses: [commit_status])
+    ci_build = create(:ci_build, project: project, when: nil)
+    ci_build.pipeline.update(project: project)
+    create(:commit_status, project: project, pipeline: ci_build.pipeline)
 
-    create(:ci_build, pipeline: ci_pipeline, project: project)
     create(:milestone, project: project)
     create(:note, noteable: issue, project: project)
     create(:note, noteable: merge_request, project: project)
@@ -257,7 +270,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
     create(:note_on_commit,
            author: user,
            project: project,
-           commit_id: ci_pipeline.sha)
+           commit_id: ci_build.pipeline.sha)
 
     create(:event, :created, target: milestone, project: project, author: user)
     create(:service, project: project, type: 'CustomIssueTrackerService', category: 'issue_tracker')

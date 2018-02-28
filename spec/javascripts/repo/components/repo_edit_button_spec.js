@@ -12,18 +12,22 @@ describe('RepoEditButton', () => {
   it('renders an edit button that toggles the view state', (done) => {
     RepoStore.isCommitable = true;
     RepoStore.changedFiles = [];
+    RepoStore.binary = false;
+    RepoStore.openedFiles = [{}, {}];
 
     const vm = createComponent();
 
     expect(vm.$el.tagName).toEqual('BUTTON');
     expect(vm.$el.textContent).toMatch('Edit');
 
-    spyOn(vm, 'editClicked').and.callThrough();
+    spyOn(vm, 'editCancelClicked').and.callThrough();
+    spyOn(vm, 'toggleProjectRefsForm');
 
     vm.$el.click();
 
     Vue.nextTick(() => {
-      expect(vm.editClicked).toHaveBeenCalled();
+      expect(vm.editCancelClicked).toHaveBeenCalled();
+      expect(vm.toggleProjectRefsForm).toHaveBeenCalled();
       expect(vm.$el.textContent).toMatch('Cancel edit');
       done();
     });
@@ -38,14 +42,10 @@ describe('RepoEditButton', () => {
   });
 
   describe('methods', () => {
-    describe('editClicked', () => {
-      it('sets dialog to open when there are changedFiles', () => {
+    describe('editCancelClicked', () => {
+      it('sets dialog to open when there are changedFiles');
 
-      });
-
-      it('toggles editMode and calls toggleBlobView', () => {
-
-      });
+      it('toggles editMode and calls toggleBlobView');
     });
   });
 });

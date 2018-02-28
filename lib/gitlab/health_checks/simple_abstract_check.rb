@@ -5,7 +5,7 @@ module Gitlab
 
       def readiness
         check_result = check
-        if is_successful?(check_result)
+        if successful?(check_result)
           HealthChecks::Result.new(true)
         elsif check_result.is_a?(Timeout::Error)
           HealthChecks::Result.new(false, "#{human_name} check timed out")
@@ -16,10 +16,10 @@ module Gitlab
 
       def metrics
         result, elapsed = with_timing(&method(:check))
-        Rails.logger.error("#{human_name} check returned unexpected result #{result}") unless is_successful?(result)
+        Rails.logger.error("#{human_name} check returned unexpected result #{result}") unless successful?(result)
         [
           metric("#{metric_prefix}_timeout", result.is_a?(Timeout::Error) ? 1 : 0),
-          metric("#{metric_prefix}_success", is_successful?(result) ? 1 : 0),
+          metric("#{metric_prefix}_success", successful?(result) ? 1 : 0),
           metric("#{metric_prefix}_latency_seconds", elapsed)
         ]
       end
@@ -30,7 +30,7 @@ module Gitlab
         raise NotImplementedError
       end
 
-      def is_successful?(result)
+      def successful?(result)
         raise NotImplementedError
       end
 

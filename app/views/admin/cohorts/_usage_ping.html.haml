@@ -7,4 +7,4 @@
     = succeed '.' do
       = link_to 'application settings', admin_application_settings_path(anchor: 'usage-statistics')
 
-%pre.usage-data.js-syntax-highlight.code.highlight{ data: { endpoint: usage_data_admin_application_settings_path(format: :html, pretty: true) } }
+%pre.usage-data.js-syntax-highlight.code.highlight{ data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }

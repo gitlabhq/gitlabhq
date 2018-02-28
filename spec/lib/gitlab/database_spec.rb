@@ -51,6 +51,28 @@ describe Gitlab::Database do
     end
   end
 
+  describe '.join_lateral_supported?' do
+    it 'returns false when using MySQL' do
+      allow(described_class).to receive(:postgresql?).and_return(false)
+
+      expect(described_class.join_lateral_supported?).to eq(false)
+    end
+
+    it 'returns false when using PostgreSQL 9.2' do
+      allow(described_class).to receive(:postgresql?).and_return(true)
+      allow(described_class).to receive(:version).and_return('9.2.1')
+
+      expect(described_class.join_lateral_supported?).to eq(false)
+    end
+
+    it 'returns true when using PostgreSQL 9.3.0 or newer' do
+      allow(described_class).to receive(:postgresql?).and_return(true)
+      allow(described_class).to receive(:version).and_return('9.3.0')
+
+      expect(described_class.join_lateral_supported?).to eq(true)
+    end
+  end
+
   describe '.nulls_last_order' do
     context 'when using PostgreSQL' do
       before do

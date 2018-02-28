@@ -31,6 +31,10 @@ module JavaScriptFixturesHelpers
     File.write(fixture_file_name, fixture)
   end
 
+  def remove_repository(project)
+    Gitlab::Shell.new.remove_repository(project.repository_storage_path, project.disk_path)
+  end
+
   private
 
   # Private: Prepare a response object for use as a frontend fixture

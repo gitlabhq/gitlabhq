@@ -281,6 +281,12 @@ describe WikiPage do
       @page.title = "Import-existing-repositories-into-GitLab"
       expect(@page.title).to eq("Import existing repositories into GitLab")
     end
+
+    it 'unescapes html' do
+      @page.title = 'foo &amp; bar'
+
+      expect(@page.title).to eq('foo & bar')
+    end
   end
 
   describe '#directory' do

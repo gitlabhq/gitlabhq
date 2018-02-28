@@ -58,6 +58,11 @@ class FilteredSearchDropdownManager {
         },
         element: this.container.querySelector('#js-dropdown-label'),
       },
+      'my-reaction': {
+        reference: null,
+        gl: 'DropdownEmoji',
+        element: this.container.querySelector('#js-dropdown-my-reaction'),
+      },
       hint: {
         reference: null,
         gl: 'DropdownHint',

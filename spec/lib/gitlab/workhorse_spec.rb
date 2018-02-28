@@ -202,7 +202,6 @@ describe Gitlab::Workhorse do
     context 'when Gitaly is enabled' do
       let(:gitaly_params) do
         {
-          GitalyAddress: Gitlab::GitalyClient.address('default'),
           GitalyServer: {
             address: Gitlab::GitalyClient.address('default'),
             token: Gitlab::GitalyClient.token('default')
@@ -217,7 +216,9 @@ describe Gitlab::Workhorse do
       it 'includes a Repository param' do
         repo_param = { Repository: {
           storage_name: 'default',
-          relative_path: project.full_path + '.git'
+          relative_path: project.full_path + '.git',
+          git_object_directory: '',
+          git_alternate_object_directories: []
         } }
 
         expect(subject).to include(repo_param)
@@ -227,21 +228,10 @@ describe Gitlab::Workhorse do
         let(:action) { 'git_upload_pack' }
         let(:feature_flag) { :post_upload_pack }
 
-        context 'when action is enabled by feature flag' do
-          it 'includes Gitaly params in the returned value' do
-            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(feature_flag).and_return(true)
+        it 'includes Gitaly params in the returned value' do
+          allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(feature_flag).and_return(true)
 
-            expect(subject).to include(gitaly_params)
-          end
-        end
-
-        context 'when action is not enabled by feature flag' do
-          it 'does not include Gitaly params in the returned value' do
-            status_opt_out = Gitlab::GitalyClient::MigrationStatus::OPT_OUT
-            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(feature_flag, status: status_opt_out).and_return(false)
-
-            expect(subject).not_to include(gitaly_params)
-          end
+          expect(subject).to include(gitaly_params)
         end
       end
 

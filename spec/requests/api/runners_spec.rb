@@ -36,7 +36,7 @@ describe API::Runners do
       it 'returns user available runners' do
         get api('/runners', user)
 
-        shared = json_response.any?{ |r| r['is_shared'] }
+        shared = json_response.any? { |r| r['is_shared'] }
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
@@ -46,7 +46,7 @@ describe API::Runners do
       it 'filters runners by scope' do
         get api('/runners?scope=active', user)
 
-        shared = json_response.any?{ |r| r['is_shared'] }
+        shared = json_response.any? { |r| r['is_shared'] }
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
@@ -74,7 +74,7 @@ describe API::Runners do
         it 'returns all runners' do
           get api('/runners/all', admin)
 
-          shared = json_response.any?{ |r| r['is_shared'] }
+          shared = json_response.any? { |r| r['is_shared'] }
           expect(response).to have_http_status(200)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
@@ -93,7 +93,7 @@ describe API::Runners do
       it 'filters runners by scope' do
         get api('/runners/all?scope=specific', admin)
 
-        shared = json_response.any?{ |r| r['is_shared'] }
+        shared = json_response.any? { |r| r['is_shared'] }
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
@@ -191,7 +191,8 @@ describe API::Runners do
                                                  active: !active,
                                                  tag_list: ['ruby2.1', 'pgsql', 'mysql'],
                                                  run_untagged: 'false',
-                                                 locked: 'true')
+                                                 locked: 'true',
+                                                 access_level: 'ref_protected')
           shared_runner.reload
 
           expect(response).to have_http_status(200)
@@ -200,6 +201,7 @@ describe API::Runners do
           expect(shared_runner.tag_list).to include('ruby2.1', 'pgsql', 'mysql')
           expect(shared_runner.run_untagged?).to be(false)
           expect(shared_runner.locked?).to be(true)
+          expect(shared_runner.ref_protected?).to be_truthy
           expect(shared_runner.ensure_runner_queue_value)
             .not_to eq(runner_queue_value)
         end
@@ -277,7 +279,11 @@ describe API::Runners do
             delete api("/runners/#{shared_runner.id}", admin)
 
             expect(response).to have_http_status(204)
-          end.to change{ Ci::Runner.shared.count }.by(-1)
+          end.to change { Ci::Runner.shared.count }.by(-1)
+        end
+
+        it_behaves_like '412 response' do
+          let(:request) { api("/runners/#{shared_runner.id}", admin) }
         end
       end
 
@@ -287,7 +293,7 @@ describe API::Runners do
             delete api("/runners/#{unused_specific_runner.id}", admin)
 
             expect(response).to have_http_status(204)
-          end.to change{ Ci::Runner.specific.count }.by(-1)
+          end.to change { Ci::Runner.specific.count }.by(-1)
         end
 
         it 'deletes used runner' do
@@ -295,7 +301,7 @@ describe API::Runners do
             delete api("/runners/#{specific_runner.id}", admin)
 
             expect(response).to have_http_status(204)
-          end.to change{ Ci::Runner.specific.count }.by(-1)
+          end.to change { Ci::Runner.specific.count }.by(-1)
         end
       end
 
@@ -330,7 +336,11 @@ describe API::Runners do
             delete api("/runners/#{specific_runner.id}", user)
 
             expect(response).to have_http_status(204)
-          end.to change{ Ci::Runner.specific.count }.by(-1)
+          end.to change { Ci::Runner.specific.count }.by(-1)
+        end
+
+        it_behaves_like '412 response' do
+          let(:request) { api("/runners/#{specific_runner.id}", user) }
         end
       end
     end
@@ -349,7 +359,7 @@ describe API::Runners do
       it "returns project's runners" do
         get api("/projects/#{project.id}/runners", user)
 
-        shared = json_response.any?{ |r| r['is_shared'] }
+        shared = json_response.any? { |r| r['is_shared'] }
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
@@ -385,14 +395,14 @@ describe API::Runners do
       it 'enables specific runner' do
         expect do
           post api("/projects/#{project.id}/runners", user), runner_id: specific_runner2.id
-        end.to change{ project.runners.count }.by(+1)
+        end.to change { project.runners.count }.by(+1)
         expect(response).to have_http_status(201)
       end
 
       it 'avoids changes when enabling already enabled runner' do
         expect do
           post api("/projects/#{project.id}/runners", user), runner_id: specific_runner.id
-        end.to change{ project.runners.count }.by(0)
+        end.to change { project.runners.count }.by(0)
         expect(response).to have_http_status(409)
       end
 
@@ -401,7 +411,7 @@ describe API::Runners do
 
         expect do
           post api("/projects/#{project.id}/runners", user), runner_id: specific_runner2.id
-        end.to change{ project.runners.count }.by(0)
+        end.to change { project.runners.count }.by(0)
 
         expect(response).to have_http_status(403)
       end
@@ -416,7 +426,7 @@ describe API::Runners do
         it 'enables any specific runner' do
           expect do
             post api("/projects/#{project.id}/runners", admin), runner_id: unused_specific_runner.id
-          end.to change{ project.runners.count }.by(+1)
+          end.to change { project.runners.count }.by(+1)
           expect(response).to have_http_status(201)
         end
       end
@@ -461,7 +471,11 @@ describe API::Runners do
             delete api("/projects/#{project.id}/runners/#{two_projects_runner.id}", user)
 
             expect(response).to have_http_status(204)
-          end.to change{ project.runners.count }.by(-1)
+          end.to change { project.runners.count }.by(-1)
+        end
+
+        it_behaves_like '412 response' do
+          let(:request) { api("/projects/#{project.id}/runners/#{two_projects_runner.id}", user) }
         end
       end
 
@@ -469,7 +483,7 @@ describe API::Runners do
         it "does not disable project's runner" do
           expect do
             delete api("/projects/#{project.id}/runners/#{specific_runner.id}", user)
-          end.to change{ project.runners.count }.by(0)
+          end.to change { project.runners.count }.by(0)
           expect(response).to have_http_status(403)
         end
       end

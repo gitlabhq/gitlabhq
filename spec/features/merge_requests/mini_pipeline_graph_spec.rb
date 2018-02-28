@@ -70,7 +70,7 @@ feature 'Mini Pipeline Graph', :js do
     it 'should show tooltip when hovered' do
       toggle.hover
 
-      expect(toggle.find(:xpath, '..')).to have_selector('.tooltip')
+      expect(page).to have_selector('.tooltip')
     end
   end
 
@@ -117,7 +117,7 @@ feature 'Mini Pipeline Graph', :js do
       it 'should show tooltip when hovered' do
         build_item.hover
 
-        expect(build_item.find(:xpath, '..')).to have_selector('.tooltip')
+        expect(page).to have_selector('.tooltip')
       end
     end
   end

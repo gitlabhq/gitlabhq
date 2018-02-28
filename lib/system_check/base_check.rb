@@ -62,6 +62,25 @@ module SystemCheck
       call_or_return(@skip_reason) || 'skipped'
     end
 
+    # Define a reason why we skipped the SystemCheck (during runtime)
+    #
+    # This is used when you need dynamic evaluation like when you have
+    # multiple reasons why a check can fail
+    #
+    # @param [String] reason to be displayed
+    def skip_reason=(reason)
+      @skip_reason = reason
+    end
+
+    # Skip reason defined during runtime
+    #
+    # This value have precedence over the one defined in the subclass
+    #
+    # @return [String] the reason
+    def skip_reason
+      @skip_reason
+    end
+
     # Does the check support automatically repair routine?
     #
     # @return [Boolean] whether check implemented `#repair!` method or not
@@ -73,7 +92,7 @@ module SystemCheck
       self.class.instance_methods(false).include?(:skip?)
     end
 
-    def is_multi_check?
+    def multi_check?
       self.class.instance_methods(false).include?(:multi_check)
     end
 

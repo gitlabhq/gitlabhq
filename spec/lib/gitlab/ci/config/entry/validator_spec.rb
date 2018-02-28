@@ -48,7 +48,7 @@ describe Gitlab::Ci::Config::Entry::Validator do
         validator_instance.validate
 
         expect(validator_instance.messages)
-          .to include "node test attribute can't be blank"
+          .to include /test attribute can't be blank/
       end
     end
   end

@@ -23,6 +23,7 @@ describe('RepoFileButtons', () => {
     RepoStore.activeFile = activeFile;
     RepoStore.activeFileLabel = activeFileLabel;
     RepoStore.editMode = true;
+    RepoStore.binary = false;
 
     const vm = createComponent();
     const raw = vm.$el.querySelector('.raw');
@@ -31,13 +32,13 @@ describe('RepoFileButtons', () => {
 
     expect(vm.$el.id).toEqual('repo-file-buttons');
     expect(raw.href).toMatch(`/${activeFile.raw_path}`);
-    expect(raw.textContent).toEqual('Raw');
+    expect(raw.textContent.trim()).toEqual('Raw');
     expect(blame.href).toMatch(`/${activeFile.blame_path}`);
-    expect(blame.textContent).toEqual('Blame');
+    expect(blame.textContent.trim()).toEqual('Blame');
     expect(history.href).toMatch(`/${activeFile.commits_path}`);
-    expect(history.textContent).toEqual('History');
-    expect(vm.$el.querySelector('.permalink').textContent).toEqual('Permalink');
-    expect(vm.$el.querySelector('.preview').textContent).toEqual(activeFileLabel);
+    expect(history.textContent.trim()).toEqual('History');
+    expect(vm.$el.querySelector('.permalink').textContent.trim()).toEqual('Permalink');
+    expect(vm.$el.querySelector('.preview').textContent.trim()).toEqual(activeFileLabel);
   });
 
   it('triggers rawPreviewToggle on preview click', () => {
@@ -70,13 +71,5 @@ describe('RepoFileButtons', () => {
     const vm = createComponent();
 
     expect(vm.$el.querySelector('.preview')).toBeFalsy();
-  });
-
-  it('does not render if not isMini', () => {
-    RepoStore.openedFiles = [];
-
-    const vm = createComponent();
-
-    expect(vm.$el.innerHTML).toBeFalsy();
   });
 });

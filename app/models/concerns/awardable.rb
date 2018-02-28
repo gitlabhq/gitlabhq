@@ -11,6 +11,21 @@ module Awardable
   end
 
   module ClassMethods
+    def awarded(user, name)
+      sql = <<~EOL
+        EXISTS (
+          SELECT TRUE
+          FROM award_emoji
+          WHERE user_id = :user_id AND
+                name = :name AND
+                awardable_type = :awardable_type AND
+                awardable_id = #{self.arel_table.name}.id
+        )
+      EOL
+
+      where(sql, user_id: user.id, name: name, awardable_type: self.name)
+    end
+
     def order_upvotes_desc
       order_votes_desc(AwardEmoji::UPVOTE_NAME)
     end

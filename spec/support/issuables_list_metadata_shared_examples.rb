@@ -2,12 +2,12 @@ shared_examples 'issuables list meta-data' do |issuable_type, action = nil|
   before do
     @issuable_ids = []
 
-    2.times do |n|
+    %w[fix improve/awesome].each do |source_branch|
       issuable =
         if issuable_type == :issue
           create(issuable_type, project: project)
         else
-          create(issuable_type, source_project: project, source_branch: "#{n}-feature")
+          create(issuable_type, source_project: project, source_branch: source_branch)
         end
 
       @issuable_ids << issuable.id

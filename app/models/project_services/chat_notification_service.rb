@@ -101,9 +101,9 @@ class ChatNotificationService < Service
     when "push", "tag_push"
       ChatMessage::PushMessage.new(data)
     when "issue"
-      ChatMessage::IssueMessage.new(data) unless is_update?(data)
+      ChatMessage::IssueMessage.new(data) unless update?(data)
     when "merge_request"
-      ChatMessage::MergeMessage.new(data) unless is_update?(data)
+      ChatMessage::MergeMessage.new(data) unless update?(data)
     when "note"
       ChatMessage::NoteMessage.new(data)
     when "pipeline"
@@ -115,7 +115,7 @@ class ChatNotificationService < Service
 
   def get_channel_field(event)
     field_name = event_channel_name(event)
-    self.public_send(field_name)
+    self.public_send(field_name) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def build_event_channels
@@ -136,7 +136,7 @@ class ChatNotificationService < Service
     project.web_url
   end
 
-  def is_update?(data)
+  def update?(data)
     data[:object_attributes][:action] == 'update'
   end
 

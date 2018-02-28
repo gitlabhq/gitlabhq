@@ -1,5 +1,4 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, quotes, consistent-return, prefer-arrow-callback, comma-dangle, object-shorthand, no-new, max-len, no-multi-spaces, import/newline-after-import, import/first */
-/* global bp */
 /* global Flash */
 /* global ConfirmDangerModal */
 /* global Aside */
@@ -7,7 +6,6 @@
 import jQuery from 'jquery';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
-import Pikaday from 'pikaday';
 import Dropzone from 'dropzone';
 import Sortable from 'vendor/Sortable';
 
@@ -20,7 +18,6 @@ import 'vendor/fuzzaldrin-plus';
 window.jQuery = jQuery;
 window.$ = jQuery;
 window._ = _;
-window.Pikaday = Pikaday;
 window.Dropzone = Dropzone;
 window.Sortable = Sortable;
 
@@ -68,7 +65,7 @@ import './api';
 import './aside';
 import './autosave';
 import loadAwardsHandler from './awards_handler';
-import './breakpoints';
+import bp from './breakpoints';
 import './broadcast_message';
 import './build';
 import './build_artifacts';
@@ -105,6 +102,7 @@ import './label_manager';
 import './labels';
 import './labels_select';
 import './layout_nav';
+import './feature_highlight/feature_highlight_options';
 import LazyLoader from './lazy_loader';
 import './line_highlighter';
 import './logo';
@@ -134,9 +132,11 @@ import './project_new';
 import './project_select';
 import './project_show';
 import './project_variables';
+import './projects_dropdown';
 import './projects_list';
-import './render_gfm';
+import './syntax_highlight';
 import './render_math';
+import './render_gfm';
 import './right_sidebar';
 import './search';
 import './search_autocomplete';
@@ -144,7 +144,7 @@ import './smart_interval';
 import './star';
 import './subscription';
 import './subscription_select';
-import './syntax_highlight';
+import initBreadcrumbs from './breadcrumb';
 
 import './dispatcher';
 
@@ -181,6 +181,8 @@ $(function () {
   var $flash = $('.flash-container');
   var bootstrapBreakpoint = bp.getBreakpointSize();
   var fitSidebarForSize;
+
+  initBreadcrumbs();
 
   // Set the default path for all cookies to GitLab's root directory
   Cookies.defaults.path = gon.relative_url_root || '/';
@@ -251,7 +253,10 @@ $(function () {
   // Initialize popovers
   $body.popover({
     selector: '[data-toggle="popover"]',
-    trigger: 'focus'
+    trigger: 'focus',
+    // set the viewport to the main content, excluding the navigation bar, so
+    // the navigation can't overlap the popover
+    viewport: '.page-with-sidebar'
   });
   $('.trigger-submit').on('change', function () {
     return $(this).parents('form').submit();

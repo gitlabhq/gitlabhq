@@ -36,7 +36,7 @@ describe HipchatService do
       Gitlab::DataBuilder::Push.build_sample(project, user)
     end
 
-    before(:each) do
+    before do
       allow(hipchat).to receive_messages(
         project_id: project.id,
         project: project,

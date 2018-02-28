@@ -33,6 +33,15 @@ describe API::Files do
         expect(Base64.decode64(json_response['content']).lines.first).to eq("require 'fileutils'\n")
       end
 
+      it 'returns json when file has txt extension' do
+        file_path = "bar%2Fbranch-test.txt"
+
+        get api(route(file_path), current_user), params
+
+        expect(response).to have_http_status(200)
+        expect(response.content_type).to eq('application/json')
+      end
+
       it 'returns file by commit sha' do
         # This file is deleted on HEAD
         file_path = "files%2Fjs%2Fcommit%2Ejs%2Ecoffee"
@@ -109,6 +118,15 @@ describe API::Files do
     shared_examples_for 'repository raw files' do
       it 'returns raw file info' do
         url = route(file_path) + "/raw"
+        expect(Gitlab::Workhorse).to receive(:send_git_blob)
+
+        get api(url, current_user), params
+
+        expect(response).to have_http_status(200)
+      end
+
+      it 'returns raw file info for files with dots' do
+        url = route('.gitignore') + "/raw"
         expect(Gitlab::Workhorse).to receive(:send_git_blob)
 
         get api(url, current_user), params
@@ -206,7 +224,7 @@ describe API::Files do
 
     it "returns a 400 if editor fails to create file" do
       allow_any_instance_of(Repository).to receive(:create_file)
-        .and_raise(Repository::CommitError, 'Cannot create file')
+        .and_raise(Gitlab::Git::CommitError, 'Cannot create file')
 
       post api(route("any%2Etxt"), user), valid_params
 
@@ -220,6 +238,7 @@ describe API::Files do
         post api(route("new_file_with_author%2Etxt"), user), valid_params
 
         expect(response).to have_http_status(201)
+        expect(response.content_type).to eq('application/json')
         last_commit = project.repository.commit.raw
         expect(last_commit.author_email).to eq(author_email)
         expect(last_commit.author_name).to eq(author_name)
@@ -320,7 +339,7 @@ describe API::Files do
     end
 
     it "returns a 400 if fails to delete file" do
-      allow_any_instance_of(Repository).to receive(:delete_file).and_raise(Repository::CommitError, 'Cannot delete file')
+      allow_any_instance_of(Repository).to receive(:delete_file).and_raise(Gitlab::Git::CommitError, 'Cannot delete file')
 
       delete api(route(file_path), user), valid_params
 

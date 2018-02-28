@@ -10,6 +10,14 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
   end
 
+  if Gitlab::LDAP::Config.enabled?
+    Gitlab::LDAP::Config.available_servers.each do |server|
+      define_method server['provider_name'] do
+        ldap
+      end
+    end
+  end
+
   # Extend the standard message generation to accept our custom exception
   def failure_message
     exception = env["omniauth.error"]
@@ -142,13 +150,13 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def oauth
     @oauth ||= request.env['omniauth.auth']
   end
-  
+
   def fail_login
     error_message = @user.errors.full_messages.to_sentence
 
     return redirect_to omniauth_error_path(oauth['provider'], error: error_message)
   end
-  
+
   def fail_ldap_login
     flash[:alert] = 'Access denied for your LDAP account.'
 

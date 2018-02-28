@@ -40,9 +40,10 @@
               %li
                 = link_to 'Remove user', admin_user_path(user),
                     data: { confirm: "USER #{user.name} WILL BE REMOVED! Are you sure?" },
+                    class: 'text-danger',
                     method: :delete
             %li
               = link_to 'Remove user and contributions', admin_user_path(user, hard_delete: true),
                   data: { confirm: "USER #{user.name} WILL BE REMOVED! All issues, merge requests and comments authored by this user, and groups owned solely by them, will also be removed! Are you sure?" },
-                  class: 'btn btn-remove btn-block',
+                  class: 'text-danger',
                   method: :delete

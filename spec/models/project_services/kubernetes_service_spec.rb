@@ -38,7 +38,8 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
           'a' * 63 => true,
           'a' * 64 => false,
           'a.b' => false,
-          'a*b' => false
+          'a*b' => false,
+          'FOO' => true
         }.each do |namespace, validity|
           it "validates #{namespace} as #{validity ? 'valid' : 'invalid'}" do
             subject.namespace = namespace
@@ -202,17 +203,12 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
 
   describe '#predefined_variables' do
     let(:kubeconfig) do
-      config =
-        YAML.load(File.read(expand_fixture_path('config/kubeconfig.yml')))
-
-      config.dig('users', 0, 'user')['token'] =
-        'token'
-
+      config_file = expand_fixture_path('config/kubeconfig.yml')
+      config = YAML.load(File.read(config_file))
+      config.dig('users', 0, 'user')['token'] = 'token'
+      config.dig('contexts', 0, 'context')['namespace'] = namespace
       config.dig('clusters', 0, 'cluster')['certificate-authority-data'] =
         Base64.encode64('CA PEM DATA')
-
-      config.dig('contexts', 0, 'context')['namespace'] =
-        namespace
 
       YAML.dump(config)
     end

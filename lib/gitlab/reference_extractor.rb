@@ -45,7 +45,7 @@ module Gitlab
     end
 
     def all
-      REFERABLES.each { |referable| send(referable.to_s.pluralize) }
+      REFERABLES.each { |referable| send(referable.to_s.pluralize) } # rubocop:disable GitlabSecurity/PublicSend
       @references.values.flatten
     end
 

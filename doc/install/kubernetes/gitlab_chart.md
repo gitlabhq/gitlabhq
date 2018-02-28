@@ -1,9 +1,9 @@
 # GitLab Helm Chart
-> Officially supported cloud providers are Google Container Service and Azure Container Service.
+> **Note:**
+* > **Note**: This chart will be replaced by the [gitlab-omnibus](gitlab_omnibus.md) chart, once it supports [additional configuration options](https://gitlab.com/charts/charts.gitlab.io/issues/68).
+* Officially supported cloud providers are Google Container Service and Azure Container Service.
 
-> Officially supported schedulers are Kubernetes and Terraform.
-
-The `gitlab` Helm chart deploys GitLab into your Kubernetes cluster.
+The `gitlab` Helm chart deploys just GitLab into your Kubernetes cluster, and offers extensive configuration options. For most deployments we recommended the [gitlab-omnibus](gitlab_omnibus.md) chart,
 
 This chart includes the following:
 
@@ -22,9 +22,7 @@ This chart includes the following:
 - [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) provisioner support in the underlying infrastructure
 - The ability to point a DNS entry or URL at your GitLab install
 - The `kubectl` CLI installed locally and authenticated for the cluster
-- The Helm Client installed locally
-- The Helm Server (Tiller) already installed and running in the cluster, by running `helm init`
-- The GitLab Helm Repo [added to your Helm Client](index.md#add-the-gitlab-helm-repository)
+- The [Helm client](https://github.com/kubernetes/helm/blob/master/docs/quickstart.md) installed locally on your machine
 
 ## Configuring GitLab
 
@@ -207,7 +205,7 @@ its class in an annotation.
 >**Note:**
 The Ingress alone doesn't expose GitLab externally. You need to have a Ingress controller setup to do that.
 Setting up an Ingress controller can be done by installing the `nginx-ingress` helm chart. But be sure
-to read the [documentation](https://github.com/kubernetes/charts/blob/master/stable/nginx-ingress/README.md). 
+to read the [documentation](https://github.com/kubernetes/charts/blob/master/stable/nginx-ingress/README.md).
 >**Note:**
 If you would like to use the Registry, you will also need to ensure your Ingress supports a [sufficiently large request size](http://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size).
 
@@ -427,6 +425,13 @@ ingress:
 
 ## Installing GitLab using the Helm Chart
 > You may see a temporary error message `SchedulerPredicates failed due to PersistentVolumeClaim is not bound` while storage provisions. Once the storage provisions, the pods will automatically restart. This may take a couple minutes depending on your cloud provider. If the error persists, please review the [prerequisites](#prerequisites) to ensure you have enough RAM, CPU, and storage.
+
+Add the GitLab Helm repository and initialize Helm:
+
+```bash
+helm repo add gitlab https://charts.gitlab.io
+helm init
+```
 
 Once you [have configured](#configuration) GitLab in your `values.yml` file,
 run the following:

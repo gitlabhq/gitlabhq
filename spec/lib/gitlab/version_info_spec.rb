@@ -50,8 +50,8 @@ describe 'Gitlab::VersionInfo' do
   context 'unknown' do
     it { expect(@unknown).not_to be @v0_0_1 }
     it { expect(@unknown).not_to be Gitlab::VersionInfo.new }
-    it { expect{@unknown > @v0_0_1}.to raise_error(ArgumentError) }
-    it { expect{@unknown < @v0_0_1}.to raise_error(ArgumentError) }
+    it { expect {@unknown > @v0_0_1}.to raise_error(ArgumentError) }
+    it { expect {@unknown < @v0_0_1}.to raise_error(ArgumentError) }
   end
 
   context 'parse' do

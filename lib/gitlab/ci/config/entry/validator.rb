@@ -8,7 +8,6 @@ module Gitlab
 
           def initialize(entry)
             super(entry)
-            @entry = entry
           end
 
           def messages
@@ -19,21 +18,6 @@ module Gitlab
 
           def self.name
             'Validator'
-          end
-
-          private
-
-          def location
-            predecessors = ancestors.map(&:key).compact
-            predecessors.append(key_name).join(':')
-          end
-
-          def key_name
-            if key.blank?
-              @entry.class.name.demodulize.underscore.humanize
-            else
-              key
-            end
           end
         end
       end

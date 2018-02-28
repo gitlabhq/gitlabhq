@@ -134,7 +134,7 @@ In order to do that, follow the steps:
     # When using dind, it's wise to use the overlayfs driver for
     # improved performance.
     variables:
-      DOCKER_DRIVER: overlay
+      DOCKER_DRIVER: overlay2
 
     services:
     - docker:dind
@@ -248,7 +248,7 @@ aware of the following implications:
 
 By default, when using `docker:dind`, Docker uses the `vfs` storage driver which
 copies the filesystem on every run. This is a very disk-intensive operation
-which can be avoided if a different driver is used, for example `overlay`.
+which can be avoided if a different driver is used, for example `overlay2`.
 
 1. Make sure a recent kernel is used, preferably `>= 4.2`.
 1. Check whether the `overlay` module is loaded:
@@ -275,8 +275,12 @@ which can be avoided if a different driver is used, for example `overlay`.
 
     ```
     variables:
-      DOCKER_DRIVER: overlay
+      DOCKER_DRIVER: overlay2
     ```
+    
+> **Note:**
+- For more information about using OverlayFS with Docker, you can read
+  [Use the OverlayFS storage driver](https://docs.docker.com/engine/userguide/storagedriver/overlayfs-driver/).
 
 ## Using the GitLab Container Registry
 

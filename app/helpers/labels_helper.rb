@@ -43,11 +43,11 @@ module LabelsHelper
   def label_filter_path(subject, label, type: :issue)
     case subject
     when Group
-      send("#{type.to_s.pluralize}_group_path",
+      send("#{type.to_s.pluralize}_group_path", # rubocop:disable GitlabSecurity/PublicSend
                   subject,
                   label_name: [label.name])
     when Project
-      send("namespace_project_#{type.to_s.pluralize}_path",
+      send("namespace_project_#{type.to_s.pluralize}_path", # rubocop:disable GitlabSecurity/PublicSend
                   subject.namespace,
                   subject,
                   label_name: [label.name])
@@ -121,13 +121,14 @@ module LabelsHelper
     end
   end
 
-  def labels_filter_path
-    return group_labels_path(@group, :json) if @group
-
+  def labels_filter_path(only_group_labels = false)
     project = @target_project || @project
 
     if project
       project_labels_path(project, :json)
+    elsif @group
+      options = { only_group_labels: only_group_labels } if only_group_labels
+      group_labels_path(@group, :json, options)
     else
       dashboard_labels_path(:json)
     end

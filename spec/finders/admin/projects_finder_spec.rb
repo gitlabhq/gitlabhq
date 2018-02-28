@@ -38,6 +38,12 @@ describe Admin::ProjectsFinder do
       it { is_expected.to match_array([shared_project, public_project, internal_project, private_project]) }
     end
 
+    context 'with pending delete project' do
+      let!(:pending_delete_project) { create(:project, pending_delete: true) }
+
+      it { is_expected.not_to include(pending_delete_project) }
+    end
+
     context 'filter by namespace_id' do
       let(:namespace) { create(:namespace) }
       let!(:project_in_namespace) { create(:project, namespace: namespace) }
@@ -111,6 +117,12 @@ describe Admin::ProjectsFinder do
         let(:params) { { archived: true } }
 
         it { is_expected.to match_array([archived_project, shared_project, public_project, internal_project, private_project]) }
+      end
+
+      context 'archived=only' do
+        let(:params) { { archived: 'only' } }
+
+        it { is_expected.to eq([archived_project]) }
       end
     end
 

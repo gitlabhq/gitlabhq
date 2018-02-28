@@ -8,7 +8,7 @@ module Gitlab
       def initialize(app)
         @app = app
       end
-      
+
       def call(env)
         trans = Gitlab::Metrics.current_transaction
         proxy_start = env['HTTP_GITLAB_WORKHORSE_PROXY_START'].presence

@@ -295,6 +295,17 @@ import 'vendor/jquery.scrollTo';
         this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
       });
 
+      it('triggers scroll event when diff already loaded', function () {
+        spyOn(document, 'dispatchEvent');
+
+        this.class.diffsLoaded = true;
+        this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
+
+        expect(
+          document.dispatchEvent,
+        ).toHaveBeenCalledWith(new CustomEvent('scroll'));
+      });
+
       describe('with inline diff', () => {
         let noteId;
         let noteLineNumId;

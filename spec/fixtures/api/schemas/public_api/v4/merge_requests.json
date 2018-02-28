@@ -72,7 +72,13 @@
       "user_notes_count": { "type": "integer" },
       "should_remove_source_branch": { "type": ["boolean", "null"] },
       "force_remove_source_branch": { "type": ["boolean", "null"] },
-      "web_url": { "type": "uri" }
+      "web_url": { "type": "uri" },
+      "time_stats": {
+        "time_estimate": { "type": "integer" },
+        "total_time_spent": { "type": "integer" },
+        "human_time_estimate": { "type": ["string", "null"] },
+        "human_total_time_spent": { "type": ["string", "null"] }
+      }
     },
     "required": [
       "id", "iid", "project_id", "title", "description",

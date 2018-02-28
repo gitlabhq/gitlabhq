@@ -13,7 +13,7 @@ describe('RepoLoadingFile', () => {
   function assertLines(lines) {
     lines.forEach((line, n) => {
       const index = n + 1;
-      expect(line.classList.contains(`line-of-code-${index}`)).toBeTruthy();
+      expect(line.classList.contains(`skeleton-line-${index}`)).toBeTruthy();
     });
   }
 

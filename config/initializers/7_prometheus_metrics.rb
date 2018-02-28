@@ -1,4 +1,5 @@
 require 'prometheus/client'
+require 'prometheus/client/support/unicorn'
 
 Prometheus::Client.configure do |config|
   config.logger = Rails.logger
@@ -9,6 +10,8 @@ Prometheus::Client.configure do |config|
   if Rails.env.development? || Rails.env.test?
     config.multiprocess_files_dir ||= Rails.root.join('tmp/prometheus_multiproc_dir')
   end
+
+  config.pid_provider = Prometheus::Client::Support::Unicorn.method(:worker_pid_provider)
 end
 
 Sidekiq.configure_server do |config|

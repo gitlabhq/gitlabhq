@@ -107,6 +107,43 @@ To lock/unlock a Runner:
 1. Check the **Lock to current projects** option
 1. Click **Save changes** for the changes to take effect
 
+## Assigning a Runner to another project
+
+If you are Master on a project where a specific Runner is assigned to, and the
+Runner is not [locked only to that project](#locking-a-specific-runner-from-being-enabled-for-other-projects),
+you can enable the Runner also on any other project where you have Master permissions.
+
+To enable/disable a Runner in your project:
+
+1. Visit your project's **Settings ➔ Pipelines**
+1. Find the Runner you wish to enable/disable
+1. Click **Enable for this project** or **Disable for this project**
+
+> **Note**:
+Consider that if you don't lock your specific Runner to a specific project, any
+user with Master role in you project can assign your runner to another arbitrary
+project without requiring your authorization, so use it with caution.
+
+## Protected Runners
+
+>
+[Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13194)
+in GitLab 10.0.
+
+You can protect Runners from revealing sensitive information.
+Whenever a Runner is protected, the Runner picks only jobs created on
+[protected branches] or [protected tags], and ignores other jobs.
+
+To protect/unprotect Runners:
+
+1. Visit your project's **Settings ➔ Pipelines**
+1. Find a Runner you want to protect/unprotect and make sure it's enabled
+1. Click the pencil button besides the Runner name
+1. Check the **Protected** option
+1. Click **Save changes** for the changes to take effect
+
+![specific Runners edit icon](img/protected_runners_check_box.png)
+
 ## How shared Runners pick jobs
 
 Shared Runners abide to a process queue we call fair usage. The fair usage
@@ -218,3 +255,5 @@ We're always looking for contributions that can mitigate these
 [install]: http://docs.gitlab.com/runner/install/
 [fifo]: https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)
 [register]: http://docs.gitlab.com/runner/register/
+[protected branches]: ../../user/project/protected_branches.md
+[protected tags]: ../../user/project/protected_tags.md

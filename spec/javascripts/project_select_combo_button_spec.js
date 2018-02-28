@@ -32,11 +32,6 @@ describe('Project Select Combo Button', function () {
       this.comboButton = new ProjectSelectComboButton(this.projectSelectInput);
     });
 
-    it('newItemBtn is disabled', function () {
-      expect(this.newItemBtn.hasAttribute('disabled')).toBe(true);
-      expect(this.newItemBtn.classList.contains('disabled')).toBe(true);
-    });
-
     it('newItemBtn href is null', function () {
       expect(this.newItemBtn.getAttribute('href')).toBe('');
     });
@@ -51,11 +46,6 @@ describe('Project Select Combo Button', function () {
       window.localStorage
         .setItem(this.defaults.localStorageKey, JSON.stringify(this.defaults.projectMeta));
       this.comboButton = new ProjectSelectComboButton(this.projectSelectInput);
-    });
-
-    it('newItemBtn is not disabled', function () {
-      expect(this.newItemBtn.hasAttribute('disabled')).toBe(false);
-      expect(this.newItemBtn.classList.contains('disabled')).toBe(false);
     });
 
     it('newItemBtn href is correctly set', function () {
@@ -82,11 +72,6 @@ describe('Project Select Combo Button', function () {
         .trigger('change');
     });
 
-    it('newItemBtn is not disabled', function () {
-      expect(this.newItemBtn.hasAttribute('disabled')).toBe(false);
-      expect(this.newItemBtn.classList.contains('disabled')).toBe(false);
-    });
-
     it('newItemBtn href is correctly set', function () {
       expect(this.newItemBtn.getAttribute('href'))
         .toBe('http://myothercoolproject.com/issues/new');
@@ -99,6 +84,41 @@ describe('Project Select Combo Button', function () {
 
     afterEach(function () {
       window.localStorage.clear();
+    });
+  });
+
+  describe('deriveTextVariants', function () {
+    beforeEach(function () {
+      this.mockExecutionContext = {
+        resourceType: '',
+        resourceLabel: '',
+      };
+
+      this.comboButton = new ProjectSelectComboButton(this.projectSelectInput);
+
+      this.method = this.comboButton.deriveTextVariants.bind(this.mockExecutionContext);
+    });
+
+    it('correctly derives test variants for merge requests', function () {
+      this.mockExecutionContext.resourceType = 'merge_requests';
+      this.mockExecutionContext.resourceLabel = 'New merge request';
+
+      const returnedVariants = this.method();
+
+      expect(returnedVariants.localStorageItemType).toBe('new-merge-request');
+      expect(returnedVariants.defaultTextPrefix).toBe('New merge request');
+      expect(returnedVariants.presetTextSuffix).toBe('merge request');
+    });
+
+    it('correctly derives text variants for issues', function () {
+      this.mockExecutionContext.resourceType = 'issues';
+      this.mockExecutionContext.resourceLabel = 'New issue';
+
+      const returnedVariants = this.method();
+
+      expect(returnedVariants.localStorageItemType).toBe('new-issue');
+      expect(returnedVariants.defaultTextPrefix).toBe('New issue');
+      expect(returnedVariants.presetTextSuffix).toBe('issue');
     });
   });
 });

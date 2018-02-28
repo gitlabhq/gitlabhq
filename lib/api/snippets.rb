@@ -123,8 +123,7 @@ module API
 
         authorize! :destroy_personal_snippet, snippet
 
-        status 204
-        snippet.destroy
+        destroy_conditionally!(snippet)
       end
 
       desc 'Get a raw snippet' do

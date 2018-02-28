@@ -30,7 +30,7 @@ module Gitlab
       end
 
       def branch_exists?(branch_name)
-        @project.repository.branch_exists?(branch_name)
+        @project.repository.raw.branch_exists?(branch_name)
       end
 
       def fork_merge_request?

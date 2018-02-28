@@ -30,7 +30,7 @@ class GitPushService < BaseService
       @project.repository.after_create_branch
 
       # Re-find the pushed commits.
-      if is_default_branch?
+      if default_branch?
         # Initial push to the default branch. Take the full history of that branch as "newly pushed".
         process_default_branch
       else
@@ -50,7 +50,7 @@ class GitPushService < BaseService
 
       # Update the bare repositories info/attributes file using the contents of the default branches
       # .gitattributes file
-      update_gitattributes if is_default_branch?
+      update_gitattributes if default_branch?
     end
 
     execute_related_hooks
@@ -66,7 +66,7 @@ class GitPushService < BaseService
   end
 
   def update_caches
-    if is_default_branch?
+    if default_branch?
       if push_to_new_branch?
         # If this is the initial push into the default branch, the file type caches
         # will already be reset as a result of `Project#change_head`.
@@ -90,14 +90,25 @@ class GitPushService < BaseService
   end
 
   def update_signatures
-    @push_commits.each do |commit|
-      CreateGpgSignatureWorker.perform_async(commit.sha, @project.id)
+    commit_shas = @push_commits.last(PROCESS_COMMIT_LIMIT).map(&:sha)
+
+    return if commit_shas.empty?
+
+    shas_with_cached_signatures = GpgSignature.where(commit_sha: commit_shas).pluck(:commit_sha)
+    commit_shas -= shas_with_cached_signatures
+
+    return if commit_shas.empty?
+
+    commit_shas = Gitlab::Git::Commit.shas_with_signatures(project.repository, commit_shas)
+
+    commit_shas.each do |sha|
+      CreateGpgSignatureWorker.perform_async(sha, project.id)
     end
   end
 
   # Schedules processing of commit messages.
   def process_commit_messages
-    default = is_default_branch?
+    default = default_branch?
 
     @push_commits.last(PROCESS_COMMIT_LIMIT).each do |commit|
       if commit.matches_cross_reference_regex?
@@ -191,7 +202,7 @@ class GitPushService < BaseService
     Gitlab::Git.branch_ref?(params[:ref])
   end
 
-  def is_default_branch?
+  def default_branch?
     Gitlab::Git.branch_ref?(params[:ref]) &&
       (Gitlab::Git.ref_name(params[:ref]) == project.default_branch || project.default_branch.nil?)
   end

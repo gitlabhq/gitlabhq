@@ -1,26 +1,49 @@
 import Vue from 'vue';
 import repoEditor from '~/repo/components/repo_editor.vue';
-import RepoStore from '~/repo/stores/repo_store';
 
 describe('RepoEditor', () => {
-  function createComponent() {
+  beforeEach(() => {
     const RepoEditor = Vue.extend(repoEditor);
 
-    return new RepoEditor().$mount();
-  }
+    this.vm = new RepoEditor().$mount();
+  });
 
-  it('renders an ide container', () => {
-    const monacoInstance = jasmine.createSpyObj('monacoInstance', ['onMouseUp', 'onKeyUp', 'setModel', 'updateOptions']);
-    const monaco = {
-      editor: jasmine.createSpyObj('editor', ['create']),
-    };
-    RepoStore.monaco = monaco;
+  it('renders an ide container', (done) => {
+    this.vm.openedFiles = ['idiidid'];
+    this.vm.binary = false;
 
-    monaco.editor.create.and.returnValue(monacoInstance);
-    spyOn(repoEditor.watch, 'blobRaw');
+    Vue.nextTick(() => {
+      expect(this.vm.shouldHideEditor).toBe(false);
+      expect(this.vm.$el.id).toEqual('ide');
+      expect(this.vm.$el.tagName).toBe('DIV');
+      done();
+    });
+  });
 
-    const vm = createComponent();
+  describe('when there are no open files', () => {
+    it('does not render the ide', (done) => {
+      this.vm.openedFiles = [];
 
-    expect(vm.$el.id).toEqual('ide');
+      Vue.nextTick(() => {
+        expect(this.vm.shouldHideEditor).toBe(true);
+        expect(this.vm.$el.tagName).not.toBeDefined();
+        done();
+      });
+    });
+  });
+
+  describe('when open file is binary and not raw', () => {
+    it('does not render the IDE', (done) => {
+      this.vm.binary = true;
+      this.vm.activeFile = {
+        raw: false,
+      };
+
+      Vue.nextTick(() => {
+        expect(this.vm.shouldHideEditor).toBe(true);
+        expect(this.vm.$el.tagName).not.toBeDefined();
+        done();
+      });
+    });
   });
 });

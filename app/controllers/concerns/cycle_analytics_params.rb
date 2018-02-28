@@ -6,6 +6,13 @@ module CycleAnalyticsParams
   end
 
   def start_date(params)
-    params[:start_date] == '30' ? 30.days.ago : 90.days.ago
+    case params[:start_date]
+    when '7'
+      7.days.ago
+    when '30'
+      30.days.ago
+    else
+      90.days.ago
+    end
   end
 end

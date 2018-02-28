@@ -204,6 +204,16 @@
         }
       }
 
+      div.avatar {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+
+        .center {
+          line-height: 14px;
+        }
+      }
+
       strong {
         color: $gl-text-color;
       }

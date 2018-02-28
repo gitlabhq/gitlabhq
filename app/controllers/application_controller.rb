@@ -117,7 +117,7 @@ class ApplicationController < ActionController::Base
     Raven.capture_exception(exception) if sentry_enabled?
 
     application_trace = ActionDispatch::ExceptionWrapper.new(env, exception).application_trace
-    application_trace.map!{ |t| "  #{t}\n" }
+    application_trace.map! { |t| "  #{t}\n" }
     logger.error "\n#{exception.class.name} (#{exception.message}):\n#{application_trace.join}"
   end
 
@@ -202,7 +202,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_password_expiration
-    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now && current_user.allow_password_authentication?
+    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now && !current_user.ldap_user?
       return redirect_to new_profile_password_path
     end
   end

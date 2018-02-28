@@ -52,6 +52,7 @@ describe('text_utility', () => {
     beforeAll(() => {
       textArea = document.createElement('textarea');
       document.querySelector('body').appendChild(textArea);
+      textArea.focus();
     });
 
     afterAll(() => {

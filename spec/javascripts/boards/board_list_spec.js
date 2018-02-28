@@ -3,6 +3,7 @@
 /* global List */
 /* global listObj */
 /* global ListIssue */
+/* global mockBoardService */
 import Vue from 'vue';
 import _ from 'underscore';
 import Sortable from 'vendor/Sortable';
@@ -24,7 +25,7 @@ describe('Board list component', () => {
 
     document.body.appendChild(el);
     Vue.http.interceptors.push(boardsMockInterceptor);
-    gl.boardService = new BoardService('/test/issue-boards/board', '', '1');
+    gl.boardService = mockBoardService();
     gl.issueBoards.BoardsStore.create();
     gl.IssueBoardsApp = new Vue();
 
@@ -32,6 +33,7 @@ describe('Board list component', () => {
     const list = new List(listObj);
     const issue = new ListIssue({
       title: 'Testing',
+      id: 1,
       iid: 1,
       confidential: false,
       labels: [],

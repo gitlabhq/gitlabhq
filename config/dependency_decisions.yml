@@ -404,3 +404,15 @@
     :why: https://github.com/mafintosh/thunky/blob/master/README.md#license
     :versions: []
     :when: 2017-08-07 05:56:09.907045000 Z
+- - :whitelist
+  - Unlicense
+  - :who: Nick Thomas <nick@gitlab.com>
+    :why: https://gitlab.com/gitlab-com/organization/issues/116
+    :versions: []
+    :when: 2017-09-01 17:17:51.996511844 Z
+- - :blacklist
+  - Facebook BSD+PATENTS
+  - :who: Nick Thomas <nick@gitlab.com>
+    :why: https://gitlab.com/gitlab-com/organization/issues/117
+    :versions: []
+    :when: 2017-09-04 12:59:51.150798717 Z

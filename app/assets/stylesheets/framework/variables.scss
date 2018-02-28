@@ -74,6 +74,8 @@ $red-700: #a62d19;
 $red-800: #8b2615;
 $red-900: #711e11;
 
+// GitLab themes
+
 $indigo-50: #f7f7ff;
 $indigo-100: #ebebfa;
 $indigo-200: #d1d1f0;
@@ -85,6 +87,43 @@ $indigo-700: #4b4ba3;
 $indigo-800: #393982;
 $indigo-900: #292961;
 $indigo-950: #1a1a40;
+
+$theme-gray-50: #fafafa;
+$theme-gray-100: #f2f2f2;
+$theme-gray-200: #dfdfdf;
+$theme-gray-300: #cccccc;
+$theme-gray-400: #bababa;
+$theme-gray-500: #a7a7a7;
+$theme-gray-600: #949494;
+$theme-gray-700: #707070;
+$theme-gray-800: #4f4f4f;
+$theme-gray-900: #2e2e2e;
+$theme-gray-950: #1f1f1f;
+
+$theme-blue-50: #f4f8fc;
+$theme-blue-100: #e6edf5;
+$theme-blue-200: #c8d7e6;
+$theme-blue-300: #97b3cf;
+$theme-blue-400: #648cb4;
+$theme-blue-500: #4a79a8;
+$theme-blue-600: #3e6fa0;
+$theme-blue-700: #305c88;
+$theme-blue-800: #25496e;
+$theme-blue-900: #1a3652;
+$theme-blue-950: #0f2235;
+
+$theme-green-50: #f2faf6;
+$theme-green-100: #e4f3ea;
+$theme-green-200: #c0dfcd;
+$theme-green-300: #8ac2a1;
+$theme-green-400: #52a274;
+$theme-green-500: #35935c;
+$theme-green-600: #288a50;
+$theme-green-700: #1c7441;
+$theme-green-800: #145d33;
+$theme-green-900: #0d4524;
+$theme-green-950: #072d16;
+
 
 $black: #000;
 $black-transparent: rgba(0, 0, 0, 0.3);
@@ -111,6 +150,8 @@ $well-light-text-color: #5b6169;
  * Text
  */
 $gl-font-size: 14px;
+$gl-font-weight-normal: 400;
+$gl-font-weight-bold: 600;
 $gl-text-color: #2e2e2e;
 $gl-text-color-secondary: #707070;
 $gl-text-color-tertiary: #949494;
@@ -118,6 +159,7 @@ $gl-text-color-quaternary: #d6d6d6;
 $gl-text-color-inverted: rgba(255, 255, 255, 1.0);
 $gl-text-color-secondary-inverted: rgba(255, 255, 255, .85);
 $gl-text-green: $green-600;
+$gl-text-green-hover: $green-700;
 $gl-text-red: $red-500;
 $gl-text-orange: $orange-600;
 $gl-link-color: $blue-600;
@@ -174,13 +216,14 @@ $row-hover: $blue-25;
 $row-hover-border: $blue-100;
 $progress-color: #c0392b;
 $header-height: 50px;
+$new-navbar-height: 40px;
 $fixed-layout-width: 1280px;
 $limited-layout-width: 990px;
 $limited-layout-width-sm: 790px;
 $container-text-max-width: 540px;
 $gl-avatar-size: 40px;
 $error-exclamation-point: $red-500;
-$border-radius-default: 3px;
+$border-radius-default: 4px;
 $settings-icon-size: 18px;
 $provider-btn-not-active-color: $blue-500;
 $link-underline-blue: $blue-500;
@@ -294,7 +337,7 @@ $dropdown-input-focus-shadow: rgba($dropdown-input-focus-border, .4);
 $dropdown-loading-bg: rgba(#fff, .6);
 $dropdown-chevron-size: 10px;
 $dropdown-toggle-active-border-color: darken($border-color, 14%);
-
+$dropdown-item-hover-bg: $gray-darker;
 
 /*
 * Filtered Search
@@ -536,6 +579,11 @@ $project-breadcrumb-color: #999;
 $project-private-forks-notice-odd: $green-600;
 $project-network-controls-color: #888;
 
+$feature-toggle-color: #fff;
+$feature-toggle-text-color: #fff;
+$feature-toggle-color-disabled: #999;
+$feature-toggle-color-enabled: #4a8bee;
+
 /*
 * Runners
 */
@@ -588,9 +636,10 @@ $ui-dev-kit-example-border: #ddd;
 /*
 Pipeline Graph
 */
-$stage-hover-bg: #eaf3fc;
-$stage-hover-border: #d1e7fc;
-$action-icon-color: #d6d6d6;
+$stage-hover-bg: $gray-darker;
+$ci-action-icon-size: 22px;
+$pipeline-dropdown-line-height: 20px;
+$pipeline-dropdown-status-icon-size: 18px;
 
 /*
 Pipeline Schedules

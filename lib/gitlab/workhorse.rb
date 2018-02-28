@@ -35,17 +35,13 @@ module Gitlab
                           when 'git_receive_pack'
                             Gitlab::GitalyClient.feature_enabled?(:post_receive_pack)
                           when 'git_upload_pack'
-                            Gitlab::GitalyClient.feature_enabled?(
-                              :post_upload_pack,
-                              status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT
-                            )
+                            true
                           when 'info_refs'
                             true
                           else
                             raise "Unsupported action: #{action}"
                           end
         if feature_enabled
-          params[:GitalyAddress] = server[:address] # This field will be deprecated
           params[:GitalyServer] = server
         end
 
@@ -125,10 +121,10 @@ module Gitlab
         ]
       end
 
-      def send_artifacts_entry(build, entry)
+      def send_artifacts_entry(build, path)
         params = {
           'Archive' => build.artifacts_file.path,
-          'Entry' => Base64.encode64(entry.path)
+          'Entry' => Base64.encode64(path.to_s)
         }
 
         [

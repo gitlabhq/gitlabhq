@@ -13,8 +13,12 @@ describe Dashboard::ProjectsController, '(JavaScript fixtures)', type: :controll
     clean_frontend_fixtures('dashboard/')
   end
 
-  before(:each) do
+  before do
     sign_in(admin)
+  end
+
+  after do
+    remove_repository(project)
   end
 
   it 'dashboard/user-callout.html.raw' do |example|

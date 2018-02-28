@@ -34,7 +34,7 @@ describe Gitlab::ImportExport::RepoRestorer do
     it 'has the webhooks' do
       restorer.restore
 
-      expect(Gitlab::Git::Hook.new('post-receive', project)).to exist
+      expect(Gitlab::Git::Hook.new('post-receive', project.repository.raw_repository)).to exist
     end
   end
 end

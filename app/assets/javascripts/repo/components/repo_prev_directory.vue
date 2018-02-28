@@ -1,9 +1,19 @@
 <script>
+import RepoMixin from '../mixins/repo_mixin';
+
 const RepoPreviousDirectory = {
   props: {
     prevUrl: {
       type: String,
       required: true,
+    },
+  },
+
+  mixins: [RepoMixin],
+
+  computed: {
+    colSpanCondition() {
+      return this.isMini ? undefined : 3;
     },
   },
 
@@ -19,8 +29,10 @@ export default RepoPreviousDirectory;
 
 <template>
 <tr class="prev-directory">
-  <td colspan="3">
-    <a :href="prevUrl" @click.prevent="linkClicked(prevUrl)">..</a>
+  <td
+    :colspan="colSpanCondition"
+    @click.prevent="linkClicked(prevUrl)">
+    <a :href="prevUrl">..</a>
   </td>
 </tr>
 </template>

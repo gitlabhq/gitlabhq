@@ -24,13 +24,13 @@ describe FileSizeValidator do
   describe 'options uses a symbol' do
     let(:options) do
       {
-        maximum: :test,
+        maximum: :max_attachment_size,
         attributes: { attachment: attachment }
       }
     end
 
     before do
-      allow(note).to receive(:test) { 10 }
+      expect(note).to receive(:max_attachment_size) { 10 }
     end
 
     it 'attachment exceeds maximum limit' do

@@ -32,7 +32,7 @@ describe 'Search bar', js: true do
     it 'selects item' do
       filtered_search.native.send_keys(:down, :down, :enter)
 
-      expect_tokens([{ name: 'author' }])
+      expect_tokens([author_token])
       expect_filtered_search_input_empty
     end
   end
@@ -100,7 +100,7 @@ describe 'Search bar', js: true do
       find('.filtered-search-box .clear-search').click
       filtered_search.click
 
-      expect(find('#js-dropdown-hint')).to have_selector('.filter-dropdown .filter-dropdown-item', count: 4)
+      expect(find('#js-dropdown-hint')).to have_selector('.filter-dropdown .filter-dropdown-item', count: 5)
       expect(get_left_style(find('#js-dropdown-hint')['style'])).to eq(hint_offset)
     end
   end

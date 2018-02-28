@@ -23,19 +23,23 @@ class Spinach::Features::ProjectPages < Spinach::FeatureSteps
   end
 
   step 'I should see the "Pages" tab' do
-    page.within '.sub-nav' do
+    page.within '.nav-sidebar' do
       expect(page).to have_link('Pages')
     end
   end
 
   step 'I should not see the "Pages" tab' do
-    page.within '.sub-nav' do
+    page.within '.nav-sidebar' do
       expect(page).not_to have_link('Pages')
     end
   end
 
   step 'pages are deployed' do
-    pipeline = @project.pipelines.create(ref: 'HEAD', sha: @project.commit('HEAD').sha)
+    pipeline = @project.pipelines.create(ref: 'HEAD',
+                                         sha: @project.commit('HEAD').sha,
+                                         source: :push,
+                                         protected: false)
+
     build = build(:ci_build,
                   project: @project,
                   pipeline: pipeline,
@@ -43,6 +47,7 @@ class Spinach::Features::ProjectPages < Spinach::FeatureSteps
                   artifacts_file: fixture_file_upload(Rails.root + 'spec/fixtures/pages.zip'),
                   artifacts_metadata: fixture_file_upload(Rails.root + 'spec/fixtures/pages.zip.meta')
                  )
+
     result = ::Projects::UpdatePagesService.new(@project, build).execute
     expect(result[:status]).to eq(:success)
   end

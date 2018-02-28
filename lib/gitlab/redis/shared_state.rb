@@ -7,9 +7,6 @@ module Gitlab
       SESSION_NAMESPACE = 'session:gitlab'.freeze
       DEFAULT_REDIS_SHARED_STATE_URL = 'redis://localhost:6382'.freeze
       REDIS_SHARED_STATE_CONFIG_ENV_VAR_NAME = 'GITLAB_REDIS_SHARED_STATE_CONFIG_FILE'.freeze
-      if defined?(::Rails) && ::Rails.root.present?
-        DEFAULT_REDIS_SHARED_STATE_CONFIG_FILE_NAME = ::Rails.root.join('config', 'redis.shared_state.yml').freeze
-      end
 
       class << self
         def default_url
@@ -22,7 +19,7 @@ module Gitlab
           return file_name if file_name
 
           # otherwise, if config files exists for this class, use it
-          file_name = File.expand_path(DEFAULT_REDIS_SHARED_STATE_CONFIG_FILE_NAME, __dir__)
+          file_name = config_file_path('redis.shared_state.yml')
           return file_name if File.file?(file_name)
 
           # this will force use of DEFAULT_REDIS_SHARED_STATE_URL when config file is absent

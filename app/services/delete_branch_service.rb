@@ -16,7 +16,7 @@ class DeleteBranchService < BaseService
     else
       error('Failed to remove branch')
     end
-  rescue GitHooksService::PreReceiveError => ex
+  rescue Gitlab::Git::HooksService::PreReceiveError => ex
     error(ex.message)
   end
 

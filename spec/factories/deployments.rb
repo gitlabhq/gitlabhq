@@ -10,6 +10,10 @@ FactoryGirl.define do
 
     after(:build) do |deployment, evaluator|
       deployment.project ||= deployment.environment.project
+
+      unless deployment.project.repository_exists?
+        allow(deployment.project.repository).to receive(:fetch_ref)
+      end
     end
   end
 end

@@ -1,5 +1,0 @@
----
-title: Fix the /projects/:id/repository/tags endpoint to handle dots in the tag name
-  when the project full path contains a `/`
-merge_request: 13368
-author:

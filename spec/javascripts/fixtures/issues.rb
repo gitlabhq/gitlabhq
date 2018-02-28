@@ -13,8 +13,12 @@ describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller 
     clean_frontend_fixtures('issues/')
   end
 
-  before(:each) do
+  before do
     sign_in(admin)
+  end
+
+  after do
+    remove_repository(project)
   end
 
   it 'issues/open-issue.html.raw' do |example|

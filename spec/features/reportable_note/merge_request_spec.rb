@@ -15,12 +15,12 @@ describe 'Reportable note on merge request', :js do
   context 'a normal note' do
     let!(:note) { create(:note_on_merge_request, noteable: merge_request, project: project) }
 
-    it_behaves_like 'reportable note'
+    it_behaves_like 'reportable note', 'merge_request'
   end
 
   context 'a diff note' do
     let!(:note) { create(:diff_note_on_merge_request, noteable: merge_request, project: project) }
 
-    it_behaves_like 'reportable note'
+    it_behaves_like 'reportable note', 'merge_request'
   end
 end

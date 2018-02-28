@@ -70,19 +70,19 @@ module Milestoneish
     due_date && due_date.past?
   end
 
-  def is_group_milestone?
+  def group_milestone?
     false
   end
 
-  def is_project_milestone?
+  def project_milestone?
     false
   end
 
-  def is_legacy_group_milestone?
+  def legacy_group_milestone?
     false
   end
 
-  def is_dashboard_milestone?
+  def dashboard_milestone?
     false
   end
 

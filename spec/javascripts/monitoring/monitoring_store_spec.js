@@ -5,10 +5,10 @@ describe('MonitoringStore', () => {
   this.store = new MonitoringStore();
   this.store.storeMetrics(MonitoringMock.data);
 
-  it('contains one group that contains two queries sorted by priority in one row', () => {
+  it('contains one group that contains two queries sorted by priority', () => {
     expect(this.store.groups).toBeDefined();
     expect(this.store.groups.length).toEqual(1);
-    expect(this.store.groups[0].metrics.length).toEqual(1);
+    expect(this.store.groups[0].metrics.length).toEqual(2);
   });
 
   it('gets the metrics count for every group', () => {

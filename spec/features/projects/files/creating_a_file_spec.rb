@@ -14,7 +14,7 @@ feature 'User wants to create a file' do
     file_name = find('#file_name')
     file_name.set options[:file_name] || 'README.md'
 
-    file_content = find('#file-content')
+    file_content = find('#file-content', visible: false)
     file_content.set options[:file_content] || 'Some content'
 
     click_button 'Commit changes'

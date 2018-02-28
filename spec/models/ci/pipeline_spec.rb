@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Ci::Pipeline, :mailer do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  set(:project) { create(:project) }
 
   let(:pipeline) do
     create(:ci_empty_pipeline, status: :created, project: project)
@@ -156,6 +156,18 @@ describe Ci::Pipeline, :mailer do
 
     def create_build(name, status)
       create(:ci_build, name: name, status: status, pipeline: pipeline)
+    end
+  end
+
+  describe '#predefined_variables' do
+    subject { pipeline.predefined_variables }
+
+    it { is_expected.to be_an(Array) }
+
+    it 'includes the defined keys' do
+      keys = subject.map { |v| v[:key] }
+
+      expect(keys).to include('CI_PIPELINE_ID', 'CI_CONFIG_PATH', 'CI_PIPELINE_SOURCE')
     end
   end
 
@@ -534,6 +546,22 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#has_kubernetes_active?' do
+    context 'when kubernetes is active' do
+      let(:project) { create(:kubernetes_project) }
+
+      it 'returns true' do
+        expect(pipeline).to have_kubernetes_active
+      end
+    end
+
+    context 'when kubernetes is not active' do
+      it 'returns false' do
+        expect(pipeline).not_to have_kubernetes_active
+      end
+    end
+  end
+
   describe '#has_stage_seeds?' do
     context 'when pipeline has stage seeds' do
       subject { build(:ci_pipeline_with_one_job) }
@@ -771,14 +799,118 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#set_config_source' do
+    context 'on object initialisation' do
+      context 'when pipelines does not contain needed data' do
+        let(:pipeline) do
+          Ci::Pipeline.new
+        end
+
+        it 'defines source to be unknown' do
+          expect(pipeline).to be_unknown_source
+        end
+      end
+
+      context 'when pipeline contains all needed data' do
+        let(:pipeline) do
+          Ci::Pipeline.new(
+            project: project,
+            sha: '1234',
+            ref: 'master',
+            source: :push)
+        end
+
+        context 'when the repository has a config file' do
+          before do
+            allow(project.repository).to receive(:gitlab_ci_yml_for)
+              .and_return('config')
+          end
+
+          it 'defines source to be from repository' do
+            expect(pipeline).to be_repository_source
+          end
+
+          context 'when loading an object' do
+            let(:new_pipeline) { Ci::Pipeline.find(pipeline.id) }
+
+            it 'does not redefine the source' do
+              # force to overwrite the source
+              pipeline.unknown_source!
+
+              expect(new_pipeline).to be_unknown_source
+            end
+          end
+        end
+
+        context 'when the repository does not have a config file' do
+          let(:implied_yml) { Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content }
+
+          context 'auto devops enabled' do
+            before do
+              stub_application_setting(auto_devops_enabled: true)
+              allow(project).to receive(:ci_config_path) { 'custom' }
+            end
+
+            it 'defines source to be auto devops' do
+              subject
+
+              expect(pipeline).to be_auto_devops_source
+            end
+          end
+        end
+      end
+    end
+  end
+
   describe '#ci_yaml_file' do
-    it 'reports error if the file is not found' do
-      allow(pipeline.project).to receive(:ci_config_path) { 'custom' }
+    let(:implied_yml) { Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content }
 
-      pipeline.ci_yaml_file
+    context 'the source is unknown' do
+      before do
+        pipeline.unknown_source!
+      end
 
-      expect(pipeline.yaml_errors)
-        .to eq('Failed to load CI/CD config file at custom')
+      it 'returns the configuration if found' do
+        allow(pipeline.project.repository).to receive(:gitlab_ci_yml_for)
+          .and_return('config')
+
+        expect(pipeline.ci_yaml_file).to be_a(String)
+        expect(pipeline.ci_yaml_file).not_to eq(implied_yml)
+        expect(pipeline.yaml_errors).to be_nil
+      end
+
+      it 'sets yaml errors if not found' do
+        expect(pipeline.ci_yaml_file).to be_nil
+        expect(pipeline.yaml_errors)
+            .to start_with('Failed to load CI/CD config file')
+      end
+    end
+
+    context 'the source is the repository' do
+      before do
+        pipeline.repository_source!
+      end
+
+      it 'returns the configuration if found' do
+        allow(pipeline.project.repository).to receive(:gitlab_ci_yml_for)
+          .and_return('config')
+
+        expect(pipeline.ci_yaml_file).to be_a(String)
+        expect(pipeline.ci_yaml_file).not_to eq(implied_yml)
+        expect(pipeline.yaml_errors).to be_nil
+      end
+    end
+
+    context 'when the source is auto_devops_source' do
+      before do
+        stub_application_setting(auto_devops_enabled: true)
+        pipeline.auto_devops_source!
+      end
+
+      it 'finds the implied config' do
+        expect(pipeline.ci_yaml_file).to eq(implied_yml)
+        expect(pipeline.yaml_errors).to be_nil
+      end
     end
   end
 

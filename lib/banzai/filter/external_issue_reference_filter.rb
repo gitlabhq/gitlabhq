@@ -95,10 +95,10 @@ module Banzai
       private
 
       def external_issues_cached(attribute)
-        return project.public_send(attribute) unless RequestStore.active?
+        return project.public_send(attribute) unless RequestStore.active? # rubocop:disable GitlabSecurity/PublicSend
 
         cached_attributes = RequestStore[:banzai_external_issues_tracker_attributes] ||= Hash.new { |h, k| h[k] = {} }
-        cached_attributes[project.id][attribute] = project.public_send(attribute) if cached_attributes[project.id][attribute].nil?
+        cached_attributes[project.id][attribute] = project.public_send(attribute) if cached_attributes[project.id][attribute].nil? # rubocop:disable GitlabSecurity/PublicSend
         cached_attributes[project.id][attribute]
       end
     end

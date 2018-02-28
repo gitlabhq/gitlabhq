@@ -1,10 +1,8 @@
 - @no_container = true
 - @sort ||= sort_value_recently_updated
 - page_title "Tags"
+- add_to_breadcrumbs("Repository", project_tree_path(@project))
 = render "projects/commits/head"
-
-- if show_new_nav?
-  - add_to_breadcrumbs("Repository", project_tree_path(@project))
 
 .flex-list{ class: container_class }
   .top-area.adjust

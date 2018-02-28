@@ -17,7 +17,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def keys
-    @keys = user.keys
+    @keys = user.keys.order_id_desc
   end
 
   def new
@@ -117,11 +117,14 @@ class Admin::UsersController < Admin::ApplicationController
     user_params_with_pass = user_params.dup
 
     if params[:user][:password].present?
-      user_params_with_pass.merge!(
+      password_params = {
         password: params[:user][:password],
-        password_confirmation: params[:user][:password_confirmation],
-        password_expires_at: Time.now
-      )
+        password_confirmation: params[:user][:password_confirmation]
+      }
+
+      password_params[:password_expires_at] = Time.now unless changing_own_password?
+
+      user_params_with_pass.merge!(password_params)
     end
 
     respond_to do |format|
@@ -167,6 +170,10 @@ class Admin::UsersController < Admin::ApplicationController
 
   protected
 
+  def changing_own_password?
+    user == current_user
+  end
+
   def user
     @user ||= User.find_by!(username: params[:id])
   end
@@ -204,6 +211,7 @@ class Admin::UsersController < Admin::ApplicationController
       :provider,
       :remember_me,
       :skype,
+      :theme_id,
       :twitter,
       :username,
       :website_url

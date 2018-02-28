@@ -14,7 +14,7 @@ class ProjectStatistics < ActiveRecord::Base
   def refresh!(only: nil)
     STATISTICS_COLUMNS.each do |column, generator|
       if only.blank? || only.include?(column)
-        public_send("update_#{column}")
+        public_send("update_#{column}") # rubocop:disable GitlabSecurity/PublicSend
       end
     end
 

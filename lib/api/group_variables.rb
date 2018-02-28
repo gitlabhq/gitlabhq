@@ -9,7 +9,7 @@ module API
       requires :id, type: String, desc: 'The ID of a group'
     end
 
-    resource :groups, requirements: { id: %r{[^/]+} } do
+    resource :groups, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get group-level variables' do
         success Entities::Variable
       end
@@ -88,8 +88,7 @@ module API
         variable = user_group.variables.find_by(key: params[:key])
         not_found!('GroupVariable') unless variable
 
-        status 204
-        variable.destroy
+        destroy_conditionally!(variable)
       end
     end
   end

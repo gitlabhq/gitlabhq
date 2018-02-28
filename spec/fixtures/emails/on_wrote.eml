@@ -53,7 +53,7 @@ y
 >   display: inline-block;
 >   font-family: FontAwesome;
 >   font-style: normal;
->   font-weight: normal;
+>   font-weight: 400;
 >   line-height: 1;
 >   -webkit-font-smoothing: antialiased;
 >   -moz-osx-font-smoothing: grayscale;
@@ -227,7 +227,7 @@ ding:5px">.fa {
   display: inline-block;
   font-family: FontAwesome;
   font-style: normal;
-  font-weight: normal;
+  font-weight: 400;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

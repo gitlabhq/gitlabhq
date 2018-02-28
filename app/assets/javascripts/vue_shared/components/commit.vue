@@ -1,6 +1,7 @@
 <script>
   import commitIconSvg from 'icons/_icon_commit.svg';
   import userAvatarLink from './user_avatar/user_avatar_link.vue';
+  import tooltip from '../directives/tooltip';
 
   export default {
     props: {
@@ -100,17 +101,22 @@
           this.author.username ? `${this.author.username}'s avatar` : null;
       },
     },
-    data() {
-      return { commitIconSvg };
+    directives: {
+      tooltip,
     },
     components: {
       userAvatarLink,
+    },
+    created() {
+      this.commitIconSvg = commitIconSvg;
     },
   };
 </script>
 <template>
   <div class="branch-commit">
-    <div v-if="hasCommitRef" class="icon-container hidden-xs">
+    <div
+      v-if="hasCommitRef"
+      class="icon-container hidden-xs">
       <i
         v-if="tag"
         class="fa fa-tag"
@@ -126,7 +132,10 @@
     <a
       v-if="hasCommitRef"
       class="ref-name hidden-xs"
-      :href="commitRef.ref_url">
+      :href="commitRef.ref_url"
+      v-tooltip
+      data-container="body"
+      :title="commitRef.name">
       {{commitRef.name}}
     </a>
 
@@ -153,7 +162,8 @@
           :img-alt="userImageAltDescription"
           :tooltip-text="author.username"
         />
-        <a class="commit-row-message"
+        <a
+          class="commit-row-message"
           :href="commitUrl">
           {{title}}
         </a>

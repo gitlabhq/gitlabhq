@@ -82,7 +82,9 @@ errors during usage.
 
 We recommend having at least 2GB of swap on your server, even if you currently have
 enough available RAM. Having swap will help reduce the chance of errors occurring
-if your available memory changes.
+if your available memory changes. We also recommend [configuring the kernels swappiness setting](https://askubuntu.com/a/103916)
+to a low value like `10` to make the most of your RAM while still having the swap
+available when needed.
 
 Notice: The 25 workers of Sidekiq will show up as separate processes in your process overview (such as top or htop) but they share the same RAM allocation since Sidekiq is a multithreaded application. Please see the section below about Unicorn workers for information about many you need of those.
 
@@ -104,6 +106,10 @@ features of GitLab work with MySQL/MariaDB:
    See [issue #30472][30472] for more information.
 1. GitLab Geo does [not support MySQL](https://docs.gitlab.com/ee/gitlab-geo/database.html#mysql-replication).
 1. [Zero downtime migrations][zero] do not work with MySQL
+1. GitLab [optimizes the loading of dashboard events](https://gitlab.com/gitlab-org/gitlab-ce/issues/31806) using [PostgreSQL LATERAL JOINs](https://blog.heapanalytics.com/postgresqls-powerful-new-join-type-lateral/).
+1. In general, SQL optimized for PostgreSQL may run much slower in MySQL due to
+   differences in query planners. For example, subqueries that work well in PostgreSQL
+   may not be [performant in MySQL](https://dev.mysql.com/doc/refman/5.7/en/optimizing-subqueries.html)
 1. We expect this list to grow over time.
 
 Existing users using GitLab with MySQL/MariaDB are advised to

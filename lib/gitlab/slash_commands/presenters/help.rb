@@ -14,7 +14,7 @@ module Gitlab
           if text.start_with?('help')
             header_with_list("Available commands", full_commands(trigger))
           else
-            header_with_list("Unknown command, these commands are available", full_commands(trigger)) 
+            header_with_list("Unknown command, these commands are available", full_commands(trigger))
           end
         end
 

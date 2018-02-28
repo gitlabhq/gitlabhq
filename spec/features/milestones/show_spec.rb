@@ -8,7 +8,7 @@ describe 'Milestone show' do
   let(:issue_params) { { project: project, assignees: [user], author: user, milestone: milestone, labels: labels } }
 
   before do
-    project.add_user(user, :developer) 
+    project.add_user(user, :developer)
     sign_in(user)
   end
 

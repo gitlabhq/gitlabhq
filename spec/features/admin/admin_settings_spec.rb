@@ -35,6 +35,7 @@ feature 'Admin updates settings' do
     fill_in 'Help page text', with: 'Example text'
     check 'Hide marketing-related entries from help'
     fill_in 'Support page URL', with: 'http://example.com/help'
+    uncheck 'Project export enabled'
     click_button 'Save'
 
     expect(current_application_settings.gravatar_enabled).to be_falsey
@@ -42,11 +43,12 @@ feature 'Admin updates settings' do
     expect(current_application_settings.help_page_text).to eq "Example text"
     expect(current_application_settings.help_page_hide_commercial_content).to be_truthy
     expect(current_application_settings.help_page_support_url).to eq "http://example.com/help"
+    expect(current_application_settings.project_export_enabled).to be_falsey
     expect(page).to have_content "Application settings saved successfully"
   end
 
   scenario 'Change Slack Notifications Service template settings' do
-    click_link 'Service Templates'
+    first(:link, 'Service Templates').click
     click_link 'Slack notifications'
     fill_in 'Webhook', with: 'http://localhost'
     fill_in 'Username', with: 'test_user'
@@ -72,9 +74,25 @@ feature 'Admin updates settings' do
   context 'sign-in restrictions', :js do
     it 'de-activates oauth sign-in source' do
       find('.btn', text: 'GitLab.com').click
-      
+
       expect(find('.btn', text: 'GitLab.com')).not_to have_css('.active')
     end
+  end
+
+  scenario 'Change Keys settings' do
+    select 'Are forbidden', from: 'RSA SSH keys'
+    select 'Are allowed', from: 'DSA SSH keys'
+    select 'Must be at least 384 bits', from: 'ECDSA SSH keys'
+    select 'Are forbidden', from: 'ED25519 SSH keys'
+    click_on 'Save'
+
+    forbidden = ApplicationSetting::FORBIDDEN_KEY_VALUE.to_s
+
+    expect(page).to have_content 'Application settings saved successfully'
+    expect(find_field('RSA SSH keys').value).to eq(forbidden)
+    expect(find_field('DSA SSH keys').value).to eq('0')
+    expect(find_field('ECDSA SSH keys').value).to eq('384')
+    expect(find_field('ED25519 SSH keys').value).to eq(forbidden)
   end
 
   def check_all_events

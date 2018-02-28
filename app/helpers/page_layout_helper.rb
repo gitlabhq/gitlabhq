@@ -4,7 +4,7 @@ module PageLayoutHelper
 
     @page_title.push(*titles.compact) if titles.any?
 
-    if show_new_nav? && titles.any? && !defined?(@breadcrumb_title)
+    if titles.any? && !defined?(@breadcrumb_title)
       @breadcrumb_title = @page_title.last
     end
 
@@ -80,7 +80,9 @@ module PageLayoutHelper
       @header_title     = title
       @header_title_url = title_url
     else
-      @header_title_url ? link_to(@header_title, @header_title_url) : @header_title
+      return @header_title unless @header_title_url
+
+      breadcrumb_list_item(link_to(@header_title, @header_title_url))
     end
   end
 

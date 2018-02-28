@@ -13,7 +13,7 @@ describe Labels::UpdateService do
 
     let(:expected_saved_color) { hex_color }
 
-    before(:each) do
+    before do
       @label = Labels::CreateService.new(title: 'Initial', color: '#000000').execute(project: project)
       expect(@label).to be_persisted
     end

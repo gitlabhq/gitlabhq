@@ -17,5 +17,16 @@ module Ci
         "Job is redundant and is auto-canceled by Pipeline ##{auto_canceled_by_id}"
       end
     end
+
+    def trigger_variables
+      return [] unless trigger_request
+
+      @trigger_variables ||=
+        if pipeline.variables.any?
+          pipeline.variables.map(&:to_runner_variable)
+        else
+          trigger_request.user_variables
+        end
+    end
   end
 end

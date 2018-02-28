@@ -1,5 +1,0 @@
----
-title: Prevent web hook and project service background jobs from going to the dead
-  jobs queue
-merge_request:
-author:

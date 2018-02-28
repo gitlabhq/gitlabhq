@@ -1,7 +1,9 @@
+/* global mockBoardService */
 import Vue from 'vue';
 import '~/boards/services/board_service';
 import '~/boards/components/board';
 import '~/boards/models/list';
+import '../mock_data';
 
 describe('Board component', () => {
   let vm;
@@ -13,8 +15,12 @@ describe('Board component', () => {
     el = document.createElement('div');
     document.body.appendChild(el);
 
-    // eslint-disable-next-line no-undef
-    gl.boardService = new BoardService('/', '/', 1);
+    gl.boardService = mockBoardService({
+      boardsEndpoint: '/',
+      listsEndpoint: '/',
+      bulkUpdatePath: '/',
+      boardId: 1,
+    });
 
     vm = new gl.issueBoards.Board({
       propsData: {

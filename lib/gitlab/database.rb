@@ -9,6 +9,14 @@ module Gitlab
       ActiveRecord::Base.configurations[Rails.env]
     end
 
+    def self.username
+      config['username'] || ENV['USER']
+    end
+
+    def self.database_name
+      config['database']
+    end
+
     def self.adapter_name
       config['adapter']
     end
@@ -23,6 +31,10 @@ module Gitlab
 
     def self.version
       database_version.match(/\A(?:PostgreSQL |)([^\s]+).*\z/)[1]
+    end
+
+    def self.join_lateral_supported?
+      postgresql? && version.to_f >= 9.3
     end
 
     def self.nulls_last_order(field, direction = 'ASC')

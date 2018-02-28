@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe Ci::Runner do
   describe 'validation' do
+    it { is_expected.to validate_presence_of(:access_level) }
+
     context 'when runner is not allowed to pick untagged jobs' do
       context 'when runner does not have tags' do
         it 'is not valid' do
@@ -15,6 +17,34 @@ describe Ci::Runner do
           runner = build(:ci_runner, tag_list: ['tag'], run_untagged: false)
           expect(runner).to be_valid
         end
+      end
+    end
+  end
+
+  describe '#access_level' do
+    context 'when creating new runner and access_level is nil' do
+      let(:runner) do
+        build(:ci_runner, access_level: nil)
+      end
+
+      it "object is invalid" do
+        expect(runner).not_to be_valid
+      end
+    end
+
+    context 'when creating new runner and access_level is defined in enum' do
+      let(:runner) do
+        build(:ci_runner, access_level: :not_protected)
+      end
+
+      it "object is valid" do
+        expect(runner).to be_valid
+      end
+    end
+
+    context 'when creating new runner and access_level is not defined in enum' do
+      it "raises an error" do
+        expect { build(:ci_runner, access_level: :this_is_not_defined) }.to raise_error(ArgumentError)
       end
     end
   end
@@ -94,6 +124,8 @@ describe Ci::Runner do
     let(:pipeline) { create(:ci_pipeline) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
     let(:runner) { create(:ci_runner) }
+
+    subject { runner.can_pick?(build) }
 
     before do
       build.project.runners << runner
@@ -220,6 +252,50 @@ describe Ci::Runner do
             expect(runner.can_pick?(build)).to be_falsey
           end
         end
+      end
+    end
+
+    context 'when access_level of runner is not_protected' do
+      before do
+        runner.not_protected!
+      end
+
+      context 'when build is protected' do
+        before do
+          build.protected = true
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when build is unprotected' do
+        before do
+          build.protected = false
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when access_level of runner is ref_protected' do
+      before do
+        runner.ref_protected!
+      end
+
+      context 'when build is protected' do
+        before do
+          build.protected = true
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when build is unprotected' do
+        before do
+          build.protected = false
+        end
+
+        it { is_expected.to be_falsey }
       end
     end
   end

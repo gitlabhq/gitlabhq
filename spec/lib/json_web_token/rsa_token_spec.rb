@@ -27,7 +27,7 @@ describe JSONWebToken::RSAToken do
 
       subject { JWT.decode(rsa_encoded, rsa_key) }
 
-      it { expect{subject}.not_to raise_error }
+      it { expect {subject}.not_to raise_error }
       it { expect(subject.first).to include('key' => 'value') }
       it do
         expect(subject.second).to eq(
@@ -41,7 +41,7 @@ describe JSONWebToken::RSAToken do
       let(:new_key) { OpenSSL::PKey::RSA.generate(512) }
       subject { JWT.decode(rsa_encoded, new_key) }
 
-      it { expect{subject}.to raise_error(JWT::DecodeError) }
+      it { expect {subject}.to raise_error(JWT::DecodeError) }
     end
   end
 end

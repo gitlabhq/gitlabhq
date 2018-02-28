@@ -43,7 +43,7 @@
   .commit-committer-link,
   .commit-author-link {
     color: $gl-text-color;
-    font-weight: bold;
+    font-weight: $gl-font-weight-bold;
   }
 
   .commit-info {

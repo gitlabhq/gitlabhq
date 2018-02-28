@@ -28,6 +28,23 @@ feature 'Profile > SSH Keys' do
       expect(page).to have_content("Title: #{attrs[:title]}")
       expect(page).to have_content(attrs[:key])
     end
+
+    context 'when only DSA and ECDSA keys are allowed' do
+      before do
+        forbidden = ApplicationSetting::FORBIDDEN_KEY_VALUE
+        stub_application_setting(rsa_key_restriction: forbidden, ed25519_key_restriction: forbidden)
+      end
+
+      scenario 'shows a validation error' do
+        attrs = attributes_for(:key)
+
+        fill_in('Key', with: attrs[:key])
+        fill_in('Title', with: attrs[:title])
+        click_button('Add key')
+
+        expect(page).to have_content('Key type is forbidden. Must be DSA or ECDSA')
+      end
+    end
   end
 
   scenario 'User sees their keys' do

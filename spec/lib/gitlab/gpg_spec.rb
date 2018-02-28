@@ -42,6 +42,73 @@ describe Gitlab::Gpg do
         described_class.user_infos_from_key('bogus')
       ).to eq []
     end
+
+    it 'downcases the email' do
+      public_key = double(:key)
+      fingerprints = double(:fingerprints)
+      uid = double(:uid, name: 'Nannie Bernhard', email: 'NANNIE.BERNHARD@EXAMPLE.COM')
+      raw_key = double(:raw_key, uids: [uid])
+      allow(Gitlab::Gpg::CurrentKeyChain).to receive(:fingerprints_from_key).with(public_key).and_return(fingerprints)
+      allow(GPGME::Key).to receive(:find).with(:public, anything).and_return([raw_key])
+
+      user_infos = described_class.user_infos_from_key(public_key)
+      expect(user_infos).to eq([{
+        name: 'Nannie Bernhard',
+        email: 'nannie.bernhard@example.com'
+      }])
+    end
+  end
+
+  describe '.current_home_dir' do
+    let(:default_home_dir) { GPGME::Engine.dirinfo('homedir') }
+
+    it 'returns the default value when no explicit home dir has been set' do
+      expect(described_class.current_home_dir).to eq default_home_dir
+    end
+
+    it 'returns the explicitely set home dir' do
+      GPGME::Engine.home_dir = '/tmp/gpg'
+
+      expect(described_class.current_home_dir).to eq '/tmp/gpg'
+
+      GPGME::Engine.home_dir = GPGME::Engine.dirinfo('homedir')
+    end
+
+    it 'returns the default value when explicitely setting the home dir to nil' do
+      GPGME::Engine.home_dir = nil
+
+      expect(described_class.current_home_dir).to eq default_home_dir
+    end
+  end
+
+  describe '.using_tmp_keychain' do
+    it "the second thread does not change the first thread's directory" do
+      thread1 = Thread.new do
+        described_class.using_tmp_keychain do
+          dir = described_class.current_home_dir
+          sleep 0.1
+          expect(described_class.current_home_dir).to eq dir
+        end
+      end
+
+      thread2 = Thread.new do
+        described_class.using_tmp_keychain do
+          sleep 0.2
+        end
+      end
+
+      thread1.join
+      thread2.join
+    end
+
+    it 'allows recursive execution in the same thread' do
+      expect do
+        described_class.using_tmp_keychain do
+          described_class.using_tmp_keychain do
+          end
+        end
+      end.not_to raise_error(ThreadError)
+    end
   end
 end
 

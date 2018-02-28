@@ -13,7 +13,7 @@ module Groups
         # Execute the destruction of the models immediately to ensure atomic cleanup.
         # Skip repository removal because we remove directory with namespace
         # that contain all these repositories
-        ::Projects::DestroyService.new(project, current_user, skip_repo: true).execute
+        ::Projects::DestroyService.new(project, current_user, skip_repo: project.legacy_storage?).execute
       end
 
       group.children.each do |group|

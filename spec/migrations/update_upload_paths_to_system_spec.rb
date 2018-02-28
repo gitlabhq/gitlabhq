@@ -11,7 +11,7 @@ describe UpdateUploadPathsToSystem do
   describe "#uploads_to_switch_to_new_path" do
     it "contains only uploads with the old path for the correct models" do
       _upload_for_other_type = create(:upload, model: create(:ci_pipeline), path: "uploads/ci_pipeline/avatar.jpg")
-      _upload_with_system_path = create(:upload, model: create(:project), path: "uploads/system/project/avatar.jpg")
+      _upload_with_system_path = create(:upload, model: create(:project), path: "uploads/-/system/project/avatar.jpg")
       _upload_with_other_path = create(:upload, model: create(:project), path: "thelongsecretforafileupload/avatar.jpg")
       old_upload = create(:upload, model: create(:project), path: "uploads/project/avatar.jpg")
       group_upload = create(:upload, model: create(:group), path: "uploads/group/avatar.jpg")
@@ -23,7 +23,7 @@ describe UpdateUploadPathsToSystem do
   describe "#uploads_to_switch_to_old_path" do
     it "contains only uploads with the new path for the correct models" do
       _upload_for_other_type = create(:upload, model: create(:ci_pipeline), path: "uploads/ci_pipeline/avatar.jpg")
-      upload_with_system_path = create(:upload, model: create(:project), path: "uploads/system/project/avatar.jpg")
+      upload_with_system_path = create(:upload, model: create(:project), path: "uploads/-/system/project/avatar.jpg")
       _upload_with_other_path = create(:upload, model: create(:project), path: "thelongsecretforafileupload/avatar.jpg")
       _old_upload = create(:upload, model: create(:project), path: "uploads/project/avatar.jpg")
 
@@ -37,13 +37,13 @@ describe UpdateUploadPathsToSystem do
 
       migration.up
 
-      expect(old_upload.reload.path).to eq("uploads/system/project/avatar.jpg")
+      expect(old_upload.reload.path).to eq("uploads/-/system/project/avatar.jpg")
     end
   end
 
   describe "#down", truncate: true do
     it "updates the new system patsh to the old paths" do
-      new_upload = create(:upload, model: create(:project), path: "uploads/system/project/avatar.jpg")
+      new_upload = create(:upload, model: create(:project), path: "uploads/-/system/project/avatar.jpg")
 
       migration.down
 

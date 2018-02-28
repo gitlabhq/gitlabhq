@@ -1,6 +1,6 @@
 /* global Shortcuts */
 describe('Shortcuts', () => {
-  const fixtureName = 'issues/issue_with_comment.html.raw';
+  const fixtureName = 'merge_requests/diff_comment.html.raw';
   const createEvent = (type, target) => $.Event(type, {
     target,
   });

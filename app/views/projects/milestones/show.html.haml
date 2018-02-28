@@ -1,4 +1,6 @@
 - @no_container = true
+- add_to_breadcrumbs "Milestones", project_milestones_path(@project)
+- breadcrumb_title @milestone.title
 - page_title       @milestone.title, "Milestones"
 - page_description @milestone.description
 = render "shared/mr_head"

@@ -59,7 +59,7 @@ module API
         end
         get route do
           options = {
-            featured: declared(params).popular.present? ? true : nil
+            featured: declared(params)[:popular].present? ? true : nil
           }
           present Licensee::License.all(options), with: ::API::Entities::RepoLicense
         end
@@ -76,7 +76,7 @@ module API
           requires :name, type: String, desc: 'The name of the template'
         end
         get route, requirements: { name: /[\w\.-]+/ } do
-          not_found!('License') unless Licensee::License.find(declared(params).name)
+          not_found!('License') unless Licensee::License.find(declared(params)[:name])
 
           template = parsed_license_template
 
@@ -111,7 +111,7 @@ module API
             requires :name, type: String, desc: 'The name of the template'
           end
           get route do
-            new_template = klass.find(declared(params).name)
+            new_template = klass.find(declared(params)[:name])
 
             render_response(template_type, new_template)
           end

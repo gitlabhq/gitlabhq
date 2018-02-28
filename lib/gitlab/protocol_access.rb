@@ -1,5 +1,7 @@
 module Gitlab
   module ProtocolAccess
+    extend Gitlab::CurrentSettings
+
     def self.allowed?(protocol)
       if protocol == 'web'
         true

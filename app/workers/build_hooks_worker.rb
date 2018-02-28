@@ -1,6 +1,8 @@
 class BuildHooksWorker
   include Sidekiq::Worker
-  include BuildQueue
+  include PipelineQueue
+
+  enqueue_in group: :hooks
 
   def perform(build_id)
     Ci::Build.find_by(id: build_id)

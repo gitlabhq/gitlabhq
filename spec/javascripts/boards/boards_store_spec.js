@@ -4,6 +4,7 @@
 /* global listObj */
 /* global listObjDuplicate */
 /* global ListIssue */
+/* global mockBoardService */
 
 import Vue from 'vue';
 import Cookies from 'js-cookie';
@@ -20,7 +21,7 @@ import './mock_data';
 describe('Store', () => {
   beforeEach(() => {
     Vue.http.interceptors.push(boardsMockInterceptor);
-    gl.boardService = new BoardService('/test/issue-boards/board', '', '1');
+    gl.boardService = mockBoardService();
     gl.issueBoards.BoardsStore.create();
 
     spyOn(gl.boardService, 'moveIssue').and.callFake(() => new Promise((resolve) => {
@@ -78,7 +79,7 @@ describe('Store', () => {
     it('persists new list', (done) => {
       gl.issueBoards.BoardsStore.new({
         title: 'Test',
-        type: 'label',
+        list_type: 'label',
         label: {
           id: 1,
           title: 'Testing',
@@ -210,6 +211,7 @@ describe('Store', () => {
     it('moves issue in list', (done) => {
       const issue = new ListIssue({
         title: 'Testing',
+        id: 2,
         iid: 2,
         confidential: false,
         labels: [],

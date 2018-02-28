@@ -42,7 +42,7 @@ feature 'Profile > GPG Keys' do
 
   scenario 'User revokes a key via the key index' do
     gpg_key = create :gpg_key, user: user, key: GpgHelpers::User2.public_key
-    gpg_signature = create :gpg_signature, gpg_key: gpg_key, valid_signature: true
+    gpg_signature = create :gpg_signature, gpg_key: gpg_key, verification_status: :verified
 
     visit profile_gpg_keys_path
 
@@ -51,7 +51,7 @@ feature 'Profile > GPG Keys' do
     expect(page).to have_content('Your GPG keys (0)')
 
     expect(gpg_signature.reload).to have_attributes(
-      valid_signature: false,
+      verification_status: 'unknown_key',
       gpg_key: nil
     )
   end

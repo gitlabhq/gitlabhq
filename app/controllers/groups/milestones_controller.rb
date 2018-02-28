@@ -35,13 +35,13 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def edit
-    render_404 if @milestone.is_legacy_group_milestone?
+    render_404 if @milestone.legacy_group_milestone?
   end
 
   def update
     # Keep this compatible with legacy group milestones where we have to update
     # all projects milestones states at once.
-    if @milestone.is_legacy_group_milestone?
+    if @milestone.legacy_group_milestone?
       update_params = milestone_params.select { |key| key == "state_event" }
       milestones = @milestone.milestones
     else
@@ -67,7 +67,7 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def milestone_path
-    if @milestone.is_legacy_group_milestone?
+    if @milestone.legacy_group_milestone?
       group_milestone_path(group, @milestone.safe_title, title: @milestone.title)
     else
       group_milestone_path(group, @milestone.iid)

@@ -13,7 +13,6 @@ Bitbucket.org account
 - [External issue tracker](external-issue-tracker.md) Redmine, JIRA, etc.
 - [Gmail actions buttons](gmail_action_buttons_for_gitlab.md) Adds GitLab actions to messages
 - [JIRA](../user/project/integrations/jira.md) Integrate with the JIRA issue tracker
-- [Koding](../administration/integration/koding.md) Configure Koding to use IDE integration
 - [LDAP](ldap.md) Set up sign in via LDAP
 - [OAuth2 provider](oauth_provider.md) OAuth2 application creation
 - [OmniAuth](omniauth.md) Sign in via Twitter, GitHub, GitLab.com, Google, Bitbucket, Facebook, Shibboleth, SAML, Crowd, Azure and Authentiq ID

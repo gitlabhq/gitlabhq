@@ -52,6 +52,13 @@ describe MergeRequests::CloseService do
       end
     end
 
+    it 'refreshes the number of open merge requests for a valid MR' do
+      service = described_class.new(project, user, {})
+
+      expect { service.execute(merge_request) }
+        .to change { project.open_merge_requests_count }.from(1).to(0)
+    end
+
     context 'current user is not authorized to close merge request' do
       before do
         perform_enqueued_jobs do

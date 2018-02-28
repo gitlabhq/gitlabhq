@@ -16,7 +16,7 @@ module Gitlab
         @deletions = 0
         @total = 0
 
-        diff = commit.diff_from_parent
+        diff = commit.rugged_diff_from_parent
 
         diff.each_patch do |p|
           # TODO: Use the new Rugged convenience methods when they're released

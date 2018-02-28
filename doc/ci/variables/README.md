@@ -57,6 +57,7 @@ future GitLab releases.**
 | **CI_RUNNER_TAGS**              | 8.10   | 0.5    | The defined runner tags |
 | **CI_PIPELINE_ID**              | 8.10   | 0.5    | The unique id of the current pipeline that GitLab CI uses internally |
 | **CI_PIPELINE_TRIGGERED**       | all    | all    | The flag to indicate that job was [triggered] |
+| **CI_PIPELINE_SOURCE**          | 10.0   | all    | The source for this pipeline, one of: push, web, trigger, schedule, api, external. Pipelines created before 9.5 will have unknown as source |
 | **CI_PROJECT_DIR**              | all    | all    | The full path where the repository is cloned and where the job is run |
 | **CI_PROJECT_ID**               | all    | all    | The unique id of the current project that GitLab CI uses internally |
 | **CI_PROJECT_NAME**             | 8.10   | 0.5    | The project name that is currently being built (actually it is project folder name) |
@@ -77,6 +78,8 @@ future GitLab releases.**
 | **GITLAB_CI**                   | all    | all    | Mark that job is executed in GitLab CI environment |
 | **GITLAB_USER_ID**              | 8.12   | all    | The id of the user who started the job |
 | **GITLAB_USER_EMAIL**           | 8.12   | all    | The email of the user who started the job |
+| **GITLAB_USER_LOGIN**           | 10.0   | all    | The login username of the user who started the job |
+| **GITLAB_USER_NAME**            | 10.0   | all    | The real name of the user who started the job |
 | **RESTORE_CACHE_ATTEMPTS**      | 8.15   | 1.9    | Number of attempts to restore the cache running a job |
 
 ## 9.0 Renaming
@@ -84,6 +87,11 @@ future GitLab releases.**
 To follow conventions of naming across GitLab, and to futher move away from the
 `build` term and toward `job` CI variables have been renamed for the 9.0
 release.
+
+>**Note:**
+Starting with GitLab 9.0, we have deprecated the `$CI_BUILD_*` variables. **You are
+strongly advised to use the new variables as we will remove the old ones in
+future GitLab releases.**
 
 | 8.x name              | 9.0+ name               |
 | --------------------- |------------------------ |

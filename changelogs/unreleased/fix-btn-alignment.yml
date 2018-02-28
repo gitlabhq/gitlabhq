@@ -1,0 +1,5 @@
+---
+title: Fix inconsistent spacing for edit buttons on issues and merge request page
+merge_request:
+author:
+type: fixed

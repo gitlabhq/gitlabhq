@@ -106,7 +106,7 @@ Example response:
 Creates a new deploy key for a project.
 
 If the deploy key already exists in another project, it will be joined to current
-project only if original one was is accessible by the same user.
+project only if original one is accessible by the same user.
 
 ```
 POST /projects/:id/deploy_keys

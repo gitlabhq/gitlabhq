@@ -42,7 +42,7 @@ class Issue {
   initIssueBtnEventListeners() {
     const issueFailMessage = 'Unable to update this issue at this time.';
 
-    return $(document).on('click', 'a.btn-close, a.btn-reopen', (e) => {
+    return $(document).on('click', '.js-issuable-actions a.btn-close, .js-issuable-actions a.btn-reopen', (e) => {
       var $button, shouldSubmit, url;
       e.preventDefault();
       e.stopImmediatePropagation();
@@ -66,15 +66,14 @@ class Issue {
         const projectIssuesCounter = $('.issue_counter');
 
         if ('id' in data) {
-          $(document).trigger('issuable:change');
-
           const isClosed = $button.hasClass('btn-close');
           isClosedBadge.toggleClass('hidden', !isClosed);
           isOpenBadge.toggleClass('hidden', isClosed);
 
+          $(document).trigger('issuable:change', isClosed);
           this.toggleCloseReopenButton(isClosed);
 
-          let numProjectIssues = Number(projectIssuesCounter.text().replace(/[^\d]/, ''));
+          let numProjectIssues = Number(projectIssuesCounter.first().text().trim().replace(/[^\d]/, ''));
           numProjectIssues = isClosed ? numProjectIssues - 1 : numProjectIssues + 1;
           projectIssuesCounter.text(gl.text.addDelimiter(numProjectIssues));
 
@@ -121,7 +120,7 @@ class Issue {
   static submitNoteForm(form) {
     var noteText;
     noteText = form.find("textarea.js-note-text").val();
-    if (noteText.trim().length > 0) {
+    if (noteText && noteText.trim().length > 0) {
       return form.submit();
     }
   }

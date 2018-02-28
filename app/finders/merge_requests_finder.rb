@@ -16,6 +16,7 @@
 #     label_name: string
 #     sort: string
 #     non_archived: boolean
+#     my_reaction_emoji: string
 #
 class MergeRequestsFinder < IssuableFinder
   def klass

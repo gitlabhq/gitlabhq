@@ -31,6 +31,10 @@
         "web_url": { "type": "uri" }
       },
       "additionalProperties": false
+    },
+    "variables": {
+      "type": ["array", "null"],
+      "items": { "$ref": "pipeline_schedule_variable.json" }
     }
   },
   "required": [

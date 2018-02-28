@@ -274,9 +274,7 @@ session -  and even a multiplexer like `screen` or `tmux`!
 >**Note:**
 Container-based deployments often lack basic tools (like an editor), and may
 be stopped or restarted at any time. If this happens, you will lose all your
-changes! Treat this as a debugging tool, not a comprehensive online IDE. You
-can use [Koding](../administration/integration/koding.md) for online
-development.
+changes! Treat this as a debugging tool, not a comprehensive online IDE.
 
 ---
 
@@ -607,10 +605,9 @@ exist, you should see something like:
 - With GitLab 9.2, all deployments to an environment are shown directly on the
   monitoring dashboard
 
-If you have enabled Prometheus for collecting metrics, you can monitor the performance behavior of your app
-through the environments.
+If you have enabled [Prometheus for monitoring system and response metrics](https://docs.gitlab.com/ee/user/project/integrations/prometheus.html), you can monitor the performance behavior of your app running in each environment.
 
-Once configured, GitLab will attempt to retrieve performance metrics for any
+Once configured, GitLab will attempt to retrieve [supported performance metrics](https://docs.gitlab.com/ee/user/project/integrations/prometheus_library/metrics.html) for any
 environment which has had a successful deployment. If monitoring data was
 successfully retrieved, a Monitoring button will appear on the environment's
 detail page.

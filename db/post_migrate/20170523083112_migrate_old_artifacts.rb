@@ -7,7 +7,7 @@ class MigrateOldArtifacts < ActiveRecord::Migration
 
   # This uses special heuristic to find potential candidates for data migration
   # Read more about this here: https://gitlab.com/gitlab-org/gitlab-ce/issues/32036#note_30422345
-  
+
   def up
     builds_with_artifacts.find_each do |build|
       build.migrate_artifacts!
@@ -51,14 +51,14 @@ class MigrateOldArtifacts < ActiveRecord::Migration
     private
 
     def source_artifacts_path
-      @source_artifacts_path ||= 
+      @source_artifacts_path ||=
         File.join(Gitlab.config.artifacts.path,
           created_at.utc.strftime('%Y_%m'),
           ci_id.to_s, id.to_s)
     end
 
     def target_artifacts_path
-      @target_artifacts_path ||= 
+      @target_artifacts_path ||=
         File.join(Gitlab.config.artifacts.path,
           created_at.utc.strftime('%Y_%m'),
           project_id.to_s, id.to_s)

@@ -24,6 +24,8 @@ class KubernetesService < DeploymentService
     validates :token
   end
 
+  before_validation :enforce_namespace_to_lower_case
+
   validates :namespace,
     allow_blank: true,
     length: 1..63,
@@ -206,5 +208,9 @@ class KubernetesService < DeploymentService
       ca_pem: ca_pem,
       max_session_time: current_application_settings.terminal_max_session_time
     }
+  end
+
+  def enforce_namespace_to_lower_case
+    self.namespace = self.namespace&.downcase
   end
 end

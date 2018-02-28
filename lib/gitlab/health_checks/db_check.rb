@@ -10,7 +10,7 @@ module Gitlab
           'db_ping'
         end
 
-        def is_successful?(result)
+        def successful?(result)
           result == '1'
         end
 

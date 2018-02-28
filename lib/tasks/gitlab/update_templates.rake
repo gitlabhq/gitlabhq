@@ -21,12 +21,17 @@ namespace :gitlab do
       params = {
         import_url: template.clone_url,
         namespace_id: admin.namespace.id,
-        path: template.title,
+        path: template.name,
         skip_wiki: true
       }
 
-      puts "Creating project for #{template.name}"
+      puts "Creating project for #{template.title}"
       project = Projects::CreateService.new(admin, params).execute
+
+      unless project.persisted?
+        puts project.errors.messages
+        exit(1)
+      end
 
       loop do
         if project.finished?

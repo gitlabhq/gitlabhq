@@ -64,10 +64,13 @@ gl.issueBoards.IssueCardInner = Vue.extend({
       return this.issue.assignees.length > this.numberOverLimit;
     },
     cardUrl() {
-      return `${this.issueLinkBase}/${this.issue.id}`;
+      return `${this.issueLinkBase}/${this.issue.iid}`;
     },
     issueId() {
-      return `#${this.issue.id}`;
+      if (this.issue.iid) {
+        return `#${this.issue.iid}`;
+      }
+      return false;
     },
     showLabelFooter() {
       return this.issue.labels.find(l => this.showLabel(l)) !== undefined;
@@ -97,7 +100,7 @@ gl.issueBoards.IssueCardInner = Vue.extend({
       return `Avatar for ${assignee.name}`;
     },
     showLabel(label) {
-      if (!this.list || !label) return true;
+      if (!label.id) return false;
       return true;
     },
     filterByLabel(label, e) {
@@ -143,7 +146,7 @@ gl.issueBoards.IssueCardInner = Vue.extend({
             :title="issue.title">{{ issue.title }}</a>
           <span
             class="card-number"
-            v-if="issue.id"
+            v-if="issueId"
           >
             {{ issueId }}
           </span>

@@ -17,17 +17,34 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "\n"
 
-msgid "%s additional commit has been omitted to prevent performance issues."
-msgid_plural "%s additional commits have been omitted to prevent performance issues."
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d commit"
 msgid_plural "%d commits"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%s additional commit has been omitted to prevent performance issues."
+msgid_plural "%s additional commits have been omitted to prevent performance issues."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{commit_author_link} committed %{commit_timeago}"
+msgstr ""
+
+msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
+msgstr ""
+
+msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will block access for %{number_of_seconds} seconds."
+msgstr ""
+
+msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will not retry automatically. Reset storage information when the problem is resolved."
+msgstr ""
+
+msgid "%{storage_name}: failed storage access attempt on host:"
+msgid_plural "%{storage_name}: %{failed_attempts} failed storage access attempts:"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "(checkout the %{link} for information on how to install it)."
 msgstr ""
 
 msgid "1 pipeline"
@@ -39,6 +56,9 @@ msgid "A collection of graphs regarding Continuous Integration"
 msgstr ""
 
 msgid "About auto deploy"
+msgstr ""
+
+msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
 msgstr ""
 
 msgid "Active"
@@ -66,6 +86,18 @@ msgid "Archived project! Repository is read-only"
 msgstr ""
 
 msgid "Are you sure you want to delete this pipeline schedule?"
+msgstr ""
+
+msgid "Are you sure you want to discard your changes?"
+msgstr ""
+
+msgid "Are you sure you want to reset registration token?"
+msgstr ""
+
+msgid "Are you sure you want to reset the health check token?"
+msgstr ""
+
+msgid "Are you sure?"
 msgstr ""
 
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
@@ -107,6 +139,9 @@ msgid "CI configuration"
 msgstr ""
 
 msgid "Cancel"
+msgstr ""
+
+msgid "Cancel edit"
 msgstr ""
 
 msgid "ChangeTypeActionLabel|Pick into branch"
@@ -234,6 +269,9 @@ msgstr ""
 msgid "Create New Directory"
 msgstr ""
 
+msgid "Create a new branch"
+msgstr ""
+
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
 msgstr ""
 
@@ -311,7 +349,13 @@ msgstr[1] ""
 msgid "Description"
 msgstr ""
 
+msgid "Details"
+msgstr ""
+
 msgid "Directory name"
+msgstr ""
+
+msgid "Discard changes"
 msgstr ""
 
 msgid "Don't show again"
@@ -397,10 +441,34 @@ msgstr ""
 msgid "From merge request merge until deploy to production"
 msgstr ""
 
+msgid "Git storage health information has been reset"
+msgstr ""
+
+msgid "GitLab Runner section"
+msgstr ""
+
 msgid "Go to your fork"
 msgstr ""
 
 msgid "GoToYourFork|Fork"
+msgstr ""
+
+msgid "Health Check"
+msgstr ""
+
+msgid "Health information can be retrieved from the following endpoints. More information is available"
+msgstr ""
+
+msgid "HealthCheck|Access token is"
+msgstr ""
+
+msgid "HealthCheck|Healthy"
+msgstr ""
+
+msgid "HealthCheck|No Health Problems Detected"
+msgstr ""
+
+msgid "HealthCheck|Unhealthy"
 msgstr ""
 
 msgid "Home"
@@ -410,6 +478,9 @@ msgid "Housekeeping successfully started"
 msgstr ""
 
 msgid "Import repository"
+msgstr ""
+
+msgid "Install a Runner compatible with GitLab CI"
 msgstr ""
 
 msgid "Interval Pattern"
@@ -468,6 +539,9 @@ msgid "Median"
 msgstr ""
 
 msgid "MissingSSHKeyWarningLink|add an SSH key"
+msgstr ""
+
+msgid "More information is available|here"
 msgstr ""
 
 msgid "New Issue"
@@ -682,6 +756,9 @@ msgstr ""
 msgid "Project access must be granted explicitly to each user."
 msgstr ""
 
+msgid "Project details"
+msgstr ""
+
 msgid "Project export could not be deleted."
 msgstr ""
 
@@ -754,7 +831,19 @@ msgstr ""
 msgid "Remove project"
 msgstr ""
 
+msgid "Repository"
+msgstr ""
+
 msgid "Request Access"
+msgstr ""
+
+msgid "Reset git storage health information"
+msgstr ""
+
+msgid "Reset health check access token"
+msgstr ""
+
+msgid "Reset runners registration token"
 msgstr ""
 
 msgid "Revert this commit"
@@ -779,6 +868,9 @@ msgid "Select Archive Format"
 msgstr ""
 
 msgid "Select a timezone"
+msgstr ""
+
+msgid "Select existing branch"
 msgstr ""
 
 msgid "Select target branch"
@@ -807,10 +899,16 @@ msgstr[1] ""
 msgid "Source code"
 msgstr ""
 
+msgid "Specify the following URL during the Runner setup:"
+msgstr ""
+
 msgid "StarProject|Star"
 msgstr ""
 
 msgid "Start a %{new_merge_request} with these changes"
+msgstr ""
+
+msgid "Start the Runner!"
 msgstr ""
 
 msgid "Switch branch/tag"
@@ -873,6 +971,9 @@ msgid "The time taken by each data entry gathered by that stage."
 msgstr ""
 
 msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
+msgstr ""
+
+msgid "There are problems accessing Git storage: "
 msgstr ""
 
 msgid "This means you can not push code until you create an empty repository or import existing one."
@@ -1044,6 +1145,9 @@ msgstr ""
 msgid "UploadLink|click to upload"
 msgstr ""
 
+msgid "Use the following registration token during setup:"
+msgstr ""
+
 msgid "Use your global notification setting"
 msgstr ""
 
@@ -1059,6 +1163,9 @@ msgstr ""
 msgid "VisibilityLevel|Public"
 msgstr ""
 
+msgid "VisibilityLevel|Unknown"
+msgstr ""
+
 msgid "Want to see the data? Please ask an administrator for access."
 msgstr ""
 
@@ -1068,16 +1175,10 @@ msgstr ""
 msgid "Withdraw Access Request"
 msgstr ""
 
-msgid ""
-"You are going to remove %{group_name}.\n"
-"Removed groups CANNOT be restored!\n"
-"Are you ABSOLUTELY sure?"
+msgid "You are going to remove %{group_name}. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?"
 msgstr ""
 
-msgid ""
-"You are going to remove %{project_name_with_namespace}.\n"
-"Removed project CANNOT be restored!\n"
-"Are you ABSOLUTELY sure?"
+msgid "You are going to remove %{project_name_with_namespace}. Removed project CANNOT be restored! Are you ABSOLUTELY sure?"
 msgstr ""
 
 msgid "You are going to remove the fork relationship to source project %{forked_from_project}. Are you ABSOLUTELY sure?"

@@ -1,8 +1,7 @@
 /* eslint-disable func-names, wrap-iife, no-use-before-define,
 consistent-return, prefer-rest-params */
-/* global Breakpoints */
-
 import _ from 'underscore';
+import bp from './breakpoints';
 import { bytesToKiB } from './lib/utils/number_utils';
 
 window.Build = (function () {
@@ -34,8 +33,6 @@ window.Build = (function () {
     this.$scrollBottomBtn = $('.js-scroll-down');
 
     clearTimeout(Build.timeout);
-    // Init breakpoint checker
-    this.bp = Breakpoints.get();
 
     this.initSidebar();
     this.populateJobs(this.buildStage);
@@ -230,7 +227,7 @@ window.Build = (function () {
   };
 
   Build.prototype.shouldHideSidebarForViewport = function () {
-    const bootstrapBreakpoint = this.bp.getBreakpointSize();
+    const bootstrapBreakpoint = bp.getBreakpointSize();
     return bootstrapBreakpoint === 'xs' || bootstrapBreakpoint === 'sm';
   };
 

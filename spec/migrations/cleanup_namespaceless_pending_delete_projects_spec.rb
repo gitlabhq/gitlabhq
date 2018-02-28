@@ -4,7 +4,7 @@ require Rails.root.join('db', 'post_migrate', '20170502101023_cleanup_namespacel
 describe CleanupNamespacelessPendingDeleteProjects do
   before do
     # Stub after_save callbacks that will fail when Project has no namespace
-    allow_any_instance_of(Project).to receive(:ensure_storage_path_exist).and_return(nil)
+    allow_any_instance_of(Project).to receive(:ensure_storage_path_exists).and_return(nil)
     allow_any_instance_of(Project).to receive(:update_project_statistics).and_return(nil)
   end
 

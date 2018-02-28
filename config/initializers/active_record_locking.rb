@@ -18,7 +18,7 @@ module ActiveRecord
 
         lock_col = self.class.locking_column
 
-        previous_lock_value = send(lock_col).to_i
+        previous_lock_value = send(lock_col).to_i # rubocop:disable GitlabSecurity/PublicSend
 
         # This line is added as a patch
         previous_lock_value = nil if previous_lock_value == '0' || previous_lock_value == 0
@@ -48,7 +48,7 @@ module ActiveRecord
 
         # If something went wrong, revert the version.
         rescue Exception
-          send(lock_col + '=', previous_lock_value)
+          send(lock_col + '=', previous_lock_value)  # rubocop:disable GitlabSecurity/PublicSend
           raise
         end
       end

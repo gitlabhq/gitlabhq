@@ -2,8 +2,10 @@ require 'spec_helper'
 
 describe MergeRequests::CreateFromIssueService do
   let(:project) { create(:project, :repository) }
-  let(:user)    { create(:user) }
-  let(:issue)   { create(:issue, project: project) }
+  let(:user) { create(:user) }
+  let(:label_ids) { create_pair(:label, project: project).map(&:id) }
+  let(:milestone_id) { create(:milestone, project: project).id }
+  let(:issue) { create(:issue, project: project, milestone_id: milestone_id) }
 
   subject(:service) { described_class.new(project, user, issue_iid: issue.iid) }
 
@@ -23,6 +25,20 @@ describe MergeRequests::CreateFromIssueService do
       expect_any_instance_of(IssuesFinder).to receive(:execute).once.and_call_original
 
       described_class.new(project, user, issue_iid: -1).execute
+    end
+
+    it "inherits labels" do
+      issue.assign_attributes(label_ids: label_ids)
+
+      result = service.execute
+
+      expect(result[:merge_request].label_ids).to eq(label_ids)
+    end
+
+    it "inherits milestones" do
+      result = service.execute
+
+      expect(result[:merge_request].milestone_id).to eq(milestone_id)
     end
 
     it 'delegates the branch creation to CreateBranchService' do

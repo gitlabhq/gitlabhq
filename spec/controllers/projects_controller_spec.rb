@@ -7,6 +7,38 @@ describe ProjectsController do
   let(:jpg) { fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg') }
   let(:txt) { fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain') }
 
+  describe 'GET new' do
+    context 'with an authenticated user' do
+      let(:group) { create(:group) }
+
+      before do
+        sign_in(user)
+      end
+
+      context 'when namespace_id param is present' do
+        context 'when user has access to the namespace' do
+          it 'renders the template' do
+            group.add_owner(user)
+
+            get :new, namespace_id: group.id
+
+            expect(response).to have_http_status(200)
+            expect(response).to render_template('new')
+          end
+        end
+
+        context 'when user does not have access to the namespace' do
+          it 'responds with status 404' do
+            get :new, namespace_id: group.id
+
+            expect(response).to have_http_status(404)
+            expect(response).not_to render_template('new')
+          end
+        end
+      end
+    end
+  end
+
   describe 'GET index' do
     context 'as a user' do
       it 'redirects to root page' do
@@ -574,6 +606,118 @@ describe ProjectsController do
 
           expect(response).to have_http_status(404)
         end
+      end
+    end
+  end
+
+  describe '#export' do
+    before do
+      sign_in(user)
+
+      project.add_master(user)
+    end
+
+    context 'when project export is enabled' do
+      it 'returns 302' do
+        get :export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'when project export is disabled' do
+      before do
+        stub_application_setting(project_export_enabled?: false)
+      end
+
+      it 'returns 404' do
+        get :export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
+
+  describe '#download_export' do
+    before do
+      sign_in(user)
+
+      project.add_master(user)
+    end
+
+    context 'when project export is enabled' do
+      it 'returns 302' do
+        get :download_export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'when project export is disabled' do
+      before do
+        stub_application_setting(project_export_enabled?: false)
+      end
+
+      it 'returns 404' do
+        get :download_export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
+
+  describe '#remove_export' do
+    before do
+      sign_in(user)
+
+      project.add_master(user)
+    end
+
+    context 'when project export is enabled' do
+      it 'returns 302' do
+        post :remove_export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'when project export is disabled' do
+      before do
+        stub_application_setting(project_export_enabled?: false)
+      end
+
+      it 'returns 404' do
+        post :remove_export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
+
+  describe '#generate_new_export' do
+    before do
+      sign_in(user)
+
+      project.add_master(user)
+    end
+
+    context 'when project export is enabled' do
+      it 'returns 302' do
+        post :generate_new_export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'when project export is disabled' do
+      before do
+        stub_application_setting(project_export_enabled?: false)
+      end
+
+      it 'returns 404' do
+        post :generate_new_export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(404)
       end
     end
   end

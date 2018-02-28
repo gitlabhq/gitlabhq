@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::PagesController do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public, :access_requestable) }
+  let(:project) { create(:project, :public) }
 
   let(:request_params) do
     {
@@ -22,6 +22,17 @@ describe Projects::PagesController do
       get :show, request_params
 
       expect(response).to have_http_status(200)
+    end
+
+    context 'when the project is in a subgroup' do
+      let(:group) { create(:group, :nested) }
+      let(:project) { create(:project, namespace: group) }
+
+      it 'returns a 404 status code' do
+        get :show, request_params
+
+        expect(response).to have_http_status(404)
+      end
     end
   end
 

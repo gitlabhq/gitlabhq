@@ -41,7 +41,7 @@ module Github
 
       def remove!(name)
         repository.delete_branch(name)
-      rescue Rugged::ReferenceError => e
+      rescue Gitlab::Git::Repository::DeleteBranchError => e
         Rails.logger.error("#{self.class.name}: Could not remove branch #{name}: #{e}")
       end
 

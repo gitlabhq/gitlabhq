@@ -1,6 +1,18 @@
 require 'securerandom'
 
 class Repository
+  REF_MERGE_REQUEST = 'merge-requests'.freeze
+  REF_KEEP_AROUND = 'keep-around'.freeze
+  REF_ENVIRONMENTS = 'environments'.freeze
+
+  RESERVED_REFS_NAMES = %W[
+    heads
+    tags
+    #{REF_ENVIRONMENTS}
+    #{REF_KEEP_AROUND}
+    #{REF_ENVIRONMENTS}
+  ].freeze
+
   include Gitlab::ShellAdapter
   include RepositoryMirroring
 
@@ -8,7 +20,6 @@ class Repository
 
   delegate :ref_name_for_sha, to: :raw_repository
 
-  CommitError = Class.new(StandardError)
   CreateTreeError = Class.new(StandardError)
 
   # Methods that cache data from the Git repository.
@@ -48,7 +59,9 @@ class Repository
     alias_method(original, name)
 
     define_method(name) do
-      cache_method_output(name, fallback: fallback, memoize_only: memoize_only) { __send__(original) }
+      cache_method_output(name, fallback: fallback, memoize_only: memoize_only) do
+        __send__(original) # rubocop:disable GitlabSecurity/PublicSend
+      end
     end
   end
 
@@ -58,11 +71,17 @@ class Repository
     @project = project
   end
 
+  def ==(other)
+    @disk_path == other.disk_path
+  end
+
   def raw_repository
     return nil unless full_path
 
     @raw_repository ||= initialize_raw_repository
   end
+
+  alias_method :raw, :raw_repository
 
   # Return absolute path to repository
   def path_to_repo
@@ -71,17 +90,8 @@ class Repository
     )
   end
 
-  #
-  # Git repository can contains some hidden refs like:
-  #   /refs/notes/*
-  #   /refs/git-as-svn/*
-  #   /refs/pulls/*
-  # This refs by default not visible in project page and not cloned to client side.
-  #
-  # This method return true if repository contains some content visible in project page.
-  #
-  def has_visible_content?
-    branch_count > 0
+  def inspect
+    "#<#{self.class.name}:#{@disk_path}>"
   end
 
   def commit(ref = 'HEAD')
@@ -156,32 +166,25 @@ class Repository
   end
 
   def add_branch(user, branch_name, ref)
-    newrev = commit(ref).try(:sha)
-
-    return false unless newrev
-
-    GitOperationService.new(user, self).add_branch(branch_name, newrev)
+    branch = raw_repository.add_branch(branch_name, committer: user, target: ref)
 
     after_create_branch
-    find_branch(branch_name)
+
+    branch
+  rescue Gitlab::Git::Repository::InvalidRef
+    false
   end
 
   def add_tag(user, tag_name, target, message = nil)
-    newrev = commit(target).try(:id)
-    options = { message: message, tagger: user_to_committer(user) } if message
-
-    return false unless newrev
-
-    GitOperationService.new(user, self).add_tag(tag_name, newrev, options)
-
-    find_tag(tag_name)
+    raw_repository.add_tag(tag_name, committer: user, target: target, message: message)
+  rescue Gitlab::Git::Repository::InvalidRef
+    false
   end
 
   def rm_branch(user, branch_name)
     before_remove_branch
-    branch = find_branch(branch_name)
 
-    GitOperationService.new(user, self).rm_branch(branch)
+    raw_repository.rm_branch(branch_name, committer: user)
 
     after_remove_branch
     true
@@ -189,9 +192,8 @@ class Repository
 
   def rm_tag(user, tag_name)
     before_remove_tag
-    tag = find_tag(tag_name)
 
-    GitOperationService.new(user, self).rm_tag(tag)
+    raw_repository.rm_tag(tag_name, committer: user)
 
     after_remove_tag
     true
@@ -202,12 +204,18 @@ class Repository
   end
 
   def branch_exists?(branch_name)
-    branch_names.include?(branch_name)
+    return false unless raw_repository
+
+    @branch_exists_memo ||= Hash.new do |hash, key|
+      hash[key] = raw_repository.branch_exists?(key)
+    end
+
+    @branch_exists_memo[branch_name]
   end
 
   def ref_exists?(ref)
-    rugged.references.exist?(ref)
-  rescue Rugged::ReferenceError
+    !!raw_repository&.ref_exists?(ref)
+  rescue ArgumentError
     false
   end
 
@@ -222,17 +230,21 @@ class Repository
 
     # This will still fail if the file is corrupted (e.g. 0 bytes)
     begin
-      rugged.references.create(keep_around_ref_name(sha), sha, force: true)
+      write_ref(keep_around_ref_name(sha), sha)
     rescue Rugged::ReferenceError => ex
-      Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
+      Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
     rescue Rugged::OSError => ex
       raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
-      Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
+      Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
     end
   end
 
   def kept_around?(sha)
     ref_exists?(keep_around_ref_name(sha))
+  end
+
+  def write_ref(ref_path, sha)
+    rugged.references.create(ref_path, sha, force: true)
   end
 
   def diverging_commit_counts(branch)
@@ -258,6 +270,7 @@ class Repository
   def expire_branches_cache
     expire_method_caches(%i(branch_names branch_count))
     @local_branches = nil
+    @branch_exists_memo = nil
   end
 
   def expire_statistics_caches
@@ -298,7 +311,7 @@ class Repository
 
     expire_method_caches(to_refresh)
 
-    to_refresh.each { |method| send(method) }
+    to_refresh.each { |method| send(method) } # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def expire_branch_cache(branch_name = nil)
@@ -437,9 +450,9 @@ class Repository
   def method_missing(m, *args, &block)
     if m == :lookup && !block_given?
       lookup_cache[m] ||= {}
-      lookup_cache[m][args.join(":")] ||= raw_repository.send(m, *args, &block)
+      lookup_cache[m][args.join(":")] ||= raw_repository.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     else
-      raw_repository.send(m, *args, &block)
+      raw_repository.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     end
   end
 
@@ -749,28 +762,42 @@ class Repository
     multi_action(**options)
   end
 
+  def with_branch(user, *args)
+    result = Gitlab::Git::OperationService.new(user, raw_repository).with_branch(*args) do |start_commit|
+      yield start_commit
+    end
+
+    newrev, should_run_after_create, should_run_after_create_branch = result
+
+    after_create if should_run_after_create
+    after_create_branch if should_run_after_create_branch
+
+    newrev
+  end
+
   # rubocop:disable Metrics/ParameterLists
   def multi_action(
     user:, branch_name:, message:, actions:,
     author_email: nil, author_name: nil,
     start_branch_name: nil, start_project: project)
 
-    GitOperationService.new(user, self).with_branch(
+    with_branch(
+      user,
       branch_name,
       start_branch_name: start_branch_name,
-      start_project: start_project) do |start_commit|
+      start_repository: start_project.repository.raw_repository) do |start_commit|
 
       index = Gitlab::Git::Index.new(raw_repository)
 
       if start_commit
-        index.read_tree(start_commit.raw_commit.tree)
+        index.read_tree(start_commit.rugged_commit.tree)
         parents = [start_commit.sha]
       else
         parents = []
       end
 
       actions.each do |options|
-        index.public_send(options.delete(:action), options)
+        index.public_send(options.delete(:action), options) # rubocop:disable GitlabSecurity/PublicSend
       end
 
       options = {
@@ -811,7 +838,8 @@ class Repository
   end
 
   def merge(user, source, merge_request, options = {})
-    GitOperationService.new(user, self).with_branch(
+    with_branch(
+      user,
       merge_request.target_branch) do |start_commit|
       our_commit = start_commit.sha
       their_commit = source
@@ -831,17 +859,18 @@ class Repository
       merge_request.update(in_progress_merge_commit_sha: commit_id)
       commit_id
     end
-  rescue Repository::CommitError # when merge_index.conflicts?
+  rescue Gitlab::Git::CommitError # when merge_index.conflicts?
     false
   end
 
   def revert(
     user, commit, branch_name,
     start_branch_name: nil, start_project: project)
-    GitOperationService.new(user, self).with_branch(
+    with_branch(
+      user,
       branch_name,
       start_branch_name: start_branch_name,
-      start_project: start_project) do |start_commit|
+      start_repository: start_project.repository.raw_repository) do |start_commit|
 
       revert_tree_id = check_revert_content(commit, start_commit.sha)
       unless revert_tree_id
@@ -861,10 +890,11 @@ class Repository
   def cherry_pick(
     user, commit, branch_name,
     start_branch_name: nil, start_project: project)
-    GitOperationService.new(user, self).with_branch(
+    with_branch(
+      user,
       branch_name,
       start_branch_name: start_branch_name,
-      start_project: start_project) do |start_commit|
+      start_repository: start_project.repository.raw_repository) do |start_commit|
 
       cherry_pick_tree_id = check_cherry_pick_content(commit, start_commit.sha)
       unless cherry_pick_tree_id
@@ -873,7 +903,7 @@ class Repository
 
       committer = user_to_committer(user)
 
-      create_commit(message: commit.message,
+      create_commit(message: commit.cherry_pick_message(user),
                     author: {
                         email: commit.author_email,
                         name: commit.author_name,
@@ -886,7 +916,7 @@ class Repository
   end
 
   def resolve_conflicts(user, branch_name, params)
-    GitOperationService.new(user, self).with_branch(branch_name) do
+    with_branch(user, branch_name) do
       committer = user_to_committer(user)
 
       create_commit(params.merge(author: committer, committer: committer))
@@ -929,7 +959,7 @@ class Repository
 
     if branch_commit
       same_head = branch_commit.id == root_ref_commit.id
-      !same_head && is_ancestor?(branch_commit.id, root_ref_commit.id)
+      !same_head && ancestor?(branch_commit.id, root_ref_commit.id)
     else
       nil
     end
@@ -943,12 +973,12 @@ class Repository
     nil
   end
 
-  def is_ancestor?(ancestor_id, descendant_id)
+  def ancestor?(ancestor_id, descendant_id)
     return false if ancestor_id.nil? || descendant_id.nil?
 
     Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
       if is_enabled
-        raw_repository.is_ancestor?(ancestor_id, descendant_id)
+        raw_repository.ancestor?(ancestor_id, descendant_id)
       else
         rugged_is_ancestor?(ancestor_id, descendant_id)
       end
@@ -976,30 +1006,6 @@ class Repository
     run_git(args).first.lines.map(&:strip)
   end
 
-  def with_repo_branch_commit(start_repository, start_branch_name)
-    return yield(nil) if start_repository.empty_repo?
-
-    branch_name_or_sha =
-      if start_repository == self
-        start_branch_name
-      else
-        tmp_ref = "refs/tmp/#{SecureRandom.hex}/head"
-
-        fetch_ref(
-          start_repository.path_to_repo,
-          "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
-          tmp_ref
-        )
-
-        start_repository.commit(start_branch_name).sha
-      end
-
-    yield(commit(branch_name_or_sha))
-
-  ensure
-    rugged.references.delete(tmp_ref) if tmp_ref
-  end
-
   def add_remote(name, url)
     raw_repository.remote_add(name, url)
   rescue Rugged::ConfigError
@@ -1014,12 +1020,15 @@ class Repository
   end
 
   def fetch_remote(remote, forced: false, no_tags: false)
-    gitlab_shell.fetch_remote(repository_storage_path, disk_path, remote, forced: forced, no_tags: no_tags)
+    gitlab_shell.fetch_remote(raw_repository, remote, forced: forced, no_tags: no_tags)
   end
 
-  def fetch_ref(source_path, source_ref, target_ref)
-    args = %W(fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
-    run_git(args)
+  def fetch_source_branch(source_repository, source_branch, local_ref)
+    raw_repository.fetch_source_branch(source_repository.raw_repository, source_branch, local_ref)
+  end
+
+  def compare_source_branch(target_branch_name, source_repository, source_branch_name, straight:)
+    raw_repository.compare_source_branch(target_branch_name, source_repository.raw_repository, source_branch_name, straight: straight)
   end
 
   def create_ref(ref, ref_path)
@@ -1100,12 +1109,6 @@ class Repository
 
   private
 
-  def run_git(args)
-    circuit_breaker.perform do
-      Gitlab::Popen.popen([Gitlab.config.git.bin_path, *args], path_to_repo)
-    end
-  end
-
   def blob_data_at(sha, path)
     blob = blob_at(sha, path)
     return unless blob
@@ -1141,7 +1144,7 @@ class Repository
   end
 
   def keep_around_ref_name(sha)
-    "refs/keep-around/#{sha}"
+    "refs/#{REF_KEEP_AROUND}/#{sha}"
   end
 
   def repository_event(event, tags = {})
@@ -1174,7 +1177,7 @@ class Repository
   end
 
   def initialize_raw_repository
-    Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git')
+    Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git', Gitlab::GlRepository.gl_repository(project, false))
   end
 
   def circuit_breaker

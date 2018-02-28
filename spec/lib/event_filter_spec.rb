@@ -5,7 +5,7 @@ describe EventFilter do
     let(:source_user) { create(:user) }
     let!(:public_project) { create(:project, :public) }
 
-    let!(:push_event)     { create(:event, :pushed,    project: public_project, target: public_project, author: source_user) }
+    let!(:push_event)     { create(:push_event,        project: public_project, author: source_user) }
     let!(:merged_event)   { create(:event, :merged,    project: public_project, target: public_project, author: source_user) }
     let!(:created_event)  { create(:event, :created,   project: public_project, target: public_project, author: source_user) }
     let!(:updated_event)  { create(:event, :updated,   project: public_project, target: public_project, author: source_user) }

@@ -42,6 +42,10 @@ GitLab does not recommend using EFS with GitLab.
   are allocated. For smaller volumes, users may experience decent performance
   for a period of time due to 'Burst Credits'. Over a period of weeks to months
   credits may run out and performance will bottom out.
+- To keep "Burst Credits" available, it may be necessary to provision more space
+  with 'dummy data'.  However, this may get expensive.
+- Another option to maintain "Burst Credits" is to use FS Cache on the server so
+  that AWS doesn't always have to go into EFS to access files.
 - For larger volumes, allocated IOPS may not be the problem. Workloads where
   many small files are written in a serialized manner are not well-suited for EFS.
   EBS with an NFS server on top will perform much better.

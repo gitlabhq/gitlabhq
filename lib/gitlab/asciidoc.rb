@@ -6,6 +6,8 @@ module Gitlab
   # Parser/renderer for the AsciiDoc format that uses Asciidoctor and filters
   # the resulting HTML through HTML pipeline filters.
   module Asciidoc
+    extend Gitlab::CurrentSettings
+
     DEFAULT_ADOC_ATTRS = [
       'showtitle', 'idprefix=user-content-', 'idseparator=-', 'env=gitlab',
       'env-gitlab', 'source-highlighter=html-pipeline', 'icons=font'

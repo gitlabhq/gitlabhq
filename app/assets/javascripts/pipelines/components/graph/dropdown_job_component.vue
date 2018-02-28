@@ -48,10 +48,31 @@
         return `${this.job.name} - ${this.job.status.label}`;
       },
     },
+
+    methods: {
+      /**
+     * When the user right clicks or cmd/ctrl + click in the job name
+     * the dropdown should not be closed and the link should open in another tab,
+     * so we stop propagation of the click event inside the dropdown.
+     *
+     * Since this component is rendered multiple times per page we need to guarantee we only
+     * target the click event of this component.
+     */
+      stopDropdownClickPropagation() {
+        $(this.$el.querySelectorAll('.js-grouped-pipeline-dropdown a.mini-pipeline-graph-dropdown-item'))
+          .on('click', (e) => {
+            e.stopPropagation();
+          });
+      },
+    },
+
+    mounted() {
+      this.stopDropdownClickPropagation();
+    },
   };
 </script>
 <template>
-  <div>
+  <div class="ci-job-dropdown-container">
     <button
       v-tooltip
       type="button"

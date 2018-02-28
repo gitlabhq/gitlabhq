@@ -10,7 +10,7 @@ module IssuableActions
   def destroy
     issuable.destroy
     destroy_method = "destroy_#{issuable.class.name.underscore}".to_sym
-    TodoService.new.public_send(destroy_method, issuable, current_user)
+    TodoService.new.public_send(destroy_method, issuable, current_user) # rubocop:disable GitlabSecurity/PublicSend
 
     name = issuable.human_class_name
     flash[:notice] = "The #{name} was successfully deleted."

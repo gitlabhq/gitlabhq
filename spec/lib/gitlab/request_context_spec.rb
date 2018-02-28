@@ -7,7 +7,7 @@ describe Gitlab::RequestContext do
     let(:env) { Hash.new }
 
     context 'when RequestStore::Middleware is used' do
-      around(:each) do |example|
+      around do |example|
         RequestStore::Middleware.new(-> (env) { example.run }).call({})
       end
 

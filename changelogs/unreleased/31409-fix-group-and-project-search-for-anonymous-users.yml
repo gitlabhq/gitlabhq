@@ -1,0 +1,5 @@
+---
+title: Fix group and project search for anonymous users
+merge_request: 13745
+author:
+type: fixed

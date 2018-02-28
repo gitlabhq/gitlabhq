@@ -9,7 +9,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       NOTEABLE_TYPES.each do |noteable_type|
         noteables_str = noteable_type.to_s.underscore.pluralize
 
@@ -129,17 +129,19 @@ module API
         end
         delete ":id/#{noteables_str}/:noteable_id/notes/:note_id" do
           note = user_project.notes.find(params[:note_id])
+
           authorize! :admin_note, note
 
-          status 204
-          ::Notes::DestroyService.new(user_project, current_user).execute(note)
+          destroy_conditionally!(note) do |note|
+            ::Notes::DestroyService.new(user_project, current_user).execute(note)
+          end
         end
       end
     end
 
     helpers do
       def find_project_noteable(noteables_str, noteable_id)
-        public_send("find_project_#{noteables_str.singularize}", noteable_id)
+        public_send("find_project_#{noteables_str.singularize}", noteable_id) # rubocop:disable GitlabSecurity/PublicSend
       end
 
       def noteable_read_ability_name(noteable)

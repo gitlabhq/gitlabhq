@@ -1,10 +1,11 @@
 require 'spec_helper'
 
 describe Gitlab::GitalyClient::RefService do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:storage_name) { project.repository_storage }
   let(:relative_path) { project.disk_path + '.git' }
-  let(:client) { described_class.new(project.repository) }
+  let(:repository) { project.repository }
+  let(:client) { described_class.new(repository) }
 
   describe '#branches' do
     it 'sends a find_all_branches message' do
@@ -84,11 +85,23 @@ describe Gitlab::GitalyClient::RefService do
   end
 
   describe '#find_ref_name', seed_helper: true do
-    let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
-    let(:client) { described_class.new(repository) }
     subject { client.find_ref_name(SeedRepo::Commit::ID, 'refs/heads/master') }
 
     it { is_expected.to be_utf8 }
     it { is_expected.to eq('refs/heads/master') }
+  end
+
+  describe '#ref_exists?', seed_helper: true do
+    it 'finds the master branch ref' do
+      expect(client.ref_exists?('refs/heads/master')).to eq(true)
+    end
+
+    it 'returns false for an illegal tag name ref' do
+      expect(client.ref_exists?('refs/tags/.this-tag-name-is-illegal')).to eq(false)
+    end
+
+    it 'raises an argument error if the ref name parameter does not start with refs/' do
+      expect { client.ref_exists?('reXXXXX') }.to raise_error(ArgumentError)
+    end
   end
 end

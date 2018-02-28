@@ -1,0 +1,5 @@
+---
+title: Fix a wrong `X-Gitlab-Event` header when testing webhooks
+merge_request: 14108
+author:
+type: fixed

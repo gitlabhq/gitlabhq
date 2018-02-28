@@ -1,0 +1,5 @@
+---
+title: Never wait for sidekiq jobs when creating projects
+merge_request: 13775
+author:
+type: other

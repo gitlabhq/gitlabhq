@@ -117,10 +117,6 @@ body {
   margin-top: $header-height + $performance-bar-height;
 }
 
-[v-cloak] {
-  display: none;
-}
-
 .vertical-center {
   min-height: 100vh;
   display: flex;

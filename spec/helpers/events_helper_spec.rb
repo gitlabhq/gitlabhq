@@ -62,6 +62,12 @@ describe EventsHelper do
       expect(helper.event_note(input)).to eq(expected)
     end
 
+    it 'preserves data-src for lazy images' do
+      input = "![ImageTest](/uploads/test.png)"
+      image_url = "data-src=\"/uploads/test.png\""
+      expect(helper.event_note(input)).to match(image_url)
+    end
+
     context 'labels formatting' do
       let(:input) { 'this should be ~label_1' }
 
@@ -99,6 +105,10 @@ describe EventsHelper do
 
     it "handles empty strings" do
       expect(helper.event_commit_title("")).to eq("")
+    end
+
+    it 'handles nil values' do
+      expect(helper.event_commit_title(nil)).to eq('')
     end
   end
 end

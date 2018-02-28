@@ -1,8 +1,8 @@
 module NavHelper
   def page_with_sidebar_class
     class_name = page_gutter_class
-    class_name << 'page-with-new-sidebar' if defined?(@new_sidebar) && @new_sidebar
-    class_name << 'page-with-icon-sidebar' if collapsed_sidebar? && @new_sidebar
+    class_name << 'page-with-new-sidebar' if defined?(@left_sidebar) && @left_sidebar
+    class_name << 'page-with-icon-sidebar' if collapsed_sidebar? && @left_sidebar
 
     class_name
   end
@@ -30,24 +30,15 @@ module NavHelper
     end
   end
 
-  def nav_header_class
-    class_names = []
-    class_names << 'with-horizontal-nav' if defined?(nav) && nav
-
-    class_names
-  end
-
-  def layout_nav_class
-    return [] if show_new_nav?
-
-    class_names = []
-    class_names << 'page-with-layout-nav' if defined?(nav) && nav
-    class_names << 'page-with-sub-nav' if content_for?(:sub_nav)
-
-    class_names
-  end
-
   def nav_control_class
     "nav-control" if current_user
+  end
+
+  def user_dropdown_class
+    class_names = []
+    class_names << 'header-user-dropdown-toggle'
+    class_names << 'impersonated-user' if session[:impersonator_id]
+
+    class_names
   end
 end

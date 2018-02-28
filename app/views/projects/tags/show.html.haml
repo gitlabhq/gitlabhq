@@ -1,4 +1,6 @@
 - @no_container = true
+- add_to_breadcrumbs "Tags", project_tags_path(@project)
+- breadcrumb_title @tag.name
 - page_title @tag.name, "Tags"
 = render "projects/commits/head"
 

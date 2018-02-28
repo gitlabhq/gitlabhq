@@ -132,7 +132,7 @@ describe GitPushService, services: true do
     end
 
     it "creates a new pipeline" do
-      expect{ subject }.to change{ Ci::Pipeline.count }
+      expect { subject }.to change { Ci::Pipeline.count }
       expect(Ci::Pipeline.last).to be_push
     end
   end
@@ -141,10 +141,13 @@ describe GitPushService, services: true do
     let!(:push_data) { push_data_from_service(project, user, oldrev, newrev, ref) }
     let(:event) { Event.find_by_action(Event::PUSHED) }
 
-    it { expect(event).not_to be_nil }
+    it { expect(event).to be_an_instance_of(PushEvent) }
     it { expect(event.project).to eq(project) }
     it { expect(event.action).to eq(Event::PUSHED) }
-    it { expect(event.data).to eq(push_data) }
+    it { expect(event.push_event_payload).to be_an_instance_of(PushEventPayload) }
+    it { expect(event.push_event_payload.commit_from).to eq(oldrev) }
+    it { expect(event.push_event_payload.commit_to).to eq(newrev) }
+    it { expect(event.push_event_payload.ref).to eq('master') }
 
     context "Updates merge requests" do
       it "when pushing a new branch for the first time" do
@@ -614,7 +617,7 @@ describe GitPushService, services: true do
 
     context 'on the default branch' do
       before do
-        allow(service).to receive(:is_default_branch?).and_return(true)
+        allow(service).to receive(:default_branch?).and_return(true)
       end
 
       it 'flushes the caches of any special files that have been changed' do
@@ -635,7 +638,7 @@ describe GitPushService, services: true do
 
     context 'on a non-default branch' do
       before do
-        allow(service).to receive(:is_default_branch?).and_return(false)
+        allow(service).to receive(:default_branch?).and_return(false)
       end
 
       it 'does not flush any conditional caches' do
@@ -685,10 +688,38 @@ describe GitPushService, services: true do
       )
     end
 
-    it 'calls CreateGpgSignatureWorker.perform_async for each commit' do
-      expect(CreateGpgSignatureWorker).to receive(:perform_async).with(sample_commit.id, project.id)
+    context 'when the commit has a signature' do
+      context 'when the signature is already cached' do
+        before do
+          create(:gpg_signature, commit_sha: sample_commit.id)
+        end
 
-      execute_service(project, user, oldrev, newrev, ref)
+        it 'does not queue a CreateGpgSignatureWorker' do
+          expect(CreateGpgSignatureWorker).not_to receive(:perform_async).with(sample_commit.id, project.id)
+
+          execute_service(project, user, oldrev, newrev, ref)
+        end
+      end
+
+      context 'when the signature is not yet cached' do
+        it 'queues a CreateGpgSignatureWorker' do
+          expect(CreateGpgSignatureWorker).to receive(:perform_async).with(sample_commit.id, project.id)
+
+          execute_service(project, user, oldrev, newrev, ref)
+        end
+      end
+    end
+
+    context 'when the commit does not have a signature' do
+      before do
+        allow(Gitlab::Git::Commit).to receive(:shas_with_signatures).with(project.repository, [sample_commit.id]).and_return([])
+      end
+
+      it 'does not queue a CreateGpgSignatureWorker' do
+        expect(CreateGpgSignatureWorker).not_to receive(:perform_async).with(sample_commit.id, project.id)
+
+        execute_service(project, user, oldrev, newrev, ref)
+      end
     end
   end
 

@@ -50,19 +50,10 @@ import initFlyOutNav from './fly_out_nav';
     });
   });
 
-  function applyScrollNavClass() {
-    const scrollOpacityHeight = 40;
-    $('.navbar-border').css('opacity', Math.min($(window).scrollTop() / scrollOpacityHeight, 1));
-  }
-
   $(() => {
-    if (Cookies.get('new_nav') === 'true') {
-      const newNavSidebar = new NewNavSidebar();
-      newNavSidebar.bindEvents();
+    const newNavSidebar = new NewNavSidebar();
+    newNavSidebar.bindEvents();
 
-      initFlyOutNav();
-    }
-
-    $(window).on('scroll', _.throttle(applyScrollNavClass, 100));
+    initFlyOutNav();
   });
 }).call(window);

@@ -1,0 +1,5 @@
+---
+title: Add 'from commit' information to cherry-picked commits
+merge_request: 13475
+author: Saverio Miroddi
+type: added

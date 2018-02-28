@@ -30,6 +30,53 @@ describe Gitlab::EncodingHelper do
     it 'leaves binary string as is' do
       expect(ext_class.encode!(binary_string)).to eq(binary_string)
     end
+
+    context 'with corrupted diff' do
+      let(:corrupted_diff) do
+        with_empty_bare_repository do |repo|
+          content = File.read(Rails.root.join(
+            'spec/fixtures/encoding/Japanese.md').to_s)
+          commit_a = commit(repo, 'Japanese.md', content)
+          commit_b = commit(repo, 'Japanese.md',
+            content.sub('[TODO: Link]', '[現在作業中です: Link]'))
+
+          repo.diff(commit_a, commit_b).each_line.map(&:content).join
+        end
+      end
+
+      let(:cleaned_diff) do
+        corrupted_diff.dup.force_encoding('UTF-8')
+          .encode!('UTF-8', invalid: :replace, replace: '')
+      end
+
+      let(:encoded_diff) do
+        described_class.encode!(corrupted_diff.dup)
+      end
+
+      it 'does not corrupt data but remove invalid characters' do
+        expect(encoded_diff).to eq(cleaned_diff)
+      end
+
+      def commit(repo, path, content)
+        oid = repo.write(content, :blob)
+        index = repo.index
+
+        index.read_tree(repo.head.target.tree) unless repo.empty?
+
+        index.add(path: path, oid: oid, mode: 0100644)
+        user = { name: 'Test', email: 'test@example.com' }
+
+        Rugged::Commit.create(
+          repo,
+          tree: index.write_tree(repo),
+          author: user,
+          committer: user,
+          message: "Update #{path}",
+          parents: repo.empty? ? [] : [repo.head.target].compact,
+          update_ref: 'HEAD'
+        )
+      end
+    end
   end
 
   describe '#encode_utf8' do

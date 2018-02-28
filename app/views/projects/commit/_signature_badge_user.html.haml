@@ -1,0 +1,21 @@
+- gpg_key = signature.gpg_key
+- user = gpg_key&.user
+- user_name = signature.gpg_key_user_name
+- user_email = signature.gpg_key_user_email
+
+- if user
+  = link_to user_path(user), class: 'gpg-popover-user-link' do
+    %div
+      = user_avatar_without_link(user: user, size: 32)
+
+    %div
+      %strong= user.name
+      %div= user.to_reference
+- else
+  = mail_to user_email do
+    %div
+      = user_avatar_without_link(user_name: user_name, user_email: user_email, size: 32)
+
+    %div
+      %strong= user_name
+      %div= user_email

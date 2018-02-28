@@ -10,7 +10,7 @@ describe MigrateOldArtifacts do
   before do
     allow(Gitlab.config.artifacts).to receive(:path).and_return(directory)
   end
-  
+
   after do
     FileUtils.remove_entry_secure(directory)
   end
@@ -95,7 +95,7 @@ describe MigrateOldArtifacts do
       FileUtils.copy(
         Rails.root.join('spec/fixtures/ci_build_artifacts.zip'),
         File.join(legacy_path(build), "ci_build_artifacts.zip"))
-  
+
       FileUtils.copy(
         Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'),
         File.join(legacy_path(build), "ci_build_artifacts_metadata.gz"))

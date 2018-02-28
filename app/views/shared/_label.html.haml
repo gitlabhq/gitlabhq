@@ -14,10 +14,10 @@
       %ul
         %li
           = link_to_label(label, subject: subject, type: :merge_request) do
-            view merge requests
+            View merge requests
         %li
           = link_to_label(label, subject: subject) do
-            view open issues
+            View open issues
         - if current_user
           %li.label-subscription
             - if can_subscribe_to_label_in_different_levels?(label)

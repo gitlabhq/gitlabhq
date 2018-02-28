@@ -7,7 +7,6 @@ class MergeRequest < ActiveRecord::Base
   include IgnorableColumn
   include CreatedAtFilterable
 
-  ignore_column :position
   ignore_column :locked_at
 
   belongs_to :target_project, class_name: "Project"
@@ -32,6 +31,7 @@ class MergeRequest < ActiveRecord::Base
 
   after_create :ensure_merge_request_diff, unless: :importing?
   after_update :reload_diff_if_branch_changed
+  after_commit :update_project_counter_caches, on: :destroy
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -162,7 +162,7 @@ class MergeRequest < ActiveRecord::Base
     target = unscoped.where(target_project_id: relation).select(:id)
     union  = Gitlab::SQL::Union.new([source, target])
 
-    where("merge_requests.id IN (#{union.to_sql})")
+    where("merge_requests.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
   end
 
   WIP_REGEX = /\A\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i.freeze
@@ -239,6 +239,14 @@ class MergeRequest < ActiveRecord::Base
     else
       []
     end
+  end
+
+  # Calls `MergeWorker` to proceed with the merge process and
+  # updates `merge_jid` with the MergeWorker#jid.
+  # This helps tracking enqueued and ongoing merge jobs.
+  def merge_async(user_id, params)
+    jid = MergeWorker.perform_async(id, user_id, params)
+    update_column(:merge_jid, jid)
   end
 
   def first_commit
@@ -384,9 +392,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def merge_ongoing?
-    return false unless merge_jid
-
-    Gitlab::SidekiqStatus.num_running([merge_jid]) > 0
+    !!merge_jid && !merged?
   end
 
   def closed_without_fork?
@@ -443,7 +449,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def reload_diff_if_branch_changed
-    if source_branch_changed? || target_branch_changed?
+    if (source_branch_changed? || target_branch_changed?) &&
+        (source_branch_head && target_branch_head)
       reload_diff
     end
   end
@@ -598,6 +605,8 @@ class MergeRequest < ActiveRecord::Base
       self.merge_requests_closing_issues.delete_all
 
       closes_issues(current_user).each do |issue|
+        next if issue.is_a?(ExternalIssue)
+
         self.merge_requests_closing_issues.create!(issue: issue)
       end
     end
@@ -682,9 +691,8 @@ class MergeRequest < ActiveRecord::Base
     if !include_description && closes_issues_references.present?
       message << "Closes #{closes_issues_references.to_sentence}"
     end
-
     message << "#{description}" if include_description && description.present?
-    message << "See merge request #{to_reference}"
+    message << "See merge request #{to_reference(full: true)}"
 
     message.join("\n\n")
   end
@@ -792,16 +800,12 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def fetch_ref
-    target_project.repository.fetch_ref(
-      source_project.repository.path_to_repo,
-      "refs/heads/#{source_branch}",
-      ref_path
-    )
+    write_ref
     update_column(:ref_fetched, true)
   end
 
   def ref_path
-    "refs/merge-requests/#{iid}/head"
+    "refs/#{Repository::REF_MERGE_REQUEST}/#{iid}/head"
   end
 
   def ref_fetched?
@@ -823,7 +827,7 @@ class MergeRequest < ActiveRecord::Base
       lock_mr
       yield
     ensure
-      unlock_mr if locked?
+      unlock_mr
     end
   end
 
@@ -914,6 +918,12 @@ class MergeRequest < ActiveRecord::Base
     active_diff_discussions.each do |discussion|
       service.execute(discussion)
     end
+
+    if project.resolve_outdated_diff_discussions?
+      MergeRequests::ResolvedDiscussionNotificationService
+        .new(project, current_user)
+        .execute(self)
+    end
   end
 
   def keep_around_commit
@@ -938,5 +948,27 @@ class MergeRequest < ActiveRecord::Base
     return false if last_diff_sha != diff_head_sha
 
     true
+  end
+
+  def update_project_counter_caches?
+    state_changed?
+  end
+
+  def update_project_counter_caches
+    return unless update_project_counter_caches?
+
+    Projects::OpenMergeRequestsCountService.new(target_project).refresh_cache
+  end
+
+  def first_contribution?
+    return false if project.team.max_member_access(author_id) > Gitlab::Access::GUEST
+
+    project.merge_requests.merged.where(author_id: author_id).empty?
+  end
+
+  private
+
+  def write_ref
+    target_project.repository.fetch_source_branch(source_project.repository, source_branch, ref_path)
   end
 end

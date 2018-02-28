@@ -1,6 +1,13 @@
 require 'spec_helper'
 
 describe Key, :mailer do
+  include Gitlab::CurrentSettings
+
+  describe 'modules' do
+    subject { described_class }
+    it { is_expected.to include_module(Gitlab::CurrentSettings) }
+  end
+
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
   end
@@ -11,8 +18,10 @@ describe Key, :mailer do
 
     it { is_expected.to validate_presence_of(:key) }
     it { is_expected.to validate_length_of(:key).is_at_most(5000) }
-    it { is_expected.to allow_value('ssh-foo').for(:key) }
-    it { is_expected.to allow_value('ecdsa-foo').for(:key) }
+    it { is_expected.to allow_value(attributes_for(:rsa_key_2048)[:key]).for(:key) }
+    it { is_expected.to allow_value(attributes_for(:dsa_key_2048)[:key]).for(:key) }
+    it { is_expected.to allow_value(attributes_for(:ecdsa_key_256)[:key]).for(:key) }
+    it { is_expected.to allow_value(attributes_for(:ed25519_key_256)[:key]).for(:key) }
     it { is_expected.not_to allow_value('foo-bar').for(:key) }
   end
 
@@ -92,6 +101,48 @@ describe Key, :mailer do
 
     it 'rejects the unfingerprintable key (not a key)' do
       expect(build(:key, key: 'ssh-rsa an-invalid-key==')).not_to be_valid
+    end
+  end
+
+  context 'validate it meets key restrictions' do
+    where(:factory, :minimum, :result) do
+      forbidden = ApplicationSetting::FORBIDDEN_KEY_VALUE
+
+      [
+        [:rsa_key_2048,    0, true],
+        [:dsa_key_2048,    0, true],
+        [:ecdsa_key_256,   0, true],
+        [:ed25519_key_256, 0, true],
+
+        [:rsa_key_2048, 1024, true],
+        [:rsa_key_2048, 2048, true],
+        [:rsa_key_2048, 4096, false],
+
+        [:dsa_key_2048, 1024, true],
+        [:dsa_key_2048, 2048, true],
+        [:dsa_key_2048, 4096, false],
+
+        [:ecdsa_key_256, 256, true],
+        [:ecdsa_key_256, 384, false],
+
+        [:ed25519_key_256, 256, true],
+        [:ed25519_key_256, 384, false],
+
+        [:rsa_key_2048,    forbidden, false],
+        [:dsa_key_2048,    forbidden, false],
+        [:ecdsa_key_256,   forbidden, false],
+        [:ed25519_key_256, forbidden, false]
+      ]
+    end
+
+    with_them do
+      subject(:key) { build(factory) }
+
+      before do
+        stub_application_setting("#{key.public_key.type}_key_restriction" => minimum)
+      end
+
+      it { expect(key.valid?).to eq(result) }
     end
   end
 

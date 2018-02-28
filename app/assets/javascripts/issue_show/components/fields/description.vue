@@ -10,11 +10,11 @@
         type: Object,
         required: true,
       },
-      markdownPreviewUrl: {
+      markdownPreviewPath: {
         type: String,
         required: true,
       },
-      markdownDocs: {
+      markdownDocsPath: {
         type: String,
         required: true,
       },
@@ -36,8 +36,8 @@
       Description
     </label>
     <markdown-field
-      :markdown-preview-url="markdownPreviewUrl"
-      :markdown-docs="markdownDocs">
+      :markdown-preview-path="markdownPreviewPath"
+      :markdown-docs-path="markdownDocsPath">
       <textarea
         id="issue-description"
         class="note-textarea js-gfm-input js-autosize markdown-area"

@@ -46,4 +46,14 @@ describe('edited', () => {
     expect(editedComponent.$el.querySelector('.author_link')).toBeFalsy();
     expect(editedComponent.$el.querySelector('time')).toBeTruthy();
   });
+
+  it('renders time ago tooltip at the bottom', () => {
+    const editedComponent = new EditedComponent({
+      propsData: {
+        updatedAt: '2017-05-15T12:31:04.428Z',
+      },
+    }).$mount();
+
+    expect(editedComponent.$el.querySelector('time').dataset.placement).toEqual('bottom');
+  });
 });

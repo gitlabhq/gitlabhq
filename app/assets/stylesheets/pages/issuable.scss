@@ -8,13 +8,13 @@
 .is-confidential {
   color: $orange-600;
   background-color: $orange-50;
-  border-radius: 3px;
+  border-radius: $border-radius-default;
   padding: 5px;
   margin: 0 3px 0 -4px;
 }
 
 .is-not-confidential {
-  border-radius: 3px;
+  border-radius: $border-radius-default;
   padding: 5px;
   margin: 0 3px 0 -4px;
 }
@@ -35,7 +35,7 @@
   .commit-box,
   .info-well,
   .commit-ci-menu,
-  .files-changed,
+  .files-changed-inner,
   .limited-header-width,
   .limited-width-notes {
     @extend .fixed-width-container;
@@ -81,6 +81,7 @@
     border: 1px solid $white-normal;
     padding: 5px;
     max-height: calc(100vh - 100px);
+    max-width: 100%;
   }
 
   .emoji-block {
@@ -219,7 +220,7 @@
 
 .right-sidebar {
   position: absolute;
-  top: $header-height;
+  top: $new-navbar-height;
   bottom: 0;
   right: 0;
   transition: width .3s;
@@ -229,7 +230,7 @@
 
   .issuable-sidebar {
     width: calc(100% + 100px);
-    height: calc(100% - #{$header-height});
+    height: calc(100% - #{$new-navbar-height});
     overflow-y: scroll;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
@@ -259,7 +260,7 @@
       padding-top: 10px;
     }
 
-    &:not(.issue-boards-sidebar):not([data-signed-in]) {
+    &:not(.issue-boards-sidebar):not([data-signed-in]):not([data-always-show-toggle]) {
       .issuable-sidebar-header {
         display: none;
       }
@@ -270,7 +271,7 @@
     }
 
     .light {
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
     }
 
     .no-value {
@@ -305,7 +306,7 @@
       display: block;
       margin-top: 4px;
       font-size: 13px;
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
     }
 
     .hide-expanded {
@@ -472,17 +473,35 @@
     padding-top: 6px;
   }
 
-  .open .dropdown-menu {
+  .dropdown-menu {
     width: 100%;
   }
 }
 
 .with-performance-bar .right-sidebar {
-  top: $header-height + $performance-bar-height;
+  top: $new-navbar-height + $performance-bar-height;
 
   .issuable-sidebar {
-    height: calc(100% - #{$header-height} - #{$performance-bar-height});
+    height: calc(100% - #{$new-navbar-height} - #{$performance-bar-height});
   }
+}
+
+.sidebar-move-issue-dropdown {
+  @include new-style-dropdown;
+}
+
+.sidebar-move-issue-confirmation-button {
+  width: 100%;
+
+  &.is-loading {
+    .sidebar-move-issue-confirmation-loading-icon {
+      display: inline-block;
+    }
+  }
+}
+
+.sidebar-move-issue-confirmation-loading-icon {
+  display: none;
 }
 
 .detail-page-description {
@@ -497,6 +516,7 @@
   color: $gray-darkest;
   display: block;
   margin: 16px 0 0;
+  font-size: 85%;
 
   .author_link {
     color: $gray-darkest;
@@ -597,6 +617,8 @@
 }
 
 .issuable-actions {
+  @include new-style-dropdown;
+
   padding-top: 10px;
 
   @media (min-width: $screen-sm-min) {
@@ -688,7 +710,7 @@
     .issuable-info,
     .task-status,
     .issuable-updated-at {
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
       color: $gl-text-color-secondary;
 
       a {

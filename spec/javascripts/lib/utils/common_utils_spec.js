@@ -266,6 +266,12 @@ import '~/lib/utils/common_utils';
     });
 
     describe('gl.utils.backOff', () => {
+      beforeEach(() => {
+        // shortcut our timeouts otherwise these tests will take a long time to finish
+        const origSetTimeout = window.setTimeout;
+        spyOn(window, 'setTimeout').and.callFake(cb => origSetTimeout(cb, 0));
+      });
+
       it('solves the promise from the callback', (done) => {
         const expectedResponseValue = 'Success!';
         gl.utils.backOff((next, stop) => (
@@ -299,37 +305,33 @@ import '~/lib/utils/common_utils';
         let numberOfCalls = 1;
         const expectedResponseValue = 'Success!';
         gl.utils.backOff((next, stop) => (
-          new Promise((resolve) => {
-            resolve(expectedResponseValue);
-          }).then((resp) => {
-            if (numberOfCalls < 3) {
-              numberOfCalls += 1;
-              next();
-            } else {
-              stop(resp);
-            }
-          })
+          Promise.resolve(expectedResponseValue)
+            .then((resp) => {
+              if (numberOfCalls < 3) {
+                numberOfCalls += 1;
+                next();
+              } else {
+                stop(resp);
+              }
+            })
         )).then((respBackoff) => {
+          const timeouts = window.setTimeout.calls.allArgs().map(([, timeout]) => timeout);
+          expect(timeouts).toEqual([2000, 4000]);
           expect(respBackoff).toBe(expectedResponseValue);
-          expect(numberOfCalls).toBe(3);
           done();
         });
-      }, 10000);
+      });
 
       it('rejects the backOff promise after timing out', (done) => {
-        const expectedResponseValue = 'Success!';
-        gl.utils.backOff(next => (
-          new Promise((resolve) => {
-            resolve(expectedResponseValue);
-          }).then(() => {
-            setTimeout(next(), 5000); // it will time out
-          })
-        ), 3000).catch((errBackoffResp) => {
-          expect(errBackoffResp instanceof Error).toBe(true);
-          expect(errBackoffResp.message).toBe('BACKOFF_TIMEOUT');
-          done();
-        });
-      }, 10000);
+        gl.utils.backOff(next => next(), 64000)
+          .catch((errBackoffResp) => {
+            const timeouts = window.setTimeout.calls.allArgs().map(([, timeout]) => timeout);
+            expect(timeouts).toEqual([2000, 4000, 8000, 16000, 32000, 32000]);
+            expect(errBackoffResp instanceof Error).toBe(true);
+            expect(errBackoffResp.message).toBe('BACKOFF_TIMEOUT');
+            done();
+          });
+      });
     });
 
     describe('gl.utils.setFavicon', () => {

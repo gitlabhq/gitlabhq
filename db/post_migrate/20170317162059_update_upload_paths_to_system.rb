@@ -48,7 +48,7 @@ class UpdateUploadPathsToSystem < ActiveRecord::Migration
   end
 
   def new_upload_dir
-    File.join(base_directory, "system")
+    File.join(base_directory, "-",  "system")
   end
 
   def arel_table

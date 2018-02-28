@@ -10,7 +10,12 @@ JIRA](https://www.programmableweb.com/news/how-and-why-to-integrate-gitlab-jira/
 
 ## Configuration
 
-Each GitLab project can be configured to connect to a different JIRA instance.
+Each GitLab project can be configured to connect to a different JIRA instance. That
+means one GitLab project maps to _all_ JIRA projects in that JIRA instance once
+the configuration is set up. Therefore, you don't have to explicitly associate 
+one GitLab project to any JIRA project. Once the configuration is set up, any JIRA
+projects in the JIRA instance are already mapped to the GitLab project.
+
 If you have one JIRA instance you can pre-fill the settings page with a default
 template, see the [Services Templates][services-templates] docs.
 
@@ -103,7 +108,6 @@ in the table below.
 | ----- | ----------- |
 | `Web URL` | The base URL to the JIRA instance web interface which is being linked to this GitLab project. E.g., `https://jira.example.com`. |
 | `JIRA API URL` | The base URL to the JIRA instance API. Web URL value will be used if not set. E.g., `https://jira-api.example.com`. |
-| `Project key` | Put a JIRA project key (in uppercase), e.g. `MARS` in this field. This is only for testing the configuration settings. JIRA integration in GitLab works with _all_ JIRA projects in your JIRA instance. This field will be removed in a future release. |
 | `Username` | The user name created in [configuring JIRA step](#configuring-jira). |
 | `Password` |The password of the user created in [configuring JIRA step](#configuring-jira). |
 | `Transition ID` | This is the ID of a transition that moves issues to a closed state. You can find this number under JIRA workflow administration ([see screenshot](img/jira_workflow_screenshot.png)). **Closing JIRA issues via commits or Merge Requests won't work if you don't set the ID correctly.** |

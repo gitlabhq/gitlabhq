@@ -116,6 +116,23 @@ are resolved.
 
 ![Only allow merge if all the discussions are resolved message](img/only_allow_merge_if_all_discussions_are_resolved_msg.png)
 
+### Automatically resolve merge request diff discussions when they become outdated
+
+> [Introduced][ce-14053] in GitLab 10.0.
+
+You can automatically resolve merge request diff discussions on lines modified
+with a new push.
+
+Navigate to your project's settings page, select the **Automatically resolve
+merge request diffs discussions on lines changed with a push** check box and hit
+**Save** for the changes to take effect.
+
+![Automatically resolve merge request diff discussions when they become outdated](img/automatically_resolve_outdated_discussions.png)
+
+From now on, any discussions on a diff will be resolved by default if a push
+makes that diff section outdated. Discussions on lines that don't change and
+top-level resolvable discussions are not automatically resolved.
+
 ## Threaded discussions
 
 > [Introduced][ce-7527] in GitLab 9.1.
@@ -141,6 +158,7 @@ comments in greater detail.
 [ce-7527]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7527
 [ce-7180]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7180
 [ce-8266]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8266
+[ce-14053]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14053
 [resolve-discussion-button]: img/resolve_discussion_button.png
 [resolve-comment-button]: img/resolve_comment_button.png
 [discussion-view]: img/discussion_view.png

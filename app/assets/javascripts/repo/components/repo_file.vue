@@ -33,6 +33,26 @@ const RepoFile = {
     canShowFile() {
       return !this.loading.tree || this.hasFiles;
     },
+
+    fileIcon() {
+      const classObj = {
+        'fa-spinner fa-spin': this.file.loading,
+        [this.file.icon]: !this.file.loading,
+      };
+      return classObj;
+    },
+
+    fileIndentation() {
+      return {
+        'margin-left': `${this.file.level * 10}px`,
+      };
+    },
+
+    activeFileClass() {
+      return {
+        active: this.activeFile.url === this.file.url,
+      };
+    },
   },
 
   methods: {
@@ -46,21 +66,42 @@ export default RepoFile;
 </script>
 
 <template>
-<tr class="file" v-if="canShowFile" :class="{'active': activeFile.url === file.url}">
-  <td @click.prevent="linkClicked(file)">
-    <i class="fa file-icon" v-if="!file.loading" :class="file.icon" :style="{'margin-left': file.level * 10 + 'px'}"></i>
-    <i class="fa fa-spinner fa-spin" v-if="file.loading" :style="{'margin-left': file.level * 10 + 'px'}"></i>
-    <a :href="file.url" class="repo-file-name" :title="file.url">{{file.name}}</a>
+<tr
+  v-if="canShowFile"
+  class="file"
+  :class="activeFileClass"
+  @click.prevent="linkClicked(file)">
+  <td>
+    <i
+      class="fa fa-fw file-icon"
+      :class="fileIcon"
+      :style="fileIndentation"
+      aria-label="file icon">
+    </i>
+    <a
+      :href="file.url"
+      class="repo-file-name"
+      :title="file.url">
+      {{file.name}}
+    </a>
   </td>
 
-  <td v-if="!isMini" class="hidden-sm hidden-xs">
-    <div class="commit-message">
-      <a :href="file.lastCommitUrl">{{file.lastCommitMessage}}</a>
-    </div>
-  </td>
+  <template v-if="!isMini">
+    <td class="hidden-sm hidden-xs">
+      <div class="commit-message">
+        <a @click.stop :href="file.lastCommitUrl">
+          {{file.lastCommitMessage}}
+        </a>
+      </div>
+    </td>
 
-  <td v-if="!isMini" class="hidden-xs">
-    <span class="commit-update" :title="tooltipTitle(file.lastCommitUpdate)">{{timeFormated(file.lastCommitUpdate)}}</span>
-  </td>
+    <td class="hidden-xs">
+      <span
+        class="commit-update"
+        :title="tooltipTitle(file.lastCommitUpdate)">
+        {{timeFormated(file.lastCommitUpdate)}}
+      </span>
+    </td>
+  </template>
 </tr>
 </template>

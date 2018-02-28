@@ -18,12 +18,12 @@
 #     sort: string
 #     non_archived: boolean
 #     iids: integer[]
+#     my_reaction_emoji: string
 #
 class IssuableFinder
   include CreatedAtFilter
 
   NONE = '0'.freeze
-  IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page state].freeze
 
   attr_accessor :current_user, :params
 
@@ -46,6 +46,7 @@ class IssuableFinder
     items = by_iids(items)
     items = by_milestone(items)
     items = by_label(items)
+    items = by_my_reaction_emoji(items)
 
     # Filtering by project HAS TO be the last because we use the project IDs yielded by the issuable query thus far
     items = by_project(items)
@@ -60,13 +61,17 @@ class IssuableFinder
     execute.find_by(*params)
   end
 
+  def row_count
+    Gitlab::IssuablesCountForState.new(self).for_state_or_opened(params[:state])
+  end
+
   # We often get counts for each state by running a query per state, and
   # counting those results. This is typically slower than running one query
   # (even if that query is slower than any of the individual state queries) and
   # grouping and counting within that query.
   #
   def count_by_state
-    count_params = params.merge(state: nil, sort: nil, for_counting: true)
+    count_params = params.merge(state: nil, sort: nil)
     labels_count = label_names.any? ? label_names.count : 1
     finder = self.class.new(current_user, count_params)
     counts = Hash.new(0)
@@ -87,16 +92,6 @@ class IssuableFinder
 
   def find_by!(*params)
     execute.find_by!(*params)
-  end
-
-  def state_counter_cache_key
-    cache_key(state_counter_cache_key_components)
-  end
-
-  def clear_caches!
-    state_counter_cache_key_components_permutations.each do |components|
-      Rails.cache.delete(cache_key(components))
-    end
   end
 
   def group
@@ -371,6 +366,14 @@ class IssuableFinder
     items
   end
 
+  def by_my_reaction_emoji(items)
+    if params[:my_reaction_emoji].present? && current_user
+      items = items.awarded(current_user, params[:my_reaction_emoji])
+    end
+
+    items
+  end
+
   def by_due_date(items)
     if due_date?
       if filter_by_no_due_date?
@@ -421,21 +424,5 @@ class IssuableFinder
 
   def current_user_related?
     params[:scope] == 'created-by-me' || params[:scope] == 'authored' || params[:scope] == 'assigned-to-me'
-  end
-
-  def state_counter_cache_key_components
-    opts = params.with_indifferent_access
-    opts.except!(*IRRELEVANT_PARAMS_FOR_CACHE_KEY)
-    opts.delete_if { |_, value| value.blank? }
-
-    ['issuables_count', klass.to_ability_name, opts.sort]
-  end
-
-  def state_counter_cache_key_components_permutations
-    [state_counter_cache_key_components]
-  end
-
-  def cache_key(components)
-    Digest::SHA1.hexdigest(components.flatten.join('-'))
   end
 end

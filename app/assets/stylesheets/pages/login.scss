@@ -22,7 +22,7 @@
     }
 
     h1:first-child {
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
       margin-bottom: 0.68em;
       margin-top: 0;
       font-size: 34px;
@@ -38,7 +38,7 @@
     }
 
     a {
-      font-weight: bold;
+      font-weight: $gl-font-weight-bold;
     }
   }
 
@@ -54,7 +54,7 @@
     padding: 15px;
 
     .login-heading h3 {
-      font-weight: 300;
+      font-weight: $gl-font-weight-normal;
       line-height: 1.5;
       margin: 0 0 10px;
     }
@@ -186,7 +186,7 @@
   }
 
   label {
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
   }
 
   .submit-container {

@@ -109,7 +109,7 @@ describe Gitlab::Saml::User do
           end
 
           it 'does not throw an error' do
-            expect{ saml_user.save }.not_to raise_error
+            expect { saml_user.save }.not_to raise_error
           end
         end
 
@@ -119,7 +119,7 @@ describe Gitlab::Saml::User do
           end
 
           it 'throws an error' do
-            expect{ saml_user.save }.to raise_error StandardError
+            expect { saml_user.save }.to raise_error StandardError
           end
         end
       end

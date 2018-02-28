@@ -21,7 +21,7 @@ shared_examples 'issuable record that supports quick actions in its description 
   before do
     project.team << [master, :master]
 
-    sign_in(master)
+    gitlab_sign_in(master)
   end
 
   after do
@@ -119,16 +119,15 @@ shared_examples 'issuable record that supports quick actions in its description 
           guest = create(:user)
           project.add_guest(guest)
 
-          sign_out(:user)
-          sign_in(guest)
-
+          gitlab_sign_out
+          gitlab_sign_in(guest)
           visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
         end
 
         it "does not close the #{issuable_type}" do
           write_note("/close")
 
-          expect(page).not_to have_content '/close'
+          expect(page).to have_content '/close'
           expect(page).not_to have_content 'Commands applied'
 
           expect(issuable).to be_open
@@ -158,16 +157,15 @@ shared_examples 'issuable record that supports quick actions in its description 
           guest = create(:user)
           project.add_guest(guest)
 
-          sign_out(:user)
-          sign_in(guest)
-
+          gitlab_sign_out
+          gitlab_sign_in(guest)
           visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
         end
 
         it "does not reopen the #{issuable_type}" do
           write_note("/reopen")
 
-          expect(page).not_to have_content '/reopen'
+          expect(page).to have_content '/reopen'
           expect(page).not_to have_content 'Commands applied'
 
           expect(issuable).to be_closed
@@ -192,15 +190,15 @@ shared_examples 'issuable record that supports quick actions in its description 
           guest = create(:user)
           project.add_guest(guest)
 
-          sign_out(:user)
-          sign_in(guest)
+          gitlab_sign_out
+          gitlab_sign_in(guest)
           visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
         end
 
         it "does not reopen the #{issuable_type}" do
           write_note("/title Awesome new title")
 
-          expect(page).not_to have_content '/title'
+          expect(page).to have_content '/title'
           expect(page).not_to have_content 'Commands applied'
 
           expect(issuable.reload.title).not_to eq 'Awesome new title'
@@ -292,7 +290,7 @@ shared_examples 'issuable record that supports quick actions in its description 
     end
   end
 
-  describe "preview of note on #{issuable_type}" do
+  describe "preview of note on #{issuable_type}", js: true do
     it 'removes quick actions from note and explains them' do
       create(:user, username: 'bob')
 

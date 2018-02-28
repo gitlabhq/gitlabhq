@@ -144,9 +144,8 @@ gitlab_rails['backup_upload_connection'] = {
   'region' => 'eu-west-1',
   'aws_access_key_id' => 'AKIAKIAKI',
   'aws_secret_access_key' => 'secret123'
-  # If using an IAM Profile, leave aws_access_key_id & aws_secret_access_key empty
-  # ie. 'aws_access_key_id' => '',
-  # 'use_iam_profile' => 'true'
+  # If using an IAM Profile, don't configure aws_access_key_id & aws_secret_access_key
+  # 'use_iam_profile' => true
 }
 gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
 ```

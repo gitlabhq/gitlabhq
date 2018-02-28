@@ -76,6 +76,87 @@ import '~/lib/utils/pretty_time';
         expect(aboveOneWeek.days).toBe(3);
         expect(aboveOneWeek.weeks).toBe(173);
       });
+
+      it('should correctly accept a custom param for hoursPerDay', function () {
+        const parser = prettyTime.parseSeconds;
+        const config = { hoursPerDay: 24 };
+
+        const aboveOneHour = parser(4800, config);
+
+        expect(aboveOneHour.minutes).toBe(20);
+        expect(aboveOneHour.hours).toBe(1);
+        expect(aboveOneHour.days).toBe(0);
+        expect(aboveOneHour.weeks).toBe(0);
+
+        const aboveOneDay = parser(110000, config);
+
+        expect(aboveOneDay.minutes).toBe(33);
+        expect(aboveOneDay.hours).toBe(6);
+        expect(aboveOneDay.days).toBe(1);
+        expect(aboveOneDay.weeks).toBe(0);
+
+        const aboveOneWeek = parser(25000000, config);
+
+        expect(aboveOneWeek.minutes).toBe(26);
+        expect(aboveOneWeek.hours).toBe(8);
+        expect(aboveOneWeek.days).toBe(4);
+
+        expect(aboveOneWeek.weeks).toBe(57);
+      });
+
+      it('should correctly accept a custom param for daysPerWeek', function () {
+        const parser = prettyTime.parseSeconds;
+        const config = { daysPerWeek: 7 };
+
+        const aboveOneHour = parser(4800, config);
+
+        expect(aboveOneHour.minutes).toBe(20);
+        expect(aboveOneHour.hours).toBe(1);
+        expect(aboveOneHour.days).toBe(0);
+        expect(aboveOneHour.weeks).toBe(0);
+
+        const aboveOneDay = parser(110000, config);
+
+        expect(aboveOneDay.minutes).toBe(33);
+        expect(aboveOneDay.hours).toBe(6);
+        expect(aboveOneDay.days).toBe(3);
+        expect(aboveOneDay.weeks).toBe(0);
+
+        const aboveOneWeek = parser(25000000, config);
+
+        expect(aboveOneWeek.minutes).toBe(26);
+        expect(aboveOneWeek.hours).toBe(0);
+        expect(aboveOneWeek.days).toBe(0);
+
+        expect(aboveOneWeek.weeks).toBe(124);
+      });
+
+      it('should correctly accept custom params for daysPerWeek and hoursPerDay', function () {
+        const parser = prettyTime.parseSeconds;
+        const config = { daysPerWeek: 55, hoursPerDay: 14 };
+
+        const aboveOneHour = parser(4800, config);
+
+        expect(aboveOneHour.minutes).toBe(20);
+        expect(aboveOneHour.hours).toBe(1);
+        expect(aboveOneHour.days).toBe(0);
+        expect(aboveOneHour.weeks).toBe(0);
+
+        const aboveOneDay = parser(110000, config);
+
+        expect(aboveOneDay.minutes).toBe(33);
+        expect(aboveOneDay.hours).toBe(2);
+        expect(aboveOneDay.days).toBe(2);
+        expect(aboveOneDay.weeks).toBe(0);
+
+        const aboveOneWeek = parser(25000000, config);
+
+        expect(aboveOneWeek.minutes).toBe(26);
+        expect(aboveOneWeek.hours).toBe(0);
+        expect(aboveOneWeek.days).toBe(1);
+
+        expect(aboveOneWeek.weeks).toBe(9);
+      });
     });
 
     describe('stringifyTime', function () {

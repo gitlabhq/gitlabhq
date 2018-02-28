@@ -16,7 +16,7 @@ module Gitlab
         error_out(error.message, caller[0].dup)
         @errors << error.message
         # Debug:
-        Rails.logger.error(error.backtrace)
+        Rails.logger.error(error.backtrace.join("\n"))
       end
 
       private

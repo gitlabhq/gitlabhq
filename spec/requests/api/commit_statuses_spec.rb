@@ -16,8 +16,8 @@ describe API::CommitStatuses do
     let(:get_url) { "/projects/#{project.id}/repository/commits/#{sha}/statuses" }
 
     context 'ci commit exists' do
-      let!(:master) { project.pipelines.create(source: :push, sha: commit.id, ref: 'master') }
-      let!(:develop) { project.pipelines.create(source: :push, sha: commit.id, ref: 'develop') }
+      let!(:master) { project.pipelines.create(source: :push, sha: commit.id, ref: 'master', protected: false) }
+      let!(:develop) { project.pipelines.create(source: :push, sha: commit.id, ref: 'develop', protected: false) }
 
       context "reporter user" do
         let(:statuses_id) { json_response.map { |status| status['id'] } }
@@ -44,8 +44,8 @@ describe API::CommitStatuses do
             expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(statuses_id).to contain_exactly(status3.id, status4.id, status5.id, status6.id)
-            json_response.sort_by!{ |status| status['id'] }
-            expect(json_response.map{ |status| status['allow_failure'] }).to eq([true, false, false, false])
+            json_response.sort_by! { |status| status['id'] }
+            expect(json_response.map { |status| status['allow_failure'] }).to eq([true, false, false, false])
           end
         end
 
@@ -142,6 +142,9 @@ describe API::CommitStatuses do
               expect(json_response['ref']).not_to be_empty
               expect(json_response['target_url']).to be_nil
               expect(json_response['description']).to be_nil
+              if status == 'failed'
+                expect(CommitStatus.find(json_response['id'])).to be_api_failure
+              end
             end
           end
         end

@@ -33,4 +33,17 @@ describe('UserCallout', function () {
     this.userCalloutBtn.click();
     expect(Cookies.get(USER_CALLOUT_COOKIE)).toBe('true');
   });
+
+  describe('Sets cookie with setCalloutPerProject', () => {
+    beforeEach(() => {
+      spyOn(Cookies, 'set').and.callFake(() => {});
+      document.querySelector('.user-callout').setAttribute('data-project-path', 'foo/bar');
+      this.userCallout = new UserCallout({ setCalloutPerProject: true });
+    });
+
+    it('sets a cookie when the user clicks the close button', () => {
+      this.userCalloutBtn.click();
+      expect(Cookies.set).toHaveBeenCalledWith('user_callout_dismissed', 'true', Object({ expires: 365, path: 'foo/bar' }));
+    });
+  });
 });

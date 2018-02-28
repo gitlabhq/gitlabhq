@@ -384,7 +384,7 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
         context 'when go over safe limits on files' do
           let(:iterator) { [fake_diff(1, 1)] * 4 }
 
-          before(:each) do
+          before do
             stub_const('Gitlab::Git::DiffCollection::DEFAULT_LIMITS', { max_files: 2, max_lines: max_lines })
           end
 
@@ -409,7 +409,7 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
             ]
           end
 
-          before(:each) do
+          before do
             stub_const('Gitlab::Git::DiffCollection::DEFAULT_LIMITS', { max_files: max_files, max_lines: 80 })
           end
 
@@ -434,7 +434,7 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
             ]
           end
 
-          before(:each) do
+          before do
             stub_const('Gitlab::Git::DiffCollection::DEFAULT_LIMITS', { max_files: max_files, max_lines: 80 })
           end
 

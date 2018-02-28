@@ -4,7 +4,7 @@ To enable the Authentiq OmniAuth provider for passwordless authentication you mu
 
 Authentiq will generate a Client ID and the accompanying Client Secret for you to use.
 
-1. Get your Client credentials (Client ID and Client Secret) at [Authentiq](https://www.authentiq.com/register).
+1. Get your Client credentials (Client ID and Client Secret) at [Authentiq](https://www.authentiq.com/developers).
 
 2. On your GitLab server, open the configuration file:
 

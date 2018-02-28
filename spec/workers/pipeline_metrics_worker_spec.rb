@@ -2,7 +2,12 @@ require 'spec_helper'
 
 describe PipelineMetricsWorker do
   let(:project) { create(:project, :repository) }
-  let!(:merge_request) { create(:merge_request, source_project: project, source_branch: pipeline.ref, head_pipeline: pipeline) }
+
+  let!(:merge_request) do
+    create(:merge_request, source_project: project,
+                           source_branch: pipeline.ref,
+                           head_pipeline: pipeline)
+  end
 
   let(:pipeline) do
     create(:ci_empty_pipeline,
@@ -13,6 +18,8 @@ describe PipelineMetricsWorker do
            started_at: 1.hour.ago,
            finished_at: Time.now)
   end
+
+  let(:status) { 'pending' }
 
   describe '#perform' do
     before do

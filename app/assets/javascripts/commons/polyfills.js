@@ -12,3 +12,4 @@ import 'core-js/fn/symbol';
 // Browser polyfills
 import './polyfills/custom_event';
 import './polyfills/element';
+import './polyfills/nodelist';

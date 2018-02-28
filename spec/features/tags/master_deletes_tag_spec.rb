@@ -36,8 +36,8 @@ feature 'Master deletes tag' do
 
   context 'when pre-receive hook fails', js: true do
     before do
-      allow_any_instance_of(GitHooksService).to receive(:execute)
-        .and_raise(GitHooksService::PreReceiveError, 'Do not delete tags')
+      allow_any_instance_of(Gitlab::Git::HooksService).to receive(:execute)
+        .and_raise(Gitlab::Git::HooksService::PreReceiveError, 'Do not delete tags')
     end
 
     scenario 'shows the error message' do

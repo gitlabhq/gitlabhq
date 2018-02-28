@@ -4,7 +4,6 @@ class Projects::ServicesController < Projects::ApplicationController
   # Authorize
   before_action :authorize_admin_project!
   before_action :service, only: [:edit, :update, :test]
-  before_action :update_service, only: [:update, :test]
 
   respond_to :html
 
@@ -14,6 +13,8 @@ class Projects::ServicesController < Projects::ApplicationController
   end
 
   def update
+    @service.attributes = service_params[:service]
+
     if @service.save(context: :manual_change)
       redirect_to(project_settings_integrations_path(@project), notice: success_message)
     else
@@ -24,7 +25,7 @@ class Projects::ServicesController < Projects::ApplicationController
   def test
     message = {}
 
-    if @service.can_test?
+    if @service.can_test? && @service.update_attributes(service_params[:service])
       data = @service.test_data(project, current_user)
       outcome = @service.test(data)
 
@@ -48,10 +49,6 @@ class Projects::ServicesController < Projects::ApplicationController
     else
       "#{@service.title} settings saved, but not activated."
     end
-  end
-
-  def update_service
-    @service.assign_attributes(service_params[:service])
   end
 
   def service

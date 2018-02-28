@@ -21,10 +21,16 @@ module Projects
       builds_access_level = @project.project_feature.builds_access_level
       new_project.project_feature.update_attributes(builds_access_level: builds_access_level)
 
+      refresh_forks_count
+
       new_project
     end
 
     private
+
+    def refresh_forks_count
+      Projects::ForksCountService.new(@project).refresh_cache
+    end
 
     def allowed_visibility_level
       project_level = @project.visibility_level

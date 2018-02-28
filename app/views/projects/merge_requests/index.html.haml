@@ -12,17 +12,15 @@
   = webpack_bundle_tag 'common_vue'
   = webpack_bundle_tag 'filtered_search'
 
-- if show_new_nav?
-  - content_for :breadcrumbs_extra do
-    = render "projects/merge_requests/nav_btns", merge_project: merge_project, new_merge_request_path: new_merge_request_path
-
 = render 'projects/last_push'
 
 - if @project.merge_requests.exists?
   %div{ class: container_class }
+    - if show_auto_devops_callout?(@project)
+      = render 'shared/auto_devops_callout'
     .top-area
       = render 'shared/issuable/nav', type: :merge_requests
-      .nav-controls{ class: ("visible-xs" if show_new_nav?) }
+      .nav-controls
         = render "projects/merge_requests/nav_btns", merge_project: merge_project, new_merge_request_path: new_merge_request_path
 
     = render 'shared/issuable/search_bar', type: :merge_requests

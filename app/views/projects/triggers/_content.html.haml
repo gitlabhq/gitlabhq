@@ -1,14 +1,8 @@
-%h4.prepend-top-0
-  Triggers
-%p.prepend-top-20
-  Triggers can force a specific branch or tag to get rebuilt with an API call.  These tokens will
-  impersonate their associated user including their access to projects and their project
-  permissions.
-%p.prepend-top-20
+%p.append-bottom-default
   Triggers with the
   %span.label.label-primary legacy
   label do not have an associated user and only have access to the current project.
-%p.append-bottom-0
+  %br
   = succeed '.' do
     Learn more in the
     = link_to 'triggers documentation', help_page_path('ci/triggers/README'), target: '_blank'

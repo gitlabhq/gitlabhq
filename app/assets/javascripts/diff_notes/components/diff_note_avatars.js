@@ -21,11 +21,13 @@ const DiffNoteAvatars = Vue.extend({
   },
   template: `
     <div class="diff-comment-avatar-holders"
+      :class="discussionClassName"
       v-show="notesCount !== 0">
       <div v-if="!isVisible">
         <!-- FIXME: Pass an alt attribute here for accessibility -->
         <user-avatar-image
           v-for="note in notesSubset"
+          :key="note.id"
           class="diff-comment-avatar js-diff-comment-avatar"
           @click.native="clickedAvatar($event)"
           :img-src="note.authorAvatar"
@@ -68,7 +70,8 @@ const DiffNoteAvatars = Vue.extend({
       });
     });
   },
-  destroyed() {
+  beforeDestroy() {
+    this.addNoCommentClass();
     $(document).off('toggle.comments');
   },
   watch: {
@@ -85,6 +88,9 @@ const DiffNoteAvatars = Vue.extend({
     },
   },
   computed: {
+    discussionClassName() {
+      return `js-diff-avatars-${this.discussionId}`;
+    },
     notesSubset() {
       let notes = [];
 

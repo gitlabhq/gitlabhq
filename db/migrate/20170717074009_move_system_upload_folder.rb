@@ -15,6 +15,11 @@ class MoveSystemUploadFolder < ActiveRecord::Migration
       return
     end
 
+    if File.directory?(new_directory)
+      say "#{new_directory} already exists. No need to redo the move."
+      return
+    end
+
     FileUtils.mkdir_p(File.join(base_directory, '-'))
 
     say "Moving #{old_directory} -> #{new_directory}"
@@ -30,6 +35,11 @@ class MoveSystemUploadFolder < ActiveRecord::Migration
 
     unless File.directory?(new_directory)
       say "#{new_directory} doesn't exist, no need to move it."
+      return
+    end
+
+    if !File.symlink?(old_directory) && File.directory?(old_directory)
+      say "#{old_directory} already exists and is not a symlink, no need to revert."
       return
     end
 

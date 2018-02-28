@@ -132,6 +132,23 @@ class FilteredSearchVisualTokens {
       .catch(() => { });
   }
 
+  static updateEmojiTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue) {
+    const container = tokenValueContainer;
+    const element = tokenValueElement;
+
+    return import(/* webpackChunkName: 'emoji' */ '../emoji')
+      .then((Emoji) => {
+        if (!Emoji.isEmojiNameValid(tokenValue)) {
+          return;
+        }
+
+        container.dataset.originalValue = tokenValue;
+        element.innerHTML = Emoji.glEmojiTag(tokenValue);
+      })
+      // ignore error and leave emoji name in the search bar
+      .catch(() => { });
+  }
+
   static renderVisualTokenValue(parentElement, tokenName, tokenValue) {
     const tokenValueContainer = parentElement.querySelector('.value-container');
     const tokenValueElement = tokenValueContainer.querySelector('.value');
@@ -142,6 +159,10 @@ class FilteredSearchVisualTokens {
       FilteredSearchVisualTokens.updateLabelTokenColor(tokenValueContainer, tokenValue);
     } else if ((tokenType === 'author') || (tokenType === 'assignee')) {
       FilteredSearchVisualTokens.updateUserTokenAppearance(
+        tokenValueContainer, tokenValueElement, tokenValue,
+      );
+    } else if (tokenType === 'my-reaction') {
+      FilteredSearchVisualTokens.updateEmojiTokenAppearance(
         tokenValueContainer, tokenValueElement, tokenValue,
       );
     }

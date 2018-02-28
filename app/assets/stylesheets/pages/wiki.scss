@@ -37,7 +37,7 @@
   }
 
   .light {
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
     color: $gl-text-color-secondary;
   }
 
@@ -89,7 +89,7 @@
 
   h3 {
     font-size: 19px;
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
     margin: $gl-padding 0;
   }
 }

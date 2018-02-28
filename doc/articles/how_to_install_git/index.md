@@ -3,7 +3,7 @@
 > **Article [Type](../../development/writing_documentation.html#types-of-technical-articles):** user guide ||
 > **Level:** beginner ||
 > **Author:** [Sean Packham](https://gitlab.com/SeanPackham) ||
-> **Publication date:** 2017/05/15
+> **Publication date:** 2017-05-15
 
 To begin contributing to GitLab projects
 you will need to install the Git client on your computer.

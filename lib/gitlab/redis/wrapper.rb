@@ -8,9 +8,6 @@ module Gitlab
     class Wrapper
       DEFAULT_REDIS_URL = 'redis://localhost:6379'.freeze
       REDIS_CONFIG_ENV_VAR_NAME = 'GITLAB_REDIS_CONFIG_FILE'.freeze
-      if defined?(::Rails) && ::Rails.root.present?
-        DEFAULT_REDIS_CONFIG_FILE_NAME = ::Rails.root.join('config', 'resque.yml').freeze
-      end
 
       class << self
         delegate :params, :url, to: :new
@@ -49,13 +46,21 @@ module Gitlab
           DEFAULT_REDIS_URL
         end
 
+        # Return the absolute path to a Rails configuration file
+        #
+        # We use this instead of `Rails.root` because for certain tasks
+        # utilizing these classes, `Rails` might not be available.
+        def config_file_path(filename)
+          File.expand_path("../../../config/#{filename}", __dir__)
+        end
+
         def config_file_name
           # if ENV set for wrapper class, use it even if it points to a file does not exist
           file_name = ENV[REDIS_CONFIG_ENV_VAR_NAME]
           return file_name unless file_name.nil?
 
           # otherwise, if config files exists for wrapper class, use it
-          file_name = File.expand_path(DEFAULT_REDIS_CONFIG_FILE_NAME, __dir__)
+          file_name = config_file_path('resque.yml')
           return file_name if File.file?(file_name)
 
           # nil will force use of DEFAULT_REDIS_URL when config file is absent

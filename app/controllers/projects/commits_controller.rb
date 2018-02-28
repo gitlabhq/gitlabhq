@@ -2,6 +2,7 @@ require "base64"
 
 class Projects::CommitsController < Projects::ApplicationController
   include ExtractsPath
+  include RendersCommits
 
   before_action :require_non_empty_project
   before_action :assign_ref_vars
@@ -56,5 +57,7 @@ class Projects::CommitsController < Projects::ApplicationController
       else
         @repository.commits(@ref, path: @path, limit: @limit, offset: @offset)
       end
+
+    @commits = prepare_commits_for_rendering(@commits)
   end
 end

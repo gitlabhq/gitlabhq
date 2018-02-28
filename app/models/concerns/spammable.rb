@@ -28,7 +28,7 @@ module Spammable
 
   def submittable_as_spam?
     if user_agent_detail
-      user_agent_detail.submittable? && current_application_settings.akismet_enabled
+      user_agent_detail.submittable? && Gitlab::CurrentSettings.current_application_settings.akismet_enabled
     else
       false
     end
@@ -58,7 +58,7 @@ module Spammable
       options.fetch(:spam_title, false)
     end
 
-    public_send(attr.first) if attr && respond_to?(attr.first.to_sym)
+    public_send(attr.first) if attr && respond_to?(attr.first.to_sym) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def spam_description
@@ -66,12 +66,12 @@ module Spammable
       options.fetch(:spam_description, false)
     end
 
-    public_send(attr.first) if attr && respond_to?(attr.first.to_sym)
+    public_send(attr.first) if attr && respond_to?(attr.first.to_sym) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def spammable_text
     result = self.class.spammable_attrs.map do |attr|
-      public_send(attr.first)
+      public_send(attr.first) # rubocop:disable GitlabSecurity/PublicSend
     end
 
     result.reject(&:blank?).join("\n")

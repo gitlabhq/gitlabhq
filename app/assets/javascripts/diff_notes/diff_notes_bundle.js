@@ -32,6 +32,10 @@ $(() => {
       const tmpApp = new tmp().$mount();
 
       $(this).replaceWith(tmpApp.$el);
+      $(tmpApp.$el).one('remove.vue', () => {
+        tmpApp.$destroy();
+        tmpApp.$el.remove();
+      });
     });
 
     const $components = $(COMPONENT_SELECTOR).filter(function () {
@@ -42,6 +46,10 @@ $(() => {
       $components.each(function () {
         const $this = $(this);
         const noteId = $this.attr(':note-id');
+        const discussionId = $this.attr(':discussion-id');
+
+        if ($this.is('comment-and-resolve-btn') && !discussionId) return;
+
         const tmp = Vue.extend({
           template: $this.get(0).outerHTML
         });

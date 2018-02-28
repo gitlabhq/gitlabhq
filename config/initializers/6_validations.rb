@@ -37,12 +37,12 @@ def validate_storages_config
       storage_validation_error("#{name} is not a valid storage, because it has no `path` key. Refer to gitlab.yml.example for an updated example")
     end
 
-    %w(failure_count_threshold failure_wait_time failure_reset_time storage_timeout).each do |setting|
+    %w(failure_count_threshold failure_reset_time storage_timeout).each do |setting|
       # Falling back to the defaults is fine!
       next if repository_storage[setting].nil?
 
       unless repository_storage[setting].to_f > 0
-        storage_validation_error("#{setting}, for storage `#{name}` needs to be greater than 0")
+        storage_validation_error("`#{setting}` for storage `#{name}` needs to be greater than 0")
       end
     end
   end

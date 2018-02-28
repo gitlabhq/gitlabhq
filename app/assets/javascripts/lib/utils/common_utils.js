@@ -27,6 +27,13 @@
       }
     };
 
+    w.gl.utils.isInIssuePage = () => {
+      const page = gl.utils.getPagePath(1);
+      const action = gl.utils.getPagePath(2);
+
+      return page === 'issues' && action === 'show';
+    };
+
     w.gl.utils.ajaxGet = function(url) {
       return $.ajax({
         type: "GET",
@@ -167,11 +174,12 @@
     };
 
     gl.utils.scrollToElement = function($el) {
-      var top = $el.offset().top;
-      gl.mrTabsHeight = gl.mrTabsHeight || $('.merge-request-tabs').height();
+      const top = $el.offset().top;
+      const mrTabsHeight = $('.merge-request-tabs').height() || 0;
+      const headerHeight = $('.navbar-gitlab').height() || 0;
 
       return $('body, html').animate({
-        scrollTop: top - (gl.mrTabsHeight)
+        scrollTop: top - mrTabsHeight - headerHeight,
       }, 200);
     };
 
@@ -378,15 +386,15 @@
     w.gl.utils.backOff = (fn, timeout = 60000) => {
       const maxInterval = 32000;
       let nextInterval = 2000;
-
-      const startTime = Date.now();
+      let timeElapsed = 0;
 
       return new Promise((resolve, reject) => {
         const stop = arg => ((arg instanceof Error) ? reject(arg) : resolve(arg));
 
         const next = () => {
-          if (Date.now() - startTime < timeout) {
-            setTimeout(fn.bind(null, next, stop), nextInterval);
+          if (timeElapsed < timeout) {
+            setTimeout(() => fn(next, stop), nextInterval);
+            timeElapsed += nextInterval;
             nextInterval = Math.min(nextInterval + nextInterval, maxInterval);
           } else {
             reject(new Error('BACKOFF_TIMEOUT'));

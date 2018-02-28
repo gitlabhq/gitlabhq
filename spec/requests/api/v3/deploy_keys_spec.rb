@@ -87,7 +87,7 @@ describe API::V3::DeployKeys do
 
         expect do
           post v3_api("/projects/#{project.id}/#{path}", admin), key_attrs
-        end.to change{ project.deploy_keys.count }.by(1)
+        end.to change { project.deploy_keys.count }.by(1)
       end
 
       it 'returns an existing ssh key when attempting to add a duplicate' do
@@ -122,7 +122,7 @@ describe API::V3::DeployKeys do
       it 'should delete existing key' do
         expect do
           delete v3_api("/projects/#{project.id}/#{path}/#{deploy_key.id}", admin)
-        end.to change{ project.deploy_keys.count }.by(-1)
+        end.to change { project.deploy_keys.count }.by(-1)
       end
 
       it 'should return 404 Not Found with invalid ID' do

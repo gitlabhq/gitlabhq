@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projects > Members > User requests access' do
+feature 'Projects > Members > User requests access', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :access_requestable, :repository) }
   let(:master) { project.owner }
@@ -46,11 +46,10 @@ feature 'Projects > Members > User requests access' do
 
     expect(project.requesters.exists?(user_id: user)).to be_truthy
 
-    page.within('.layout-nav .nav-links') do
+    page.within('.nav-sidebar') do
       click_link('Members')
     end
 
-    visit project_project_members_path(project)
     page.within('.content') do
       expect(page).not_to have_content(user.name)
     end

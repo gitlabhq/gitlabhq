@@ -1,6 +1,7 @@
 /* eslint-disable comma-dangle */
 /* global BoardService */
 /* global ListIssue */
+/* global mockBoardService */
 
 import Vue from 'vue';
 import '~/lib/utils/url_utility';
@@ -16,11 +17,12 @@ describe('Issue model', () => {
   let issue;
 
   beforeEach(() => {
-    gl.boardService = new BoardService('/test/issue-boards/board', '', '1');
+    gl.boardService = mockBoardService();
     gl.issueBoards.BoardsStore.create();
 
     issue = new ListIssue({
       title: 'Testing',
+      id: 1,
       iid: 1,
       confidential: false,
       labels: [{

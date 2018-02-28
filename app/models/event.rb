@@ -1,5 +1,6 @@
 class Event < ActiveRecord::Base
   include Sortable
+  include IgnorableColumn
   default_scope { reorder(nil).where.not(author_id: nil) }
 
   CREATED   = 1
@@ -48,9 +49,7 @@ class Event < ActiveRecord::Base
   belongs_to :author, class_name: "User"
   belongs_to :project
   belongs_to :target, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
-
-  # For Hash only
-  serialize :data # rubocop:disable Cop/ActiveRecordSerialize
+  has_one :push_event_payload, foreign_key: :event_id
 
   # Callbacks
   after_create :reset_project_activity
@@ -60,14 +59,53 @@ class Event < ActiveRecord::Base
   scope :recent, -> { reorder(id: :desc) }
   scope :code_push, -> { where(action: PUSHED) }
 
-  scope :in_projects, ->(projects) do
-    where(project_id: projects.pluck(:id)).recent
+  scope :in_projects, -> (projects) do
+    sub_query = projects
+      .except(:order)
+      .select(1)
+      .where('projects.id = events.project_id')
+
+    where('EXISTS (?)', sub_query).recent
   end
 
-  scope :with_associations, -> { includes(:author, :project, project: :namespace).preload(:target) }
+  scope :with_associations, -> do
+    # We're using preload for "push_event_payload" as otherwise the association
+    # is not always available (depending on the query being built).
+    includes(:author, :project, project: :namespace)
+      .preload(:target, :push_event_payload)
+  end
+
   scope :for_milestone_id, ->(milestone_id) { where(target_type: "Milestone", target_id: milestone_id) }
 
+  self.inheritance_column = 'action'
+
+  # "data" will be removed in 10.0 but it may be possible that JOINs happen that
+  # include this column, hence we're ignoring it as well.
+  ignore_column :data
+
   class << self
+    def model_name
+      ActiveModel::Name.new(self, nil, 'event')
+    end
+
+    def find_sti_class(action)
+      if action.to_i == PUSHED
+        PushEvent
+      else
+        Event
+      end
+    end
+
+    def subclass_from_attributes(attrs)
+      # Without this Rails will keep calling this method on the returned class,
+      # resulting in an infinite loop.
+      return unless self == Event
+
+      action = attrs.with_indifferent_access[inheritance_column].to_i
+
+      PushEvent if action == PUSHED
+    end
+
     # Update Gitlab::ContributionsCalendar#activity_dates if this changes
     def contributions
       where("action = ? OR (target_type IN (?) AND action IN (?)) OR (target_type = ? AND action = ?)",
@@ -122,7 +160,7 @@ class Event < ActiveRecord::Base
   end
 
   def push?
-    action == PUSHED && valid_push?
+    false
   end
 
   def merged?
@@ -235,77 +273,6 @@ class Event < ActiveRecord::Base
     end
   end
 
-  def valid_push?
-    data[:ref] && ref_name.present?
-  rescue
-    false
-  end
-
-  def tag?
-    Gitlab::Git.tag_ref?(data[:ref])
-  end
-
-  def branch?
-    Gitlab::Git.branch_ref?(data[:ref])
-  end
-
-  def new_ref?
-    Gitlab::Git.blank_ref?(commit_from)
-  end
-
-  def rm_ref?
-    Gitlab::Git.blank_ref?(commit_to)
-  end
-
-  def md_ref?
-    !(rm_ref? || new_ref?)
-  end
-
-  def commit_from
-    data[:before]
-  end
-
-  def commit_to
-    data[:after]
-  end
-
-  def ref_name
-    if tag?
-      tag_name
-    else
-      branch_name
-    end
-  end
-
-  def branch_name
-    @branch_name ||= Gitlab::Git.ref_name(data[:ref])
-  end
-
-  def tag_name
-    @tag_name ||= Gitlab::Git.ref_name(data[:ref])
-  end
-
-  # Max 20 commits from push DESC
-  def commits
-    @commits ||= (data[:commits] || []).reverse
-  end
-
-  def commits_count
-    data[:total_commits_count] || commits.count || 0
-  end
-
-  def ref_type
-    tag? ? "tag" : "branch"
-  end
-
-  def push_with_commits?
-    !commits.empty? && commit_from && commit_to
-  end
-
-  def last_push_to_non_root?
-    branch? && project.default_branch != branch_name
-  end
-
   def target_iid
     target.respond_to?(:iid) ? target.iid : target_id
   end
@@ -359,7 +326,7 @@ class Event < ActiveRecord::Base
 
   def body?
     if push?
-      push_with_commits? || rm_ref?
+      push_with_commits?
     elsif note?
       true
     else
@@ -383,6 +350,12 @@ class Event < ActiveRecord::Base
 
   def authored_by?(user)
     user ? author_id == user.id : false
+  end
+
+  def to_partial_path
+    # We are intentionally using `Event` rather than `self.class` so that
+    # subclasses also use the `Event` implementation.
+    Event._to_partial_path
   end
 
   private

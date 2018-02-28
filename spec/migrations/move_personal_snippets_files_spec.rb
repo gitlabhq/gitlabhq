@@ -5,7 +5,7 @@ describe MovePersonalSnippetsFiles do
   let(:migration) { described_class.new }
   let(:test_dir) { File.join(Rails.root, "tmp", "tests", "move_snippet_files_test") }
   let(:uploads_dir) { File.join(test_dir, 'uploads') }
-  let(:new_uploads_dir) { File.join(uploads_dir, 'system') }
+  let(:new_uploads_dir) { File.join(uploads_dir, '-', 'system') }
 
   before do
     allow(CarrierWave).to receive(:root).and_return(test_dir)
@@ -42,7 +42,7 @@ describe MovePersonalSnippetsFiles do
     describe 'updating the markdown' do
       it 'includes the new path when the file exists' do
         secret = "secret#{snippet.id}"
-        file_location = "/uploads/system/personal_snippet/#{snippet.id}/#{secret}/picture.jpg"
+        file_location = "/uploads/-/system/personal_snippet/#{snippet.id}/#{secret}/picture.jpg"
 
         migration.up
 
@@ -60,7 +60,7 @@ describe MovePersonalSnippetsFiles do
 
       it 'updates the note markdown' do
         secret = "secret#{snippet.id}"
-        file_location = "/uploads/system/personal_snippet/#{snippet.id}/#{secret}/picture.jpg"
+        file_location = "/uploads/-/system/personal_snippet/#{snippet.id}/#{secret}/picture.jpg"
         markdown = markdown_linking_file('picture.jpg', snippet)
         note = create(:note_on_personal_snippet, noteable: snippet, note: "with #{markdown}")
 
@@ -108,7 +108,7 @@ describe MovePersonalSnippetsFiles do
 
       it 'keeps the markdown as is when the file is missing' do
         secret = "secret#{snippet_with_missing_file.id}"
-        file_location = "/uploads/system/personal_snippet/#{snippet_with_missing_file.id}/#{secret}/picture.jpg"
+        file_location = "/uploads/-/system/personal_snippet/#{snippet_with_missing_file.id}/#{secret}/picture.jpg"
 
         migration.down
 
@@ -167,7 +167,7 @@ describe MovePersonalSnippetsFiles do
   def markdown_linking_file(filename, snippet, in_new_path: false)
     markdown =  "![#{filename.split('.')[0]}]"
     markdown += '(/uploads'
-    markdown += '/system' if in_new_path
+    markdown += '/-/system' if in_new_path
     markdown += "/#{model_file_path(filename, snippet)})"
     markdown
   end

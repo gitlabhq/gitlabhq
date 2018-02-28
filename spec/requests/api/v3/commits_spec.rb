@@ -386,7 +386,7 @@ describe API::V3::Commits do
       end
 
       it "returns status for CI" do
-        pipeline = project.pipelines.create(source: :push, ref: 'master', sha: project.repository.commit.sha)
+        pipeline = project.pipelines.create(source: :push, ref: 'master', sha: project.repository.commit.sha, protected: false)
         pipeline.update(status: 'success')
 
         get v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
@@ -396,7 +396,7 @@ describe API::V3::Commits do
       end
 
       it "returns status for CI when pipeline is created" do
-        project.pipelines.create(source: :push, ref: 'master', sha: project.repository.commit.sha)
+        project.pipelines.create(source: :push, ref: 'master', sha: project.repository.commit.sha, protected: false)
 
         get v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
 
@@ -474,7 +474,7 @@ describe API::V3::Commits do
 
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq(master_pickable_commit.title)
-        expect(json_response['message']).to eq(master_pickable_commit.message)
+        expect(json_response['message']).to eq(master_pickable_commit.cherry_pick_message(user))
         expect(json_response['author_name']).to eq(master_pickable_commit.author_name)
         expect(json_response['committer_name']).to eq(user.name)
       end

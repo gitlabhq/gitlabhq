@@ -11,7 +11,7 @@ module Gitlab
             'redis_ping'
           end
 
-          def is_successful?(result)
+          def successful?(result)
             result == 'PONG'
           end
 

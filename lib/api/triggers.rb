@@ -5,7 +5,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS  do
       desc 'Trigger a GitLab project pipeline' do
         success Entities::Pipeline
       end
@@ -140,8 +140,7 @@ module API
         trigger = user_project.triggers.find(params.delete(:trigger_id))
         return not_found!('Trigger') unless trigger
 
-        status 204
-        trigger.destroy
+        destroy_conditionally!(trigger)
       end
     end
   end

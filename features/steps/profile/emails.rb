@@ -28,7 +28,7 @@ class Spinach::Features::ProfileEmails < Spinach::FeatureSteps
     expect(email).to be_nil
     expect(page).not_to have_content("my@email.com")
   end
-  
+
   step 'I click link "Remove" for "my@email.com"' do
     # there should only be one remove button at this time
     click_link "Remove"

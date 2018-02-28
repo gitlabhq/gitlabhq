@@ -1,0 +1,5 @@
+---
+title: Only update the sidebar count caches when needed
+merge_request:
+author:
+type: other

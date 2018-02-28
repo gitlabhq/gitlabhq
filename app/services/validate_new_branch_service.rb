@@ -13,7 +13,7 @@ class ValidateNewBranchService < BaseService
     end
 
     success
-  rescue GitHooksService::PreReceiveError => ex
+  rescue Gitlab::Git::HooksService::PreReceiveError => ex
     error(ex.message)
   end
 end

@@ -127,7 +127,7 @@ describe API::V3::Files do
 
     it "returns a 400 if editor fails to create file" do
       allow_any_instance_of(Repository).to receive(:create_file)
-        .and_raise(Repository::CommitError, 'Cannot create file')
+        .and_raise(Gitlab::Git::CommitError, 'Cannot create file')
 
       post v3_api("/projects/#{project.id}/repository/files", user), valid_params
 
@@ -228,7 +228,7 @@ describe API::V3::Files do
     end
 
     it "returns a 400 if fails to delete file" do
-      allow_any_instance_of(Repository).to receive(:delete_file).and_raise(Repository::CommitError, 'Cannot delete file')
+      allow_any_instance_of(Repository).to receive(:delete_file).and_raise(Gitlab::Git::CommitError, 'Cannot delete file')
 
       delete v3_api("/projects/#{project.id}/repository/files", user), valid_params
 

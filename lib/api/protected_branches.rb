@@ -61,7 +61,7 @@ module API
         service_args = [user_project, current_user, protected_branch_params]
 
         protected_branch = ::ProtectedBranches::CreateService.new(*service_args).execute
-        
+
         if protected_branch.persisted?
           present protected_branch, with: Entities::ProtectedBranch, project: user_project
         else
@@ -76,9 +76,7 @@ module API
       delete ':id/protected_branches/:name', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         protected_branch = user_project.protected_branches.find_by!(name: params[:name])
 
-        protected_branch.destroy
-
-        status 204
+        destroy_conditionally!(protected_branch)
       end
     end
   end

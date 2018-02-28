@@ -1,0 +1,5 @@
+---
+title: Fix division by zero error in blame age mapping
+merge_request: 13803
+author: Jeff Stubler
+type: fixed

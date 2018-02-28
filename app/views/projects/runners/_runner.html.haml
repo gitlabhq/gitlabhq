@@ -8,7 +8,7 @@
       - if runner.locked?
         = icon('lock', class: 'has-tooltip', title: 'Locked to current projects')
 
-      %small
+      %small.edit-runner
         = link_to edit_project_runner_path(@project, runner) do
           %i.fa.fa-edit.btn
     - else

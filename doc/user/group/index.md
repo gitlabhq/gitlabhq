@@ -55,7 +55,17 @@ By doing so:
 - John mentions everyone from his team with `@john-team`
 - John mentions only his marketing team with `@john-team/marketing`
 
+## Issues and merge requests within a group
+
+Issues and merge requests are part of projects. For a given group, view all the
+[issues](../project/issues/index.md#issues-per-group) and [merge requests](../project/merge_requests/index.md#merge-requests-per-group) across all the projects in that group,
+together in a single list view.
+
 ## Create a new group
+
+> **Notes:**
+- For a list of words that are not allowed to be used as group names see the
+  [reserved names][reserved].
 
 You can create a group in GitLab from:
 
@@ -153,6 +163,13 @@ Find this option under your project's settings.
 
 GitLab administrators can use the admin interface to move any project to any namespace if needed.
 
+## Sharing a project with a group
+
+You can [share your projects with a group](../project/members/share_project_with_groups.md)
+and give your group members access to the project all at once.
+
+Alternatively, you can [lock the sharing with group feature](#share-with-group-lock).
+
 ## Manage group memberships via LDAP
 
 In GitLab Enterprise Edition it is possible to manage GitLab group memberships using LDAP groups.
@@ -173,9 +190,27 @@ access further configurations for your group.
 
 #### Enforce 2FA to group members
 
-Add a secury layer to your group by
+Add a security layer to your group by
 [enforcing two-factor authentication (2FA)](../../security/two_factor_authentication.md#enforcing-2fa-for-all-users-in-a-group)
 to all group members.
+
+#### Share with group lock
+
+Prevent projects in a group from [sharing
+a project with another group](../project/members/share_project_with_groups.md).
+This allows for tighter control over project access.
+
+For example, consider you have two distinct teams (Group A and Group B)
+working together in a project.
+To inherit the group membership, you share the project between the
+two groups A and B. **Share with group lock** prevents any project within
+the group from being shared with another group. By doing so, you
+guarantee only the right group members have access to that projects.
+
+To enable this feature, navigate to the group settings page. Select
+**Share with group lock** and **Save the group**.
+
+![Checkbox for share with group lock](img/share_with_group_lock.png)
 
 #### Member Lock (EES/EEP)
 
@@ -184,15 +219,6 @@ with **Member Lock** it is possible to lock membership in project to the
 level of members in group.
 
 Learn more about [Member Lock](https://docs.gitlab.com/ee/user/group/index.html#member-lock-ees-eep).
-
-#### Share with group lock (EES/EEP)
-
-In [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/)
-it is possible to prevent projects in a group from [sharing
-a project with another group](../../workflow/share_projects_with_other_groups.md).
-This allows for tighter control over project access.
-
-Learn more about [Share with group lock](https://docs.gitlab.com/ee/user/group/index.html#share-with-group-lock-ees-eep).
 
 ### Advanced settings
 
@@ -206,3 +232,4 @@ for the group (GitLab admins only, available in [GitLab Enterprise Edition Start
 
 [permissions]: ../permissions.md#permissions
 [ee]: https://about.gitlab.com/products/
+[reserved]:  ../reserved_names.md

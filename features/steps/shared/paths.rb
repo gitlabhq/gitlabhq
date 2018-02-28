@@ -304,10 +304,6 @@ module SharedPaths
     visit project_commits_path(@project, 'stable', { limit: 5 })
   end
 
-  step 'I visit project source page' do
-    visit project_tree_path(@project, root_ref)
-  end
-
   step 'I visit blob file from repo' do
     visit project_blob_path(@project, File.join(sample_commit.id, sample_blob.path))
   end

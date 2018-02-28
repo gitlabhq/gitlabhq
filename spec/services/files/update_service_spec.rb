@@ -76,7 +76,7 @@ describe Files::UpdateService do
       let(:branch_name) { "#{project.default_branch}-new" }
 
       it 'fires hooks only once' do
-        expect(GitHooksService).to receive(:new).once.and_call_original
+        expect(Gitlab::Git::HooksService).to receive(:new).once.and_call_original
 
         subject.execute
       end

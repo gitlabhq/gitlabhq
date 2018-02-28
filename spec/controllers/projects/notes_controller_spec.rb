@@ -46,10 +46,13 @@ describe Projects::NotesController do
     end
 
     context 'for a discussion note' do
-      let!(:note) { create(:discussion_note_on_issue, noteable: issue, project: project) }
+      let(:project) { create(:project, :repository) }
+      let!(:note) { create(:discussion_note_on_merge_request, project: project) }
+
+      let(:params) { request_params.merge(target_type: 'merge_request', target_id: note.noteable_id) }
 
       it 'responds with the expected attributes' do
-        get :index, request_params
+        get :index, params
 
         expect(note_json[:id]).to eq(note.id)
         expect(note_json[:discussion_html]).not_to be_nil
@@ -104,10 +107,12 @@ describe Projects::NotesController do
     end
 
     context 'for a regular note' do
-      let!(:note) { create(:note, noteable: issue, project: project) }
+      let!(:note) { create(:note_on_merge_request, project: project) }
+
+      let(:params) { request_params.merge(target_type: 'merge_request', target_id: note.noteable_id) }
 
       it 'responds with the expected attributes' do
-        get :index, request_params
+        get :index, params
 
         expect(note_json[:id]).to eq(note.id)
         expect(note_json[:html]).not_to be_nil
@@ -125,7 +130,9 @@ describe Projects::NotesController do
         note: { note: 'some note', noteable_id: merge_request.id, noteable_type: 'MergeRequest' },
         namespace_id: project.namespace,
         project_id: project,
-        merge_request_diff_head_sha: 'sha'
+        merge_request_diff_head_sha: 'sha',
+        target_type: 'merge_request',
+        target_id: merge_request.id
       }
     end
 

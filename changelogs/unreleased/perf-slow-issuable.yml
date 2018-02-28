@@ -1,0 +1,6 @@
+---
+title: Fix repository equality check and avoid fetching ref if the commit is already
+  available. This affects merge request creation performance
+merge_request: 13685
+author:
+type: other

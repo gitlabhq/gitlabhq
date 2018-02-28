@@ -4,5 +4,7 @@ module Ci
     include HasVariable
 
     belongs_to :pipeline_schedule
+
+    validates :key, uniqueness: { scope: :pipeline_schedule_id }
   end
 end

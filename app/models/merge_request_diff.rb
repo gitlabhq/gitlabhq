@@ -282,9 +282,7 @@ class MergeRequestDiff < ActiveRecord::Base
   def load_commits
     commits = st_commits.presence || merge_request_diff_commits
 
-    commits.map do |commit|
-      Commit.new(Gitlab::Git::Commit.new(commit.to_hash), merge_request.source_project)
-    end
+    commits.map { |commit| Commit.from_hash(commit.to_hash, project) }
   end
 
   def save_diffs

@@ -7,6 +7,7 @@
 class NamespacelessProjectDestroyWorker
   include Sidekiq::Worker
   include DedicatedSidekiqQueue
+  include ExceptionBacktrace
 
   def self.bulk_perform_async(args_list)
     Sidekiq::Client.push_bulk('class' => self, 'queue' => sidekiq_options['queue'], 'args' => args_list)
@@ -18,15 +19,12 @@ class NamespacelessProjectDestroyWorker
     rescue ActiveRecord::RecordNotFound
       return
     end
-    return unless project.namespace_id.nil?  # Reject doing anything for projects that *do* have a namespace
+
+    return if project.namespace  # Reject doing anything for projects that *do* have a namespace
 
     project.team.truncate
 
     unlink_fork(project) if project.forked?
-
-    # Override Project#remove_pages for this instance so it doesn't do anything
-    def project.remove_pages
-    end
 
     project.destroy!
   end

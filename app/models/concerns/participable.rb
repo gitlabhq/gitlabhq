@@ -82,7 +82,7 @@ module Participable
           if attr.respond_to?(:call)
             source.instance_exec(current_user, ext, &attr)
           else
-            process << source.__send__(attr)
+            process << source.__send__(attr) # rubocop:disable GitlabSecurity/PublicSend
           end
         end
       when Enumerable, ActiveRecord::Relation

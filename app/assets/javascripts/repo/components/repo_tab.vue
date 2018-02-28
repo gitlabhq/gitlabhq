@@ -10,10 +10,16 @@ const RepoTab = {
   },
 
   computed: {
+    closeLabel() {
+      if (this.tab.changed) {
+        return `${this.tab.name} changed`;
+      }
+      return `Close ${this.tab.name}`;
+    },
     changedClass() {
       const tabChangedObj = {
-        'fa-times': !this.tab.changed,
-        'fa-circle': this.tab.changed,
+        'fa-times close-icon': !this.tab.changed,
+        'fa-circle unsaved-icon': this.tab.changed,
       };
       return tabChangedObj;
     },
@@ -22,9 +28,9 @@ const RepoTab = {
   methods: {
     tabClicked: Store.setActiveFiles,
 
-    xClicked(file) {
+    closeTab(file) {
       if (file.changed) return;
-      this.$emit('xclicked', file);
+      this.$emit('tabclosed', file);
     },
   },
 };
@@ -33,13 +39,25 @@ export default RepoTab;
 </script>
 
 <template>
-<li>
-  <a href="#" class="close" @click.prevent="xClicked(tab)" v-if="!tab.loading">
-    <i class="fa" :class="changedClass"></i>
+<li @click="tabClicked(tab)">
+  <a
+    href="#0"
+    class="close"
+    @click.stop.prevent="closeTab(tab)"
+    :aria-label="closeLabel">
+    <i
+      class="fa"
+      :class="changedClass"
+      aria-hidden="true">
+    </i>
   </a>
 
-  <a href="#" class="repo-tab" v-if="!tab.loading" :title="tab.url" @click.prevent="tabClicked(tab)">{{tab.name}}</a>
-
-  <i v-if="tab.loading" class="fa fa-spinner fa-spin"></i>
+  <a
+    href="#"
+    class="repo-tab"
+    :title="tab.url"
+    @click.prevent="tabClicked(tab)">
+    {{tab.name}}
+  </a>
 </li>
 </template>

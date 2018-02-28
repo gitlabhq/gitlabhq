@@ -20,24 +20,6 @@ module Ci
       raise ValidationError, e.message
     end
 
-    def jobs_for_ref(ref, tag = false, source = nil)
-      @jobs.select do |_, job|
-        process?(job[:only], job[:except], ref, tag, source)
-      end
-    end
-
-    def jobs_for_stage_and_ref(stage, ref, tag = false, source = nil)
-      jobs_for_ref(ref, tag, source).select do |_, job|
-        job[:stage] == stage
-      end
-    end
-
-    def builds_for_ref(ref, tag = false, source = nil)
-      jobs_for_ref(ref, tag, source).map do |name, _|
-        build_attributes(name)
-      end
-    end
-
     def builds_for_stage_and_ref(stage, ref, tag = false, source = nil)
       jobs_for_stage_and_ref(stage, ref, tag, source).map do |name, _|
         build_attributes(name)
@@ -52,8 +34,7 @@ module Ci
 
     def stage_seeds(pipeline)
       seeds = @stages.uniq.map do |stage|
-        builds = builds_for_stage_and_ref(
-          stage, pipeline.ref, pipeline.tag?, pipeline.source)
+        builds = pipeline_stage_builds(stage, pipeline)
 
         Gitlab::Ci::Stage::Seed.new(pipeline, stage, builds) if builds.any?
       end
@@ -100,6 +81,34 @@ module Ci
     end
 
     private
+
+    def pipeline_stage_builds(stage, pipeline)
+      builds = builds_for_stage_and_ref(
+        stage, pipeline.ref, pipeline.tag?, pipeline.source)
+
+      builds.select do |build|
+        job = @jobs[build.fetch(:name).to_sym]
+        has_kubernetes = pipeline.has_kubernetes_active?
+        only_kubernetes = job.dig(:only, :kubernetes)
+        except_kubernetes = job.dig(:except, :kubernetes)
+
+        [!only_kubernetes && !except_kubernetes,
+         only_kubernetes && has_kubernetes,
+         except_kubernetes && !has_kubernetes].any?
+      end
+    end
+
+    def jobs_for_ref(ref, tag = false, source = nil)
+      @jobs.select do |_, job|
+        process?(job.dig(:only, :refs), job.dig(:except, :refs), ref, tag, source)
+      end
+    end
+
+    def jobs_for_stage_and_ref(stage, ref, tag = false, source = nil)
+      jobs_for_ref(ref, tag, source).select do |_, job|
+        job[:stage] == stage
+      end
+    end
 
     def initial_parsing
       ##

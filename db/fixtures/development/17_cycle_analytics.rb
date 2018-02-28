@@ -15,7 +15,7 @@ class Gitlab::Seeder::CycleAnalytics
   # to disable the `pre_receive` hook in order to remove this
   # dependency on the GitLab API.
   def stub_git_pre_receive!
-    GitHooksService.class_eval do
+    Gitlab::Git::HooksService.class_eval do
       def run_hook(name)
         [true, '']
       end

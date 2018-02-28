@@ -98,7 +98,7 @@ feature 'Multiple merge requests updating from merge_requests#index' do
   end
 
   def change_status(text)
-    click_button 'Edit Merge Requests'
+    click_button 'Edit merge requests'
     find('#check-all-issues').click
     find('.js-issue-status').click
     find('.dropdown-menu-status a', text: text).click
@@ -106,7 +106,7 @@ feature 'Multiple merge requests updating from merge_requests#index' do
   end
 
   def change_assignee(text)
-    click_button 'Edit Merge Requests'
+    click_button 'Edit merge requests'
     find('#check-all-issues').click
     find('.js-update-assignee').click
     wait_for_requests
@@ -119,7 +119,7 @@ feature 'Multiple merge requests updating from merge_requests#index' do
   end
 
   def change_milestone(text)
-    click_button 'Edit Merge Requests'
+    click_button 'Edit merge requests'
     find('#check-all-issues').click
     find('.issues-bulk-update .js-milestone-select').click
     find('.dropdown-menu-milestone a', text: text).click

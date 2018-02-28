@@ -54,7 +54,7 @@ module Gitlab
       end
 
       def serialize_commit(event, commit, query)
-        commit = Commit.new(Gitlab::Git::Commit.new(commit.to_hash), @project)
+        commit = Commit.from_hash(commit.to_hash, @project)
 
         AnalyticsCommitSerializer.new(project: @project, total_time: event['total_time']).represent(commit)
       end

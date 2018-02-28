@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'New project' do
+  include Select2Helper
+
   let(:user) { create(:admin) }
 
   before do
@@ -68,26 +70,10 @@ feature 'New project' do
 
         expect(namespace.text).to eq group.name
       end
-
-      context 'on validation error' do
-        before do
-          fill_in('project_path', with: 'private-group-project')
-          choose('Internal')
-          click_button('Create project')
-
-          expect(page).to have_css '.project-edit-errors .alert.alert-danger'
-        end
-
-        it 'selects the group namespace' do
-          namespace = find('#project_namespace_id option[selected]')
-
-          expect(namespace.text).to eq group.name
-        end
-      end
     end
 
     context 'with subgroup namespace' do
-      let(:group) { create(:group, :private, owner: user) }
+      let(:group) { create(:group, owner: user) }
       let(:subgroup) { create(:group, parent: group) }
 
       before do
@@ -99,6 +85,41 @@ feature 'New project' do
         namespace = find('#project_namespace_id option[selected]')
 
         expect(namespace.text).to eq subgroup.full_path
+      end
+    end
+
+    context 'when changing namespaces dynamically', :js do
+      let(:public_group) { create(:group, :public) }
+      let(:internal_group) { create(:group, :internal) }
+      let(:private_group) { create(:group, :private) }
+
+      before do
+        public_group.add_owner(user)
+        internal_group.add_owner(user)
+        private_group.add_owner(user)
+        visit new_project_path(namespace_id: public_group.id)
+      end
+
+      it 'enables the correct visibility options' do
+        select2(user.namespace_id, from: '#project_namespace_id')
+        expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
+        expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).not_to be_disabled
+        expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PUBLIC}")).not_to be_disabled
+
+        select2(public_group.id, from: '#project_namespace_id')
+        expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
+        expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).not_to be_disabled
+        expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PUBLIC}")).not_to be_disabled
+
+        select2(internal_group.id, from: '#project_namespace_id')
+        expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
+        expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).not_to be_disabled
+        expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PUBLIC}")).to be_disabled
+
+        select2(private_group.id, from: '#project_namespace_id')
+        expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
+        expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).to be_disabled
+        expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PUBLIC}")).to be_disabled
       end
     end
   end

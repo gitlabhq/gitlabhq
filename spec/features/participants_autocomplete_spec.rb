@@ -11,10 +11,14 @@ feature 'Member autocomplete', :js do
     sign_in(user)
   end
 
-  shared_examples "open suggestions when typing @" do
+  shared_examples "open suggestions when typing @" do |resource_name|
     before do
       page.within('.new-note') do
-        find('#note_note').send_keys('@')
+        if resource_name == 'issue'
+          find('#note-body').send_keys('@')
+        else
+          find('#note_note').send_keys('@')
+        end
       end
     end
 
@@ -32,7 +36,7 @@ feature 'Member autocomplete', :js do
       visit project_issue_path(project, noteable)
     end
 
-    include_examples "open suggestions when typing @"
+    include_examples "open suggestions when typing @", 'issue'
   end
 
   context 'adding a new note on a Merge Request' do
@@ -45,7 +49,7 @@ feature 'Member autocomplete', :js do
       visit project_merge_request_path(project, noteable)
     end
 
-    include_examples "open suggestions when typing @"
+    include_examples "open suggestions when typing @", 'merge_request'
   end
 
   context 'adding a new note on a Commit' do
@@ -60,6 +64,6 @@ feature 'Member autocomplete', :js do
       visit project_commit_path(project, noteable)
     end
 
-    include_examples "open suggestions when typing @"
+    include_examples "open suggestions when typing @", 'commit'
   end
 end

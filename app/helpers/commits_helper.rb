@@ -114,7 +114,7 @@ module CommitsHelper
   end
 
   def commit_signature_badge_classes(additional_classes)
-    %w(btn status-box gpg-status-box) + Array(additional_classes)
+    %w(btn gpg-status-box) + Array(additional_classes)
   end
 
   protected
@@ -128,10 +128,10 @@ module CommitsHelper
   #  avatar: true will prepend the avatar image
   #  size:   size of the avatar image in px
   def commit_person_link(commit, options = {})
-    user = commit.send(options[:source])
+    user = commit.public_send(options[:source]) # rubocop:disable GitlabSecurity/PublicSend
 
-    source_name = clean(commit.send "#{options[:source]}_name".to_sym)
-    source_email = clean(commit.send "#{options[:source]}_email".to_sym)
+    source_name  = clean(commit.public_send(:"#{options[:source]}_name"))  # rubocop:disable GitlabSecurity/PublicSend
+    source_email = clean(commit.public_send(:"#{options[:source]}_email")) # rubocop:disable GitlabSecurity/PublicSend
 
     person_name = user.try(:name) || source_name
 

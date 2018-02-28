@@ -149,7 +149,7 @@ describe ProjectMember do
   describe 'notifications' do
     describe '#after_accept_request' do
       it 'calls NotificationService.new_project_member' do
-        member = create(:project_member, user: build_stubbed(:user), requested_at: Time.now)
+        member = create(:project_member, user: create(:user), requested_at: Time.now)
 
         expect_any_instance_of(NotificationService).to receive(:new_project_member)
 

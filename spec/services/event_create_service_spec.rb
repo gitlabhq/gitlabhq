@@ -117,12 +117,52 @@ describe EventCreateService do
     let(:project) { create(:project) }
     let(:user) { create(:user) }
 
+    let(:push_data) do
+      {
+        commits: [
+          {
+            id: '1cf19a015df3523caf0a1f9d40c98a267d6a2fc2',
+            message: 'This is a commit'
+          }
+        ],
+        before: '0000000000000000000000000000000000000000',
+        after: '1cf19a015df3523caf0a1f9d40c98a267d6a2fc2',
+        total_commits_count: 1,
+        ref: 'refs/heads/my-branch'
+      }
+    end
+
     it 'creates a new event' do
-      expect { service.push(project, user, {}) }.to change { Event.count }
+      expect { service.push(project, user, push_data) }.to change { Event.count }
+    end
+
+    it 'creates the push event payload' do
+      expect(PushEventPayloadService).to receive(:new)
+        .with(an_instance_of(PushEvent), push_data)
+        .and_call_original
+
+      service.push(project, user, push_data)
     end
 
     it 'updates user last activity' do
-      expect { service.push(project, user, {}) }.to change { user_activity(user) }
+      expect { service.push(project, user, push_data) }
+        .to change { user_activity(user) }
+    end
+
+    it 'does not create any event data when an error is raised' do
+      payload_service = double(:service)
+
+      allow(payload_service).to receive(:execute)
+        .and_raise(RuntimeError)
+
+      allow(PushEventPayloadService).to receive(:new)
+        .and_return(payload_service)
+
+      expect { service.push(project, user, push_data) }
+        .to raise_error(RuntimeError)
+
+      expect(Event.count).to eq(0)
+      expect(PushEventPayload.count).to eq(0)
     end
   end
 

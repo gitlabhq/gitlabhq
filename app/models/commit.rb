@@ -16,6 +16,8 @@ class Commit
   participant :notes_with_associations
 
   attr_accessor :project, :author
+  attr_accessor :redacted_description_html
+  attr_accessor :redacted_title_html
 
   DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines]
 
@@ -25,6 +27,13 @@ class Commit
 
   # The SHA can be between 7 and 40 hex characters.
   COMMIT_SHA_PATTERN = '\h{7,40}'.freeze
+
+  def banzai_render_context(field)
+    context = { pipeline: :single_line, project: self.project }
+    context[:author] = self.author if self.author
+
+    context
+  end
 
   class << self
     def decorate(commits, project)
@@ -55,7 +64,8 @@ class Commit
     end
 
     def from_hash(hash, project)
-      new(Gitlab::Git::Commit.new(hash), project)
+      raw_commit = Gitlab::Git::Commit.new(project.repository.raw, hash)
+      new(raw_commit, project)
     end
 
     def valid_hash?(key)
@@ -199,7 +209,7 @@ class Commit
   end
 
   def method_missing(m, *args, &block)
-    @raw.send(m, *args, &block)
+    @raw.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def respond_to_missing?(method, include_private = false)
@@ -248,6 +258,28 @@ class Commit
 
   def cherry_pick_branch_name
     project.repository.next_branch("cherry-pick-#{short_id}", mild: true)
+  end
+
+  def cherry_pick_description(user)
+    message_body = "(cherry picked from commit #{sha})"
+
+    if merged_merge_request?(user)
+      commits_in_merge_request = merged_merge_request(user).commits
+
+      if commits_in_merge_request.present?
+        message_body << "\n"
+
+        commits_in_merge_request.reverse.each do |commit_in_merge|
+          message_body << "\n#{commit_in_merge.short_id} #{commit_in_merge.title}"
+        end
+      end
+    end
+
+    message_body
+  end
+
+  def cherry_pick_message(user)
+    %Q{#{message}\n\n#{cherry_pick_description(user)}}
   end
 
   def revert_description(user)
@@ -320,21 +352,11 @@ class Commit
   end
 
   def raw_diffs(*args)
-    if Gitlab::GitalyClient.feature_enabled?(:commit_raw_diffs)
-      Gitlab::GitalyClient::CommitService.new(project.repository).diff_from_parent(self, *args)
-    else
-      raw.diffs(*args)
-    end
+    raw.diffs(*args)
   end
 
   def raw_deltas
-    @deltas ||= Gitlab::GitalyClient.migrate(:commit_deltas) do |is_enabled|
-      if is_enabled
-        Gitlab::GitalyClient::CommitService.new(project.repository).commit_deltas(self)
-      else
-        raw.deltas
-      end
-    end
+    @deltas ||= raw.deltas
   end
 
   def diffs(diff_options = nil)

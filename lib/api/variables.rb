@@ -9,7 +9,7 @@ module API
       requires :id, type: String, desc: 'The ID of a project'
     end
 
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS  do
       desc 'Get project variables' do
         success Entities::Variable
       end
@@ -88,6 +88,7 @@ module API
         variable = user_project.variables.find_by(key: params[:key])
         not_found!('Variable') unless variable
 
+        # Variables don't have any timestamp. Therfore, destroy unconditionally.
         status 204
         variable.destroy
       end

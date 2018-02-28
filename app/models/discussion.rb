@@ -81,6 +81,10 @@ class Discussion
     last_note.author
   end
 
+  def updated?
+    last_updated_at != created_at
+  end
+
   def id
     first_note.discussion_id(context_noteable)
   end

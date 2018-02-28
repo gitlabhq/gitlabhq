@@ -1,12 +1,15 @@
 module Gitlab
   module Gpg
     class Commit
-      attr_reader :commit
-
       def initialize(commit)
         @commit = commit
 
-        @signature_text, @signed_text = commit.raw.signature(commit.project.repository)
+        @signature_text, @signed_text =
+          begin
+            Rugged::Commit.extract_signature(@commit.project.repository.rugged, @commit.sha)
+          rescue Rugged::OdbError
+            nil
+          end
       end
 
       def has_signature?
@@ -16,18 +19,20 @@ module Gitlab
       def signature
         return unless has_signature?
 
-        cached_signature = GpgSignature.find_by(commit_sha: commit.sha)
-        return cached_signature if cached_signature.present?
+        return @signature if @signature
 
-        using_keychain do |gpg_key|
-          create_cached_signature!(gpg_key)
-        end
+        cached_signature = GpgSignature.find_by(commit_sha: @commit.sha)
+        return @signature = cached_signature if cached_signature.present?
+
+        @signature = create_cached_signature!
       end
 
       def update_signature!(cached_signature)
         using_keychain do |gpg_key|
           cached_signature.update_attributes!(attributes(gpg_key))
         end
+
+        @signature = cached_signature
       end
 
       private
@@ -55,26 +60,39 @@ module Gitlab
         end
       end
 
-      def create_cached_signature!(gpg_key)
-        GpgSignature.create!(attributes(gpg_key))
+      def create_cached_signature!
+        using_keychain do |gpg_key|
+          GpgSignature.create!(attributes(gpg_key))
+        end
       end
 
       def attributes(gpg_key)
         user_infos = user_infos(gpg_key)
+        verification_status = verification_status(gpg_key)
 
         {
-          commit_sha: commit.sha,
-          project: commit.project,
+          commit_sha: @commit.sha,
+          project: @commit.project,
           gpg_key: gpg_key,
           gpg_key_primary_keyid: gpg_key&.primary_keyid || verified_signature.fingerprint,
           gpg_key_user_name: user_infos[:name],
           gpg_key_user_email: user_infos[:email],
-          valid_signature: gpg_signature_valid_signature_value(gpg_key)
+          verification_status: verification_status
         }
       end
 
-      def gpg_signature_valid_signature_value(gpg_key)
-        !!(gpg_key && gpg_key.verified? && verified_signature.valid?)
+      def verification_status(gpg_key)
+        return :unknown_key unless gpg_key
+        return :unverified_key unless gpg_key.verified?
+        return :unverified unless verified_signature.valid?
+
+        if gpg_key.verified_and_belongs_to_email?(@commit.committer_email)
+          :verified
+        elsif gpg_key.user.all_emails.include?(@commit.committer_email)
+          :same_user_different_email
+        else
+          :other_user
+        end
       end
 
       def user_infos(gpg_key)

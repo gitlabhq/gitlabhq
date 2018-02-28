@@ -84,13 +84,10 @@ describe 'New/edit merge request', :js do
           end
         end
 
-        page.within '.issuable-meta' do
+        page.within '.breadcrumbs' do
           merge_request = MergeRequest.find_by(source_branch: 'fix')
 
-          expect(page).to have_text("Merge request #{merge_request.to_reference}")
-          # compare paths because the host differ in test
-          expect(find_link(merge_request.to_reference)[:href])
-            .to end_with(merge_request_path(merge_request))
+          expect(page).to have_text("Merge Requests #{merge_request.to_reference}")
         end
       end
 

@@ -69,7 +69,7 @@ module AuthenticatesWithTwoFactor
     if U2fRegistration.authenticate(user, u2f_app_id, user_params[:device_response], session[:challenge])
       # Remove any lingering user data from login
       session.delete(:otp_user_id)
-      session.delete(:challenges)
+      session.delete(:challenge)
 
       remember_me(user) if user_params[:remember_me] == '1'
       sign_in(user)

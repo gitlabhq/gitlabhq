@@ -85,6 +85,13 @@ class DropDown {
     const renderableList = this.list.querySelector('ul[data-dynamic]') || this.list;
 
     renderableList.innerHTML = children.join('');
+
+    const listEvent = new CustomEvent('render.dl', {
+      detail: {
+        list: this,
+      },
+    });
+    this.list.dispatchEvent(listEvent);
   }
 
   renderChildren(data) {

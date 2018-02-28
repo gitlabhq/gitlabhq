@@ -1,3 +1,4 @@
+# :nocov:
 module DeliverNever
   def deliver_later
     self
@@ -21,3 +22,4 @@ module Gitlab
     end
   end
 end
+# :nocov:

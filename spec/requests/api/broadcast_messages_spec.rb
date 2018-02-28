@@ -171,6 +171,10 @@ describe API::BroadcastMessages do
       expect(response).to have_http_status(403)
     end
 
+    it_behaves_like '412 response' do
+      let(:request) { api("/broadcast_messages/#{message.id}", admin) }
+    end
+
     it 'deletes the broadcast message for admins' do
       expect do
         delete api("/broadcast_messages/#{message.id}", admin)

@@ -1,6 +1,7 @@
 class ProjectDestroyWorker
   include Sidekiq::Worker
   include DedicatedSidekiqQueue
+  include ExceptionBacktrace
 
   def perform(project_id, user_id, params)
     project = Project.find(project_id)

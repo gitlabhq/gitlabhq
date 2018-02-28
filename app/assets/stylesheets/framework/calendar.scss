@@ -52,13 +52,13 @@
   .pika-label {
     color: $gl-text-color-secondary;
     font-size: 14px;
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
   }
 
   th {
     padding: 2px 0;
     color: $note-disabled-comment-color;
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
     text-transform: lowercase;
     border-top: 1px solid $calendar-border-color;
   }
@@ -88,15 +88,15 @@
   .is-today {
     .pika-day {
       color: inherit;
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
     }
   }
 
   .is-selected .pika-day,
   .pika-day:hover,
   .is-today .pika-day {
-    background: $gl-primary;
-    color: $white-light;
+    background: $gray-darker;
+    color: $gl-text-color;
     box-shadow: none;
   }
 }

@@ -10,10 +10,13 @@ describe IssuesFinder do
   set(:issue1) { create(:issue, author: user, assignees: [user], project: project1, milestone: milestone, title: 'gitlab', created_at: 1.week.ago) }
   set(:issue2) { create(:issue, author: user, assignees: [user], project: project2, description: 'gitlab') }
   set(:issue3) { create(:issue, author: user2, assignees: [user2], project: project2, title: 'tanuki', description: 'tanuki', created_at: 1.week.from_now) }
+  set(:award_emoji1) { create(:award_emoji, name: 'thumbsup', user: user, awardable: issue1) }
+  set(:award_emoji2) { create(:award_emoji, name: 'thumbsup', user: user2, awardable: issue2) }
+  set(:award_emoji3) { create(:award_emoji, name: 'thumbsdown', user: user, awardable: issue3) }
 
   describe '#execute' do
-    set(:closed_issue) { create(:issue, author: user2, assignees: [user2], project: project2, state: 'closed') }
-    set(:label_link) { create(:label_link, label: label, target: issue2) }
+    let!(:closed_issue) { create(:issue, author: user2, assignees: [user2], project: project2, state: 'closed') }
+    let!(:label_link) { create(:label_link, label: label, target: issue2) }
     let(:search_user) { user }
     let(:params) { {} }
     let(:issues) { described_class.new(search_user, params.reverse_merge(scope: scope, state: 'opened')).execute }
@@ -26,6 +29,10 @@ describe IssuesFinder do
       issue1
       issue2
       issue3
+
+      award_emoji1
+      award_emoji2
+      award_emoji3
     end
 
     context 'scope: all' do
@@ -250,6 +257,34 @@ describe IssuesFinder do
         end
       end
 
+      context 'filtering by reaction name' do
+        context 'user searches by "thumbsup" reaction' do
+          let(:params) { { my_reaction_emoji: 'thumbsup' } }
+
+          it 'returns issues that the user thumbsup to' do
+            expect(issues).to contain_exactly(issue1)
+          end
+        end
+
+        context 'user2 searches by "thumbsup" reaction' do
+          let(:search_user) { user2 }
+
+          let(:params) { { my_reaction_emoji: 'thumbsup' } }
+
+          it 'returns issues that the user2 thumbsup to' do
+            expect(issues).to contain_exactly(issue2)
+          end
+        end
+
+        context 'user searches by "thumbsdown" reaction' do
+          let(:params) { { my_reaction_emoji: 'thumbsdown' } }
+
+          it 'returns issues that the user thumbsdown to' do
+            expect(issues).to contain_exactly(issue3)
+          end
+        end
+      end
+
       context 'when the user is unauthorized' do
         let(:search_user) { nil }
 
@@ -309,6 +344,20 @@ describe IssuesFinder do
 
         expect(issues.count).to eq 0
       end
+    end
+  end
+
+  describe '#row_count', :request_store do
+    it 'returns the number of rows for the default state' do
+      finder = described_class.new(user)
+
+      expect(finder.row_count).to eq(3)
+    end
+
+    it 'returns the number of rows for a given state' do
+      finder = described_class.new(user, state: 'closed')
+
+      expect(finder.row_count).to be_zero
     end
   end
 

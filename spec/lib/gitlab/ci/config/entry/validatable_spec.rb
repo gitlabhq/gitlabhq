@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::Entry::Validatable do
-  let(:entry) { Class.new }
-
-  before do
-    entry.include(described_class)
+  let(:entry) do
+    Class.new(Gitlab::Ci::Config::Entry::Node) do
+      include Gitlab::Ci::Config::Entry::Validatable
+    end
   end
 
   describe '.validator' do
@@ -28,7 +28,7 @@ describe Gitlab::Ci::Config::Entry::Validatable do
     end
 
     context 'when validating entry instance' do
-      let(:entry_instance) { entry.new }
+      let(:entry_instance) { entry.new('something') }
 
       context 'when attribute is valid' do
         before do

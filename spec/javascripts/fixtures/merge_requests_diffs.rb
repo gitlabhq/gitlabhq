@@ -25,8 +25,12 @@ describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)', type
     clean_frontend_fixtures('merge_request_diffs/')
   end
 
-  before(:each) do
+  before do
     sign_in(admin)
+  end
+
+  after do
+    remove_repository(project)
   end
 
   it 'merge_request_diffs/inline_changes_tab_with_comments.json' do |example|

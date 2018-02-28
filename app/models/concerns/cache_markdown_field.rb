@@ -78,7 +78,7 @@ module CacheMarkdownField
   def cached_html_up_to_date?(markdown_field)
     html_field = cached_markdown_fields.html_field(markdown_field)
 
-    cached = cached_html_for(markdown_field).present? && __send__(markdown_field).present?
+    cached = cached_html_for(markdown_field).present? && __send__(markdown_field).present? # rubocop:disable GitlabSecurity/PublicSend
     return false unless cached
 
     markdown_changed = attribute_changed?(markdown_field) || false
@@ -93,14 +93,14 @@ module CacheMarkdownField
   end
 
   def attribute_invalidated?(attr)
-    __send__("#{attr}_invalidated?")
+    __send__("#{attr}_invalidated?") # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def cached_html_for(markdown_field)
     raise ArgumentError.new("Unknown field: #{field}") unless
       cached_markdown_fields.markdown_fields.include?(markdown_field)
 
-    __send__(cached_markdown_fields.html_field(markdown_field))
+    __send__(cached_markdown_fields.html_field(markdown_field)) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   included do

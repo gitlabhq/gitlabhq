@@ -142,7 +142,7 @@ module SystemNoteService
   #
   # Returns the created Note object
   def change_milestone(noteable, project, author, milestone)
-    format = milestone&.is_group_milestone? ? :name : :iid
+    format = milestone&.group_milestone? ? :name : :iid
     body = milestone.nil? ? 'removed milestone' : "changed milestone to #{milestone.to_reference(project, format: format)}"
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'milestone'))

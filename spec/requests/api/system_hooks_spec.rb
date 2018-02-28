@@ -102,5 +102,9 @@ describe API::SystemHooks do
 
       expect(response).to have_http_status(404)
     end
+
+    it_behaves_like '412 response' do
+      let(:request) { api("/hooks/#{hook.id}", admin) }
+    end
   end
 end

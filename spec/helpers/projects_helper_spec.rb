@@ -191,10 +191,31 @@ describe ProjectsHelper do
     end
   end
 
-  describe 'link_to_member' do
-    let(:group)   { create(:group) }
-    let(:project) { create(:project, group: group) }
-    let(:user)    { create(:user) }
+  describe '#link_to_member_avatar' do
+    let(:user) { build_stubbed(:user) }
+    let(:expected) { double }
+
+    before do
+      expect(helper).to receive(:avatar_icon).with(user, 16).and_return(expected)
+    end
+
+    it 'returns image tag for member avatar' do
+      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: ["avatar", "avatar-inline", "s16"], alt: "" })
+
+      helper.link_to_member_avatar(user)
+    end
+
+    it 'returns image tag with avatar class' do
+      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: ["avatar", "avatar-inline", "s16", "any-avatar-class"], alt: "" })
+
+      helper.link_to_member_avatar(user, avatar_class: "any-avatar-class")
+    end
+  end
+
+  describe '#link_to_member' do
+    let(:group)   { build_stubbed(:group) }
+    let(:project) { build_stubbed(:project, group: group) }
+    let(:user)    { build_stubbed(:user) }
 
     describe 'using the default options' do
       it 'returns an HTML link to the user' do
@@ -432,9 +453,7 @@ describe ProjectsHelper do
   end
 
   describe '#any_projects?' do
-    before do
-      create(:project)
-    end
+    let!(:project) { create(:project) }
 
     it 'returns true when projects will be returned' do
       expect(helper.any_projects?(Project.all)).to eq(true)
@@ -442,6 +461,14 @@ describe ProjectsHelper do
 
     it 'returns false when no projects will be returned' do
       expect(helper.any_projects?(Project.none)).to eq(false)
+    end
+
+    it 'returns true when using a non-empty Array' do
+      expect(helper.any_projects?([project])).to eq(true)
+    end
+
+    it 'returns false when using an empty Array' do
+      expect(helper.any_projects?([])).to eq(false)
     end
 
     it 'only executes a single query when a LIMIT is applied' do

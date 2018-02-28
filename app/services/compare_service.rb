@@ -11,26 +11,8 @@ class CompareService
   end
 
   def execute(target_project, target_branch, straight: false)
-    # If compare with other project we need to fetch ref first
-    target_project.repository.with_repo_branch_commit(
-      start_project.repository,
-      start_branch_name) do |commit|
-      break unless commit
+    raw_compare = target_project.repository.compare_source_branch(target_branch, start_project.repository, start_branch_name, straight: straight)
 
-      compare(commit.sha, target_project, target_branch, straight: straight)
-    end
-  end
-
-  private
-
-  def compare(source_sha, target_project, target_branch, straight:)
-    raw_compare = Gitlab::Git::Compare.new(
-      target_project.repository.raw_repository,
-      target_branch,
-      source_sha,
-      straight: straight
-    )
-
-    Compare.new(raw_compare, target_project, straight: straight)
+    Compare.new(raw_compare, target_project, straight: straight) if raw_compare
   end
 end

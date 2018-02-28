@@ -120,7 +120,7 @@ export default {
         </a>
 
         <a
-          v-if="action.type === 'ujs-link'"
+          v-else-if="action.type === 'ujs-link'"
           :href="action.path"
           data-method="post"
           rel="nofollow"
@@ -129,7 +129,7 @@ export default {
         </a>
 
         <button
-          v-else="action.type === 'button'"
+          v-else-if="action.type === 'button'"
           @click="onClickAction(action)"
           :disabled="action.isLoading"
           :class="action.cssClass"

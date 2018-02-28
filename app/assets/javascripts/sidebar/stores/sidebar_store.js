@@ -13,6 +13,8 @@ export default class SidebarStore {
       this.isFetching = {
         assignees: true,
       };
+      this.autocompleteProjects = [];
+      this.moveToProjectId = 0;
 
       SidebarStore.singleton = this;
     }
@@ -52,5 +54,13 @@ export default class SidebarStore {
 
   removeAllAssignees() {
     this.assignees = [];
+  }
+
+  setAutocompleteProjects(projects) {
+    this.autocompleteProjects = projects;
+  }
+
+  setMoveToProjectId(moveToProjectId) {
+    this.moveToProjectId = moveToProjectId;
   }
 }

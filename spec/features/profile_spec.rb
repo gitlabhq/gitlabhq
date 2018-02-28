@@ -7,9 +7,8 @@ describe 'Profile account page' do
     sign_in(user)
   end
 
-  describe 'when signup is enabled' do
+  describe 'when I delete my account' do
     before do
-      stub_application_setting(signup_enabled: true)
       visit profile_account_path
     end
 
@@ -18,18 +17,6 @@ describe 'Profile account page' do
     it 'deletes the account' do
       expect { click_link 'Delete account' }.to change { User.where(id: user.id).count }.by(-1)
       expect(current_path).to eq(new_user_session_path)
-    end
-  end
-
-  describe 'when signup is disabled' do
-    before do
-      stub_application_setting(signup_enabled: false)
-      visit profile_account_path
-    end
-
-    it 'does not have option to remove account' do
-      expect(page).not_to have_content('Remove account')
-      expect(current_path).to eq(profile_account_path)
     end
   end
 

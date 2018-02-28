@@ -32,7 +32,18 @@ module MilestonesHelper
   end
 
   def milestone_issues_by_label_count(milestone, label, state:)
-    milestone.issues.with_label(label.title).send(state).size
+    issues = milestone.issues.with_label(label.title)
+    issues =
+      case state
+      when :opened
+        issues.opened
+      when :closed
+        issues.closed
+      else
+        raise ArgumentError, "invalid milestone state `#{state}`"
+      end
+
+    issues.size
   end
 
   # Returns count of milestones for different states
@@ -153,7 +164,7 @@ module MilestonesHelper
   def group_milestone_route(milestone, params = {})
     params = nil if params.empty?
 
-    if milestone.is_legacy_group_milestone?
+    if milestone.legacy_group_milestone?
       group_milestone_path(@group, milestone.safe_title, title: milestone.title, milestone: params)
     else
       group_milestone_path(@group, milestone.iid, milestone: params)

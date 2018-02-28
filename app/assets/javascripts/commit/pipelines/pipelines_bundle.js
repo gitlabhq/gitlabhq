@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         propsData: {
           endpoint: pipelineTableViewEl.dataset.endpoint,
           helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
+          autoDevopsHelpPath: pipelineTableViewEl.dataset.helpAutoDevopsPath,
         },
       }).$mount();
       pipelineTableViewEl.appendChild(table.$el);

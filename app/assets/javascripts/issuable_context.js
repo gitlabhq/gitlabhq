@@ -1,7 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, no-new, comma-dangle, quotes, prefer-arrow-callback, consistent-return, one-var, no-var, one-var-declaration-per-line, no-underscore-dangle, max-len */
-/* global bp */
-
 import Cookies from 'js-cookie';
+import bp from './breakpoints';
 import UsersSelect from './users_select';
 
 const PARTICIPANTS_ROW_COUNT = 7;

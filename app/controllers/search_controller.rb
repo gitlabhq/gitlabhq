@@ -2,6 +2,7 @@ class SearchController < ApplicationController
   skip_before_action :authenticate_user!
 
   include SearchHelper
+  include RendersCommits
 
   layout 'search'
 
@@ -20,6 +21,8 @@ class SearchController < ApplicationController
     @search_results = search_service.search_results
     @search_objects = search_service.search_objects
 
+    render_commits if @scope == 'commits'
+
     check_single_commit_result
   end
 
@@ -37,6 +40,10 @@ class SearchController < ApplicationController
   end
 
   private
+
+  def render_commits
+    @search_objects = prepare_commits_for_rendering(@search_objects)
+  end
 
   def check_single_commit_result
     if @search_results.single_commit_result?

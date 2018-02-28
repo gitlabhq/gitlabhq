@@ -279,16 +279,6 @@ describe Gitlab::Auth do
         gl_auth.find_with_user_password('ldap_user', 'password')
       end
     end
-
-    context "with sign-in disabled" do
-      before do
-        stub_application_setting(password_authentication_enabled: false)
-      end
-
-      it "does not find user by valid login/password" do
-        expect(gl_auth.find_with_user_password(username, password)).to be_nil
-      end
-    end
   end
 
   private

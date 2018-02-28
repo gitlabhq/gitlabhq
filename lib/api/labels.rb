@@ -7,7 +7,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get all labels of the project' do
         success Entities::Label
       end
@@ -56,8 +56,7 @@ module API
         label = user_project.labels.find_by(title: params[:name])
         not_found!('Label') unless label
 
-        status 204
-        label.destroy
+        destroy_conditionally!(label)
       end
 
       desc 'Update an existing label. At least one optional parameter is required.' do

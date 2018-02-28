@@ -46,7 +46,7 @@
     }
 
     strong {
-      font-weight: 600;
+      font-weight: $gl-font-weight-bold;
     }
   }
 
@@ -54,6 +54,10 @@
     @media (min-width: $screen-sm-min) {
       display: -webkit-flex;
       display: flex;
+    }
+
+    .dropdown-menu.dropdown-menu-align-right {
+      margin-top: -2px;
     }
   }
 
@@ -96,6 +100,8 @@
 }
 
 .member-search-form {
+  @include new-style-dropdown;
+
   position: relative;
 
   @media (min-width: $screen-sm-min) {
@@ -221,7 +227,7 @@
   }
 
   .member {
-    font-weight: bold;
+    font-weight: $gl-font-weight-bold;
     overflow-wrap: break-word;
     word-break: break-all;
   }
@@ -303,4 +309,8 @@
       margin-left: 0;
     }
   }
+}
+
+.member-form-control {
+  @include new-style-dropdown;
 }

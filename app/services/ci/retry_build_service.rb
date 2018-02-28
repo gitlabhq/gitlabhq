@@ -3,7 +3,7 @@ module Ci
     CLONE_ACCESSORS = %i[pipeline project ref tag options commands name
                          allow_failure stage_id stage stage_idx trigger_request
                          yaml_variables when environment coverage_regex
-                         description tag_list].freeze
+                         description tag_list protected].freeze
 
     def execute(build)
       reprocess!(build).tap do |new_build|
@@ -23,7 +23,7 @@ module Ci
       end
 
       attributes = CLONE_ACCESSORS.map do |attribute|
-        [attribute, build.send(attribute)]
+        [attribute, build.public_send(attribute)] # rubocop:disable GitlabSecurity/PublicSend
       end
 
       attributes.push([:user, current_user])

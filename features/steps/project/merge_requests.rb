@@ -14,7 +14,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "New Merge Request"' do
-    page.within '#content-body' do
+    page.within '.nav-controls' do
       page.has_link?('New Merge Request') ? click_link("New Merge Request") : click_link('New merge request')
     end
   end
@@ -299,9 +299,6 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I change the comment "Line is wrong" to "Typo, please fix" on diff' do
     page.within('.diff-file:nth-of-type(5) .note') do
-      find('.more-actions').click
-      find('.more-actions .dropdown-menu li', match: :first)
-
       find('.js-note-edit').click
 
       page.within('.current-note-edit-form', visible: true) do

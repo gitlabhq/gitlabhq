@@ -44,7 +44,8 @@ module TokenAuthenticatable
       end
 
       define_method("ensure_#{token_field}!") do
-        send("reset_#{token_field}!") if read_attribute(token_field).blank?
+        send("reset_#{token_field}!") if read_attribute(token_field).blank? # rubocop:disable GitlabSecurity/PublicSend
+
         read_attribute(token_field)
       end
 

@@ -40,7 +40,7 @@
             label: 'New issue',
             path: this.job.new_issue_path,
             cssClass: 'js-new-issue btn btn-new btn-inverted visible-md-block visible-lg-block',
-            type: 'ujs-link',
+            type: 'link',
           });
         }
 

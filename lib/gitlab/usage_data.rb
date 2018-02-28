@@ -1,8 +1,8 @@
 module Gitlab
   class UsageData
-    include Gitlab::CurrentSettings
-
     class << self
+      include Gitlab::CurrentSettings
+
       def data(force_refresh: false)
         Rails.cache.fetch('usage_data', force: force_refresh, expires_in: 2.weeks) { uncached_data }
       end

@@ -1,0 +1,5 @@
+---
+title: Improve performance for AutocompleteController#users.json
+merge_request: 13754
+author: Hiroyuki Sato
+type: changed

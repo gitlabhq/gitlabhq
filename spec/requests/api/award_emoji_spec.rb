@@ -253,6 +253,10 @@ describe API::AwardEmoji do
 
         expect(response).to have_http_status(404)
       end
+
+      it_behaves_like '412 response' do
+        let(:request) { api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji/#{award_emoji.id}", user) }
+      end
     end
 
     context 'when the awardable is a Merge Request' do
@@ -269,6 +273,10 @@ describe API::AwardEmoji do
 
         expect(response).to have_http_status(404)
       end
+
+      it_behaves_like '412 response' do
+        let(:request) { api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/award_emoji/#{downvote.id}", user) }
+      end
     end
 
     context 'when the awardable is a Snippet' do
@@ -282,6 +290,10 @@ describe API::AwardEmoji do
           expect(response).to have_http_status(204)
         end.to change { snippet.award_emoji.count }.from(1).to(0)
       end
+
+      it_behaves_like '412 response' do
+        let(:request) { api("/projects/#{project.id}/snippets/#{snippet.id}/award_emoji/#{award.id}", user) }
+      end
     end
   end
 
@@ -294,6 +306,10 @@ describe API::AwardEmoji do
 
         expect(response).to have_http_status(204)
       end.to change { note.award_emoji.count }.from(1).to(0)
+    end
+
+    it_behaves_like '412 response' do
+      let(:request) { api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji/#{rocket.id}", user) }
     end
   end
 end

@@ -138,6 +138,47 @@ translations. There's no need to generate `.po` files.
 Translations that aren't used in the source code anymore will be marked with
 `~#`; these can be removed to keep our translation files clutter-free.
 
+### Validating PO files
+
+To make sure we keep our translation files up to date, there's a linter that is
+running on CI as part of the `static-analysis` job.
+
+To lint the adjustments in PO files locally you can run `rake gettext:lint`.
+
+The linter will take the following into account:
+
+- Valid PO-file syntax
+- Variable usage
+  - Only one unnamed (`%d`) variable, since the order of variables might change
+    in different languages
+  - All variables used in the message-id are used in the translation
+  - There should be no variables used in a translation that aren't in the
+    message-id
+- Errors during translation.
+
+The errors are grouped per file, and per message ID:
+
+```
+Errors in `locale/zh_HK/gitlab.po`:
+  PO-syntax errors
+    SimplePoParser::ParserErrorSyntax error in lines
+    Syntax error in msgctxt
+    Syntax error in msgid
+    Syntax error in msgstr
+    Syntax error in message_line
+    There should be only whitespace until the end of line after the double quote character of a message text.
+    Parseing result before error: '{:msgid=>["", "You are going to remove %{project_name_with_namespace}.\\n", "Removed project CANNOT be restored!\\n", "Are you ABSOLUTELY sure?"]}'
+    SimplePoParser filtered backtrace: SimplePoParser::ParserError
+Errors in `locale/zh_TW/gitlab.po`:
+  1 pipeline
+    <%d 條流水線> is using unknown variables: [%d]
+    Failure translating to zh_TW with []: too few arguments
+```
+
+In this output the `locale/zh_HK/gitlab.po` has syntax errors.
+The `locale/zh_TW/gitlab.po` has variables that are used in the translation that
+aren't in the message with id `1 pipeline`.
+
 ## Working with special content
 
 ### Interpolation

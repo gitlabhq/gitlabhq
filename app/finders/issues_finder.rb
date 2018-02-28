@@ -14,6 +14,7 @@
 #     search: string
 #     label_name: string
 #     sort: string
+#     my_reaction_emoji: string
 #
 class IssuesFinder < IssuableFinder
   CONFIDENTIAL_ACCESS_LEVEL = Gitlab::Access::REPORTER
@@ -54,44 +55,10 @@ class IssuesFinder < IssuableFinder
       project.team.max_member_access(current_user.id) >= CONFIDENTIAL_ACCESS_LEVEL
   end
 
-  # Anonymous users can't see any confidential issues.
-  #
-  # Users without access to see _all_ confidential issues (as in
-  # `user_can_see_all_confidential_issues?`) are more complicated, because they
-  # can see confidential issues where:
-  # 1. They are an assignee.
-  # 2. They are an author.
-  #
-  # That's fine for most cases, but if we're just counting, we need to cache
-  # effectively. If we cached this accurately, we'd have a cache key for every
-  # authenticated user without sufficient access to the project. Instead, when
-  # we are counting, we treat them as if they can't see any confidential issues.
-  #
-  # This does mean the counts may be wrong for those users, but avoids an
-  # explosion in cache keys.
-  def user_cannot_see_confidential_issues?(for_counting: false)
+  def user_cannot_see_confidential_issues?
     return false if user_can_see_all_confidential_issues?
 
-    current_user.blank? || for_counting || params[:for_counting]
-  end
-
-  def state_counter_cache_key_components
-    extra_components = [
-      user_can_see_all_confidential_issues?,
-      user_cannot_see_confidential_issues?(for_counting: true)
-    ]
-
-    super + extra_components
-  end
-
-  def state_counter_cache_key_components_permutations
-    # Ignore the last two, as we'll provide both options for them.
-    components = super.first[0..-3]
-
-    [
-      components + [false, true],
-      components + [true, false]
-    ]
+    current_user.blank?
   end
 
   def by_assignee(items)

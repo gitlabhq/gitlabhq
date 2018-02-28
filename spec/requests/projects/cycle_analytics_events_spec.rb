@@ -93,7 +93,7 @@ describe 'cycle analytics events' do
 
     context 'with private project and builds' do
       before do
-        project.members.first.update(access_level: Gitlab::Access::GUEST)
+        project.members.last.update(access_level: Gitlab::Access::GUEST)
       end
 
       it 'does not list the test events' do

@@ -42,6 +42,11 @@ describe Issues::CloseService do
       service.execute(issue)
     end
 
+    it 'refreshes the number of open issues' do
+      expect { service.execute(issue) }
+        .to change { project.open_issues_count }.from(1).to(0)
+    end
+
     it 'invalidates counter cache for assignees' do
       expect_any_instance_of(User).to receive(:invalidate_issue_cache_counts)
 

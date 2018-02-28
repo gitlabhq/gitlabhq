@@ -73,7 +73,7 @@ module NotesHelper
   end
 
   def note_max_access_for_user(note)
-    note.project.team.human_max_access(note.author_id)
+    note.project.team.max_member_access(note.author_id)
   end
 
   def discussion_path(discussion)
@@ -93,11 +93,13 @@ module NotesHelper
     end
   end
 
-  def notes_url
+  def notes_url(params = {})
     if @snippet.is_a?(PersonalSnippet)
-      snippet_notes_path(@snippet)
+      snippet_notes_path(@snippet, params)
     else
-      project_noteable_notes_path(@project, target_id: @noteable.id, target_type: @noteable.class.name.underscore)
+      params.merge!(target_id: @noteable.id, target_type: @noteable.class.name.underscore)
+
+      project_noteable_notes_path(@project, params)
     end
   end
 
@@ -143,5 +145,9 @@ module NotesHelper
       diffView: diff_view,
       autocomplete: autocomplete
     }
+  end
+
+  def discussion_resolved_intro(discussion)
+    discussion.resolved_by_push? ? 'Automatically resolved' : 'Resolved'
   end
 end

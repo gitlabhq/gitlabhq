@@ -24,9 +24,8 @@ describe 'Subgroup Issuables', :js, :nested_groups do
   end
 
   def expect_to_have_full_subgroup_title
-    title = find('.title-container')
+    title = find('.breadcrumbs-links')
 
-    expect(title).not_to have_selector '.initializing'
-    expect(title).to have_content 'group / subgroup / project'
+    expect(title).to have_content 'group subgroup project'
   end
 end

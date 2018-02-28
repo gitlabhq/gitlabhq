@@ -15,19 +15,17 @@ describe 'Issue Boards', js: true do
   let!(:list)        { create(:list, board: board, label: development, position: 0) }
   let(:card) { find('.board:nth-child(2)').first('.card') }
 
-  before do
-    Timecop.freeze
+  around do |example|
+    Timecop.freeze { example.run }
+  end
 
-    project.team << [user, :master]
+  before do
+    project.add_master(user)
 
     sign_in(user)
 
     visit project_board_path(project, board)
     wait_for_requests
-  end
-
-  after do
-    Timecop.return
   end
 
   it 'shows sidebar when clicking issue' do

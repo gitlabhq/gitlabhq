@@ -20,12 +20,12 @@ describe 'mail_room.yml' do
     YAML.load(output)
   end
 
-  before(:each) do
+  before do
     stub_env('GITLAB_REDIS_QUEUES_CONFIG_FILE', absolute_path(queues_config_path))
     clear_queues_raw_config
   end
 
-  after(:each) do
+  after do
     clear_queues_raw_config
   end
 
