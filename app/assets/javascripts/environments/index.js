@@ -5,7 +5,7 @@ import Translate from '../vue_shared/translate';
 
 Vue.use(Translate);
 
-document.addEventListener('DOMContentLoaded', () => new Vue({
+export default () => new Vue({
   el: '#environments-list-view',
   components: {
     environmentsComponent,
@@ -36,4 +36,4 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
       },
     });
   },
-}));
+});
