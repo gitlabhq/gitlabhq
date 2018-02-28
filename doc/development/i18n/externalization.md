@@ -226,14 +226,14 @@ For instance, the following
 
 ```js
 {{ s__("mrWidget|Set by") }}
-<mr-widget-author :author="mr.setToMWPSBy" />
+{{ author.name }}
 {{ s__("mrWidget|to be merged automatically when the pipeline succeeds") }}
 ```
 
 should be externalized as follows:
 
 ```js
-{{ sprintf(s__("mrWidget|Set by %{author} to be merged automatically when the pipeline succeeds"), { author: '<mr-widget-author :author="mr.setToMWPSBy" />' }) }}
+{{ sprintf(s__("mrWidget|Set by %{author} to be merged automatically when the pipeline succeeds"), { author: author.name }) }}
 ```
 
 When in doubt, try to follow the best practices described in this [Mozilla
