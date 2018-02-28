@@ -44,13 +44,10 @@ function generateEntries() {
 
   const manualEntries = {
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
-    common:               './commons/index.js',
-    common_vue:           './vue_shared/vue_resource_interceptor.js',
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     environments:         './environments/environments_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
     help:                 './help/help.js',
-    merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
     monitoring:           './monitoring/monitoring_bundle.js',
     mr_notes:             './mr_notes/index.js',
     notebook_viewer:      './blob/notebook_viewer.js',
@@ -242,7 +239,6 @@ var config = {
         'environments',
         'filtered_search',
         'groups',
-        'merge_conflicts',
         'monitoring',
         'mr_notes',
         'notebook_viewer',
