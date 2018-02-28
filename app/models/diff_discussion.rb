@@ -24,7 +24,11 @@ class DiffDiscussion < Discussion
     return unless for_merge_request?
     return {} if active?
 
-    noteable.version_params_for(position.diff_refs)
+    if on_merge_request_commit?
+      { commit_id: commit_id }
+    else
+      noteable.version_params_for(position.diff_refs)
+    end
   end
 
   def reply_attributes

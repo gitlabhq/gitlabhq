@@ -1,5 +1,0 @@
----
-title: Fix bad type checking to prevent 0 count badge to be shown
-merge_request:
-author:
-type: fixed

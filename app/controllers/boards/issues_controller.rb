@@ -84,6 +84,7 @@ module Boards
       resource.as_json(
         only: [:id, :iid, :project_id, :title, :confidential, :due_date, :relative_position],
         labels: true,
+        sidebar_endpoints: true,
         include: {
           project: { only: [:id, :path] },
           assignees: { only: [:id, :name, :username], methods: [:avatar_url] },

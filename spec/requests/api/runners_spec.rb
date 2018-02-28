@@ -354,6 +354,140 @@ describe API::Runners do
     end
   end
 
+  describe 'GET /runners/:id/jobs' do
+    set(:job_1) { create(:ci_build) }
+    let!(:job_2) { create(:ci_build, :running, runner: shared_runner, project: project) }
+    let!(:job_3) { create(:ci_build, :failed, runner: shared_runner, project: project) }
+    let!(:job_4) { create(:ci_build, :running, runner: specific_runner, project: project) }
+    let!(:job_5) { create(:ci_build, :failed, runner: specific_runner, project: project) }
+
+    context 'admin user' do
+      context 'when runner exists' do
+        context 'when runner is shared' do
+          it 'return jobs' do
+            get api("/runners/#{shared_runner.id}/jobs", admin)
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(response).to include_pagination_headers
+
+            expect(json_response).to be_an(Array)
+            expect(json_response.length).to eq(2)
+          end
+        end
+
+        context 'when runner is specific' do
+          it 'return jobs' do
+            get api("/runners/#{specific_runner.id}/jobs", admin)
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(response).to include_pagination_headers
+
+            expect(json_response).to be_an(Array)
+            expect(json_response.length).to eq(2)
+          end
+        end
+
+        context 'when valid status is provided' do
+          it 'return filtered jobs' do
+            get api("/runners/#{specific_runner.id}/jobs?status=failed", admin)
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(response).to include_pagination_headers
+
+            expect(json_response).to be_an(Array)
+            expect(json_response.length).to eq(1)
+            expect(json_response.first).to include('id' => job_5.id)
+          end
+        end
+
+        context 'when invalid status is provided' do
+          it 'return 400' do
+            get api("/runners/#{specific_runner.id}/jobs?status=non-existing", admin)
+
+            expect(response).to have_gitlab_http_status(400)
+          end
+        end
+      end
+
+      context "when runner doesn't exist" do
+        it 'returns 404' do
+          get api('/runners/9999/jobs', admin)
+
+          expect(response).to have_gitlab_http_status(404)
+        end
+      end
+    end
+
+    context "runner project's administrative user" do
+      context 'when runner exists' do
+        context 'when runner is shared' do
+          it 'returns 403' do
+            get api("/runners/#{shared_runner.id}/jobs", user)
+
+            expect(response).to have_gitlab_http_status(403)
+          end
+        end
+
+        context 'when runner is specific' do
+          it 'return jobs' do
+            get api("/runners/#{specific_runner.id}/jobs", user)
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(response).to include_pagination_headers
+
+            expect(json_response).to be_an(Array)
+            expect(json_response.length).to eq(2)
+          end
+        end
+
+        context 'when valid status is provided' do
+          it 'return filtered jobs' do
+            get api("/runners/#{specific_runner.id}/jobs?status=failed", user)
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(response).to include_pagination_headers
+
+            expect(json_response).to be_an(Array)
+            expect(json_response.length).to eq(1)
+            expect(json_response.first).to include('id' => job_5.id)
+          end
+        end
+
+        context 'when invalid status is provided' do
+          it 'return 400' do
+            get api("/runners/#{specific_runner.id}/jobs?status=non-existing", user)
+
+            expect(response).to have_gitlab_http_status(400)
+          end
+        end
+      end
+
+      context "when runner doesn't exist" do
+        it 'returns 404' do
+          get api('/runners/9999/jobs', user)
+
+          expect(response).to have_gitlab_http_status(404)
+        end
+      end
+    end
+
+    context 'other authorized user' do
+      it 'does not return jobs' do
+        get api("/runners/#{specific_runner.id}/jobs", user2)
+
+        expect(response).to have_gitlab_http_status(403)
+      end
+    end
+
+    context 'unauthorized user' do
+      it 'does not return jobs' do
+        get api("/runners/#{specific_runner.id}/jobs")
+
+        expect(response).to have_gitlab_http_status(401)
+      end
+    end
+  end
+
   describe 'GET /projects/:id/runners' do
     context 'authorized user with master privileges' do
       it "returns project's runners" do

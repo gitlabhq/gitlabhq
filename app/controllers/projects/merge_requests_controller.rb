@@ -7,11 +7,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include IssuableCollections
 
   skip_before_action :merge_request, only: [:index, :bulk_update]
-
   before_action :authorize_update_issuable!, only: [:close, :edit, :update, :remove_wip, :sort]
-
   before_action :set_issuables_index, only: [:index]
-
   before_action :authenticate_user!, only: [:assign_related_issues]
 
   def index
@@ -80,9 +77,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def commits
     # Get commits from repository
     # or from cache if already merged
-    @commits = prepare_commits_for_rendering(@merge_request.commits)
-    @note_counts = Note.where(commit_id: @commits.map(&:id))
-      .group(:commit_id).count
+    @commits =
+      prepare_commits_for_rendering(@merge_request.commits.with_pipeline_status)
 
     render json: { html: view_to_html_string('projects/merge_requests/_commits') }
   end
@@ -284,15 +280,15 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @merge_request.update(merge_error: nil)
 
     if params[:merge_when_pipeline_succeeds].present?
-      return :failed unless @merge_request.head_pipeline
+      return :failed unless @merge_request.actual_head_pipeline
 
-      if @merge_request.head_pipeline.active?
+      if @merge_request.actual_head_pipeline.active?
         ::MergeRequests::MergeWhenPipelineSucceedsService
           .new(@project, current_user, merge_params)
           .execute(@merge_request)
 
         :merge_when_pipeline_succeeds
-      elsif @merge_request.head_pipeline.success?
+      elsif @merge_request.actual_head_pipeline.success?
         # This can be triggered when a user clicks the auto merge button while
         # the tests finish at about the same time
         @merge_request.merge_async(current_user.id, params)

@@ -17,7 +17,7 @@
    *   />
    */
   import { mapGetters } from 'vuex';
-  import issueNoteHeader from '../../../notes/components/issue_note_header.vue';
+  import noteHeader from '~/notes/components/note_header.vue';
   import { spriteIcon } from '../../../lib/utils/common_utils';
 
   export default {
@@ -29,7 +29,7 @@
       },
     },
     components: {
-      issueNoteHeader,
+      noteHeader,
     },
     computed: {
       ...mapGetters([
@@ -60,12 +60,12 @@
       </div>
       <div class="timeline-content">
         <div class="note-header">
-          <issue-note-header
+          <note-header
             :author="note.author"
             :created-at="note.created_at"
             :note-id="note.id"
             :action-text-html="note.note_html"
-            />
+          />
         </div>
       </div>
     </div>

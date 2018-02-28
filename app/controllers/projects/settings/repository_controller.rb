@@ -21,14 +21,14 @@ module Projects
 
       def access_levels_options
         {
-          create_access_levels: levels_for_dropdown(ProtectedTag::CreateAccessLevel),
-          push_access_levels: levels_for_dropdown(ProtectedBranch::PushAccessLevel),
-          merge_access_levels: levels_for_dropdown(ProtectedBranch::MergeAccessLevel)
+          create_access_levels: levels_for_dropdown,
+          push_access_levels: levels_for_dropdown,
+          merge_access_levels: levels_for_dropdown
         }
       end
 
-      def levels_for_dropdown(access_level_type)
-        roles = access_level_type.human_access_levels.map do |id, text|
+      def levels_for_dropdown
+        roles = ProtectedRefAccess::HUMAN_ACCESS_LEVELS.map do |id, text|
           { id: id, text: text, before_divider: true }
         end
         { roles: roles }

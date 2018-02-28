@@ -73,6 +73,28 @@ describe Gitlab::Database do
     end
   end
 
+  describe '.replication_slots_supported?' do
+    it 'returns false when using MySQL' do
+      allow(described_class).to receive(:postgresql?).and_return(false)
+
+      expect(described_class.replication_slots_supported?).to eq(false)
+    end
+
+    it 'returns false when using PostgreSQL 9.3' do
+      allow(described_class).to receive(:postgresql?).and_return(true)
+      allow(described_class).to receive(:version).and_return('9.3.1')
+
+      expect(described_class.replication_slots_supported?).to eq(false)
+    end
+
+    it 'returns true when using PostgreSQL 9.4.0 or newer' do
+      allow(described_class).to receive(:postgresql?).and_return(true)
+      allow(described_class).to receive(:version).and_return('9.4.0')
+
+      expect(described_class.replication_slots_supported?).to eq(true)
+    end
+  end
+
   describe '.nulls_last_order' do
     context 'when using PostgreSQL' do
       before do
@@ -199,8 +221,44 @@ describe Gitlab::Database do
       described_class.bulk_insert('test', rows)
     end
 
+    it 'does not quote values of a column in the disable_quote option' do
+      [1, 2, 4, 5].each do |i|
+        expect(connection).to receive(:quote).with(i)
+      end
+
+      described_class.bulk_insert('test', rows, disable_quote: :c)
+    end
+
+    it 'does not quote values of columns in the disable_quote option' do
+      [2, 5].each do |i|
+        expect(connection).to receive(:quote).with(i)
+      end
+
+      described_class.bulk_insert('test', rows, disable_quote: [:a, :c])
+    end
+
     it 'handles non-UTF-8 data' do
       expect { described_class.bulk_insert('test', [{ a: "\255" }]) }.not_to raise_error
+    end
+
+    context 'when using PostgreSQL' do
+      before do
+        allow(described_class).to receive(:mysql?).and_return(false)
+      end
+
+      it 'allows the returning of the IDs of the inserted rows' do
+        result = double(:result, values: [['10']])
+
+        expect(connection)
+          .to receive(:execute)
+          .with(/RETURNING id/)
+          .and_return(result)
+
+        ids = described_class
+          .bulk_insert('test', [{ number: 10 }], return_ids: true)
+
+        expect(ids).to eq([10])
+      end
     end
   end
 

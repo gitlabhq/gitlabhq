@@ -21,9 +21,9 @@ describe Import::GithubController do
   describe "GET callback" do
     it "updates access token" do
       token = "asdasd12345"
-      allow_any_instance_of(Gitlab::GithubImport::Client)
+      allow_any_instance_of(Gitlab::LegacyGithubImport::Client)
         .to receive(:get_token).and_return(token)
-      allow_any_instance_of(Gitlab::GithubImport::Client)
+      allow_any_instance_of(Gitlab::LegacyGithubImport::Client)
         .to receive(:github_options).and_return({})
       stub_omniauth_provider('github')
 

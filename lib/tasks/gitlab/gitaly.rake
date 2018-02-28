@@ -14,18 +14,18 @@ namespace :gitlab do
 
       checkout_or_clone_version(version: version, repo: args.repo, target_dir: args.dir)
 
-      _, status = Gitlab::Popen.popen(%w[which gmake])
-      command = status.zero? ? ['gmake'] : ['make']
+      command = %w[/usr/bin/env -u RUBYOPT -u BUNDLE_GEMFILE]
 
-      if Rails.env.test?
-        command += %W[BUNDLE_PATH=#{Bundler.bundle_path}]
-      end
+      _, status = Gitlab::Popen.popen(%w[which gmake])
+      command << (status.zero? ? 'gmake' : 'make')
+
+      command << 'BUNDLE_FLAGS=--no-deployment' if Rails.env.test?
 
       Dir.chdir(args.dir) do
         create_gitaly_configuration
         # In CI we run scripts/gitaly-test-build instead of this command
         unless ENV['CI'].present?
-          Bundler.with_original_env { run_command!(%w[/usr/bin/env -u RUBYOPT -u BUNDLE_GEMFILE] + command) }
+          Bundler.with_original_env { run_command!(command) }
         end
       end
     end
@@ -78,13 +78,18 @@ namespace :gitlab do
       config[:auth] = { token: 'secret' } if Rails.env.test?
       config[:'gitaly-ruby'] = { dir: File.join(Dir.pwd, 'ruby') } if gitaly_ruby
       config[:'gitlab-shell'] = { dir: Gitlab.config.gitlab_shell.path }
+      config[:bin_dir] = Gitlab.config.gitaly.client_path
+
       TOML.dump(config)
     end
 
     def create_gitaly_configuration
-      File.open("config.toml", "w") do |f|
+      File.open("config.toml", File::WRONLY | File::CREAT | File::EXCL) do |f|
         f.puts gitaly_configuration_toml
       end
+    rescue Errno::EEXIST
+      puts "Skipping config.toml generation:"
+      puts "A configuration file already exists."
     rescue ArgumentError => e
       puts "Skipping config.toml generation:"
       puts e.message

@@ -22,9 +22,11 @@ module Gitlab
           end
 
           def move_project_folders(project, old_full_path, new_full_path)
-            move_repository(project, old_full_path, new_full_path)
-            move_repository(project, "#{old_full_path}.wiki", "#{new_full_path}.wiki")
-            move_uploads(old_full_path, new_full_path)
+            unless project.hashed_storage?(:repository)
+              move_repository(project, old_full_path, new_full_path)
+              move_repository(project, "#{old_full_path}.wiki", "#{new_full_path}.wiki")
+            end
+            move_uploads(old_full_path, new_full_path) unless project.hashed_storage?(:attachments)
             move_pages(old_full_path, new_full_path)
           end
 

@@ -2,7 +2,7 @@ module Gitlab
   module Git
     module Conflict
       class File
-        attr_reader :content, :their_path, :our_path, :our_mode, :repository
+        attr_reader :content, :their_path, :our_path, :our_mode, :repository, :commit_oid
 
         def initialize(repository, commit_oid, conflict, content)
           @repository = repository

@@ -8,7 +8,7 @@ describe Ci::CreatePipelineService do
   let(:ref_name) { 'refs/heads/master' }
 
   before do
-    stub_ci_pipeline_to_return_yaml_file
+    stub_repository_ci_yaml_file(sha: anything)
   end
 
   describe '#execute' do
@@ -44,6 +44,7 @@ describe Ci::CreatePipelineService do
         expect(pipeline).to eq(project.pipelines.last)
         expect(pipeline).to have_attributes(user: user)
         expect(pipeline).to have_attributes(status: 'pending')
+        expect(pipeline.repository_source?).to be true
         expect(pipeline.builds.first).to be_kind_of(Ci::Build)
       end
 
@@ -56,19 +57,39 @@ describe Ci::CreatePipelineService do
       end
 
       context 'when merge requests already exist for this source branch' do
-        it 'updates head pipeline of each merge request' do
-          merge_request_1 = create(:merge_request, source_branch: 'master',
-                                                   target_branch: "branch_1",
-                                                   source_project: project)
+        let(:merge_request_1) do
+          create(:merge_request, source_branch: 'master', target_branch: "branch_1", source_project: project)
+        end
+        let(:merge_request_2) do
+          create(:merge_request, source_branch: 'master', target_branch: "branch_2", source_project: project)
+        end
 
-          merge_request_2 = create(:merge_request, source_branch: 'master',
-                                                   target_branch: "branch_2",
-                                                   source_project: project)
+        context 'when the head pipeline sha equals merge request sha' do
+          it 'updates head pipeline of each merge request' do
+            merge_request_1
+            merge_request_2
 
-          head_pipeline = execute_service
+            head_pipeline = execute_service
 
-          expect(merge_request_1.reload.head_pipeline).to eq(head_pipeline)
-          expect(merge_request_2.reload.head_pipeline).to eq(head_pipeline)
+            expect(merge_request_1.reload.head_pipeline).to eq(head_pipeline)
+            expect(merge_request_2.reload.head_pipeline).to eq(head_pipeline)
+          end
+        end
+
+        context 'when the head pipeline sha does not equal merge request sha' do
+          it 'raises the ArgumentError error from worker and does not update the head piepeline of MRs' do
+            merge_request_1
+            merge_request_2
+
+            allow_any_instance_of(Ci::Pipeline).to receive(:latest?).and_return(true)
+
+            expect { execute_service(after: 'ae73cb07c9eeaf35924a10f713b364d32b2dd34f') }.to raise_error(ArgumentError)
+
+            last_pipeline = Ci::Pipeline.last
+
+            expect(merge_request_1.reload.head_pipeline).not_to eq(last_pipeline)
+            expect(merge_request_2.reload.head_pipeline).not_to eq(last_pipeline)
+          end
         end
 
         context 'when there is no pipeline for source branch' do
@@ -105,8 +126,7 @@ describe Ci::CreatePipelineService do
                                                    target_branch: "branch_1",
                                                    source_project: project)
 
-            allow_any_instance_of(Ci::Pipeline)
-              .to receive(:latest?).and_return(false)
+            allow_any_instance_of(Ci::Pipeline).to receive(:latest?).and_return(false)
 
             execute_service
 

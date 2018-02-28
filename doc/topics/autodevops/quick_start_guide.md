@@ -23,12 +23,12 @@ page](https://gitlab.com/auto-devops-examples/minimal-ruby-app) and press the
 **Fork** button. Soon you should have a project under your namespace with the
 necessary files.
 
-## Setup your own cluster on Google Container Engine
+## Setup your own cluster on Google Kubernetes Engine
 
 If you do not already have a Google Cloud account, create one at
 https://console.cloud.google.com.
 
-Visit the [**Container Engine**](https://console.cloud.google.com/kubernetes/list)
+Visit the [**Kubernetes Engine**](https://console.cloud.google.com/kubernetes/list)
 tab and create a new cluster. You can change the name and leave the rest of the
 default settings. Once you have your cluster running, you need to connect to the
 cluster by following the Google interface.

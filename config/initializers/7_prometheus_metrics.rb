@@ -11,15 +11,12 @@ Prometheus::Client.configure do |config|
     config.multiprocess_files_dir ||= Rails.root.join('tmp/prometheus_multiproc_dir')
   end
 
-  config.pid_provider = -> do
-    wid = Prometheus::Client::Support::Unicorn.worker_id
-    wid = Process.pid if wid.nil?
-    if wid.nil?
-      "process_pid_#{Process.pid}"
-    else
-      "worker_id_#{wid}"
-    end
-  end
+  config.pid_provider = Prometheus::Client::Support::Unicorn.method(:worker_pid_provider)
+end
+
+Gitlab::Application.configure do |config|
+  # 0 should be Sentry to catch errors in this middleware
+  config.middleware.insert(1, Gitlab::Metrics::RequestsRackMiddleware)
 end
 
 Sidekiq.configure_server do |config|

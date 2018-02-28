@@ -1,0 +1,5 @@
+---
+title: Fix graph notes number duplication.
+merge_request: 15696
+author: Vladislav Kaverin
+type: fixed

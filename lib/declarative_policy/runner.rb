@@ -43,6 +43,7 @@ module DeclarativePolicy
     # used by Rule::Ability. See #steps_by_score
     def score
       return 0 if cached?
+
       steps.map(&:score).inject(0, :+)
     end
 

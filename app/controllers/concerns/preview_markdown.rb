@@ -8,6 +8,7 @@ module PreviewMarkdown
       case controller_name
       when 'wikis'    then { pipeline: :wiki, project_wiki: @project_wiki, page_slug: params[:id] }
       when 'snippets' then { skip_project_check: true }
+      when 'groups'   then { group: group }
       else {}
       end
 

@@ -2,6 +2,8 @@ module API
   module Helpers
     module Pagination
       def paginate(relation)
+        relation = add_default_order(relation)
+
         relation.page(params[:page]).per(params[:per_page]).tap do |data|
           add_pagination_headers(data)
         end
@@ -44,6 +46,14 @@ module API
       def total_pages(paginated_data)
         # Ensure there is in total at least 1 page
         [paginated_data.total_pages, 1].max
+      end
+
+      def add_default_order(relation)
+        if relation.is_a?(ActiveRecord::Relation) && relation.order_values.empty?
+          relation = relation.order(:id)
+        end
+
+        relation
       end
     end
   end

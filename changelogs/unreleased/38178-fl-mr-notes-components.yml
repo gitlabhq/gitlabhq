@@ -1,6 +1,0 @@
----
-title: Moves placeholders components into shared folder with documentation. Makes
-  them easier to reuse in MR and Snippets comments
-merge_request:
-author:
-type: other

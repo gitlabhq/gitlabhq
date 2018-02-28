@@ -241,14 +241,10 @@ module SystemNoteService
     create_note(NoteSummary.new(noteable, project, author, body, action: 'merge'))
   end
 
-  def remove_merge_request_wip(noteable, project, author)
-    body = 'unmarked as a **Work In Progress**'
+  def handle_merge_request_wip(noteable, project, author)
+    prefix = noteable.work_in_progress? ? "marked" : "unmarked"
 
-    create_note(NoteSummary.new(noteable, project, author, body, action: 'title'))
-  end
-
-  def add_merge_request_wip(noteable, project, author)
-    body = 'marked as a **Work In Progress**'
+    body = "#{prefix} as a **Work In Progress**"
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'title'))
   end
@@ -481,17 +477,7 @@ module SystemNoteService
   #
   # Returns Boolean
   def cross_reference_exists?(noteable, mentioner)
-    # Initial scope should be system notes of this noteable type
-    notes = Note.system.where(noteable_type: noteable.class)
-
-    notes =
-      if noteable.is_a?(Commit)
-        # Commits have non-integer IDs, so they're stored in `commit_id`
-        notes.where(commit_id: noteable.id)
-      else
-        notes.where(noteable_id: noteable.id)
-      end
-
+    notes = noteable.notes.system
     notes_for_mentioner(mentioner, noteable, notes).exists?
   end
 
@@ -591,6 +577,10 @@ module SystemNoteService
     body = "#{action} this #{issuable.class.to_s.titleize.downcase}"
 
     create_note(NoteSummary.new(issuable, issuable.project, author, body, action: action))
+  end
+
+  def cross_reference?(note_text)
+    note_text =~ /\A#{cross_reference_note_prefix}/i
   end
 
   private

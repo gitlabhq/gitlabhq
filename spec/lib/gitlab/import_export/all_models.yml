@@ -88,6 +88,7 @@ merge_requests:
 - metrics
 - timelogs
 - head_pipeline
+- latest_merge_request_diff
 merge_request_diff:
 - merge_request
 - merge_request_diff_commits

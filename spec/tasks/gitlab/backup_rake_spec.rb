@@ -212,7 +212,7 @@ describe 'gitlab:app namespace rake task' do
 
         # Avoid asking gitaly about the root ref (which will fail beacuse of the
         # mocked storages)
-        allow_any_instance_of(Repository).to receive(:empty_repo?).and_return(false)
+        allow_any_instance_of(Repository).to receive(:empty?).and_return(false)
       end
 
       after do

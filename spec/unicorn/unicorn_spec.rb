@@ -37,7 +37,22 @@ describe 'Unicorn' do
     config_path = 'tmp/tests/unicorn.rb'
     File.write(config_path, config_lines.join("\n") + "\n")
 
-    cmd = %W[unicorn -E test -c #{config_path} #{Rails.root.join('config.ru')}]
+    rackup_path = 'tmp/tests/config.ru'
+    File.write(rackup_path, <<~EOS)
+      app =
+        proc do |env|
+          if env['REQUEST_METHOD'] == 'GET'
+            [200, {}, [Process.pid]]
+          else
+            Process.kill(env['QUERY_STRING'], Process.pid)
+            [200, {}, ['Bye!']]
+          end
+        end
+
+      run app
+    EOS
+
+    cmd = %W[unicorn -E test -c #{config_path} #{rackup_path}]
     @unicorn_master_pid = spawn(*cmd)
     wait_unicorn_boot!(@unicorn_master_pid, ready_file)
     WebMock.allow_net_connect!
@@ -45,14 +60,14 @@ describe 'Unicorn' do
 
   %w[SIGQUIT SIGTERM SIGKILL].each do |signal|
     it "has a worker that self-terminates on signal #{signal}" do
-      response = Excon.get('unix:///unicorn_test/pid', socket: @socket_path)
+      response = Excon.get('unix://', socket: @socket_path)
       expect(response.status).to eq(200)
 
       worker_pid = response.body.to_i
       expect(worker_pid).to be > 0
 
       begin
-        Excon.post('unix:///unicorn_test/kill', socket: @socket_path, body: "signal=#{signal}")
+        Excon.post("unix://?#{signal}", socket: @socket_path)
       rescue Excon::Error::Socket
         # The connection may be closed abruptly
       end
@@ -71,6 +86,7 @@ describe 'Unicorn' do
     timeout = 5 * 60
     timeout.times do
       return if File.exist?(ready_file)
+
       pid = Process.waitpid(master_pid, Process::WNOHANG)
       raise "unicorn failed to boot: #{$?}" unless pid.nil?
 

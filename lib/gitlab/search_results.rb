@@ -30,7 +30,7 @@ module Gitlab
     def initialize(current_user, limit_projects, query)
       @current_user = current_user
       @limit_projects = limit_projects || Project.all
-      @query = Shellwords.shellescape(query) if query.present?
+      @query = query
     end
 
     def objects(scope, page = nil)

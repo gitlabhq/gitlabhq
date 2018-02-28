@@ -1,6 +1,0 @@
----
-title: Add applications section to GKE clusters page to easily install Helm Tiller,
-  Ingress
-merge_request:
-author:
-type: added

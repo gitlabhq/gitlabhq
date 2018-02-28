@@ -22,6 +22,16 @@
         required: false,
         default: '',
       },
+      issuableType: {
+        type: String,
+        required: false,
+        default: 'issue',
+      },
+      updateUrl: {
+        type: String,
+        required: false,
+        default: null,
+      },
     },
     data() {
       return {
@@ -48,7 +58,7 @@
         if (this.canUpdate) {
           // eslint-disable-next-line no-new
           new TaskList({
-            dataType: 'issue',
+            dataType: this.issuableType,
             fieldName: 'description',
             selector: '.detail-page-description',
           });
@@ -95,7 +105,9 @@
     <textarea
       class="hidden js-task-list-field"
       v-if="descriptionText"
-      v-model="descriptionText">
+      v-model="descriptionText"
+      :data-update-url="updateUrl"
+    >
     </textarea>
   </div>
 </template>

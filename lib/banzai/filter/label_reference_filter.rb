@@ -33,7 +33,7 @@ module Banzai
       end
 
       def find_label(project_ref, label_id, label_name)
-        project = project_from_ref(project_ref)
+        project = parent_from_ref(project_ref)
         return unless project
 
         label_params = label_params(label_id, label_name)
@@ -66,7 +66,7 @@ module Banzai
 
       def object_link_text(object, matches)
         project_path     = full_project_path(matches[:namespace], matches[:project])
-        project_from_ref = project_from_ref_cached(project_path)
+        project_from_ref = from_ref_cached(project_path)
         reference        = project_from_ref.to_human_reference(project)
         label_suffix     = " <i>in #{reference}</i>" if reference.present?
 

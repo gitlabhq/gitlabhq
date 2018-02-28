@@ -280,6 +280,17 @@ describe Groups::ChildrenController do
 
           expect(assigns(:children)).to contain_exactly(other_subgroup, *next_page_projects.take(per_page - 1))
         end
+
+        context 'with a mixed first page' do
+          let!(:first_page_subgroups) { [create(:group,  :public,  parent: group)] }
+          let!(:first_page_projects) { create_list(:project, per_page, :public, namespace: group) }
+
+          it 'correctly calculates the counts' do
+            get :index, group_id: group.to_param, sort: 'id_asc', page: 2, format: :json
+
+            expect(response).to have_gitlab_http_status(200)
+          end
+        end
       end
     end
   end

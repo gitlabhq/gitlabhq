@@ -373,7 +373,7 @@ describe WikiPage do
     end
 
     it 'returns commit sha' do
-      expect(@page.last_commit_sha).to eq @page.commit.sha
+      expect(@page.last_commit_sha).to eq @page.last_version.sha
     end
 
     it 'is changed after page updated' do

@@ -1,7 +1,7 @@
 # GitLab Helm Chart
 > **Note**:
 * This chart is deprecated, and is being replaced by the [cloud native GitLab chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md). For more information on available charts, please see our [overview](index.md#chart-overview).
-* These charts have been tested on Google Container Engine and Azure Container Service. Other Kubernetes installations may work as well, if not please [open an issue](https://gitlab.com/charts/charts.gitlab.io/issues).
+* These charts have been tested on Google Kubernetes Engine and Azure Container Service. Other Kubernetes installations may work as well, if not please [open an issue](https://gitlab.com/charts/charts.gitlab.io/issues).
 
 
 For more information on available GitLab Helm Charts, please see our [overview](index.md#chart-overview).
@@ -243,7 +243,7 @@ controller. For `nginx-ingress` you can check the
 on how to add the annotation to the  `controller.service.annotations` array.
 
 >**Note:**
-When using the `nginx-ingress` controller on Google Container Engine (GKE), and using the `external-traffic` annotation,
+When using the `nginx-ingress` controller on Google Kubernetes Engine (GKE), and using the `external-traffic` annotation,
 you will need to additionally set the `controller.kind` to be DaemonSet. Otherwise only pods running on the same node
 as the nginx controller will be able to reach GitLab. This may result in pods within your cluster not being able to reach GitLab.
 See the [Kubernetes documentation](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typeloadbalancer) and

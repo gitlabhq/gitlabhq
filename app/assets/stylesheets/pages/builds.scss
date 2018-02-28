@@ -49,6 +49,7 @@
     font-size: 12px;
     border-radius: 0;
     border: 0;
+    padding: $grid-size;
 
     .bash {
       display: block;
@@ -57,14 +58,13 @@
 
   .top-bar {
     height: 35px;
-    display: flex;
-    justify-content: flex-end;
     background: $gray-light;
     border: 1px solid $border-color;
     color: $gl-text-color;
     position: sticky;
     position: -webkit-sticky;
     top: $header-height;
+    padding: $grid-size;
 
     &.affix {
       top: $header-height;
@@ -90,9 +90,6 @@
     }
 
     .truncated-info {
-      margin: 0 auto;
-      align-self: center;
-
       .truncated-info-size {
         margin: 0 5px;
       }
@@ -118,7 +115,11 @@
 
       .controllers-buttons {
         color: $gl-text-color;
-        margin: 0 10px;
+        margin: 0 $grid-size;
+
+        &:last-child {
+          margin-right: 0;
+        }
       }
 
       .btn-scroll.animate {

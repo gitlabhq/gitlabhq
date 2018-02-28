@@ -74,7 +74,6 @@ class MigrateGcpClustersToNewClustersArchitectures < ActiveRecord::Migration
           encrypted_access_token_iv: gcp_cluster.encrypted_gcp_token_iv
         },
         platform_kubernetes_attributes: {
-          cluster_id: gcp_cluster.id,
           api_url: api_url(gcp_cluster.endpoint),
           ca_cert: gcp_cluster.ca_cert,
           namespace: gcp_cluster.project_namespace,

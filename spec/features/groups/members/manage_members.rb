@@ -44,7 +44,11 @@ feature 'Groups > Members > Manage members' do
 
     visit group_group_members_path(group)
 
-    find(:css, '.project-members-page li', text: user2.name).find(:css, 'a.btn-remove').click
+    accept_confirm do
+      find(:css, '.project-members-page li', text: user2.name).find(:css, 'a.btn-remove').click
+    end
+
+    wait_for_requests
 
     expect(page).not_to have_content(user2.name)
     expect(group.users).not_to include(user2)

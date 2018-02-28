@@ -1,10 +1,7 @@
-import axios from 'axios';
-import setAxiosCsrfToken from '../../lib/utils/axios_utils';
+import axios from '../../lib/utils/axios_utils';
 
 export default class ClusterService {
   constructor(options = {}) {
-    setAxiosCsrfToken();
-
     this.options = options;
     this.appInstallEndpointMap = {
       helm: this.options.installHelmEndpoint,
@@ -18,7 +15,10 @@ export default class ClusterService {
   }
 
   installApplication(appId) {
-    const endpoint = this.appInstallEndpointMap[appId];
-    return axios.post(endpoint);
+    return axios.post(this.appInstallEndpointMap[appId]);
+  }
+
+  static updateCluster(endpoint, data) {
+    return axios.put(endpoint, data);
   }
 }

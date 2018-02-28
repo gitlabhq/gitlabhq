@@ -1,11 +1,10 @@
 /* eslint-disable class-methods-use-this, no-new */
 /* global MilestoneSelect */
-/* global SubscriptionSelect */
 
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
 import './milestone_select';
 import issueStatusSelect from './issue_status_select';
-import './subscription_select';
+import subscriptionSelect from './subscription_select';
 import LabelsSelect from './labels_select';
 
 const HIDDEN_CLASS = 'hidden';
@@ -48,7 +47,7 @@ export default class IssuableBulkUpdateSidebar {
     new LabelsSelect();
     new MilestoneSelect();
     issueStatusSelect();
-    new SubscriptionSelect();
+    subscriptionSelect();
   }
 
   setupBulkUpdateActions() {

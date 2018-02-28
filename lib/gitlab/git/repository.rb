@@ -18,6 +18,8 @@ module Gitlab
         GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE
       ].freeze
       SEARCH_CONTEXT_LINES = 3
+      REBASE_WORKTREE_PREFIX = 'rebase'.freeze
+      SQUASH_WORKTREE_PREFIX = 'squash'.freeze
 
       NoRepository = Class.new(StandardError)
       InvalidBlobName = Class.new(StandardError)
@@ -58,7 +60,7 @@ module Gitlab
       # Rugged repo object
       attr_reader :rugged
 
-      attr_reader :storage, :gl_repository, :relative_path, :gitaly_resolver
+      attr_reader :storage, :gl_repository, :relative_path
 
       # This initializer method is only used on the client side (gitlab-ce).
       # Gitaly-ruby uses a different initializer.
@@ -66,16 +68,12 @@ module Gitlab
         @storage = storage
         @relative_path = relative_path
         @gl_repository = gl_repository
-        @gitaly_resolver = Gitlab::GitalyClient
 
         storage_path = Gitlab.config.repositories.storages[@storage]['path']
         @path = File.join(storage_path, @relative_path)
         @name = @relative_path.split("/").last
         @attributes = Gitlab::Git::Attributes.new(path)
       end
-
-      delegate  :empty?,
-                to: :rugged
 
       def ==(other)
         path == other.path
@@ -105,7 +103,7 @@ module Gitlab
       end
 
       def exists?
-        Gitlab::GitalyClient.migrate(:repository_exists) do |enabled|
+        Gitlab::GitalyClient.migrate(:repository_exists, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
           if enabled
             gitaly_repository_client.exists?
           else
@@ -204,6 +202,13 @@ module Gitlab
           end
         end
       end
+
+      # Git repository can contains some hidden refs like:
+      #   /refs/notes/*
+      #   /refs/git-as-svn/*
+      #   /refs/pulls/*
+      # This refs by default not visible in project page and not cloned to client side.
+      alias_method :has_visible_content?, :has_local_branches?
 
       def has_local_branches_rugged?
         rugged.branches.each(:local).any? do |ref|
@@ -305,7 +310,13 @@ module Gitlab
       end
 
       def delete_all_refs_except(prefixes)
-        delete_refs(*all_ref_names_except(prefixes))
+        gitaly_migrate(:ref_delete_refs) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.delete_refs(except_with_prefixes: prefixes)
+          else
+            delete_refs(*all_ref_names_except(prefixes))
+          end
+        end
       end
 
       # Returns an Array of all ref names, except when it's matching pattern
@@ -500,7 +511,7 @@ module Gitlab
 
       # Counts the amount of commits between `from` and `to`.
       def count_commits_between(from, to)
-        Commit.between(self, from, to).size
+        count_commits(ref: "#{from}..#{to}")
       end
 
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
@@ -769,24 +780,21 @@ module Gitlab
       end
 
       def revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
-        OperationService.new(user, self).with_branch(
-          branch_name,
-          start_branch_name: start_branch_name,
-          start_repository: start_repository
-        ) do |start_commit|
+        gitaly_migrate(:revert) do |is_enabled|
+          args = {
+            user: user,
+            commit: commit,
+            branch_name: branch_name,
+            message: message,
+            start_branch_name: start_branch_name,
+            start_repository: start_repository
+          }
 
-          Gitlab::Git.check_namespace!(commit, start_repository)
-
-          revert_tree_id = check_revert_content(commit, start_commit.sha)
-          raise CreateTreeError unless revert_tree_id
-
-          committer = user_to_committer(user)
-
-          create_commit(message: message,
-                        author: committer,
-                        committer: committer,
-                        tree: revert_tree_id,
-                        parents: [start_commit.sha])
+          if is_enabled
+            gitaly_operations_client.user_revert(args)
+          else
+            rugged_revert(args)
+          end
         end
       end
 
@@ -804,42 +812,22 @@ module Gitlab
       end
 
       def cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
-        OperationService.new(user, self).with_branch(
-          branch_name,
-          start_branch_name: start_branch_name,
-          start_repository: start_repository
-        ) do |start_commit|
+        gitaly_migrate(:cherry_pick) do |is_enabled|
+          args = {
+            user: user,
+            commit: commit,
+            branch_name: branch_name,
+            message: message,
+            start_branch_name: start_branch_name,
+            start_repository: start_repository
+          }
 
-          Gitlab::Git.check_namespace!(commit, start_repository)
-
-          cherry_pick_tree_id = check_cherry_pick_content(commit, start_commit.sha)
-          raise CreateTreeError unless cherry_pick_tree_id
-
-          committer = user_to_committer(user)
-
-          create_commit(message: message,
-                        author: {
-                            email: commit.author_email,
-                            name: commit.author_name,
-                            time: commit.authored_date
-                        },
-                        committer: committer,
-                        tree: cherry_pick_tree_id,
-                        parents: [start_commit.sha])
+          if is_enabled
+            gitaly_operations_client.user_cherry_pick(args)
+          else
+            rugged_cherry_pick(args)
+          end
         end
-      end
-
-      def check_cherry_pick_content(target_commit, source_sha)
-        args = [target_commit.sha, source_sha]
-        args << 1 if target_commit.merge_commit?
-
-        cherry_pick_index = rugged.cherrypick_commit(*args)
-        return false if cherry_pick_index.conflicts?
-
-        tree_id = cherry_pick_index.write_tree(rugged)
-        return false unless diff_exists?(source_sha, tree_id)
-
-        tree_id
       end
 
       def diff_exists?(sha1, sha2)
@@ -920,6 +908,11 @@ module Gitlab
         false
       end
 
+      # Returns true if a remote exists.
+      def remote_exists?(name)
+        rugged.remotes[name].present?
+      end
+
       # Update the specified remote using the values in the +options+ hash
       #
       # Example
@@ -980,6 +973,10 @@ module Gitlab
         @attributes.attributes(path)
       end
 
+      def gitattribute(path, name)
+        attributes(path)[name]
+      end
+
       def languages(ref = nil)
         Gitlab::GitalyClient.migrate(:commit_languages) do |is_enabled|
           if is_enabled
@@ -1009,23 +1006,22 @@ module Gitlab
 
       def with_repo_branch_commit(start_repository, start_branch_name)
         Gitlab::Git.check_namespace!(start_repository)
+        start_repository = RemoteRepository.new(start_repository) unless start_repository.is_a?(RemoteRepository)
 
-        return yield nil if start_repository.empty_repo?
+        return yield nil if start_repository.empty?
 
-        if start_repository == self
+        if start_repository.same_repository?(self)
           yield commit(start_branch_name)
         else
-          start_commit = start_repository.commit(start_branch_name)
+          start_commit_id = start_repository.commit_id(start_branch_name)
 
-          return yield nil unless start_commit
+          return yield nil unless start_commit_id
 
-          sha = start_commit.sha
-
-          if branch_commit = commit(sha)
+          if branch_commit = commit(start_commit_id)
             yield branch_commit
           else
             with_repo_tmp_commit(
-              start_repository, start_branch_name, sha) do |tmp_commit|
+              start_repository, start_branch_name, start_commit_id) do |tmp_commit|
               yield tmp_commit
             end
           end
@@ -1033,9 +1029,15 @@ module Gitlab
       end
 
       def with_repo_tmp_commit(start_repository, start_branch_name, sha)
+        source_ref = start_branch_name
+
+        unless Gitlab::Git.branch_ref?(source_ref)
+          source_ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}#{source_ref}"
+        end
+
         tmp_ref = fetch_ref(
           start_repository,
-          source_ref: "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
+          source_ref: source_ref,
           target_ref: "refs/tmp/#{SecureRandom.hex}"
         )
 
@@ -1045,12 +1047,11 @@ module Gitlab
       end
 
       def fetch_source_branch!(source_repository, source_branch, local_ref)
-        with_repo_branch_commit(source_repository, source_branch) do |commit|
-          if commit
-            write_ref(local_ref, commit.sha)
-            true
+        Gitlab::GitalyClient.migrate(:fetch_source_branch) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.fetch_source_branch(source_repository, source_branch, local_ref)
           else
-            false
+            rugged_fetch_source_branch(source_repository, source_branch, local_ref)
           end
         end
       end
@@ -1072,16 +1073,14 @@ module Gitlab
         raise ArgumentError, "invalid ref_path #{ref_path.inspect}" if ref_path.include?(' ')
         raise ArgumentError, "invalid ref #{ref.inspect}" if ref.include?("\x00")
 
-        command = [Gitlab.config.git.bin_path] + %w[update-ref --stdin -z]
         input = "update #{ref_path}\x00#{ref}\x00\x00"
-        output, status = circuit_breaker.perform do
-          popen(command, path) { |stdin| stdin.write(input) }
-        end
-
-        raise GitError, output unless status.zero?
+        run_git!(%w[update-ref --stdin -z]) { |stdin| stdin.write(input) }
       end
 
       def fetch_ref(source_repository, source_ref:, target_ref:)
+        Gitlab::Git.check_namespace!(source_repository)
+        source_repository = RemoteRepository.new(source_repository) unless source_repository.is_a?(RemoteRepository)
+
         message, status = GitalyClient.migrate(:fetch_ref) do |is_enabled|
           if is_enabled
             gitaly_fetch_ref(source_repository, source_ref: source_ref, target_ref: target_ref)
@@ -1097,10 +1096,20 @@ module Gitlab
       end
 
       # Refactoring aid; allows us to copy code from app/models/repository.rb
-      def run_git(args, env: {})
+      def run_git(args, chdir: path, env: {}, nice: false, &block)
+        cmd = [Gitlab.config.git.bin_path, *args]
+        cmd.unshift("nice") if nice
         circuit_breaker.perform do
-          popen([Gitlab.config.git.bin_path, *args], path, env)
+          popen(cmd, chdir, env, &block)
         end
+      end
+
+      def run_git!(args, chdir: path, env: {}, nice: false, &block)
+        output, status = run_git(args, chdir: chdir, env: env, nice: nice, &block)
+
+        raise GitError, output unless status.zero?
+
+        output
       end
 
       # Refactoring aid; allows us to copy code from app/models/repository.rb
@@ -1115,34 +1124,25 @@ module Gitlab
         Gitlab::Git::Commit.find(self, ref)
       end
 
-      # Refactoring aid; allows us to copy code from app/models/repository.rb
-      def empty_repo?
-        !exists? || !has_visible_content?
+      def empty?
+        !has_visible_content?
       end
 
-      #
-      # Git repository can contains some hidden refs like:
-      #   /refs/notes/*
-      #   /refs/git-as-svn/*
-      #   /refs/pulls/*
-      # This refs by default not visible in project page and not cloned to client side.
-      #
-      # This method return true if repository contains some content visible in project page.
-      #
-      def has_visible_content?
-        return @has_visible_content if defined?(@has_visible_content)
-
-        @has_visible_content = has_local_branches?
-      end
-
-      def fetch(remote = 'origin')
-        args = %W(#{Gitlab.config.git.bin_path} fetch #{remote})
-
-        popen(args, @path).last.zero?
+      # Like all public `Gitlab::Git::Repository` methods, this method is part
+      # of `Repository`'s interface through `method_missing`.
+      # `Repository` has its own `fetch_remote` which uses `gitlab-shell` and
+      # takes some extra attributes, so we qualify this method name to prevent confusion.
+      def fetch_remote_without_shell(remote = 'origin')
+        run_git(['fetch', remote]).last.zero?
       end
 
       def blob_at(sha, path)
         Gitlab::Git::Blob.find(self, sha, path) unless Gitlab::Git.blank_ref?(sha)
+      end
+
+      # Items should be of format [[commit_id, path], [commit_id1, path1]]
+      def batch_blobs(items, blob_size_limit: nil)
+        Gitlab::Git::Blob.batch(self, items, blob_size_limit: blob_size_limit)
       end
 
       def commit_index(user, branch_name, index, options)
@@ -1157,6 +1157,76 @@ module Gitlab
 
           create_commit(commit_params)
         end
+      end
+
+      def fsck
+        gitaly_migrate(:git_fsck) do |is_enabled|
+          msg, status = if is_enabled
+                          gitaly_fsck
+                        else
+                          shell_fsck
+                        end
+
+          raise GitError.new("Could not fsck repository: #{msg}") unless status.zero?
+        end
+      end
+
+      def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
+        rebase_path = worktree_path(REBASE_WORKTREE_PREFIX, rebase_id)
+        env = git_env_for_user(user)
+
+        with_worktree(rebase_path, branch, env: env) do
+          run_git!(
+            %W(pull --rebase #{remote_repository.path} #{remote_branch}),
+            chdir: rebase_path, env: env
+          )
+
+          rebase_sha = run_git!(%w(rev-parse HEAD), chdir: rebase_path, env: env).strip
+
+          Gitlab::Git::OperationService.new(user, self)
+            .update_branch(branch, rebase_sha, branch_sha)
+
+          rebase_sha
+        end
+      end
+
+      def rebase_in_progress?(rebase_id)
+        fresh_worktree?(worktree_path(REBASE_WORKTREE_PREFIX, rebase_id))
+      end
+
+      def squash(user, squash_id, branch:, start_sha:, end_sha:, author:, message:)
+        squash_path = worktree_path(SQUASH_WORKTREE_PREFIX, squash_id)
+        env = git_env_for_user(user).merge(
+          'GIT_AUTHOR_NAME' => author.name,
+          'GIT_AUTHOR_EMAIL' => author.email
+        )
+        diff_range = "#{start_sha}...#{end_sha}"
+        diff_files = run_git!(
+          %W(diff --name-only --diff-filter=a --binary #{diff_range})
+        ).chomp
+
+        with_worktree(squash_path, branch, sparse_checkout_files: diff_files, env: env) do
+          # Apply diff of the `diff_range` to the worktree
+          diff = run_git!(%W(diff --binary #{diff_range}))
+          run_git!(%w(apply --index), chdir: squash_path, env: env) do |stdin|
+            stdin.write(diff)
+          end
+
+          # Commit the `diff_range` diff
+          run_git!(%W(commit --no-verify --message #{message}), chdir: squash_path, env: env)
+
+          # Return the squash sha. May print a warning for ambiguous refs, but
+          # we can ignore that with `--quiet` and just take the SHA, if present.
+          # HEAD here always refers to the current HEAD commit, even if there is
+          # another ref called HEAD.
+          run_git!(
+            %w(rev-parse --quiet --verify HEAD), chdir: squash_path, env: env
+          ).chomp
+        end
+      end
+
+      def squash_in_progress?(squash_id)
+        fresh_worktree?(worktree_path(SQUASH_WORKTREE_PREFIX, squash_id))
       end
 
       def gitaly_repository
@@ -1195,6 +1265,94 @@ module Gitlab
 
       private
 
+      def fresh_worktree?(path)
+        File.exist?(path) && !clean_stuck_worktree(path)
+      end
+
+      def with_worktree(worktree_path, branch, sparse_checkout_files: nil, env:)
+        base_args = %w(worktree add --detach)
+
+        # Note that we _don't_ want to test for `.present?` here: If the caller
+        # passes an non nil empty value it means it still wants sparse checkout
+        # but just isn't interested in any file, perhaps because it wants to
+        # checkout files in by a changeset but that changeset only adds files.
+        if sparse_checkout_files
+          # Create worktree without checking out
+          run_git!(base_args + ['--no-checkout', worktree_path], env: env)
+          worktree_git_path = run_git!(%w(rev-parse --git-dir), chdir: worktree_path)
+
+          configure_sparse_checkout(worktree_git_path, sparse_checkout_files)
+
+          # After sparse checkout configuration, checkout `branch` in worktree
+          run_git!(%W(checkout --detach #{branch}), chdir: worktree_path, env: env)
+        else
+          # Create worktree and checkout `branch` in it
+          run_git!(base_args + [worktree_path, branch], env: env)
+        end
+
+        yield
+      ensure
+        FileUtils.rm_rf(worktree_path) if File.exist?(worktree_path)
+        FileUtils.rm_rf(worktree_git_path) if worktree_git_path && File.exist?(worktree_git_path)
+      end
+
+      def clean_stuck_worktree(path)
+        return false unless File.mtime(path) < 15.minutes.ago
+
+        FileUtils.rm_rf(path)
+        true
+      end
+
+      # Adding a worktree means checking out the repository. For large repos,
+      # this can be very expensive, so set up sparse checkout for the worktree
+      # to only check out the files we're interested in.
+      def configure_sparse_checkout(worktree_git_path, files)
+        run_git!(%w(config core.sparseCheckout true))
+
+        return if files.empty?
+
+        worktree_info_path = File.join(worktree_git_path, 'info')
+        FileUtils.mkdir_p(worktree_info_path)
+        File.write(File.join(worktree_info_path, 'sparse-checkout'), files)
+      end
+
+      def gitaly_fsck
+        gitaly_repository_client.fsck
+      end
+
+      def shell_fsck
+        run_git(%W[--git-dir=#{path} fsck], nice: true)
+      end
+
+      def rugged_fetch_source_branch(source_repository, source_branch, local_ref)
+        with_repo_branch_commit(source_repository, source_branch) do |commit|
+          if commit
+            write_ref(local_ref, commit.sha)
+            true
+          else
+            false
+          end
+        end
+      end
+
+      def worktree_path(prefix, id)
+        id = id.to_s
+        raise ArgumentError, "worktree id can't be empty" unless id.present?
+        raise ArgumentError, "worktree id can't contain slashes " if id.include?("/")
+
+        File.join(path, 'gitlab-worktree', "#{prefix}-#{id}")
+      end
+
+      def git_env_for_user(user)
+        {
+          'GIT_COMMITTER_NAME' => user.name,
+          'GIT_COMMITTER_EMAIL' => user.email,
+          'GL_ID' => Gitlab::GlId.gl_id(user),
+          'GL_PROTOCOL' => Gitlab::Git::Hook::GL_PROTOCOL,
+          'GL_REPOSITORY' => gl_repository
+        }
+      end
+
       # Gitaly note: JV: Trying to get rid of the 'filter' option so we can implement this with 'git'.
       def branches_filter(filter: nil, sort_by: nil)
         # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37464
@@ -1212,11 +1370,25 @@ module Gitlab
         sort_branches(branches, sort_by)
       end
 
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/695
       def git_merged_branch_names(branch_names = [])
-        lines = run_git(['branch', '--merged', root_ref] + branch_names)
-          .first.lines
+        return [] unless root_ref
 
-        lines.map(&:strip)
+        root_sha = find_branch(root_ref)&.target
+
+        return [] unless root_sha
+
+        git_arguments =
+          %W[branch --merged #{root_sha}
+             --format=%(refname:short)\ %(objectname)] + branch_names
+
+        lines = run_git(git_arguments).first.lines
+
+        lines.each_with_object([]) do |line, branches|
+          name, sha = line.strip.split(' ', 2)
+
+          branches << name if sha != root_sha
+        end
       end
 
       def log_using_shell?(options)
@@ -1370,6 +1542,7 @@ module Gitlab
             end
 
             return nil unless tmp_entry.type == :tree
+
             tmp_entry = tmp_entry[dir]
           end
         end
@@ -1490,6 +1663,7 @@ module Gitlab
       # Ref names must start with `refs/`.
       def rugged_ref_exists?(ref_name)
         raise ArgumentError, 'invalid refname' unless ref_name.start_with?('refs/')
+
         rugged.references.exist?(ref_name)
       rescue Rugged::ReferenceError
         false
@@ -1556,6 +1730,7 @@ module Gitlab
         Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
       rescue Rugged::ReferenceError => e
         raise InvalidRef.new("Branch #{ref} already exists") if e.to_s =~ /'refs\/heads\/#{ref}'/
+
         raise InvalidRef.new("Invalid reference #{start_point}")
       end
 
@@ -1593,6 +1768,28 @@ module Gitlab
         end
       end
 
+      def rugged_revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
+        OperationService.new(user, self).with_branch(
+          branch_name,
+          start_branch_name: start_branch_name,
+          start_repository: start_repository
+        ) do |start_commit|
+
+          Gitlab::Git.check_namespace!(commit, start_repository)
+
+          revert_tree_id = check_revert_content(commit, start_commit.sha)
+          raise CreateTreeError unless revert_tree_id
+
+          committer = user_to_committer(user)
+
+          create_commit(message: message,
+                        author: committer,
+                        committer: committer,
+                        tree: revert_tree_id,
+                        parents: [start_commit.sha])
+        end
+      end
+
       def gitaly_add_branch(branch_name, user, target)
         gitaly_operation_client.user_create_branch(branch_name, user, target)
       rescue GRPC::FailedPrecondition => ex
@@ -1609,28 +1806,54 @@ module Gitlab
         raise InvalidRef, ex
       end
 
+      def rugged_cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
+        OperationService.new(user, self).with_branch(
+          branch_name,
+          start_branch_name: start_branch_name,
+          start_repository: start_repository
+        ) do |start_commit|
+
+          Gitlab::Git.check_namespace!(commit, start_repository)
+
+          cherry_pick_tree_id = check_cherry_pick_content(commit, start_commit.sha)
+          raise CreateTreeError unless cherry_pick_tree_id
+
+          committer = user_to_committer(user)
+
+          create_commit(message: message,
+                        author: {
+                            email: commit.author_email,
+                            name: commit.author_name,
+                            time: commit.authored_date
+                        },
+                        committer: committer,
+                        tree: cherry_pick_tree_id,
+                        parents: [start_commit.sha])
+        end
+      end
+
+      def check_cherry_pick_content(target_commit, source_sha)
+        args = [target_commit.sha, source_sha]
+        args << 1 if target_commit.merge_commit?
+
+        cherry_pick_index = rugged.cherrypick_commit(*args)
+        return false if cherry_pick_index.conflicts?
+
+        tree_id = cherry_pick_index.write_tree(rugged)
+        return false unless diff_exists?(source_sha, tree_id)
+
+        tree_id
+      end
+
       def local_fetch_ref(source_path, source_ref:, target_ref:)
         args = %W(fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
         run_git(args)
       end
 
       def gitaly_fetch_ref(source_repository, source_ref:, target_ref:)
-        gitaly_ssh = File.absolute_path(File.join(Gitlab.config.gitaly.client_path, 'gitaly-ssh'))
-        gitaly_address = gitaly_resolver.address(source_repository.storage)
-        gitaly_token = gitaly_resolver.token(source_repository.storage)
-
-        request = Gitaly::SSHUploadPackRequest.new(repository: source_repository.gitaly_repository)
-        env = {
-          'GITALY_ADDRESS' => gitaly_address,
-          'GITALY_PAYLOAD' => request.to_json,
-          'GITALY_WD' => Dir.pwd,
-          'GIT_SSH_COMMAND' => "#{gitaly_ssh} upload-pack"
-        }
-        env['GITALY_TOKEN'] = gitaly_token if gitaly_token.present?
-
         args = %W(fetch --no-tags -f ssh://gitaly/internal.git #{source_ref}:#{target_ref})
 
-        run_git(args, env: env)
+        run_git(args, env: source_repository.fetch_env)
       end
 
       def gitaly_ff_merge(user, source_sha, target_branch)

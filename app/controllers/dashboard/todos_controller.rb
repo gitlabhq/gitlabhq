@@ -76,7 +76,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   def redirect_out_of_range(todos)
     total_pages =
       if todo_params.except(:sort, :page).empty?
-        (current_user.todos_pending_count / todos.limit_value).ceil
+        (current_user.todos_pending_count.to_f / todos.limit_value).ceil
       else
         todos.total_pages
       end

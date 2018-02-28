@@ -36,6 +36,7 @@ class IssuableFinder
     iids
     label_name
     milestone_title
+    my_reaction_emoji
     non_archived
     project_id
     scope

@@ -331,7 +331,7 @@ GitLabDropdown = (function() {
             if (_this.dropdown.find('.dropdown-toggle-page').length) {
               selector = ".dropdown-page-one " + selector;
             }
-            return $(selector);
+            return $(selector, this.instance.dropdown);
           };
         })(this),
         data: (function(_this) {
@@ -514,10 +514,11 @@ GitLabDropdown = (function() {
 
     const dropdownToggle = this.dropdown.find('.dropdown-menu-toggle');
     const hasFilterBulkUpdate = dropdownToggle.hasClass('js-filter-bulk-update');
+    const shouldRefreshOnOpen = dropdownToggle.hasClass('js-gl-dropdown-refresh-on-open');
     const hasMultiSelect = dropdownToggle.hasClass('js-multiselect');
 
     // Makes indeterminate items effective
-    if (this.fullData && hasFilterBulkUpdate) {
+    if (this.fullData && (shouldRefreshOnOpen || hasFilterBulkUpdate)) {
       this.parseData(this.fullData);
     }
 

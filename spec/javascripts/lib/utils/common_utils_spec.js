@@ -142,44 +142,33 @@ describe('common_utils', () => {
     });
   });
 
-  describe('setParamInURL', () => {
+  describe('historyPushState', () => {
     afterEach(() => {
-      window.history.pushState({}, null, '');
+      window.history.replaceState({}, null, null);
     });
 
-    it('should return the parameter', () => {
-      window.history.replaceState({}, null, '');
+    it('should call pushState with the correct path', () => {
+      spyOn(window.history, 'pushState');
 
-      expect(commonUtils.setParamInURL('page', 156)).toBe('?page=156');
-      expect(commonUtils.setParamInURL('page', '156')).toBe('?page=156');
+      commonUtils.historyPushState('newpath?page=2');
+
+      expect(window.history.pushState).toHaveBeenCalled();
+      expect(window.history.pushState.calls.allArgs()[0][2]).toContain('newpath?page=2');
     });
+  });
 
-    it('should update the existing parameter when its a number', () => {
-      window.history.pushState({}, null, '?page=15');
-
-      expect(commonUtils.setParamInURL('page', 16)).toBe('?page=16');
-      expect(commonUtils.setParamInURL('page', '16')).toBe('?page=16');
-      expect(commonUtils.setParamInURL('page', true)).toBe('?page=true');
+  describe('parseQueryStringIntoObject', () => {
+    it('should return object with query parameters', () => {
+      expect(commonUtils.parseQueryStringIntoObject('scope=all&page=2')).toEqual({ scope: 'all', page: '2' });
+      expect(commonUtils.parseQueryStringIntoObject('scope=all')).toEqual({ scope: 'all' });
+      expect(commonUtils.parseQueryStringIntoObject()).toEqual({});
     });
+  });
 
-    it('should update the existing parameter when its a string', () => {
-      window.history.pushState({}, null, '?scope=all');
-
-      expect(commonUtils.setParamInURL('scope', 'finished')).toBe('?scope=finished');
-    });
-
-    it('should update the existing parameter when more than one parameter exists', () => {
-      window.history.pushState({}, null, '?scope=all&page=15');
-
-      expect(commonUtils.setParamInURL('scope', 'finished')).toBe('?scope=finished&page=15');
-    });
-
-    it('should add a new parameter to the end of the existing ones', () => {
-      window.history.pushState({}, null, '?scope=all');
-
-      expect(commonUtils.setParamInURL('page', 16)).toBe('?scope=all&page=16');
-      expect(commonUtils.setParamInURL('page', '16')).toBe('?scope=all&page=16');
-      expect(commonUtils.setParamInURL('page', true)).toBe('?scope=all&page=true');
+  describe('buildUrlWithCurrentLocation', () => {
+    it('should build an url with current location and given parameters', () => {
+      expect(commonUtils.buildUrlWithCurrentLocation()).toEqual(window.location.pathname);
+      expect(commonUtils.buildUrlWithCurrentLocation('?page=2')).toEqual(`${window.location.pathname}?page=2`);
     });
   });
 

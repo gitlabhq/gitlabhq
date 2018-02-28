@@ -1,6 +1,5 @@
 class CreateGpgSignatureWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   def perform(commit_sha, project_id)
     project = Project.find_by(id: project_id)

@@ -195,7 +195,7 @@ Devise.setup do |config|
   config.navigational_formats = [:"*/*", "*/*", :html, :zip]
 
   # The default HTTP method used to sign out a resource. Default is :delete.
-  config.sign_out_via = :delete
+  config.sign_out_via = :get
 
   # ==> OmniAuth
   # To configure a new OmniAuth provider copy and edit omniauth.rb.sample
@@ -236,6 +236,7 @@ Devise.setup do |config|
         provider['args'][:on_single_sign_out] = lambda do |request|
           ticket = request.params[:session_index]
           raise "Service Ticket not found." unless Gitlab::OAuth::Session.valid?(:cas3, ticket)
+
           Gitlab::OAuth::Session.destroy(:cas3, ticket)
           true
         end

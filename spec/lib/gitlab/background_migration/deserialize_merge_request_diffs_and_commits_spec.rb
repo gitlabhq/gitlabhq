@@ -1,9 +1,13 @@
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :truncate do
+describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :truncate, :migration, schema: 20171114162227 do
+  let(:merge_request_diffs) { table(:merge_request_diffs) }
+  let(:merge_requests) { table(:merge_requests) }
+
   describe '#perform' do
-    let(:merge_request) { create(:merge_request) }
-    let(:merge_request_diff) { merge_request.merge_request_diff }
+    let(:project) { create(:project, :repository) }
+    let(:merge_request) { merge_requests.create!(iid: 1, target_project_id: project.id, source_project_id: project.id, target_branch: 'feature', source_branch: 'master').becomes(MergeRequest) }
+    let(:merge_request_diff) { MergeRequest.find(merge_request.id).create_merge_request_diff }
     let(:updated_merge_request_diff) { MergeRequestDiff.find(merge_request_diff.id) }
 
     def diffs_to_hashes(diffs)
@@ -68,7 +72,7 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :t
       let(:stop_id) { described_class::MergeRequestDiff.maximum(:id) }
 
       before do
-        merge_request.reload_diff(true)
+        merge_request.create_merge_request_diff
 
         convert_to_yaml(start_id, merge_request_diff.commits, diffs_to_hashes(merge_request_diff.merge_request_diff_files))
         convert_to_yaml(stop_id, updated_merge_request_diff.commits, diffs_to_hashes(updated_merge_request_diff.merge_request_diff_files))
@@ -288,7 +292,7 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :t
 
     context 'when the merge request diffs are Rugged::Patch instances' do
       let(:commits) { merge_request_diff.commits.map(&:to_hash) }
-      let(:first_commit) { merge_request.project.repository.commit(merge_request_diff.head_commit_sha) }
+      let(:first_commit) { project.repository.commit(merge_request_diff.head_commit_sha) }
       let(:expected_commits) { commits }
       let(:diffs) { first_commit.rugged_diff_from_parent.patches }
       let(:expected_diffs) { [] }
@@ -298,7 +302,7 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :t
 
     context 'when the merge request diffs are Rugged::Diff::Delta instances' do
       let(:commits) { merge_request_diff.commits.map(&:to_hash) }
-      let(:first_commit) { merge_request.project.repository.commit(merge_request_diff.head_commit_sha) }
+      let(:first_commit) { project.repository.commit(merge_request_diff.head_commit_sha) }
       let(:expected_commits) { commits }
       let(:diffs) { first_commit.rugged_diff_from_parent.deltas }
       let(:expected_diffs) { [] }

@@ -24,8 +24,8 @@ describe('RepoTab', () => {
       tab: file(),
     });
     vm.$store.state.openFiles.push(vm.tab);
-    const close = vm.$el.querySelector('.close-btn');
-    const name = vm.$el.querySelector(`a[title="${vm.tab.url}"]`);
+    const close = vm.$el.querySelector('.multi-file-tab-close');
+    const name = vm.$el.querySelector(`[title="${vm.tab.url}"]`);
 
     expect(close.querySelector('.fa-times')).toBeTruthy();
     expect(name.textContent.trim()).toEqual(vm.tab.name);
@@ -50,7 +50,7 @@ describe('RepoTab', () => {
 
     spyOn(vm, 'closeFile');
 
-    vm.$el.querySelector('.close-btn').click();
+    vm.$el.querySelector('.multi-file-tab-close').click();
 
     expect(vm.closeFile).toHaveBeenCalledWith({ file: vm.tab });
   });
@@ -62,7 +62,7 @@ describe('RepoTab', () => {
       tab,
     });
 
-    expect(vm.$el.querySelector('.close-btn .fa-circle')).toBeTruthy();
+    expect(vm.$el.querySelector('.multi-file-tab-close .fa-circle')).not.toBeNull();
   });
 
   describe('methods', () => {
@@ -77,7 +77,7 @@ describe('RepoTab', () => {
         vm.$store.state.openFiles.push(tab);
         vm.$store.dispatch('setFileActive', tab);
 
-        vm.$el.querySelector('.close-btn').click();
+        vm.$el.querySelector('.multi-file-tab-close').click();
 
         vm.$nextTick(() => {
           expect(tab.opened).toBeTruthy();
@@ -95,7 +95,7 @@ describe('RepoTab', () => {
         vm.$store.state.openFiles.push(tab);
         vm.$store.dispatch('setFileActive', tab);
 
-        vm.$el.querySelector('.close-btn').click();
+        vm.$el.querySelector('.multi-file-tab-close').click();
 
         vm.$nextTick(() => {
           expect(tab.opened).toBeFalsy();

@@ -4,7 +4,6 @@ module API
 
     before do
       authenticate!
-      require_pages_enabled!
     end
 
     after_validation do
@@ -29,10 +28,31 @@ module API
       end
     end
 
+    resource :pages do
+      before do
+        require_pages_config_enabled!
+        authenticated_with_full_private_access!
+      end
+
+      desc "Get all pages domains" do
+        success Entities::PagesDomainBasic
+      end
+      params do
+        use :pagination
+      end
+      get "domains" do
+        present paginate(PagesDomain.all), with: Entities::PagesDomainBasic
+      end
+    end
+
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
     resource :projects, requirements: { id: %r{[^/]+} } do
+      before do
+        require_pages_enabled!
+      end
+
       desc 'Get all pages domains' do
         success Entities::PagesDomain
       end

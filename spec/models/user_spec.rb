@@ -642,16 +642,40 @@ describe User do
   end
 
   describe 'groups' do
+    let(:user) { create(:user) }
+    let(:group) { create(:group) }
+
     before do
-      @user = create :user
-      @group = create :group
-      @group.add_owner(@user)
+      group.add_owner(user)
     end
 
-    it { expect(@user.several_namespaces?).to be_truthy }
-    it { expect(@user.authorized_groups).to eq([@group]) }
-    it { expect(@user.owned_groups).to eq([@group]) }
-    it { expect(@user.namespaces).to match_array([@user.namespace, @group]) }
+    it { expect(user.several_namespaces?).to be_truthy }
+    it { expect(user.authorized_groups).to eq([group]) }
+    it { expect(user.owned_groups).to eq([group]) }
+    it { expect(user.namespaces).to contain_exactly(user.namespace, group) }
+    it { expect(user.manageable_namespaces).to contain_exactly(user.namespace, group) }
+
+    context 'with child groups', :nested_groups do
+      let!(:subgroup) { create(:group, parent: group) }
+
+      describe '#manageable_namespaces' do
+        it 'includes all the namespaces the user can manage' do
+          expect(user.manageable_namespaces).to contain_exactly(user.namespace, group, subgroup)
+        end
+      end
+
+      describe '#manageable_groups' do
+        it 'includes all the namespaces the user can manage' do
+          expect(user.manageable_groups).to contain_exactly(group, subgroup)
+        end
+
+        it 'does not include duplicates if a membership was added for the subgroup' do
+          subgroup.add_owner(user)
+
+          expect(user.manageable_groups).to contain_exactly(group, subgroup)
+        end
+      end
+    end
   end
 
   describe 'group multiple owners' do
@@ -804,7 +828,7 @@ describe User do
       end
     end
 
-    describe '#require_ssh_key?' do
+    describe '#require_ssh_key?', :use_clean_rails_memory_store_caching do
       protocol_and_expectation = {
         'http' => false,
         'ssh' => true,
@@ -818,6 +842,12 @@ describe User do
 
           expect(user.require_ssh_key?).to eq(expected)
         end
+      end
+
+      it 'returns false when the user has 1 or more SSH keys' do
+        key = create(:personal_key)
+
+        expect(key.user.require_ssh_key?).to eq(false)
       end
     end
   end
@@ -838,6 +868,19 @@ describe User do
 
     it 'returns nil when nothing found' do
       expect(described_class.find_by_any_email('')).to be_nil
+    end
+  end
+
+  describe '.by_any_email' do
+    it 'returns an ActiveRecord::Relation' do
+      expect(described_class.by_any_email('foo@example.com'))
+        .to be_a_kind_of(ActiveRecord::Relation)
+    end
+
+    it 'returns a relation of users' do
+      user = create(:user)
+
+      expect(described_class.by_any_email(user.email)).to eq([user])
     end
   end
 
@@ -1136,16 +1179,9 @@ describe User do
     let(:user) { create(:user, :with_avatar) }
 
     context 'when avatar file is uploaded' do
-      let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
-      let(:avatar_path) { "/uploads/-/system/user/avatar/#{user.id}/dk.png" }
-
       it 'shows correct avatar url' do
-        expect(user.avatar_url).to eq(avatar_path)
-        expect(user.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
-
-        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
-
-        expect(user.avatar_url).to eq([gitlab_host, avatar_path].join)
+        expect(user.avatar_url).to eq(user.avatar.url)
+        expect(user.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, user.avatar.url].join)
       end
     end
   end
@@ -2107,25 +2143,47 @@ describe User do
     end
   end
 
-  describe '#allow_password_authentication?' do
+  describe '#allow_password_authentication_for_web?' do
     context 'regular user' do
       let(:user) { build(:user) }
 
-      it 'returns true when sign-in is enabled' do
-        expect(user.allow_password_authentication?).to be_truthy
+      it 'returns true when password authentication is enabled for the web interface' do
+        expect(user.allow_password_authentication_for_web?).to be_truthy
       end
 
-      it 'returns false when sign-in is disabled' do
-        stub_application_setting(password_authentication_enabled: false)
+      it 'returns false when password authentication is disabled for the web interface' do
+        stub_application_setting(password_authentication_enabled_for_web: false)
 
-        expect(user.allow_password_authentication?).to be_falsey
+        expect(user.allow_password_authentication_for_web?).to be_falsey
       end
     end
 
     it 'returns false for ldap user' do
       user = create(:omniauth_user, provider: 'ldapmain')
 
-      expect(user.allow_password_authentication?).to be_falsey
+      expect(user.allow_password_authentication_for_web?).to be_falsey
+    end
+  end
+
+  describe '#allow_password_authentication_for_git?' do
+    context 'regular user' do
+      let(:user) { build(:user) }
+
+      it 'returns true when password authentication is enabled for Git' do
+        expect(user.allow_password_authentication_for_git?).to be_truthy
+      end
+
+      it 'returns false when password authentication is disabled Git' do
+        stub_application_setting(password_authentication_enabled_for_git: false)
+
+        expect(user.allow_password_authentication_for_git?).to be_falsey
+      end
+    end
+
+    it 'returns false for ldap user' do
+      user = create(:omniauth_user, provider: 'ldapmain')
+
+      expect(user.allow_password_authentication_for_git?).to be_falsey
     end
   end
 
@@ -2345,7 +2403,8 @@ describe User do
       let(:expected) { !(password_automatically_set || ldap_user || password_authentication_disabled) }
 
       before do
-        stub_application_setting(password_authentication_enabled: !password_authentication_disabled)
+        stub_application_setting(password_authentication_enabled_for_web: !password_authentication_disabled)
+        stub_application_setting(password_authentication_enabled_for_git: !password_authentication_disabled)
       end
 
       it 'returns false unless all inputs are true' do
@@ -2372,6 +2431,165 @@ describe User do
       user.delete_async(deleted_by: deleted_by)
 
       expect(user).not_to be_blocked
+    end
+  end
+
+  describe '#max_member_access_for_project_ids' do
+    shared_examples 'max member access for projects' do
+      let(:user) { create(:user) }
+      let(:group) { create(:group) }
+      let(:owner_project) { create(:project, group: group) }
+      let(:master_project) { create(:project) }
+      let(:reporter_project) { create(:project) }
+      let(:developer_project) { create(:project) }
+      let(:guest_project) { create(:project) }
+      let(:no_access_project) { create(:project) }
+
+      let(:projects) do
+        [owner_project, master_project, reporter_project, developer_project, guest_project, no_access_project].map(&:id)
+      end
+
+      let(:expected) do
+        {
+          owner_project.id => Gitlab::Access::OWNER,
+          master_project.id => Gitlab::Access::MASTER,
+          reporter_project.id => Gitlab::Access::REPORTER,
+          developer_project.id => Gitlab::Access::DEVELOPER,
+          guest_project.id => Gitlab::Access::GUEST,
+          no_access_project.id => Gitlab::Access::NO_ACCESS
+        }
+      end
+
+      before do
+        create(:group_member, user: user, group: group)
+        master_project.add_master(user)
+        reporter_project.add_reporter(user)
+        developer_project.add_developer(user)
+        guest_project.add_guest(user)
+      end
+
+      it 'returns correct roles for different projects' do
+        expect(user.max_member_access_for_project_ids(projects)).to eq(expected)
+      end
+    end
+
+    context 'with RequestStore enabled', :request_store do
+      include_examples 'max member access for projects'
+
+      def access_levels(projects)
+        user.max_member_access_for_project_ids(projects)
+      end
+
+      it 'does not perform extra queries when asked for projects who have already been found' do
+        access_levels(projects)
+
+        expect { access_levels(projects) }.not_to exceed_query_limit(0)
+
+        expect(access_levels(projects)).to eq(expected)
+      end
+
+      it 'only requests the extra projects when uncached projects are passed' do
+        second_master_project = create(:project)
+        second_developer_project = create(:project)
+        second_master_project.add_master(user)
+        second_developer_project.add_developer(user)
+
+        all_projects = projects + [second_master_project.id, second_developer_project.id]
+
+        expected_all = expected.merge(second_master_project.id => Gitlab::Access::MASTER,
+                                      second_developer_project.id => Gitlab::Access::DEVELOPER)
+
+        access_levels(projects)
+
+        queries = ActiveRecord::QueryRecorder.new { access_levels(all_projects) }
+
+        expect(queries.count).to eq(1)
+        expect(queries.log_message).to match(/\W(#{second_master_project.id}, #{second_developer_project.id})\W/)
+        expect(access_levels(all_projects)).to eq(expected_all)
+      end
+    end
+
+    context 'with RequestStore disabled' do
+      include_examples 'max member access for projects'
+    end
+  end
+
+  describe '#max_member_access_for_group_ids' do
+    shared_examples 'max member access for groups' do
+      let(:user) { create(:user) }
+      let(:owner_group) { create(:group) }
+      let(:master_group) { create(:group) }
+      let(:reporter_group) { create(:group) }
+      let(:developer_group) { create(:group) }
+      let(:guest_group) { create(:group) }
+      let(:no_access_group) { create(:group) }
+
+      let(:groups) do
+        [owner_group, master_group, reporter_group, developer_group, guest_group, no_access_group].map(&:id)
+      end
+
+      let(:expected) do
+        {
+          owner_group.id => Gitlab::Access::OWNER,
+          master_group.id => Gitlab::Access::MASTER,
+          reporter_group.id => Gitlab::Access::REPORTER,
+          developer_group.id => Gitlab::Access::DEVELOPER,
+          guest_group.id => Gitlab::Access::GUEST,
+          no_access_group.id => Gitlab::Access::NO_ACCESS
+        }
+      end
+
+      before do
+        owner_group.add_owner(user)
+        master_group.add_master(user)
+        reporter_group.add_reporter(user)
+        developer_group.add_developer(user)
+        guest_group.add_guest(user)
+      end
+
+      it 'returns correct roles for different groups' do
+        expect(user.max_member_access_for_group_ids(groups)).to eq(expected)
+      end
+    end
+
+    context 'with RequestStore enabled', :request_store do
+      include_examples 'max member access for groups'
+
+      def access_levels(groups)
+        user.max_member_access_for_group_ids(groups)
+      end
+
+      it 'does not perform extra queries when asked for groups who have already been found' do
+        access_levels(groups)
+
+        expect { access_levels(groups) }.not_to exceed_query_limit(0)
+
+        expect(access_levels(groups)).to eq(expected)
+      end
+
+      it 'only requests the extra groups when uncached groups are passed' do
+        second_master_group = create(:group)
+        second_developer_group = create(:group)
+        second_master_group.add_master(user)
+        second_developer_group.add_developer(user)
+
+        all_groups = groups + [second_master_group.id, second_developer_group.id]
+
+        expected_all = expected.merge(second_master_group.id => Gitlab::Access::MASTER,
+                                      second_developer_group.id => Gitlab::Access::DEVELOPER)
+
+        access_levels(groups)
+
+        queries = ActiveRecord::QueryRecorder.new { access_levels(all_groups) }
+
+        expect(queries.count).to eq(1)
+        expect(queries.log_message).to match(/\W(#{second_master_group.id}, #{second_developer_group.id})\W/)
+        expect(access_levels(all_groups)).to eq(expected_all)
+      end
+    end
+
+    context 'with RequestStore disabled' do
+      include_examples 'max member access for groups'
     end
   end
 end

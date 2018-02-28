@@ -35,7 +35,9 @@ class ProjectStatistics < ActiveRecord::Base
   end
 
   def update_build_artifacts_size
-    self.build_artifacts_size = project.builds.sum(:artifacts_size)
+    self.build_artifacts_size =
+      project.builds.sum(:artifacts_size) +
+      Ci::JobArtifact.artifacts_size_for(self)
   end
 
   def update_storage_size

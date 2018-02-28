@@ -14,6 +14,7 @@ module API
 
       def get_runner_version_from_params
         return unless params['info'].present?
+
         attributes_for_keys(%w(name version revision platform architecture), params['info'])
       end
 

@@ -1,6 +1,10 @@
 class SystemHooksService
   def execute_hooks_for(model, event)
-    execute_hooks(build_event_data(model, event))
+    data = build_event_data(model, event)
+
+    model.run_after_commit_or_now do
+      SystemHooksService.new.execute_hooks(data)
+    end
   end
 
   def execute_hooks(data, hooks_scope = :all)

@@ -16,6 +16,10 @@ export default {
       required: true,
       type: String,
     },
+    updateEndpoint: {
+      required: true,
+      type: String,
+    },
     canUpdate: {
       required: true,
       type: Boolean,
@@ -28,6 +32,16 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    showDeleteButton: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    enableAutocomplete: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
     issuableRef: {
       type: String,
@@ -91,6 +105,16 @@ export default {
     projectNamespace: {
       type: String,
       required: true,
+    },
+    issuableType: {
+      type: String,
+      required: false,
+      default: 'issue',
+    },
+    canAttachFile: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   data() {
@@ -157,21 +181,21 @@ export default {
         })
         .catch(() => {
           eventHub.$emit('close.form');
-          window.Flash('Error updating issue');
+          window.Flash(`Error updating ${this.issuableType}`);
         });
     },
     deleteIssuable() {
       this.service.deleteIssuable()
         .then(res => res.json())
         .then((data) => {
-          // Stop the poll so we don't get 404's with the issue not existing
+          // Stop the poll so we don't get 404's with the issuable not existing
           this.poll.stop();
 
           gl.utils.visitUrl(data.web_url);
         })
         .catch(() => {
           eventHub.$emit('close.form');
-          window.Flash('Error deleting issue');
+          window.Flash(`Error deleting ${this.issuableType}`);
         });
     },
   },
@@ -223,6 +247,9 @@ export default {
       :markdown-preview-path="markdownPreviewPath"
       :project-path="projectPath"
       :project-namespace="projectNamespace"
+      :show-delete-button="showDeleteButton"
+      :can-attach-file="canAttachFile"
+      :enable-autocomplete="enableAutocomplete"
     />
     <div v-else>
       <title-component
@@ -239,6 +266,8 @@ export default {
         :description-text="state.descriptionText"
         :updated-at="state.updatedAt"
         :task-status="state.taskStatus"
+        :issuable-type="issuableType"
+        :update-url="updateEndpoint"
       />
       <edited-component
         v-if="hasUpdated"

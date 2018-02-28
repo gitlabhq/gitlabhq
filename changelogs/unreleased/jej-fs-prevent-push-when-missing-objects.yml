@@ -1,5 +1,0 @@
----
-title: Prevent git push when LFS objects are missing
-merge_request: 13837
-author:
-type: added

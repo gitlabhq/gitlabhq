@@ -22,6 +22,8 @@ describe Clusters::Applications::ScheduleInstallationService do
     let(:service) { described_class.new(project, nil, cluster: cluster, application_class: application_class) }
 
     it 'creates a new application' do
+      allow(ClusterInstallAppWorker).to receive(:perform_async)
+
       expect { service.execute }.to change { application_class.count }.by(1)
     end
 

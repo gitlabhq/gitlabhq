@@ -3,6 +3,7 @@ require 'spec_helper'
 describe GoogleApi::CloudPlatform::Client do
   let(:token) { 'token' }
   let(:client) { described_class.new(token, nil) }
+  let(:user_agent_options) { client.instance_eval { user_agent_header } }
 
   describe '.session_key_for_redirect_uri' do
     let(:state) { 'random_string' }
@@ -55,7 +56,8 @@ describe GoogleApi::CloudPlatform::Client do
 
     before do
       allow_any_instance_of(Google::Apis::ContainerV1::ContainerService)
-        .to receive(:get_zone_cluster).and_return(gke_cluster)
+        .to receive(:get_zone_cluster).with(any_args, options: user_agent_options)
+        .and_return(gke_cluster)
     end
 
     it { is_expected.to eq(gke_cluster) }
@@ -74,7 +76,8 @@ describe GoogleApi::CloudPlatform::Client do
 
     before do
       allow_any_instance_of(Google::Apis::ContainerV1::ContainerService)
-        .to receive(:create_cluster).and_return(operation)
+        .to receive(:create_cluster).with(any_args, options: user_agent_options)
+        .and_return(operation)
     end
 
     it { is_expected.to eq(operation) }
@@ -102,7 +105,8 @@ describe GoogleApi::CloudPlatform::Client do
 
     before do
       allow_any_instance_of(Google::Apis::ContainerV1::ContainerService)
-        .to receive(:get_zone_operation).and_return(operation)
+        .to receive(:get_zone_operation).with(any_args, options: user_agent_options)
+        .and_return(operation)
     end
 
     it { is_expected.to eq(operation) }
@@ -123,6 +127,20 @@ describe GoogleApi::CloudPlatform::Client do
       let(:self_link) { '???' }
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#user_agent_header' do
+    subject { client.instance_eval { user_agent_header } }
+
+    it 'returns a RequestOptions object' do
+      expect(subject).to be_instance_of(Google::Apis::RequestOptions)
+    end
+
+    it 'has the correct GitLab version in User-Agent header' do
+      stub_const('Gitlab::VERSION', '10.3.0-pre')
+
+      expect(subject.header).to eq({ 'User-Agent': 'GitLab/10.3 (GPN:GitLab;)' })
     end
   end
 end

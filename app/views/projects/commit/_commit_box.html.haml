@@ -47,7 +47,7 @@
           %li= link_to s_("DownloadCommit|Email Patches"), project_commit_path(@project, @commit, format: :patch)
         %li= link_to s_("DownloadCommit|Plain Diff"),    project_commit_path(@project, @commit, format: :diff)
 
-.commit-box
+.commit-box{ data: { project_path: project_path(@project) } }
   %h3.commit-title
     = markdown(@commit.title, pipeline: :single_line, author: @commit.author)
   - if @commit.description.present?
@@ -67,8 +67,8 @@
   - if @commit.last_pipeline
     - last_pipeline = @commit.last_pipeline
     .well-segment.pipeline-info
-      .status-icon-container{ class: "ci-status-icon-#{last_pipeline.status}" }
-        = link_to project_pipeline_path(@project, last_pipeline.id) do
+      .status-icon-container
+        = link_to project_pipeline_path(@project, last_pipeline.id), class: "ci-status-icon-#{last_pipeline.status}" do
           = ci_icon_for_status(last_pipeline.status)
       #{ _('Pipeline') }
       = link_to "##{last_pipeline.id}", project_pipeline_path(@project, last_pipeline.id)
@@ -80,3 +80,13 @@
       - if last_pipeline.duration
         in
         = time_interval_in_words last_pipeline.duration
+
+  - if @merge_request
+    .well-segment
+      = icon('info-circle fw')
+
+      This commit is part of merge request
+      = succeed '.' do
+        = link_to @merge_request.to_reference, diffs_project_merge_request_path(@project, @merge_request, commit_id: @commit.id)
+
+      Comments created here will be created in the context of that merge request.

@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+# rubocop:disable Metrics/LineLength
+# rubocop:disable Style/Documentation
+
 module Gitlab
   module BackgroundMigration
     # Class that migrates events for the new push event payloads setup. All

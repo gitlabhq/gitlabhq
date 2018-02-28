@@ -25,8 +25,12 @@ describe('RepoCommitSection', () => {
     return comp.$mount();
   }
 
-  beforeEach(() => {
+  beforeEach((done) => {
     vm = createComponent();
+
+    vm.collapsed = false;
+
+    Vue.nextTick(done);
   });
 
   afterEach(() => {
@@ -36,12 +40,11 @@ describe('RepoCommitSection', () => {
   });
 
   it('renders a commit section', () => {
-    const changedFileElements = [...vm.$el.querySelectorAll('.changed-files > li')];
-    const submitCommit = vm.$el.querySelector('.btn');
-    const targetBranch = vm.$el.querySelector('.target-branch');
+    const changedFileElements = [...vm.$el.querySelectorAll('.multi-file-commit-list li')];
+    const submitCommit = vm.$el.querySelector('form .btn');
 
-    expect(vm.$el.querySelector(':scope > form')).toBeTruthy();
-    expect(vm.$el.querySelector('.staged-files').textContent.trim()).toEqual('Staged files (2)');
+    expect(vm.$el.querySelector('.multi-file-commit-form')).not.toBeNull();
+    expect(vm.$el.querySelector('.multi-file-commit-panel-section header').textContent.trim()).toEqual('Staged');
     expect(changedFileElements.length).toEqual(2);
 
     changedFileElements.forEach((changedFile, i) => {
@@ -49,10 +52,7 @@ describe('RepoCommitSection', () => {
     });
 
     expect(submitCommit.disabled).toBeTruthy();
-    expect(submitCommit.querySelector('.fa-spinner.fa-spin')).toBeFalsy();
-    expect(vm.$el.querySelector('.commit-summary').textContent.trim()).toEqual('Commit 2 files');
-    expect(targetBranch.querySelector(':scope > label').textContent.trim()).toEqual('Target branch');
-    expect(targetBranch.querySelector('.help-block').textContent.trim()).toEqual('master');
+    expect(submitCommit.querySelector('.fa-spinner.fa-spin')).toBeNull();
   });
 
   describe('when submitting', () => {
@@ -69,7 +69,7 @@ describe('RepoCommitSection', () => {
     });
 
     it('allows you to submit', () => {
-      expect(vm.$el.querySelector('.btn').disabled).toBeTruthy();
+      expect(vm.$el.querySelector('form .btn').disabled).toBeTruthy();
     });
 
     it('submits commit', (done) => {

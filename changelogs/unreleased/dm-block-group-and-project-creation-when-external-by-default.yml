@@ -1,6 +1,0 @@
----
-title: Make sure group and project creation is blocked for new users that are external
-  by default
-merge_request:
-author:
-type: fixed

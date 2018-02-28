@@ -18,6 +18,7 @@ module Gitlab
 
       def execute
         return true unless repo.valid?
+
         client = Gitlab::FogbugzImport::Client.new(token: fb_session[:token], uri: fb_session[:uri])
 
         @cases = client.cases(@repo.id.to_i)
@@ -206,6 +207,7 @@ module Gitlab
 
       def format_content(raw_content)
         return raw_content if raw_content.nil?
+
         linkify_issues(escape_for_markdown(raw_content))
       end
 

@@ -1,5 +1,0 @@
----
-title: Issue JWT token with registry:catalog:* scope when requested by GitLab admin
-merge_request: 14751
-author: Vratislav Kalenda
-type: added

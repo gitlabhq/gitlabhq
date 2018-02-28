@@ -21,7 +21,7 @@ describe('datefix', () => {
 
   describe('pikadayToString', () => {
     it('should format a UTC date into yyyy-mm-dd format', () => {
-      expect(pikadayToString(new Date('2020-01-29'))).toEqual('2020-01-29');
+      expect(pikadayToString(new Date('2020-01-29:00:00'))).toEqual('2020-01-29');
     });
   });
 });

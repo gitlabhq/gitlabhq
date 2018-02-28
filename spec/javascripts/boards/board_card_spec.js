@@ -9,10 +9,11 @@
 import Vue from 'vue';
 import '~/boards/models/assignee';
 
+import eventHub from '~/boards/eventhub';
 import '~/boards/models/list';
 import '~/boards/models/label';
 import '~/boards/stores/boards_store';
-import boardCard from '~/boards/components/board_card';
+import boardCard from '~/boards/components/board_card.vue';
 import './mock_data';
 
 describe('Board card', () => {
@@ -157,33 +158,35 @@ describe('Board card', () => {
     });
 
     it('sets detail issue to card issue on mouse up', () => {
+      spyOn(eventHub, '$emit');
+
       triggerEvent('mousedown');
       triggerEvent('mouseup');
 
-      expect(gl.issueBoards.BoardsStore.detail.issue).toEqual(vm.issue);
+      expect(eventHub.$emit).toHaveBeenCalledWith('newDetailIssue', vm.issue);
       expect(gl.issueBoards.BoardsStore.detail.list).toEqual(vm.list);
     });
 
     it('adds active class if detail issue is set', (done) => {
-      triggerEvent('mousedown');
-      triggerEvent('mouseup');
+      vm.detailIssue.issue = vm.issue;
 
-      setTimeout(() => {
-        expect(vm.$el.classList.contains('is-active')).toBe(true);
-        done();
-      }, 0);
+      Vue.nextTick()
+        .then(() => {
+          expect(vm.$el.classList.contains('is-active')).toBe(true);
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('resets detail issue to empty if already set', () => {
+      spyOn(eventHub, '$emit');
+
+      gl.issueBoards.BoardsStore.detail.issue = vm.issue;
+
       triggerEvent('mousedown');
       triggerEvent('mouseup');
 
-      expect(gl.issueBoards.BoardsStore.detail.issue).toEqual(vm.issue);
-
-      triggerEvent('mousedown');
-      triggerEvent('mouseup');
-
-      expect(gl.issueBoards.BoardsStore.detail.issue).toEqual({});
+      expect(eventHub.$emit).toHaveBeenCalledWith('clearDetailIssue');
     });
   });
 });

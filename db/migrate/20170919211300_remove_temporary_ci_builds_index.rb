@@ -12,6 +12,7 @@ class RemoveTemporaryCiBuildsIndex < ActiveRecord::Migration
 
   def up
     return unless index_exists?(:ci_builds, :id, name: 'index_for_ci_builds_retried_migration')
+
     remove_concurrent_index(:ci_builds, :id, name: "index_for_ci_builds_retried_migration")
   end
 

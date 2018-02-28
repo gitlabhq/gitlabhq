@@ -2,7 +2,7 @@
 import Timeago from 'timeago.js';
 import _ from 'underscore';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-import '../../lib/utils/text_utility';
+import { humanize } from '../../lib/utils/text_utility';
 import ActionsComponent from './environment_actions.vue';
 import ExternalUrlComponent from './environment_external_url.vue';
 import StopComponent from './environment_stop.vue';
@@ -139,7 +139,7 @@ export default {
       if (this.hasManualActions) {
         return this.model.last_deployment.manual_actions.map((action) => {
           const parsedAction = {
-            name: gl.text.humanize(action.name),
+            name: humanize(action.name),
             play_path: action.play_path,
             playable: action.playable,
           };
@@ -432,7 +432,7 @@ export default {
         v-if="!model.isFolder"
         class="table-mobile-header"
         role="rowheader">
-        Environment
+        {{s__("Environments|Environment")}}
       </div>
       <a
         v-if="!model.isFolder"
@@ -505,7 +505,7 @@ export default {
       <div
         role="rowheader"
         class="table-mobile-header">
-        Commit
+        {{s__("Environments|Commit")}}
       </div>
       <div
         v-if="hasLastDeploymentKey"
@@ -521,7 +521,7 @@ export default {
       <div
         v-if="!hasLastDeploymentKey"
         class="commit-title table-mobile-content">
-        No deployments yet
+        {{s__("Environments|No deployments yet")}}
       </div>
     </div>
 
@@ -531,7 +531,7 @@ export default {
       <div
         role="rowheader"
         class="table-mobile-header">
-        Updated
+        {{s__("Environments|Updated")}}
       </div>
       <span
         v-if="canShowDate"

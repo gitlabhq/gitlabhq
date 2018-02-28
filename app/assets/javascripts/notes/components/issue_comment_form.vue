@@ -8,8 +8,8 @@
   import * as constants from '../constants';
   import eventHub from '../event_hub';
   import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
-  import issueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
-  import issueDiscussionLockedWidget from './issue_discussion_locked_widget.vue';
+  import noteSignedOutWidget from './note_signed_out_widget.vue';
+  import discussionLockedWidget from './discussion_locked_widget.vue';
   import markdownField from '../../vue_shared/components/markdown/field.vue';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
   import issuableStateMixin from '../mixins/issuable_state';
@@ -22,15 +22,15 @@
         noteType: constants.COMMENT,
         // Can't use mapGetters,
         // this needs to be in the data object because it belongs to the state
-        issueState: this.$store.getters.getIssueData.state,
+        issueState: this.$store.getters.getNoteableData.state,
         isSubmitting: false,
         isSubmitButtonDisabled: true,
       };
     },
     components: {
       issueWarning,
-      issueNoteSignedOutWidget,
-      issueDiscussionLockedWidget,
+      noteSignedOutWidget,
+      discussionLockedWidget,
       markdownField,
       userAvatarLink,
     },
@@ -46,7 +46,7 @@
       ...mapGetters([
         'getCurrentUserLastNote',
         'getUserData',
-        'getIssueData',
+        'getNoteableData',
         'getNotesData',
       ]),
       isLoggedIn() {
@@ -59,7 +59,7 @@
         return this.issueState === constants.OPENED || this.issueState === constants.REOPENED;
       },
       canCreateNote() {
-        return this.getIssueData.current_user.can_create_note;
+        return this.getNoteableData.current_user.can_create_note;
       },
       issueActionButtonTitle() {
         if (this.note.length) {
@@ -85,16 +85,16 @@
         return this.getNotesData.quickActionsDocsPath;
       },
       markdownPreviewPath() {
-        return this.getIssueData.preview_note_path;
+        return this.getNoteableData.preview_note_path;
       },
       author() {
         return this.getUserData;
       },
       canUpdateIssue() {
-        return this.getIssueData.current_user.can_update;
+        return this.getNoteableData.current_user.can_update;
       },
       endpoint() {
-        return this.getIssueData.create_note_path;
+        return this.getNoteableData.create_note_path;
       },
     },
     methods: {
@@ -119,7 +119,7 @@
             data: {
               note: {
                 noteable_type: constants.NOTEABLE_TYPE,
-                noteable_id: this.getIssueData.id,
+                noteable_id: this.getNoteableData.id,
                 note: this.note,
               },
             },
@@ -207,7 +207,7 @@
       },
       initAutoSave() {
         if (this.isLoggedIn) {
-          this.autosave = new Autosave($(this.$refs.textarea), ['Note', 'Issue', this.getIssueData.id], 'issue');
+          this.autosave = new Autosave($(this.$refs.textarea), ['Note', 'Issue', this.getNoteableData.id], 'issue');
         }
       },
       initTaskList() {
@@ -240,8 +240,11 @@
 
 <template>
   <div>
-    <issue-note-signed-out-widget v-if="!isLoggedIn" />
-    <issue-discussion-locked-widget v-else-if="!canCreateNote" />
+    <note-signed-out-widget v-if="!isLoggedIn" />
+    <discussion-locked-widget
+      issuable-type="issue"
+      v-else-if="!canCreateNote"
+    />
     <ul
       v-else
       class="notes notes-form timeline">
@@ -266,9 +269,9 @@
               <div class="error-alert"></div>
 
               <issue-warning
-                v-if="hasWarning(getIssueData)"
-                :is-locked="isLocked(getIssueData)"
-                :is-confidential="isConfidential(getIssueData)"
+                v-if="hasWarning(getNoteableData)"
+                :is-locked="isLocked(getNoteableData)"
+                :is-confidential="isConfidential(getNoteableData)"
               />
 
               <markdown-field
@@ -357,7 +360,8 @@
                   @click="handleSave(true)"
                   v-if="canUpdateIssue"
                   :class="actionButtonClassNames"
-                  class="btn btn-comment btn-comment-and-close">
+                  :disabled="isSubmitting"
+                  class="btn btn-comment btn-comment-and-close js-action-button">
                   {{issueActionButtonTitle}}
                 </button>
                 <button

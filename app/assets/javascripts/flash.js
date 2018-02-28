@@ -41,7 +41,7 @@ const createFlashEl = (message, type, isInContentWrapper = false) => `
 `;
 
 const removeFlashClickListener = (flashEl, fadeTransition) => {
-  flashEl.parentNode.addEventListener('click', () => hideFlash(flashEl, fadeTransition));
+  flashEl.addEventListener('click', () => hideFlash(flashEl, fadeTransition));
 };
 
 /*

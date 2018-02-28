@@ -57,13 +57,13 @@
 
     .build-trace-container.prepend-top-default
       .top-bar.js-top-bar
-        .js-truncated-info.truncated-info.hidden<
+        .js-truncated-info.truncated-info.hidden-xs.pull-left.hidden<
           Showing last
           %span.js-truncated-info-size.truncated-info-size><
           KiB of log -
           %a.js-raw-link.raw-link{ href: raw_project_job_path(@project, @build) }>< Complete Raw
 
-        .controllers
+        .controllers.pull-right
           - if @build.has_trace?
             = link_to raw_project_job_path(@project, @build),
                     title: 'Show complete raw',
@@ -71,7 +71,7 @@
                     class: 'js-raw-link-controller has-tooltip controllers-buttons' do
               = icon('file-text-o')
 
-          - if can?(current_user, :update_build, @project) && @build.erasable?
+          - if @build.erasable? && can?(current_user, :erase_build, @build)
             = link_to erase_project_job_path(@project, @build),
                       method: :post,
                       data: { confirm: 'Are you sure you want to erase this build?', placement: 'top', container: 'body' },

@@ -124,7 +124,11 @@
 
     &:hover,
     &.active {
-      color: $black;
+      text-decoration: none;
+
+      span {
+        text-decoration: underline;
+      }
     }
   }
 

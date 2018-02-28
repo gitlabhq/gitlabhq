@@ -8,10 +8,18 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
   },
   data() {
     const notesDataset = document.getElementById('js-vue-notes').dataset;
+    const parsedUserData = JSON.parse(notesDataset.currentUserData);
+    const currentUserData = parsedUserData ? {
+      id: parsedUserData.id,
+      name: parsedUserData.name,
+      username: parsedUserData.username,
+      avatar_url: parsedUserData.avatar_path || parsedUserData.avatar_url,
+      path: parsedUserData.path,
+    } : {};
 
     return {
-      issueData: JSON.parse(notesDataset.issueData),
-      currentUserData: JSON.parse(notesDataset.currentUserData),
+      noteableData: JSON.parse(notesDataset.noteableData),
+      currentUserData,
       notesData: {
         lastFetchedAt: notesDataset.lastFetchedAt,
         discussionsPath: notesDataset.discussionsPath,
@@ -26,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
   render(createElement) {
     return createElement('issue-notes-app', {
       props: {
-        issueData: this.issueData,
+        noteableData: this.noteableData,
         notesData: this.notesData,
         userData: this.currentUserData,
       },

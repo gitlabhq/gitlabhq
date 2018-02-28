@@ -14,7 +14,6 @@ export default () => {
   });
   new LabelsSelect();
   new IssuableContext(sidebarOptions.currentUser);
-  gl.Subscription.bindAll('.subscription');
   new DueDateSelectors();
   window.sidebar = new Sidebar();
 };

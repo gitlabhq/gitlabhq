@@ -527,7 +527,11 @@ describe API::Jobs do
   end
 
   describe 'POST /projects/:id/jobs/:job_id/erase' do
+    let(:role) { :master }
+
     before do
+      project.team << [user, role]
+
       post api("/projects/#{project.id}/jobs/#{job.id}/erase", user)
     end
 
@@ -554,6 +558,23 @@ describe API::Jobs do
 
       it 'responds with forbidden' do
         expect(response).to have_gitlab_http_status(403)
+      end
+    end
+
+    context 'when a developer erases a build' do
+      let(:role) { :developer }
+      let(:job) { create(:ci_build, :trace, :artifacts, :success, project: project, pipeline: pipeline, user: owner) }
+
+      context 'when the build was created by the developer' do
+        let(:owner) { user }
+
+        it { expect(response).to have_gitlab_http_status(201) }
+      end
+
+      context 'when the build was created by the other' do
+        let(:owner) { create(:user) }
+
+        it { expect(response).to have_gitlab_http_status(403) }
       end
     end
   end

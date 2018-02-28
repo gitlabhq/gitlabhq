@@ -1,139 +1,132 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, quotes, consistent-return, no-new, prefer-arrow-callback, no-return-assign, one-var, one-var-declaration-per-line, object-shorthand, comma-dangle, no-else-return, newline-per-chained-call, no-shadow, vars-on-top, prefer-template, max-len */
-/* global ProjectSelect */
+/* eslint-disable func-names, space-before-function-paren, no-var, consistent-return, no-new, prefer-arrow-callback, no-return-assign, one-var, one-var-declaration-per-line, object-shorthand, no-else-return, newline-per-chained-call, no-shadow, vars-on-top, prefer-template, max-len */
 
 import Cookies from 'js-cookie';
+import projectSelect from './project_select';
 
-(function() {
-  this.Project = (function() {
-    function Project() {
-      const $cloneOptions = $('ul.clone-options-dropdown');
-      const $projectCloneField = $('#project_clone');
-      const $cloneBtnText = $('a.clone-dropdown-btn span');
+export default class Project {
+  constructor() {
+    const $cloneOptions = $('ul.clone-options-dropdown');
+    const $projectCloneField = $('#project_clone');
+    const $cloneBtnText = $('a.clone-dropdown-btn span');
 
-      const selectedCloneOption = $cloneBtnText.text().trim();
-      if (selectedCloneOption.length > 0) {
-        $(`a:contains('${selectedCloneOption}')`, $cloneOptions).addClass('is-active');
-      }
-
-      $('a', $cloneOptions).on('click', (e) => {
-        const $this = $(e.currentTarget);
-        const url = $this.attr('href');
-
-        e.preventDefault();
-
-        $('.is-active', $cloneOptions).not($this).removeClass('is-active');
-        $this.toggleClass('is-active');
-        $projectCloneField.val(url);
-        $cloneBtnText.text($this.text());
-
-        return $('.clone').text(url);
-      });
-      // Ref switcher
-      this.initRefSwitcher();
-      $('.project-refs-select').on('change', function() {
-        return $(this).parents('form').submit();
-      });
-      $('.hide-no-ssh-message').on('click', function(e) {
-        Cookies.set('hide_no_ssh_message', 'false');
-        $(this).parents('.no-ssh-key-message').remove();
-        return e.preventDefault();
-      });
-      $('.hide-no-password-message').on('click', function(e) {
-        Cookies.set('hide_no_password_message', 'false');
-        $(this).parents('.no-password-message').remove();
-        return e.preventDefault();
-      });
-      this.projectSelectDropdown();
+    const selectedCloneOption = $cloneBtnText.text().trim();
+    if (selectedCloneOption.length > 0) {
+      $(`a:contains('${selectedCloneOption}')`, $cloneOptions).addClass('is-active');
     }
 
-    Project.prototype.projectSelectDropdown = function() {
-      new ProjectSelect();
-      $('.project-item-select').on('click', (function(_this) {
-        return function(e) {
-          return _this.changeProject($(e.currentTarget).val());
-        };
-      })(this));
-    };
+    $('a', $cloneOptions).on('click', (e) => {
+      const $this = $(e.currentTarget);
+      const url = $this.attr('href');
+      const activeText = $this.find('.dropdown-menu-inner-title').text();
 
-    Project.prototype.changeProject = function(url) {
-      return window.location = url;
-    };
+      e.preventDefault();
 
-    Project.prototype.initRefSwitcher = function() {
-      var refListItem = document.createElement('li');
-      var refLink = document.createElement('a');
+      $('.is-active', $cloneOptions).not($this).removeClass('is-active');
+      $this.toggleClass('is-active');
+      $projectCloneField.val(url);
+      $cloneBtnText.text(activeText);
 
-      refLink.href = '#';
+      return $('.clone').text(url);
+    });
+    // Ref switcher
+    Project.initRefSwitcher();
+    $('.project-refs-select').on('change', function() {
+      return $(this).parents('form').submit();
+    });
+    $('.hide-no-ssh-message').on('click', function(e) {
+      Cookies.set('hide_no_ssh_message', 'false');
+      $(this).parents('.no-ssh-key-message').remove();
+      return e.preventDefault();
+    });
+    $('.hide-no-password-message').on('click', function(e) {
+      Cookies.set('hide_no_password_message', 'false');
+      $(this).parents('.no-password-message').remove();
+      return e.preventDefault();
+    });
+    Project.projectSelectDropdown();
+  }
 
-      return $('.js-project-refs-dropdown').each(function() {
-        var $dropdown, selected;
-        $dropdown = $(this);
-        selected = $dropdown.data('selected');
-        return $dropdown.glDropdown({
-          data: function(term, callback) {
-            return $.ajax({
-              url: $dropdown.data('refs-url'),
-              data: {
-                ref: $dropdown.data('ref'),
-                search: term
-              },
-              dataType: "json"
-            }).done(function(refs) {
-              return callback(refs);
-            });
-          },
-          selectable: true,
-          filterable: true,
-          filterRemote: true,
-          filterByText: true,
-          inputFieldName: $dropdown.data('input-field-name'),
-          fieldName: $dropdown.data('field-name'),
-          renderRow: function(ref) {
-            var li = refListItem.cloneNode(false);
+  static projectSelectDropdown () {
+    projectSelect();
+    $('.project-item-select').on('click', e => Project.changeProject($(e.currentTarget).val()));
+  }
 
-            if (ref.header != null) {
-              li.className = 'dropdown-header';
-              li.textContent = ref.header;
-            } else {
-              var link = refLink.cloneNode(false);
+  static changeProject(url) {
+    return window.location = url;
+  }
 
-              if (ref === selected) {
-                link.className = 'is-active';
-              }
+  static initRefSwitcher() {
+    var refListItem = document.createElement('li');
+    var refLink = document.createElement('a');
 
-              link.textContent = ref;
-              link.dataset.ref = ref;
+    refLink.href = '#';
 
-              li.appendChild(link);
+    return $('.js-project-refs-dropdown').each(function() {
+      var $dropdown, selected;
+      $dropdown = $(this);
+      selected = $dropdown.data('selected');
+      return $dropdown.glDropdown({
+        data: function(term, callback) {
+          return $.ajax({
+            url: $dropdown.data('refs-url'),
+            data: {
+              ref: $dropdown.data('ref'),
+              search: term,
+            },
+            dataType: 'json',
+          }).done(function(refs) {
+            return callback(refs);
+          });
+        },
+        selectable: true,
+        filterable: true,
+        filterRemote: true,
+        filterByText: true,
+        inputFieldName: $dropdown.data('input-field-name'),
+        fieldName: $dropdown.data('field-name'),
+        renderRow: function(ref) {
+          var li = refListItem.cloneNode(false);
+
+          if (ref.header != null) {
+            li.className = 'dropdown-header';
+            li.textContent = ref.header;
+          } else {
+            var link = refLink.cloneNode(false);
+
+            if (ref === selected) {
+              link.className = 'is-active';
             }
 
-            return li;
-          },
-          id: function(obj, $el) {
-            return $el.attr('data-ref');
-          },
-          toggleLabel: function(obj, $el) {
-            return $el.text().trim();
-          },
-          clicked: function(options) {
-            const { e } = options;
-            e.preventDefault();
-            if ($('input[name="ref"]').length) {
-              var $form = $dropdown.closest('form');
+            link.textContent = ref;
+            link.dataset.ref = ref;
 
-              var $visit = $dropdown.data('visit');
-              var shouldVisit = $visit ? true : $visit;
-              var action = $form.attr('action');
-              var divider = action.indexOf('?') === -1 ? '?' : '&';
-              if (shouldVisit) {
-                gl.utils.visitUrl(`${action}${divider}${$form.serialize()}`);
-              }
+            li.appendChild(link);
+          }
+
+          return li;
+        },
+        id: function(obj, $el) {
+          return $el.attr('data-ref');
+        },
+        toggleLabel: function(obj, $el) {
+          return $el.text().trim();
+        },
+        clicked: function(options) {
+          const { e } = options;
+          e.preventDefault();
+          if ($('input[name="ref"]').length) {
+            var $form = $dropdown.closest('form');
+
+            var $visit = $dropdown.data('visit');
+            var shouldVisit = $visit ? true : $visit;
+            var action = $form.attr('action');
+            var divider = action.indexOf('?') === -1 ? '?' : '&';
+            if (shouldVisit) {
+              gl.utils.visitUrl(`${action}${divider}${$form.serialize()}`);
             }
           }
-        });
+        },
       });
-    };
-
-    return Project;
-  })();
-}).call(window);
+    });
+  }
+}

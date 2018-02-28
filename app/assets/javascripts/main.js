@@ -29,8 +29,6 @@ import './commit/image_file';
 // lib/utils
 import { handleLocationHash } from './lib/utils/common_utils';
 import './lib/utils/datetime_utility';
-import './lib/utils/pretty_time';
-import './lib/utils/text_utility';
 import './lib/utils/url_utility';
 
 // behaviors
@@ -46,7 +44,6 @@ import './commits';
 import './compare';
 import './compare_autocomplete';
 import './confirm_danger_modal';
-import './copy_to_clipboard';
 import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
 import './gl_field_error';
@@ -60,36 +57,21 @@ import './line_highlighter';
 import initLogoAnimation from './logo';
 import './merge_request';
 import './merge_request_tabs';
-import './milestone';
 import './milestone_select';
-import './namespace_select';
-import './new_branch_form';
-import './new_commit_form';
 import './notes';
 import './notifications_dropdown';
 import './notifications_form';
 import './pager';
 import './preview_markdown';
-import './project';
-import './project_avatar';
 import './project_find_file';
 import './project_import';
-import './project_label_subscription';
-import './project_new';
-import './project_select';
-import './project_show';
-import './project_variables';
 import './projects_dropdown';
 import './projects_list';
 import './syntax_highlight';
-import './render_math';
 import './render_gfm';
 import './right_sidebar';
 import './search';
 import './search_autocomplete';
-import './smart_interval';
-import './subscription';
-import './subscription_select';
 import initBreadcrumbs from './breadcrumb';
 
 import './dispatcher';
@@ -318,6 +300,8 @@ $(function () {
   const flashContainer = document.querySelector('.flash-container');
 
   if (flashContainer && flashContainer.children.length) {
-    removeFlashClickListener(flashContainer.children[0]);
+    flashContainer.querySelectorAll('.flash-alert, .flash-notice, .flash-success').forEach((flashEl) => {
+      removeFlashClickListener(flashEl);
+    });
   }
 });

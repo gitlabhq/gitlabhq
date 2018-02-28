@@ -172,7 +172,6 @@ export const getSelectedFragment = () => {
   return documentFragment;
 };
 
-// TODO: Update this name, there is a gl.text.insertText function.
 export const insertText = (target, text) => {
   // Firefox doesn't support `document.execCommand('insertText', false, text)` on textareas
   const selectionStart = target.selectionStart;
@@ -191,7 +190,7 @@ export const insertText = (target, text) => {
   target.selectionStart = target.selectionEnd = selectionStart + insertedText.length;
 
   // Trigger autosave
-  $(target).trigger('input');
+  target.dispatchEvent(new Event('input'));
 
   // Trigger autosize
   const event = document.createEvent('Event');
@@ -271,43 +270,39 @@ export const parseIntPagination = paginationInformation => ({
 });
 
 /**
- * Updates the search parameter of a URL given the parameter and value provided.
+ * Given a string of query parameters creates an object.
  *
- * If no search params are present we'll add it.
- * If param for page is already present, we'll update it
- * If there are params but not for the given one, we'll add it at the end.
- * Returns the new search parameters.
+ * @example
+ * `scope=all&page=2` -> { scope: 'all', page: '2'}
+ * `scope=all` -> { scope: 'all' }
+ * ``-> {}
+ * @param {String} query
+ * @returns {Object}
+ */
+export const parseQueryStringIntoObject = (query = '') => {
+  if (query === '') return {};
+
+  return query
+    .split('&')
+    .reduce((acc, element) => {
+      const val = element.split('=');
+      Object.assign(acc, {
+        [val[0]]: decodeURIComponent(val[1]),
+      });
+      return acc;
+    }, {});
+};
+
+export const buildUrlWithCurrentLocation = param => (param ? `${window.location.pathname}${param}` : window.location.pathname);
+
+/**
+ * Based on the current location and the string parameters provided
+ * creates a new entry in the history without reloading the page.
  *
  * @param {String} param
- * @param {Number|String|Undefined|Null} value
- * @return {String}
  */
-export const setParamInURL = (param, value) => {
-  let search;
-  const locationSearch = window.location.search;
-
-  if (locationSearch.length) {
-    const parameters = locationSearch.substring(1, locationSearch.length)
-      .split('&')
-      .reduce((acc, element) => {
-        const val = element.split('=');
-        // eslint-disable-next-line no-param-reassign
-        acc[val[0]] = decodeURIComponent(val[1]);
-        return acc;
-      }, {});
-
-    parameters[param] = value;
-
-    const toString = Object.keys(parameters)
-      .map(val => `${val}=${encodeURIComponent(parameters[val])}`)
-      .join('&');
-
-    search = `?${toString}`;
-  } else {
-    search = `?${param}=${value}`;
-  }
-
-  return search;
+export const historyPushState = (newUrl) => {
+  window.history.pushState({}, document.title, newUrl);
 };
 
 /**

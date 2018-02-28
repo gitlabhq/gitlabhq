@@ -1,11 +1,22 @@
 import Vue from 'vue';
 import descriptionComponent from '~/issue_show/components/description.vue';
+import * as taskList from '~/task_list';
+import mountComponent from '../../helpers/vue_mount_component_helper';
 
 describe('Description component', () => {
   let vm;
+  let DescriptionComponent;
+  const props = {
+    canUpdate: true,
+    descriptionHtml: 'test',
+    descriptionText: 'test',
+    updatedAt: new Date().toString(),
+    taskStatus: '',
+    updateUrl: gl.TEST_HOST,
+  };
 
   beforeEach(() => {
-    const Component = Vue.extend(descriptionComponent);
+    DescriptionComponent = Vue.extend(descriptionComponent);
 
     if (!document.querySelector('.issuable-meta')) {
       const metaData = document.createElement('div');
@@ -15,15 +26,11 @@ describe('Description component', () => {
       document.body.appendChild(metaData);
     }
 
-    vm = new Component({
-      propsData: {
-        canUpdate: true,
-        descriptionHtml: 'test',
-        descriptionText: 'test',
-        updatedAt: new Date().toString(),
-        taskStatus: '',
-      },
-    }).$mount();
+    vm = mountComponent(DescriptionComponent, props);
+  });
+
+  afterEach(() => {
+    vm.$destroy();
   });
 
   it('animates description changes', (done) => {
@@ -44,34 +51,46 @@ describe('Description component', () => {
     });
   });
 
-  // TODO: gl.TaskList no longer exists. rewrite these tests once we have a way to rewire ES modules
+  describe('TaskList', () => {
+    beforeEach(() => {
+      vm = mountComponent(DescriptionComponent, Object.assign({}, props, {
+        issuableType: 'issuableType',
+      }));
+      spyOn(taskList, 'default');
+    });
 
-  // it('re-inits the TaskList when description changed', (done) => {
-  //   spyOn(gl, 'TaskList');
-  //   vm.descriptionHtml = 'changed';
-  //
-  //   setTimeout(() => {
-  //     expect(
-  //       gl.TaskList,
-  //     ).toHaveBeenCalled();
-  //
-  //     done();
-  //   });
-  // });
+    it('re-inits the TaskList when description changed', (done) => {
+      vm.descriptionHtml = 'changed';
 
-  // it('does not re-init the TaskList when canUpdate is false', (done) => {
-  //   spyOn(gl, 'TaskList');
-  //   vm.canUpdate = false;
-  //   vm.descriptionHtml = 'changed';
-  //
-  //   setTimeout(() => {
-  //     expect(
-  //       gl.TaskList,
-  //     ).not.toHaveBeenCalled();
-  //
-  //     done();
-  //   });
-  // });
+      setTimeout(() => {
+        expect(taskList.default).toHaveBeenCalled();
+        done();
+      });
+    });
+
+    it('does not re-init the TaskList when canUpdate is false', (done) => {
+      vm.canUpdate = false;
+      vm.descriptionHtml = 'changed';
+
+      setTimeout(() => {
+        expect(taskList.default).not.toHaveBeenCalled();
+        done();
+      });
+    });
+
+    it('calls with issuableType dataType', (done) => {
+      vm.descriptionHtml = 'changed';
+
+      setTimeout(() => {
+        expect(taskList.default).toHaveBeenCalledWith({
+          dataType: 'issuableType',
+          fieldName: 'description',
+          selector: '.detail-page-description',
+        });
+        done();
+      });
+    });
+  });
 
   describe('taskStatus', () => {
     it('adds full taskStatus', (done) => {
@@ -125,5 +144,9 @@ describe('Description component', () => {
         done();
       });
     });
+  });
+
+  it('sets data-update-url', () => {
+    expect(vm.$el.querySelector('textarea').dataset.updateUrl).toEqual(gl.TEST_HOST);
   });
 });

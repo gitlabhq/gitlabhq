@@ -10,7 +10,9 @@ module Gitlab
       def exists?
         request = Gitaly::RepositoryExistsRequest.new(repository: @gitaly_repo)
 
-        GitalyClient.call(@storage, :repository_service, :repository_exists, request).exists
+        response = GitalyClient.call(@storage, :repository_service, :repository_exists, request, timeout: GitalyClient.fast_timeout)
+
+        response.exists
       end
 
       def garbage_collect(create_bitmap)
@@ -30,7 +32,8 @@ module Gitlab
 
       def repository_size
         request = Gitaly::RepositorySizeRequest.new(repository: @gitaly_repo)
-        GitalyClient.call(@storage, :repository_service, :repository_size, request).size
+        response = GitalyClient.call(@storage, :repository_service, :repository_size, request)
+        response.size
       end
 
       def apply_gitattributes(revision)
@@ -61,9 +64,39 @@ module Gitlab
 
       def has_local_branches?
         request = Gitaly::HasLocalBranchesRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :repository_service, :has_local_branches, request)
+        response = GitalyClient.call(@storage, :repository_service, :has_local_branches, request, timeout: GitalyClient.fast_timeout)
 
         response.value
+      end
+
+      def fetch_source_branch(source_repository, source_branch, local_ref)
+        request = Gitaly::FetchSourceBranchRequest.new(
+          repository: @gitaly_repo,
+          source_repository: source_repository.gitaly_repository,
+          source_branch: source_branch.b,
+          target_ref: local_ref.b
+        )
+
+        response = GitalyClient.call(
+          @storage,
+          :repository_service,
+          :fetch_source_branch,
+          request,
+          remote_storage: source_repository.storage
+        )
+
+        response.result
+      end
+
+      def fsck
+        request = Gitaly::FsckRequest.new(repository: @gitaly_repo)
+        response = GitalyClient.call(@storage, :repository_service, :fsck, request)
+
+        if response.error.empty?
+          return "", 0
+        else
+          return response.error.b, 1
+        end
       end
     end
   end

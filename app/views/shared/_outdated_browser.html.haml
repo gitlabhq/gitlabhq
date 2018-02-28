@@ -1,7 +1,8 @@
 - if outdated_browser?
-  .browser-alert
-    GitLab may not work properly because you are using an outdated web browser.
-    %br
-    Please install a
-    = link_to 'supported web browser', help_page_url('install/requirements', anchor: 'supported-web-browsers')
-    for a better experience.
+  .flash-container
+    .flash-alert.text-center
+      GitLab may not work properly because you are using an outdated web browser.
+      %br
+      Please install a
+      = link_to 'supported web browser', help_page_path('install/requirements', anchor: 'supported-web-browsers')
+      for a better experience.

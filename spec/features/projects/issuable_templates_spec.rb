@@ -32,7 +32,7 @@ feature 'issuable templates', :js do
         message: 'added issue template',
         branch_name: 'master')
       visit project_issue_path project, issue
-      page.within('.content .issuable-actions') do
+      page.within('.js-issuable-actions') do
         click_on 'Edit'
       end
       fill_in :'issuable-title', with: 'test issue title'
@@ -77,7 +77,7 @@ feature 'issuable templates', :js do
         message: 'added issue template',
         branch_name: 'master')
       visit project_issue_path project, issue
-      page.within('.content .issuable-actions') do
+      page.within('.js-issuable-actions') do
         click_on 'Edit'
       end
       fill_in :'issuable-title', with: 'test issue title'

@@ -1,14 +1,17 @@
 import utils from './utils';
-import { SELECTED_CLASS, IGNORE_CLASS } from './constants';
+import { SELECTED_CLASS, IGNORE_CLASS, IGNORE_HIDING_CLASS } from './constants';
 
 class DropDown {
-  constructor(list) {
+  constructor(list, config = {}) {
     this.currentIndex = 0;
     this.hidden = true;
     this.list = typeof list === 'string' ? document.querySelector(list) : list;
     this.items = [];
-
     this.eventWrapper = {};
+
+    if (config.addActiveClassToDropdownButton) {
+      this.dropdownToggle = this.list.parentNode.querySelector('.js-dropdown-toggle');
+    }
 
     this.getItems();
     this.initTemplateString();
@@ -42,7 +45,7 @@ class DropDown {
     this.addSelectedClass(selected);
 
     e.preventDefault();
-    this.hide();
+    if (!e.target.classList.contains(IGNORE_HIDING_CLASS)) this.hide();
 
     const listEvent = new CustomEvent('click.dl', {
       detail: {
@@ -67,7 +70,20 @@ class DropDown {
 
   addEvents() {
     this.eventWrapper.clickEvent = this.clickEvent.bind(this);
+    this.eventWrapper.closeDropdown = this.closeDropdown.bind(this);
+
     this.list.addEventListener('click', this.eventWrapper.clickEvent);
+    this.list.addEventListener('keyup', this.eventWrapper.closeDropdown);
+  }
+
+  closeDropdown(event) {
+    // `ESC` key closes the dropdown.
+    if (event.keyCode === 27) {
+      event.preventDefault();
+      return this.toggle();
+    }
+
+    return true;
   }
 
   setData(data) {
@@ -110,6 +126,8 @@ class DropDown {
     this.list.style.display = 'block';
     this.currentIndex = 0;
     this.hidden = false;
+
+    if (this.dropdownToggle) this.dropdownToggle.classList.add('active');
   }
 
   hide() {
@@ -117,6 +135,8 @@ class DropDown {
     this.list.style.display = 'none';
     this.currentIndex = 0;
     this.hidden = true;
+
+    if (this.dropdownToggle) this.dropdownToggle.classList.remove('active');
   }
 
   toggle() {
@@ -128,6 +148,7 @@ class DropDown {
   destroy() {
     this.hide();
     this.list.removeEventListener('click', this.eventWrapper.clickEvent);
+    this.list.removeEventListener('keyup', this.eventWrapper.closeDropdown);
   }
 
   static setImagesSrc(template) {

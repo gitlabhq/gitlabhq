@@ -40,7 +40,6 @@ module Ci
     validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
 
-    after_initialize :set_config_source, if: :new_record?
     after_create :keep_around_commits, unless: :importing?
 
     enum source: {
@@ -66,8 +65,8 @@ module Ci
 
     state_machine :status, initial: :created do
       event :enqueue do
-        transition created: :pending
-        transition [:success, :failed, :canceled, :skipped] => :running
+        transition [:created, :skipped] => :pending
+        transition [:success, :failed, :canceled] => :running
       end
 
       event :run do
@@ -149,31 +148,67 @@ module Ci
       end
     end
 
-    # ref can't be HEAD or SHA, can only be branch/tag name
-    scope :latest, ->(ref = nil) do
-      max_id = unscope(:select)
-        .select("max(#{quoted_table_name}.id)")
-        .group(:ref, :sha)
-
-      if ref
-        where(ref: ref, id: max_id.where(ref: ref))
-      else
-        where(id: max_id)
-      end
-    end
     scope :internal, -> { where(source: internal_sources) }
 
+    # Returns the pipelines in descending order (= newest first), optionally
+    # limited to a number of references.
+    #
+    # ref - The name (or names) of the branch(es)/tag(s) to limit the list of
+    #       pipelines to.
+    def self.newest_first(ref = nil)
+      relation = order(id: :desc)
+
+      ref ? relation.where(ref: ref) : relation
+    end
+
     def self.latest_status(ref = nil)
-      latest(ref).status
+      newest_first(ref).pluck(:status).first
     end
 
     def self.latest_successful_for(ref)
-      success.latest(ref).order(id: :desc).first
+      newest_first(ref).success.take
     end
 
     def self.latest_successful_for_refs(refs)
-      success.latest(refs).order(id: :desc).each_with_object({}) do |pipeline, hash|
+      relation = newest_first(refs).success
+
+      relation.each_with_object({}) do |pipeline, hash|
         hash[pipeline.ref] ||= pipeline
+      end
+    end
+
+    # Returns a Hash containing the latest pipeline status for every given
+    # commit.
+    #
+    # The keys of this Hash are the commit SHAs, the values the statuses.
+    #
+    # commits - The list of commit SHAs to get the status for.
+    # ref - The ref to scope the data to (e.g. "master"). If the ref is not
+    #       given we simply get the latest status for the commits, regardless
+    #       of what refs their pipelines belong to.
+    def self.latest_status_per_commit(commits, ref = nil)
+      p1 = arel_table
+      p2 = arel_table.alias
+
+      # This LEFT JOIN will filter out all but the newest row for every
+      # combination of (project_id, sha) or (project_id, sha, ref) if a ref is
+      # given.
+      cond = p1[:sha].eq(p2[:sha])
+        .and(p1[:project_id].eq(p2[:project_id]))
+        .and(p1[:id].lt(p2[:id]))
+
+      cond = cond.and(p1[:ref].eq(p2[:ref])) if ref
+      join = p1.join(p2, Arel::Nodes::OuterJoin).on(cond)
+
+      relation = select(:sha, :status)
+        .where(sha: commits)
+        .where(p2[:id].eq(nil))
+        .joins(join.join_sources)
+
+      relation = relation.where(ref: ref) if ref
+
+      relation.each_with_object({}) do |row, hash|
+        hash[row[:sha]] = row[:status]
       end
     end
 
@@ -300,8 +335,10 @@ module Ci
 
     def latest?
       return false unless ref
+
       commit = project.commit(ref)
       return false unless commit
+
       commit.sha == sha
     end
 
@@ -327,7 +364,7 @@ module Ci
     end
 
     def has_kubernetes_active?
-      project.kubernetes_service&.active?
+      project.deployment_platform&.active?
     end
 
     def has_stage_seeds?
@@ -409,7 +446,7 @@ module Ci
     end
 
     def notes
-      Note.for_commit_id(sha)
+      project.notes.for_commit_id(sha)
     end
 
     def process!
@@ -469,7 +506,10 @@ module Ci
     end
 
     def latest_builds_with_artifacts
-      @latest_builds_with_artifacts ||= builds.latest.with_artifacts
+      # We purposely cast the builds to an Array here. Because we always use the
+      # rows if there are more than 0 this prevents us from having to run two
+      # queries: one to get the count and one to get the rows.
+      @latest_builds_with_artifacts ||= builds.latest.with_artifacts.to_a
     end
 
     private

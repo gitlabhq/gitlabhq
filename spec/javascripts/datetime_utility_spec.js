@@ -1,4 +1,4 @@
-import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
+import * as datetimeUtility from '~/lib/utils/datetime_utility';
 
 (() => {
   describe('Date time utils', () => {
@@ -89,10 +89,22 @@ import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 
   describe('timeIntervalInWords', () => {
     it('should return string with number of minutes and seconds', () => {
-      expect(timeIntervalInWords(9.54)).toEqual('9 seconds');
-      expect(timeIntervalInWords(1)).toEqual('1 second');
-      expect(timeIntervalInWords(200)).toEqual('3 minutes 20 seconds');
-      expect(timeIntervalInWords(6008)).toEqual('100 minutes 8 seconds');
+      expect(datetimeUtility.timeIntervalInWords(9.54)).toEqual('9 seconds');
+      expect(datetimeUtility.timeIntervalInWords(1)).toEqual('1 second');
+      expect(datetimeUtility.timeIntervalInWords(200)).toEqual('3 minutes 20 seconds');
+      expect(datetimeUtility.timeIntervalInWords(6008)).toEqual('100 minutes 8 seconds');
+    });
+  });
+
+  describe('dateInWords', () => {
+    const date = new Date('07/01/2016');
+
+    it('should return date in words', () => {
+      expect(datetimeUtility.dateInWords(date)).toEqual('July 1, 2016');
+    });
+
+    it('should return abbreviated month name', () => {
+      expect(datetimeUtility.dateInWords(date, true)).toEqual('Jul 1, 2016');
     });
   });
 })();

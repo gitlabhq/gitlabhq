@@ -51,7 +51,7 @@
         .cover-desc
           - unless @user.public_email.blank?
             .profile-link-holder.middle-dot-divider
-              = link_to @user.public_email, "mailto:#{@user.public_email}"
+              = link_to @user.public_email, "mailto:#{@user.public_email}", class: 'text-link'
           - unless @user.skype.blank?
             .profile-link-holder.middle-dot-divider
               = link_to "skype:#{@user.skype}", title: "Skype" do
@@ -66,7 +66,7 @@
                 = icon('twitter-square')
           - unless @user.website_url.blank?
             .profile-link-holder.middle-dot-divider
-              = link_to @user.short_website_url, @user.full_website_url
+              = link_to @user.short_website_url, @user.full_website_url, class: 'text-link'
           - unless @user.location.blank?
             .profile-link-holder.middle-dot-divider
               = icon('map-marker')

@@ -34,7 +34,6 @@ describe('Inline edit form component', () => {
   });
 
   it('renders template selector when templates exists', (done) => {
-    spyOn(gl, 'IssuableTemplateSelectors');
     vm.issuableTemplates = ['test'];
 
     Vue.nextTick(() => {

@@ -1,15 +1,15 @@
 require 'spec_helper'
 
 describe Projects::CommitController do
-  let(:project)  { create(:project, :repository) }
-  let(:user)     { create(:user) }
+  set(:project)  { create(:project, :repository) }
+  set(:user)     { create(:user) }
   let(:commit)   { project.commit("master") }
   let(:master_pickable_sha) { '7d3b0f7cff5f37573aea97cebfd5692ea1689924' }
   let(:master_pickable_commit)  { project.commit(master_pickable_sha) }
 
   before do
     sign_in(user)
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   describe 'GET show' do
@@ -130,6 +130,22 @@ describe Projects::CommitController do
             id: commit.id)
 
         expect(response).to be_success
+      end
+    end
+
+    context 'in the context of a merge_request' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+      let(:commit) { merge_request.commits.first }
+
+      it 'prepare diff notes in the context of the merge request' do
+        go(id: commit.id, merge_request_iid: merge_request.iid)
+
+        expect(assigns(:new_diff_note_attrs)).to eq({
+                                                      noteable_type: 'MergeRequest',
+                                                      noteable_id: merge_request.id,
+                                                      commit_id: commit.id
+                                                    })
+        expect(response).to be_ok
       end
     end
   end
@@ -323,7 +339,7 @@ describe Projects::CommitController do
 
     context 'when the commit does not exist' do
       before do
-        diff_for_path(id: commit.id.succ, old_path: existing_path, new_path: existing_path)
+        diff_for_path(id: commit.id.reverse, old_path: existing_path, new_path: existing_path)
       end
 
       it 'returns a 404' do

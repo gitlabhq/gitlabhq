@@ -40,7 +40,7 @@
   <button
     v-tooltip
     type="button"
-    class="toolbar-btn js-md hidden-xs"
+    class="toolbar-btn js-md"
     tabindex="-1"
     data-container="body"
     :data-md-tag="tag"

@@ -98,6 +98,7 @@ module Gitlab
           def read_string(gz)
             string_size = read_uint32(gz)
             return nil unless string_size
+
             gz.read(string_size)
           end
 

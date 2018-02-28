@@ -8,7 +8,12 @@ module Gitlab
       end
 
       def self.from_gitaly(gitaly_user)
-        new(gitaly_user.gl_username, gitaly_user.name, gitaly_user.email, gitaly_user.gl_id)
+        new(
+          gitaly_user.gl_username,
+          Gitlab::EncodingHelper.encode!(gitaly_user.name),
+          Gitlab::EncodingHelper.encode!(gitaly_user.email),
+          gitaly_user.gl_id
+        )
       end
 
       def initialize(username, name, email, gl_id)
@@ -23,7 +28,7 @@ module Gitlab
       end
 
       def to_gitaly
-        Gitaly::User.new(gl_username: username, gl_id: gl_id, name: name, email: email)
+        Gitaly::User.new(gl_username: username, gl_id: gl_id, name: name.b, email: email.b)
       end
     end
   end

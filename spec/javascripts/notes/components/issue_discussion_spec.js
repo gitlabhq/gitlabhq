@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import store from '~/notes/stores';
 import issueDiscussion from '~/notes/components/issue_discussion.vue';
-import { issueDataMock, discussionMock, notesDataMock } from '../mock_data';
+import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
 
 describe('issue_discussion component', () => {
   let vm;
@@ -9,7 +9,7 @@ describe('issue_discussion component', () => {
   beforeEach(() => {
     const Component = Vue.extend(issueDiscussion);
 
-    store.dispatch('setIssueData', issueDataMock);
+    store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
 
     vm = new Component({

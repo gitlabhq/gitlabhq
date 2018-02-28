@@ -185,6 +185,31 @@ describe 'projects/jobs/show' do
     end
   end
 
+  context 'when incomplete trigger_request is used' do
+    before do
+      build.trigger_request = FactoryGirl.build(:ci_trigger_request, trigger: nil)
+    end
+
+    it 'test should not render token block' do
+      render
+
+      expect(rendered).not_to have_content('Token')
+    end
+  end
+
+  context 'when complete trigger_request is used' do
+    before do
+      build.trigger_request = FactoryGirl.build(:ci_trigger_request)
+    end
+
+    it 'should render token' do
+      render
+
+      expect(rendered).to have_content('Token')
+      expect(rendered).to have_content(build.trigger_request.trigger.short_token)
+    end
+  end
+
   describe 'commit title in sidebar' do
     let(:commit_title) { project.commit.title }
 

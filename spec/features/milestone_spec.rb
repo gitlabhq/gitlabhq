@@ -65,4 +65,33 @@ feature 'Milestone' do
       expect(find('.alert-danger')).to have_content('already being used for another group or project milestone.')
     end
   end
+
+  feature 'Open a milestone' do
+    scenario 'shows total issue time spent correctly when no time has been logged' do
+      milestone = create(:milestone, project: project, title: 8.7)
+
+      visit project_milestone_path(project, milestone)
+
+      page.within('.block.time_spent') do
+        expect(page).to have_content 'No time spent'
+        expect(page).to have_content 'None'
+      end
+    end
+
+    scenario 'shows total issue time spent' do
+      milestone = create(:milestone, project: project, title: 8.7)
+      issue1 = create(:issue, project: project, milestone: milestone)
+      issue2 = create(:issue, project: project, milestone: milestone)
+      issue1.spend_time(duration: 3600, user: user)
+      issue1.save!
+      issue2.spend_time(duration: 7200, user: user)
+      issue2.save!
+
+      visit project_milestone_path(project, milestone)
+
+      page.within('.block.time_spent') do
+        expect(page).to have_content '3h'
+      end
+    end
+  end
 end

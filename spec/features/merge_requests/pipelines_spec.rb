@@ -20,16 +20,29 @@ feature 'Pipelines for Merge Requests', :js do
       end
 
       before do
-        visit project_merge_request_path(project, merge_request)
+        merge_request.update_attribute(:head_pipeline_id, pipeline.id)
       end
 
       scenario 'user visits merge request pipelines tab' do
+        visit project_merge_request_path(project, merge_request)
+
+        expect(page.find('.ci-widget')).to have_content('pending')
+
         page.within('.merge-request-tabs') do
           click_link('Pipelines')
         end
         wait_for_requests
 
         expect(page).to have_selector('.stage-cell')
+      end
+
+      scenario 'pipeline sha does not equal last commit sha' do
+        pipeline.update_attribute(:sha, '19e2e9b4ef76b422ce1154af39a91323ccc57434')
+        visit project_merge_request_path(project, merge_request)
+        wait_for_requests
+
+        expect(page.find('.ci-widget')).to have_content(
+          'Could not connect to the CI server. Please check your settings and try again')
       end
     end
 

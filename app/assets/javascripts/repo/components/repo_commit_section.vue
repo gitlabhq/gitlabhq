@@ -1,11 +1,18 @@
 <script>
 import { mapGetters, mapState, mapActions } from 'vuex';
+import tooltip from '../../vue_shared/directives/tooltip';
+import icon from '../../vue_shared/components/icon.vue';
 import PopupDialog from '../../vue_shared/components/popup_dialog.vue';
-import { n__ } from '../../locale';
+import commitFilesList from './commit_sidebar/list.vue';
 
 export default {
   components: {
     PopupDialog,
+    icon,
+    commitFilesList,
+  },
+  directives: {
+    tooltip,
   },
   data() {
     return {
@@ -13,6 +20,7 @@ export default {
       submitCommitsLoading: false,
       startNewMR: false,
       commitMessage: '',
+      collapsed: true,
     };
   },
   computed: {
@@ -23,10 +31,10 @@ export default {
       'changedFiles',
     ]),
     commitButtonDisabled() {
-      return !this.commitMessage || this.submitCommitsLoading;
+      return this.commitMessage === '' || this.submitCommitsLoading || !this.changedFiles.length;
     },
-    commitButtonText() {
-      return n__('Commit %d file', 'Commit %d files', this.changedFiles.length);
+    commitMessageCount() {
+      return this.commitMessage.length;
     },
   },
   methods: {
@@ -77,12 +85,20 @@ export default {
           this.submitCommitsLoading = false;
         });
     },
+    toggleCollapsed() {
+      this.collapsed = !this.collapsed;
+    },
   },
 };
 </script>
 
 <template>
-<div id="commit-area">
+<div
+  class="multi-file-commit-panel"
+  :class="{
+    'is-collapsed': collapsed,
+  }"
+>
   <popup-dialog
     v-if="showNewBranchDialog"
     :primary-button-label="__('Create new branch')"
@@ -92,78 +108,71 @@ export default {
     @toggle="showNewBranchDialog = false"
     @submit="makeCommit(true)"
   />
+  <button
+    v-if="collapsed"
+    type="button"
+    class="btn btn-transparent multi-file-commit-panel-collapse-btn is-collapsed prepend-top-10 append-bottom-10"
+    @click="toggleCollapsed"
+  >
+    <i
+      aria-hidden="true"
+      class="fa fa-angle-double-left"
+    >
+    </i>
+  </button>
+  <commit-files-list
+    title="Staged"
+    :file-list="changedFiles"
+    :collapsed="collapsed"
+    @toggleCollapsed="toggleCollapsed"
+  />
   <form
-    class="form-horizontal"
-    @submit.prevent="tryCommit()">
-    <fieldset>
-      <div class="form-group">
-        <label class="col-md-4 control-label staged-files">
-          Staged files ({{changedFiles.length}})
-        </label>
-        <div class="col-md-6">
-          <ul class="list-unstyled changed-files">
-            <li
-              v-for="(file, index) in changedFiles"
-              :key="index">
-              <span class="help-block">
-                {{ file.path }}
-              </span>
-            </li>
-          </ul>
-        </div>
+    class="form-horizontal multi-file-commit-form"
+    @submit.prevent="tryCommit"
+    v-if="!collapsed"
+  >
+    <div class="multi-file-commit-fieldset">
+      <textarea
+        class="form-control multi-file-commit-message"
+        name="commit-message"
+        v-model="commitMessage"
+        placeholder="Commit message"
+      >
+      </textarea>
+    </div>
+    <div class="multi-file-commit-fieldset">
+      <label
+        v-tooltip
+        title="Create a new merge request with these changes"
+        data-container="body"
+        data-placement="top"
+      >
+        <input
+          type="checkbox"
+          v-model="startNewMR"
+        />
+        Merge Request
+      </label>
+      <button
+        type="submit"
+        :disabled="commitButtonDisabled"
+        class="btn btn-default btn-sm append-right-10 prepend-left-10"
+      >
+        <i
+          v-if="submitCommitsLoading"
+          class="js-commit-loading-icon fa fa-spinner fa-spin"
+          aria-hidden="true"
+          aria-label="loading"
+        >
+        </i>
+        Commit
+      </button>
+      <div
+        class="multi-file-commit-message-count"
+      >
+        {{ commitMessageCount }}
       </div>
-      <div class="form-group">
-        <label
-          class="col-md-4 control-label"
-          for="commit-message">
-          Commit message
-        </label>
-        <div class="col-md-6">
-          <textarea
-            id="commit-message"
-            class="form-control"
-            name="commit-message"
-            v-model="commitMessage">
-          </textarea>
-        </div>
-      </div>
-      <div class="form-group target-branch">
-        <label
-          class="col-md-4 control-label"
-          for="target-branch">
-          Target branch
-        </label>
-        <div class="col-md-6">
-          <span class="help-block">
-            {{currentBranch}}
-          </span>
-        </div>
-      </div>
-      <div class="col-md-offset-4 col-md-6">
-        <button
-          type="submit"
-          :disabled="commitButtonDisabled"
-          class="btn btn-success">
-          <i
-            v-if="submitCommitsLoading"
-            class="js-commit-loading-icon fa fa-spinner fa-spin"
-            aria-hidden="true"
-            aria-label="loading">
-          </i>
-          <span class="commit-summary">
-            {{ commitButtonText }}
-          </span>
-        </button>
-      </div>
-      <div class="col-md-offset-4 col-md-6">
-        <div class="checkbox">
-          <label>
-            <input type="checkbox" v-model="startNewMR">
-            <span>Start a <strong>new merge request</strong> with these changes</span>
-          </label>
-        </div>
-      </div>
-    </fieldset>
+    </div>
   </form>
 </div>
 </template>

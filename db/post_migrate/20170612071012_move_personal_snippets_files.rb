@@ -32,6 +32,7 @@ class MovePersonalSnippetsFiles < ActiveRecord::Migration
       file_name = upload['path'].split('/')[1]
 
       next unless move_file(upload['model_id'], secret, file_name)
+
       update_markdown(upload['model_id'], secret, file_name, upload['description'])
     end
   end

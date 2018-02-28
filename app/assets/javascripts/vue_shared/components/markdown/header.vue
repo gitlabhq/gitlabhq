@@ -50,7 +50,9 @@
 <template>
   <div class="md-header">
     <ul class="nav-links clearfix">
-      <li :class="{ active: !previewMarkdown }">
+      <li
+        class="md-header-tab"
+        :class="{ active: !previewMarkdown }">
         <a
           class="js-write-link"
           href="#md-write-holder"
@@ -59,7 +61,9 @@
           Write
         </a>
       </li>
-      <li :class="{ active: previewMarkdown }">
+      <li
+        class="md-header-tab"
+        :class="{ active: previewMarkdown }">
         <a
           class="js-preview-link"
           href="#md-preview-holder"
@@ -68,56 +72,52 @@
           Preview
         </a>
       </li>
-      <li class="pull-right">
-        <div class="toolbar-group">
-          <toolbar-button
-            tag="**"
-            button-title="Add bold text"
-            icon="bold" />
-          <toolbar-button
-            tag="*"
-            button-title="Add italic text"
-            icon="italic" />
-          <toolbar-button
-            tag="> "
-            :prepend="true"
-            button-title="Insert a quote"
-            icon="quote" />
-          <toolbar-button
-            tag="`"
-            tag-block="```"
-            button-title="Insert code"
-            icon="code" />
-          <toolbar-button
-            tag="* "
-            :prepend="true"
-            button-title="Add a bullet list"
-            icon="list-bulleted" />
-          <toolbar-button
-            tag="1. "
-            :prepend="true"
-            button-title="Add a numbered list"
-            icon="list-numbered" />
-          <toolbar-button
-            tag="* [ ] "
-            :prepend="true"
-            button-title="Add a task list"
-            icon="task-done" />
-        </div>
-        <div class="toolbar-group">
-          <button
-            v-tooltip
-            aria-label="Go full screen"
-            class="toolbar-btn js-zen-enter"
-            data-container="body"
-            tabindex="-1"
-            title="Go full screen"
-            type="button">
-            <icon
-              name="screen-full">
-            </icon>
-          </button>
-        </div>
+      <li class="md-header-toolbar">
+        <toolbar-button
+          tag="**"
+          button-title="Add bold text"
+          icon="bold" />
+        <toolbar-button
+          tag="*"
+          button-title="Add italic text"
+          icon="italic" />
+        <toolbar-button
+          tag="> "
+          :prepend="true"
+          button-title="Insert a quote"
+          icon="quote" />
+        <toolbar-button
+          tag="`"
+          tag-block="```"
+          button-title="Insert code"
+          icon="code" />
+        <toolbar-button
+          tag="* "
+          :prepend="true"
+          button-title="Add a bullet list"
+          icon="list-bulleted" />
+        <toolbar-button
+          tag="1. "
+          :prepend="true"
+          button-title="Add a numbered list"
+          icon="list-numbered" />
+        <toolbar-button
+          tag="* [ ] "
+          :prepend="true"
+          button-title="Add a task list"
+          icon="task-done" />
+        <button
+          v-tooltip
+          aria-label="Go full screen"
+          class="toolbar-btn toolbar-fullscreen-btn js-zen-enter"
+          data-container="body"
+          tabindex="-1"
+          title="Go full screen"
+          type="button">
+          <icon
+            name="screen-full">
+          </icon>
+        </button>
       </li>
     </ul>
   </div>

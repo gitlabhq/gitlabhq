@@ -176,6 +176,7 @@ class JiraService < IssueTrackerService
 
   def test_settings
     return unless client_url.present?
+
     # Test settings by getting the project
     jira_request { client.ServerInfo.all.attrs }
   end

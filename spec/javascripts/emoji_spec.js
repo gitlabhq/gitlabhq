@@ -1,6 +1,7 @@
 import { glEmojiTag } from '~/emoji';
 import isEmojiUnicodeSupported, {
   isFlagEmoji,
+  isRainbowFlagEmoji,
   isKeycapEmoji,
   isSkinToneComboEmoji,
   isHorceRacingSkinToneComboEmoji,
@@ -214,6 +215,24 @@ describe('gl_emoji', () => {
     });
     it('should not detect >2 letters', () => {
       expect(isFlagEmoji('🇦🇧🇨')).toBeFalsy();
+    });
+  });
+
+  describe('isRainbowFlagEmoji', () => {
+    it('should gracefully handle empty string', () => {
+      expect(isRainbowFlagEmoji('')).toBeFalsy();
+    });
+    it('should detect rainbow_flag', () => {
+      expect(isRainbowFlagEmoji('🏳🌈')).toBeTruthy();
+    });
+    it('should not detect flag_white on its\' own', () => {
+      expect(isRainbowFlagEmoji('🏳')).toBeFalsy();
+    });
+    it('should not detect rainbow on its\' own', () => {
+      expect(isRainbowFlagEmoji('🌈')).toBeFalsy();
+    });
+    it('should not detect flag_white with something else', () => {
+      expect(isRainbowFlagEmoji('🏳🔵')).toBeFalsy();
     });
   });
 

@@ -153,11 +153,10 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { greater_than_or_equal_to: 0 }
 
-  validates :circuitbreaker_backoff_threshold,
-            :circuitbreaker_failure_count_threshold,
-            :circuitbreaker_failure_wait_time,
+  validates :circuitbreaker_failure_count_threshold,
             :circuitbreaker_failure_reset_time,
             :circuitbreaker_storage_timeout,
+            :circuitbreaker_check_interval,
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
@@ -165,12 +164,26 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 1 }
 
-  validates_each :circuitbreaker_backoff_threshold do |record, attr, value|
-    if value.to_i >= record.circuitbreaker_failure_count_threshold
-      record.errors.add(attr, _("The circuitbreaker backoff threshold should be "\
-                                "lower than the failure count threshold"))
-    end
-  end
+  validates :gitaly_timeout_default,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validates :gitaly_timeout_medium,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :gitaly_timeout_medium,
+            numericality: { less_than_or_equal_to: :gitaly_timeout_default },
+            if: :gitaly_timeout_default
+  validates :gitaly_timeout_medium,
+            numericality: { greater_than_or_equal_to: :gitaly_timeout_fast },
+            if: :gitaly_timeout_fast
+
+  validates :gitaly_timeout_fast,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :gitaly_timeout_fast,
+            numericality: { less_than_or_equal_to: :gitaly_timeout_default },
+            if: :gitaly_timeout_default
 
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
@@ -276,7 +289,8 @@ class ApplicationSetting < ActiveRecord::Base
       koding_url: nil,
       max_artifacts_size: Settings.artifacts['max_size'],
       max_attachment_size: Settings.gitlab['max_attachment_size'],
-      password_authentication_enabled: Settings.gitlab['password_authentication_enabled'],
+      password_authentication_enabled_for_web: Settings.gitlab['signin_enabled'],
+      password_authentication_enabled_for_git: true,
       performance_bar_allowed_group_id: nil,
       rsa_key_restriction: 0,
       plantuml_enabled: false,
@@ -295,10 +309,22 @@ class ApplicationSetting < ActiveRecord::Base
       sign_in_text: nil,
       signup_enabled: Settings.gitlab['signup_enabled'],
       terminal_max_session_time: 0,
+      throttle_unauthenticated_enabled: false,
+      throttle_unauthenticated_requests_per_period: 3600,
+      throttle_unauthenticated_period_in_seconds: 3600,
+      throttle_authenticated_web_enabled: false,
+      throttle_authenticated_web_requests_per_period: 7200,
+      throttle_authenticated_web_period_in_seconds: 3600,
+      throttle_authenticated_api_enabled: false,
+      throttle_authenticated_api_requests_per_period: 7200,
+      throttle_authenticated_api_period_in_seconds: 3600,
       two_factor_grace_period: 48,
       user_default_external: false,
       polling_interval_multiplier: 1,
-      usage_ping_enabled: Settings.gitlab['usage_ping_enabled']
+      usage_ping_enabled: Settings.gitlab['usage_ping_enabled'],
+      gitaly_timeout_fast: 10,
+      gitaly_timeout_medium: 30,
+      gitaly_timeout_default: 55
     }
   end
 
@@ -463,6 +489,14 @@ class ApplicationSetting < ActiveRecord::Base
     attr_name = "#{type}_key_restriction"
 
     has_attribute?(attr_name) ? public_send(attr_name) : FORBIDDEN_KEY_VALUE # rubocop:disable GitlabSecurity/PublicSend
+  end
+
+  def allow_signup?
+    signup_enabled? && password_authentication_enabled_for_web?
+  end
+
+  def password_authentication_enabled?
+    password_authentication_enabled_for_web? || password_authentication_enabled_for_git?
   end
 
   private

@@ -27,6 +27,10 @@ module Gitlab
       end
     end
 
+    def deploy_key_pushable?(project)
+      actor.is_a?(DeployKey) && actor.can_push_to?(project)
+    end
+
     def user?
       actor.is_a?(User)
     end

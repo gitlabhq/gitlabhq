@@ -1,6 +1,5 @@
 class InvalidGpgSignatureUpdateWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   def perform(gpg_key_id)
     gpg_key = GpgKey.find_by(id: gpg_key_id)

@@ -3,7 +3,6 @@ class IssueEntity < IssuableEntity
 
   expose :state
   expose :deleted_at
-  expose :branch_name
   expose :confidential
   expose :discussion_locked
   expose :assignees, using: API::Entities::UserBasic

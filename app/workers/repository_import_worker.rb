@@ -1,8 +1,7 @@
 class RepositoryImportWorker
   ImportError = Class.new(StandardError)
 
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
   include ExceptionBacktrace
   include ProjectStartImport
 
@@ -17,11 +16,16 @@ class RepositoryImportWorker
                               import_url: project.import_url,
                               path: project.full_path)
 
-    result = Projects::ImportService.new(project, project.creator).execute
+    service = Projects::ImportService.new(project, project.creator)
+    result = service.execute
+
+    # Some importers may perform their work asynchronously. In this case it's up
+    # to those importers to mark the import process as complete.
+    return if service.async?
+
     raise ImportError, result[:message] if result[:status] == :error
 
-    project.repository.after_import
-    project.import_finish
+    project.after_import
   rescue ImportError => ex
     fail_import(project, ex.message)
     raise

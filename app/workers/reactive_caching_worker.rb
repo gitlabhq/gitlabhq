@@ -1,6 +1,5 @@
 class ReactiveCachingWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   def perform(class_name, id, *args)
     klass = begin

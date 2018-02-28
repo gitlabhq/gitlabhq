@@ -104,4 +104,17 @@ describe Gitlab::GitalyClient::RefService do
       expect { client.ref_exists?('reXXXXX') }.to raise_error(ArgumentError)
     end
   end
+
+  describe '#delete_refs' do
+    let(:prefixes) { %w(refs/heads refs/keep-around) }
+
+    it 'sends a delete_refs message' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:delete_refs)
+        .with(gitaly_request_with_params(except_with_prefix: prefixes), kind_of(Hash))
+        .and_return(double('delete_refs_response'))
+
+      client.delete_refs(except_with_prefixes: prefixes)
+    end
+  end
 end

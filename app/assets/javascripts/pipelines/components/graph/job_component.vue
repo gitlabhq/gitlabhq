@@ -78,11 +78,13 @@
   <div class="ci-job-component">
     <a
       v-tooltip
-      v-if="job.status.details_path"
+      v-if="job.status.has_details"
       :href="job.status.details_path"
       :title="tooltipText"
       :class="cssClassJobName"
-      data-container="body">
+      data-container="body"
+      class="js-pipeline-graph-job-link"
+      >
 
       <job-name-component
         :name="job.name"
@@ -95,7 +97,8 @@
       v-tooltip
       :title="tooltipText"
       :class="cssClassJobName"
-      data-container="body">
+      data-container="body"
+      >
 
       <job-name-component
         :name="job.name"

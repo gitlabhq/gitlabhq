@@ -490,6 +490,41 @@ Remove all previously JIRA settings from a project.
 DELETE /projects/:id/services/jira
 ```
 
+## Kubernetes
+
+Kubernetes / Openshift integration
+
+### Create/Edit Kubernetes service
+
+Set Kubernetes service for a project.
+
+```
+PUT /projects/:id/services/kubernetes
+```
+
+Parameters:
+
+- `namespace` (**required**) - The Kubernetes namespace to use
+- `api_url` (**required**) - The URL to the Kubernetes cluster API, e.g., https://kubernetes.example.com
+- `token` (**required**) - The service token to authenticate against the Kubernetes cluster with
+- `ca_pem` (optional) - A custom certificate authority bundle to verify the Kubernetes cluster with (PEM format)
+
+### Delete Kubernetes service
+
+Delete Kubernetes service for a project.
+
+```
+DELETE /projects/:id/services/kubernetes
+```
+
+### Get Kubernetes service settings
+
+Get Kubernetes service settings for a project.
+
+```
+GET /projects/:id/services/kubernetes
+```
+
 ## Slack slash commands
 
 Ability to receive slash commands from a Slack chat instance.
@@ -572,7 +607,7 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `token` | string | yes | The Mattermost token |
-
+| `username` | string | no | The username to use to post the message |
 
 ### Delete Mattermost slash command service
 

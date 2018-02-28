@@ -111,6 +111,7 @@ module DiffHelper
   def diff_file_old_blob_raw_path(diff_file)
     sha = diff_file.old_content_sha
     return unless sha
+
     project_raw_path(@project, tree_join(diff_file.old_content_sha, diff_file.old_path))
   end
 
@@ -152,11 +153,11 @@ module DiffHelper
 
   def diff_file_changed_icon(diff_file)
     if diff_file.deleted_file? || diff_file.renamed_file?
-      "minus"
+      "file-deletion"
     elsif diff_file.new_file?
-      "plus"
+      "file-addition"
     else
-      "adjust"
+      "file-modified"
     end
   end
 

@@ -11,7 +11,7 @@ troubleshooting steps that will help you diagnose the bottleneck.
 debug steps with GitLab Support so the backtraces can be analyzed by our team.
 It may reveal a bug or necessary improvement in GitLab.
 
-> **Note:** In any of the backtraces, be weary of suspecting cases where every
+> **Note:** In any of the backtraces, be wary of suspecting cases where every
   thread appears to be waiting in the database, Redis, or waiting to acquire
   a mutex. This **may** mean there's contention in the database, for example,
   but look for one thread that is different than the rest. This other thread

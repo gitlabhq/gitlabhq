@@ -3,9 +3,9 @@ module ApplicationSettingsHelper
 
   include Gitlab::CurrentSettings
 
-  delegate  :gravatar_enabled?,
-            :signup_enabled?,
-            :password_authentication_enabled?,
+  delegate  :allow_signup?,
+            :gravatar_enabled?,
+            :password_authentication_enabled_for_web?,
             :akismet_enabled?,
             :koding_enabled?,
             to: :current_application_settings
@@ -30,9 +30,9 @@ module ApplicationSettingsHelper
   def enabled_project_button(project, protocol)
     case protocol
     when 'ssh'
-      ssh_clone_button(project, 'bottom', append_link: false)
+      ssh_clone_button(project, append_link: false)
     else
-      http_clone_button(project, 'bottom', append_link: false)
+      http_clone_button(project, append_link: false)
     end
   end
 
@@ -124,17 +124,6 @@ module ApplicationSettingsHelper
     _('The number of attempts GitLab will make to access a storage.')
   end
 
-  def circuitbreaker_backoff_threshold_help_text
-    _("The number of failures after which GitLab will start temporarily "\
-      "disabling access to a storage shard on a host")
-  end
-
-  def circuitbreaker_failure_wait_time_help_text
-    _("When access to a storage fails. GitLab will prevent access to the "\
-      "storage for the time specified here. This allows the filesystem to "\
-      "recover. Repositories on failing shards are temporarly unavailable")
-  end
-
   def circuitbreaker_failure_reset_time_help_text
     _("The time in seconds GitLab will keep failure information. When no "\
       "failures occur during this time, information about the mount is reset.")
@@ -143,6 +132,11 @@ module ApplicationSettingsHelper
   def circuitbreaker_storage_timeout_help_text
     _("The time in seconds GitLab will try to access storage. After this time a "\
       "timeout error will be raised.")
+  end
+
+  def circuitbreaker_check_interval_help_text
+    _("The time in seconds between storage checks. When a previous check did "\
+      "complete yet, GitLab will skip a check.")
   end
 
   def visible_attributes
@@ -154,10 +148,9 @@ module ApplicationSettingsHelper
       :akismet_enabled,
       :auto_devops_enabled,
       :circuitbreaker_access_retries,
-      :circuitbreaker_backoff_threshold,
+      :circuitbreaker_check_interval,
       :circuitbreaker_failure_count_threshold,
       :circuitbreaker_failure_reset_time,
-      :circuitbreaker_failure_wait_time,
       :circuitbreaker_storage_timeout,
       :clientside_sentry_dsn,
       :clientside_sentry_enabled,
@@ -177,6 +170,9 @@ module ApplicationSettingsHelper
       :ed25519_key_restriction,
       :email_author_in_body,
       :enabled_git_access_protocol,
+      :gitaly_timeout_default,
+      :gitaly_timeout_medium,
+      :gitaly_timeout_fast,
       :gravatar_enabled,
       :hashed_storage_enabled,
       :help_page_hide_commercial_content,
@@ -203,7 +199,7 @@ module ApplicationSettingsHelper
       :metrics_port,
       :metrics_sample_interval,
       :metrics_timeout,
-      :password_authentication_enabled,
+      :password_authentication_enabled_for_web,
       :performance_bar_allowed_group_id,
       :performance_bar_enabled,
       :plantuml_enabled,
@@ -231,6 +227,15 @@ module ApplicationSettingsHelper
       :sign_in_text,
       :signup_enabled,
       :terminal_max_session_time,
+      :throttle_unauthenticated_enabled,
+      :throttle_unauthenticated_requests_per_period,
+      :throttle_unauthenticated_period_in_seconds,
+      :throttle_authenticated_web_enabled,
+      :throttle_authenticated_web_requests_per_period,
+      :throttle_authenticated_web_period_in_seconds,
+      :throttle_authenticated_api_enabled,
+      :throttle_authenticated_api_requests_per_period,
+      :throttle_authenticated_api_period_in_seconds,
       :two_factor_grace_period,
       :unique_ips_limit_enabled,
       :unique_ips_limit_per_user,

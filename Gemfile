@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.8'
+gem 'rails', '4.2.10'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 
 # Responders respond_to and respond_with
@@ -111,7 +111,7 @@ gem 'google-api-client', '~> 0.13.6'
 gem 'unf', '~> 0.1.4'
 
 # Seed data
-gem 'seed-fu', '~> 2.3.5'
+gem 'seed-fu', '2.3.6' # Upgrade to > 2.3.7 once https://github.com/mbleigh/seed-fu/issues/123 is solved
 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 1.11.0'
@@ -171,7 +171,7 @@ gem 're2', '~> 1.1.1'
 gem 'version_sorter', '~> 2.1.0'
 
 # Cache
-gem 'redis-rails', '~> 5.0.1'
+gem 'redis-rails', '~> 5.0.2'
 
 # Redis
 gem 'redis', '~> 3.2'
@@ -245,7 +245,7 @@ gem 'font-awesome-rails', '~> 4.7'
 gem 'gemojione', '~> 3.3'
 gem 'gon', '~> 6.1.0'
 gem 'jquery-atwho-rails', '~> 1.3.2'
-gem 'jquery-rails', '~> 4.1.0'
+gem 'jquery-rails', '~> 4.3.1'
 gem 'request_store', '~> 1.3'
 gem 'select2-rails', '~> 3.5.9'
 gem 'virtus', '~> 1.0.1'
@@ -262,6 +262,8 @@ gem 'rails-i18n', '~> 4.0.9'
 gem 'gettext_i18n_rails', '~> 1.8.0'
 gem 'gettext_i18n_rails_js', '~> 1.2.0'
 gem 'gettext', '~> 3.2.2', require: false, group: :development
+
+gem 'batch-loader'
 
 # Perf bar
 gem 'peek', '~> 1.0.1'
@@ -281,7 +283,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~>0.7.0.beta18'
+  gem 'prometheus-client-mmap', '~> 0.7.0.beta39'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -343,7 +345,7 @@ group :development, :test do
 
   gem 'benchmark-ips', '~> 2.3.0', require: false
 
-  gem 'license_finder', '~> 2.1.0', require: false
+  gem 'license_finder', '~> 3.1', require: false
   gem 'knapsack', '~> 1.11.0'
 
   gem 'activerecord_sane_schema_dumper', '0.2'
@@ -398,7 +400,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.51.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.59.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

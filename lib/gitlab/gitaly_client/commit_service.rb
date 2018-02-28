@@ -16,7 +16,7 @@ module Gitlab
           revision: GitalyClient.encode(revision)
         )
 
-        response = GitalyClient.call(@repository.storage, :commit_service, :list_files, request)
+        response = GitalyClient.call(@repository.storage, :commit_service, :list_files, request, timeout: GitalyClient.medium_timeout)
         response.flat_map do |msg|
           msg.paths.map { |d| EncodingHelper.encode!(d.dup) }
         end
@@ -29,7 +29,7 @@ module Gitlab
           child_id: child_id
         )
 
-        GitalyClient.call(@repository.storage, :commit_service, :commit_is_ancestor, request).value
+        GitalyClient.call(@repository.storage, :commit_service, :commit_is_ancestor, request, timeout: GitalyClient.fast_timeout).value
       end
 
       def diff(from, to, options = {})
@@ -77,7 +77,7 @@ module Gitlab
           limit: limit.to_i
         )
 
-        response = GitalyClient.call(@repository.storage, :commit_service, :tree_entry, request)
+        response = GitalyClient.call(@repository.storage, :commit_service, :tree_entry, request, timeout: GitalyClient.medium_timeout)
 
         entry = nil
         data = ''
@@ -102,7 +102,7 @@ module Gitlab
           path: path.present? ? GitalyClient.encode(path) : '.'
         )
 
-        response = GitalyClient.call(@repository.storage, :commit_service, :get_tree_entries, request)
+        response = GitalyClient.call(@repository.storage, :commit_service, :get_tree_entries, request, timeout: GitalyClient.medium_timeout)
 
         response.flat_map do |message|
           message.entries.map do |gitaly_tree_entry|
@@ -129,7 +129,7 @@ module Gitlab
         request.before = Google::Protobuf::Timestamp.new(seconds: options[:before].to_i) if options[:before].present?
         request.path = options[:path] if options[:path].present?
 
-        GitalyClient.call(@repository.storage, :commit_service, :count_commits, request).count
+        GitalyClient.call(@repository.storage, :commit_service, :count_commits, request, timeout: GitalyClient.medium_timeout).count
       end
 
       def last_commit_for_path(revision, path)
@@ -139,7 +139,7 @@ module Gitlab
           path: GitalyClient.encode(path.to_s)
         )
 
-        gitaly_commit = GitalyClient.call(@repository.storage, :commit_service, :last_commit_for_path, request).commit
+        gitaly_commit = GitalyClient.call(@repository.storage, :commit_service, :last_commit_for_path, request, timeout: GitalyClient.fast_timeout).commit
         return unless gitaly_commit
 
         Gitlab::Git::Commit.new(@repository, gitaly_commit)
@@ -152,7 +152,7 @@ module Gitlab
           to: to
         )
 
-        response = GitalyClient.call(@repository.storage, :commit_service, :commits_between, request)
+        response = GitalyClient.call(@repository.storage, :commit_service, :commits_between, request, timeout: GitalyClient.medium_timeout)
         consume_commits_response(response)
       end
 
@@ -165,7 +165,7 @@ module Gitlab
         )
         request.order = opts[:order].upcase if opts[:order].present?
 
-        response = GitalyClient.call(@repository.storage, :commit_service, :find_all_commits, request)
+        response = GitalyClient.call(@repository.storage, :commit_service, :find_all_commits, request, timeout: GitalyClient.medium_timeout)
         consume_commits_response(response)
       end
 
@@ -179,7 +179,7 @@ module Gitlab
           offset: offset.to_i
         )
 
-        response = GitalyClient.call(@repository.storage, :commit_service, :commits_by_message, request)
+        response = GitalyClient.call(@repository.storage, :commit_service, :commits_by_message, request, timeout: GitalyClient.medium_timeout)
         consume_commits_response(response)
       end
 
@@ -197,7 +197,7 @@ module Gitlab
           path: GitalyClient.encode(path)
         )
 
-        response = GitalyClient.call(@repository.storage, :commit_service, :raw_blame, request)
+        response = GitalyClient.call(@repository.storage, :commit_service, :raw_blame, request, timeout: GitalyClient.medium_timeout)
         response.reduce("") { |memo, msg| memo << msg.data }
       end
 
@@ -207,7 +207,7 @@ module Gitlab
           revision: GitalyClient.encode(revision)
         )
 
-        response = GitalyClient.call(@repository.storage, :commit_service, :find_commit, request)
+        response = GitalyClient.call(@repository.storage, :commit_service, :find_commit, request, timeout: GitalyClient.medium_timeout)
 
         response.commit
       end
@@ -217,7 +217,7 @@ module Gitlab
           repository: @gitaly_repo,
           revision: GitalyClient.encode(revision)
         )
-        response = GitalyClient.call(@repository.storage, :diff_service, :commit_patch, request)
+        response = GitalyClient.call(@repository.storage, :diff_service, :commit_patch, request, timeout: GitalyClient.medium_timeout)
 
         response.sum(&:data)
       end
@@ -227,7 +227,7 @@ module Gitlab
           repository: @gitaly_repo,
           revision: GitalyClient.encode(revision)
         )
-        GitalyClient.call(@repository.storage, :commit_service, :commit_stats, request)
+        GitalyClient.call(@repository.storage, :commit_service, :commit_stats, request, timeout: GitalyClient.medium_timeout)
       end
 
       def find_commits(options)
@@ -245,9 +245,29 @@ module Gitlab
 
         request.paths = GitalyClient.encode_repeated(Array(options[:path])) if options[:path].present?
 
-        response = GitalyClient.call(@repository.storage, :commit_service, :find_commits, request)
+        response = GitalyClient.call(@repository.storage, :commit_service, :find_commits, request, timeout: GitalyClient.medium_timeout)
 
         consume_commits_response(response)
+      end
+
+      def filter_shas_with_signatures(shas)
+        request = Gitaly::FilterShasWithSignaturesRequest.new(repository: @gitaly_repo)
+
+        enum = Enumerator.new do |y|
+          shas.each_slice(20) do |revs|
+            request.shas = GitalyClient.encode_repeated(revs)
+
+            y.yield request
+
+            request = Gitaly::FilterShasWithSignaturesRequest.new
+          end
+        end
+
+        response = GitalyClient.call(@repository.storage, :commit_service, :filter_shas_with_signatures, enum)
+
+        response.flat_map do |msg|
+          msg.shas.map { |sha| EncodingHelper.encode!(sha) }
+        end
       end
 
       private
@@ -259,7 +279,7 @@ module Gitlab
         request_params.merge!(Gitlab::Git::DiffCollection.collection_limits(options).to_h)
 
         request = Gitaly::CommitDiffRequest.new(request_params)
-        response = GitalyClient.call(@repository.storage, :diff_service, :commit_diff, request)
+        response = GitalyClient.call(@repository.storage, :diff_service, :commit_diff, request, timeout: GitalyClient.medium_timeout)
         GitalyClient::DiffStitcher.new(response)
       end
 

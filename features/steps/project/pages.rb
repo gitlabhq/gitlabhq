@@ -44,8 +44,8 @@ class Spinach::Features::ProjectPages < Spinach::FeatureSteps
                   project: @project,
                   pipeline: pipeline,
                   ref: 'HEAD',
-                  artifacts_file: fixture_file_upload(Rails.root + 'spec/fixtures/pages.zip'),
-                  artifacts_metadata: fixture_file_upload(Rails.root + 'spec/fixtures/pages.zip.meta')
+                  legacy_artifacts_file: fixture_file_upload(Rails.root + 'spec/fixtures/pages.zip'),
+                  legacy_artifacts_metadata: fixture_file_upload(Rails.root + 'spec/fixtures/pages.zip.meta')
                  )
 
     result = ::Projects::UpdatePagesService.new(@project, build).execute

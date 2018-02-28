@@ -25,7 +25,7 @@ module Gitlab
         result =
           service_request_check(login, password, project) ||
           build_access_token_check(login, password) ||
-          lfs_token_check(login, password) ||
+          lfs_token_check(login, password, project) ||
           oauth_access_token_check(login, password) ||
           personal_access_token_check(password) ||
           user_with_password_for_git(login, password) ||
@@ -34,7 +34,7 @@ module Gitlab
         rate_limit!(ip, success: result.success?, login: login)
         Gitlab::Auth::UniqueIpsLimiter.limit_user!(result.actor)
 
-        return result if result.success? || current_application_settings.password_authentication_enabled? || Gitlab::LDAP::Config.enabled?
+        return result if result.success? || authenticate_using_internal_or_ldap_password?
 
         # If sign-in is disabled and LDAP is not configured, recommend a
         # personal access token on failed auth attempts
@@ -45,6 +45,10 @@ module Gitlab
         # Avoid resource intensive login checks if password is not provided
         return unless password.present?
 
+        # Nothing to do here if internal auth is disabled and LDAP is
+        # not configured
+        return unless authenticate_using_internal_or_ldap_password?
+
         Gitlab::Auth::UniqueIpsLimiter.limit_user! do
           user = User.by_login(login)
 
@@ -52,10 +56,8 @@ module Gitlab
           #   LDAP users are only authenticated via LDAP
           if user.nil? || user.ldap_user?
             # Second chance - try LDAP authentication
-            return unless Gitlab::LDAP::Config.enabled?
-
             Gitlab::LDAP::Authentication.login(login, password)
-          else
+          elsif current_application_settings.password_authentication_enabled_for_git?
             user if user.active? && user.valid_password?(password)
           end
         end
@@ -83,6 +85,10 @@ module Gitlab
       end
 
       private
+
+      def authenticate_using_internal_or_ldap_password?
+        current_application_settings.password_authentication_enabled_for_git? || Gitlab::LDAP::Config.enabled?
+      end
 
       def service_request_check(login, password, project)
         matched_login = /(?<service>^[a-zA-Z]*-ci)-token$/.match(login)
@@ -128,7 +134,7 @@ module Gitlab
         token = PersonalAccessTokensFinder.new(state: 'active').find_by(token: password)
 
         if token && valid_scoped_token?(token, available_scopes)
-          Gitlab::Auth::Result.new(token.user, nil, :personal_access_token, abilities_for_scope(token.scopes))
+          Gitlab::Auth::Result.new(token.user, nil, :personal_access_token, abilities_for_scopes(token.scopes))
         end
       end
 
@@ -140,13 +146,18 @@ module Gitlab
         AccessTokenValidationService.new(token).include_any_scope?(scopes)
       end
 
-      def abilities_for_scope(scopes)
-        scopes.map do |scope|
-          self.public_send(:"#{scope}_scope_authentication_abilities") # rubocop:disable GitlabSecurity/PublicSend
-        end.flatten.uniq
+      def abilities_for_scopes(scopes)
+        abilities_by_scope = {
+          api: full_authentication_abilities,
+          read_registry: [:read_container_image]
+        }
+
+        scopes.flat_map do |scope|
+          abilities_by_scope.fetch(scope.to_sym, [])
+        end.uniq
       end
 
-      def lfs_token_check(login, password)
+      def lfs_token_check(login, password, project)
         deploy_key_matches = login.match(/\Alfs\+deploy-key-(\d+)\z/)
 
         actor =
@@ -163,6 +174,8 @@ module Gitlab
         authentication_abilities =
           if token_handler.user?
             full_authentication_abilities
+          elsif token_handler.deploy_key_pushable?(project)
+            read_write_authentication_abilities
           else
             read_authentication_abilities
           end
@@ -208,22 +221,17 @@ module Gitlab
         ]
       end
 
-      def full_authentication_abilities
+      def read_write_authentication_abilities
         read_authentication_abilities + [
           :push_code,
-          :create_container_image,
-          :admin_container_image
+          :create_container_image
         ]
       end
-      alias_method :api_scope_authentication_abilities, :full_authentication_abilities
 
-      def read_registry_scope_authentication_abilities
-        [:read_container_image]
-      end
-
-      # The currently used auth method doesn't allow any actions for this scope
-      def read_user_scope_authentication_abilities
-        []
+      def full_authentication_abilities
+        read_write_authentication_abilities + [
+          :admin_container_image
+        ]
       end
 
       def available_scopes(current_user = nil)

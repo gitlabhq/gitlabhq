@@ -44,20 +44,16 @@ export default {
 </script>
 
 <template>
-<div id="sidebar" :class="{'sidebar-mini' : isCollapsed}">
+<div class="ide-file-list">
   <table class="table">
     <thead>
       <tr>
         <th
           v-if="isCollapsed"
-          class="repo-file-options title"
         >
-          <strong class="clgray">
-            {{ projectName }}
-          </strong>
         </th>
         <template v-else>
-          <th class="name multi-file-table-col-name">
+          <th class="name multi-file-table-name">
             Name
           </th>
           <th class="hidden-sm hidden-xs last-commit">
@@ -79,7 +75,7 @@ export default {
         :key="n"
       />
       <repo-file
-        v-for="(file, index) in treeList"
+        v-for="file in treeList"
         :key="file.key"
         :file="file"
       />

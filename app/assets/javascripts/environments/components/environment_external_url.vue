@@ -1,5 +1,6 @@
 <script>
 import tooltip from '../../vue_shared/directives/tooltip';
+import { s__ } from '../../locale';
 
 /**
  * Renders the external url link in environments table.
@@ -18,7 +19,7 @@ export default {
 
   computed: {
     title() {
-      return 'Open';
+      return s__('Environments|Open');
     },
   },
 };

@@ -11,8 +11,7 @@ class ApplicationController < ActionController::Base
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
 
-  before_action :authenticate_user_from_personal_access_token!
-  before_action :authenticate_user_from_rss_token!
+  before_action :authenticate_sessionless_user!
   before_action :authenticate_user!
   before_action :validate_user_service_ticket!
   before_action :check_password_expiration
@@ -97,30 +96,15 @@ class ApplicationController < ActionController::Base
   # (e.g. tokens) to authenticate the user, whereas Devise sets current_user
   def auth_user
     return current_user if current_user.present?
+
     return try(:authenticated_user)
   end
 
-  def authenticate_user_from_personal_access_token!
-    token = params[:private_token].presence || request.headers['PRIVATE-TOKEN'].presence
+  # This filter handles personal access tokens, and atom requests with rss tokens
+  def authenticate_sessionless_user!
+    user = Gitlab::Auth::RequestAuthenticator.new(request).find_sessionless_user
 
-    return unless token.present?
-
-    user = User.find_by_personal_access_token(token)
-
-    sessionless_sign_in(user)
-  end
-
-  # This filter handles authentication for atom request with an rss_token
-  def authenticate_user_from_rss_token!
-    return unless request.format.atom?
-
-    token = params[:rss_token].presence
-
-    return unless token.present?
-
-    user = User.find_by_rss_token(token)
-
-    sessionless_sign_in(user)
+    sessionless_sign_in(user) if user
   end
 
   def log_exception(exception)
@@ -212,7 +196,11 @@ class ApplicationController < ActionController::Base
   end
 
   def check_password_expiration
-    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now && !current_user.ldap_user?
+    return if session[:impersonator_id] || !current_user&.allow_password_authentication?
+
+    password_expires_at = current_user&.password_expires_at
+
+    if password_expires_at && password_expires_at < Time.now
       return redirect_to new_profile_password_path
     end
   end

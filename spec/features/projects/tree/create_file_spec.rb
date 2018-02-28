@@ -26,9 +26,11 @@ feature 'Multi-file editor new file', :js do
       click_button('Create file')
     end
 
+    find('.multi-file-commit-panel-collapse-btn').click
+
     fill_in('commit-message', with: 'commit message')
 
-    click_button('Commit 1 file')
+    click_button('Commit')
 
     expect(page).to have_selector('td', text: 'commit message')
   end

@@ -336,6 +336,12 @@ Blocks of code that are EE-specific should be moved to partials as much as
 possible to avoid conflicts with big chunks of HAML code that that are not fun
 to resolve when you add the indentation in the equation.
 
+### Assets
+
+#### gitlab-svgs
+
+Conflicts in `app/assets/images/icons.json` or `app/assets/images/icons.svg` can be resolved simply by regenerating those assets with [`yarn run svg`](https://gitlab.com/gitlab-org/gitlab-svgs).
+
 ---
 
 [Return to Development documentation](README.md)

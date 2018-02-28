@@ -2,6 +2,7 @@
 
 import GfmAutoComplete from './gfm_auto_complete';
 import dropzoneInput from './dropzone_input';
+import textUtils from './lib/utils/text_markdown';
 
 export default class GLForm {
   constructor(form, enableGFM = false) {
@@ -46,7 +47,7 @@ export default class GLForm {
     }
     // form and textarea event listeners
     this.addEventListeners();
-    gl.text.init(this.form);
+    textUtils.init(this.form);
     // hide discard button
     this.form.find('.js-note-discard').hide();
     this.form.show();
@@ -85,7 +86,7 @@ export default class GLForm {
   clearEventListeners() {
     this.textarea.off('focus');
     this.textarea.off('blur');
-    gl.text.removeListeners(this.form);
+    textUtils.removeListeners(this.form);
   }
 
   addEventListeners() {

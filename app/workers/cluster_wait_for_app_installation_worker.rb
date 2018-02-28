@@ -1,5 +1,5 @@
 class ClusterWaitForAppInstallationWorker
-  include Sidekiq::Worker
+  include ApplicationWorker
   include ClusterQueue
   include ClusterApplications
 

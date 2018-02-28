@@ -44,11 +44,11 @@ describe Dashboard::TodosController do
 
     context 'when using pagination' do
       let(:last_page) { user.todos.page.total_pages }
-      let!(:issues) { create_list(:issue, 2, project: project, assignees: [user]) }
+      let!(:issues) { create_list(:issue, 3, project: project, assignees: [user]) }
 
       before do
         issues.each { |issue| todo_service.new_issue(issue, user) }
-        allow(Kaminari.config).to receive(:default_per_page).and_return(1)
+        allow(Kaminari.config).to receive(:default_per_page).and_return(2)
       end
 
       it 'redirects to last_page if page number is larger than number of pages' do

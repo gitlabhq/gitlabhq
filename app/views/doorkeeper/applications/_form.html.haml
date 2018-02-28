@@ -1,4 +1,4 @@
-= form_for application, url: doorkeeper_submit_path(application), html: {role: 'form'} do |f|
+= form_for application, url: doorkeeper_submit_path(application), html: { role: 'form', class: 'doorkeeper-app-form' } do |f|
   = form_errors(application)
 
   .form-group

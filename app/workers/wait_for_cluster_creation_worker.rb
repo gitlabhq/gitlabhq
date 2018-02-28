@@ -1,5 +1,5 @@
 class WaitForClusterCreationWorker
-  include Sidekiq::Worker
+  include ApplicationWorker
   include ClusterQueue
 
   def perform(cluster_id)

@@ -3,7 +3,7 @@
   %span.note-role.note-role-special.has-tooltip{ title: _("This is the author's first Merge Request to this project.") }
     = issuable_first_contribution_icon
 - if access.nonzero?
-  %span.note-role.note-role-access= Gitlab::Access.human_access(access)
+  %span.note-role.user-access-role= Gitlab::Access.human_access(access)
 
 - if note.resolvable?
   - can_resolve = can?(current_user, :resolve_note, note)

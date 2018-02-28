@@ -50,6 +50,12 @@ describe API::Projects do
         expect(json_response).to be_an Array
         expect(json_response.map { |p| p['id'] }).to contain_exactly(*projects.map(&:id))
       end
+
+      it 'returns the proper security headers' do
+        get api('/projects', current_user), filter
+
+        expect(response).to include_security_headers
+      end
     end
 
     shared_examples_for 'projects response without N + 1 queries' do
@@ -431,6 +437,7 @@ describe API::Projects do
 
       project.each_pair do |k, v|
         next if %i[has_external_issue_tracker issues_enabled merge_requests_enabled wiki_enabled].include?(k)
+
         expect(json_response[k.to_s]).to eq(v)
       end
 
@@ -637,6 +644,7 @@ describe API::Projects do
       expect(response).to have_gitlab_http_status(201)
       project.each_pair do |k, v|
         next if %i[has_external_issue_tracker path].include?(k)
+
         expect(json_response[k.to_s]).to eq(v)
       end
     end

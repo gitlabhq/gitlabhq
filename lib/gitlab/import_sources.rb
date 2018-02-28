@@ -8,14 +8,14 @@ module Gitlab
     ImportSource = Struct.new(:name, :title, :importer)
 
     ImportTable = [
-      ImportSource.new('github',         'GitHub',        Github::Import),
+      ImportSource.new('github',         'GitHub',        Gitlab::GithubImport::ParallelImporter),
       ImportSource.new('bitbucket',      'Bitbucket',     Gitlab::BitbucketImport::Importer),
       ImportSource.new('gitlab',         'GitLab.com',    Gitlab::GitlabImport::Importer),
       ImportSource.new('google_code',    'Google Code',   Gitlab::GoogleCodeImport::Importer),
       ImportSource.new('fogbugz',        'FogBugz',       Gitlab::FogbugzImport::Importer),
       ImportSource.new('git',            'Repo by URL',   nil),
       ImportSource.new('gitlab_project', 'GitLab export', Gitlab::ImportExport::Importer),
-      ImportSource.new('gitea',          'Gitea',         Gitlab::GithubImport::Importer)
+      ImportSource.new('gitea',          'Gitea',         Gitlab::LegacyGithubImport::Importer)
     ].freeze
 
     class << self

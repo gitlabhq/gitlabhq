@@ -127,19 +127,24 @@ class WikiPage
     @version ||= @page.version
   end
 
-  # Returns an array of Gitlab Commit instances.
-  def versions
+  def versions(options = {})
     return [] unless persisted?
 
-    wiki.wiki.page_versions(@page.path)
+    wiki.wiki.page_versions(@page.path, options)
   end
 
-  def commit
-    versions.first
+  def count_versions
+    return [] unless persisted?
+
+    wiki.wiki.count_page_versions(@page.path)
+  end
+
+  def last_version
+    @last_version ||= versions(limit: 1).first
   end
 
   def last_commit_sha
-    commit&.sha
+    last_version&.sha
   end
 
   # Returns the Date that this latest version was
@@ -151,7 +156,7 @@ class WikiPage
   # Returns boolean True or False if this instance
   # is an old version of the page.
   def historical?
-    @page.historical? && versions.first.sha != version.sha
+    @page.historical? && last_version.sha != version.sha
   end
 
   # Returns boolean True or False if this instance

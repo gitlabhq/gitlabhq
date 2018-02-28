@@ -81,9 +81,9 @@ module API
         service_args = [user_project, current_user, protected_branch_params]
 
         protected_branch = if protected_branch
-                             ::ProtectedBranches::ApiUpdateService.new(*service_args).execute(protected_branch)
+                             ::ProtectedBranches::LegacyApiUpdateService.new(*service_args).execute(protected_branch)
                            else
-                             ::ProtectedBranches::ApiCreateService.new(*service_args).execute
+                             ::ProtectedBranches::LegacyApiCreateService.new(*service_args).execute
                            end
 
         if protected_branch.valid?

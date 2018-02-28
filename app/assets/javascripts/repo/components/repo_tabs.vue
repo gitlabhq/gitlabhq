@@ -16,14 +16,12 @@
 
 <template>
   <ul
-    id="tabs"
-    class="list-unstyled"
+    class="multi-file-tabs list-unstyled append-bottom-0"
   >
     <repo-tab
       v-for="tab in openFiles"
       :key="tab.id"
       :tab="tab"
     />
-    <li class="tabs-divider" />
   </ul>
 </template>

@@ -88,17 +88,6 @@
     border-color: $border-dark;
     color: $color;
   }
-
-  svg {
-
-    path {
-      fill: $color;
-    }
-
-    use {
-      stroke: $color;
-    }
-  }
 }
 
 @mixin btn-green {
@@ -140,6 +129,13 @@
   &.btn-xs {
     margin-left: $btn-xs-side-margin;
   }
+}
+
+@mixin btn-svg {
+  height: $gl-padding;
+  width: $gl-padding;
+  top: 0;
+  vertical-align: text-top;
 }
 
 .btn {
@@ -241,6 +237,16 @@
     .fa-caret-down {
       margin-left: 3px;
     }
+  }
+
+  &.dot-highlight::after {
+    content: '';
+    background-color: $blue-500;
+    width: $gl-padding * 0.5;
+    height: $gl-padding * 0.5;
+    display: inline-block;
+    border-radius: 50%;
+    margin-left: 3px;
   }
 
   svg {
@@ -408,6 +414,7 @@
   padding: 0;
   background: transparent;
   border: 0;
+  border-radius: 0;
 
   &:hover,
   &:active,
@@ -416,4 +423,30 @@
     background: transparent;
     box-shadow: none;
   }
+}
+
+.btn-link.btn-secondary-hover-link {
+  color: $gl-text-color-secondary;
+
+  &:hover,
+  &:active,
+  &:focus {
+    color: $gl-link-color;
+    text-decoration: none;
+  }
+}
+
+.btn-link.btn-primary-hover-link {
+  color: inherit;
+
+  &:hover,
+  &:active,
+  &:focus {
+    color: $gl-link-color;
+    text-decoration: none;
+  }
+}
+
+.btn-svg svg {
+  @include btn-svg;
 }

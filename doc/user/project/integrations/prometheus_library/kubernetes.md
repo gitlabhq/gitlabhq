@@ -13,8 +13,8 @@ integration services must be enabled.
 
 | Name | Query |
 | ---- | ----- |
-| Average Memory Usage (MB) | (sum(container_memory_usage_bytes{container_name!="POD",%{environment_filter}}) / count(container_memory_usage_bytes{container_name!="POD",%{environment_filter}})) /1024/1024 |
-| Average CPU Utilization (%) | sum(rate(container_cpu_usage_seconds_total{container_name!="POD",%{environment_filter}}[2m])) by (cpu)  * 100 |
+| Average Memory Usage (MB) | (sum(avg(container_memory_usage_bytes{container_name!="POD",environment="%{ci_environment_slug}"}) without (job))) / count(avg(container_memory_usage_bytes{container_name!="POD",environment="%{ci_environment_slug}"}) without (job)) /1024/1024 |
+| Average CPU Utilization (%) | sum(avg(rate(container_cpu_usage_seconds_total{container_name!="POD",environment="%{ci_environment_slug}"}[2m])) without (job)) * 100 |
 
 ## Configuring Prometheus to monitor for Kubernetes node metrics
 

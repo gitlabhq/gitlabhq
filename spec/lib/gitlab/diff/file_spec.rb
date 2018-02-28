@@ -116,12 +116,8 @@ describe Gitlab::Diff::File do
     end
 
     context 'when renamed' do
-      let(:commit) { project.commit('6907208d755b60ebeacb2e9dfea74c92c3449a1f') }
-      let(:diff_file) { commit.diffs.diff_file_with_new_path('files/js/commit.coffee') }
-
-      before do
-        allow(diff_file.new_blob).to receive(:id).and_return(diff_file.old_blob.id)
-      end
+      let(:commit) { project.commit('94bb47ca1297b7b3731ff2a36923640991e9236f') }
+      let(:diff_file) { commit.diffs.diff_file_with_new_path('CHANGELOG.md') }
 
       it 'returns false' do
         expect(diff_file.content_changed?).to be_falsey

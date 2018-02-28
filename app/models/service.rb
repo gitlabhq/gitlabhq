@@ -211,7 +211,7 @@ class Service < ActiveRecord::Base
   def async_execute(data)
     return unless supported_events.include?(data[:object_kind])
 
-    Sidekiq::Client.enqueue(ProjectServiceWorker, id, data)
+    ProjectServiceWorker.perform_async(id, data)
   end
 
   def issue_tracker?

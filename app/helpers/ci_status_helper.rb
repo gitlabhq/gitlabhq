@@ -6,11 +6,6 @@
 # See 'detailed_status?` method and `Gitlab::Ci::Status` module.
 #
 module CiStatusHelper
-  def ci_status_path(pipeline)
-    project = pipeline.project
-    project_pipeline_path(project, pipeline)
-  end
-
   def ci_label_for_status(status)
     if detailed_status?(status)
       return status.label

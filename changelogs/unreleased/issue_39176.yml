@@ -1,5 +1,0 @@
----
-title: Render 404 when polling commit notes without having permissions
-merge_request:
-author:
-type: fixed

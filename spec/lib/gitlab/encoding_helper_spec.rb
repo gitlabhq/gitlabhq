@@ -9,6 +9,7 @@ describe Gitlab::EncodingHelper do
       ["nil", nil, nil],
       ["empty string", "".encode("ASCII-8BIT"), "".encode("UTF-8")],
       ["invalid utf-8 encoded string", "my bad string\xE5".force_encoding("UTF-8"), "my bad string"],
+      ["frozen non-ascii string", "é".force_encoding("ASCII-8BIT").freeze, "é".encode("UTF-8")],
       [
         'leaves ascii only string as is',
         'ascii only string',

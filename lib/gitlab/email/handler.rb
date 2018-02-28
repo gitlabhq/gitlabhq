@@ -1,3 +1,4 @@
+require 'gitlab/email/handler/create_merge_request_handler'
 require 'gitlab/email/handler/create_note_handler'
 require 'gitlab/email/handler/create_issue_handler'
 require 'gitlab/email/handler/unsubscribe_handler'
@@ -8,6 +9,7 @@ module Gitlab
       HANDLERS = [
         UnsubscribeHandler,
         CreateNoteHandler,
+        CreateMergeRequestHandler,
         CreateIssueHandler
       ].freeze
 

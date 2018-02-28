@@ -68,6 +68,11 @@ module Gitlab
             has_one :route, as: :source
             self.table_name = 'projects'
 
+            HASHED_STORAGE_FEATURES = {
+              repository: 1,
+              attachments: 2
+            }.freeze
+
             def repository_storage_path
               Gitlab.config.repositories.storages[repository_storage]['path']
             end
@@ -75,6 +80,13 @@ module Gitlab
             # Overridden to have the correct `source_type` for the `route` relation
             def self.name
               'Project'
+            end
+
+            def hashed_storage?(feature)
+              raise ArgumentError, "Invalid feature" unless HASHED_STORAGE_FEATURES.include?(feature)
+              return false unless respond_to?(:storage_version)
+
+              self.storage_version && self.storage_version >= HASHED_STORAGE_FEATURES[feature]
             end
           end
         end

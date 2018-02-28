@@ -4,8 +4,11 @@ module NamespacesHelper
   end
 
   def namespaces_options(selected = :current_user, display_path: false, extra_group: nil)
-    groups  = current_user.owned_groups + current_user.masters_groups
-    users   = [current_user.namespace]
+    groups = current_user.manageable_groups
+               .joins(:route)
+               .includes(:route)
+               .order('routes.path')
+    users = [current_user.namespace]
 
     unless extra_group.nil? || extra_group.is_a?(Group)
       extra_group = Group.find(extra_group) if Namespace.find(extra_group).kind == 'group'

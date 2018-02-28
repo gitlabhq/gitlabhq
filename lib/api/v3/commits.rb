@@ -106,7 +106,7 @@ module API
           commit = user_project.commit(params[:sha])
 
           not_found! 'Commit' unless commit
-          notes = Note.where(commit_id: commit.id).order(:created_at)
+          notes = commit.notes.order(:created_at)
 
           present paginate(notes), with: ::API::Entities::CommitNote
         end
@@ -169,10 +169,12 @@ module API
           if params[:path]
             commit.raw_diffs(limits: false).each do |diff|
               next unless diff.new_path == params[:path]
+
               lines = Gitlab::Diff::Parser.new.parse(diff.diff.each_line)
 
               lines.each do |line|
                 next unless line.new_pos == params[:line] && line.type == params[:line_type]
+
                 break opts[:line_code] = Gitlab::Git.diff_line_code(diff.new_path, line.new_pos, line.old_pos)
               end
 

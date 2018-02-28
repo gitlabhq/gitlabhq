@@ -278,4 +278,20 @@ describe Gitlab::GitalyClient, skip_gitaly_mock: true do
       end
     end
   end
+
+  describe 'timeouts' do
+    context 'with default values' do
+      before do
+        stub_application_setting(gitaly_timeout_default: 55)
+        stub_application_setting(gitaly_timeout_medium: 30)
+        stub_application_setting(gitaly_timeout_fast: 10)
+      end
+
+      it 'returns expected values' do
+        expect(described_class.default_timeout).to be(55)
+        expect(described_class.medium_timeout).to be(30)
+        expect(described_class.fast_timeout).to be(10)
+      end
+    end
+  end
 end

@@ -17,6 +17,10 @@ module Gitlab
       return nil unless message.respond_to?(:force_encoding)
       return message if message.encoding == Encoding::UTF_8 && message.valid_encoding?
 
+      if message.respond_to?(:frozen?) && message.frozen?
+        message = message.dup
+      end
+
       message.force_encoding("UTF-8")
       return message if message.valid_encoding?
 

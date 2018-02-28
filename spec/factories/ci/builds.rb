@@ -154,39 +154,27 @@ FactoryGirl.define do
       runner factory: :ci_runner
     end
 
+    trait :legacy_artifacts do
+      after(:create) do |build, _|
+        build.update!(
+          legacy_artifacts_file: fixture_file_upload(
+            Rails.root.join('spec/fixtures/ci_build_artifacts.zip'), 'application/zip'),
+          legacy_artifacts_metadata: fixture_file_upload(
+            Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'), 'application/x-gzip')
+        )
+      end
+    end
+
     trait :artifacts do
-      after(:create) do |build, _|
-        build.artifacts_file =
-          fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts.zip'),
-                             'application/zip')
-
-        build.artifacts_metadata =
-          fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'),
-                             'application/x-gzip')
-
-        build.save!
+      after(:create) do |build|
+        create(:ci_job_artifact, :archive, job: build)
+        create(:ci_job_artifact, :metadata, job: build)
+        build.reload
       end
     end
 
-    trait :remote_store do
-      artifacts_file_store ArtifactUploader::REMOTE_STORE
-      artifacts_metadata_store ArtifactUploader::REMOTE_STORE
-    end
-
-    trait :artifacts_expired do
-      after(:create) do |build, _|
-        build.artifacts_file =
-          fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts.zip'),
-            'application/zip')
-
-        build.artifacts_metadata =
-          fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'),
-            'application/x-gzip')
-
-        build.artifacts_expire_at = 1.minute.ago
-
-        build.save!
-      end
+    trait :expired do
+      artifacts_expire_at 1.minute.ago
     end
 
     trait :with_commit do

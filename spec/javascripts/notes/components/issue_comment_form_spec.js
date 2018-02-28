@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Autosize from 'autosize';
 import store from '~/notes/stores';
 import issueCommentForm from '~/notes/components/issue_comment_form.vue';
-import { loggedOutIssueData, notesDataMock, userDataMock, issueDataMock } from '../mock_data';
+import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } from '../mock_data';
 import { keyboardDownEvent } from '../../issue_show/helpers';
 
 describe('issue_comment_form component', () => {
@@ -23,7 +23,7 @@ describe('issue_comment_form component', () => {
   describe('user is logged in', () => {
     beforeEach(() => {
       store.dispatch('setUserData', userDataMock);
-      store.dispatch('setIssueData', issueDataMock);
+      store.dispatch('setNoteableData', noteableDataMock);
       store.dispatch('setNotesData', notesDataMock);
 
       vm = mountComponent();
@@ -54,6 +54,25 @@ describe('issue_comment_form component', () => {
         vm.handleSave();
 
         expect(vm.toggleIssueState).toHaveBeenCalled();
+      });
+
+      it('should disable action button whilst submitting', (done) => {
+        const saveNotePromise = Promise.resolve();
+        vm.note = 'hello world';
+        spyOn(vm, 'saveNote').and.returnValue(saveNotePromise);
+        spyOn(vm, 'stopPolling');
+
+        const actionButton = vm.$el.querySelector('.js-action-button');
+
+        vm.handleSave();
+
+        Vue.nextTick()
+          .then(() => expect(actionButton.disabled).toBeTruthy())
+          .then(saveNotePromise)
+          .then(Vue.nextTick)
+          .then(() => expect(actionButton.disabled).toBeFalsy())
+          .then(done)
+          .catch(done.fail);
       });
     });
 
@@ -159,7 +178,7 @@ describe('issue_comment_form component', () => {
 
     describe('issue is confidential', () => {
       it('shows information warning', (done) => {
-        store.dispatch('setIssueData', Object.assign(issueDataMock, { confidential: true }));
+        store.dispatch('setNoteableData', Object.assign(noteableDataMock, { confidential: true }));
         Vue.nextTick(() => {
           expect(vm.$el.querySelector('.confidential-issue-warning')).toBeDefined();
           done();
@@ -171,7 +190,7 @@ describe('issue_comment_form component', () => {
   describe('user is not logged in', () => {
     beforeEach(() => {
       store.dispatch('setUserData', null);
-      store.dispatch('setIssueData', loggedOutIssueData);
+      store.dispatch('setNoteableData', loggedOutnoteableData);
       store.dispatch('setNotesData', notesDataMock);
 
       vm = mountComponent();

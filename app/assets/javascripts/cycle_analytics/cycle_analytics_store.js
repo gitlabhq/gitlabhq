@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 
 import { __ } from '../locale';
-import '../lib/utils/text_utility';
+import { dasherize } from '../lib/utils/text_utility';
 import DEFAULT_EVENT_OBJECTS from './default_event_objects';
 
 const EMPTY_STAGE_TEXTS = {
@@ -36,7 +36,7 @@ export default {
     });
 
     newData.stages.forEach((item) => {
-      const stageSlug = gl.text.dasherize(item.name.toLowerCase());
+      const stageSlug = dasherize(item.name.toLowerCase());
       item.active = false;
       item.isUserAllowed = data.permissions[stageSlug];
       item.emptyStageText = EMPTY_STAGE_TEXTS[stageSlug];

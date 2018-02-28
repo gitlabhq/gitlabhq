@@ -1,5 +1,5 @@
 class StageUpdateWorker
-  include Sidekiq::Worker
+  include ApplicationWorker
   include PipelineQueue
 
   enqueue_in group: :processing

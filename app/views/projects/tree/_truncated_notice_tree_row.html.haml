@@ -1,0 +1,7 @@
+%tr.tree-truncated-warning
+  %td{ colspan: '3' }
+    = icon('exclamation-triangle fw')
+    %span
+      Too many items to show. To preserve performance only
+      %strong #{number_with_delimiter(limit)} of #{number_with_delimiter(total)}
+      items are displayed.

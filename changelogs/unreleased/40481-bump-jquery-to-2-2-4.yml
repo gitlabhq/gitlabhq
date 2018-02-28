@@ -1,0 +1,5 @@
+---
+title: Upgrade jQuery to 2.2.4
+merge_request: 15570
+author: Takuya Noguchi
+type: security

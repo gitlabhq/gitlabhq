@@ -13,7 +13,7 @@ export { default as Vue } from 'vue';
 export { default as SmartInterval } from '~/smart_interval';
 export { default as WidgetHeader } from './components/mr_widget_header';
 export { default as WidgetMergeHelp } from './components/mr_widget_merge_help';
-export { default as WidgetPipeline } from './components/mr_widget_pipeline';
+export { default as WidgetPipeline } from './components/mr_widget_pipeline.vue';
 export { default as WidgetDeployment } from './components/mr_widget_deployment';
 export { default as WidgetRelatedLinks } from './components/mr_widget_related_links';
 export { default as MergedState } from './components/states/mr_widget_merged';

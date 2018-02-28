@@ -2,19 +2,6 @@ require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170926150348_schedule_merge_request_diff_migrations_take_two')
 
 describe ScheduleMergeRequestDiffMigrationsTakeTwo, :migration, :sidekiq do
-  matcher :be_scheduled_migration do |time, *expected|
-    match do |migration|
-      BackgroundMigrationWorker.jobs.any? do |job|
-        job['args'] == [migration, expected] &&
-          job['at'].to_i == time.to_i
-      end
-    end
-
-    failure_message do |migration|
-      "Migration `#{migration}` with args `#{expected.inspect}` not scheduled!"
-    end
-  end
-
   let(:merge_request_diffs) { table(:merge_request_diffs) }
   let(:merge_requests) { table(:merge_requests) }
   let(:projects) { table(:projects) }
@@ -37,9 +24,9 @@ describe ScheduleMergeRequestDiffMigrationsTakeTwo, :migration, :sidekiq do
       Timecop.freeze do
         migrate!
 
-        expect(described_class::MIGRATION).to be_scheduled_migration(10.minutes.from_now, 1, 1)
-        expect(described_class::MIGRATION).to be_scheduled_migration(20.minutes.from_now, 2, 2)
-        expect(described_class::MIGRATION).to be_scheduled_migration(30.minutes.from_now, 4, 4)
+        expect(described_class::MIGRATION).to be_scheduled_migration(10.minutes, 1, 1)
+        expect(described_class::MIGRATION).to be_scheduled_migration(20.minutes, 2, 2)
+        expect(described_class::MIGRATION).to be_scheduled_migration(30.minutes, 4, 4)
         expect(BackgroundMigrationWorker.jobs.size).to eq 3
       end
     end

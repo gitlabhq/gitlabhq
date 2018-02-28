@@ -17,6 +17,7 @@ class CertificateValidator < ActiveModel::EachValidator
 
   def valid_certificate_pem?(value)
     return false unless value
+
     OpenSSL::X509::Certificate.new(value).present?
   rescue OpenSSL::X509::CertificateError
     false

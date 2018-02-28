@@ -1,7 +1,7 @@
 module Gitlab
   module ImportExport
     class MergeRequestParser
-      FORKED_PROJECT_ID = -1
+      FORKED_PROJECT_ID = nil
 
       def initialize(project, diff_head_sha, merge_request, relation_hash)
         @project = project

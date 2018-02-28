@@ -60,6 +60,8 @@ module Gitlab
           end
         end
 
+        @project.merge_requests.set_latest_merge_request_diff_ids!
+
         @saved
       end
 

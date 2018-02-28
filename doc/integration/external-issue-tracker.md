@@ -22,6 +22,7 @@ Visit the links below for details:
 - [Redmine](../user/project/integrations/redmine.md)
 - [Jira](../user/project/integrations/jira.md)
 - [Bugzilla](../user/project/integrations/bugzilla.md)
+- [Custom Issue Tracker](../user/project/integrations/custom_issue_tracker.md)
 
 ### Service Template
 

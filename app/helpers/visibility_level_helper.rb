@@ -150,6 +150,7 @@ module VisibilityLevelHelper
 
   def restricted_visibility_levels(show_all = false)
     return [] if current_user.admin? && !show_all
+
     current_application_settings.restricted_visibility_levels || []
   end
 
@@ -159,6 +160,7 @@ module VisibilityLevelHelper
 
   def disallowed_visibility_level?(form_model, level)
     return false unless form_model.respond_to?(:visibility_level_allowed?)
+
     !form_model.visibility_level_allowed?(level)
   end
 

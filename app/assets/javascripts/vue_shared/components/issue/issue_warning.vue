@@ -1,4 +1,6 @@
 <script>
+  import Icon from '../../../vue_shared/components/icon.vue';
+
   export default {
     props: {
       isLocked: {
@@ -14,12 +16,16 @@
       },
     },
 
+    components: {
+      Icon,
+    },
+
     computed: {
-      iconClass() {
-        return {
-          'fa-eye-slash': this.isConfidential,
-          'fa-lock': this.isLocked,
-        };
+      warningIcon() {
+        if (this.isConfidential) return 'eye-slash';
+        if (this.isLocked) return 'lock';
+
+        return '';
       },
 
       isLockedAndConfidential() {
@@ -30,12 +36,13 @@
 </script>
 <template>
   <div class="issuable-note-warning">
-    <i
-      aria-hidden="true"
-      class="fa icon"
-      :class="iconClass"
-      v-if="!isLockedAndConfidential"
-    ></i>
+    <icon
+        :name="warningIcon"
+        :size="16"
+        class="icon inline"
+        aria-hidden="true"
+        v-if="!isLockedAndConfidential">
+    </icon>
 
     <span v-if="isLockedAndConfidential">
       {{ __('This issue is confidential and locked.') }}

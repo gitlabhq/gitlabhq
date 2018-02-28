@@ -93,10 +93,6 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         expect(saved_project_json['merge_requests'].first['merge_request_diff']).not_to be_empty
       end
 
-      it 'has merge requests diff st_diffs' do
-        expect(saved_project_json['merge_requests'].first['merge_request_diff']['utf8_st_diffs']).not_to be_nil
-      end
-
       it 'has merge request diff files' do
         expect(saved_project_json['merge_requests'].first['merge_request_diff']['merge_request_diff_files']).not_to be_empty
       end
@@ -170,12 +166,6 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
 
       it 'has custom attributes' do
         expect(saved_project_json['custom_attributes'].count).to eq(2)
-      end
-
-      it 'does not complain about non UTF-8 characters in MR diffs' do
-        ActiveRecord::Base.connection.execute("UPDATE merge_request_diffs SET st_diffs = '---\n- :diff: !binary |-\n    LS0tIC9kZXYvbnVsbAorKysgYi9pbWFnZXMvbnVjb3IucGRmCkBAIC0wLDAg\n    KzEsMTY3OSBAQAorJVBERi0xLjUNJeLjz9MNCisxIDAgb2JqDTw8L01ldGFk\n    YXR'")
-
-        expect(project_tree_saver.save).to be true
       end
 
       it 'does not complain about non UTF-8 characters in MR diff files' do

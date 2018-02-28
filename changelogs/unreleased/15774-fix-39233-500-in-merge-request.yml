@@ -1,0 +1,5 @@
+---
+title: 'fix #39233 - 500 in merge request'
+merge_request: 15774
+author: Martin Nowak
+type: fixed

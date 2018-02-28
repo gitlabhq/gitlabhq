@@ -1,5 +1,0 @@
----
-title: Update Merge Request polling so there is only one request at a time
-merge_request: 15032
-author:
-type: fixed

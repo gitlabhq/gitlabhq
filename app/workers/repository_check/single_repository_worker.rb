@@ -1,6 +1,6 @@
 module RepositoryCheck
   class SingleRepositoryWorker
-    include Sidekiq::Worker
+    include ApplicationWorker
     include RepositoryCheckQueue
 
     def perform(project_id)
@@ -32,16 +32,14 @@ module RepositoryCheck
     end
 
     def git_fsck(repository)
-      path = repository.path_to_repo
-      cmd = %W(nice git --git-dir=#{path} fsck)
-      output, status = Gitlab::Popen.popen(cmd)
+      return false unless repository.exists?
 
-      if status.zero?
-        true
-      else
-        Gitlab::RepositoryCheckLogger.error("command failed: #{cmd.join(' ')}\n#{output}")
-        false
-      end
+      repository.raw_repository.fsck
+
+      true
+    rescue Gitlab::Git::Repository::GitError => e
+      Gitlab::RepositoryCheckLogger.error(e.message)
+      false
     end
 
     def has_pushes?(project)

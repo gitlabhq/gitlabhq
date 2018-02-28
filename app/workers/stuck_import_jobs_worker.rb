@@ -1,5 +1,5 @@
 class StuckImportJobsWorker
-  include Sidekiq::Worker
+  include ApplicationWorker
   include CronjobQueue
 
   IMPORT_JOBS_EXPIRATION = 15.hours.to_i

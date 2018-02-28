@@ -5,7 +5,7 @@
 - In 9.2, the feature was [renamed to Pipeline Schedule][ce-10853].
 - Cron notation is parsed by [Rufus-Scheduler](https://github.com/jmettraux/rufus-scheduler).
 
-Pipeline schedules can be used to run pipelines only once, or for example every
+Pipeline schedules can be used to run a pipeline at specific intervals, for example every
 month on the 22nd for a certain branch.
 
 ## Using Pipeline schedules
@@ -44,7 +44,7 @@ GitLab CI so that they can be used in your `.gitlab-ci.yml` file.
 
 To configure that a job can be executed only when the pipeline has been
 scheduled (or the opposite), you can use
-[only and except](../../../ci/yaml/README.md#only-and-except) configuration keywords.
+[only and except](../../../ci/yaml/README.md#only-and-except-simplified) configuration keywords.
 
 ```
 job:on-schedule:

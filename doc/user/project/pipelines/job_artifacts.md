@@ -44,7 +44,7 @@ the artifacts will be kept forever.
 For more examples on artifacts, follow the [artifacts reference in
 `.gitlab-ci.yml`](../../../ci/yaml/README.md#artifacts).
 
-## Browsing job artifacts
+## Browsing artifacts
 
 >**Note:**
 With GitLab 9.2, PDFs, images, videos and other formats can be previewed
@@ -77,7 +77,7 @@ one HTML file that you can view directly online when
 
 ---
 
-## Downloading job artifacts
+## Downloading artifacts
 
 If you need to download the whole archive, there are buttons in various places
 inside GitLab that make that possible.
@@ -102,7 +102,7 @@ inside GitLab that make that possible.
 
     ![Job artifacts browser](img/job_artifacts_browser.png)
 
-## Downloading the latest job artifacts
+## Downloading the latest artifacts
 
 It is possible to download the latest artifacts of a job via a well known URL
 so you can use it for scripting purposes.
@@ -163,6 +163,18 @@ information in the UI.
 
 ![Latest artifacts button](img/job_latest_artifacts_browser.png)
 
+## Erasing artifacts
+
+DANGER: **Warning:**
+This is a destructive action that leads to data loss. Use with caution.
+
+If you have at least Developer [permissions](../../permissions.md#gitlab-ci-cd-permissions)
+on the project, you can erase a single job via the UI which will also remove the
+artifacts and the job's trace.
+
+1. Navigate to a job's page.
+1. Click the trash icon at the top right of the job's trace.
+1. Confirm the deletion.
 
 [expiry date]: ../../../ci/yaml/README.md#artifacts-expire_in
 [ce-14399]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14399

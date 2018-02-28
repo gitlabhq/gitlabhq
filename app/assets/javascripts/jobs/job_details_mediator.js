@@ -29,8 +29,8 @@ export default class JobMediator {
     this.poll = new Poll({
       resource: this.service,
       method: 'getJob',
-      successCallback: this.successCallback.bind(this),
-      errorCallback: this.errorCallback.bind(this),
+      successCallback: response => this.successCallback(response),
+      errorCallback: () => this.errorCallback(),
     });
 
     if (!Visibility.hidden()) {
@@ -57,7 +57,7 @@ export default class JobMediator {
 
   successCallback(response) {
     this.state.isLoading = false;
-    return response.json().then(data => this.store.storeJob(data));
+    return this.store.storeJob(response.data);
   }
 
   errorCallback() {

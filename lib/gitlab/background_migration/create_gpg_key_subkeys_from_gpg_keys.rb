@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+# rubocop:disable Metrics/LineLength
+# rubocop:disable Style/Documentation
+
 class Gitlab::BackgroundMigration::CreateGpgKeySubkeysFromGpgKeys
   class GpgKey < ActiveRecord::Base
     self.table_name = 'gpg_keys'

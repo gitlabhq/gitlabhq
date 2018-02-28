@@ -3,19 +3,18 @@
 import { mapGetters, mapActions } from 'vuex';
 import flash from '../../flash';
 import monacoLoader from '../monaco_loader';
+import Editor from '../lib/editor';
 
 export default {
-  destroyed() {
-    if (this.monacoInstance) {
-      this.monacoInstance.destroy();
-    }
+  beforeDestroy() {
+    this.editor.dispose();
   },
   mounted() {
-    if (this.monaco) {
+    if (this.editor && monaco) {
       this.initMonaco();
     } else {
       monacoLoader(['vs/editor/editor.main'], () => {
-        this.monaco = monaco;
+        this.editor = Editor.create(monaco);
 
         this.initMonaco();
       });
@@ -29,47 +28,25 @@ export default {
     initMonaco() {
       if (this.shouldHideEditor) return;
 
-      if (this.monacoInstance) {
-        this.monacoInstance.setModel(null);
-      }
+      this.editor.clearEditor();
 
       this.getRawFileData(this.activeFile)
         .then(() => {
-          if (!this.monacoInstance) {
-            this.monacoInstance = this.monaco.editor.create(this.$el, {
-              model: null,
-              readOnly: false,
-              contextmenu: true,
-              scrollBeyondLastLine: false,
-            });
-
-            this.languages = this.monaco.languages.getLanguages();
-
-            this.addMonacoEvents();
-          }
-
-          this.setupEditor();
+          this.editor.createInstance(this.$refs.editor);
         })
+        .then(() => this.setupEditor())
         .catch(() => flash('Error setting up monaco. Please try again.'));
     },
     setupEditor() {
       if (!this.activeFile) return;
-      const content = this.activeFile.content !== '' ? this.activeFile.content : this.activeFile.raw;
 
-      const foundLang = this.languages.find(lang =>
-        lang.extensions && lang.extensions.indexOf(this.activeFileExtension) === 0,
-      );
-      const newModel = this.monaco.editor.createModel(
-        content, foundLang ? foundLang.id : 'plaintext',
-      );
+      const model = this.editor.createModel(this.activeFile);
 
-      this.monacoInstance.setModel(newModel);
-    },
-    addMonacoEvents() {
-      this.monacoInstance.onKeyUp(() => {
+      this.editor.attachModel(model);
+      model.onChange((m) => {
         this.changeFileContent({
           file: this.activeFile,
-          content: this.monacoInstance.getValue(),
+          content: m.getValue(),
         });
       });
     },
@@ -99,8 +76,13 @@ export default {
     class="blob-viewer-container blob-editor-container"
   >
     <div
-      v-if="shouldHideEditor"
+      v-show="shouldHideEditor"
       v-html="activeFile.html"
+    >
+    </div>
+    <div
+      v-show="!shouldHideEditor"
+      ref="editor"
     >
     </div>
   </div>

@@ -166,4 +166,27 @@ describe Key, :mailer do
       expect(key.public_key.key_text).to eq(valid_key)
     end
   end
+
+  describe '#refresh_user_cache', :use_clean_rails_memory_store_caching do
+    context 'when the key belongs to a user' do
+      it 'refreshes the keys count cache for the user' do
+        expect_any_instance_of(Users::KeysCountService)
+          .to receive(:refresh_cache)
+          .and_call_original
+
+        key = create(:personal_key)
+
+        expect(Users::KeysCountService.new(key.user).count).to eq(1)
+      end
+    end
+
+    context 'when the key does not belong to a user' do
+      it 'does nothing' do
+        expect_any_instance_of(Users::KeysCountService)
+          .not_to receive(:refresh_cache)
+
+        create(:key)
+      end
+    end
+  end
 end

@@ -198,7 +198,43 @@ end
 
 Keep in mind that this operation can easily take 10-15 minutes to complete on
 larger installations (e.g. GitLab.com). As a result you should only add default
-values if absolutely necessary.
+values if absolutely necessary. There is a RuboCop cop that will fail if this
+method is used on some tables that are very large on GitLab.com, which would
+cause other issues.
+
+## Updating an existing column
+
+To update an existing column to a particular value, you can use
+`update_column_in_batches` (`add_column_with_default` uses this internally to
+fill in the default value). This will split the updates into batches, so we
+don't update too many rows at in a single statement.
+
+This updates the column `foo` in the `projects` table to 10, where `some_column`
+is `'hello'`:
+
+```ruby
+update_column_in_batches(:projects, :foo, 10) do |table, query|
+  query.where(table[:some_column].eq('hello'))
+end
+```
+
+To perform a computed update, the value can be wrapped in `Arel.sql`, so Arel
+treats it as an SQL literal. The below example is the same as the one above, but
+the value is set to the product of the `bar` and `baz` columns:
+
+```ruby
+update_value = Arel.sql('bar * baz')
+
+update_column_in_batches(:projects, :foo, update_value) do |table, query|
+  query.where(table[:some_column].eq('hello'))
+end
+```
+
+Like `add_column_with_default`, there is a RuboCop cop to detect usage of this
+on large tables. In the case of `update_column_in_batches`, it may be acceptable
+to run on a large table, as long as it is only updating a small subset of the
+rows in the table, but do not ignore that without validating on the GitLab.com
+staging environment - or asking someone else to do so for you - beforehand.
 
 ## Integer column type
 

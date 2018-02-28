@@ -11,7 +11,6 @@ describe Gitlab::HookData::IssueBuilder do
       %w[
         assignee_id
         author_id
-        branch_name
         closed_at
         confidential
         created_at

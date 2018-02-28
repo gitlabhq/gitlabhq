@@ -351,9 +351,16 @@ eos
       end
 
       it 'gives compound status from latest pipelines if ref is nil' do
-        expect(commit.status(nil)).to eq(Ci::Pipeline.latest_status)
-        expect(commit.status(nil)).to eq('failed')
+        expect(commit.status(nil)).to eq(pipeline_from_fix.status)
       end
+    end
+  end
+
+  describe '#set_status_for_ref' do
+    it 'sets the status for a given reference' do
+      commit.set_status_for_ref('master', 'failed')
+
+      expect(commit.status('master')).to eq('failed')
     end
   end
 

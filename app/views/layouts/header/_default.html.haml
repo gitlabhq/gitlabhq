@@ -7,7 +7,7 @@
           = link_to root_path, title: 'Dashboard', id: 'logo' do
             = brand_header_logo
             %span.logo-text.hidden-xs
-              = render 'shared/logo_type.svg'
+              = brand_header_logo_type
 
         - if current_user
           = render "layouts/nav/dashboard"
@@ -61,7 +61,7 @@
                       = link_to "Help", help_path
                   %li.divider
                   %li
-                    = link_to "Sign out", destroy_user_session_path, method: :delete, class: "sign-out-link"
+                    = link_to "Sign out", destroy_user_session_path, class: "sign-out-link"
             - if session[:impersonator_id]
               %li.impersonation
                 = link_to admin_impersonation_path, class: 'impersonation-btn', method: :delete, title: "Stop impersonation", aria: { label: 'Stop impersonation' }, data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
@@ -75,5 +75,3 @@
         %span.sr-only Toggle navigation
         = sprite_icon('more', size: 12, css_class: 'more-icon js-navbar-toggle-right')
         = sprite_icon('close', size: 12, css_class: 'close-icon js-navbar-toggle-left')
-
-= render 'shared/outdated_browser'

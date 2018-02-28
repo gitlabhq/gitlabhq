@@ -6,9 +6,8 @@
 
       - git_access_url = project_wikis_git_access_path(@project)
       = link_to git_access_url, class: active_nav_link?(path: 'wikis#git_access') ? 'active' : '' do
-        = succeed '&nbsp;' do
-          = icon('cloud-download')
-        = _("Clone repository")
+        = icon('cloud-download', class: 'append-right-5')
+        %span= _("Clone repository")
 
     .blocks-container
       .block.block-first

@@ -671,6 +671,20 @@ describe 'Git LFS API and storage' do
         }
       end
 
+      shared_examples 'pushes new LFS objects' do
+        let(:sample_size) { 150.megabytes }
+        let(:sample_oid) { '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897' }
+
+        it 'responds with upload hypermedia link' do
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response['objects']).to be_kind_of(Array)
+          expect(json_response['objects'].first['oid']).to eq(sample_oid)
+          expect(json_response['objects'].first['size']).to eq(sample_size)
+          expect(json_response['objects'].first['actions']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.full_path}.git/gitlab-lfs/objects/#{sample_oid}/#{sample_size}")
+          expect(json_response['objects'].first['actions']['upload']['header']).to eq('Authorization' => authorization)
+        end
+      end
+
       describe 'when request is authenticated' do
         describe 'when user has project push access' do
           let(:authorization) { authorize_user }
@@ -701,27 +715,7 @@ describe 'Git LFS API and storage' do
           end
 
           context 'when pushing a lfs object that does not exist' do
-            let(:body) do
-              {
-                'operation' => 'upload',
-                'objects' => [
-                  { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                    'size' => 1575078 }
-                ]
-              }
-            end
-
-            it 'responds with status 200' do
-              expect(response).to have_gitlab_http_status(200)
-            end
-
-            it 'responds with upload hypermedia link' do
-              expect(json_response['objects']).to be_kind_of(Array)
-              expect(json_response['objects'].first['oid']).to eq("91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897")
-              expect(json_response['objects'].first['size']).to eq(1575078)
-              expect(json_response['objects'].first['actions']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.full_path}.git/gitlab-lfs/objects/91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897/1575078")
-              expect(json_response['objects'].first['actions']['upload']['header']).to eq('Authorization' => authorization)
-            end
+            it_behaves_like 'pushes new LFS objects'
           end
 
           context 'when pushing one new and one existing lfs object' do
@@ -801,6 +795,17 @@ describe 'Git LFS API and storage' do
               expect(response).to have_gitlab_http_status(403)
             end
           end
+        end
+
+        context 'when deploy key has project push access' do
+          let(:key) { create(:deploy_key, can_push: true) }
+          let(:authorization) { authorize_deploy_key }
+
+          let(:update_user_permissions) do
+            project.deploy_keys << key
+          end
+
+          it_behaves_like 'pushes new LFS objects'
         end
       end
 

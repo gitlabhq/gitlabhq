@@ -55,9 +55,10 @@ You have 6 options here that you can use for your default dashboard view:
 The project home page content setting allows you to choose what content you want to
 see on a project’s home page.
 
-You can choose between 2 options:
+You can choose between 3 options:
 
 - Show the files and the readme (default)
+- Show the readme
 - Show the project’s activity
 
 [rouge]: http://rouge.jneen.net/ "Rouge website"

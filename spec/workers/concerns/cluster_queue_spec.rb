@@ -3,7 +3,11 @@ require 'spec_helper'
 describe ClusterQueue do
   let(:worker) do
     Class.new do
-      include Sidekiq::Worker
+      def self.name
+        'DummyWorker'
+      end
+
+      include ApplicationWorker
       include ClusterQueue
     end
   end

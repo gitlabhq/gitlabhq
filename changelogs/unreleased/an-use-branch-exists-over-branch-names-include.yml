@@ -1,5 +1,0 @@
----
-title: Avoid fetching all branches for branch existence checks
-merge_request: 14778
-author:
-type: changed

@@ -1,6 +1,6 @@
 /* global Sortable */
 import boardNewIssue from './board_new_issue';
-import boardCard from './board_card';
+import boardCard from './board_card.vue';
 import eventHub from '../eventhub';
 import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 

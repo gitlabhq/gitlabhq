@@ -124,11 +124,11 @@ class Gitlab::Seeder::Pipelines
     return unless %w[build test].include?(build.stage)
 
     artifacts_cache_file(artifacts_archive_path) do |file|
-      build.artifacts_file = file
+      build.job_artifacts.build(project: build.project, file_type: :archive, file: file)
     end
 
     artifacts_cache_file(artifacts_metadata_path) do |file|
-      build.artifacts_metadata = file
+      build.job_artifacts.build(project: build.project, file_type: :metadata, file: file)
     end
   end
 

@@ -22,12 +22,7 @@ class Projects::CommitController < Projects::ApplicationController
     apply_diff_view_cookie!
 
     respond_to do |format|
-      format.html do
-        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37599
-        Gitlab::GitalyClient.allow_n_plus_1_calls do
-          render
-        end
-      end
+      format.html  { render }
       format.diff  { render text: @commit.to_diff }
       format.patch { render text: @commit.to_patch }
     end
@@ -112,7 +107,7 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def commit
-    @noteable = @commit ||= @project.commit(params[:id])
+    @noteable = @commit ||= @project.commit_by(oid: params[:id])
   end
 
   def define_commit_vars
@@ -138,6 +133,23 @@ class Projects::CommitController < Projects::ApplicationController
 
     @grouped_diff_discussions = commit.grouped_diff_discussions
     @discussions = commit.discussions
+
+    if merge_request_iid = params[:merge_request_iid]
+      @merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).find_by(iid: merge_request_iid)
+
+      if @merge_request
+        @new_diff_note_attrs.merge!(
+          noteable_type: 'MergeRequest',
+          noteable_id: @merge_request.id
+        )
+
+        merge_request_commit_notes = @merge_request.notes.where(commit_id: @commit.id).inc_relations_for_view
+        merge_request_commit_diff_discussions = merge_request_commit_notes.grouped_diff_discussions(@commit.diff_refs)
+        @grouped_diff_discussions.merge!(merge_request_commit_diff_discussions) do |line_code, left, right|
+          left + right
+        end
+      end
+    end
 
     @notes = (@grouped_diff_discussions.values.flatten + @discussions).flat_map(&:notes)
     @notes = prepare_notes_for_rendering(@notes, @commit)

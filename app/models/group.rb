@@ -2,6 +2,7 @@ require 'carrierwave/orm/activerecord'
 
 class Group < Namespace
   include Gitlab::ConfigHelper
+  include AfterCommitQueue
   include AccessRequestable
   include Avatarable
   include Referable
@@ -50,20 +51,6 @@ class Group < Namespace
       Gitlab::Database.postgresql?
     end
 
-    # Searches for groups matching the given query.
-    #
-    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
-    #
-    # query - The search query as a String
-    #
-    # Returns an ActiveRecord::Relation.
-    def search(query)
-      table   = Namespace.arel_table
-      pattern = "%#{query}%"
-
-      where(table[:name].matches(pattern).or(table[:path].matches(pattern)))
-    end
-
     def sort(method)
       if method == 'storage_size_desc'
         # storage_size is a virtual column so we need to
@@ -97,7 +84,7 @@ class Group < Namespace
     end
   end
 
-  def to_reference(_from_project = nil, full: nil)
+  def to_reference(_from = nil, full: nil)
     "#{self.class.reference_prefix}#{full_path}"
   end
 
@@ -301,6 +288,18 @@ class Group < Namespace
     return path_was unless has_parent?
 
     "#{parent.full_path}/#{path_was}"
+  end
+
+  def group_member(user)
+    if group_members.loaded?
+      group_members.find { |gm| gm.user_id == user.id }
+    else
+      group_members.find_by(user_id: user)
+    end
+  end
+
+  def hashed_storage?(_feature)
+    false
   end
 
   private

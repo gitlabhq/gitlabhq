@@ -5,18 +5,11 @@ module QA
     # including staging and on-premises installation.
     #
     class Entrypoint < Template
-      def self.tags(*tags)
-        @tags = tags
-      end
-
-      def self.get_tags
-        @tags
-      end
+      include Bootable
 
       def perform(address, *files)
-        Specs::Config.perform do |specs|
-          specs.address = address
-        end
+        Specs::Config.act { configure_capybara! }
+        Runtime::Scenario.define(:gitlab_address, address)
 
         ##
         # Perform before hooks, which are different for CE and EE
@@ -24,12 +17,18 @@ module QA
         Runtime::Release.perform_before_hooks
 
         Specs::Runner.perform do |specs|
-          specs.rspec(
-            tty: true,
-            tags: self.class.get_tags,
-            files: files.any? ? files : 'qa/specs/features'
-          )
+          specs.tty = true
+          specs.tags = self.class.get_tags
+          specs.files = files.any? ? files : 'qa/specs/features'
         end
+      end
+
+      def self.tags(*tags)
+        @tags = tags
+      end
+
+      def self.get_tags
+        @tags
       end
     end
   end

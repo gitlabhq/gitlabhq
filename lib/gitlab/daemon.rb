@@ -2,6 +2,7 @@ module Gitlab
   class Daemon
     def self.initialize_instance(*args)
       raise "#{name} singleton instance already initialized" if @instance
+
       @instance = new(*args)
       Kernel.at_exit(&@instance.method(:stop))
       @instance

@@ -1,7 +1,7 @@
 module Projects
   # Base class for the various service classes that count project data (e.g.
   # issues or forks).
-  class CountService
+  class CountService < BaseCountService
     # The version of the cache format. This should be bumped whenever the
     # underlying logic changes. This removes the need for explicitly flushing
     # all caches.
@@ -12,26 +12,7 @@ module Projects
     end
 
     def relation_for_count
-      raise(
-        NotImplementedError,
-        '"relation_for_count" must be implemented and return an ActiveRecord::Relation'
-      )
-    end
-
-    def count
-      Rails.cache.fetch(cache_key) { uncached_count }
-    end
-
-    def refresh_cache
-      Rails.cache.write(cache_key, uncached_count)
-    end
-
-    def uncached_count
-      relation_for_count.count
-    end
-
-    def delete_cache
-      Rails.cache.delete(cache_key)
+      self.class.query(@project.id)
     end
 
     def cache_key_name
@@ -43,6 +24,13 @@ module Projects
 
     def cache_key
       ['projects', 'count_service', VERSION, @project.id, cache_key_name]
+    end
+
+    def self.query(project_ids)
+      raise(
+        NotImplementedError,
+        '"query" must be implemented and return an ActiveRecord::Relation'
+      )
     end
   end
 end

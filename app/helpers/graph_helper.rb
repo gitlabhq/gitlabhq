@@ -8,7 +8,7 @@ module GraphHelper
 
     # append note count
     notes_count = @graph.notes[commit.id]
-    refs << "[#{notes_count} #{pluralize(notes_count, 'note')}]" if notes_count > 0
+    refs << "[#{pluralize(notes_count, 'note')}]" if notes_count > 0
 
     refs
   end

@@ -1,4 +1,6 @@
 class ProjectTeam
+  include BulkMemberAccessLoad
+
   attr_accessor :project
 
   def initialize(project)
@@ -157,39 +159,16 @@ class ProjectTeam
   #
   # Returns a Hash mapping user ID -> maximum access level.
   def max_member_access_for_user_ids(user_ids)
-    user_ids = user_ids.uniq
-    key = "max_member_access:#{project.id}"
-
-    access = {}
-
-    if RequestStore.active?
-      RequestStore.store[key] ||= {}
-      access = RequestStore.store[key]
+    max_member_access_for_resource_ids(User, user_ids, project.id) do |user_ids|
+      project.project_authorizations
+             .where(user: user_ids)
+             .group(:user_id)
+             .maximum(:access_level)
     end
-
-    # Look up only the IDs we need
-    user_ids = user_ids - access.keys
-
-    return access if user_ids.empty?
-
-    users_access = project.project_authorizations
-      .where(user: user_ids)
-      .group(:user_id)
-      .maximum(:access_level)
-
-    access.merge!(users_access)
-
-    missing_user_ids = user_ids - users_access.keys
-
-    missing_user_ids.each do |user_id|
-      access[user_id] = Gitlab::Access::NO_ACCESS
-    end
-
-    access
   end
 
   def max_member_access(user_id)
-    max_member_access_for_user_ids([user_id])[user_id] || Gitlab::Access::NO_ACCESS
+    max_member_access_for_user_ids([user_id])[user_id]
   end
 
   private

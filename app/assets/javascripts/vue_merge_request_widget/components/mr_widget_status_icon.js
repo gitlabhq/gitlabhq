@@ -14,7 +14,7 @@ export default {
     statusObj() {
       return {
         group: this.status,
-        icon: `icon_status_${this.status}`,
+        icon: `status_${this.status}`,
       };
     },
   },

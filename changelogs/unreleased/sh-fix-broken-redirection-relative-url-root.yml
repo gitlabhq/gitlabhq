@@ -1,5 +1,0 @@
----
-title: Fix broken Members link when relative URL root paths are used
-merge_request:
-author:
-type: fixed

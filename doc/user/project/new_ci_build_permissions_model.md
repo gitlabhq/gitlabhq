@@ -230,7 +230,7 @@ test:
     - docker run $CI_REGISTRY/group/other-project:latest
 ```
 
-[job permissions]: ../permissions.md#jobs-permissions
+[job permissions]: ../permissions.md#job-permissions
 [comment]: https://gitlab.com/gitlab-org/gitlab-ce/issues/22484#note_16648302
 [ext]: ../permissions.md#external-users
 [gitsub]: ../../ci/git_submodules.md

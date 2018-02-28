@@ -21,7 +21,7 @@
         %th= _("Last updated")
         %th= _("Format")
     %tbody
-      - @page.versions.each_with_index do |version, index|
+      - @page_versions.each_with_index do |version, index|
         - commit = version
         %tr
           %td
@@ -37,5 +37,6 @@
           %td
             %strong
               = version.format
+= paginate @page_versions, theme: 'gitlab'
 
 = render 'sidebar'

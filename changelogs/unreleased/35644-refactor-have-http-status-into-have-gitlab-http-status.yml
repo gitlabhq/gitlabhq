@@ -1,5 +1,0 @@
----
-title: Refactor have_http_status into have_gitlab_http_status
-merge_request: 14958
-author: Jacopo Beschi @jacopo-beschi
-type: added

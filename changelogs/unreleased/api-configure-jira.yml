@@ -1,5 +1,0 @@
----
-title: Validate username/pw for Jiraservice, require them in the API
-merge_request: 15025
-author: Robert Schilling
-type: fixed

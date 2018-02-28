@@ -8,7 +8,7 @@
   with the use of [SSH keys](ssh_keys/README.md).
 - With GitLab 8.12 onward, your permissions are used to evaluate what a CI job
   can access. More information about how this system works can be found in the
-  [Jobs permissions model](../user/permissions.md#jobs-permissions).
+  [Jobs permissions model](../user/permissions.md#job-permissions).
 - The HTTP(S) Git protocol [must be enabled][gitpro] in your GitLab instance.
 
 ## Configuring the `.gitmodules` file

@@ -13,8 +13,10 @@ module Gitlab
     UserBlockedError = Class.new(ProcessingError)
     UserNotAuthorizedError = Class.new(ProcessingError)
     NoteableNotFoundError = Class.new(ProcessingError)
-    InvalidNoteError = Class.new(ProcessingError)
-    InvalidIssueError = Class.new(ProcessingError)
+    InvalidRecordError = Class.new(ProcessingError)
+    InvalidNoteError = Class.new(InvalidRecordError)
+    InvalidIssueError = Class.new(InvalidRecordError)
+    InvalidMergeRequestError = Class.new(InvalidRecordError)
     UnknownIncomingEmail = Class.new(ProcessingError)
 
     class Receiver

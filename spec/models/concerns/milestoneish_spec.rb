@@ -186,4 +186,21 @@ describe Milestone, 'Milestoneish' do
       expect(milestone.elapsed_days).to eq(2)
     end
   end
+
+  describe '#total_issue_time_spent' do
+    it 'calculates total issue time spent' do
+      closed_issue_1.spend_time(duration: 300, user: author)
+      closed_issue_1.save!
+      closed_issue_2.spend_time(duration: 600, user: assignee)
+      closed_issue_2.save!
+
+      expect(milestone.total_issue_time_spent).to eq(900)
+    end
+  end
+
+  describe '#human_total_issue_time_spent' do
+    it 'returns nil if no time has been spent' do
+      expect(milestone.human_total_issue_time_spent).to be_nil
+    end
+  end
 end

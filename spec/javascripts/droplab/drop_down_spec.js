@@ -279,7 +279,12 @@ describe('DropDown', function () {
   describe('addEvents', function () {
     beforeEach(function () {
       this.list = { addEventListener: () => {} };
-      this.dropdown = { list: this.list, clickEvent: () => {}, eventWrapper: {} };
+      this.dropdown = {
+        list: this.list,
+        clickEvent: () => {},
+        closeDropdown: () => {},
+        eventWrapper: {},
+      };
 
       spyOn(this.list, 'addEventListener');
 
@@ -288,6 +293,7 @@ describe('DropDown', function () {
 
     it('should call .addEventListener', function () {
       expect(this.list.addEventListener).toHaveBeenCalledWith('click', jasmine.any(Function));
+      expect(this.list.addEventListener).toHaveBeenCalledWith('keyup', jasmine.any(Function));
     });
   });
 

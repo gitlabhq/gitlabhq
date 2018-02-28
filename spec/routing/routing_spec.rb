@@ -257,8 +257,10 @@ describe "Authentication", "routing" do
     expect(post("/users/sign_in")).to route_to('sessions#create')
   end
 
-  it "DELETE /users/sign_out" do
-    expect(delete("/users/sign_out")).to route_to('sessions#destroy')
+  # sign_out with GET instead of DELETE facilitates ad-hoc single-sign-out processes
+  # (https://gitlab.com/gitlab-org/gitlab-ce/issues/39708)
+  it "GET /users/sign_out" do
+    expect(get("/users/sign_out")).to route_to('sessions#destroy')
   end
 
   it "POST /users/password" do

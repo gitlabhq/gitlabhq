@@ -1,5 +1,0 @@
----
-title: Fix SAML error 500 when no groups are defined for user
-merge_request: 14913
-author:
-type: fixed

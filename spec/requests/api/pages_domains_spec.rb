@@ -3,6 +3,7 @@ require 'rails_helper'
 describe API::PagesDomains do
   set(:project) { create(:project) }
   set(:user) { create(:user) }
+  set(:admin) { create(:admin) }
 
   set(:pages_domain) { create(:pages_domain, domain: 'www.domain.test', project: project) }
   set(:pages_domain_secure) { create(:pages_domain, :with_certificate, :with_key, domain: 'ssl.domain.test', project: project) }
@@ -23,12 +24,49 @@ describe API::PagesDomains do
     allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
   end
 
+  describe 'GET /pages/domains' do
+    context 'when pages is disabled' do
+      before do
+        allow(Gitlab.config.pages).to receive(:enabled).and_return(false)
+      end
+
+      it_behaves_like '404 response' do
+        let(:request) { get api('/pages/domains', admin) }
+      end
+    end
+
+    context 'when pages is enabled' do
+      context 'when authenticated as an admin' do
+        it 'returns paginated all pages domains' do
+          get api('/pages/domains', admin)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to match_response_schema('public_api/v4/pages_domain_basics')
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.size).to eq(3)
+          expect(json_response.last).to have_key('domain')
+          expect(json_response.last).to have_key('certificate_expiration')
+          expect(json_response.last['certificate_expiration']['expired']).to be true
+          expect(json_response.first).not_to have_key('certificate_expiration')
+        end
+      end
+
+      context 'when authenticated as a non-member' do
+        it_behaves_like '403 response' do
+          let(:request) { get api('/pages/domains', user) }
+        end
+      end
+    end
+  end
+
   describe 'GET /projects/:project_id/pages/domains' do
     shared_examples_for 'get pages domains' do
       it 'returns paginated pages domains' do
         get api(route, user)
 
         expect(response).to have_gitlab_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/pages_domains')
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(3)
@@ -99,6 +137,7 @@ describe API::PagesDomains do
         get api(route_domain, user)
 
         expect(response).to have_gitlab_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(json_response['domain']).to eq(pages_domain.domain)
         expect(json_response['url']).to eq(pages_domain.url)
         expect(json_response['certificate']).to be_nil
@@ -108,6 +147,7 @@ describe API::PagesDomains do
         get api(route_secure_domain, user)
 
         expect(response).to have_gitlab_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(json_response['domain']).to eq(pages_domain_secure.domain)
         expect(json_response['url']).to eq(pages_domain_secure.url)
         expect(json_response['certificate']['subject']).to eq(pages_domain_secure.subject)
@@ -118,6 +158,7 @@ describe API::PagesDomains do
         get api(route_expired_domain, user)
 
         expect(response).to have_gitlab_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(json_response['certificate']['expired']).to be true
       end
     end
@@ -187,6 +228,7 @@ describe API::PagesDomains do
         pages_domain = PagesDomain.find_by(domain: json_response['domain'])
 
         expect(response).to have_gitlab_http_status(201)
+        expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(pages_domain.domain).to eq(params[:domain])
         expect(pages_domain.certificate).to be_nil
         expect(pages_domain.key).to be_nil
@@ -197,6 +239,7 @@ describe API::PagesDomains do
         pages_domain = PagesDomain.find_by(domain: json_response['domain'])
 
         expect(response).to have_gitlab_http_status(201)
+        expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(pages_domain.domain).to eq(params_secure[:domain])
         expect(pages_domain.certificate).to eq(params_secure[:certificate])
         expect(pages_domain.key).to eq(params_secure[:key])
@@ -270,6 +313,7 @@ describe API::PagesDomains do
         pages_domain_secure.reload
 
         expect(response).to have_gitlab_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(pages_domain_secure.certificate).to be_nil
         expect(pages_domain_secure.key).to be_nil
       end
@@ -279,6 +323,7 @@ describe API::PagesDomains do
         pages_domain.reload
 
         expect(response).to have_gitlab_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(pages_domain.certificate).to eq(params_secure[:certificate])
         expect(pages_domain.key).to eq(params_secure[:key])
       end
@@ -288,6 +333,7 @@ describe API::PagesDomains do
         pages_domain_expired.reload
 
         expect(response).to have_gitlab_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(pages_domain_expired.certificate).to eq(params_secure[:certificate])
         expect(pages_domain_expired.key).to eq(params_secure[:key])
       end
@@ -297,6 +343,7 @@ describe API::PagesDomains do
         pages_domain_secure.reload
 
         expect(response).to have_gitlab_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(pages_domain_secure.certificate).to eq(params_secure_nokey[:certificate])
       end
 

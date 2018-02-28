@@ -185,6 +185,36 @@ describe 'Pipeline', :js do
     end
   end
 
+  context 'when user does not have access to read jobs' do
+    before do
+      project.update(public_builds: false)
+    end
+
+    describe 'GET /:project/pipelines/:id' do
+      include_context 'pipeline builds'
+
+      let(:project) { create(:project, :repository) }
+      let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id, user: user) }
+
+      before do
+        visit project_pipeline_path(project, pipeline)
+      end
+
+      it 'shows the pipeline graph' do
+        expect(page).to have_selector('.pipeline-visualization')
+        expect(page).to have_content('Build')
+        expect(page).to have_content('Test')
+        expect(page).to have_content('Deploy')
+        expect(page).to have_content('Retry')
+        expect(page).to have_content('Cancel running')
+      end
+
+      it 'should not link to job' do
+        expect(page).not_to have_selector('.js-pipeline-graph-job-link')
+      end
+    end
+  end
+
   describe 'GET /:project/pipelines/:id/builds' do
     include_context 'pipeline builds'
 

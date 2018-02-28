@@ -247,8 +247,6 @@ describe Group do
   describe '#avatar_url' do
     let!(:group) { create(:group, :access_requestable, :with_avatar) }
     let(:user) { create(:user) }
-    let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
-    let(:avatar_path) { "/uploads/-/system/group/avatar/#{group.id}/dk.png" }
 
     context 'when avatar file is uploaded' do
       before do
@@ -256,12 +254,8 @@ describe Group do
       end
 
       it 'shows correct avatar url' do
-        expect(group.avatar_url).to eq(avatar_path)
-        expect(group.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
-
-        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
-
-        expect(group.avatar_url).to eq([gitlab_host, avatar_path].join)
+        expect(group.avatar_url).to eq(group.avatar.url)
+        expect(group.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, group.avatar.url].join)
       end
     end
   end

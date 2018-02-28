@@ -20,8 +20,7 @@ module BuildsHelper
 
   def javascript_build_options
     {
-      page_url: project_job_url(@project, @build),
-      build_url: project_job_url(@project, @build, :json),
+      page_path: project_job_path(@project, @build),
       build_status: @build.status,
       build_stage: @build.stage,
       log_state: ''

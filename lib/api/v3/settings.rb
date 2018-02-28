@@ -44,8 +44,8 @@ module API
           requires :domain_blacklist, type: String, desc: 'Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com'
         end
         optional :after_sign_up_text, type: String, desc: 'Text shown after sign up'
-        optional :password_authentication_enabled, type: Boolean, desc: 'Flag indicating if password authentication is enabled'
-        optional :signin_enabled, type: Boolean, desc: 'Flag indicating if password authentication is enabled'
+        optional :password_authentication_enabled, type: Boolean, desc: 'Flag indicating if password authentication is enabled for the web interface'
+        optional :signin_enabled, type: Boolean, desc: 'Flag indicating if password authentication is enabled for the web interface'
         mutually_exclusive :password_authentication_enabled, :signin_enabled
         optional :require_two_factor_authentication, type: Boolean, desc: 'Require all users to setup Two-factor authentication'
         given require_two_factor_authentication: ->(val) { val } do
@@ -131,7 +131,9 @@ module API
         attrs = declared_params(include_missing: false)
 
         if attrs.has_key?(:signin_enabled)
-          attrs[:password_authentication_enabled] = attrs.delete(:signin_enabled)
+          attrs[:password_authentication_enabled_for_web] = attrs.delete(:signin_enabled)
+        elsif attrs.has_key?(:password_authentication_enabled)
+          attrs[:password_authentication_enabled_for_web] = attrs.delete(:password_authentication_enabled)
         end
 
         if current_settings.update_attributes(attrs)

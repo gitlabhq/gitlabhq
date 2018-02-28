@@ -133,6 +133,25 @@ describe Gitlab::Auth do
 
         gl_auth.find_for_git_client(user.username, token, project: nil, ip: 'ip')
       end
+
+      it 'grants deploy key write permissions' do
+        project = create(:project)
+        key = create(:deploy_key, can_push: true)
+        create(:deploy_keys_project, deploy_key: key, project: project)
+        token = Gitlab::LfsToken.new(key).token
+
+        expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: "lfs+deploy-key-#{key.id}")
+        expect(gl_auth.find_for_git_client("lfs+deploy-key-#{key.id}", token, project: project, ip: 'ip')).to eq(Gitlab::Auth::Result.new(key, nil, :lfs_deploy_token, read_write_authentication_abilities))
+      end
+
+      it 'does not grant deploy key write permissions' do
+        project = create(:project)
+        key = create(:deploy_key, can_push: true)
+        token = Gitlab::LfsToken.new(key).token
+
+        expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: "lfs+deploy-key-#{key.id}")
+        expect(gl_auth.find_for_git_client("lfs+deploy-key-#{key.id}", token, project: project, ip: 'ip')).to eq(Gitlab::Auth::Result.new(key, nil, :lfs_deploy_token, read_authentication_abilities))
+      end
     end
 
     context 'while using OAuth tokens as passwords' do
@@ -188,7 +207,7 @@ describe Gitlab::Auth do
       end
 
       it 'limits abilities based on scope' do
-        personal_access_token = create(:personal_access_token, scopes: ['read_user'])
+        personal_access_token = create(:personal_access_token, scopes: %w[read_user sudo])
 
         expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: '')
         expect(gl_auth.find_for_git_client('', personal_access_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(personal_access_token.user, nil, :personal_access_token, []))
@@ -232,7 +251,7 @@ describe Gitlab::Auth do
     end
 
     it 'throws an error suggesting user create a PAT when internal auth is disabled' do
-      allow_any_instance_of(ApplicationSetting).to receive(:password_authentication_enabled?) { false }
+      allow_any_instance_of(ApplicationSetting).to receive(:password_authentication_enabled_for_git?) { false }
 
       expect { gl_auth.find_for_git_client('foo', 'bar', project: nil, ip: 'ip') }.to raise_error(Gitlab::Auth::MissingPersonalAccessTokenError)
     end
@@ -305,6 +324,26 @@ describe Gitlab::Auth do
         gl_auth.find_with_user_password('ldap_user', 'password')
       end
     end
+
+    context "with password authentication disabled for Git" do
+      before do
+        stub_application_setting(password_authentication_enabled_for_git: false)
+      end
+
+      it "does not find user by valid login/password" do
+        expect(gl_auth.find_with_user_password(username, password)).to be_nil
+      end
+
+      context "with ldap enabled" do
+        before do
+          allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
+        end
+
+        it "does not find non-ldap user by valid login/password" do
+          expect(gl_auth.find_with_user_password(username, password)).to be_nil
+        end
+      end
+    end
   end
 
   private
@@ -326,10 +365,15 @@ describe Gitlab::Auth do
     ]
   end
 
-  def full_authentication_abilities
+  def read_write_authentication_abilities
     read_authentication_abilities + [
       :push_code,
-      :create_container_image,
+      :create_container_image
+    ]
+  end
+
+  def full_authentication_abilities
+    read_write_authentication_abilities + [
       :admin_container_image
     ]
   end

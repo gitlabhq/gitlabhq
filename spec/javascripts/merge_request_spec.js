@@ -63,7 +63,7 @@ import IssuablesHelper from '~/helpers/issuables_helper';
       describe('merge request of another user', () => {
         beforeEach(() => {
           loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
-          this.el = document.querySelector('.merge-request .issuable-actions');
+          this.el = document.querySelector('.js-issuable-actions');
           const merge = new MergeRequest();
           merge.hideCloseButton();
         });
@@ -83,7 +83,7 @@ import IssuablesHelper from '~/helpers/issuables_helper';
       describe('merge request of current_user', () => {
         beforeEach(() => {
           loadFixtures('merge_requests/merge_request_of_current_user.html.raw');
-          this.el = document.querySelector('.merge-request .issuable-actions');
+          this.el = document.querySelector('.js-issuable-actions');
           const merge = new MergeRequest();
           merge.hideCloseButton();
         });

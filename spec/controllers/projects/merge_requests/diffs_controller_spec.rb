@@ -100,7 +100,8 @@ describe Projects::MergeRequests::DiffsController do
 
             expect(assigns(:diff_notes_disabled)).to be_falsey
             expect(assigns(:new_diff_note_attrs)).to eq(noteable_type: 'MergeRequest',
-                                                        noteable_id: merge_request.id)
+                                                        noteable_id: merge_request.id,
+                                                        commit_id: nil)
           end
 
           it 'only renders the diffs for the path given' do

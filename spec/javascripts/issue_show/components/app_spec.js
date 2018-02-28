@@ -35,11 +35,12 @@ describe('Issuable output', () => {
         canUpdate: true,
         canDestroy: true,
         endpoint: '/gitlab-org/gitlab-shell/issues/9/realtime_changes',
+        updateEndpoint: gl.TEST_HOST,
         issuableRef: '#1',
         initialTitleHtml: '',
         initialTitleText: '',
-        initialDescriptionHtml: '',
-        initialDescriptionText: '',
+        initialDescriptionHtml: 'test',
+        initialDescriptionText: 'test',
         markdownPreviewPath: '/',
         markdownDocsPath: '/',
         projectNamespace: '/',
@@ -223,23 +224,46 @@ describe('Issuable output', () => {
       });
     });
 
-    it('closes form on error', (done) => {
-      spyOn(window, 'Flash').and.callThrough();
-      spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve, reject) => {
-        reject();
-      }));
+    describe('error when updating', () => {
+      beforeEach(() => {
+        spyOn(window, 'Flash').and.callThrough();
+        spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve, reject) => {
+          reject();
+        }));
+      });
 
-      vm.updateIssuable();
+      it('closes form on error', (done) => {
+        vm.updateIssuable();
 
-      setTimeout(() => {
-        expect(
-          eventHub.$emit,
-        ).toHaveBeenCalledWith('close.form');
-        expect(
-          window.Flash,
-        ).toHaveBeenCalledWith('Error updating issue');
+        setTimeout(() => {
+          expect(
+            eventHub.$emit,
+          ).toHaveBeenCalledWith('close.form');
+          expect(
+            window.Flash,
+          ).toHaveBeenCalledWith('Error updating issue');
 
-        done();
+          done();
+        });
+      });
+
+      it('returns the correct error message for issuableType', (done) => {
+        vm.issuableType = 'merge request';
+
+        Vue.nextTick(() => {
+          vm.updateIssuable();
+
+          setTimeout(() => {
+            expect(
+              eventHub.$emit,
+            ).toHaveBeenCalledWith('close.form');
+            expect(
+              window.Flash,
+            ).toHaveBeenCalledWith('Error updating merge request');
+
+            done();
+          });
+        });
       });
     });
   });

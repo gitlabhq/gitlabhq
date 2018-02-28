@@ -9,7 +9,7 @@ mapping structure from the projects URLs:
 
  * Project's repository: `#{namespace}/#{project_name}.git`
  * Project's wiki: `#{namespace}/#{project_name}.wiki.git`
- 
+
 This structure made simple to migrate from existing solutions to GitLab and easy for Administrators to find where the
 repository is stored.
 
@@ -27,7 +27,7 @@ of load in big installations, and can be even worst if they are using any type o
 Last, for GitLab Geo, this storage type means we have to synchronize the disk state, replicate renames in the correct
 order or we may end-up with wrong repository or missing data temporarily.
 
-This pattern also exists in other objects stored in GitLab, like issue Attachments, GitLab Pages artifacts, 
+This pattern also exists in other objects stored in GitLab, like issue Attachments, GitLab Pages artifacts,
 Docker Containers for the integrated Registry, etc.
 
 ## Hashed Storage
@@ -62,9 +62,9 @@ you will never mistakenly restore a repository in the wrong project (considering
 
 ### How to migrate to Hashed Storage
 
-In GitLab, go to **Admin > Settings**, find the **Repository Storage** section and select 
+In GitLab, go to **Admin > Settings**, find the **Repository Storage** section and select
 "_Create new projects using hashed storage paths_".
- 
+
 To migrate your existing projects to the new storage type, check the specific [rake tasks].
 
 [ce-28283]: https://gitlab.com/gitlab-org/gitlab-ce/issues/28283
@@ -79,14 +79,14 @@ coverage status below.
 Note that things stored in an S3 compatible endpoint will not have the downsides mentioned earlier, if they are not
 prefixed with `#{namespace}/#{project_name}`, which is true for CI Cache and LFS Objects.
 
-| Storable Object | Legacy Storage | Hashed Storage | S3 Compatible | GitLab Version | 
-| ----------------| -------------- | -------------- | ------------- | -------------- |
+| Storable Object | Legacy Storage | Hashed Storage | S3 Compatible | GitLab Version |
+| --------------- | -------------- | -------------- | ------------- | -------------- |
 | Repository      | Yes            | Yes            | -             | 10.0           |
 | Attachments     | Yes            | Yes            | -             | 10.2           |
-| Avatars         | Yes            | No             | -             | -              | 
+| Avatars         | Yes            | No             | -             | -              |
 | Pages           | Yes            | No             | -             | -              |
 | Docker Registry | Yes            | No             | -             | -              |
-| CI Build Logs   | No             | No             | -             | -              | 
-| CI Artifacts    | No             | No             | -             | -              | 
+| CI Build Logs   | No             | No             | -             | -              |
+| CI Artifacts    | No             | No             | Yes (EEP)     | -              |
 | CI Cache        | No             | No             | Yes           | -              |
-| LFS Objects     | Yes            | No             | Yes (EEP)     | -              | 
+| LFS Objects     | Yes            | No             | Yes (EEP)     | -              |

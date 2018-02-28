@@ -3,16 +3,16 @@ import * as types from '../mutation_types';
 import { pushState } from '../utils';
 
 // eslint-disable-next-line import/prefer-default-export
-export const createNewBranch = ({ rootState, commit }, branch) => service.createBranch(
-  rootState.project.id,
+export const createNewBranch = ({ state, commit }, branch) => service.createBranch(
+  state.project.id,
   {
     branch,
-    ref: rootState.currentBranch,
+    ref: state.currentBranch,
   },
 ).then(res => res.json())
 .then((data) => {
   const branchName = data.name;
-  const url = location.href.replace(rootState.currentBranch, branchName);
+  const url = location.href.replace(state.currentBranch, branchName);
 
   pushState(url);
 

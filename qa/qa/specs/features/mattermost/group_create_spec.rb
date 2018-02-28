@@ -1,7 +1,8 @@
 module QA
   feature 'create a new group', :mattermost do
     scenario 'creating a group with a mattermost team' do
-      Page::Main::Entry.act { sign_in_using_credentials }
+      Page::Main::Entry.act { visit_login_page }
+      Page::Main::Login.act { sign_in_using_credentials }
       Page::Main::Menu.act { go_to_groups }
 
       Page::Dashboard::Groups.perform do |page|

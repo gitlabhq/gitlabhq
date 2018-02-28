@@ -33,5 +33,15 @@ describe Identity do
         expect(identity).to eq(ldap_identity)
       end
     end
+
+    context 'any other provider' do
+      let!(:test_entity) { create(:identity, provider: 'test_provider', extern_uid: 'test_uid') }
+
+      it 'the extern_uid lookup is case insensitive' do
+        identity = described_class.with_extern_uid('test_provider', 'TEST_UID').first
+
+        expect(identity).to eq(test_entity)
+      end
+    end
   end
 end

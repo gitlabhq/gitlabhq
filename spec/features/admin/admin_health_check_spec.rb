@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature "Admin Health Check", :feature, :broken_storage do
+feature "Admin Health Check", :feature do
   include StubENV
 
   before do
@@ -36,6 +36,7 @@ feature "Admin Health Check", :feature, :broken_storage do
 
   context 'when services are up' do
     before do
+      stub_storage_settings({}) # Hide the broken storage
       visit admin_health_check_path
     end
 
@@ -56,10 +57,8 @@ feature "Admin Health Check", :feature, :broken_storage do
     end
   end
 
-  context 'with repository storage failures' do
+  context 'with repository storage failures', :broken_storage do
     before do
-      # Track a failure
-      Gitlab::Git::Storage::CircuitBreaker.for_storage('broken').perform { nil } rescue nil
       visit admin_health_check_path
     end
 
@@ -67,9 +66,10 @@ feature "Admin Health Check", :feature, :broken_storage do
       hostname = Gitlab::Environment.hostname
       maximum_failures = Gitlab::CurrentSettings.current_application_settings
                            .circuitbreaker_failure_count_threshold
+      number_of_failures = maximum_failures + 1
 
-      expect(page).to have_content('broken: failed storage access attempt on host:')
-      expect(page).to have_content("#{hostname}: 1 of #{maximum_failures} failures.")
+      expect(page).to have_content("broken: #{number_of_failures} failed storage access attempts:")
+      expect(page).to have_content("#{hostname}: #{number_of_failures} of #{maximum_failures} failures.")
     end
 
     it 'allows resetting storage failures' do

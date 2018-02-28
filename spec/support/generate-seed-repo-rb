@@ -33,6 +33,7 @@ end
 def capture!(cmd, dir)
   output = IO.popen(cmd, 'r', chdir: dir) { |io| io.read }
   raise "command failed with #{$?}: #{cmd.join(' ')}" unless $?.success?
+
   output.chomp
 end
 

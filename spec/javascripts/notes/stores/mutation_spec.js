@@ -1,5 +1,5 @@
 import mutations from '~/notes/stores/mutations';
-import { note, discussionMock, notesDataMock, userDataMock, issueDataMock, individualNote } from '../mock_data';
+import { note, discussionMock, notesDataMock, userDataMock, noteableDataMock, individualNote } from '../mock_data';
 
 describe('Mutation Notes Store', () => {
   describe('ADD_NEW_NOTE', () => {
@@ -74,14 +74,14 @@ describe('Mutation Notes Store', () => {
     });
   });
 
-  describe('SET_ISSUE_DATA', () => {
+  describe('SET_NOTEABLE_DATA', () => {
     it('should set the issue data', () => {
       const state = {
-        issueData: {},
+        noteableData: {},
       };
 
-      mutations.SET_ISSUE_DATA(state, issueDataMock);
-      expect(state.issueData).toEqual(issueDataMock);
+      mutations.SET_NOTEABLE_DATA(state, noteableDataMock);
+      expect(state.noteableData).toEqual(noteableDataMock);
     });
   });
 
