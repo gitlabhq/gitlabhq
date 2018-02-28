@@ -1,0 +1,5 @@
+---
+title: Create Kubernetes cluster on GKE from k8s service
+merge_request: 14470
+author:
+type: added

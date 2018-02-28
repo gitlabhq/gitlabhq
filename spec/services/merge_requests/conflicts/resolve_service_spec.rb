@@ -1,14 +1,16 @@
 require 'spec_helper'
 
 describe MergeRequests::Conflicts::ResolveService do
+  include ProjectForksHelper
   let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :public, :repository) }
 
-  let(:fork_project) do
-    create(:forked_project_with_submodules) do |fork_project|
-      fork_project.build_forked_project_link(forked_to_project_id: fork_project.id, forked_from_project_id: project.id)
-      fork_project.save
-    end
+  let(:forked_project) do
+    forked_project = fork_project(project, user)
+    TestEnv.copy_repo(forked_project,
+                      bare_repo: TestEnv.forked_repo_path_bare,
+                      refs: TestEnv::FORKED_BRANCH_SHA)
+    forked_project
   end
 
   let(:merge_request) do
@@ -19,7 +21,7 @@ describe MergeRequests::Conflicts::ResolveService do
 
   let(:merge_request_from_fork) do
     create(:merge_request,
-           source_branch: 'conflict-resolvable-fork', source_project: fork_project,
+           source_branch: 'conflict-resolvable-fork', source_project: forked_project,
            target_branch: 'conflict-start', target_project: project)
   end
 
@@ -114,7 +116,7 @@ describe MergeRequests::Conflicts::ResolveService do
         end
 
         it 'gets conflicts from the source project' do
-          expect(fork_project.repository.rugged).to receive(:merge_commits).and_call_original
+          expect(forked_project.repository.rugged).to receive(:merge_commits).and_call_original
           expect(project.repository.rugged).not_to receive(:merge_commits)
 
           resolve_conflicts

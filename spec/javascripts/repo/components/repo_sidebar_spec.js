@@ -5,26 +5,34 @@ import RepoStore from '~/repo/stores/repo_store';
 import repoSidebar from '~/repo/components/repo_sidebar.vue';
 
 describe('RepoSidebar', () => {
+  let vm;
+
   function createComponent() {
     const RepoSidebar = Vue.extend(repoSidebar);
 
     return new RepoSidebar().$mount();
   }
 
+  afterEach(() => {
+    vm.$destroy();
+  });
+
   it('renders a sidebar', () => {
     RepoStore.files = [{
       id: 0,
     }];
     RepoStore.openedFiles = [];
-    const vm = createComponent();
+    RepoStore.isRoot = false;
+
+    vm = createComponent();
     const thead = vm.$el.querySelector('thead');
     const tbody = vm.$el.querySelector('tbody');
 
     expect(vm.$el.id).toEqual('sidebar');
     expect(vm.$el.classList.contains('sidebar-mini')).toBeFalsy();
     expect(thead.querySelector('.name').textContent).toEqual('Name');
-    expect(thead.querySelector('.last-commit').textContent).toEqual('Last Commit');
-    expect(thead.querySelector('.last-update').textContent).toEqual('Last Update');
+    expect(thead.querySelector('.last-commit').textContent).toEqual('Last commit');
+    expect(thead.querySelector('.last-update').textContent).toEqual('Last update');
     expect(tbody.querySelector('.repo-file-options')).toBeFalsy();
     expect(tbody.querySelector('.prev-directory')).toBeFalsy();
     expect(tbody.querySelector('.loading-file')).toBeFalsy();
@@ -35,7 +43,7 @@ describe('RepoSidebar', () => {
     RepoStore.openedFiles = [{
       id: 0,
     }];
-    const vm = createComponent();
+    vm = createComponent();
 
     expect(vm.$el.classList.contains('sidebar-mini')).toBeTruthy();
     expect(vm.$el.querySelector('thead')).toBeFalsy();
@@ -47,7 +55,7 @@ describe('RepoSidebar', () => {
       tree: true,
     };
     RepoStore.files = [];
-    const vm = createComponent();
+    vm = createComponent();
 
     expect(vm.$el.querySelectorAll('tbody .loading-file').length).toEqual(5);
   });
@@ -57,7 +65,7 @@ describe('RepoSidebar', () => {
       id: 0,
     }];
     RepoStore.isRoot = true;
-    const vm = createComponent();
+    vm = createComponent();
 
     expect(vm.$el.querySelector('tbody .prev-directory')).toBeTruthy();
   });
@@ -72,11 +80,25 @@ describe('RepoSidebar', () => {
         };
         RepoStore.files = [file1];
         RepoStore.isRoot = true;
-        const vm = createComponent();
+        vm = createComponent();
 
         vm.fileClicked(file1);
 
         expect(Helper.getContent).toHaveBeenCalledWith(file1);
+      });
+
+      it('should not fetch data for already opened files', () => {
+        const file = {
+          id: 42,
+          url: 'foo',
+        };
+
+        spyOn(Helper, 'getFileFromPath').and.returnValue(file);
+        spyOn(RepoStore, 'setActiveFiles');
+        vm = createComponent();
+        vm.fileClicked(file);
+
+        expect(RepoStore.setActiveFiles).toHaveBeenCalledWith(file);
       });
 
       it('should hide files in directory if already open', () => {
@@ -89,7 +111,7 @@ describe('RepoSidebar', () => {
         };
         RepoStore.files = [file1];
         RepoStore.isRoot = true;
-        const vm = createComponent();
+        vm = createComponent();
 
         vm.fileClicked(file1);
 
@@ -100,11 +122,47 @@ describe('RepoSidebar', () => {
     describe('goToPreviousDirectoryClicked', () => {
       it('should hide files in directory if already open', () => {
         const prevUrl = 'foo/bar';
-        const vm = createComponent();
+        vm = createComponent();
 
         vm.goToPreviousDirectoryClicked(prevUrl);
 
         expect(RepoService.url).toEqual(prevUrl);
+      });
+    });
+
+    describe('back button', () => {
+      const file1 = {
+        id: 1,
+        url: 'file1',
+      };
+      const file2 = {
+        id: 2,
+        url: 'file2',
+      };
+      RepoStore.files = [file1, file2];
+      RepoStore.openedFiles = [file1, file2];
+      RepoStore.isRoot = true;
+
+      vm = createComponent();
+      vm.fileClicked(file1);
+
+      it('render previous file when using back button', () => {
+        spyOn(Helper, 'getContent').and.callThrough();
+
+        vm.fileClicked(file2);
+        expect(Helper.getContent).toHaveBeenCalledWith(file2);
+        Helper.getContent.calls.reset();
+
+        history.pushState({
+          key: Math.random(),
+        }, '', file1.url);
+        const popEvent = document.createEvent('Event');
+        popEvent.initEvent('popstate', true, true);
+        window.dispatchEvent(popEvent);
+
+        expect(Helper.getContent.calls.mostRecent().args[0].url).toContain(file1.url);
+
+        window.history.pushState({}, null, '/');
       });
     });
   });

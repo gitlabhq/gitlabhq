@@ -3,10 +3,13 @@ require 'rails_helper'
 describe 'Merge request', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
+  let(:project_only_mwps) { create(:project, :repository, only_allow_merge_if_pipeline_succeeds: true) }
   let(:merge_request) { create(:merge_request, source_project: project) }
+  let(:merge_request_in_only_mwps_project) { create(:merge_request, source_project: project_only_mwps) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
+    project_only_mwps.add_master(user)
     sign_in(user)
   end
 
@@ -142,6 +145,38 @@ describe 'Merge request', :js do
     end
   end
 
+  context 'view merge request where project has CI setup but no CI status' do
+    before do
+      pipeline = create(:ci_pipeline, project: project,
+                                      sha: merge_request.diff_head_sha,
+                                      ref: merge_request.source_branch)
+      create(:ci_build, pipeline: pipeline)
+
+      visit project_merge_request_path(project, merge_request)
+    end
+
+    it 'has pipeline error text' do
+      # Wait for the `ci_status` and `merge_check` requests
+      wait_for_requests
+
+      expect(page).to have_text('Could not connect to the CI server. Please check your settings and try again')
+    end
+  end
+
+  context 'view merge request in project with only-mwps setting enabled but no CI is setup' do
+    before do
+      visit project_merge_request_path(project_only_mwps, merge_request_in_only_mwps_project)
+    end
+
+    it 'should be allowed to merge' do
+      # Wait for the `ci_status` and `merge_check` requests
+      wait_for_requests
+
+      expect(page).to have_selector('.accept-merge-request')
+      expect(find('.accept-merge-request')['disabled']).not_to be(true)
+    end
+  end
+
   context 'view merge request with MWPS enabled but automatically merge fails' do
     before do
       merge_request.update(
@@ -180,6 +215,28 @@ describe 'Merge request', :js do
 
       page.within('.mr-widget-body') do
         expect(page).to have_content('Something went wrong')
+      end
+    end
+  end
+
+  context 'view merge request where fast-forward merge is not possible' do
+    before do
+      project.update(merge_requests_ff_only_enabled: true)
+
+      merge_request.update(
+        merge_user: merge_request.author,
+        merge_status: :cannot_be_merged
+      )
+
+      visit project_merge_request_path(project, merge_request)
+    end
+
+    it 'shows information about the merge error' do
+      # Wait for the `ci_status` and `merge_check` requests
+      wait_for_requests
+
+      page.within('.mr-widget-body') do
+        expect(page).to have_content('Fast-forward merge is not possible')
       end
     end
   end
@@ -199,7 +256,7 @@ describe 'Merge request', :js do
     end
   end
 
-  context 'user can merge into source project but cannot push to fork', js: true do
+  context 'user can merge into source project but cannot push to fork', :js do
     let(:fork_project) { create(:project, :public, :repository) }
     let(:user2) { create(:user) }
 

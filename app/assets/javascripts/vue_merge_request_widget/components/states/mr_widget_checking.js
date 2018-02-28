@@ -7,7 +7,7 @@ export default {
   },
   template: `
     <div class="mr-widget-body media">
-      <status-icon status="loading" showDisabledButton />
+      <status-icon status="loading" :show-disabled-button="true" />
       <div class="media-body space-children">
         <span class="bold">
           Checking ability to merge automatically

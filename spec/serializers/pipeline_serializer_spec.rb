@@ -103,9 +103,15 @@ describe PipelineSerializer do
       let(:project) { create(:project) }
 
       before do
-        Ci::Pipeline::AVAILABLE_STATUSES.each do |status|
-          create_pipeline(status)
+        # Since RequestStore.active? is true we have to allow the
+        # gitaly calls in this block
+        # Issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/37772
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          Ci::Pipeline::AVAILABLE_STATUSES.each do |status|
+            create_pipeline(status)
+          end
         end
+        Gitlab::GitalyClient.reset_counts
       end
 
       shared_examples 'no N+1 queries' do
@@ -162,7 +168,7 @@ describe PipelineSerializer do
         expect(subject[:text]).to eq(status.text)
         expect(subject[:label]).to eq(status.label)
         expect(subject[:icon]).to eq(status.icon)
-        expect(subject[:favicon]).to eq("/assets/ci_favicons/#{status.favicon}.ico")
+        expect(subject[:favicon]).to match_asset_path("/assets/ci_favicons/#{status.favicon}.ico")
       end
     end
   end

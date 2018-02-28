@@ -18,16 +18,12 @@ class Projects::WikisController < Projects::ApplicationController
       response.headers['Content-Security-Policy'] = "default-src 'none'"
       response.headers['X-Content-Security-Policy'] = "default-src 'none'"
 
-      if file.on_disk?
-        send_file file.on_disk_path, disposition: 'inline'
-      else
-        send_data(
-          file.raw_data,
-          type: file.mime_type,
-          disposition: 'inline',
-          filename: file.name
-        )
-      end
+      send_data(
+        file.raw_data,
+        type: file.mime_type,
+        disposition: 'inline',
+        filename: file.name
+      )
     else
       return render('empty') unless can?(current_user, :create_wiki, @project)
       @page = WikiPage.new(@project_wiki)

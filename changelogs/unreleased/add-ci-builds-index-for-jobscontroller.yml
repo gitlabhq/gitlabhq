@@ -1,0 +1,5 @@
+---
+title: Change index on ci_builds to optimize Jobs Controller
+merge_request:
+author:
+type: other

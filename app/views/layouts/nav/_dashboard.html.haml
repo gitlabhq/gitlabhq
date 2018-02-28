@@ -2,7 +2,7 @@
   = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: { id: 'nav-projects-dropdown', class: "home dropdown header-projects" }) do
     %a{ href: "#", data: { toggle: "dropdown" } }
       Projects
-      = custom_icon('caret_down')
+      = sprite_icon('angle-down', css_class: 'caret-down')
     .dropdown-menu.projects-dropdown-menu
       = render "layouts/nav/projects_dropdown/show"
 
@@ -25,7 +25,7 @@
   %li.header-more.dropdown.hidden-lg
     %a{ href: "#", data: { toggle: "dropdown" } }
       More
-      = custom_icon('caret_down')
+      = sprite_icon('angle-down', css_class: 'caret-down')
     .dropdown-menu
       %ul
         = nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { class: "visible-xs" }) do
@@ -54,7 +54,7 @@
   - if current_user.admin?
     = nav_link(controller: 'admin/dashboard') do
       = link_to admin_root_path, class: 'admin-icon', title: 'Admin area', aria: { label: "Admin area" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-        = icon('wrench fw')
+        = sprite_icon('admin', size: 18)
   - if Gitlab::Sherlock.enabled?
     %li
       = link_to sherlock_transactions_path, class: 'admin-icon', title: 'Sherlock Transactions',

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Merge request awards', js: true do
+feature 'Merge request awards', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }

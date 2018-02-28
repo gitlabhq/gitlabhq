@@ -3,7 +3,7 @@ require 'spec_helper'
 describe DiffNote do
   include RepoHelpers
 
-  let(:merge_request) { create(:merge_request) }
+  let!(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.project }
   let(:commit) { project.commit(sample_commit.id) }
 
@@ -98,14 +98,14 @@ describe DiffNote do
       diff_line = subject.diff_line
 
       expect(diff_line.added?).to be true
-      expect(diff_line.new_line).to eq(position.new_line)
+      expect(diff_line.new_line).to eq(position.formatter.new_line)
       expect(diff_line.text).to eq("+    vars = {")
     end
   end
 
   describe "#line_code" do
     it "returns the correct line code" do
-      line_code = Gitlab::Diff::LineCode.generate(position.file_path, position.new_line, 15)
+      line_code = Gitlab::Diff::LineCode.generate(position.file_path, position.formatter.new_line, 15)
 
       expect(subject.line_code).to eq(line_code)
     end
@@ -253,6 +253,40 @@ describe DiffNote do
           expect(subject.created_at_diff?(merge_request.diff_refs)).to be false
         end
       end
+    end
+  end
+
+  describe "image diff notes" do
+    let(:path) { "files/images/any_image.png" }
+
+    let!(:position) do
+      Gitlab::Diff::Position.new(
+        old_path: path,
+        new_path: path,
+        width: 10,
+        height: 10,
+        x: 1,
+        y: 1,
+        diff_refs: merge_request.diff_refs,
+        position_type: "image"
+      )
+    end
+
+    describe "validations" do
+      subject { build(:diff_note_on_merge_request, project: project, position: position, noteable: merge_request) }
+
+      it { is_expected.not_to validate_presence_of(:line_code) }
+
+      it "does not validate diff line" do
+        diff_line = subject.diff_line
+
+        expect(diff_line).to be nil
+        expect(subject).to be_valid
+      end
+    end
+
+    it "returns true for on_image?" do
+      expect(subject.on_image?).to be_truthy
     end
   end
 end

@@ -1,6 +1,6 @@
 module Ci
   class PipelineScheduleVariable < ActiveRecord::Base
-    extend Ci::Model
+    extend Gitlab::Ci::Model
     include HasVariable
 
     belongs_to :pipeline_schedule

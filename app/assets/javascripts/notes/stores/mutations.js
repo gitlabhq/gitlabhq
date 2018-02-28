@@ -5,15 +5,19 @@ import * as constants from '../constants';
 export default {
   [types.ADD_NEW_NOTE](state, note) {
     const { discussion_id, type } = note;
-    const noteData = {
-      expanded: true,
-      id: discussion_id,
-      individual_note: !(type === constants.DISCUSSION_NOTE),
-      notes: [note],
-      reply_id: discussion_id,
-    };
+    const [exists] = state.notes.filter(n => n.id === note.discussion_id);
 
-    state.notes.push(noteData);
+    if (!exists) {
+      const noteData = {
+        expanded: true,
+        id: discussion_id,
+        individual_note: !(type === constants.DISCUSSION_NOTE),
+        notes: [note],
+        reply_id: discussion_id,
+      };
+
+      state.notes.push(noteData);
+    }
   },
 
   [types.ADD_NEW_REPLY_TO_DISCUSSION](state, note) {

@@ -26,5 +26,9 @@ class EnvironmentEntity < Grape::Entity
       terminal_project_environment_path(environment.project, environment)
   end
 
+  expose :folder_path do |environment|
+    folder_project_environments_path(environment.project, environment.folder_name)
+  end
+
   expose :created_at, :updated_at
 end

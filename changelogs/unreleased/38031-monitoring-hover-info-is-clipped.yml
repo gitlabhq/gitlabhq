@@ -1,0 +1,6 @@
+---
+title: Move the deployment flag content to the left when deployment marker is near
+  the end
+merge_request: 14514
+author:
+type: fixed

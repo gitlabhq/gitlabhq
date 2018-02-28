@@ -29,6 +29,15 @@ module Gitlab
       adapter_name.casecmp('postgresql').zero?
     end
 
+    # Overridden in EE
+    def self.read_only?
+      false
+    end
+
+    def self.read_write?
+      !self.read_only?
+    end
+
     def self.version
       database_version.match(/\A(?:PostgreSQL |)([^\s]+).*\z/)[1]
     end

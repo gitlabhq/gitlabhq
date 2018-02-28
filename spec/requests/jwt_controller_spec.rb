@@ -49,6 +49,10 @@ describe JwtController do
         let(:pat) { create(:personal_access_token, user: user, scopes: ['read_registry']) }
         let(:headers) { { authorization: credentials('personal_access_token', pat.token) } }
 
+        before do
+          stub_container_registry_config(enabled: true)
+        end
+
         subject! { get '/jwt/auth', parameters, headers }
 
         it 'authenticates correctly' do

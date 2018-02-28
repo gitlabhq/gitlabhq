@@ -1,6 +1,5 @@
 <script>
   import { mapGetters } from 'vuex';
-  import iconsMap from './issue_note_icons';
   import issueNoteHeader from './issue_note_header.vue';
 
   export default {
@@ -24,9 +23,9 @@
       isTargetNote() {
         return this.targetNoteHash === this.noteAnchorId;
       },
-    },
-    created() {
-      this.svg = iconsMap[this.note.system_note_icon_name];
+      iconHtml() {
+        return gl.utils.spriteIcon(this.note.system_note_icon_name);
+      },
     },
   };
 </script>
@@ -39,7 +38,7 @@
     <div class="timeline-entry-inner">
       <div
         class="timeline-icon"
-        v-html="svg">
+        v-html="iconHtml">
       </div>
       <div class="timeline-content">
         <div class="note-header">

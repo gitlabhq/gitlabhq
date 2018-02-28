@@ -132,10 +132,10 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def charts
     @charts = {}
-    @charts[:week] = Ci::Charts::WeekChart.new(project)
-    @charts[:month] = Ci::Charts::MonthChart.new(project)
-    @charts[:year] = Ci::Charts::YearChart.new(project)
-    @charts[:pipeline_times] = Ci::Charts::PipelineTime.new(project)
+    @charts[:week] = Gitlab::Ci::Charts::WeekChart.new(project)
+    @charts[:month] = Gitlab::Ci::Charts::MonthChart.new(project)
+    @charts[:year] = Gitlab::Ci::Charts::YearChart.new(project)
+    @charts[:pipeline_times] = Gitlab::Ci::Charts::PipelineTime.new(project)
 
     @counts = {}
     @counts[:total] = @project.pipelines.count(:all)

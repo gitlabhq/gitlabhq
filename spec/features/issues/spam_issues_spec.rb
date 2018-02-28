@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'New issue', js: true do
+describe 'New issue', :js do
   include StubENV
 
   let(:project) { create(:project, :public) }

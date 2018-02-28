@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Group variables', js: true do
+feature 'Group variables', :js do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
 

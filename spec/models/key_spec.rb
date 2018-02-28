@@ -37,30 +37,17 @@ describe Key, :mailer do
     end
 
     describe "#update_last_used_at" do
-      let(:key) { create(:key) }
+      it 'updates the last used timestamp' do
+        key = build(:key)
+        service = double(:service)
 
-      context 'when key was not updated during the last day' do
-        before do
-          allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain)
-            .and_return('000000')
-        end
+        expect(Keys::LastUsedService).to receive(:new)
+          .with(key)
+          .and_return(service)
 
-        it 'enqueues a UseKeyWorker job' do
-          expect(UseKeyWorker).to receive(:perform_async).with(key.id)
-          key.update_last_used_at
-        end
-      end
+        expect(service).to receive(:execute)
 
-      context 'when key was updated during the last day' do
-        before do
-          allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain)
-            .and_return(false)
-        end
-
-        it 'does not enqueue a UseKeyWorker job' do
-          expect(UseKeyWorker).not_to receive(:perform_async)
-          key.update_last_used_at
-        end
+        key.update_last_used_at
       end
     end
   end
@@ -168,17 +155,15 @@ describe Key, :mailer do
     it 'strips white spaces' do
       expect(described_class.new(key: " #{valid_key} ").key).to eq(valid_key)
     end
-  end
 
-  describe 'notification' do
-    let(:user) { create(:user) }
+    it 'invalidates the public_key attribute' do
+      key = build(:key)
 
-    it 'sends a notification' do
-      perform_enqueued_jobs do
-        create(:key, user: user)
-      end
+      original = key.public_key
+      key.key = valid_key
 
-      should_email(user)
+      expect(original.key_text).not_to be_nil
+      expect(key.public_key.key_text).to eq(valid_key)
     end
   end
 end

@@ -5,11 +5,18 @@
     {
       "required" : [
         "stats",
-        "status"
+        "status",
+        "last_pipeline"
       ],
       "properties": {
         "stats": { "$ref": "../commit_stats.json" },
-        "status": { "type": ["string", "null"] }
+        "status": { "type": ["string", "null"] },
+        "last_pipeline": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "../pipeline/basic.json" }
+          ]
+        }
       }
     }
   ]

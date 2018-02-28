@@ -76,7 +76,7 @@ feature 'Integration settings' do
         expect(page).to have_content(url)
       end
 
-      scenario 'test existing webhook', js: true do
+      scenario 'test existing webhook', :js do
         WebMock.stub_request(:post, hook.url)
         visit integrations_path
 

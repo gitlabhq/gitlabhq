@@ -1,14 +1,3 @@
-<template>
-  <div v-if="hasNotebook">
-    <component
-      v-for="(cell, index) in cells"
-      :is="cellType(cell.cell_type)"
-      :cell="cell"
-      :key="index"
-      :code-css-class="codeCssClass" />
-  </div>
-</template>
-
 <script>
   import {
     MarkdownCell,
@@ -58,6 +47,17 @@
     },
   };
 </script>
+
+<template>
+  <div v-if="hasNotebook">
+    <component
+      v-for="(cell, index) in cells"
+      :is="cellType(cell.cell_type)"
+      :cell="cell"
+      :key="index"
+      :code-css-class="codeCssClass" />
+  </div>
+</template>
 
 <style>
 .cell,

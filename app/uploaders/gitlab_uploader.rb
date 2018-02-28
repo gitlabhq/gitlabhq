@@ -51,7 +51,7 @@ class GitlabUploader < CarrierWave::Uploader::Base
   end
 
   def exists?
-    file.try(:exists?)
+    file.present?
   end
 
   # Override this if you don't want to save files by default to the Rails.root directory

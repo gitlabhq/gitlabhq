@@ -207,6 +207,16 @@
 
   &.user-cover-block {
     padding: 24px 0 0;
+
+    .nav-links {
+      justify-content: center;
+      width: 100%;
+      float: none;
+
+      &.scrolling-tabs {
+        float: none;
+      }
+    }
   }
 
   .group-info {
@@ -260,7 +270,7 @@
   position: relative;
   border: 1px solid $blue-300;
   border-radius: $border-radius-default;
-  background-color: $blue-25;
+  background-color: $blue-50;
   justify-content: center;
 
   .dismiss-button {
@@ -317,16 +327,6 @@
     max-width: 460px;
     margin: 0 auto;
     padding: $gl-padding;
-  }
-
-  .svg-content {
-    text-align: center;
-
-    svg {
-      max-width: 425px;
-      width: 100%;
-      padding: $gl-padding;
-    }
   }
 
   .emoji-icon {

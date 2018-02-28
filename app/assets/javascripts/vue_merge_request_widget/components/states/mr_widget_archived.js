@@ -11,7 +11,7 @@ export default {
         <status-icon status="failed" />
         <button
           type="button"
-          class="btn btn-success btn-small"
+          class="btn btn-success btn-sm"
           disabled="true">
           Merge
         </button>

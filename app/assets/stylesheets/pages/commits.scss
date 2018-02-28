@@ -54,10 +54,13 @@
   .mr-widget-pipeline-graph {
     display: inline-block;
     vertical-align: middle;
-    margin-right: 4px;
 
     .stage-cell .stage-container {
       margin: 3px 3px 3px 0;
+    }
+
+    .stage-container:last-child {
+      margin-right: 0;
     }
 
     .dropdown-menu {

@@ -22,8 +22,7 @@ class Admin::ApplicationsController < Admin::ApplicationController
     @application = Doorkeeper::Application.new(application_params)
 
     if @application.save
-      flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
-      redirect_to admin_application_url(@application)
+      redirect_to_admin_page
     else
       render :new
     end
@@ -40,6 +39,13 @@ class Admin::ApplicationsController < Admin::ApplicationController
   def destroy
     @application.destroy
     redirect_to admin_applications_url, status: 302, notice: 'Application was successfully destroyed.'
+  end
+
+  protected
+
+  def redirect_to_admin_page
+    flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
+    redirect_to admin_application_url(@application)
   end
 
   private

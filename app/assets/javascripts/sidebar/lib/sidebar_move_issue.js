@@ -38,7 +38,7 @@ class SidebarMoveIssue {
       data: (searchTerm, callback) => {
         this.mediator.fetchAutocompleteProjects(searchTerm)
           .then(callback)
-          .catch(() => new Flash('An error occured while fetching projects autocomplete.'));
+          .catch(() => new Flash('An error occurred while fetching projects autocomplete.'));
       },
       renderRow: project => `
         <li>
@@ -73,7 +73,7 @@ class SidebarMoveIssue {
 
       this.mediator.moveIssue()
         .catch(() => {
-          Flash('An error occured while moving the issue.');
+          Flash('An error occurred while moving the issue.');
           this.$confirmButton
             .enable()
             .removeClass('is-loading');

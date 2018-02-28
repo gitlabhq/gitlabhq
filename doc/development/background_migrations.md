@@ -215,20 +215,44 @@ same time will ensure that both existing and new data is migrated.
 
 In the next release we can remove the `after_commit` hooks and related code. We
 will also need to add a post-deployment migration that consumes any remaining
-jobs. Such a migration would look like this:
+jobs and manually run on any un-migrated rows. Such a migration would look like
+this:
 
 ```ruby
 class ConsumeRemainingExtractServicesUrlJobs < ActiveRecord::Migration
   disable_ddl_transaction!
 
+  class Service < ActiveRecord::Base
+    include ::EachBatch
+
+    self.table_name = 'services'
+  end
+
   def up
+    # This must be included
     Gitlab::BackgroundMigration.steal('ExtractServicesUrl')
+
+    # This should be included, but can be skipped - see below
+    Service.where(url: nil).each_batch(of: 50) do |batch|
+      range = batch.pluck('MIN(id)', 'MAX(id)').first
+
+      Gitlab::BackgroundMigration::ExtractServicesUrl.new.perform(*range)
+    end
   end
 
   def down
   end
 end
 ```
+
+The final step runs for any un-migrated rows after all of the jobs have been
+processed. This is in case a Sidekiq process running the background migrations
+received SIGKILL, leading to the jobs being lost. (See
+[more reliable Sidekiq queue][reliable-sidekiq] for more information.)
+
+If the application does not depend on the data being 100% migrated (for
+instance, the data is advisory, and not mission-critical), then this final step
+can be skipped.
 
 This migration will then process any jobs for the ExtractServicesUrl migration
 and continue once all jobs have been processed. Once done you can safely remove
@@ -254,6 +278,9 @@ for more details.
 
 1. Make sure that background migration jobs are idempotent.
 1. Make sure that tests you write are not false positives.
+1. Make sure that if the data being migrated is critical and cannot be lost, the
+   clean-up migration also checks the final state of the data before completing.
 
 [migrations-readme]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/migrations/README.md
 [issue-rspec-hooks]: https://gitlab.com/gitlab-org/gitlab-ce/issues/35351
+[reliable-sidekiq]: https://gitlab.com/gitlab-org/gitlab-ce/issues/36791

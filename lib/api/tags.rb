@@ -11,18 +11,18 @@ module API
     end
     resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get a project repository tags' do
-        success Entities::RepoTag
+        success Entities::Tag
       end
       params do
         use :pagination
       end
       get ':id/repository/tags' do
         tags = ::Kaminari.paginate_array(user_project.repository.tags.sort_by(&:name).reverse)
-        present paginate(tags), with: Entities::RepoTag, project: user_project
+        present paginate(tags), with: Entities::Tag, project: user_project
       end
 
       desc 'Get a single repository tag' do
-        success Entities::RepoTag
+        success Entities::Tag
       end
       params do
         requires :tag_name, type: String, desc: 'The name of the tag'
@@ -31,11 +31,11 @@ module API
         tag = user_project.repository.find_tag(params[:tag_name])
         not_found!('Tag') unless tag
 
-        present tag, with: Entities::RepoTag, project: user_project
+        present tag, with: Entities::Tag, project: user_project
       end
 
       desc 'Create a new repository tag' do
-        success Entities::RepoTag
+        success Entities::Tag
       end
       params do
         requires :tag_name,            type: String, desc: 'The name of the tag'
@@ -51,7 +51,7 @@ module API
 
         if result[:status] == :success
           present result[:tag],
-                  with: Entities::RepoTag,
+                  with: Entities::Tag,
                   project: user_project
         else
           render_api_error!(result[:message], 400)

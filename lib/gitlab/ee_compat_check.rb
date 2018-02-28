@@ -2,7 +2,7 @@
 module Gitlab
   # Checks if a set of migrations requires downtime or not.
   class EeCompatCheck
-    CE_REPO = 'https://gitlab.com/gitlab-org/gitlab-ce.git'.freeze
+    DEFAULT_CE_REPO = 'https://gitlab.com/gitlab-org/gitlab-ce.git'.freeze
     EE_REPO = 'https://gitlab.com/gitlab-org/gitlab-ee.git'.freeze
     CHECK_DIR = Rails.root.join('ee_compat_check')
     IGNORED_FILES_REGEX = /(VERSION|CHANGELOG\.md:\d+)/.freeze
@@ -20,7 +20,7 @@ module Gitlab
     attr_reader :ee_repo_dir, :patches_dir, :ce_repo, :ce_branch, :ee_branch_found
     attr_reader :failed_files
 
-    def initialize(branch:, ce_repo: CE_REPO)
+    def initialize(branch:, ce_repo: DEFAULT_CE_REPO)
       @ee_repo_dir = CHECK_DIR.join('ee-repo')
       @patches_dir = CHECK_DIR.join('patches')
       @ce_branch = branch
@@ -132,7 +132,7 @@ module Gitlab
     def check_patch(patch_path)
       step("Checking out master", %w[git checkout master])
       step("Resetting to latest master", %w[git reset --hard origin/master])
-      step("Fetching CE/#{ce_branch}", %W[git fetch #{CE_REPO} #{ce_branch}])
+      step("Fetching CE/#{ce_branch}", %W[git fetch #{ce_repo} #{ce_branch}])
       step(
         "Checking if #{patch_path} applies cleanly to EE/master",
         # Don't use --check here because it can result in a 0-exit status even
@@ -284,13 +284,18 @@ module Gitlab
         EE/master, and no `#{ee_branch_prefix}` or `#{ee_branch_suffix}` branch
         was found in the EE repository.
 
+        If you're a community contributor, don't worry, someone from
+        GitLab Inc. will take care of this, and you don't have to do anything.
+        If you're willing to help, and are ok to contribute to EE as well,
+        you're welcome to help. You could follow the instructions below.
+
         #{conflicting_files_msg}
 
         We advise you to create a `#{ee_branch_prefix}` or `#{ee_branch_suffix}`
         branch that includes changes from `#{ce_branch}` but also specific changes
         than can be applied cleanly to EE/master. In some cases, the conflicts
         are trivial and you can ignore the warning from this job. As always,
-        use your best judgment!
+        use your best judgement!
 
         There are different ways to create such branch:
 

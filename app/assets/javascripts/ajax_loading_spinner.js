@@ -1,4 +1,4 @@
-class AjaxLoadingSpinner {
+export default class AjaxLoadingSpinner {
   static init() {
     const $elements = $('.js-ajax-loading-spinner');
 
@@ -30,6 +30,3 @@ class AjaxLoadingSpinner {
     classList.toggle('fa-spin');
   }
 }
-
-window.gl = window.gl || {};
-gl.AjaxLoadingSpinner = AjaxLoadingSpinner;

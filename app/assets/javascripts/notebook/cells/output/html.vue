@@ -1,10 +1,3 @@
-<template>
-  <div class="output">
-    <prompt />
-    <div v-html="rawCode"></div>
-  </div>
-</template>
-
 <script>
 import Prompt from '../prompt.vue';
 
@@ -20,3 +13,10 @@ export default {
   },
 };
 </script>
+
+<template>
+  <div class="output">
+    <prompt />
+    <div v-html="rawCode"></div>
+  </div>
+</template>

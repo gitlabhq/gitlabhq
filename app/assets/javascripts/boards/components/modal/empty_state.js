@@ -8,11 +8,11 @@ gl.issueBoards.ModalEmptyState = Vue.extend({
     return ModalStore.store;
   },
   props: {
-    image: {
+    newIssuePath: {
       type: String,
       required: true,
     },
-    newIssuePath: {
+    emptyStateSvg: {
       type: String,
       required: true,
     },
@@ -42,7 +42,7 @@ gl.issueBoards.ModalEmptyState = Vue.extend({
     <section class="empty-state">
       <div class="row">
         <div class="col-xs-12 col-sm-6 col-sm-push-6">
-          <aside class="svg-content" v-html="image"></aside>
+          <aside class="svg-content"><img :src="emptyStateSvg"/></aside>
         </div>
         <div class="col-xs-12 col-sm-6 col-sm-pull-6">
           <div class="text-content">

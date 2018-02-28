@@ -13,7 +13,7 @@ feature 'User wants to add a .gitignore file' do
     expect(page).to have_css('.gitignore-selector')
   end
 
-  scenario 'user can pick a .gitignore file from the dropdown', js: true do
+  scenario 'user can pick a .gitignore file from the dropdown', :js do
     find('.js-gitignore-selector').click
     wait_for_requests
     within '.gitignore-selector' do

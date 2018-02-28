@@ -9,6 +9,7 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   delegate :actor, :authentication_abilities, to: :authentication_result, allow_nil: true
 
   alias_method :user, :actor
+  alias_method :authenticated_user, :actor
 
   # Git clients will not know what authenticity token to send along
   skip_before_action :verify_authenticity_token

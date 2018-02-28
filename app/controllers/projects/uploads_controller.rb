@@ -28,7 +28,7 @@ class Projects::UploadsController < Projects::ApplicationController
   end
 
   def image_or_video?
-    uploader && uploader.file.exists? && uploader.image_or_video?
+    uploader && uploader.exists? && uploader.image_or_video?
   end
 
   def uploader_class

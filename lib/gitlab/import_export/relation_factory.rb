@@ -8,6 +8,8 @@ module Gitlab
                     triggers: 'Ci::Trigger',
                     pipeline_schedules: 'Ci::PipelineSchedule',
                     builds: 'Ci::Build',
+                    cluster: 'Gcp::Cluster',
+                    clusters: 'Gcp::Cluster',
                     hooks: 'ProjectHook',
                     merge_access_levels: 'ProtectedBranch::MergeAccessLevel',
                     push_access_levels: 'ProtectedBranch::PushAccessLevel',

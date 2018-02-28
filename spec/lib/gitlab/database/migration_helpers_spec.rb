@@ -914,4 +914,126 @@ describe Gitlab::Database::MigrationHelpers do
         .to raise_error(RuntimeError, /Your database user is not allowed/)
     end
   end
+
+  describe '#bulk_queue_background_migration_jobs_by_range', :sidekiq do
+    context 'when the model has an ID column' do
+      let!(:id1) { create(:user).id }
+      let!(:id2) { create(:user).id }
+      let!(:id3) { create(:user).id }
+
+      before do
+        User.class_eval do
+          include EachBatch
+        end
+      end
+
+      context 'with enough rows to bulk queue jobs more than once' do
+        before do
+          stub_const('Gitlab::Database::MigrationHelpers::BACKGROUND_MIGRATION_JOB_BUFFER_SIZE', 1)
+        end
+
+        it 'queues jobs correctly' do
+          Sidekiq::Testing.fake! do
+            model.bulk_queue_background_migration_jobs_by_range(User, 'FooJob', batch_size: 2)
+
+            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id2]])
+            expect(BackgroundMigrationWorker.jobs[1]['args']).to eq(['FooJob', [id3, id3]])
+          end
+        end
+
+        it 'queues jobs in groups of buffer size 1' do
+          expect(BackgroundMigrationWorker).to receive(:perform_bulk).with([['FooJob', [id1, id2]]])
+          expect(BackgroundMigrationWorker).to receive(:perform_bulk).with([['FooJob', [id3, id3]]])
+
+          model.bulk_queue_background_migration_jobs_by_range(User, 'FooJob', batch_size: 2)
+        end
+      end
+
+      context 'with not enough rows to bulk queue jobs more than once' do
+        it 'queues jobs correctly' do
+          Sidekiq::Testing.fake! do
+            model.bulk_queue_background_migration_jobs_by_range(User, 'FooJob', batch_size: 2)
+
+            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id2]])
+            expect(BackgroundMigrationWorker.jobs[1]['args']).to eq(['FooJob', [id3, id3]])
+          end
+        end
+
+        it 'queues jobs in bulk all at once (big buffer size)' do
+          expect(BackgroundMigrationWorker).to receive(:perform_bulk).with([['FooJob', [id1, id2]],
+                                                                            ['FooJob', [id3, id3]]])
+
+          model.bulk_queue_background_migration_jobs_by_range(User, 'FooJob', batch_size: 2)
+        end
+      end
+
+      context 'without specifying batch_size' do
+        it 'queues jobs correctly' do
+          Sidekiq::Testing.fake! do
+            model.bulk_queue_background_migration_jobs_by_range(User, 'FooJob')
+
+            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id3]])
+          end
+        end
+      end
+    end
+
+    context "when the model doesn't have an ID column" do
+      it 'raises error (for now)' do
+        expect do
+          model.bulk_queue_background_migration_jobs_by_range(ProjectAuthorization, 'FooJob')
+        end.to raise_error(StandardError, /does not have an ID/)
+      end
+    end
+  end
+
+  describe '#queue_background_migration_jobs_by_range_at_intervals', :sidekiq do
+    context 'when the model has an ID column' do
+      let!(:id1) { create(:user).id }
+      let!(:id2) { create(:user).id }
+      let!(:id3) { create(:user).id }
+
+      around do |example|
+        Timecop.freeze { example.run }
+      end
+
+      before do
+        User.class_eval do
+          include EachBatch
+        end
+      end
+
+      context 'with batch_size option' do
+        it 'queues jobs correctly' do
+          Sidekiq::Testing.fake! do
+            model.queue_background_migration_jobs_by_range_at_intervals(User, 'FooJob', 10.seconds, batch_size: 2)
+
+            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id2]])
+            expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(10.seconds.from_now.to_f)
+            expect(BackgroundMigrationWorker.jobs[1]['args']).to eq(['FooJob', [id3, id3]])
+            expect(BackgroundMigrationWorker.jobs[1]['at']).to eq(20.seconds.from_now.to_f)
+          end
+        end
+      end
+
+      context 'without batch_size option' do
+        it 'queues jobs correctly' do
+          Sidekiq::Testing.fake! do
+            model.queue_background_migration_jobs_by_range_at_intervals(User, 'FooJob', 10.seconds)
+
+            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id3]])
+            expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(10.seconds.from_now.to_f)
+          end
+        end
+      end
+    end
+
+    context "when the model doesn't have an ID column" do
+      it 'raises error (for now)' do
+        expect do
+          model.queue_background_migration_jobs_by_range_at_intervals(ProjectAuthorization, 'FooJob', 10.seconds)
+        end.to raise_error(StandardError, /does not have an ID/)
+      end
+    end
+  end
 end

@@ -56,7 +56,8 @@ module Gitlab
         name: project_path,
         path: project_path,
         repository_storage: storage_name,
-        namespace_id: group&.id
+        namespace_id: group&.id,
+        skip_disk_validation: true
       }
 
       project = Projects::CreateService.new(user, project_params).execute

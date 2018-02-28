@@ -1,0 +1,5 @@
+---
+title: Display full pre-receive and post-receive hook output in GitLab UI
+merge_request: 14222
+author: Robin Bobbitt
+type: fixed

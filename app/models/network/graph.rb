@@ -61,8 +61,11 @@ module Network
         @reserved[i] = []
       end
 
-      commits_sort_by_ref.each do |commit|
-        place_chain(commit)
+      # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37436
+      Gitlab::GitalyClient.allow_n_plus_1_calls do
+        commits_sort_by_ref.each do |commit|
+          place_chain(commit)
+        end
       end
 
       # find parent spaces for not overlap lines

@@ -1,0 +1,5 @@
+---
+title: Fix username and ID not logging in production_json.log for Git activity
+merge_request:
+author:
+type: fixed

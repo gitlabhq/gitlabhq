@@ -1,21 +1,24 @@
 <script>
-import pipelinesEmptyStateSVG from 'empty_states/icons/_pipelines_empty.svg';
-
 export default {
   props: {
     helpPagePath: {
       type: String,
       required: true,
     },
+    emptyStateSvgPath: {
+      type: String,
+      required: true,
+    },
   },
-  data: () => ({ pipelinesEmptyStateSVG }),
 };
 </script>
 
 <template>
   <div class="row empty-state js-empty-state">
     <div class="col-xs-12">
-      <div class="svg-content" v-html="pipelinesEmptyStateSVG" />
+      <div class="svg-content">
+        <img :src="emptyStateSvgPath"/>
+      </div>
     </div>
 
     <div class="col-xs-12 text-center">

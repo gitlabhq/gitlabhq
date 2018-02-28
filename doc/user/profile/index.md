@@ -8,10 +8,27 @@ experience according to the best approach to their cases.
 Your `username` is a unique [`namespace`](../group/index.md#namespaces)
 related to your user ID.
 
+### Changing your username
+
 You can change your `username` from your
-[profile settings](#profile-settings). To avoid breaking
-paths when you change your `username`, we suggest you follow
-[this procedure from the GitLab Team Handbook](https://about.gitlab.com/handbook/tools-and-tips/#how-to-change-your-username-at-gitlabcom).
+[profile settings](#profile-settings).
+
+> **Note:** If you want to retain ownership over the original namespace and
+protect the URL redirects, then instead of changing your username, you can
+create a new group and transfer projects to it.
+Alternatively, you can follow [this detailed procedure from the GitLab Team Handbook](https://about.gitlab.com/handbook/tools-and-tips/#how-to-change-your-username-at-gitlabcom).
+
+Changing your username can have unintended side effects.
+
+* Existing web URLs for the user and anything under it (i.e. projects) will
+redirect to the new URLs
+* Existing Git remote URLs for projects under the user will no longer work, but
+Git responses will show an error with the new remote URL
+* The original namespace can be claimed again by any group or user, which will
+destroy any web redirects and Git remote warnings
+
+> It is currently not possible to rename a namespace if it contains a
+project with container registry tags, because the project cannot be moved.
 
 ## User profile
 

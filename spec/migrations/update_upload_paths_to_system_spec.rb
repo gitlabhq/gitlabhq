@@ -31,7 +31,7 @@ describe UpdateUploadPathsToSystem do
     end
   end
 
-  describe "#up", truncate: true do
+  describe "#up", :truncate do
     it "updates old upload records to the new path" do
       old_upload = create(:upload, model: create(:project), path: "uploads/project/avatar.jpg")
 
@@ -41,7 +41,7 @@ describe UpdateUploadPathsToSystem do
     end
   end
 
-  describe "#down", truncate: true do
+  describe "#down", :truncate do
     it "updates the new system patsh to the old paths" do
       new_upload = create(:upload, model: create(:project), path: "uploads/-/system/project/avatar.jpg")
 

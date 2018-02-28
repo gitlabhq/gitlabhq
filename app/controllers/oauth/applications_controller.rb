@@ -21,12 +21,18 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
     @application.owner = current_user
 
     if @application.save
-      flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
-      redirect_to oauth_application_url(@application)
+      redirect_to_oauth_application_page
     else
       set_index_vars
       render :index
     end
+  end
+
+  protected
+
+  def redirect_to_oauth_application_page
+    flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
+    redirect_to oauth_application_url(@application)
   end
 
   private

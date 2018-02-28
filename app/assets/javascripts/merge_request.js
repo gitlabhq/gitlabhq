@@ -127,6 +127,21 @@ import IssuablesHelper from './helpers/issuables_helper';
       $el.text(gl.text.addDelimiter(count));
     };
 
+    MergeRequest.prototype.hideCloseButton = function() {
+      const el = document.querySelector('.merge-request .issuable-actions');
+      const closeDropdownItem = el.querySelector('li.close-item');
+      if (closeDropdownItem) {
+        closeDropdownItem.classList.add('hidden');
+        // Selects the next dropdown item
+        el.querySelector('li.report-item').click();
+      } else {
+        // No dropdown just hide the Close button
+        el.querySelector('.btn-close').classList.add('hidden');
+      }
+      // Dropdown for mobile screen
+      el.querySelector('li.js-close-item').classList.add('hidden');
+    };
+
     return MergeRequest;
   })();
 }).call(window);

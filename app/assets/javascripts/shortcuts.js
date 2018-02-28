@@ -1,6 +1,7 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, prefer-arrow-callback, consistent-return, object-shorthand, no-unused-vars, one-var, one-var-declaration-per-line, no-else-return, comma-dangle, max-len */
 /* global Mousetrap */
 import Cookies from 'js-cookie';
+import Mousetrap from 'mousetrap';
 
 import findAndFollowLink from './shortcuts_dashboard_navigation';
 
@@ -17,22 +18,7 @@ import findAndFollowLink from './shortcuts_dashboard_navigation';
       Mousetrap.bind('f', (e => this.focusFilter(e)));
       Mousetrap.bind('p b', this.onTogglePerfBar);
 
-      const $globalDropdownMenu = $('.global-dropdown-menu');
-      const $globalDropdownToggle = $('.global-dropdown-toggle');
       const findFileURL = document.body.dataset.findFile;
-
-      $('.global-dropdown').on('hide.bs.dropdown', () => {
-        $globalDropdownMenu.removeClass('shortcuts');
-      });
-
-      Mousetrap.bind('n', () => {
-        $globalDropdownMenu.toggleClass('shortcuts');
-        $globalDropdownToggle.trigger('click');
-
-        if (!$globalDropdownMenu.is(':visible')) {
-          $globalDropdownToggle.blur();
-        }
-      });
 
       Mousetrap.bind('shift+t', () => findAndFollowLink('.shortcuts-todos'));
       Mousetrap.bind('shift+a', () => findAndFollowLink('.dashboard-shortcuts-activity'));

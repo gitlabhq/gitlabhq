@@ -115,7 +115,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects, :tr
     end
   end
 
-  describe '#revert_renames', redis: true do
+  describe '#revert_renames', :redis do
     it 'renames the routes back to the previous values' do
       subject.rename_project(project)
 

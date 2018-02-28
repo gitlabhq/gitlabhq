@@ -367,5 +367,20 @@ describe Projects::BranchesController do
         expect(parsed_response.first).to eq 'master'
       end
     end
+
+    context 'when branch contains an invalid UTF-8 sequence' do
+      before do
+        project.repository.create_branch("wrong-\xE5-utf8-sequence")
+      end
+
+      it 'return with a status 200' do
+        get :index,
+            namespace_id: project.namespace,
+            project_id: project,
+            format: :html
+
+        expect(response).to have_http_status(200)
+      end
+    end
   end
 end

@@ -14,9 +14,12 @@ const createComponent = () => {
     canRevertInCurrentMR: true,
     canRemoveSourceBranch: true,
     sourceBranchRemoved: true,
-    mergedBy: {},
-    mergedAt: '',
-    updatedAt: '',
+    mergedEvent: {
+      author: {},
+      updatedAt: 'mergedUpdatedAt',
+      formattedUpdatedAt: '',
+    },
+    updatedAt: 'mrUpdatedAt',
     targetBranch,
   };
 
@@ -169,6 +172,12 @@ describe('MRWidgetMerged', () => {
         expect(el.innerText).not.toContain('The source branch has been removed');
         done();
       });
+    });
+
+    it('should use mergedEvent updatedAt as tooltip title', () => {
+      expect(
+        el.querySelector('time').getAttribute('title'),
+      ).toBe('mergedUpdatedAt');
     });
   });
 });

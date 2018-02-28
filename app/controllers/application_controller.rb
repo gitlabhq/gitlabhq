@@ -25,6 +25,8 @@ class ApplicationController < ActionController::Base
 
   around_action :set_locale
 
+  after_action :set_page_title_header, if: -> { request.format == :json }
+
   protect_from_forgery with: :exception
 
   helper_method :can?, :current_application_settings
@@ -83,10 +85,19 @@ class ApplicationController < ActionController::Base
     super
     payload[:remote_ip] = request.remote_ip
 
-    if current_user.present?
-      payload[:user_id] = current_user.id
-      payload[:username] = current_user.username
+    logged_user = auth_user
+
+    if logged_user.present?
+      payload[:user_id] = logged_user.try(:id)
+      payload[:username] = logged_user.try(:username)
     end
+  end
+
+  # Controllers such as GitHttpController may use alternative methods
+  # (e.g. tokens) to authenticate the user, whereas Devise sets current_user
+  def auth_user
+    return current_user if current_user.present?
+    return try(:authenticated_user)
   end
 
   # This filter handles both private tokens and personal access tokens
@@ -334,5 +345,10 @@ class ApplicationController < ActionController::Base
       # sign in token, you can simply remove store: false.
       sign_in user, store: false
     end
+  end
+
+  def set_page_title_header
+    # Per https://tools.ietf.org/html/rfc5987, headers need to be ISO-8859-1, not UTF-8
+    response.headers['Page-Title'] = page_title('GitLab').encode('ISO-8859-1')
   end
 end

@@ -79,7 +79,7 @@ module Backup
             # - 1495527122_gitlab_backup.tar
             # - 1495527068_2017_05_23_gitlab_backup.tar
             # - 1495527097_2017_05_23_9.3.0-pre_gitlab_backup.tar
-            next unless file =~ /(\d+)(?:_\d{4}_\d{2}_\d{2}(_\d+\.\d+\.\d+.*)?)?_gitlab_backup\.tar$/
+            next unless file =~ /^(\d{10})(?:_\d{4}_\d{2}_\d{2}(_\d+\.\d+\.\d+((-|\.)(pre|rc\d))?(-ee)?)?)?_gitlab_backup\.tar$/
 
             timestamp = $1.to_i
 

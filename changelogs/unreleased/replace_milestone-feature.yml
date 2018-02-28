@@ -1,0 +1,5 @@
+---
+title: Replace the project/milestone.feature spinach test with an rspec analog
+merge_request: 14171
+author: Vitaliy @blackst0ne Klachkov
+type: other

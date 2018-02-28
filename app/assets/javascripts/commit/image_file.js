@@ -1,4 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-use-before-define, prefer-arrow-callback, no-else-return, consistent-return, prefer-template, quotes, one-var, one-var-declaration-per-line, no-unused-vars, no-return-assign, comma-dangle, quote-props, no-unused-expressions, no-sequences, object-shorthand, max-len */
+import 'vendor/jquery.waitforimages';
+
 (function() {
   gl.ImageFile = (function() {
     var prepareFrames;
@@ -11,14 +13,17 @@
     function ImageFile(file) {
       this.file = file;
       this.requestImageInfo($('.two-up.view .frame.deleted img', this.file), (function(_this) {
-        // Determine if old and new file has same dimensions, if not show 'two-up' view
         return function(deletedWidth, deletedHeight) {
           return _this.requestImageInfo($('.two-up.view .frame.added img', _this.file), function(width, height) {
-            if (width === deletedWidth && height === deletedHeight) {
-              return _this.initViewModes();
-            } else {
-              return _this.initView('two-up');
-            }
+            _this.initViewModes();
+
+            // Load two-up view after images are loaded
+            // so that we can display the correct width and height information
+            const $images = $('.two-up.view img', _this.file);
+
+            $images.waitForImages(function() {
+              _this.initView('two-up');
+            });
           });
         };
       })(this));
@@ -134,8 +139,9 @@
               width: maxWidth + 1,
               height: maxHeight + 2
             });
+            // Set swipeBar left position to match image frame
             $swipeBar.css({
-              left: 0
+              left: 1
             });
 
             wrapPadding = parseInt($swipeWrap.css('right').replace('px', ''), 10);

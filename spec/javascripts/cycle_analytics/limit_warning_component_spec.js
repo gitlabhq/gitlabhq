@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Translate from '~/vue_shared/translate';
-import limitWarningComp from '~/cycle_analytics/components/limit_warning_component';
+import limitWarningComp from '~/cycle_analytics/components/limit_warning_component.vue';
 
 Vue.use(Translate);
 

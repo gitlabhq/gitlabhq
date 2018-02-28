@@ -1,6 +1,7 @@
 module Github
   class Client
     TIMEOUT = 60
+    DEFAULT_PER_PAGE = 100
 
     attr_reader :connection, :rate_limit
 
@@ -20,7 +21,7 @@ module Github
       exceed, reset_in = rate_limit.get
       sleep reset_in if exceed
 
-      Github::Response.new(connection.get(url, query))
+      Github::Response.new(connection.get(url, { per_page: DEFAULT_PER_PAGE }.merge(query)))
     end
 
     private

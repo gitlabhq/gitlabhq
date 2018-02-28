@@ -428,7 +428,7 @@ is a good example of this pattern.
 
 ## Style guide
 
-Please refer to the Vue section of our [style guide](style_guide_js.md#vuejs)
+Please refer to the Vue section of our [style guide](style_guide_js.md#vue-js)
 for best practices while writing your Vue components and templates.
 
 ## Testing Vue Components

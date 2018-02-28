@@ -20,15 +20,12 @@
             - if can_edit_tree?
               %li
                 = link_to project_new_blob_path(@project, @id) do
-                  = icon('pencil fw')
                   #{ _('New file') }
               %li
                 = link_to '#modal-upload-blob', { 'data-target' => '#modal-upload-blob', 'data-toggle' => 'modal' } do
-                  = icon('file fw')
                   #{ _('Upload file') }
               %li
                 = link_to '#modal-create-new-dir', { 'data-target' => '#modal-create-new-dir', 'data-toggle' => 'modal' } do
-                  = icon('folder fw')
                   #{ _('New directory') }
             - elsif can?(current_user, :fork_project, @project)
               %li
@@ -38,7 +35,6 @@
                 - fork_path = project_forks_path(@project, namespace_key:  current_user.namespace.id,
                                                                                         continue:       continue_params)
                 = link_to fork_path, method: :post do
-                  = icon('pencil fw')
                   #{ _('New file') }
               %li
                 - continue_params = { to:         request.fullpath,
@@ -47,7 +43,6 @@
                 - fork_path = project_forks_path(@project, namespace_key:  current_user.namespace.id,
                                                                                         continue:       continue_params)
                 = link_to fork_path, method: :post do
-                  = icon('file fw')
                   #{ _('Upload file') }
               %li
                 - continue_params = { to:         request.fullpath,
@@ -56,15 +51,12 @@
                 - fork_path = project_forks_path(@project, namespace_key:  current_user.namespace.id,
                                                                                         continue:       continue_params)
                 = link_to fork_path, method: :post do
-                  = icon('folder fw')
                   #{ _('New directory') }
 
             %li.divider
             %li
               = link_to new_project_branch_path(@project) do
-                = icon('code-fork fw')
                 #{ _('New branch') }
             %li
               = link_to new_project_tag_path(@project) do
-                = icon('tags fw')
                 #{ _('New tag') }

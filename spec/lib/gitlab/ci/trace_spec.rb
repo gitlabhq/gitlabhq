@@ -61,6 +61,93 @@ describe Gitlab::Ci::Trace do
     end
   end
 
+  describe '#extract_sections' do
+    let(:log) { 'No sections' }
+    let(:sections) { trace.extract_sections }
+
+    before do
+      trace.set(log)
+    end
+
+    context 'no sections' do
+      it 'returs []' do
+        expect(trace.extract_sections).to eq([])
+      end
+    end
+
+    context 'multiple sections available' do
+      let(:log) { File.read(expand_fixture_path('trace/trace_with_sections')) }
+      let(:sections_data) do
+        [
+          { name: 'prepare_script', lines: 2, duration: 3.seconds },
+          { name: 'get_sources', lines: 4, duration: 1.second },
+          { name: 'restore_cache', lines: 0, duration: 0.seconds },
+          { name: 'download_artifacts', lines: 0, duration: 0.seconds },
+          { name: 'build_script', lines: 2, duration: 1.second },
+          { name: 'after_script', lines: 0, duration: 0.seconds },
+          { name: 'archive_cache', lines: 0, duration: 0.seconds },
+          { name: 'upload_artifacts', lines: 0, duration: 0.seconds }
+        ]
+      end
+
+      it "returns valid sections" do
+        expect(sections).not_to be_empty
+        expect(sections.size).to eq(sections_data.size),
+                                 "expected #{sections_data.size} sections, got #{sections.size}"
+
+        buff = StringIO.new(log)
+        sections.each_with_index do |s, i|
+          expected = sections_data[i]
+
+          expect(s[:name]).to eq(expected[:name])
+          expect(s[:date_end] - s[:date_start]).to eq(expected[:duration])
+
+          buff.seek(s[:byte_start], IO::SEEK_SET)
+          length = s[:byte_end] - s[:byte_start]
+          lines = buff.read(length).count("\n")
+          expect(lines).to eq(expected[:lines])
+        end
+      end
+    end
+
+    context 'logs contains "section_start"' do
+      let(:log) { "section_start:1506417476:a_section\r\033[0Klooks like a section_start:invalid\nsection_end:1506417477:a_section\r\033[0K"}
+
+      it "returns only one section" do
+        expect(sections).not_to be_empty
+        expect(sections.size).to eq(1)
+
+        section = sections[0]
+        expect(section[:name]).to eq('a_section')
+        expect(section[:byte_start]).not_to eq(section[:byte_end]), "got an empty section"
+      end
+    end
+
+    context 'missing section_end' do
+      let(:log) { "section_start:1506417476:a_section\r\033[0KSome logs\nNo section_end\n"}
+
+      it "returns no sections" do
+        expect(sections).to be_empty
+      end
+    end
+
+    context 'missing section_start' do
+      let(:log) { "Some logs\nNo section_start\nsection_end:1506417476:a_section\r\033[0K"}
+
+      it "returns no sections" do
+        expect(sections).to be_empty
+      end
+    end
+
+    context 'inverted section_start section_end' do
+      let(:log) { "section_end:1506417476:a_section\r\033[0Klooks like a section_start:invalid\nsection_start:1506417477:a_section\r\033[0K"}
+
+      it "returns no sections" do
+        expect(sections).to be_empty
+      end
+    end
+  end
+
   describe '#set' do
     before do
       trace.set("12")

@@ -79,10 +79,26 @@ describe Gitlab::Middleware::Go do
           it_behaves_like 'a nested project'
         end
 
+        context 'with a subpackage that is not a valid project path' do
+          let(:path) { "#{project.full_path}/---subpackage" }
+
+          it_behaves_like 'a nested project'
+        end
+
         context 'without subpackages' do
           let(:path) { project.full_path }
 
           it_behaves_like 'a nested project'
+        end
+      end
+
+      context 'with a bogus path' do
+        let(:path) { "http:;url=http:&sol;&sol;www.example.com'http-equiv='refresh'x='?go-get=1" }
+
+        it 'skips go-import generation' do
+          expect(app).to receive(:call).and_return('no-go')
+
+          go
         end
       end
     end
@@ -100,7 +116,7 @@ describe Gitlab::Middleware::Go do
     def expect_response_with_path(response, path)
       expect(response[0]).to eq(200)
       expect(response[1]['Content-Type']).to eq('text/html')
-      expected_body = "<!DOCTYPE html><html><head><meta content='#{Gitlab.config.gitlab.host}/#{path} git http://#{Gitlab.config.gitlab.host}/#{path}.git' name='go-import'></head></html>\n"
+      expected_body = %{<html><head><meta name="go-import" content="#{Gitlab.config.gitlab.host}/#{path} git http://#{Gitlab.config.gitlab.host}/#{path}.git" /></head></html>}
       expect(response[2].body).to eq([expected_body])
     end
   end

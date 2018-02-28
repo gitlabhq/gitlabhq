@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { parseIntPagination, normalizeHeaders } from '../../lib/utils/common_utils';
 
 export default class GroupsStore {
   constructor() {
@@ -30,8 +31,8 @@ export default class GroupsStore {
     let paginationInfo;
 
     if (Object.keys(pagination).length) {
-      const normalizedHeaders = gl.utils.normalizeHeaders(pagination);
-      paginationInfo = gl.utils.parseIntPagination(normalizedHeaders);
+      const normalizedHeaders = normalizeHeaders(pagination);
+      paginationInfo = parseIntPagination(normalizedHeaders);
     } else {
       paginationInfo = pagination;
     }

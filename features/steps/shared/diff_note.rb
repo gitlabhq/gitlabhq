@@ -232,7 +232,7 @@ module SharedDiffNote
   end
 
   def click_parallel_diff_line(code, line_type)
-    find(".line_holder.parallel .diff-line-num[id='#{code}']").trigger 'mouseover'
+    find(".line_holder.parallel td[id='#{code}']").find(:xpath, 'preceding-sibling::*[1][self::td]').trigger 'mouseover'
     find(".line_holder.parallel button[data-line-code='#{code}']").trigger 'click'
   end
 end

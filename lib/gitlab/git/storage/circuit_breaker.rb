@@ -28,14 +28,26 @@ module Gitlab
         def self.for_storage(storage)
           cached_circuitbreakers = RequestStore.fetch(:circuitbreaker_cache) do
             Hash.new do |hash, storage_name|
-              hash[storage_name] = new(storage_name)
+              hash[storage_name] = build(storage_name)
             end
           end
 
           cached_circuitbreakers[storage]
         end
 
-        def initialize(storage, hostname = Gitlab::Environment.hostname)
+        def self.build(storage, hostname = Gitlab::Environment.hostname)
+          config = Gitlab.config.repositories.storages[storage]
+
+          if !config.present?
+            NullCircuitBreaker.new(storage, hostname, error: Misconfiguration.new("Storage '#{storage}' is not configured"))
+          elsif !config['path'].present?
+            NullCircuitBreaker.new(storage, hostname, error: Misconfiguration.new("Path for storage '#{storage}' is not configured"))
+          else
+            new(storage, hostname)
+          end
+        end
+
+        def initialize(storage, hostname)
           @storage = storage
           @hostname = hostname
 
@@ -62,6 +74,10 @@ module Gitlab
           too_many_failures = failure_count > failure_count_threshold
 
           recent_failure || too_many_failures
+        end
+
+        def failure_info
+          @failure_info ||= get_failure_info
         end
 
         # Memoizing the `storage_available` call means we only do it once per
@@ -121,9 +137,11 @@ module Gitlab
           end
         end
 
-        def failure_info
-          @failure_info ||= get_failure_info
+        def cache_key
+          @cache_key ||= "#{Gitlab::Git::Storage::REDIS_KEY_PREFIX}#{storage}:#{hostname}"
         end
+
+        private
 
         def get_failure_info
           last_failure, failure_count = Gitlab::Git::Storage.redis.with do |redis|
@@ -133,10 +151,6 @@ module Gitlab
           last_failure = Time.at(last_failure.to_i) if last_failure.present?
 
           FailureInfo.new(last_failure, failure_count.to_i)
-        end
-
-        def cache_key
-          @cache_key ||= "#{Gitlab::Git::Storage::REDIS_KEY_PREFIX}#{storage}:#{hostname}"
         end
       end
     end

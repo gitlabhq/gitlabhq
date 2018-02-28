@@ -32,7 +32,7 @@ module ChatMessage
 
     def activity
       {
-        title: "#{user_name} #{link('commented on ' + target, note_url)}",
+        title: "#{user_combined_name} #{link('commented on ' + target, note_url)}",
         subtitle: "in #{project_link}",
         text: formatted_title,
         image: user_avatar
@@ -42,7 +42,7 @@ module ChatMessage
     private
 
     def message
-      "#{user_name} #{link('commented on ' + target, note_url)} in #{project_link}: *#{formatted_title}*"
+      "#{user_combined_name} #{link('commented on ' + target, note_url)} in #{project_link}: *#{formatted_title}*"
     end
 
     def format_title(title)

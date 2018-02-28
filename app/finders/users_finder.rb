@@ -15,6 +15,7 @@
 #
 class UsersFinder
   include CreatedAtFilter
+  include CustomAttributesFilter
 
   attr_accessor :current_user, :params
 
@@ -32,6 +33,7 @@ class UsersFinder
     users = by_external_identity(users)
     users = by_external(users)
     users = by_created_at(users)
+    users = by_custom_attributes(users)
 
     users
   end

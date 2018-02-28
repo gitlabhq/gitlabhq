@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Dropdown label', js: true do
+describe 'Dropdown label', :js do
   include FilteredSearchHelpers
 
   let(:project) { create(:project) }

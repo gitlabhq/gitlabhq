@@ -352,7 +352,7 @@ module Gitlab
       end
 
       def stats
-        Gitlab::Git::CommitStats.new(self)
+        Gitlab::Git::CommitStats.new(@repository, self)
       end
 
       def to_patch(options = {})
@@ -411,6 +411,10 @@ module Gitlab
                            else
                              @repository.rev_parse_target(id)
                            end
+      end
+
+      def merge_commit?
+        parent_ids.size > 1
       end
 
       private

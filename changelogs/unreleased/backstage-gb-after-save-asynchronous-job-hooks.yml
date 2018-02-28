@@ -1,5 +1,0 @@
----
-title: Fire hooks asynchronously when creating a new job to improve performance
-merge_request: 13734
-author:
-type: changed

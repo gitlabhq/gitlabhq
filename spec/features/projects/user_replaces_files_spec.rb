@@ -23,7 +23,7 @@ describe 'User replaces files' do
       visit(project_tree_path_root_ref)
     end
 
-    it 'replaces an existed file with a new one', js: true do
+    it 'replaces an existed file with a new one', :js do
       click_link('.gitignore')
 
       expect(page).to have_content('.gitignore')
@@ -49,7 +49,7 @@ describe 'User replaces files' do
       visit(project2_tree_path_root_ref)
     end
 
-    it 'replaces an existed file with a new one in a forked project', js: true do
+    it 'replaces an existed file with a new one in a forked project', :js do
       click_link('.gitignore')
 
       expect(page).to have_content('.gitignore')
@@ -74,7 +74,7 @@ describe 'User replaces files' do
 
       expect(page).to have_content('Replacement file commit message')
 
-      fork = user.fork_of(project2)
+      fork = user.fork_of(project2.reload)
 
       expect(current_path).to eq(project_new_merge_request_path(fork))
 

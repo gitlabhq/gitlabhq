@@ -37,6 +37,26 @@ describe('MRWidgetPipeline', () => {
       });
     });
 
+    describe('hasPipeline', () => {
+      it('should return true when there is a pipeline', () => {
+        expect(Object.keys(mockData.pipeline).length).toBeGreaterThan(0);
+
+        const vm = createComponent({
+          pipeline: mockData.pipeline,
+        });
+
+        expect(vm.hasPipeline).toBeTruthy();
+      });
+
+      it('should return false when there is no pipeline', () => {
+        const vm = createComponent({
+          pipeline: null,
+        });
+
+        expect(vm.hasPipeline).toBeFalsy();
+      });
+    });
+
     describe('hasCIError', () => {
       it('should return false when there is no CI error', () => {
         const vm = createComponent({

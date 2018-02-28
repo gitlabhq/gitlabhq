@@ -64,7 +64,7 @@ describe 'Cherry-pick Commits' do
     end
   end
 
-  context "I cherry-pick a commit from a different branch", js: true do
+  context "I cherry-pick a commit from a different branch", :js do
     it do
       find('.header-action-buttons a.dropdown-toggle').click
       find(:css, "a[href='#modal-cherry-pick-commit']").click

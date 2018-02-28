@@ -3,6 +3,10 @@
 module Gitlab
   module LDAP
     class AuthHash < Gitlab::OAuth::AuthHash
+      def uid
+        Gitlab::LDAP::Person.normalize_dn(super)
+      end
+
       private
 
       def get_info(key)

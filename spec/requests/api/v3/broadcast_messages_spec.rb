@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe API::V3::BroadcastMessages do
-  let(:user)  { create(:user) }
-  let(:admin) { create(:admin) }
+  set(:user)  { create(:user) }
+  set(:admin) { create(:admin) }
 
   describe 'DELETE /broadcast_messages/:id' do
-    let!(:message) { create(:broadcast_message) }
+    set(:message) { create(:broadcast_message) }
 
     it 'returns a 401 for anonymous users' do
       delete v3_api("/broadcast_messages/#{message.id}"),

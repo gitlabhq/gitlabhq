@@ -1,0 +1,5 @@
+---
+title: Allow the git circuit breaker to correctly handle missing repository storages
+merge_request: 14417
+author:
+type: fixed

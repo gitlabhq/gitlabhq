@@ -117,7 +117,7 @@ describe('iPython notebook renderer', () => {
     it('shows error message', () => {
       expect(
         document.querySelector('.md').textContent.trim(),
-      ).toBe('An error occured whilst parsing the file.');
+      ).toBe('An error occurred whilst parsing the file.');
     });
   });
 
@@ -153,7 +153,7 @@ describe('iPython notebook renderer', () => {
     it('shows error message', () => {
       expect(
         document.querySelector('.md').textContent.trim(),
-      ).toBe('An error occured whilst loading the file. Please try again later.');
+      ).toBe('An error occurred whilst loading the file. Please try again later.');
     });
   });
 });

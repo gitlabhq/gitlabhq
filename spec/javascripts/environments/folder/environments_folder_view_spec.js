@@ -14,6 +14,10 @@ describe('Environments Folder View', () => {
     window.history.pushState({}, null, 'environments/folders/build');
   });
 
+  afterEach(() => {
+    window.history.pushState({}, null, '/');
+  });
+
   let component;
 
   describe('successfull request', () => {

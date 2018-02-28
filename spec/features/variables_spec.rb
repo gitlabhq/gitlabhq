@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Project variables', js: true do
+describe 'Project variables', :js do
   let(:user)     { create(:user) }
   let(:project)  { create(:project) }
   let(:variable) { create(:ci_variable, key: 'test_key', value: 'test value') }

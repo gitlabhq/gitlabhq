@@ -147,6 +147,10 @@ deploy_keys:
 - user
 - deploy_keys_projects
 - projects
+cluster:
+- project
+- user
+- service
 services:
 - project
 - service_hook
@@ -177,6 +181,7 @@ project:
 - tag_taggings
 - tags
 - chat_services
+- cluster
 - creator
 - group
 - namespace
@@ -266,6 +271,10 @@ project:
 - container_repositories
 - uploads
 - members_and_requesters
+- build_trace_section_names
+- root_of_fork_network
+- fork_network_member
+- fork_network
 award_emoji:
 - awardable
 - user

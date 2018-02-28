@@ -18,9 +18,9 @@ describe 'Milestone show' do
 
   it 'avoids N+1 database queries' do
     create(:labeled_issue, issue_params)
-    control_count = ActiveRecord::QueryRecorder.new { visit_milestone }.count
+    control = ActiveRecord::QueryRecorder.new { visit_milestone }
     create_list(:labeled_issue, 10, issue_params)
 
-    expect { visit_milestone }.not_to exceed_query_limit(control_count)
+    expect { visit_milestone }.not_to exceed_query_limit(control)
   end
 end

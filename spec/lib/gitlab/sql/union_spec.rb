@@ -22,5 +22,12 @@ describe Gitlab::SQL::Union do
       expect {User.where("users.id IN (#{union.to_sql})").to_a}.not_to raise_error
       expect(union.to_sql).to eq("#{to_sql(relation_1)}\nUNION\n#{to_sql(relation_2)}")
     end
+
+    it 'uses UNION ALL when removing duplicates is disabled' do
+      union = described_class
+        .new([relation_1, relation_2], remove_duplicates: false)
+
+      expect(union.to_sql).to include('UNION ALL')
+    end
   end
 end

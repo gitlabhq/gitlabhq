@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'CI Lint', js: true do
+describe 'CI Lint', :js do
   before do
     sign_in(create(:user))
   end

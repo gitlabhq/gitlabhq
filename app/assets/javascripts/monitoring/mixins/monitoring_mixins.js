@@ -1,3 +1,5 @@
+import { bisectDate } from '../utils/date_time_formatters';
+
 const mixins = {
   methods: {
     mouseOverDeployInfo(mouseXPos) {
@@ -18,6 +20,7 @@ const mixins = {
 
       return dataFound;
     },
+
     formatDeployments() {
       this.reducedDeploymentData = this.deploymentData.reduce((deploymentDataArray, deployment) => {
         const time = new Date(deployment.created_at);
@@ -39,6 +42,25 @@ const mixins = {
 
         return deploymentDataArray;
       }, []);
+    },
+
+    positionFlag() {
+      const timeSeries = this.timeSeries[0];
+      const hoveredDataIndex = bisectDate(timeSeries.values, this.hoverData.hoveredDate, 1);
+      this.currentData = timeSeries.values[hoveredDataIndex];
+      this.currentDataIndex = hoveredDataIndex;
+      this.currentXCoordinate = Math.floor(timeSeries.timeSeriesScaleX(this.currentData.time));
+      if (this.currentXCoordinate > (this.graphWidth - 200)) {
+        this.currentFlagPosition = this.currentXCoordinate - 103;
+      } else {
+        this.currentFlagPosition = this.currentXCoordinate;
+      }
+
+      if (this.hoverData.currentDeployXPos) {
+        this.showFlag = false;
+      } else {
+        this.showFlag = true;
+      }
     },
   },
 };

@@ -1,0 +1,5 @@
+---
+title: Fix incorrect X-axis labels in Prometheus graphs
+merge_request: 14258
+author:
+type: fixed

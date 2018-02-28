@@ -90,17 +90,17 @@ feature 'Dashboard Issues filtering', :js do
 
   context 'sorting' do
     it 'shows sorted issues' do
-      sorting_by('Oldest updated')
+      sorting_by('Created date')
       visit_issues
 
-      expect(find('.issues-filters')).to have_content('Oldest updated')
+      expect(find('.issues-filters')).to have_content('Created date')
     end
 
     it 'keeps sorting issues after visiting Projects Issues page' do
-      sorting_by('Oldest updated')
+      sorting_by('Created date')
       visit project_issues_path(project)
 
-      expect(find('.issues-filters')).to have_content('Oldest updated')
+      expect(find('.issues-filters')).to have_content('Created date')
     end
   end
 

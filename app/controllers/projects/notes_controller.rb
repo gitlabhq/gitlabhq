@@ -66,7 +66,16 @@ class Projects::NotesController < Projects::ApplicationController
     params.merge(last_fetched_at: last_fetched_at)
   end
 
+  def authorize_admin_note!
+    return access_denied! unless can?(current_user, :admin_note, note)
+  end
+
   def authorize_resolve_note!
     return access_denied! unless can?(current_user, :resolve_note, note)
+  end
+
+  def authorize_create_note!
+    return unless noteable.lockable?
+    access_denied! unless can?(current_user, :create_note, noteable)
   end
 end

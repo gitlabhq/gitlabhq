@@ -5,8 +5,8 @@ module QA
         def choose_repository_clone_http
           find('#clone-dropdown').click
 
-          page.within('#clone-dropdown') do
-            find('span', text: 'HTTP').click
+          page.within('.clone-options-dropdown') do
+            click_link('HTTP')
           end
         end
 

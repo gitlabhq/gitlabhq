@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature "Admin Health Check", feature: true, broken_storage: true do
+feature "Admin Health Check", :feature, :broken_storage do
   include StubENV
 
   before do

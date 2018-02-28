@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: true, broken_storage: true do
   let(:storage_name) { 'default' }
-  let(:circuit_breaker) { described_class.new(storage_name) }
+  let(:circuit_breaker) { described_class.new(storage_name, hostname) }
   let(:hostname) { Gitlab::Environment.hostname }
   let(:cache_key) { "storage_accessible:#{storage_name}:#{hostname}" }
 
@@ -22,7 +22,8 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
                             'failure_wait_time' => 30,
                             'failure_reset_time' => 1800,
                             'storage_timeout' => 5
-                          }
+                          },
+                          'nopath' => { 'path' => nil }
                          )
   end
 
@@ -58,6 +59,14 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
 
       expect(breaker).to be_a(described_class)
       expect(described_class.for_storage('default')).to eq(breaker)
+    end
+
+    it 'returns a broken circuit breaker for an unknown storage' do
+      expect(described_class.for_storage('unknown').circuit_broken?).to be_truthy
+    end
+
+    it 'returns a broken circuit breaker when the path is not set' do
+      expect(described_class.for_storage('nopath').circuit_broken?).to be_truthy
     end
   end
 

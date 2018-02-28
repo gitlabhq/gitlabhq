@@ -1,0 +1,5 @@
+---
+title: Compare email addresses case insensitively when verifying GPG signatures
+merge_request: 14376
+author: Tim Bishop
+type: fixed

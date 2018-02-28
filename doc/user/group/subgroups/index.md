@@ -84,10 +84,13 @@ structure.
   a subgroup. For more information check the [permissions table][permissions].
 - For a list of words that are not allowed to be used as group names see the
   [reserved names][reserved].
+- Users can always create subgroups if they are explicitly added as an Owner to
+  a parent group even if group creation is disabled by an administrator in their
+  settings.
 
 To create a subgroup:
 
-1. In the group's dashboard go to the **Subgroups** page and click **Create subgroup**.
+1. In the group's dashboard go to the **Subgroups** page and click **New subgroup**.
 
     ![Subgroups page](img/create_subgroup_button.png)
 
@@ -100,9 +103,7 @@ To create a subgroup:
 1. Click the **Create group** button and you will be taken to the new group's
    dashboard page.
 
----
-
-You can follow the same process to create any subsequent groups.
+Follow the same process to create any subsequent groups.
 
 ## Membership
 

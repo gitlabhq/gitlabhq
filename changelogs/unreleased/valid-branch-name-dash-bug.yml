@@ -1,0 +1,5 @@
+---
+title: Prevent branches or tags from starting with invalid characters (e.g. -, .)
+merge_request:
+author:
+type: fixed

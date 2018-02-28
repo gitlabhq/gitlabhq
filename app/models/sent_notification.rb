@@ -53,11 +53,15 @@ class SentNotification < ActiveRecord::Base
   end
 
   def unsubscribable?
-    !for_commit?
+    !(for_commit? || for_snippet?)
   end
 
   def for_commit?
     noteable_type == "Commit"
+  end
+
+  def for_snippet?
+    noteable_type.end_with?('Snippet')
   end
 
   def noteable

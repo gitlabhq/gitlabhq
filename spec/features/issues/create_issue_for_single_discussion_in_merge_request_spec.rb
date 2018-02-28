@@ -24,7 +24,7 @@ feature 'Resolve an open discussion in a merge request by creating an issue' do
       end
     end
 
-    context 'resolving the discussion', js: true do
+    context 'resolving the discussion', :js do
       before do
         click_button 'Resolve discussion'
       end

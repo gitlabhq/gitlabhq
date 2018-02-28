@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-06 08:32+0200\n"
-"PO-Revision-Date: 2017-09-06 06:20-0400\n"
+"POT-Creation-Date: 2017-09-27 16:26+0200\n"
+"PO-Revision-Date: 2017-09-27 13:44-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -29,6 +29,9 @@ msgstr[1] "%s commit aggiuntivi sono stati omessi per evitare degradi di prestaz
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "%{commit_author_link} ha committato %{commit_timeago}"
 
+msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
+msgstr ""
+
 msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
 msgstr ""
 
@@ -50,6 +53,9 @@ msgid "1 pipeline"
 msgid_plural "%d pipelines"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "1st contribution!"
+msgstr ""
 
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr "Un insieme di grafici riguardo la Continuous Integration"
@@ -93,7 +99,7 @@ msgstr "Aggiungi una directory (cartella)"
 msgid "All"
 msgstr ""
 
-msgid "Appearances"
+msgid "Appearance"
 msgstr ""
 
 msgid "Applications"
@@ -117,10 +123,34 @@ msgstr ""
 msgid "Are you sure?"
 msgstr ""
 
+msgid "Artifacts"
+msgstr ""
+
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr "Aggiungi un file tramite trascina &amp; rilascia ( drag &amp; drop) o %{upload_link}"
 
-msgid "Authentication log"
+msgid "Authentication Log"
+msgstr ""
+
+msgid "Auto DevOps (Beta)"
+msgstr ""
+
+msgid "Auto DevOps can be activated for this project. It will automatically build, test, and deploy your application based on a predefined CI/CD configuration."
+msgstr ""
+
+msgid "Auto DevOps documentation"
+msgstr ""
+
+msgid "Auto Review Apps and Auto Deploy need a domain name and the %{kubernetes} to work correctly."
+msgstr ""
+
+msgid "Auto Review Apps and Auto Deploy need a domain name to work correctly."
+msgstr ""
+
+msgid "Auto Review Apps and Auto Deploy need the %{kubernetes} to work correctly."
+msgstr ""
+
+msgid "AutoDevOps|Learn more in the"
 msgstr ""
 
 msgid "Billing"
@@ -177,6 +207,9 @@ msgstr ""
 msgid "Billinglans|Downgrade"
 msgstr ""
 
+msgid "Board"
+msgstr ""
+
 msgid "Branch"
 msgid_plural "Branches"
 msgstr[0] ""
@@ -192,6 +225,90 @@ msgid "BranchSwitcherTitle|Switch branch"
 msgstr "Cambia branch"
 
 msgid "Branches"
+msgstr ""
+
+msgid "Branches|Cant find HEAD commit for this branch"
+msgstr ""
+
+msgid "Branches|Compare"
+msgstr ""
+
+msgid "Branches|Delete all branches that are merged into '%{default_branch}'"
+msgstr ""
+
+msgid "Branches|Delete branch"
+msgstr ""
+
+msgid "Branches|Delete merged branches"
+msgstr ""
+
+msgid "Branches|Delete protected branch"
+msgstr ""
+
+msgid "Branches|Delete protected branch '%{branch_name}'?"
+msgstr ""
+
+msgid "Branches|Deleting the '%{branch_name}' branch cannot be undone. Are you sure?"
+msgstr ""
+
+msgid "Branches|Deleting the merged branches cannot be undone. Are you sure?"
+msgstr ""
+
+msgid "Branches|Filter by branch name"
+msgstr ""
+
+msgid "Branches|Merged into %{default_branch}"
+msgstr ""
+
+msgid "Branches|New branch"
+msgstr ""
+
+msgid "Branches|No branches to show"
+msgstr ""
+
+msgid "Branches|Once you confirm and press %{delete_protected_branch}, it cannot be undone or recovered."
+msgstr ""
+
+msgid "Branches|Only a project master or owner can delete a protected branch"
+msgstr ""
+
+msgid "Branches|Protected branches can be managed in %{project_settings_link}"
+msgstr ""
+
+msgid "Branches|Sort by"
+msgstr ""
+
+msgid "Branches|The branch could not be updated automatically because it has diverged from its upstream counterpart."
+msgstr ""
+
+msgid "Branches|The default branch cannot be deleted"
+msgstr ""
+
+msgid "Branches|This branch hasn’t been merged into %{default_branch}."
+msgstr ""
+
+msgid "Branches|To avoid data loss, consider merging this branch before deleting it."
+msgstr ""
+
+msgid "Branches|To confirm, type %{branch_name_confirmation}:"
+msgstr ""
+
+msgid "Branches|To discard the local changes and overwrite the branch with the upstream version, delete it here and choose 'Update Now' above."
+msgstr ""
+
+msgid "Branches|You’re about to permanently delete the protected branch %{branch_name}."
+msgstr ""
+
+msgid "Branches|diverged from upstream"
+msgstr ""
+
+msgid "Branches|merged"
+msgstr ""
+
+msgid "Branches|project settings"
+msgstr ""
+
+msgid "Branches|protected"
 msgstr ""
 
 msgid "Browse Directory"
@@ -336,9 +453,6 @@ msgstr "Committato da "
 
 msgid "Compare"
 msgstr "Confronta"
-
-msgid "Container Registry"
-msgstr ""
 
 msgid "Contribution guide"
 msgstr "Guida per contribuire"
@@ -489,6 +603,9 @@ msgstr "Cambia programmazione della pipeline %{id}"
 msgid "Emails"
 msgstr ""
 
+msgid "Enable in settings"
+msgstr ""
+
 msgid "EventFilterBy|Filter by all"
 msgstr ""
 
@@ -515,6 +632,9 @@ msgstr "Ogni primo giorno del mese (alle 4 del mattino)"
 
 msgid "Every week (Sundays at 4:00am)"
 msgstr "Ogni settimana (Di domenica alle 4 del mattino)"
+
+msgid "Explore projects"
+msgstr ""
 
 msgid "Failed to change the owner"
 msgstr "Impossibile cambiare owner"
@@ -572,7 +692,28 @@ msgstr "Vai il tuo fork"
 msgid "GoToYourFork|Fork"
 msgstr "Fork"
 
-msgid "Group overview"
+msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
+msgstr ""
+
+msgid "GroupSettings|Share with group lock"
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup."
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group}. To share projects in this group with another group, ask the owner to override the setting or %{remove_ancestor_share_with_group_lock}."
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group}. You can override the setting or %{remove_ancestor_share_with_group_lock}."
+msgstr ""
+
+msgid "GroupSettings|This setting will be applied to all subgroups unless overridden by a group owner. Groups that already have access to the project will continue to have access unless removed manually."
+msgstr ""
+
+msgid "GroupSettings|cannot be disabled when the parent group \"Share with group lock\" is enabled, except by the owner of the parent group"
+msgstr ""
+
+msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name}"
 msgstr ""
 
 msgid "Health Check"
@@ -591,12 +732,6 @@ msgid "HealthCheck|No Health Problems Detected"
 msgstr ""
 
 msgid "HealthCheck|Unhealthy"
-msgstr ""
-
-msgid "Home"
-msgstr ""
-
-msgid "Hooks"
 msgstr ""
 
 msgid "Housekeeping successfully started"
@@ -618,6 +753,9 @@ msgid "Issue events"
 msgstr ""
 
 msgid "Issues"
+msgstr ""
+
+msgid "Jobs"
 msgstr ""
 
 msgid "LFSStatus|Disabled"
@@ -682,6 +820,9 @@ msgid "Merge Requests"
 msgstr ""
 
 msgid "Merge events"
+msgstr ""
+
+msgid "Merge request"
 msgstr ""
 
 msgid "Messages"
@@ -812,6 +953,18 @@ msgstr ""
 msgid "Owner"
 msgstr ""
 
+msgid "Pagination|Last »"
+msgstr ""
+
+msgid "Pagination|Next"
+msgstr ""
+
+msgid "Pagination|Prev"
+msgstr ""
+
+msgid "Pagination|« First"
+msgstr ""
+
 msgid "Password"
 msgstr ""
 
@@ -917,10 +1070,7 @@ msgstr "con più stadi"
 msgid "Preferences"
 msgstr ""
 
-msgid "Profile Settings"
-msgstr ""
-
-msgid "Project"
+msgid "Profile"
 msgstr ""
 
 msgid "Project '%{project_name}' queued for deletion."
@@ -953,12 +1103,6 @@ msgstr "Il link d'esportazione del progetto è scaduto. Genera una nuova esporta
 msgid "Project export started. A download link will be sent by email."
 msgstr "Esportazione del progetto iniziata. Un link di download sarà inviato via email."
 
-msgid "Project home"
-msgstr "Home di progetto"
-
-msgid "Project overview"
-msgstr ""
-
 msgid "ProjectActivityRSS|Subscribe"
 msgstr ""
 
@@ -983,6 +1127,27 @@ msgstr "Stadio"
 msgid "ProjectNetworkGraph|Graph"
 msgstr "Grafico"
 
+msgid "ProjectsDropdown|Frequently visited"
+msgstr ""
+
+msgid "ProjectsDropdown|Loading projects"
+msgstr ""
+
+msgid "ProjectsDropdown|Projects you visit often will appear here"
+msgstr ""
+
+msgid "ProjectsDropdown|Search your projects"
+msgstr ""
+
+msgid "ProjectsDropdown|Something went wrong on our end."
+msgstr ""
+
+msgid "ProjectsDropdown|Sorry, no projects matched your search"
+msgstr ""
+
+msgid "ProjectsDropdown|This feature requires browser localStorage support"
+msgstr ""
+
 msgid "Push Rules"
 msgstr ""
 
@@ -1000,6 +1165,9 @@ msgstr "Branches"
 
 msgid "RefSwitcher|Tags"
 msgstr "Tags"
+
+msgid "Registry"
+msgstr ""
 
 msgid "Related Commits"
 msgstr "Commit correlati"
@@ -1055,6 +1223,9 @@ msgstr "Salva pianificazione pipeline"
 msgid "Schedule a new pipeline"
 msgstr "Pianifica una nuova Pipeline"
 
+msgid "Schedules"
+msgstr ""
+
 msgid "Scheduling Pipelines"
 msgstr "Pianificazione pipelines"
 
@@ -1094,12 +1265,114 @@ msgstr "imposta una password"
 msgid "Settings"
 msgstr ""
 
+msgid "Show parent pages"
+msgstr ""
+
+msgid "Show parent subgroups"
+msgstr ""
+
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] "Visualizza %d evento"
 msgstr[1] "Visualizza %d eventi"
 
 msgid "Snippets"
+msgstr ""
+
+msgid "SortOptions|Access level, ascending"
+msgstr ""
+
+msgid "SortOptions|Access level, descending"
+msgstr ""
+
+msgid "SortOptions|Created date"
+msgstr ""
+
+msgid "SortOptions|Due date"
+msgstr ""
+
+msgid "SortOptions|Due later"
+msgstr ""
+
+msgid "SortOptions|Due soon"
+msgstr ""
+
+msgid "SortOptions|Label priority"
+msgstr ""
+
+msgid "SortOptions|Largest group"
+msgstr ""
+
+msgid "SortOptions|Largest repository"
+msgstr ""
+
+msgid "SortOptions|Last created"
+msgstr ""
+
+msgid "SortOptions|Last joined"
+msgstr ""
+
+msgid "SortOptions|Last updated"
+msgstr ""
+
+msgid "SortOptions|Least popular"
+msgstr ""
+
+msgid "SortOptions|Less weight"
+msgstr ""
+
+msgid "SortOptions|Milestone"
+msgstr ""
+
+msgid "SortOptions|Milestone due later"
+msgstr ""
+
+msgid "SortOptions|Milestone due soon"
+msgstr ""
+
+msgid "SortOptions|More weight"
+msgstr ""
+
+msgid "SortOptions|Most popular"
+msgstr ""
+
+msgid "SortOptions|Name"
+msgstr ""
+
+msgid "SortOptions|Name, ascending"
+msgstr ""
+
+msgid "SortOptions|Name, descending"
+msgstr ""
+
+msgid "SortOptions|Oldest created"
+msgstr ""
+
+msgid "SortOptions|Oldest joined"
+msgstr ""
+
+msgid "SortOptions|Oldest sign in"
+msgstr ""
+
+msgid "SortOptions|Oldest updated"
+msgstr ""
+
+msgid "SortOptions|Popularity"
+msgstr ""
+
+msgid "SortOptions|Priority"
+msgstr ""
+
+msgid "SortOptions|Recent sign in"
+msgstr ""
+
+msgid "SortOptions|Start later"
+msgstr ""
+
+msgid "SortOptions|Start soon"
+msgstr ""
+
+msgid "SortOptions|Weight"
 msgstr ""
 
 msgid "Source code"
@@ -1114,6 +1387,9 @@ msgstr ""
 msgid "StarProject|Star"
 msgstr "Star"
 
+msgid "Starred projects"
+msgstr ""
+
 msgid "Start a %{new_merge_request} with these changes"
 msgstr "inizia una %{new_merge_request} con queste modifiche"
 
@@ -1122,6 +1398,9 @@ msgstr ""
 
 msgid "Switch branch/tag"
 msgstr "Cambia branch/tag"
+
+msgid "System Hooks"
+msgstr ""
 
 msgid "Tag"
 msgid_plural "Tags"
@@ -1186,6 +1465,9 @@ msgid "The value lying at the midpoint of a series of observed values. E.g., bet
 msgstr "Il valore falsato nel mezzo di una serie di dati osservati. ES: tra 3,5,9 il mediano è 5. Tra 3,5,7,8 il mediano è (5+7)/2  quindi 6."
 
 msgid "There are problems accessing Git storage: "
+msgstr ""
+
+msgid "This is the author's first Merge Request to this project. Handle with care."
 msgstr ""
 
 msgid "This means you can not push code until you create an empty repository or import existing one."
@@ -1363,8 +1645,14 @@ msgstr ""
 msgid "Use your global notification setting"
 msgstr "Usa le tue impostazioni globali "
 
+msgid "View file @ "
+msgstr ""
+
 msgid "View open merge request"
 msgstr "Mostra la richieste di merge aperte"
+
+msgid "View replaced file @ "
+msgstr ""
 
 msgid "VisibilityLevel|Internal"
 msgstr "Interno"
@@ -1437,6 +1725,12 @@ msgstr "Non sarai in grado di effettuare push o pull tramite SSH fino a che %{ad
 
 msgid "Your name"
 msgstr "Il tuo nome"
+
+msgid "Your projects"
+msgstr ""
+
+msgid "commit"
+msgstr ""
 
 msgid "day"
 msgid_plural "days"

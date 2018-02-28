@@ -35,7 +35,7 @@ module API
             new_notification_email = params.delete(:notification_email)
 
             if new_notification_email
-              ::Users::UpdateService.new(current_user, notification_email: new_notification_email).execute
+              ::Users::UpdateService.new(current_user, user: current_user, notification_email: new_notification_email).execute
             end
 
             notification_setting.update(declared_params(include_missing: false))

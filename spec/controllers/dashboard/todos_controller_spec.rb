@@ -57,7 +57,7 @@ describe Dashboard::TodosController do
         expect(response).to redirect_to(dashboard_todos_path(page: last_page))
       end
 
-      it 'redirects to correspondent page' do
+      it 'goes to the correct page' do
         get :index, page: last_page
 
         expect(assigns(:todos).current_page).to eq(last_page)
@@ -69,6 +69,30 @@ describe Dashboard::TodosController do
         get :index, page: (last_page + 1).to_param, host: external_host
 
         expect(response).to redirect_to(dashboard_todos_path(page: last_page))
+      end
+
+      context 'when providing no filters' do
+        it 'does not perform a query to get the page count, but gets that from the user' do
+          allow(controller).to receive(:current_user).and_return(user)
+
+          expect(user).to receive(:todos_pending_count).and_call_original
+
+          get :index, page: (last_page + 1).to_param, sort: :created_asc
+
+          expect(response).to redirect_to(dashboard_todos_path(page: last_page, sort: :created_asc))
+        end
+      end
+
+      context 'when providing filters' do
+        it 'performs a query to get the correct page count' do
+          allow(controller).to receive(:current_user).and_return(user)
+
+          expect(user).not_to receive(:todos_pending_count)
+
+          get :index, page: (last_page + 1).to_param, project_id: project.id
+
+          expect(response).to redirect_to(dashboard_todos_path(page: last_page, project_id: project.id))
+        end
       end
     end
   end

@@ -112,17 +112,20 @@ describe Gitlab::Git::Blob, seed_helper: true do
       it_behaves_like 'finding blobs'
     end
 
-    context 'when project_raw_show Gitaly feature is disabled', skip_gitaly_mock: true do
+    context 'when project_raw_show Gitaly feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'finding blobs'
     end
   end
 
   shared_examples 'finding blobs by ID' do
     let(:raw_blob) { Gitlab::Git::Blob.raw(repository, SeedRepo::RubyBlob::ID) }
+    let(:bad_blob) { Gitlab::Git::Blob.raw(repository, SeedRepo::BigCommit::ID) }
+
     it { expect(raw_blob.id).to eq(SeedRepo::RubyBlob::ID) }
     it { expect(raw_blob.data[0..10]).to eq("require \'fi") }
     it { expect(raw_blob.size).to eq(669) }
     it { expect(raw_blob.truncated?).to be_falsey }
+    it { expect(bad_blob).to be_nil }
 
     context 'large file' do
       it 'limits the size of a large file' do
@@ -147,7 +150,7 @@ describe Gitlab::Git::Blob, seed_helper: true do
       it_behaves_like 'finding blobs by ID'
     end
 
-    context 'when the blob_raw Gitaly feature is disabled', skip_gitaly_mock: true do
+    context 'when the blob_raw Gitaly feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'finding blobs by ID'
     end
   end

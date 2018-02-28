@@ -1,6 +1,6 @@
 class Dashboard::GroupsController < Dashboard::ApplicationController
   def index
-    @sort = params[:sort] || 'id_desc'
+    @sort = params[:sort] || 'created_desc'
 
     @groups =
       if params[:parent_id] && Group.supports_nested_groups?

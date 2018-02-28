@@ -37,14 +37,14 @@ export default {
         content: f.newContent,
       }));
       const payload = {
-        branch: Store.targetBranch,
+        branch: Store.currentBranch,
         commit_message: commitMessage,
         actions,
       };
       Store.submitCommitsLoading = true;
       Service.commitFiles(payload)
         .then(this.resetCommitState)
-        .catch(() => Flash('An error occured while committing your changes'));
+        .catch(() => Flash('An error occurred while committing your changes'));
     },
 
     resetCommitState() {
@@ -105,7 +105,7 @@ export default {
         </label>
         <div class="col-md-6">
           <span class="help-block">
-            {{targetBranch}}
+            {{currentBranch}}
           </span>
         </div>
       </div>

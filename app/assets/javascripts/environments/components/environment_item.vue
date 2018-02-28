@@ -410,20 +410,11 @@ export default {
              this.hasStopAction ||
              this.canRetry;
     },
-
-    /**
-     * Constructs folder URL based on the current location and the folder id.
-     *
-     * @return {String}
-     */
-    folderUrl() {
-      return `${window.location.pathname}/folders/${this.model.folderName}`;
-    },
   },
 
   methods: {
     onClickFolder() {
-      eventHub.$emit('toggleFolder', this.model, this.folderUrl);
+      eventHub.$emit('toggleFolder', this.model);
     },
   },
 };

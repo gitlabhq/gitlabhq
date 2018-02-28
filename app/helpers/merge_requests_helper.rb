@@ -73,7 +73,8 @@ module MergeRequestsHelper
   end
 
   def target_projects(project)
-    [project, project.default_merge_request_target].uniq
+    MergeRequestTargetProjectFinder.new(current_user: current_user, source_project: project)
+      .execute
   end
 
   def merge_request_button_visibility(merge_request, closed)

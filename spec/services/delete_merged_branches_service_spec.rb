@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe DeleteMergedBranchesService do
+  include ProjectForksHelper
+
   subject(:service) { described_class.new(project, project.owner) }
 
   let(:project) { create(:project, :repository) }
@@ -50,9 +52,9 @@ describe DeleteMergedBranchesService do
 
     context 'open merge requests' do
       it 'does not delete branches from open merge requests' do
-        fork_link = create(:forked_project_link, forked_from_project: project)
+        forked_project = fork_project(project)
         create(:merge_request, :opened, source_project: project, target_project: project, source_branch: 'branch-merged', target_branch: 'master')
-        create(:merge_request, :opened, source_project: fork_link.forked_to_project, target_project: project, target_branch: 'improve/awesome', source_branch: 'master')
+        create(:merge_request, :opened, source_project: forked_project, target_project: project, target_branch: 'improve/awesome', source_branch: 'master')
 
         service.execute
 

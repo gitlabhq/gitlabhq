@@ -74,4 +74,8 @@ module Noteable
   def discussions_can_be_resolved_by?(user)
     discussions_to_be_resolved.all? { |discussion| discussion.can_resolve?(user) }
   end
+
+  def lockable?
+    [MergeRequest, Issue].include?(self.class)
+  end
 end

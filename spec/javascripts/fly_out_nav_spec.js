@@ -73,6 +73,12 @@ describe('Fly out sidebar navigation', () => {
       ).toBe(0);
     });
 
+    it('returns 0 if mousePos is empty', () => {
+      expect(
+        getHideSubItemsInterval(),
+      ).toBe(0);
+    });
+
     it('returns 0 when mouse above sub-items', () => {
       showSubLevelItems(el);
       documentMouseMove({
@@ -271,12 +277,19 @@ describe('Fly out sidebar navigation', () => {
     });
 
     it('sets transform of sub-items', () => {
+      const sidebar = document.createElement('div');
       const subItems = el.querySelector('.sidebar-sub-level-items');
+
+      sidebar.style.width = '200px';
+
+      document.body.appendChild(sidebar);
+
+      setSidebar(sidebar);
       showSubLevelItems(el);
 
       expect(
         subItems.style.transform,
-      ).toBe(`translate3d(0px, ${Math.floor(el.getBoundingClientRect().top) - getHeaderHeight()}px, 0px)`);
+      ).toBe(`translate3d(200px, ${Math.floor(el.getBoundingClientRect().top) - getHeaderHeight()}px, 0px)`);
     });
 
     it('sets is-above when element is above', () => {

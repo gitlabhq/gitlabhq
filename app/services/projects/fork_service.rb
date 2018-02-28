@@ -23,10 +23,30 @@ module Projects
 
       refresh_forks_count
 
+      link_fork_network(new_project)
+
       new_project
     end
 
     private
+
+    def fork_network
+      if @project.fork_network
+        @project.fork_network
+      elsif forked_from_project = @project.forked_from_project
+        # TODO: remove this case when all background migrations have completed
+        # this only happens when a project had a `forked_project_link` that was
+        # not migrated to the `fork_network` relation
+        forked_from_project.fork_network || forked_from_project.create_root_of_fork_network
+      else
+        @project.create_root_of_fork_network
+      end
+    end
+
+    def link_fork_network(new_project)
+      fork_network.fork_network_members.create(project: new_project,
+                                               forked_from_project: @project)
+    end
 
     def refresh_forks_count
       Projects::ForksCountService.new(@project).refresh_cache

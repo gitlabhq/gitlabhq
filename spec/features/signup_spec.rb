@@ -24,6 +24,24 @@ feature 'Signup' do
       end
     end
 
+    context "when sigining up with different cased emails" do
+      it "creates the user successfully" do
+        user = build(:user)
+
+        visit root_path
+
+        fill_in 'new_user_name',                with: user.name
+        fill_in 'new_user_username',            with: user.username
+        fill_in 'new_user_email',               with: user.email
+        fill_in 'new_user_email_confirmation',  with: user.email.capitalize
+        fill_in 'new_user_password',            with: user.password
+        click_button "Register"
+
+        expect(current_path).to eq dashboard_projects_path
+        expect(page).to have_content("Welcome! You have signed up successfully.")
+      end
+    end
+
     context "when not sending confirmation email" do
       before do
         stub_application_setting(send_user_confirmation_email: false)

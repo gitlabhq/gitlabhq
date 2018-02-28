@@ -1,6 +1,6 @@
 # Writing documentation
 
-  - **General Documentation**: written by the developers responsible by creating features. Should be submitted in the same merge request containing code. Feature proposals (by GitLab contributors) should also be accompanied by its respective documentation. They can be later improved by PMs and Technical Writers.
+  - **General Documentation**: written by the [developers responsible by creating features](#contributing-to-docs). Should be submitted in the same merge request containing code. Feature proposals (by GitLab contributors) should also be accompanied by its respective documentation. They can be later improved by PMs and Technical Writers.
   - **Technical Articles**: written by any [GitLab Team](https://about.gitlab.com/team/) member, GitLab contributors, or [Community Writers](https://about.gitlab.com/handbook/product/technical-writing/community-writers/).
   - **Indexes per topic**: initially prepared by the Technical Writing Team, and kept up-to-date by developers and PMs in the same merge request containing code. They gather all resources for that topic in a single page (user and admin documentation, articles, and third-party docs).
 
@@ -69,6 +69,51 @@ Use the [writing method](https://about.gitlab.com/handbook/product/technical-wri
 
 All the docs follow the same [styleguide](doc_styleguide.md).
 
+### Contributing to docs
+
+Whenever a feature is changed, updated, introduced, or deprecated, the merge
+request introducing these changes must be accompanied by the documentation
+(either updating existing ones or creating new ones). This is also valid when
+changes are introduced to the UI.
+
+The one resposible for writing the first piece of documentation is the developer who
+wrote the code. It's the job of the Product Manager to ensure all features are
+shipped with its docs, whether is a small or big change. At the pace GitLab evolves,
+this is the only way to keep the docs up-to-date. If you have any questions about it,
+please ask a Technical Writer. Otherwise, when your content is ready, assign one of
+them to review it for you.
+
+We use the [monthly release blog post](https://about.gitlab.com/handbook/marketing/blog/release-posts/#monthly-releases) as a changelog checklist to ensure everything
+is documented.
+
+### Feature overview and use cases
+
+Every major feature (regardless if present in GitLab Community or Enterprise editions)
+should present, at the beginning of the document, two main sections: **overview** and
+**use cases**. Every GitLab EE-only feature should also contain these sections.
+
+**Overview**: at the name suggests, the goal here is to provide an overview of the feature.
+Describe what is it, what it does, why it is important/cool/nice-to-have,
+what problem it solves, and what you can do with this feature that you couldn't
+do before.
+
+**Use cases**: provide at least two, ideally three, use cases for every major feature.
+You should answer this question: what can you do with this feature/change? Use cases
+are examples of how this feauture or change can be used in real life.
+
+Examples:
+- CE and EE: [Issues](../user/project/issues/index.md#use-cases)
+- CE and EE: [Merge Requests](../user/project/merge_requests/index.md#overview)
+- EE-only: [Geo](https://docs.gitlab.com/ee/gitlab-geo/README.html#overview)
+- EE-only: [Jenkins integration](https://docs.gitlab.com/ee/integration/jenkins.md#overview)
+
+Note that if you don't have anything to add between the doc title (`<h1>`) and
+the header `## Overview`, you can omit the header, but keep the content of the
+overview there.
+
+> **Overview** and **use cases** are required to **every** Enterprise Edition feature,
+and for every **major** feature present in Community Edition.
+
 ### Markdown
 
 Currently GitLab docs use Redcarpet as [markdown](../user/markdown.md) engine, but there's an [open discussion](https://gitlab.com/gitlab-com/gitlab-docs/issues/50) for implementing Kramdown in the near future.
@@ -106,21 +151,84 @@ CE and EE.
 
 ## Previewing the changes live
 
-If you want to preview your changes live, you can use the manual `build-docs`
-job in your merge request.
+If you want to preview the doc changes of your merge request live, you can use
+the manual `review-docs-deploy` job in your merge request.
+
+TIP: **Tip:**
+If your branch contains only documentation changes, you can use
+[special branch names](#testing) to avoid long running pipelines.
 
 ![Manual trigger a docs build](img/manual_build_docs.png)
 
 This job will:
 
 1. Create a new branch in the [gitlab-docs](https://gitlab.com/gitlab-com/gitlab-docs)
-   project named after the scheme: `<CE/EE-branch-slug>-built-from-ce-ee`
-1. Trigger a pipeline and build the docs site with your changes
+   project named after the scheme: `preview-<branch-slug>`
+1. Trigger a cross project pipeline and build the docs site with your changes
 
-Look for the docs URL at the output of the `build-docs` job.
+After a few minutes, the Review App will be deployed and you will be able to
+preview the changes. The docs URL can be found in two places:
 
->**Note:**
+- In the merge request widget
+- In the output of the `review-docs-deploy` job, which also includes the
+  triggered pipeline so that you can investigate whether something went wrong
+
+In case the Review App URL returns 404, follow these steps to debug:
+
+1. **Did you follow the URL from the merge request widget?** If yes, then check if
+   the link is the same as the one in the job output. It can happen that if the
+   branch name slug is longer than 35 characters, it is automatically
+   truncated. That means that the merge request widget will not show the proper
+   URL due to a limitation of how `environment: url` works, but you can find the
+   real URL from the output of the `review-docs-deploy` job.
+1. **Did you follow the URL from the job output?** If yes, then it means that
+   either the site is not yet deployed or something went wrong with the remote
+   pipeline. Give it a few minutes and it should appear online, otherwise you
+   can check the status of the remote pipeline from the link in the job output.
+   If the pipeline failed or got stuck, drop a line in the `#docs` chat channel.
+
+TIP: **Tip:**
+Someone that has no merge rights to the CE/EE projects (think of forks from
+contributors) will not be able to run the manual job. In that case, you can
+ask someone from the GitLab team who has the permissions to do that for you.
+
+NOTE: **Note:**
 Make sure that you always delete the branch of the merge request you were
 working on. If you don't, the remote docs branch won't be removed either,
 and the server where the Review Apps are hosted will eventually be out of
 disk space.
+
+### Behind the scenes
+
+If you want to know the hot details, here's what's really happening:
+
+1. You manually run the `review-docs-deploy` job in a CE/EE merge request.
+1. The job runs the [`scirpts/trigger-build-docs`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/scripts/trigger-build-docs)
+   script with the `deploy` flag, which in turn:
+   1. Takes your branch name and applies the following:
+      - The slug of the branch name is used to avoid special characters since
+        ultimately this will be used by NGINX.
+      - The `preview-` prefix is added to avoid conflicts if there's a remote branch
+        with the same name that you created in the merge request.
+      - The final branch name is truncated to 42 characters to avoid filesystem
+        limitations with long branch names (> 63 chars).
+   1. The remote branch is then created if it doesn't exist (meaning you can
+      re-run the manual job as many times as you want and this step will be skipped).
+   1. A new cross-project pipeline is triggered in the docs project.
+   1. The preview URL is shown both at the job output and in the merge request
+      widget. You also get the link to the remote pipeline.
+1. In the docs project, the pipeline is created and it
+   [skips the test jobs](https://gitlab.com/gitlab-com/gitlab-docs/blob/8d5d5c750c602a835614b02f9db42ead1c4b2f5e/.gitlab-ci.yml#L50-55)
+   to lower the build time.
+1. Once the docs site is built, the HTML files are uploaded as artifacts.
+1. A specific Runner tied only to the docs project, runs the Review App job
+   that downloads the artifacts and uses `rsync` to transfer the files over
+   to a location where NGINX serves them.
+
+The following GitLab features are used among others:
+
+- [Manual actions](../ci/yaml/README.md#manual-actions)
+- [Multi project pipelines](https://docs.gitlab.com/ee/ci/multi_project_pipeline_graphs.html)
+- [Review Apps](../ci/review_apps/index.md)
+- [Artifacts](../ci/yaml/README.md#artifacts)
+- [Specific Runner](../ci/runners/README.md#locking-a-specific-runner-from-being-enabled-for-other-projects)

@@ -1,9 +1,14 @@
 # GitLab Helm Chart
-> **Note:**
-* > **Note**: This chart will be replaced by the [gitlab-omnibus](gitlab_omnibus.md) chart, once it supports [additional configuration options](https://gitlab.com/charts/charts.gitlab.io/issues/68).
-* Officially supported cloud providers are Google Container Service and Azure Container Service.
+> **Note**:
+* This chart will be replaced by the [gitlab-omnibus](gitlab_omnibus.md) chart, once it supports [additional configuration options](https://gitlab.com/charts/charts.gitlab.io/issues/68). For more information on available charts, please see our [overview](index.md#chart-overview).
+* These charts have been tested on Google Container Engine and Azure Container Service. Other Kubernetes installations may work as well, if not please [open an issue](https://gitlab.com/charts/charts.gitlab.io/issues).
 
-The `gitlab` Helm chart deploys just GitLab into your Kubernetes cluster, and offers extensive configuration options. For most deployments we recommended the [gitlab-omnibus](gitlab_omnibus.md) chart,
+
+For more information on available GitLab Helm Charts, please see our [overview](index.md#chart-overview).
+
+## Introduction
+
+The `gitlab` Helm chart deploys just GitLab into your Kubernetes cluster, and offers extensive configuration options. This chart requires advanced knowledge of Kubernetes to successfully use. For most deployments we **strongly recommended** the [gitlab-omnibus](gitlab_omnibus.md) chart, which will replace this chart once it supports [additional configuration options](https://gitlab.com/charts/charts.gitlab.io/issues/68). Due to the difficulty in supporting upgrades to the `omnibus-gitlab` chart, migrating will require exporting data out of this instance and importing it into the new deployment.
 
 This chart includes the following:
 
@@ -17,7 +22,7 @@ This chart includes the following:
 
 ## Prerequisites
 
-- _At least_ 3 GB of RAM available on your cluster, in chunks of 1 GB. 41GB of storage and 2 CPU are also required.
+- _At least_ 3 GB of RAM available on your cluster. 41GB of storage and 2 CPU are also required.
 - Kubernetes 1.4+ with Beta APIs enabled
 - [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) provisioner support in the underlying infrastructure
 - The ability to point a DNS entry or URL at your GitLab install

@@ -257,7 +257,7 @@ Settings.gitlab['signup_enabled'] ||= true if Settings.gitlab['signup_enabled'].
 Settings.gitlab['password_authentication_enabled'] ||= true if Settings.gitlab['password_authentication_enabled'].nil?
 Settings.gitlab['restricted_visibility_levels'] = Settings.__send__(:verify_constant_array, Gitlab::VisibilityLevel, Settings.gitlab['restricted_visibility_levels'], [])
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
-Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing))(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)' if Settings.gitlab['issue_closing_pattern'].nil?
+Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)|[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)' if Settings.gitlab['issue_closing_pattern'].nil?
 Settings.gitlab['default_projects_features'] ||= {}
 Settings.gitlab['webhook_timeout'] ||= 10
 Settings.gitlab['max_attachment_size'] ||= 10
@@ -270,7 +270,7 @@ Settings.gitlab.default_projects_features['builds']             = true if Settin
 Settings.gitlab.default_projects_features['container_registry'] = true if Settings.gitlab.default_projects_features['container_registry'].nil?
 Settings.gitlab.default_projects_features['visibility_level']   = Settings.__send__(:verify_constant, Gitlab::VisibilityLevel, Settings.gitlab.default_projects_features['visibility_level'], Gitlab::VisibilityLevel::PRIVATE)
 Settings.gitlab['domain_whitelist'] ||= []
-Settings.gitlab['import_sources'] ||= %w[github bitbucket gitlab google_code fogbugz git gitlab_project gitea]
+Settings.gitlab['import_sources'] ||= Gitlab::ImportSources.values
 Settings.gitlab['trusted_proxies'] ||= []
 Settings.gitlab['no_todos_messages'] ||= YAML.load_file(Rails.root.join('config', 'no_todos_messages.yml'))
 Settings.gitlab['usage_ping_enabled'] = true if Settings.gitlab['usage_ping_enabled'].nil?
@@ -323,15 +323,16 @@ Settings.registry['path']            = Settings.absolute(Settings.registry['path
 # Pages
 #
 Settings['pages'] ||= Settingslogic.new({})
-Settings.pages['enabled']         = false if Settings.pages['enabled'].nil?
-Settings.pages['path']            = Settings.absolute(Settings.pages['path'] || File.join(Settings.shared['path'], "pages"))
-Settings.pages['https']           = false if Settings.pages['https'].nil?
-Settings.pages['host']            ||= "example.com"
-Settings.pages['port']            ||= Settings.pages.https ? 443 : 80
-Settings.pages['protocol']        ||= Settings.pages.https ? "https" : "http"
-Settings.pages['url']             ||= Settings.__send__(:build_pages_url)
-Settings.pages['external_http']   ||= false unless Settings.pages['external_http'].present?
-Settings.pages['external_https']  ||= false unless Settings.pages['external_https'].present?
+Settings.pages['enabled']           = false if Settings.pages['enabled'].nil?
+Settings.pages['path']              = Settings.absolute(Settings.pages['path'] || File.join(Settings.shared['path'], "pages"))
+Settings.pages['https']             = false if Settings.pages['https'].nil?
+Settings.pages['host']              ||= "example.com"
+Settings.pages['port']              ||= Settings.pages.https ? 443 : 80
+Settings.pages['protocol']          ||= Settings.pages.https ? "https" : "http"
+Settings.pages['url']               ||= Settings.__send__(:build_pages_url)
+Settings.pages['external_http']     ||= false unless Settings.pages['external_http'].present?
+Settings.pages['external_https']    ||= false unless Settings.pages['external_https'].present?
+Settings.pages['artifacts_server']  ||= Settings.pages['enabled'] if Settings.pages['artifacts_server'].nil?
 
 #
 # Git LFS
@@ -513,9 +514,7 @@ Settings.backup['upload']['storage_class'] ||= nil
 # Git
 #
 Settings['git'] ||= Settingslogic.new({})
-Settings.git['max_size']  ||= 20971520 # 20.megabytes
-Settings.git['bin_path']  ||= '/usr/bin/git'
-Settings.git['timeout']   ||= 10
+Settings.git['bin_path'] ||= '/usr/bin/git'
 
 # Important: keep the satellites.path setting until GitLab 9.0 at
 # least. This setting is fed to 'rm -rf' in

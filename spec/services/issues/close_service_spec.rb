@@ -42,7 +42,7 @@ describe Issues::CloseService do
       service.execute(issue)
     end
 
-    it 'refreshes the number of open issues' do
+    it 'refreshes the number of open issues', :use_clean_rails_memory_store_caching do
       expect { service.execute(issue) }
         .to change { project.open_issues_count }.from(1).to(0)
     end

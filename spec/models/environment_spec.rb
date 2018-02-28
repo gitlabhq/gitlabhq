@@ -54,6 +54,28 @@ describe Environment do
     end
   end
 
+  describe '#folder_name' do
+    context 'when it is inside a folder' do
+      subject(:environment) do
+        create(:environment, name: 'staging/review-1')
+      end
+
+      it 'returns a top-level folder name' do
+        expect(environment.folder_name).to eq 'staging'
+      end
+    end
+
+    context 'when the environment if a top-level item itself' do
+      subject(:environment) do
+        create(:environment, name: 'production')
+      end
+
+      it 'returns an environment name' do
+        expect(environment.folder_name).to eq 'production'
+      end
+    end
+  end
+
   describe '#nullify_external_url' do
     it 'replaces a blank url with nil' do
       env = build(:environment, external_url: "")

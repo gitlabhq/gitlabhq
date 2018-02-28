@@ -162,6 +162,16 @@ describe 'Pipelines', :js do
           expect(page).to have_selector(
             %Q{span[data-original-title="#{pipeline.yaml_errors}"]})
         end
+
+        it 'contains badge that indicates failure reason' do
+          expect(page).to have_content 'error'
+        end
+
+        it 'contains badge with tooltip which contains failure reason' do
+          expect(pipeline.failure_reason?).to eq true
+          expect(page).to have_selector(
+            %Q{span[data-original-title="#{pipeline.present.failure_reason}"]})
+        end
       end
 
       context 'with manual actions' do
@@ -443,7 +453,7 @@ describe 'Pipelines', :js do
         visit new_project_pipeline_path(project)
       end
 
-      context 'for valid commit', js: true do
+      context 'for valid commit', :js do
         before do
           click_button project.default_branch
 
@@ -491,7 +501,7 @@ describe 'Pipelines', :js do
       end
 
       describe 'find pipelines' do
-        it 'shows filtered pipelines', js: true do
+        it 'shows filtered pipelines', :js do
           click_button project.default_branch
 
           page.within '.dropdown-menu' do

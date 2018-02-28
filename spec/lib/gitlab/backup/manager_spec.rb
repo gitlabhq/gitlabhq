@@ -26,6 +26,9 @@ describe Backup::Manager do
       [
         '1451606400_2016_01_01_1.2.3_gitlab_backup.tar',
         '1451520000_2015_12_31_4.5.6_gitlab_backup.tar',
+        '1451520000_2015_12_31_4.5.6-pre_gitlab_backup.tar',
+        '1451520000_2015_12_31_4.5.6-rc1_gitlab_backup.tar',
+        '1451520000_2015_12_31_4.5.6-pre-ee_gitlab_backup.tar',
         '1451510000_2015_12_30_gitlab_backup.tar',
         '1450742400_2015_12_22_gitlab_backup.tar',
         '1449878400_gitlab_backup.tar',
@@ -57,6 +60,30 @@ describe Backup::Manager do
       end
     end
 
+    context 'when no valid file is found' do
+      let(:files) do
+        [
+          '14516064000_2016_01_01_1.2.3_gitlab_backup.tar',
+          'foo_1451520000_2015_12_31_4.5.6_gitlab_backup.tar',
+          '1451520000_2015_12_31_4.5.6-foo_gitlab_backup.tar'
+        ]
+      end
+
+      before do
+        allow(Gitlab.config.backup).to receive(:keep_time).and_return(1)
+
+        subject.remove_old
+      end
+
+      it 'removes no files' do
+        expect(FileUtils).not_to have_received(:rm)
+      end
+
+      it 'prints a done message' do
+        expect(progress).to have_received(:puts).with('done. (0 removed)')
+      end
+    end
+
     context 'when there are no files older than keep_time' do
       before do
         # Set to 30 days
@@ -84,16 +111,22 @@ describe Backup::Manager do
 
       it 'removes matching files with a human-readable versioned timestamp' do
         expect(FileUtils).to have_received(:rm).with(files[1])
-      end
-
-      it 'removes matching files with a human-readable non-versioned timestamp' do
         expect(FileUtils).to have_received(:rm).with(files[2])
         expect(FileUtils).to have_received(:rm).with(files[3])
       end
 
-      it 'removes matching files without a human-readable timestamp' do
+      it 'removes matching files with a human-readable versioned timestamp with tagged EE' do
         expect(FileUtils).to have_received(:rm).with(files[4])
+      end
+
+      it 'removes matching files with a human-readable non-versioned timestamp' do
         expect(FileUtils).to have_received(:rm).with(files[5])
+        expect(FileUtils).to have_received(:rm).with(files[6])
+      end
+
+      it 'removes matching files without a human-readable timestamp' do
+        expect(FileUtils).to have_received(:rm).with(files[7])
+        expect(FileUtils).to have_received(:rm).with(files[8])
       end
 
       it 'does not remove files that are not old enough' do
@@ -101,11 +134,11 @@ describe Backup::Manager do
       end
 
       it 'does not remove non-matching files' do
-        expect(FileUtils).not_to have_received(:rm).with(files[6])
+        expect(FileUtils).not_to have_received(:rm).with(files[9])
       end
 
       it 'prints a done message' do
-        expect(progress).to have_received(:puts).with('done. (5 removed)')
+        expect(progress).to have_received(:puts).with('done. (8 removed)')
       end
     end
 
@@ -121,14 +154,15 @@ describe Backup::Manager do
       end
 
       it 'removes the remaining expected files' do
-        expect(FileUtils).to have_received(:rm).with(files[2])
-        expect(FileUtils).to have_received(:rm).with(files[3])
         expect(FileUtils).to have_received(:rm).with(files[4])
         expect(FileUtils).to have_received(:rm).with(files[5])
+        expect(FileUtils).to have_received(:rm).with(files[6])
+        expect(FileUtils).to have_received(:rm).with(files[7])
+        expect(FileUtils).to have_received(:rm).with(files[8])
       end
 
       it 'sets the correct removed count' do
-        expect(progress).to have_received(:puts).with('done. (4 removed)')
+        expect(progress).to have_received(:puts).with('done. (7 removed)')
       end
 
       it 'prints the error from file that could not be removed' do

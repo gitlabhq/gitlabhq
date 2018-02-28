@@ -41,6 +41,8 @@ class Projects::BlobController < Projects::ApplicationController
       end
 
       format.json do
+        page_title @blob.path, @ref, @project.name_with_namespace
+
         show_json
       end
     end

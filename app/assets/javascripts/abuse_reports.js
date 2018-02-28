@@ -1,7 +1,7 @@
 const MAX_MESSAGE_LENGTH = 500;
 const MESSAGE_CELL_SELECTOR = '.abuse-reports .message';
 
-class AbuseReports {
+export default class AbuseReports {
   constructor() {
     $(MESSAGE_CELL_SELECTOR).each(this.truncateLongMessage);
     $(document)
@@ -32,6 +32,3 @@ class AbuseReports {
     }
   }
 }
-
-window.gl = window.gl || {};
-window.gl.AbuseReports = AbuseReports;

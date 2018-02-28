@@ -1,0 +1,5 @@
+---
+title: Adjusts tag link to avoid underlining spaces
+merge_request: 14544
+author: Guilherme Vieira
+type: fixed

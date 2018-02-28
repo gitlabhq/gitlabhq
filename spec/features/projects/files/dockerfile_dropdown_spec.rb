@@ -16,7 +16,7 @@ feature 'User wants to add a Dockerfile file' do
     expect(page).to have_css('.dockerfile-selector')
   end
 
-  scenario 'user can pick a Dockerfile file from the dropdown', js: true do
+  scenario 'user can pick a Dockerfile file from the dropdown', :js do
     find('.js-dockerfile-selector').click
 
     wait_for_requests

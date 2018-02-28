@@ -28,6 +28,23 @@ describe Gitlab::Gpg do
     end
   end
 
+  describe '.subkeys_from_key' do
+    it 'returns the subkeys by primary key' do
+      all_subkeys = described_class.subkeys_from_key(GpgHelpers::User1.public_key)
+      subkeys = all_subkeys[GpgHelpers::User1.primary_keyid]
+
+      expect(subkeys).to be_present
+      expect(subkeys.first[:keyid]).to be_present
+      expect(subkeys.first[:fingerprint]).to be_present
+    end
+
+    it 'returns an empty array when there are not subkeys' do
+      all_subkeys = described_class.subkeys_from_key(GpgHelpers::User4.public_key)
+
+      expect(all_subkeys[GpgHelpers::User4.primary_keyid]).to be_empty
+    end
+  end
+
   describe '.user_infos_from_key' do
     it 'returns the names and emails' do
       user_infos = described_class.user_infos_from_key(GpgHelpers::User1.public_key)

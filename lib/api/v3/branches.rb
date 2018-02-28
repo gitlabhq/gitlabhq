@@ -11,12 +11,12 @@ module API
       end
       resource :projects, requirements: { id: %r{[^/]+} } do
         desc 'Get a project repository branches' do
-          success ::API::Entities::RepoBranch
+          success ::API::Entities::Branch
         end
         get ":id/repository/branches" do
           branches = user_project.repository.branches.sort_by(&:name)
 
-          present branches, with: ::API::Entities::RepoBranch, project: user_project
+          present branches, with: ::API::Entities::Branch, project: user_project
         end
 
         desc 'Delete a branch'
@@ -47,7 +47,7 @@ module API
         end
 
         desc 'Create branch' do
-          success ::API::Entities::RepoBranch
+          success ::API::Entities::Branch
         end
         params do
           requires :branch_name, type: String, desc: 'The name of the branch'
@@ -60,7 +60,7 @@ module API
 
           if result[:status] == :success
             present result[:branch],
-              with: ::API::Entities::RepoBranch,
+              with: ::API::Entities::Branch,
               project: user_project
           else
             render_api_error!(result[:message], 400)

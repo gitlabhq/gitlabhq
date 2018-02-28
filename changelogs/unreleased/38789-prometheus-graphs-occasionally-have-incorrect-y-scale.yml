@@ -1,0 +1,5 @@
+---
+title: Fix broken Y-axis scaling in some Prometheus graphs
+merge_request: 14693
+author:
+type: fixed

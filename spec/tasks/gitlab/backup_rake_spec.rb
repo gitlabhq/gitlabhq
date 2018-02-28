@@ -224,17 +224,20 @@ describe 'gitlab:app namespace rake task' do
     end
 
     context 'multiple repository storages' do
+      let(:gitaly_address) { Gitlab.config.repositories.storages.default.gitaly_address }
+      let(:storages) do
+        {
+          'default' => { 'path' => Settings.absolute('tmp/tests/default_storage'), 'gitaly_address' => gitaly_address  },
+          'test_second_storage' => { 'path' => Settings.absolute('tmp/tests/custom_storage'), 'gitaly_address' => gitaly_address }
+        }
+      end
+
       let(:project_a) { create(:project, :repository, repository_storage: 'default') }
-      let(:project_b) { create(:project, :repository, repository_storage: 'custom') }
+      let(:project_b) { create(:project, :repository, repository_storage: 'test_second_storage') }
 
       before do
         FileUtils.mkdir('tmp/tests/default_storage')
         FileUtils.mkdir('tmp/tests/custom_storage')
-        gitaly_address = Gitlab.config.repositories.storages.default.gitaly_address
-        storages = {
-          'default' => { 'path' => Settings.absolute('tmp/tests/default_storage'), 'gitaly_address' => gitaly_address  },
-          'custom' => { 'path' => Settings.absolute('tmp/tests/custom_storage'), 'gitaly_address' => gitaly_address }
-        }
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
 
         # Create the projects now, after mocking the settings but before doing the backup
@@ -253,7 +256,7 @@ describe 'gitlab:app namespace rake task' do
       after do
         FileUtils.rm_rf('tmp/tests/default_storage')
         FileUtils.rm_rf('tmp/tests/custom_storage')
-        FileUtils.rm(@backup_tar)
+        FileUtils.rm(@backup_tar) if @backup_tar
       end
 
       it 'includes repositories in all repository storages' do

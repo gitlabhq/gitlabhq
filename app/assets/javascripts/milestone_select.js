@@ -45,7 +45,7 @@ import _ from 'underscore';
         if (issueUpdateURL) {
           milestoneLinkTemplate = _.template('<a href="/<%- full_path %>/milestones/<%- iid %>" class="bold has-tooltip" data-container="body" title="<%- remaining %>"><%- title %></a>');
           milestoneLinkNoneTemplate = '<span class="no-value">None</span>';
-          collapsedSidebarLabelTemplate = _.template('<span class="has-tooltip" data-container="body" title="<%- remaining %>" data-placement="left"> <%- title %> </span>');
+          collapsedSidebarLabelTemplate = _.template('<span class="has-tooltip" data-container="body" title="<%- name %><br /><%- remaining %>" data-placement="left" data-html="true"> <%- title %> </span>');
         }
         return $dropdown.glDropdown({
           showMenuAbove: showMenuAbove,
@@ -208,6 +208,7 @@ import _ from 'underscore';
                 if (data.milestone != null) {
                   data.milestone.full_path = _this.currentProject.full_path;
                   data.milestone.remaining = gl.utils.timeFor(data.milestone.due_date);
+                  data.milestone.name = data.milestone.title;
                   $value.html(milestoneLinkTemplate(data.milestone));
                   return $sidebarCollapsedValue.find('span').html(collapsedSidebarLabelTemplate(data.milestone));
                 } else {

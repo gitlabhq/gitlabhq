@@ -30,7 +30,7 @@ module BuildsHelper
 
   def build_failed_issue_options
     {
-      title: "Build Failed ##{@build.id}",
+      title: "Job Failed ##{@build.id}",
       description: project_job_url(@project, @build)
     }
   end

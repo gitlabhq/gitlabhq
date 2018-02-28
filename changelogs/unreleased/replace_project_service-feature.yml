@@ -1,0 +1,5 @@
+---
+title: Replace the 'project/service.feature' spinach test with an rspec analog
+merge_request: 14432
+author: Vitaliy @blackst0ne Klachkov
+type: other

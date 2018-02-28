@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'User visits the notifications tab', js: true do
+feature 'User visits the notifications tab', :js do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 

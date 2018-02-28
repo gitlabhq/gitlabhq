@@ -23,7 +23,7 @@
               - disabled_class = 'disabled'
               - disabled_title = @service.disabled_title
 
-        = link_to 'Cancel', project_settings_integrations_path(@project), class: 'btn btn-cancel'
+          = link_to 'Cancel', project_settings_integrations_path(@project), class: 'btn btn-cancel'
 
 - if lookup_context.template_exists?('show', "projects/services/#{@service.to_param}", true)
   %hr

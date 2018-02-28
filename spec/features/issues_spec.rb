@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Issues' do
+describe 'Issues', :js do
   include DropzoneHelper
   include IssueHelpers
   include SortingHelper
@@ -24,113 +24,27 @@ describe 'Issues' do
     end
 
     before do
-      visit edit_project_issue_path(project, issue)
-      find('.js-zen-enter').click
+      visit project_issue_path(project, issue)
+      page.within('.content .issuable-actions') do
+        find('.issuable-edit').click
+      end
+      find('.issue-details .content-block .js-zen-enter').click
     end
 
     it 'opens new issue popup' do
-      expect(page).to have_content("Issue ##{issue.iid}")
-    end
-  end
-
-  describe 'Editing issue assignee' do
-    let!(:issue) do
-      create(:issue,
-             author: user,
-             assignees: [user],
-             project: project)
-    end
-
-    it 'allows user to select unassigned', js: true do
-      visit edit_project_issue_path(project, issue)
-
-      expect(page).to have_content "Assignee #{user.name}"
-
-      first('.js-user-search').click
-      click_link 'Unassigned'
-
-      click_button 'Save changes'
-
-      page.within('.assignee') do
-        expect(page).to have_content 'No assignee - assign yourself'
-      end
-
-      expect(issue.reload.assignees).to be_empty
-    end
-  end
-
-  describe 'due date', js: true do
-    context 'on new form' do
-      before do
-        visit new_project_issue_path(project)
-      end
-
-      it 'saves with due date' do
-        date = Date.today.at_beginning_of_month
-
-        fill_in 'issue_title', with: 'bug 345'
-        fill_in 'issue_description', with: 'bug description'
-        find('#issuable-due-date').click
-
-        page.within '.pika-single' do
-          click_button date.day
-        end
-
-        expect(find('#issuable-due-date').value).to eq date.to_s
-
-        click_button 'Submit issue'
-
-        page.within '.issuable-sidebar' do
-          expect(page).to have_content date.to_s(:medium)
-        end
-      end
-    end
-
-    context 'on edit form' do
-      let(:issue) { create(:issue, author: user, project: project, due_date: Date.today.at_beginning_of_month.to_s) }
-
-      before do
-        visit edit_project_issue_path(project, issue)
-      end
-
-      it 'saves with due date' do
-        date = Date.today.at_beginning_of_month
-
-        expect(find('#issuable-due-date').value).to eq date.to_s
-
-        date = date.tomorrow
-
-        fill_in 'issue_title', with: 'bug 345'
-        fill_in 'issue_description', with: 'bug description'
-        find('#issuable-due-date').click
-
-        page.within '.pika-single' do
-          click_button date.day
-        end
-
-        expect(find('#issuable-due-date').value).to eq date.to_s
-
-        click_button 'Save changes'
-
-        page.within '.issuable-sidebar' do
-          expect(page).to have_content date.to_s(:medium)
-        end
-      end
-
-      it 'warns about version conflict' do
-        issue.update(title: "New title")
-
-        fill_in 'issue_title', with: 'bug 345'
-        fill_in 'issue_description', with: 'bug description'
-
-        click_button 'Save changes'
-
-        expect(page).to have_content 'Someone edited the issue the same time you did'
-      end
+      expect(page).to have_content(issue.description)
     end
   end
 
   describe 'Issue info' do
+    it 'links to current issue in breadcrubs' do
+      issue = create(:issue, project: project)
+
+      visit project_issue_path(project, issue)
+
+      expect(find('.breadcrumbs-sub-title a')[:href]).to end_with(issue_path(issue))
+    end
+
     it 'excludes award_emoji from comment count' do
       issue = create(:issue, author: user, assignees: [user], project: project, title: 'foobar')
       create(:award_emoji, awardable: issue)
@@ -190,17 +104,10 @@ describe 'Issues' do
     let(:later_due_milestone) { create(:milestone, due_date: '2013-12-12') }
 
     it 'sorts by newest' do
-      visit project_issues_path(project, sort: sort_value_recently_created)
+      visit project_issues_path(project, sort: sort_value_created_date)
 
       expect(first_issue).to include('foo')
       expect(last_issue).to include('baz')
-    end
-
-    it 'sorts by oldest' do
-      visit project_issues_path(project, sort: sort_value_oldest_created)
-
-      expect(first_issue).to include('baz')
-      expect(last_issue).to include('foo')
     end
 
     it 'sorts by most recently updated' do
@@ -211,36 +118,22 @@ describe 'Issues' do
       expect(first_issue).to include('baz')
     end
 
-    it 'sorts by least recently updated' do
-      baz.updated_at = Time.now - 100
-      baz.save
-      visit project_issues_path(project, sort: sort_value_oldest_updated)
-
-      expect(first_issue).to include('baz')
-    end
-
     describe 'sorting by due date' do
       before do
         foo.update(due_date: 1.day.from_now)
         bar.update(due_date: 6.days.from_now)
       end
 
-      it 'sorts by recently due date' do
-        visit project_issues_path(project, sort: sort_value_due_date_soon)
+      it 'sorts by due date' do
+        visit project_issues_path(project, sort: sort_value_due_date)
 
         expect(first_issue).to include('foo')
       end
 
-      it 'sorts by least recently due date' do
-        visit project_issues_path(project, sort: sort_value_due_date_later)
-
-        expect(first_issue).to include('bar')
-      end
-
-      it 'sorts by least recently due date by excluding nil due dates' do
+      it 'sorts by due date by excluding nil due dates' do
         bar.update(due_date: nil)
 
-        visit project_issues_path(project, sort: sort_value_due_date_later)
+        visit project_issues_path(project, sort: sort_value_due_date)
 
         expect(first_issue).to include('foo')
       end
@@ -339,17 +232,10 @@ describe 'Issues' do
         bar.save
       end
 
-      it 'sorts by recently due milestone' do
-        visit project_issues_path(project, sort: sort_value_milestone_soon)
+      it 'sorts by milestone' do
+        visit project_issues_path(project, sort: sort_value_milestone)
 
         expect(first_issue).to include('foo')
-        expect(last_issue).to include('baz')
-      end
-
-      it 'sorts by least recently due milestone' do
-        visit project_issues_path(project, sort: sort_value_milestone_later)
-
-        expect(first_issue).to include('bar')
         expect(last_issue).to include('baz')
       end
     end
@@ -365,13 +251,11 @@ describe 'Issues' do
       end
 
       it 'sorts with a filter applied' do
-        visit project_issues_path(project,
-                                            sort: sort_value_oldest_created,
-                                            assignee_id: user2.id)
+        visit project_issues_path(project, sort: sort_value_created_date, assignee_id: user2.id)
 
-        expect(first_issue).to include('bar')
-        expect(last_issue).to include('foo')
-        expect(page).not_to have_content 'baz'
+        expect(first_issue).to include('foo')
+        expect(last_issue).to include('bar')
+        expect(page).not_to have_content('baz')
       end
     end
   end
@@ -386,7 +270,7 @@ describe 'Issues' do
       visit namespace_project_issues_path(user.namespace, project1)
     end
 
-    it 'changes incoming email address token', js: true do
+    it 'changes incoming email address token', :js do
       find('.issue-email-modal-btn').click
       previous_token = find('input#issue_email').value
       find('.incoming-email-token-reset').trigger('click')
@@ -402,7 +286,7 @@ describe 'Issues' do
     end
   end
 
-  describe 'update labels from issue#show', js: true do
+  describe 'update labels from issue#show', :js do
     let(:issue) { create(:issue, project: project, author: user, assignees: [user]) }
     let!(:label) { create(:label, project: project) }
 
@@ -425,7 +309,7 @@ describe 'Issues' do
     let(:issue) { create(:issue, project: project, author: user, assignees: [user]) }
 
     context 'by authorized user' do
-      it 'allows user to select unassigned', js: true do
+      it 'allows user to select unassigned', :js do
         visit project_issue_path(project, issue)
 
         page.within('.assignee') do
@@ -443,7 +327,7 @@ describe 'Issues' do
         expect(issue.reload.assignees).to be_empty
       end
 
-      it 'allows user to select an assignee', js: true do
+      it 'allows user to select an assignee', :js do
         issue2 = create(:issue, project: project, author: user)
         visit project_issue_path(project, issue2)
 
@@ -464,7 +348,7 @@ describe 'Issues' do
         end
       end
 
-      it 'allows user to unselect themselves', js: true do
+      it 'allows user to unselect themselves', :js do
         issue2 = create(:issue, project: project, author: user)
         visit project_issue_path(project, issue2)
 
@@ -493,7 +377,7 @@ describe 'Issues' do
         project.team << [[guest], :guest]
       end
 
-      it 'shows assignee text', js: true do
+      it 'shows assignee text', :js do
         sign_out(:user)
         sign_in(guest)
 
@@ -508,7 +392,7 @@ describe 'Issues' do
     let!(:milestone) { create(:milestone, project: project) }
 
     context 'by authorized user' do
-      it 'allows user to select unassigned', js: true do
+      it 'allows user to select unassigned', :js do
         visit project_issue_path(project, issue)
 
         page.within('.milestone') do
@@ -526,7 +410,7 @@ describe 'Issues' do
         expect(issue.reload.milestone).to be_nil
       end
 
-      it 'allows user to de-select milestone', js: true do
+      it 'allows user to de-select milestone', :js do
         visit project_issue_path(project, issue)
 
         page.within('.milestone') do
@@ -556,7 +440,7 @@ describe 'Issues' do
         issue.save
       end
 
-      it 'shows milestone text', js: true do
+      it 'shows milestone text', :js do
         sign_out(:user)
         sign_in(guest)
 
@@ -589,7 +473,7 @@ describe 'Issues' do
       end
     end
 
-    context 'dropzone upload file', js: true do
+    context 'dropzone upload file', :js do
       before do
         visit new_project_issue_path(project)
       end
@@ -660,7 +544,7 @@ describe 'Issues' do
   end
 
   describe 'due date' do
-    context 'update due on issue#show', js: true do
+    context 'update due on issue#show', :js do
       let(:issue) { create(:issue, project: project, author: user, assignees: [user]) }
 
       before do
@@ -704,8 +588,8 @@ describe 'Issues' do
     end
   end
 
-  describe 'title issue#show', js: true do
-    it 'updates the title', js: true do
+  describe 'title issue#show', :js do
+    it 'updates the title', :js do
       issue = create(:issue, author: user, assignees: [user], project: project, title: 'new title')
 
       visit project_issue_path(project, issue)
@@ -719,20 +603,20 @@ describe 'Issues' do
     end
   end
 
-  describe 'confidential issue#show', js: true do
+  describe 'confidential issue#show', :js do
     it 'shows confidential sibebar information as confidential and can be turned off' do
       issue = create(:issue, :confidential, project: project)
 
       visit project_issue_path(project, issue)
 
-      expect(page).to have_css('.confidential-issue-warning')
-      expect(page).to have_css('.is-confidential')
-      expect(page).not_to have_css('.is-not-confidential')
+      expect(page).to have_css('.issuable-note-warning')
+      expect(find('.issuable-sidebar-item.confidentiality')).to have_css('.is-active')
+      expect(find('.issuable-sidebar-item.confidentiality')).not_to have_css('.not-active')
 
       find('.confidential-edit').click
-      expect(page).to have_css('.confidential-warning-message')
+      expect(page).to have_css('.sidebar-item-warning-message')
 
-      within('.confidential-warning-message') do
+      within('.sidebar-item-warning-message') do
         find('.btn-close').click
       end
 
@@ -740,7 +624,7 @@ describe 'Issues' do
 
       visit project_issue_path(project, issue)
 
-      expect(page).not_to have_css('.is-confidential')
+      expect(page).not_to have_css('.is-active')
     end
   end
 end

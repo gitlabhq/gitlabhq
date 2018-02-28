@@ -183,6 +183,16 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
+      resources :clusters, except: [:edit] do
+        collection do
+          get :login
+        end
+
+        member do
+          get :status, format: :json
+        end
+      end
+
       resources :environments, except: [:destroy] do
         member do
           post :stop
@@ -271,7 +281,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       namespace :registry do
         resources :repository, only: [] do
-          resources :tags, only: [:destroy],
+          resources :tags, only: [:index, :destroy],
                            constraints: { id: Gitlab::Regex.container_registry_tag_regex }
         end
       end

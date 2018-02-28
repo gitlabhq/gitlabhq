@@ -11,6 +11,8 @@ describe BuildFinishedWorker do
         expect(BuildHooksWorker)
           .to receive(:new).ordered.and_call_original
 
+        expect(BuildTraceSectionsWorker)
+          .to receive(:perform_async)
         expect_any_instance_of(BuildCoverageWorker)
           .to receive(:perform)
         expect_any_instance_of(BuildHooksWorker)

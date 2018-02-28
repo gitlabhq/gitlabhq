@@ -21,8 +21,8 @@
                   %a
                     Loading...
             = dropdown_loading
-          %i.search-icon
-          %i.clear-icon.js-clear-input
+          = sprite_icon('search', size: 16, css_class: 'search-icon')
+          = sprite_icon('close', size: 16, css_class: 'clear-icon js-clear-input')
 
     = hidden_field_tag :group_id, @group.try(:id), class: 'js-search-group-options', data: group_data_attrs
 

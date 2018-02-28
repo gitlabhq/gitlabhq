@@ -229,7 +229,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :trunca
     end
   end
 
-  describe '#track_rename', redis: true do
+  describe '#track_rename', :redis do
     it 'tracks a rename in redis' do
       key = 'rename:FakeRenameReservedPathMigrationV1:namespace'
 
@@ -246,7 +246,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :trunca
     end
   end
 
-  describe '#reverts_for_type', redis: true do
+  describe '#reverts_for_type', :redis do
     it 'yields for each tracked rename' do
       subject.track_rename('project', 'old_path', 'new_path')
       subject.track_rename('project', 'old_path2', 'new_path2')

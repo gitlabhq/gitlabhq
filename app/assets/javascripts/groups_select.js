@@ -4,6 +4,7 @@
                   prefer-rest-params, prefer-spread, no-unused-vars, prefer-template,
                   promise/catch-or-return */
 import Api from './api';
+import { normalizeCRLFHeaders } from './lib/utils/common_utils';
 
 var slice = [].slice;
 
@@ -30,7 +31,7 @@ window.GroupsSelect = (function() {
               $.ajax(params).then((data, status, xhr) => {
                 const results = data || [];
 
-                const headers = gl.utils.normalizeCRLFHeaders(xhr.getAllResponseHeaders());
+                const headers = normalizeCRLFHeaders(xhr.getAllResponseHeaders());
                 const currentPage = parseInt(headers['X-PAGE'], 10) || 0;
                 const totalPages = parseInt(headers['X-TOTAL-PAGES'], 10) || 0;
                 const more = currentPage < totalPages;

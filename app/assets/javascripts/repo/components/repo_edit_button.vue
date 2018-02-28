@@ -26,16 +26,6 @@ export default {
       this.editMode = !this.editMode;
       Store.toggleBlobView();
     },
-    toggleProjectRefsForm() {
-      $('.project-refs-form').toggleClass('disabled', this.editMode);
-      $('.js-tree-ref-target-holder').toggle(this.editMode);
-    },
-  },
-
-  watch: {
-    editMode() {
-      this.toggleProjectRefsForm();
-    },
   },
 };
 </script>

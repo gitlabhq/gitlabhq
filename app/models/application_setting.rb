@@ -137,11 +137,11 @@ class ApplicationSetting < ActiveRecord::Base
 
   validates :housekeeping_full_repack_period,
             presence: true,
-            numericality: { only_integer: true, greater_than: :housekeeping_incremental_repack_period }
+            numericality: { only_integer: true, greater_than_or_equal_to: :housekeeping_incremental_repack_period }
 
   validates :housekeeping_gc_period,
             presence: true,
-            numericality: { only_integer: true, greater_than: :housekeeping_full_repack_period }
+            numericality: { only_integer: true, greater_than_or_equal_to: :housekeeping_full_repack_period }
 
   validates :terminal_max_session_time,
             presence: true,
@@ -247,7 +247,7 @@ class ApplicationSetting < ActiveRecord::Base
       housekeeping_full_repack_period: 50,
       housekeeping_gc_period: 200,
       housekeeping_incremental_repack_period: 10,
-      import_sources: Gitlab::ImportSources.values,
+      import_sources: Settings.gitlab['import_sources'],
       koding_enabled: false,
       koding_url: nil,
       max_artifacts_size: Settings.artifacts['max_size'],

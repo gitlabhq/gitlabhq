@@ -79,7 +79,7 @@ namespace :gitlab do
         if File.exist?(path_to_repo)
           print '-'
         else
-          if Gitlab::Shell.new.add_repository(project.repository_storage_path,
+          if Gitlab::Shell.new.add_repository(project.repository_storage,
                                               project.disk_path)
             print '.'
           else

@@ -69,8 +69,7 @@
           @click="onClickAction(action.path)"
           :class="{ disabled: isActionDisabled(action) }"
           :disabled="isActionDisabled(action)">
-          <span v-html="playIconSvg"></span>
-          <span>{{action.name}}</span>
+          {{action.name}}
         </button>
       </li>
     </ul>

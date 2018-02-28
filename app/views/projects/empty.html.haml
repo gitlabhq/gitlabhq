@@ -3,7 +3,6 @@
 
 = render partial: 'flash_messages', locals: { project: @project }
 
-= render "projects/head"
 = render "home_panel"
 
 .row-content-block.second-block.center
@@ -27,6 +26,8 @@
 
 - if can?(current_user, :push_code, @project)
   %div{ class: container_class }
+    - if show_auto_devops_callout?(@project)
+      = render 'shared/auto_devops_callout'
     .prepend-top-20
     .empty_wrapper
       %h3.page-title-empty

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Dropdown emoji', js: true do
+describe 'Dropdown emoji', :js do
   include FilteredSearchHelpers
 
   let!(:project) { create(:project, :public) }

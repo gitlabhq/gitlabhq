@@ -216,7 +216,7 @@ describe Projects::JobsController do
       expect(json_response['text']).to eq status.text
       expect(json_response['label']).to eq status.label
       expect(json_response['icon']).to eq status.icon
-      expect(json_response['favicon']).to eq "/assets/ci_favicons/#{status.favicon}.ico"
+      expect(json_response['favicon']).to match_asset_path "/assets/ci_favicons/#{status.favicon}.ico"
     end
   end
 

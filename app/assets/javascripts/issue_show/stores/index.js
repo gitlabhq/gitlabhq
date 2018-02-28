@@ -3,7 +3,6 @@ export default class Store {
     this.state = initialState;
     this.formState = {
       title: '',
-      confidential: false,
       description: '',
       lockedWarningVisible: false,
       updateLoading: false,

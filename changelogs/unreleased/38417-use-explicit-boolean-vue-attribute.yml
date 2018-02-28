@@ -1,0 +1,5 @@
+---
+title: Use explicit boolean true attribute for show-disabled-button in Vue files
+merge_request: 14672
+author:
+type: fixed

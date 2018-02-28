@@ -8,7 +8,7 @@
       = link_to git_access_url, class: active_nav_link?(path: 'wikis#git_access') ? 'active' : '' do
         = succeed '&nbsp;' do
           = icon('cloud-download')
-        Clone repository
+        = _("Clone repository")
 
     .blocks-container
       .block.block-first
@@ -17,6 +17,6 @@
 
       .block
         = link_to project_wikis_pages_path(@project), class: 'btn btn-block' do
-          More Pages
+          = s_("Wiki|More Pages")
 
 = render 'projects/wikis/new'

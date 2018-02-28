@@ -36,7 +36,7 @@ describe 'Filter merge requests' do
       expect_mr_list_count(0)
     end
 
-    context 'assignee', js: true do
+    context 'assignee', :js do
       it 'updates to current user' do
         expect_assignee_visual_tokens()
       end
@@ -69,7 +69,7 @@ describe 'Filter merge requests' do
       expect_mr_list_count(0)
     end
 
-    context 'milestone', js: true do
+    context 'milestone', :js do
       it 'updates to current milestone' do
         expect_milestone_visual_tokens()
       end
@@ -88,7 +88,7 @@ describe 'Filter merge requests' do
     end
   end
 
-  describe 'for label from mr#index', js: true do
+  describe 'for label from mr#index', :js do
     it 'filters by no label' do
       input_filtered_search('label:none')
 
@@ -137,7 +137,7 @@ describe 'Filter merge requests' do
       expect_mr_list_count(0)
     end
 
-    context 'assignee and label', js: true do
+    context 'assignee and label', :js do
       def expect_assignee_label_visual_tokens
         wait_for_requests
 
@@ -183,7 +183,7 @@ describe 'Filter merge requests' do
       visit project_merge_requests_path(project)
     end
 
-    context 'only text', js: true do
+    context 'only text', :js do
       it 'filters merge requests by searched text' do
         input_filtered_search('bug')
 
@@ -199,7 +199,7 @@ describe 'Filter merge requests' do
       end
     end
 
-    context 'filters and searches', js: true do
+    context 'filters and searches', :js do
       it 'filters by text and label' do
         input_filtered_search('Bug')
 
@@ -277,9 +277,9 @@ describe 'Filter merge requests' do
 
       expect_mr_list_count(2)
 
-      click_button 'Last created'
+      click_button 'Created date'
       page.within '.dropdown-menu-sort' do
-        click_link 'Oldest created'
+        click_link 'Priority'
       end
       wait_for_requests
 
@@ -289,7 +289,7 @@ describe 'Filter merge requests' do
     end
   end
 
-  describe 'filter by assignee id', js: true do
+  describe 'filter by assignee id', :js do
     it 'filter by current user' do
       visit project_merge_requests_path(project, assignee_id: user.id)
 
@@ -312,7 +312,7 @@ describe 'Filter merge requests' do
     end
   end
 
-  describe 'filter by author id', js: true do
+  describe 'filter by author id', :js do
     it 'filter by current user' do
       visit project_merge_requests_path(project, author_id: user.id)
 

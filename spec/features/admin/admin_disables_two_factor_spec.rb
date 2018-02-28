@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'Admin disables 2FA for a user' do
-  scenario 'successfully', js: true do
+  scenario 'successfully', :js do
     sign_in(create(:admin))
     user = create(:user, :two_factor)
 

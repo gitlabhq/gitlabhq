@@ -1,48 +1,15 @@
 require_relative 'error'
+require_relative 'import/issue'
+require_relative 'import/legacy_diff_note'
+require_relative 'import/merge_request'
+require_relative 'import/note'
 
 module Github
   class Import
     include Gitlab::ShellAdapter
 
-    class MergeRequest < ::MergeRequest
-      self.table_name = 'merge_requests'
-
-      self.reset_callbacks :create
-      self.reset_callbacks :save
-      self.reset_callbacks :commit
-      self.reset_callbacks :update
-      self.reset_callbacks :validate
-    end
-
-    class Issue < ::Issue
-      self.table_name = 'issues'
-
-      self.reset_callbacks :save
-      self.reset_callbacks :create
-      self.reset_callbacks :commit
-      self.reset_callbacks :update
-      self.reset_callbacks :validate
-    end
-
-    class Note < ::Note
-      self.table_name = 'notes'
-
-      self.reset_callbacks :save
-      self.reset_callbacks :commit
-      self.reset_callbacks :update
-      self.reset_callbacks :validate
-    end
-
-    class LegacyDiffNote < ::LegacyDiffNote
-      self.table_name = 'notes'
-
-      self.reset_callbacks :commit
-      self.reset_callbacks :update
-      self.reset_callbacks :validate
-    end
-
     attr_reader :project, :repository, :repo, :repo_url, :wiki_url,
-                :options, :errors, :cached, :verbose
+                :options, :errors, :cached, :verbose, :last_fetched_at
 
     def initialize(project, options = {})
       @project = project
@@ -54,12 +21,13 @@ module Github
       @verbose = options.fetch(:verbose, false)
       @cached  = Hash.new { |hash, key| hash[key] = Hash.new }
       @errors  = []
+      @last_fetched_at = nil
     end
 
     # rubocop: disable Rails/Output
     def execute
       puts 'Fetching repository...'.color(:aqua) if verbose
-      fetch_repository
+      setup_and_fetch_repository
       puts 'Fetching labels...'.color(:aqua) if verbose
       fetch_labels
       puts 'Fetching milestones...'.color(:aqua) if verbose
@@ -75,7 +43,7 @@ module Github
       puts 'Expiring repository cache...'.color(:aqua) if verbose
       expire_repository_cache
 
-      true
+      errors.empty?
     rescue Github::RepositoryFetchError
       expire_repository_cache
       false
@@ -85,16 +53,22 @@ module Github
 
     private
 
-    def fetch_repository
+    def setup_and_fetch_repository
       begin
         project.ensure_repository
         project.repository.add_remote('github', repo_url)
-        project.repository.set_remote_as_mirror('github')
-        project.repository.fetch_remote('github', forced: true)
+        project.repository.set_import_remote_as_mirror('github')
+        project.repository.add_remote_fetch_config('github', '+refs/pull/*/head:refs/merge-requests/*/head')
+        fetch_remote(forced: true)
       rescue Gitlab::Git::Repository::NoRepository, Gitlab::Shell::Error => e
         error(:project, repo_url, e.message)
         raise Github::RepositoryFetchError
       end
+    end
+
+    def fetch_remote(forced: false)
+      @last_fetched_at = Time.now
+      project.repository.fetch_remote('github', forced: forced)
     end
 
     def fetch_wiki_repository
@@ -125,7 +99,7 @@ module Github
               label.color = representation.color
             end
 
-            cached[:label_ids][label.title] = label.id
+            cached[:label_ids][representation.title] = label.id
           rescue => e
             error(:label, representation.url, e.message)
           end
@@ -176,7 +150,9 @@ module Github
           next unless merge_request.new_record? && pull_request.valid?
 
           begin
-            pull_request.restore_branches!
+            # If the PR has been created/updated after we last fetched the
+            # remote, we fetch again to get the up-to-date refs.
+            fetch_remote if pull_request.updated_at > last_fetched_at
 
             author_id   = user_id(pull_request.author, project.creator_id)
             description = format_description(pull_request.description, pull_request.author)
@@ -185,6 +161,7 @@ module Github
               iid: pull_request.iid,
               title: pull_request.title,
               description: description,
+              ref_fetched: true,
               source_project: pull_request.source_project,
               source_branch: pull_request.source_branch_name,
               source_branch_sha: pull_request.source_branch_sha,
@@ -202,17 +179,10 @@ module Github
             merge_request.save!(validate: false)
             merge_request.merge_request_diffs.create
 
-            # Fetch review comments
             review_comments_url = "/repos/#{repo}/pulls/#{pull_request.iid}/comments"
             fetch_comments(merge_request, :review_comment, review_comments_url, LegacyDiffNote)
-
-            # Fetch comments
-            comments_url = "/repos/#{repo}/issues/#{pull_request.iid}/comments"
-            fetch_comments(merge_request, :comment, comments_url)
           rescue => e
             error(:pull_request, pull_request.url, e.message)
-          ensure
-            pull_request.remove_restored_branches!
           end
         end
 
@@ -241,12 +211,17 @@ module Github
         # for both features, like manipulating assignees, labels
         # and milestones, are provided within the Issues API.
         if representation.pull_request?
-          return unless representation.has_labels?
+          return unless representation.labels? || representation.comments?
 
           merge_request = MergeRequest.find_by!(target_project_id: project.id, iid: representation.iid)
-          merge_request.update_attribute(:label_ids, label_ids(representation.labels))
+
+          if representation.labels?
+            merge_request.update_attribute(:label_ids, label_ids(representation.labels))
+          end
+
+          fetch_comments_conditionally(merge_request, representation)
         else
-          return if Issue.where(iid: representation.iid, project_id: project.id).exists?
+          return if Issue.exists?(iid: representation.iid, project_id: project.id)
 
           author_id          = user_id(representation.author, project.creator_id)
           issue              = Issue.new
@@ -255,22 +230,27 @@ module Github
           issue.title        = representation.title
           issue.description  = format_description(representation.description, representation.author)
           issue.state        = representation.state
-          issue.label_ids    = label_ids(representation.labels)
           issue.milestone_id = milestone_id(representation.milestone)
           issue.author_id    = author_id
-          issue.assignee_ids = [user_id(representation.assignee)]
           issue.created_at   = representation.created_at
           issue.updated_at   = representation.updated_at
           issue.save!(validate: false)
 
-          # Fetch comments
-          if representation.has_comments?
-            comments_url = "/repos/#{repo}/issues/#{issue.iid}/comments"
-            fetch_comments(issue, :comment, comments_url)
-          end
+          issue.update(
+            label_ids: label_ids(representation.labels),
+            assignee_ids: assignee_ids(representation.assignees))
+
+          fetch_comments_conditionally(issue, representation)
         end
       rescue => e
         error(:issue, representation.url, e.message)
+      end
+    end
+
+    def fetch_comments_conditionally(issuable, representation)
+      if representation.comments?
+        comments_url = "/repos/#{repo}/issues/#{issuable.iid}/comments"
+        fetch_comments(issuable, :comment, comments_url)
       end
     end
 
@@ -332,7 +312,11 @@ module Github
     end
 
     def label_ids(labels)
-      labels.map { |attrs| cached[:label_ids][attrs.fetch('name')] }.compact
+      labels.map { |label| cached[:label_ids][label.title] }.compact
+    end
+
+    def assignee_ids(assignees)
+      assignees.map { |assignee| user_id(assignee) }.compact
     end
 
     def milestone_id(milestone)

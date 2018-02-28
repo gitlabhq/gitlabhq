@@ -9,24 +9,21 @@ module RspecFlaky
           line: example.line,
           description: example.description,
           last_attempts_count: example.attempts,
-          flaky_reports: 1)
+          flaky_reports: 0)
       else
         super
       end
     end
 
-    def first_flaky_at
-      self[:first_flaky_at] || Time.now
-    end
+    def update_flakiness!(last_attempts_count: nil)
+      self.first_flaky_at ||= Time.now
+      self.last_flaky_at = Time.now
+      self.flaky_reports += 1
+      self.last_attempts_count = last_attempts_count if last_attempts_count
 
-    def last_flaky_at
-      Time.now
-    end
-
-    def last_flaky_job
-      return unless ENV['CI_PROJECT_URL'] && ENV['CI_JOB_ID']
-
-      "#{ENV['CI_PROJECT_URL']}/-/jobs/#{ENV['CI_JOB_ID']}"
+      if ENV['CI_PROJECT_URL'] && ENV['CI_JOB_ID']
+        self.last_flaky_job = "#{ENV['CI_PROJECT_URL']}/-/jobs/#{ENV['CI_JOB_ID']}"
+      end
     end
 
     def to_h

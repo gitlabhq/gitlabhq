@@ -1,7 +1,8 @@
+- access = note_max_access_for_user(note)
 - if note.has_special_role?(Note::SpecialRole::FIRST_TIME_CONTRIBUTOR)
-  %span.note-role.note-role-special.has-tooltip{ title: _("This is the author's first Merge Request to this project. Handle with care.") }
+  %span.note-role.note-role-special.has-tooltip{ title: _("This is the author's first Merge Request to this project.") }
     = issuable_first_contribution_icon
-- if access = note_max_access_for_user(note)
+- if access.nonzero?
   %span.note-role.note-role-access= Gitlab::Access.human_access(access)
 
 - if note.resolvable?

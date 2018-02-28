@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project member activity', js: true do
+feature 'Project member activity', :js do
   let(:user)            { create(:user) }
   let(:project)         { create(:project, :public, name: 'x', namespace: user.namespace) }
 

@@ -39,13 +39,19 @@ class GithubImport
   def import!
     @project.force_import_start
 
+    import_success = false
+
     timings = Benchmark.measure do
-      Github::Import.new(@project, @options).execute
+      import_success = Github::Import.new(@project, @options).execute
     end
 
-    puts "Import finished. Timings: #{timings}".color(:green)
-
-    @project.import_finish
+    if import_success
+      @project.import_finish
+      puts "Import finished. Timings: #{timings}".color(:green)
+    else
+      puts "Import was not successful. Errors were as follows:"
+      puts @project.import_error
+    end
   end
 
   def new_project
@@ -53,18 +59,23 @@ class GithubImport
       namespace_path, _sep, name = @project_path.rpartition('/')
       namespace = find_or_create_namespace(namespace_path)
 
-      Projects::CreateService.new(
+      project = Projects::CreateService.new(
         @current_user,
         name: name,
         path: name,
         description: @repo['description'],
         namespace_id: namespace.id,
         visibility_level: visibility_level,
-        import_type: 'github',
-        import_source: @repo['full_name'],
-        import_url: @repo['clone_url'].sub('://', "://#{@options[:token]}@"),
         skip_wiki: @repo['has_wiki']
       ).execute
+
+      project.update!(
+        import_type: 'github',
+        import_source: @repo['full_name'],
+        import_url: @repo['clone_url'].sub('://', "://#{@options[:token]}@")
+      )
+
+      project
     end
   end
 

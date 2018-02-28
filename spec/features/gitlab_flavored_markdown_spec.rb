@@ -49,7 +49,7 @@ describe "GitLab Flavored Markdown" do
     end
   end
 
-  describe "for issues", js: true do
+  describe "for issues", :js do
     before do
       @other_issue = create(:issue,
                             author: user,

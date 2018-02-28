@@ -1,0 +1,6 @@
+---
+title: Allow merge in MR widget with no pipeline but using "Only allow merge requests
+  to be merged if the pipeline succeeds"
+merge_request: 14633
+author:
+type: fixed

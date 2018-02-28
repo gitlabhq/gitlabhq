@@ -16,7 +16,12 @@ describe SystemCheck::App::GitUserDefaultSSHConfigCheck do
   end
 
   it 'only whitelists safe files' do
-    expect(described_class::WHITELIST).to contain_exactly('authorized_keys', 'authorized_keys2', 'known_hosts')
+    expect(described_class::WHITELIST).to contain_exactly(
+      'authorized_keys',
+      'authorized_keys2',
+      'authorized_keys.lock',
+      'known_hosts'
+    )
   end
 
   describe '#skip?' do
@@ -33,6 +38,14 @@ describe SystemCheck::App::GitUserDefaultSSHConfigCheck do
       end
 
       it { is_expected.to eq(expected_result) }
+    end
+
+    it 'skips GitLab read-only instances' do
+      stub_user
+      stub_home_dir
+      allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+
+      is_expected.to be_truthy
     end
   end
 

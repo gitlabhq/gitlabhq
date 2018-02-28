@@ -1,0 +1,5 @@
+---
+title: Sort JobsController by id, not created_at
+merge_request:
+author:
+type: fixed

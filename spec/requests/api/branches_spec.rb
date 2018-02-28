@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe API::Branches do
-  let(:user) { create(:user) }
-  let(:guest) { create(:user).tap { |u| project.add_guest(u) } }
+  set(:user) { create(:user) }
   let(:project) { create(:project, :repository, creator: user, path: 'my.project') }
+  let(:guest) { create(:user).tap { |u| project.add_guest(u) } }
   let(:branch_name) { 'feature' }
   let(:branch_sha) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
   let(:branch_with_dot) { project.repository.find_branch('ends-with.json') }
@@ -40,7 +40,9 @@ describe API::Branches do
     end
 
     context 'when unauthenticated', 'and project is public' do
-      let(:project) { create(:project, :public, :repository) }
+      before do
+        project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+      end
 
       it_behaves_like 'repository branches'
     end
@@ -118,7 +120,9 @@ describe API::Branches do
     end
 
     context 'when unauthenticated', 'and project is public' do
-      let(:project) { create(:project, :public, :repository) }
+      before do
+        project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+      end
 
       it_behaves_like 'repository branch'
     end

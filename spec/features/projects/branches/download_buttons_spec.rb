@@ -29,7 +29,7 @@ feature 'Download buttons in branches page' do
   describe 'when checking branches' do
     context 'with artifacts' do
       before do
-        visit project_branches_path(project)
+        visit project_branches_path(project, search: 'binary-encoding')
       end
 
       scenario 'shows download artifacts button' do

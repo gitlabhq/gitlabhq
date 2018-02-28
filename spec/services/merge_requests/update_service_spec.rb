@@ -49,7 +49,8 @@ describe MergeRequests::UpdateService, :mailer do
           state_event: 'close',
           label_ids: [label.id],
           target_branch: 'target',
-          force_remove_source_branch: '1'
+          force_remove_source_branch: '1',
+          discussion_locked: true
         }
       end
 
@@ -73,6 +74,7 @@ describe MergeRequests::UpdateService, :mailer do
         expect(@merge_request.labels.first.title).to eq(label.name)
         expect(@merge_request.target_branch).to eq('target')
         expect(@merge_request.merge_params['force_remove_source_branch']).to eq('1')
+        expect(@merge_request.discussion_locked).to be_truthy
       end
 
       it 'executes hooks with update action' do
@@ -121,6 +123,13 @@ describe MergeRequests::UpdateService, :mailer do
 
         expect(note).not_to be_nil
         expect(note.note).to eq 'changed target branch from `master` to `target`'
+      end
+
+      it 'creates system note about discussion lock' do
+        note = find_note('locked this issue')
+
+        expect(note).not_to be_nil
+        expect(note.note).to eq 'locked this issue'
       end
 
       context 'when not including source branch removal options' do

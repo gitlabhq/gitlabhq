@@ -22,7 +22,10 @@ module Gitlab
         end
 
         def diff_files
-          @diff_files ||= @diffs.decorate! { |diff| decorate_diff!(diff) }
+          # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37445
+          Gitlab::GitalyClient.allow_n_plus_1_calls do
+            @diff_files ||= @diffs.decorate! { |diff| decorate_diff!(diff) }
+          end
         end
 
         def diff_file_with_old_path(old_path)

@@ -1,0 +1,5 @@
+---
+title: Don't show an "Unsubscribe" link in snippet comment notifications
+merge_request: 14764
+author:
+type: fixed

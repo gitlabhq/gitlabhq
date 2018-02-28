@@ -1,5 +1,8 @@
 - environment = local_assigns.fetch(:environment, nil)
 - file_hash = hexdigest(diff_file.file_path)
+- image_diff = diff_file.rich_viewer && diff_file.rich_viewer.partial_name == 'image'
+- image_replaced = diff_file.old_content_sha && diff_file.old_content_sha != diff_file.content_sha
+
 .diff-file.file-holder{ id: file_hash, data: diff_file_html_data(project, diff_file.file_path, diff_file.content_sha) }
   .js-file-title.file-title-flex-parent
     .file-header-content
@@ -16,6 +19,9 @@
             - link_opts = @merge_request.persisted? ? { from_merge_request_iid: @merge_request.iid } : {}
             = edit_blob_link(@merge_request.source_project, @merge_request.source_branch, diff_file.new_path,
                              blob: blob, link_opts: link_opts)
+
+        - if image_diff && image_replaced
+          = view_file_button(diff_file.old_content_sha, diff_file.old_path, project, replaced: true)
 
         = view_file_button(diff_file.content_sha, diff_file.file_path, project)
         = view_on_environment_button(diff_file.content_sha, diff_file.file_path, environment) if environment

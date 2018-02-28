@@ -62,7 +62,7 @@ export default {
       :primary-button-label="__('Discard changes')"
       kind="warning"
       :title="__('Are you sure?')"
-      :body="__('Are you sure you want to discard your changes?')"
+      :text="__('Are you sure you want to discard your changes?')"
       @toggle="toggleDialogOpen"
       @submit="dialogSubmitted"
     />

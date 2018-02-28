@@ -12,11 +12,47 @@ describe 'Profile account page' do
       visit profile_account_path
     end
 
-    it { expect(page).to have_content('Remove account') }
+    it { expect(page).to have_content('Delete account') }
 
-    it 'deletes the account' do
-      expect { click_link 'Delete account' }.to change { User.where(id: user.id).count }.by(-1)
-      expect(current_path).to eq(new_user_session_path)
+    it 'does not immediately delete the account' do
+      click_button 'Delete account'
+
+      expect(User.exists?(user.id)).to be_truthy
+    end
+
+    it 'deletes user', :js do
+      click_button 'Delete account'
+
+      fill_in 'password', with: '12345678'
+
+      page.within '.popup-dialog' do
+        click_button 'Delete account'
+      end
+
+      expect(page).to have_content('Account scheduled for removal')
+      expect(User.exists?(user.id)).to be_falsy
+    end
+
+    it 'shows invalid password flash message', :js do
+      click_button 'Delete account'
+
+      fill_in 'password', with: 'testing123'
+
+      page.within '.popup-dialog' do
+        click_button 'Delete account'
+      end
+
+      expect(page).to have_content('Invalid password')
+    end
+
+    it 'does not show delete button when user owns a group' do
+      group = create(:group)
+      group.add_owner(user)
+
+      visit profile_account_path
+
+      expect(page).not_to have_button('Delete account')
+      expect(page).to have_content("Your account is currently an owner in these groups: #{group.name}")
     end
   end
 

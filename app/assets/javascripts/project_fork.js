@@ -1,13 +1,7 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, max-len */
-(function() {
-  this.ProjectFork = (function() {
-    function ProjectFork() {
-      $('.fork-thumbnail a').on('click', function() {
-        $('.fork-namespaces').hide();
-        return $('.save-project-loader').show();
-      });
-    }
+export default () => {
+  $('.js-fork-thumbnail').on('click', function forkThumbnailClicked() {
+    if ($(this).hasClass('disabled')) return false;
 
-    return ProjectFork;
-  })();
-}).call(window);
+    return $('.js-fork-content').toggle();
+  });
+};

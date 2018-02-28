@@ -77,13 +77,14 @@
           %ul.content-list.todos-list
             = render @todos
       = paginate @todos, theme: "gitlab"
-    .js-nothing-here-container.todos-all-done.hidden
-      = render "shared/empty_states/icons/todos_all_done.svg"
+    .js-nothing-here-container.todos-all-done.hidden.svg-content
+      = image_tag 'illustrations/todos_all_done.svg'
       %h4.text-center
         You're all done!
   - elsif current_user.todos.any?
     .todos-all-done
-      = render "shared/empty_states/icons/todos_all_done.svg"
+      .svg-content
+        = image_tag 'illustrations/todos_all_done.svg'
       - if todos_filter_empty?
         %h4.text-center
           = Gitlab.config.gitlab.no_todos_messages.sample
@@ -99,8 +100,8 @@
           There are no todos to show.
   - else
     .todos-empty
-      .todos-empty-hero
-        = render "shared/empty_states/icons/todos_empty.svg"
+      .todos-empty-hero.svg-content
+        = image_tag 'illustrations/todos_empty.svg'
       .todos-empty-content
         %h4
           Todos let you see what you should do next.

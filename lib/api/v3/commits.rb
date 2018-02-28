@@ -13,7 +13,7 @@ module API
       end
       resource :projects, requirements: { id: %r{[^/]+} } do
         desc 'Get a project repository commits' do
-          success ::API::Entities::RepoCommit
+          success ::API::Entities::Commit
         end
         params do
           optional :ref_name, type: String, desc: 'The name of a repository branch or tag, if not given the default branch is used'
@@ -34,11 +34,11 @@ module API
                                                     after: params[:since],
                                                     before: params[:until])
 
-          present commits, with: ::API::Entities::RepoCommit
+          present commits, with: ::API::Entities::Commit
         end
 
         desc 'Commit multiple file changes as one commit' do
-          success ::API::Entities::RepoCommitDetail
+          success ::API::Entities::CommitDetail
           detail 'This feature was introduced in GitLab 8.13'
         end
         params do
@@ -59,14 +59,14 @@ module API
 
           if result[:status] == :success
             commit_detail = user_project.repository.commits(result[:result], limit: 1).first
-            present commit_detail, with: ::API::Entities::RepoCommitDetail
+            present commit_detail, with: ::API::Entities::CommitDetail
           else
             render_api_error!(result[:message], 400)
           end
         end
 
         desc 'Get a specific commit of a project' do
-          success ::API::Entities::RepoCommitDetail
+          success ::API::Entities::CommitDetail
           failure [[404, 'Not Found']]
         end
         params do
@@ -77,7 +77,7 @@ module API
 
           not_found! "Commit" unless commit
 
-          present commit, with: ::API::Entities::RepoCommitDetail
+          present commit, with: ::API::Entities::CommitDetail
         end
 
         desc 'Get the diff for a specific commit of a project' do
@@ -113,7 +113,7 @@ module API
 
         desc 'Cherry pick commit into a branch' do
           detail 'This feature was introduced in GitLab 8.15'
-          success ::API::Entities::RepoCommit
+          success ::API::Entities::Commit
         end
         params do
           requires :sha, type: String, desc: 'A commit sha to be cherry picked'
@@ -138,7 +138,7 @@ module API
 
           if result[:status] == :success
             branch = user_project.repository.find_branch(params[:branch])
-            present user_project.repository.commit(branch.dereferenced_target), with: ::API::Entities::RepoCommit
+            present user_project.repository.commit(branch.dereferenced_target), with: ::API::Entities::Commit
           else
             render_api_error!(result[:message], 400)
           end

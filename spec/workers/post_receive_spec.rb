@@ -70,12 +70,15 @@ describe PostReceive do
 
       context "creates a Ci::Pipeline for every change" do
         before do
-          allow_any_instance_of(Ci::CreatePipelineService).to receive(:commit) do
-            OpenStruct.new(id: '123456')
-          end
-          allow_any_instance_of(Ci::CreatePipelineService).to receive(:branch?).and_return(true)
-          allow_any_instance_of(Repository).to receive(:ref_exists?).and_return(true)
           stub_ci_pipeline_to_return_yaml_file
+
+          # TODO, don't stub private methods
+          #
+          allow_any_instance_of(Ci::CreatePipelineService)
+            .to receive(:commit).and_return(OpenStruct.new(id: '123456'))
+
+          allow_any_instance_of(Repository)
+            .to receive(:branch_exists?).and_return(true)
         end
 
         it { expect { subject }.to change { Ci::Pipeline.count }.by(2) }

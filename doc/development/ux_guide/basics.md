@@ -32,19 +32,17 @@ This is the typeface used for code blocks and references to commits, branches, a
 ---
 
 ## Icons
-GitLab uses Font Awesome icons throughout our interface.
 
-| | |
-| :-----------: | :---- |
-| ![Trash icon](img/icon-trash.png) | The trash icon is used for destructive actions that deletes information. |
-| ![Edit icon](img/icon-edit.png) | The pencil icon is used for editing content such as comments.|
-| ![Notification icon](img/icon-notification.png) | The bell icon is for notifications, such as Todos. |
-| ![Subscribe icon](img/icon-subscribe.png) | The eye icon is for subscribing to updates. For example, you can subscribe to a label and get updated on issues with that label. |
-| ![RSS icon](img/icon-rss.png) | The standard RSS icon is used for linking to RSS/atom feeds. |
-| ![Close icon](img/icon-close.png) | An 'x' is used for closing UI elements such as dropdowns. |
-| ![Add icon](img/icon-add.png) | A plus is used when creating new objects, such as issues, projects, etc. |
+GitLab has a strong, unique personality. When you look at any screen, you should know immediately that it is GitLab. 
+Iconography is a powerful visual cue to the user and is a great way for us to reflect our particular sense of style.
 
-> TODO: update this section, add more general guidance to icon usage and personality, etc.
+- **Standard size:** 16px * 16px
+- **Border thickness:** 2px
+- **Border radius:** 3px
+
+![Icon sampler](img/icon-spec.png)
+
+> TODO: List all icons, proper usage, hover, and active states.
 
 ---
 

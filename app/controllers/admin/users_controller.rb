@@ -128,7 +128,7 @@ class Admin::UsersController < Admin::ApplicationController
     end
 
     respond_to do |format|
-      result = Users::UpdateService.new(user, user_params_with_pass).execute do |user|
+      result = Users::UpdateService.new(current_user, user_params_with_pass.merge(user: user)).execute do |user|
         user.skip_reconfirmation!
       end
 
@@ -155,7 +155,7 @@ class Admin::UsersController < Admin::ApplicationController
 
   def remove_email
     email = user.emails.find(params[:email_id])
-    success = Emails::DestroyService.new(user, email: email.email).execute
+    success = Emails::DestroyService.new(current_user, user: user).execute(email)
 
     respond_to do |format|
       if success
@@ -219,7 +219,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def update_user(&block)
-    result = Users::UpdateService.new(user).execute(&block)
+    result = Users::UpdateService.new(current_user, user: user).execute(&block)
 
     result[:status] == :success
   end

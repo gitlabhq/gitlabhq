@@ -206,11 +206,13 @@ module DeclarativePolicy
       end
 
       def cached_pass?(context)
-        passes = @rules.map { |r| r.cached_pass?(context) }
-        return false if passes.any? { |p| p == false }
-        return true if passes.all? { |p| p == true }
+        @rules.each do |rule|
+          pass = rule.cached_pass?(context)
 
-        nil
+          return pass if pass.nil? || pass == false
+        end
+
+        true
       end
 
       def repr
@@ -245,11 +247,13 @@ module DeclarativePolicy
       end
 
       def cached_pass?(context)
-        passes = @rules.map { |r| r.cached_pass?(context) }
-        return true if passes.any? { |p| p == true }
-        return false if passes.all? { |p| p == false }
+        @rules.each do |rule|
+          pass = rule.cached_pass?(context)
 
-        nil
+          return pass if pass.nil? || pass == true
+        end
+
+        false
       end
 
       def score(context)

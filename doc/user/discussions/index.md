@@ -153,12 +153,52 @@ comments in greater detail.
 
 ![Discussion comment](img/discussion_comment.png)
 
+## Locking discussions
+
+> [Introduced][ce-14531] in GitLab 10.1.
+
+There might be some cases where a discussion is better off if it's locked down.
+For example:
+
+- Discussions that are several years old and the issue/merge request is closed,
+  but people continue to try to resurrect the discussion.
+- Discussions where someone or a group of people are trolling, are abusive, or
+  in-general are causing the discussion to be unproductive.
+
+In locked discussions, only team members can write new comments and edit the old
+ones.
+
+To lock or unlock a discussion, you need to have at least Master [permissions]:
+
+1. Find the "Lock" section in the sidebar and click **Edit**
+1. In the dialog that will appear, you can choose to turn on or turn off the
+   discussion lock
+1. Optionally, leave a comment to explain your reasoning behind that action
+
+| Turn off discussion lock | Turn on discussion lock |
+| :-----------: | :----------: |
+| ![Turn off discussion lock](img/turn_off_lock.png) | ![Turn on discussion lock](img/turn_on_lock.png) |
+
+Every change is indicated by a system note in the issue's or merge request's
+comments.
+
+![Discussion lock system notes](img/discussion_lock_system_notes.png)
+
+Once an issue or merge request is locked, project members can see the indicator
+in the comment area, whereas non project members can only see the information
+that the discussion is locked.
+
+| Team member | Not a member |
+| :-----------: | :----------: |
+| ![Comment form member](img/lock_form_member.png) | ![Comment form non-member](img/lock_form_non_member.png) |
+
 [ce-5022]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5022
 [ce-7125]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7125
 [ce-7527]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7527
 [ce-7180]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7180
 [ce-8266]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8266
 [ce-14053]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14053
+[ce-14531]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14531
 [resolve-discussion-button]: img/resolve_discussion_button.png
 [resolve-comment-button]: img/resolve_comment_button.png
 [discussion-view]: img/discussion_view.png

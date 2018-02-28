@@ -1,0 +1,5 @@
+---
+title: Fix the default branches sorting to actually be 'Last updated'
+merge_request: 14295
+author:
+type: fixed

@@ -1,8 +1,9 @@
 require 'spec_helper'
 
 describe API::BroadcastMessages do
-  let(:user)  { create(:user) }
-  let(:admin) { create(:admin) }
+  set(:user)  { create(:user) }
+  set(:admin) { create(:admin) }
+  set(:message) { create(:broadcast_message) }
 
   describe 'GET /broadcast_messages' do
     it 'returns a 401 for anonymous users' do
@@ -31,8 +32,6 @@ describe API::BroadcastMessages do
   end
 
   describe 'GET /broadcast_messages/:id' do
-    let!(:message) { create(:broadcast_message) }
-
     it 'returns a 401 for anonymous users' do
       get api("/broadcast_messages/#{message.id}")
 
@@ -103,8 +102,6 @@ describe API::BroadcastMessages do
   end
 
   describe 'PUT /broadcast_messages/:id' do
-    let!(:message) { create(:broadcast_message) }
-
     it 'returns a 401 for anonymous users' do
       put api("/broadcast_messages/#{message.id}"),
         attributes_for(:broadcast_message)
@@ -155,8 +152,6 @@ describe API::BroadcastMessages do
   end
 
   describe 'DELETE /broadcast_messages/:id' do
-    let!(:message) { create(:broadcast_message) }
-
     it 'returns a 401 for anonymous users' do
       delete api("/broadcast_messages/#{message.id}"),
         attributes_for(:broadcast_message)

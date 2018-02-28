@@ -3,11 +3,15 @@
 
 GitLab has support for automatically detecting and monitoring HAProxy. This is provided by leveraging the [HAProxy Exporter](https://github.com/prometheus/haproxy_exporter), which translates HAProxy statistics into a Prometheus readable form.
 
+## Requirements
+
+The [Prometheus service](../prometheus/index.md) must be enabled.
+
 ## Metrics supported
 
 | Name | Query |
 | ---- | ----- |
-| Throughput (req/sec) | sum(rate(haproxy_frontend_http_requests_total{%{environment_filter}}[2m])) |
+| Throughput (req/sec) | sum(rate(haproxy_frontend_http_requests_total{%{environment_filter}}[2m])) by (code) |
 | HTTP Error Rate (%) | sum(rate(haproxy_frontend_http_requests_total{code="5xx",%{environment_filter}}[2m])) / sum(rate(haproxy_frontend_http_requests_total{%{environment_filter}}[2m])) |
 
 ## Configuring Prometheus to monitor for HAProxy metrics

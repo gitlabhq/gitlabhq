@@ -3,6 +3,7 @@
 import './lib/utils/url_utility';
 import FilesCommentButton from './files_comment_button';
 import SingleFileDiff from './single_file_diff';
+import imageDiffHelper from './image_diff/helpers/index';
 
 const UNFOLD_COUNT = 20;
 let isBound = false;
@@ -17,14 +18,18 @@ class Diff {
       }
     });
 
-    FilesCommentButton.init($diffFile);
+    const tab = document.getElementById('diffs');
+    if (!tab || (tab && tab.dataset && tab.dataset.isLocked !== '')) FilesCommentButton.init($diffFile);
 
-    $diffFile.each((index, file) => new gl.ImageFile(file));
+    const firstFile = $('.files').first().get(0);
+    const canCreateNote = firstFile && firstFile.hasAttribute('data-can-create-note');
+    $diffFile.each((index, file) => imageDiffHelper.initImageDiff(file, canCreateNote));
 
     if (!isBound) {
       $(document)
         .on('click', '.js-unfold', this.handleClickUnfold.bind(this))
-        .on('click', '.diff-line-num a', this.handleClickLineNum.bind(this));
+        .on('click', '.diff-line-num a', this.handleClickLineNum.bind(this))
+        .on('mousedown', 'td.line_content.parallel', this.handleParallelLineDown.bind(this));
       isBound = true;
     }
 
@@ -98,6 +103,18 @@ class Diff {
       window.location.hash = hash;
     }
     this.highlightSelectedLine();
+  }
+
+  handleParallelLineDown(e) {
+    const line = $(e.currentTarget);
+    const table = line.closest('table');
+
+    table.removeClass('left-side-selected right-side-selected');
+
+    const lineClass = ['left-side', 'right-side'].filter(name => line.hasClass(name))[0];
+    if (lineClass) {
+      table.addClass(`${lineClass}-selected`);
+    }
   }
 
   diffViewType() {

@@ -14,6 +14,7 @@ following locations:
 - [Project-level Variables](project_level_variables.md)
 - [Group-level Variables](group_level_variables.md)
 - [Commits](commits.md)
+- [Custom Attributes](custom_attributes.md)
 - [Deployments](deployments.md)
 - [Deploy Keys](deploy_keys.md)
 - [Environments](environments.md)

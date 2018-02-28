@@ -1,7 +1,7 @@
 Doorkeeper::OpenidConnect.configure do
   issuer Gitlab.config.gitlab.url
 
-  jws_private_key Rails.application.secrets.jws_private_key
+  signing_key Rails.application.secrets.openid_connect_signing_key
 
   resource_owner_from_access_token do |access_token|
     User.active.find_by(id: access_token.resource_owner_id)

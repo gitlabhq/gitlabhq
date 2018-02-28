@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Admin::UsersController do
   let(:user) { create(:user) }
-  let(:admin) { create(:admin) }
+  set(:admin) { create(:admin) }
 
   before do
     sign_in(admin)

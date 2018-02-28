@@ -1,10 +1,11 @@
 module Ci
   class Pipeline < ActiveRecord::Base
-    extend Ci::Model
+    extend Gitlab::Ci::Model
     include HasStatus
     include Importable
     include AfterCommitQueue
     include Presentable
+    include Gitlab::OptimisticLocking
 
     belongs_to :project
     belongs_to :user
@@ -31,6 +32,7 @@ module Ci
     has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
 
     delegate :id, to: :project, prefix: true
+    delegate :full_path, to: :project, prefix: true
 
     validates :source, exclusion: { in: %w(unknown), unless: :importing? }, on: :create
     validates :sha, presence: { unless: :importing? }
@@ -55,6 +57,11 @@ module Ci
       unknown_source: nil,
       repository_source: 1,
       auto_devops_source: 2
+    }
+
+    enum failure_reason: {
+      unknown_failure: 0,
+      config_error: 1
     }
 
     state_machine :status, initial: :created do
@@ -106,6 +113,12 @@ module Ci
 
       before_transition canceled: any - [:canceled] do |pipeline|
         pipeline.auto_canceled_by = nil
+      end
+
+      before_transition any => :failed do |pipeline, transition|
+        transition.args.first.try do |reason|
+          pipeline.failure_reason = reason
+        end
       end
 
       after_transition [:created, :pending] => :running do |pipeline|
@@ -262,7 +275,7 @@ module Ci
     end
 
     def cancel_running
-      Gitlab::OptimisticLocking.retry_lock(cancelable_statuses) do |cancelable|
+      retry_optimistic_lock(cancelable_statuses) do |cancelable|
         cancelable.find_each do |job|
           yield(job) if block_given?
           job.cancel
@@ -311,6 +324,10 @@ module Ci
       @stage_seeds ||= config_processor.stage_seeds(self)
     end
 
+    def seeds_size
+      @seeds_size ||= stage_seeds.sum(&:size)
+    end
+
     def has_kubernetes_active?
       project.kubernetes_service&.active?
     end
@@ -336,8 +353,8 @@ module Ci
       return @config_processor if defined?(@config_processor)
 
       @config_processor ||= begin
-        Ci::GitlabCiYamlProcessor.new(ci_yaml_file, project.full_path)
-      rescue Ci::GitlabCiYamlProcessor::ValidationError, Psych::SyntaxError => e
+        Gitlab::Ci::YamlProcessor.new(ci_yaml_file)
+      rescue Gitlab::Ci::YamlProcessor::ValidationError, Psych::SyntaxError => e
         self.yaml_errors = e.message
         nil
       rescue
@@ -402,7 +419,7 @@ module Ci
     end
 
     def update_status
-      Gitlab::OptimisticLocking.retry_lock(self) do
+      retry_optimistic_lock(self) do
         case latest_builds_status
         when 'pending' then enqueue
         when 'running' then run
@@ -433,7 +450,7 @@ module Ci
     def update_duration
       return unless started_at
 
-      self.duration = Gitlab::Ci::PipelineDuration.from_pipeline(self)
+      self.duration = Gitlab::Ci::Pipeline::Duration.from_pipeline(self)
     end
 
     def execute_hooks
@@ -451,6 +468,10 @@ module Ci
       Gitlab::Ci::Status::Pipeline::Factory
         .new(self, current_user)
         .fabricate!
+    end
+
+    def latest_builds_with_artifacts
+      @latest_builds_with_artifacts ||= builds.latest.with_artifacts
     end
 
     private

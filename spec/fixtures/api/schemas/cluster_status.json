@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "required" : [
+    "status"
+  ],
+  "properties" : {
+    "status": { "type": "string" },
+    "status_reason": { "type": ["string", "null"] }
+  },
+  "additionalProperties": false
+}

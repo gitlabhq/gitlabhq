@@ -67,10 +67,13 @@ const PARTICIPANTS_ROW_COUNT = 7;
       originalText = $(this).data("original-text");
       if (currentText === originalText) {
         $(this).text(lessText);
+
+        if (gl.lazyLoader) gl.lazyLoader.loadCheck();
       } else {
         $(this).text(originalText);
       }
-      return $(".js-participants-hidden").toggle();
+
+      $(".js-participants-hidden").toggle();
     };
 
     return IssuableContext;

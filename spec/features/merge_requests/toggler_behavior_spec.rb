@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'toggler_behavior', js: true do
+feature 'toggler_behavior', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project, author: user) }

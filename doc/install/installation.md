@@ -133,9 +133,9 @@ Remove the old Ruby 1.8 if present:
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.3.tar.gz
-    echo '1014ee699071aa2ddd501907d18cbe15399c997d  ruby-2.3.3.tar.gz' | shasum -c - && tar xzf ruby-2.3.3.tar.gz
-    cd ruby-2.3.3
+    curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.5.tar.gz
+    echo '3247e217d6745c27ef23bdc77b6abdb4b57a118f  ruby-2.3.5.tar.gz' | shasum -c - && tar xzf ruby-2.3.5.tar.gz
+    cd ruby-2.3.5
     ./configure --disable-install-rdoc
     make
     sudo make install
@@ -299,9 +299,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 9-5-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 10-0-stable gitlab
 
-**Note:** You can change `9-5-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `10-0-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 

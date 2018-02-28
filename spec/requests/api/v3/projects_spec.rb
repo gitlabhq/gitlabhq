@@ -89,6 +89,7 @@ describe API::V3::Projects do
             path path_with_namespace
             star_count forks_count
             created_at last_activity_at
+            avatar_url
           )
 
           get v3_api('/projects?simple=true', user)

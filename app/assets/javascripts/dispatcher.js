@@ -7,14 +7,11 @@
 /* global IssuableForm */
 /* global LabelsSelect */
 /* global MilestoneSelect */
-/* global Commit */
-/* global CommitsList */
 /* global NewBranchForm */
 /* global NotificationsForm */
 /* global NotificationsDropdown */
 /* global GroupAvatar */
 /* global LineHighlighter */
-/* global ProjectFork */
 /* global BuildArtifacts */
 /* global GroupsSelect */
 /* global Search */
@@ -37,6 +34,7 @@
 /* global Sidebar */
 /* global ShortcutsWiki */
 
+import CommitsList from './commits';
 import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
 import DeleteModal from './branches/branches_delete_modal';
@@ -77,6 +75,9 @@ import initProjectVisibilitySelector from './project_visibility';
 import GpgBadges from './gpg_badges';
 import UserFeatureHelper from './helpers/user_feature_helper';
 import initChangesDropdown from './init_changes_dropdown';
+import AbuseReports from './abuse_reports';
+import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
+import AjaxLoadingSpinner from './ajax_loading_spinner';
 
 (function() {
   var Dispatcher;
@@ -100,7 +101,7 @@ import initChangesDropdown from './init_changes_dropdown';
 
       $('.js-gfm-input:not(.js-vue-textarea)').each((i, el) => {
         const gfm = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
-        const enableGFM = gl.utils.convertPermissionToBoolean(el.dataset.supportsAutocomplete);
+        const enableGFM = convertPermissionToBoolean(el.dataset.supportsAutocomplete);
         gfm.setup($(el), {
           emojis: true,
           members: enableGFM,
@@ -238,7 +239,7 @@ import initChangesDropdown from './init_changes_dropdown';
           new NewBranchForm($('.js-create-branch-form'), JSON.parse(document.getElementById('availableRefs').innerHTML));
           break;
         case 'projects:branches:index':
-          gl.AjaxLoadingSpinner.init();
+          AjaxLoadingSpinner.init();
           new DeleteModal();
           break;
         case 'projects:issues:new':
@@ -316,7 +317,6 @@ import initChangesDropdown from './init_changes_dropdown';
           new gl.Activities();
           break;
         case 'projects:commit:show':
-          new Commit();
           new gl.Diff();
           new ZenMode();
           shortcut_handler = new ShortcutsNavigation();
@@ -351,7 +351,7 @@ import initChangesDropdown from './init_changes_dropdown';
           if ($('.blob-viewer').length) new BlobViewer();
           if ($('.project-show-activity').length) new gl.Activities();
           $('#tree-slider').waitForImages(function() {
-            gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
+            ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
           });
           break;
         case 'projects:edit':
@@ -427,7 +427,7 @@ import initChangesDropdown from './init_changes_dropdown';
           new NewCommitForm($('.js-create-dir-form'));
           new UserCallout({ setCalloutPerProject: true });
           $('#tree-slider').waitForImages(function() {
-            gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
+            ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
           });
           break;
         case 'projects:find_file:show':
@@ -475,7 +475,9 @@ import initChangesDropdown from './init_changes_dropdown';
           shortcut_handler = true;
           break;
         case 'projects:forks:new':
-          new ProjectFork();
+          import(/* webpackChunkName: 'project_fork' */ './project_fork')
+            .then(fork => fork.default())
+            .catch(() => {});
           break;
         case 'projects:artifacts:browse':
           new ShortcutsNavigation();
@@ -523,6 +525,11 @@ import initChangesDropdown from './init_changes_dropdown';
         case 'admin:impersonation_tokens:index':
           new gl.DueDateSelectors();
           break;
+        case 'projects:clusters:show':
+          import(/* webpackChunkName: "clusters" */ './clusters')
+            .then(cluster => new cluster.default()) // eslint-disable-line new-cap
+            .catch(() => {});
+          break;
       }
       switch (path[0]) {
         case 'sessions':
@@ -555,7 +562,7 @@ import initChangesDropdown from './init_changes_dropdown';
                   new Labels();
               }
             case 'abuse_reports':
-              new gl.AbuseReports();
+              new AbuseReports();
               break;
           }
           break;

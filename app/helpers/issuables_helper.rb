@@ -213,7 +213,6 @@ module IssuablesHelper
       canUpdate: can?(current_user, :update_issue, issuable),
       canDestroy: can?(current_user, :destroy_issue, issuable),
       issuableRef: issuable.to_reference,
-      isConfidential: issuable.confidential,
       markdownPreviewPath: preview_markdown_path(@project),
       markdownDocsPath: help_page_path('user/markdown'),
       issuableTemplates: issuable_templates(issuable),
@@ -249,16 +248,25 @@ module IssuablesHelper
     Gitlab::IssuablesCountForState.new(finder)[state]
   end
 
-  def close_issuable_url(issuable)
-    issuable_url(issuable, close_reopen_params(issuable, :close))
+  def close_issuable_path(issuable)
+    issuable_path(issuable, close_reopen_params(issuable, :close))
   end
 
-  def reopen_issuable_url(issuable)
-    issuable_url(issuable, close_reopen_params(issuable, :reopen))
+  def reopen_issuable_path(issuable)
+    issuable_path(issuable, close_reopen_params(issuable, :reopen))
   end
 
-  def close_reopen_issuable_url(issuable, should_inverse = false)
-    issuable.closed? ^ should_inverse ? reopen_issuable_url(issuable) : close_issuable_url(issuable)
+  def close_reopen_issuable_path(issuable, should_inverse = false)
+    issuable.closed? ^ should_inverse ? reopen_issuable_path(issuable) : close_issuable_path(issuable)
+  end
+
+  def issuable_path(issuable, *options)
+    case issuable
+    when Issue
+      issue_path(issuable, *options)
+    when MergeRequest
+      merge_request_path(issuable, *options)
+    end
   end
 
   def issuable_url(issuable, *options)

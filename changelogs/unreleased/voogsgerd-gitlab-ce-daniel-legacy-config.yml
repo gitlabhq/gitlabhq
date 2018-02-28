@@ -1,0 +1,5 @@
+---
+title: Removed two legacy config options
+merge_request:
+author: Daniel Voogsgerd
+type: deprecated

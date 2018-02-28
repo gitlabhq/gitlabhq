@@ -4,8 +4,6 @@ class Key < ActiveRecord::Base
   include Gitlab::CurrentSettings
   include Sortable
 
-  LAST_USED_AT_REFRESH_TIME = 1.day.to_i
-
   belongs_to :user
 
   before_validation :generate_fingerprint
@@ -28,7 +26,6 @@ class Key < ActiveRecord::Base
   delegate :name, :email, to: :user, prefix: true
 
   after_commit :add_to_shell, on: :create
-  after_commit :notify_user, on: :create
   after_create :post_create_hook
   after_commit :remove_from_shell, on: :destroy
   after_destroy :post_destroy_hook
@@ -37,6 +34,7 @@ class Key < ActiveRecord::Base
     value&.delete!("\n\r")
     value.strip! unless value.blank?
     write_attribute(:key, value)
+    @public_key = nil
   end
 
   def publishable_key
@@ -55,10 +53,7 @@ class Key < ActiveRecord::Base
   end
 
   def update_last_used_at
-    lease = Gitlab::ExclusiveLease.new("key_update_last_used_at:#{id}", timeout: LAST_USED_AT_REFRESH_TIME)
-    return unless lease.try_obtain
-
-    UseKeyWorker.perform_async(id)
+    Keys::LastUsedService.new(self).execute
   end
 
   def add_to_shell
@@ -117,9 +112,5 @@ class Key < ActiveRecord::Base
         .to_sentence(last_word_connector: ', or ', two_words_connector: ' or ')
 
     "type is forbidden. Must be #{allowed_types}"
-  end
-
-  def notify_user
-    NotificationService.new.new_key(self)
   end
 end

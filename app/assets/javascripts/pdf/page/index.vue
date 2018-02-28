@@ -1,10 +1,3 @@
-<template>
-  <canvas
-    class="pdf-page"
-    ref="canvas"
-    :data-page="number" />
-</template>
-
 <script>
   export default {
     props: {
@@ -47,6 +40,13 @@
     },
   };
 </script>
+
+<template>
+  <canvas
+    class="pdf-page"
+    ref="canvas"
+    :data-page="number" />
+</template>
 
 <style>
 .pdf-page {

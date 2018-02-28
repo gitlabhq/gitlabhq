@@ -13,7 +13,7 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
   # Make sure merge requests created before 8.0
   # have head file in refs/merge-requests/
   def ensure_ref_fetched
-    @merge_request.ensure_ref_fetched
+    @merge_request.ensure_ref_fetched if Gitlab::Database.read_write?
   end
 
   def merge_request_params
@@ -34,6 +34,7 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
       :target_project_id,
       :task_num,
       :title,
+      :discussion_locked,
 
       label_ids: []
     ]

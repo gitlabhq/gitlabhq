@@ -1,0 +1,5 @@
+---
+title: Add support for GPG subkeys in signature verification
+merge_request: 14517
+author:
+type: added

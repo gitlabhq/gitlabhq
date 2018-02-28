@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Create New Merge Request', js: true do
+feature 'Create New Merge Request', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
 

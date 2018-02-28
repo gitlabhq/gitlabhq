@@ -2,8 +2,6 @@
 - page_title "CI / CD Settings"
 - page_title "CI / CD"
 
-= render "projects/settings/head"
-
 - expanded = Rails.env.test?
 
 %section.settings#js-general-pipeline-settings
@@ -13,7 +11,7 @@
     %button.btn.js-settings-toggle
       = expanded ? 'Collapse' : 'Expand'
     %p
-      Update your CI/CD configuration, like job timeout.
+      Update your CI/CD configuration, like job timeout or Auto DevOps.
   .settings-content.no-animate{ class: ('expanded' if expanded) }
     = render 'projects/pipelines_settings/show'
 

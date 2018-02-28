@@ -1,6 +1,6 @@
 module Ci
   class PipelineSchedule < ActiveRecord::Base
-    extend Ci::Model
+    extend Gitlab::Ci::Model
     include Importable
 
     acts_as_paranoid

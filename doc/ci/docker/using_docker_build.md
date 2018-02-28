@@ -250,6 +250,8 @@ By default, when using `docker:dind`, Docker uses the `vfs` storage driver which
 copies the filesystem on every run. This is a very disk-intensive operation
 which can be avoided if a different driver is used, for example `overlay2`.
 
+### Requirements
+
 1. Make sure a recent kernel is used, preferably `>= 4.2`.
 1. Check whether the `overlay` module is loaded:
 
@@ -271,14 +273,27 @@ which can be avoided if a different driver is used, for example `overlay2`.
     overlay
     ```
 
-1. Use the driver by defining a variable at the top of your `.gitlab-ci.yml`:
+### Use driver per project
 
-    ```
-    variables:
-      DOCKER_DRIVER: overlay2
-    ```
-    
-> **Note:**
+You can enable the driver for each project individually by editing the project's `.gitlab-ci.yml`:
+
+```
+variables:
+  DOCKER_DRIVER: overlay2
+```
+
+### Use driver for every project
+
+To enable the driver for every project, you can set the environment variable for every build by adding `environment` in the `[[runners]]` section of `config.toml`:
+
+```toml
+environment = ["DOCKER_DRIVER=overlay2"]
+```
+
+If you're running multiple Runners you will have to modify all configuration files.
+
+> **Notes:**
+- More information about the Runner configuration is available in the [Runner documentation](https://docs.gitlab.com/runner/configuration/).
 - For more information about using OverlayFS with Docker, you can read
   [Use the OverlayFS storage driver](https://docs.docker.com/engine/userguide/storagedriver/overlayfs-driver/).
 

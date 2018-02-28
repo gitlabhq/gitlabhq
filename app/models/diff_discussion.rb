@@ -11,6 +11,8 @@ class DiffDiscussion < Discussion
   delegate  :position,
             :original_position,
             :change_position,
+            :on_text?,
+            :on_image?,
 
             to: :first_note
 

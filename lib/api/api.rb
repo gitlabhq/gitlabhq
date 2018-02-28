@@ -8,7 +8,6 @@ module API
         logger: Logger.new(LOG_FILENAME),
         formatter: Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp.new,
         include: [
-          GrapeLogging::Loggers::Response.new,
           GrapeLogging::Loggers::FilterParameters.new,
           GrapeLogging::Loggers::ClientEnv.new
         ]

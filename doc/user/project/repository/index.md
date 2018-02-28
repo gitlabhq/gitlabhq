@@ -55,7 +55,7 @@ Use GitLab's [file finder](../../../workflow/file_finder.md) to search for files
 
 ## Branches
 
-When you submit changes in a new branch, you create a new version
+When you submit changes in a new [branch](branches/index.md), you create a new version
 of that project's file tree. Your branch contains all the changes
 you are presenting, which are detected by Git line by line.
 
@@ -70,8 +70,9 @@ With [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/)
 subscriptions, you can also request
 [approval](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html#merge-request-approvals) from your managers.
 
-To create, delete, and branches via GitLab's UI:
+To create, delete, and [branches](branches/index.md) via GitLab's UI:
 
+- [Default branches](branches/index.md#default-branch)
 - [Create a branch](web_editor.md#create-a-new-branch)
 - [Protected branches](../protected_branches.md#protected-branches)
 - [Delete merged branches](branches/index.md#delete-merged-branches)

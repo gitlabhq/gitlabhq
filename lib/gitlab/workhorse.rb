@@ -22,9 +22,9 @@ module Gitlab
         params = {
           GL_ID: Gitlab::GlId.gl_id(user),
           GL_REPOSITORY: Gitlab::GlRepository.gl_repository(project, is_wiki),
+          GL_USERNAME: user&.username,
           RepoPath: repo_path
         }
-
         server = {
           address: Gitlab::GitalyClient.address(project.repository_storage),
           token: Gitlab::GitalyClient.token(project.repository_storage)
@@ -89,6 +89,13 @@ module Gitlab
         params = repository.archive_metadata(ref, Gitlab.config.gitlab.repository_downloads_path, format)
         raise "Repository or ref not found" if params.empty?
 
+        if Gitlab::GitalyClient.feature_enabled?(:workhorse_archive)
+          params.merge!(
+            'GitalyServer' => gitaly_server_hash(repository),
+            'GitalyRepository' => repository.gitaly_repository.to_h
+          )
+        end
+
         [
           SEND_DATA_HEADER,
           "git-archive:#{encode(params)}"
@@ -121,10 +128,10 @@ module Gitlab
         ]
       end
 
-      def send_artifacts_entry(build, path)
+      def send_artifacts_entry(build, entry)
         params = {
           'Archive' => build.artifacts_file.path,
-          'Entry' => Base64.encode64(path.to_s)
+          'Entry' => Base64.encode64(entry.to_s)
         }
 
         [
