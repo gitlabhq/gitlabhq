@@ -123,6 +123,17 @@ describe Projects::UpdateService do
       end
     end
 
+    context 'when we update project but not enabling a wiki' do
+      it 'does not try to create an empty wiki' do
+        FileUtils.rm_rf(project.wiki.repository.path)
+
+        result = update_project(project, user, { name: 'test1' })
+
+        expect(result).to eq({ status: :success })
+        expect(project.wiki_repository_exists?).to be false
+      end
+    end
+
     context 'when enabling a wiki' do
       it 'creates a wiki' do
         project.project_feature.update(wiki_access_level: ProjectFeature::DISABLED)
