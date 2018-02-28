@@ -1,6 +1,4 @@
 class AkismetService
-  include Gitlab::CurrentSettings
-
   attr_accessor :owner, :text, :options
 
   def initialize(owner, text, options = {})
@@ -41,12 +39,12 @@ class AkismetService
   private
 
   def akismet_client
-    @akismet_client ||= ::Akismet::Client.new(current_application_settings.akismet_api_key,
+    @akismet_client ||= ::Akismet::Client.new(Gitlab::CurrentSettings.akismet_api_key,
                                               Gitlab.config.gitlab.url)
   end
 
   def akismet_enabled?
-    current_application_settings.akismet_enabled
+    Gitlab::CurrentSettings.akismet_enabled
   end
 
   def submit(type)

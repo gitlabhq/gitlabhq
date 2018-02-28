@@ -6,6 +6,8 @@ module Gitlab
 
         def initialize(config)
           @config = YAML.safe_load(config, [Symbol], [], true)
+        rescue Psych::Exception => e
+          raise FormatError, e.message
         end
 
         def valid?

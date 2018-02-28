@@ -6,7 +6,7 @@
 - link = commit_path(project, commit, merge_request: merge_request)
 - cache_key = [project.full_path,
                commit.id,
-               current_application_settings,
+               Gitlab::CurrentSettings.current_application_settings,
                @path.presence,
                current_controller?(:commits),
                merge_request&.iid,

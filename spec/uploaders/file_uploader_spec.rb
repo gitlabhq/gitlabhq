@@ -51,11 +51,34 @@ describe FileUploader do
   end
 
   describe 'initialize' do
-    let(:uploader) { described_class.new(double, 'secret') }
+    let(:uploader) { described_class.new(double, secret: 'secret') }
 
     it 'accepts a secret parameter' do
       expect(described_class).not_to receive(:generate_secret)
       expect(uploader.secret).to eq('secret')
+    end
+  end
+
+  describe 'callbacks' do
+    describe '#prune_store_dir after :remove' do
+      before do
+        uploader.store!(fixture_file_upload('spec/fixtures/doc_sample.txt'))
+      end
+
+      def store_dir
+        File.expand_path(uploader.store_dir, uploader.root)
+      end
+
+      it 'is called' do
+        expect(uploader).to receive(:prune_store_dir).once
+
+        uploader.remove!
+      end
+
+      it 'prune the store directory' do
+        expect { uploader.remove! }
+          .to change { File.exist?(store_dir) }.from(true).to(false)
+      end
     end
   end
 

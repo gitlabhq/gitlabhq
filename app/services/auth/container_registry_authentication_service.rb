@@ -1,7 +1,5 @@
 module Auth
   class ContainerRegistryAuthenticationService < BaseService
-    extend Gitlab::CurrentSettings
-
     AUDIENCE = 'container_registry'.freeze
 
     def execute(authentication_abilities:)
@@ -32,7 +30,7 @@ module Auth
     end
 
     def self.token_expire_at
-      Time.now + current_application_settings.container_registry_token_expire_delay.minutes
+      Time.now + Gitlab::CurrentSettings.container_registry_token_expire_delay.minutes
     end
 
     private

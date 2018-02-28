@@ -600,12 +600,16 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe "#refs_hash" do
-    let(:refs) { repository.refs_hash }
+    subject { repository.refs_hash }
 
     it "should have as many entries as branches and tags" do
       expected_refs = SeedRepo::Repo::BRANCHES + SeedRepo::Repo::TAGS
       # We flatten in case a commit is pointed at by more than one branch and/or tag
-      expect(refs.values.flatten.size).to eq(expected_refs.size)
+      expect(subject.values.flatten.size).to eq(expected_refs.size)
+    end
+
+    it 'has valid commit ids as keys' do
+      expect(subject.keys).to all( match(Commit::COMMIT_SHA_PATTERN) )
     end
   end
 
@@ -1162,14 +1166,27 @@ describe Gitlab::Git::Repository, seed_helper: true do
     context 'when Gitaly find_branch feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'finding a branch'
 
-      it 'should reload Rugged::Repository and return master' do
-        expect(Rugged::Repository).to receive(:new).twice.and_call_original
+      context 'force_reload is true' do
+        it 'should reload Rugged::Repository' do
+          expect(Rugged::Repository).to receive(:new).twice.and_call_original
 
-        repository.find_branch('master')
-        branch = repository.find_branch('master', force_reload: true)
+          repository.find_branch('master')
+          branch = repository.find_branch('master', force_reload: true)
 
-        expect(branch).to be_a_kind_of(Gitlab::Git::Branch)
-        expect(branch.name).to eq('master')
+          expect(branch).to be_a_kind_of(Gitlab::Git::Branch)
+          expect(branch.name).to eq('master')
+        end
+      end
+
+      context 'force_reload is false' do
+        it 'should not reload Rugged::Repository' do
+          expect(Rugged::Repository).to receive(:new).once.and_call_original
+
+          branch = repository.find_branch('master', force_reload: false)
+
+          expect(branch).to be_a_kind_of(Gitlab::Git::Branch)
+          expect(branch.name).to eq('master')
+        end
       end
     end
   end
@@ -2183,7 +2200,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
         repository.squash(user, squash_id, opts)
       end
 
-      context 'sparse checkout' do
+      context 'sparse checkout', :skip_gitaly_mock do
         let(:expected_files) { %w(files files/js files/js/application.js) }
 
         before do

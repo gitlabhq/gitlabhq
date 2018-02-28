@@ -26,6 +26,7 @@ import './gl_dropdown';
 import initTodoToggle from './header';
 import initImporterStatus from './importer_status';
 import initLayoutNav from './layout_nav';
+import './feature_highlight/feature_highlight_options';
 import LazyLoader from './lazy_loader';
 import initLogoAnimation from './logo';
 import './milestone_select';
@@ -33,7 +34,7 @@ import './projects_dropdown';
 import './render_gfm';
 import initBreadcrumbs from './breadcrumb';
 
-import './dispatcher';
+import initDispatcher from './dispatcher';
 
 // eslint-disable-next-line global-require, import/no-commonjs
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
@@ -265,4 +266,6 @@ $(() => {
       removeFlashClickListener(flashEl);
     });
   }
+
+  initDispatcher();
 });

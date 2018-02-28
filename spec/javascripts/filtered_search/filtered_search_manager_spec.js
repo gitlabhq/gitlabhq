@@ -3,8 +3,8 @@ import * as recentSearchesStoreSrc from '~/filtered_search/stores/recent_searche
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 import RecentSearchesServiceError from '~/filtered_search/services/recent_searches_service_error';
 import RecentSearchesRoot from '~/filtered_search/recent_searches_root';
+import FilteredSearchTokenKeys from '~/filtered_search/filtered_search_token_keys';
 import '~/lib/utils/common_utils';
-import '~/filtered_search/filtered_search_token_keys';
 import '~/filtered_search/filtered_search_tokenizer';
 import '~/filtered_search/filtered_search_dropdown_manager';
 import '~/filtered_search/filtered_search_manager';
@@ -14,6 +14,7 @@ describe('Filtered Search Manager', () => {
   let input;
   let manager;
   let tokensContainer;
+  const page = 'issues';
   const placeholder = 'Search or filter results...';
 
   function dispatchBackspaceEvent(element, eventType) {
@@ -62,7 +63,7 @@ describe('Filtered Search Manager', () => {
 
     input = document.querySelector('.filtered-search');
     tokensContainer = document.querySelector('.tokens-container');
-    manager = new gl.FilteredSearchManager();
+    manager = new gl.FilteredSearchManager({ page });
     manager.setup();
   };
 
@@ -80,19 +81,19 @@ describe('Filtered Search Manager', () => {
     });
 
     it('should instantiate RecentSearchesStore with isLocalStorageAvailable', () => {
-      manager = new gl.FilteredSearchManager();
+      manager = new gl.FilteredSearchManager({ page });
 
       expect(RecentSearchesService.isAvailable).toHaveBeenCalled();
       expect(recentSearchesStoreSrc.default).toHaveBeenCalledWith({
         isLocalStorageAvailable,
-        allowedKeys: gl.FilteredSearchTokenKeys.getKeys(),
+        allowedKeys: FilteredSearchTokenKeys.getKeys(),
       });
     });
   });
 
   describe('setup', () => {
     beforeEach(() => {
-      manager = new gl.FilteredSearchManager();
+      manager = new gl.FilteredSearchManager({ page });
     });
 
     it('should not instantiate Flash if an RecentSearchesServiceError is caught', () => {

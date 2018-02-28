@@ -10,6 +10,11 @@
         required: false,
         default: '',
       },
+      clustersPath: {
+        type: String,
+        required: false,
+        default: '',
+      },
       selectedState: {
         type: String,
         required: true,
@@ -35,7 +40,10 @@
             title: 'Get started with performance monitoring',
             description: `Stay updated about the performance and health
               of your environment by configuring Prometheus to monitor your deployments.`,
-            buttonText: 'Configure Prometheus',
+            buttonText: 'Install Prometheus on clusters',
+            buttonPath: this.clustersPath,
+            secondaryButtonText: 'Configure existing Prometheus',
+            secondaryButtonPath: this.settingsPath,
           },
           loading: {
             svgUrl: this.emptyLoadingSvgPath,
@@ -43,6 +51,7 @@
             description: `Creating graphs uses the data from the Prometheus server.
               If this takes a long time, ensure that data is available.`,
             buttonText: 'View documentation',
+            buttonPath: this.documentationPath,
           },
           noData: {
             svgUrl: this.emptyUnableToConnectSvgPath,
@@ -50,12 +59,14 @@
             description: `You are connected to the Prometheus server, but there is currently
               no data to display.`,
             buttonText: 'Configure Prometheus',
+            buttonPath: this.settingsPath,
           },
           unableToConnect: {
             svgUrl: this.emptyUnableToConnectSvgPath,
             title: 'Unable to connect to Prometheus server',
             description: 'Ensure connectivity is available from the GitLab server to the ',
             buttonText: 'View documentation',
+            buttonPath: this.documentationPath,
           },
         },
       };
@@ -63,13 +74,6 @@
     computed: {
       currentState() {
         return this.states[this.selectedState];
-      },
-
-      buttonPath() {
-        if (this.selectedState === 'gettingStarted') {
-          return this.settingsPath;
-        }
-        return this.documentationPath;
       },
 
       showButtonDescription() {
@@ -99,10 +103,20 @@
     </p>
     <div class="state-button">
       <a
+        v-if="currentState.buttonPath"
         class="btn btn-success"
-        :href="buttonPath"
+        :href="currentState.buttonPath"
       >
         {{ currentState.buttonText }}
+      </a>
+    </div>
+    <div class="state-button">
+      <a
+        v-if="currentState.secondaryButtonPath"
+        class="btn"
+        :href="currentState.secondaryButtonPath"
+      >
+        {{ currentState.secondaryButtonText }}
       </a>
     </div>
   </div>

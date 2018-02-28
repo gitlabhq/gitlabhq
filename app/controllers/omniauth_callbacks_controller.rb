@@ -145,7 +145,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     label = Gitlab::OAuth::Provider.label_for(oauth['provider'])
     message = "Signing in using your #{label} account without a pre-existing GitLab account is not allowed."
 
-    if current_application_settings.allow_signup?
+    if Gitlab::CurrentSettings.allow_signup?
       message << " Create a GitLab account first, and then connect it to your #{label} account."
     end
 

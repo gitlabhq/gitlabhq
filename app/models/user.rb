@@ -2,10 +2,8 @@ require 'carrierwave/orm/activerecord'
 
 class User < ActiveRecord::Base
   extend Gitlab::ConfigHelper
-  extend Gitlab::CurrentSettings
 
   include Gitlab::ConfigHelper
-  include Gitlab::CurrentSettings
   include Gitlab::SQL::Pattern
   include AfterCommitQueue
   include Avatarable
@@ -30,7 +28,7 @@ class User < ActiveRecord::Base
   add_authentication_token_field :rss_token
 
   default_value_for :admin, false
-  default_value_for(:external) { current_application_settings.user_default_external }
+  default_value_for(:external) { Gitlab::CurrentSettings.user_default_external }
   default_value_for :can_create_group, gitlab_config.default_can_create_group
   default_value_for :can_create_team, false
   default_value_for :hide_no_ssh_key, false
@@ -79,7 +77,7 @@ class User < ActiveRecord::Base
   #
 
   # Namespace for personal projects
-  has_one :namespace, -> { where(type: nil) }, dependent: :destroy, foreign_key: :owner_id, autosave: true # rubocop:disable Cop/ActiveRecordDependent
+  has_one :namespace, -> { where(type: nil) }, dependent: :destroy, foreign_key: :owner_id, inverse_of: :owner, autosave: true # rubocop:disable Cop/ActiveRecordDependent
 
   # Profile
   has_many :keys, -> do
@@ -127,7 +125,7 @@ class User < ActiveRecord::Base
   has_many :spam_logs,                dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build' # rubocop:disable Cop/ActiveRecordDependent
   has_many :pipelines,                dependent: :nullify, class_name: 'Ci::Pipeline' # rubocop:disable Cop/ActiveRecordDependent
-  has_many :todos,                    dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :todos
   has_many :notification_settings,    dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :award_emoji,              dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :triggers,                 dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :owner_id # rubocop:disable Cop/ActiveRecordDependent
@@ -137,6 +135,7 @@ class User < ActiveRecord::Base
   has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest" # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
+  has_many :callouts, class_name: 'UserCallout'
   has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   #
@@ -152,12 +151,9 @@ class User < ActiveRecord::Base
   validates :projects_limit,
     presence: true,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
-  validates :username,
-    user_path: true,
-    presence: true,
-    uniqueness: { case_sensitive: false }
+  validates :username, presence: true
 
-  validate :namespace_uniq, if: :username_changed?
+  validates :namespace, presence: true
   validate :namespace_move_dir_allowed, if: :username_changed?
 
   validate :unique_email, if: :email_changed?
@@ -172,7 +168,8 @@ class User < ActiveRecord::Base
   before_save :ensure_user_rights_and_limits, if: ->(user) { user.new_record? || user.external_changed? }
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
   before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
-  after_save :ensure_namespace_correct
+  before_validation :ensure_namespace_correct
+  after_validation :set_username_errors
   after_update :username_changed_hook, if: :username_changed?
   after_destroy :post_destroy_hook
   after_destroy :remove_key_cache
@@ -231,8 +228,8 @@ class User < ActiveRecord::Base
   scope :active, -> { with_state(:active).non_internal }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members WHERE user_id IS NOT NULL AND requested_at IS NULL)') }
   scope :todo_authors, ->(user_id, state) { where(id: Todo.where(user_id: user_id, state: state).select(:author_id)) }
-  scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('last_sign_in_at', 'DESC')) }
-  scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('last_sign_in_at', 'ASC')) }
+  scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
+  scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'ASC')) }
 
   def self.with_two_factor
     joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id")
@@ -506,17 +503,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def namespace_uniq
-    # Return early if username already failed the first uniqueness validation
-    return if errors.key?(:username) &&
-        errors[:username].include?('has already been taken')
-
-    existing_namespace = Namespace.by_path(username)
-    if existing_namespace && existing_namespace != namespace
-      errors.add(:username, 'has already been taken')
-    end
-  end
-
   def namespace_move_dir_allowed
     if namespace&.any_project_has_container_registry_tags?
       errors.add(:username, 'cannot be changed if a personal project has container registry tags.')
@@ -660,11 +646,11 @@ class User < ActiveRecord::Base
   end
 
   def allow_password_authentication_for_web?
-    current_application_settings.password_authentication_enabled_for_web? && !ldap_user?
+    Gitlab::CurrentSettings.password_authentication_enabled_for_web? && !ldap_user?
   end
 
   def allow_password_authentication_for_git?
-    current_application_settings.password_authentication_enabled_for_git? && !ldap_user?
+    Gitlab::CurrentSettings.password_authentication_enabled_for_git? && !ldap_user?
   end
 
   def can_change_username?
@@ -792,7 +778,7 @@ class User < ActiveRecord::Base
     # without this safeguard!
     return unless has_attribute?(:projects_limit) && projects_limit.nil?
 
-    self.projects_limit = current_application_settings.default_projects_limit
+    self.projects_limit = Gitlab::CurrentSettings.default_projects_limit
   end
 
   def requires_ldap_check?
@@ -885,17 +871,16 @@ class User < ActiveRecord::Base
   end
 
   def ensure_namespace_correct
-    # Ensure user has namespace
-    create_namespace!(path: username, name: username) unless namespace
-
-    if username_changed?
-      unless namespace.update_attributes(path: username, name: username)
-        namespace.errors.each do |attribute, message|
-          self.errors.add(:"namespace_#{attribute}", message)
-        end
-        raise ActiveRecord::RecordInvalid.new(namespace)
-      end
+    if namespace
+      namespace.path = namespace.name = username if username_changed?
+    else
+      build_namespace(path: username, name: username)
     end
+  end
+
+  def set_username_errors
+    namespace_path_errors = self.errors.delete(:"namespace.path")
+    self.errors[:username].concat(namespace_path_errors) if namespace_path_errors
   end
 
   def username_changed_hook
@@ -1215,7 +1200,7 @@ class User < ActiveRecord::Base
     else
       # Only revert these back to the default if they weren't specifically changed in this update.
       self.can_create_group = gitlab_config.default_can_create_group unless can_create_group_changed?
-      self.projects_limit = current_application_settings.default_projects_limit unless projects_limit_changed?
+      self.projects_limit = Gitlab::CurrentSettings.default_projects_limit unless projects_limit_changed?
     end
   end
 
@@ -1223,15 +1208,15 @@ class User < ActiveRecord::Base
     valid = true
     error = nil
 
-    if current_application_settings.domain_blacklist_enabled?
-      blocked_domains = current_application_settings.domain_blacklist
+    if Gitlab::CurrentSettings.domain_blacklist_enabled?
+      blocked_domains = Gitlab::CurrentSettings.domain_blacklist
       if domain_matches?(blocked_domains, email)
         error = 'is not from an allowed domain.'
         valid = false
       end
     end
 
-    allowed_domains = current_application_settings.domain_whitelist
+    allowed_domains = Gitlab::CurrentSettings.domain_whitelist
     unless allowed_domains.blank?
       if domain_matches?(allowed_domains, email)
         valid = true

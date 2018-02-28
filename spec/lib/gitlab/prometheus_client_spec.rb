@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::PrometheusClient do
   include PrometheusHelpers
 
-  subject { described_class.new(api_url: 'https://prometheus.example.com') }
+  subject { described_class.new(RestClient::Resource.new('https://prometheus.example.com')) }
 
   describe '#ping' do
     it 'issues a "query" request to the API endpoint' do
@@ -47,16 +47,28 @@ describe Gitlab::PrometheusClient do
         expect(req_stub).to have_been_requested
       end
     end
+
+    context 'when request returns non json data' do
+      it 'raises a Gitlab::PrometheusError error' do
+        req_stub = stub_prometheus_request(query_url, status: 200, body: 'not json')
+
+        expect { execute_query }
+          .to raise_error(Gitlab::PrometheusError, 'Parsing response failed')
+        expect(req_stub).to have_been_requested
+      end
+    end
   end
 
   describe 'failure to reach a provided prometheus url' do
     let(:prometheus_url) {"https://prometheus.invalid.example.com"}
 
+    subject { described_class.new(RestClient::Resource.new(prometheus_url)) }
+
     context 'exceptions are raised' do
       it 'raises a Gitlab::PrometheusError error when a SocketError is rescued' do
         req_stub = stub_prometheus_request_with_exception(prometheus_url, SocketError)
 
-        expect { subject.send(:get, prometheus_url) }
+        expect { subject.send(:get, '/', {}) }
           .to raise_error(Gitlab::PrometheusError, "Can't connect to #{prometheus_url}")
         expect(req_stub).to have_been_requested
       end
@@ -64,15 +76,15 @@ describe Gitlab::PrometheusClient do
       it 'raises a Gitlab::PrometheusError error when a SSLError is rescued' do
         req_stub = stub_prometheus_request_with_exception(prometheus_url, OpenSSL::SSL::SSLError)
 
-        expect { subject.send(:get, prometheus_url) }
+        expect { subject.send(:get, '/', {}) }
           .to raise_error(Gitlab::PrometheusError, "#{prometheus_url} contains invalid SSL data")
         expect(req_stub).to have_been_requested
       end
 
-      it 'raises a Gitlab::PrometheusError error when a HTTParty::Error is rescued' do
-        req_stub = stub_prometheus_request_with_exception(prometheus_url, HTTParty::Error)
+      it 'raises a Gitlab::PrometheusError error when a RestClient::Exception is rescued' do
+        req_stub = stub_prometheus_request_with_exception(prometheus_url, RestClient::Exception)
 
-        expect { subject.send(:get, prometheus_url) }
+        expect { subject.send(:get, '/', {}) }
           .to raise_error(Gitlab::PrometheusError, "Network connection error")
         expect(req_stub).to have_been_requested
       end

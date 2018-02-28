@@ -64,7 +64,7 @@ feature 'Clusters Applications', :js do
             expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Installed')
           end
 
-          expect(page).to have_content('Helm Tiller was successfully installed on your cluster')
+          expect(page).to have_content('Helm Tiller was successfully installed on your Kubernetes cluster')
         end
       end
 
@@ -98,7 +98,7 @@ feature 'Clusters Applications', :js do
               expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Installed')
             end
 
-            expect(page).to have_content('Ingress was successfully installed on your cluster')
+            expect(page).to have_content('Ingress was successfully installed on your Kubernetes cluster')
           end
         end
       end

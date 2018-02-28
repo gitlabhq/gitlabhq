@@ -56,4 +56,25 @@ describe('issue_note', () => {
       done();
     }, 0);
   });
+
+  describe('cancel edit', () => {
+    it('restores content of updated note', (done) => {
+      const noteBody = 'updated note text';
+      vm.updateNote = () => Promise.resolve();
+
+      vm.formUpdateHandler(noteBody, null, $.noop);
+
+      setTimeout(() => {
+        expect(vm.note.note_html).toEqual(noteBody);
+
+        vm.formCancelHandler();
+
+        setTimeout(() => {
+          expect(vm.note.note_html).toEqual(noteBody);
+
+          done();
+        });
+      });
+    });
+  });
 });

@@ -139,6 +139,27 @@ describe Gitlab::LDAP::Person do
         expect(person.username).to eq(attr_value)
       end
     end
+
+    context 'if lowercase_usernames setting is' do
+      let(:username_attribute) { 'uid' }
+
+      before do
+        entry[username_attribute] = 'JOHN'
+        @person = described_class.new(entry, 'ldapmain')
+      end
+
+      it 'enabled the username attribute is lower cased' do
+        stub_ldap_config(lowercase_usernames: true)
+
+        expect(@person.username).to eq 'john'
+      end
+
+      it 'disabled the username attribute is not lower cased' do
+        stub_ldap_config(lowercase_usernames: false)
+
+        expect(@person.username).to eq 'JOHN'
+      end
+    end
   end
 
   def assert_generic_test(test_description, got, expected)

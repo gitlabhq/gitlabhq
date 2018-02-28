@@ -42,11 +42,14 @@ module API
           end
 
         access_checker_klass = wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
-        access_checker = access_checker_klass
-          .new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities, redirected_path: redirected_path)
+        access_checker = access_checker_klass.new(actor, project,
+          protocol, authentication_abilities: ssh_authentication_abilities,
+                    namespace_path: namespace_path, project_path: project_path,
+                    redirected_path: redirected_path)
 
         begin
           access_checker.check(params[:action], params[:changes])
+          @project ||= access_checker.project
         rescue Gitlab::GitAccess::UnauthorizedError, Gitlab::GitAccess::NotFoundError => e
           return { status: false, message: e.message }
         end
@@ -207,8 +210,11 @@ module API
         # A user is not guaranteed to be returned; an orphaned write deploy
         # key could be used
         if user
-          redirect_message = Gitlab::Checks::ProjectMoved.fetch_redirect_message(user.id, project.id)
+          redirect_message = Gitlab::Checks::ProjectMoved.fetch_message(user.id, project.id)
+          project_created_message = Gitlab::Checks::ProjectCreated.fetch_message(user.id, project.id)
+
           output[:redirected_message] = redirect_message if redirect_message
+          output[:project_created_message] = project_created_message if project_created_message
         end
 
         output

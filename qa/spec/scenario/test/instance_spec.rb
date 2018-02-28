@@ -29,7 +29,8 @@ describe QA::Scenario::Test::Instance do
       it 'should call runner with default arguments' do
         subject.perform("test")
 
-        expect(runner).to have_received(:files=).with('qa/specs/features')
+        expect(runner).to have_received(:files=)
+          .with(File.expand_path('../../../qa/specs/features', __dir__))
       end
     end
 

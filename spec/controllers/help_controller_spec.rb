@@ -68,7 +68,7 @@ describe HelpController do
       context 'when requested file exists' do
         it 'renders the raw file' do
           get :show,
-              path: 'user/project/img/labels_filter',
+              path: 'user/project/img/labels_default',
               format: :png
           expect(response).to be_success
           expect(response.content_type).to eq 'image/png'

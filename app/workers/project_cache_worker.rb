@@ -18,6 +18,8 @@ class ProjectCacheWorker
     update_statistics(project, statistics.map(&:to_sym))
 
     project.repository.refresh_method_caches(files.map(&:to_sym))
+
+    project.cleanup
   end
 
   def update_statistics(project, statistics = [])

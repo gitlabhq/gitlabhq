@@ -227,4 +227,3 @@ memory and disk I/O.
 [restart gitlab]: restart_gitlab.md "How to restart GitLab"
 [gitlab workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse "GitLab Workhorse repository"
 [ee-os]: https://docs.gitlab.com/ee/administration/job_artifacts.html#using-object-storage
-[eep]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition Premium"

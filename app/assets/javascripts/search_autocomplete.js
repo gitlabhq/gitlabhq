@@ -1,4 +1,5 @@
 /* eslint-disable no-return-assign, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-unused-vars, no-cond-assign, consistent-return, object-shorthand, prefer-arrow-callback, func-names, space-before-function-paren, prefer-template, quotes, class-methods-use-this, no-sequences, wrap-iife, no-lonely-if, no-else-return, no-param-reassign, vars-on-top, max-len */
+import axios from './lib/utils/axios_utils';
 import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from './lib/utils/common_utils';
 
 /**
@@ -146,23 +147,25 @@ export default class SearchAutocomplete {
 
     this.loadingSuggestions = true;
 
-    return $.get(this.autocompletePath, {
-      project_id: this.projectId,
-      project_ref: this.projectRef,
-      term: term,
-    }, (response) => {
-      var firstCategory, i, lastCategory, len, suggestion;
+    return axios.get(this.autocompletePath, {
+      params: {
+        project_id: this.projectId,
+        project_ref: this.projectRef,
+        term: term,
+      },
+    }).then((response) => {
       // Hide dropdown menu if no suggestions returns
-      if (!response.length) {
+      if (!response.data.length) {
         this.disableAutocomplete();
         return;
       }
 
       const data = [];
       // List results
-      firstCategory = true;
-      for (i = 0, len = response.length; i < len; i += 1) {
-        suggestion = response[i];
+      let firstCategory = true;
+      let lastCategory;
+      for (let i = 0, len = response.data.length; i < len; i += 1) {
+        const suggestion = response.data[i];
         // Add group header before list each group
         if (lastCategory !== suggestion.category) {
           if (!firstCategory) {
@@ -177,7 +180,7 @@ export default class SearchAutocomplete {
           lastCategory = suggestion.category;
         }
         data.push({
-          id: (suggestion.category.toLowerCase()) + "-" + suggestion.id,
+          id: `${suggestion.category.toLowerCase()}-${suggestion.id}`,
           category: suggestion.category,
           text: suggestion.label,
           url: suggestion.url,
@@ -187,13 +190,17 @@ export default class SearchAutocomplete {
       if (data.length) {
         data.push('separator');
         data.push({
-          text: "Result name contains \"" + term + "\"",
-          url: "/search?search=" + term + "&project_id=" + (this.projectInputEl.val()) + "&group_id=" + (this.groupInputEl.val()),
+          text: `Result name contains "${term}"`,
+          url: `/search?search=${term}&project_id=${this.projectInputEl.val()}&group_id=${this.groupInputEl.val()}`,
         });
       }
-      return callback(data);
-    })
-    .always(() => { this.loadingSuggestions = false; });
+
+      callback(data);
+
+      this.loadingSuggestions = false;
+    }).catch(() => {
+      this.loadingSuggestions = false;
+    });
   }
 
   getCategoryContents() {

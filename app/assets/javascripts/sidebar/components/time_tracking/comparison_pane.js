@@ -68,7 +68,7 @@ export default {
         <div class="compare-display-container">
           <div class="compare-display pull-left">
             <span class="compare-label">
-              Spent
+            {{ s__('TimeTracking|Spent') }}
             </span>
             <span class="compare-value spent">
               {{ timeSpentHumanReadable }}
@@ -76,7 +76,7 @@ export default {
           </div>
           <div class="compare-display estimated pull-right">
             <span class="compare-label">
-              Est
+              {{ s__('TimeTrackingEstimated|Est') }}
             </span>
             <span class="compare-value">
               {{ timeEstimateHumanReadable }}

@@ -7,10 +7,13 @@ class PrometheusService < MonitoringService
 
   #  Access to prometheus is directly through the API
   prop_accessor :api_url
+  boolean_accessor :manual_configuration
 
-  with_options presence: true, if: :activated? do
+  with_options presence: true, if: :manual_configuration? do
     validates :api_url, url: true
   end
+
+  before_save :synchronize_service_state!
 
   after_save :clear_reactive_cache!
 
@@ -20,12 +23,20 @@ class PrometheusService < MonitoringService
     end
   end
 
+  def show_active_box?
+    false
+  end
+
+  def editable?
+    manual_configuration? || !prometheus_installed?
+  end
+
   def title
     'Prometheus'
   end
 
   def description
-    s_('PrometheusService|Prometheus monitoring')
+    s_('PrometheusService|Time-series monitoring service')
   end
 
   def self.to_param
@@ -33,7 +44,15 @@ class PrometheusService < MonitoringService
   end
 
   def fields
+    return [] unless editable?
+
     [
+      {
+        type: 'checkbox',
+        name: 'manual_configuration',
+        title: s_('PrometheusService|Active'),
+        required: true
+      },
       {
         type: 'text',
         name: 'api_url',
@@ -59,7 +78,7 @@ class PrometheusService < MonitoringService
   end
 
   def deployment_metrics(deployment)
-    metrics = with_reactive_cache(Gitlab::Prometheus::Queries::DeploymentQuery.name, deployment.id, &method(:rename_data_to_metrics))
+    metrics = with_reactive_cache(Gitlab::Prometheus::Queries::DeploymentQuery.name, deployment.environment.id, deployment.id, &method(:rename_data_to_metrics))
     metrics&.merge(deployment_time: deployment.created_at.to_i) || {}
   end
 
@@ -68,7 +87,7 @@ class PrometheusService < MonitoringService
   end
 
   def additional_deployment_metrics(deployment)
-    with_reactive_cache(Gitlab::Prometheus::Queries::AdditionalMetricsDeploymentQuery.name, deployment.id, &:itself)
+    with_reactive_cache(Gitlab::Prometheus::Queries::AdditionalMetricsDeploymentQuery.name, deployment.environment.id, deployment.id, &:itself)
   end
 
   def matched_metrics
@@ -78,6 +97,9 @@ class PrometheusService < MonitoringService
   # Cache metrics for specific environment
   def calculate_reactive_cache(query_class_name, *args)
     return unless active? && project && !project.pending_delete?
+
+    environment_id = args.first
+    client = client(environment_id)
 
     data = Kernel.const_get(query_class_name).new(client).query(*args)
     {
@@ -89,14 +111,55 @@ class PrometheusService < MonitoringService
     { success: false, result: err.message }
   end
 
-  def client
-    @prometheus ||= Gitlab::PrometheusClient.new(api_url: api_url)
+  def client(environment_id = nil)
+    if manual_configuration?
+      Gitlab::PrometheusClient.new(RestClient::Resource.new(api_url))
+    else
+      cluster = cluster_with_prometheus(environment_id)
+      raise Gitlab::PrometheusError, "couldn't find cluster with Prometheus installed" unless cluster
+
+      rest_client = client_from_cluster(cluster)
+      raise Gitlab::PrometheusError, "couldn't create proxy Prometheus client" unless rest_client
+
+      Gitlab::PrometheusClient.new(rest_client)
+    end
+  end
+
+  def prometheus_installed?
+    return false if template?
+    return false unless project
+
+    project.clusters.enabled.any? { |cluster| cluster.application_prometheus&.installed? }
   end
 
   private
 
+  def cluster_with_prometheus(environment_id = nil)
+    clusters = if environment_id
+                 ::Environment.find_by(id: environment_id).try do |env|
+                   # sort results by descending order based on environment_scope being longer
+                   # thus more closely matching environment slug
+                   project.clusters.enabled.for_environment(env).sort_by { |c| c.environment_scope&.length }.reverse!
+                 end
+               else
+                 project.clusters.enabled.for_all_environments
+               end
+
+    clusters&.detect { |cluster| cluster.application_prometheus&.installed? }
+  end
+
+  def client_from_cluster(cluster)
+    cluster.application_prometheus.proxy_client
+  end
+
   def rename_data_to_metrics(metrics)
     metrics[:metrics] = metrics.delete :data
     metrics
+  end
+
+  def synchronize_service_state!
+    self.active = prometheus_installed? || manual_configuration?
+
+    true
   end
 end

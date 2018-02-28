@@ -87,6 +87,6 @@ prefixed with `#{namespace}/#{project_name}`, which is true for CI Cache and LFS
 | Pages           | Yes            | No             | -             | -              |
 | Docker Registry | Yes            | No             | -             | -              |
 | CI Build Logs   | No             | No             | -             | -              |
-| CI Artifacts    | No             | No             | Yes (EEP)     | -              |
+| CI Artifacts    | No             | No             | Yes (Premium) | -              |
 | CI Cache        | No             | No             | Yes           | -              |
-| LFS Objects     | Yes            | No             | Yes (EEP)     | -              |
+| LFS Objects     | Yes            | No             | Yes (Premium) | -              |

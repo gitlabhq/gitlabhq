@@ -22,7 +22,7 @@
         - else
           commented on a #{link_to 'discussion', @target_url}
 
-- elsif current_application_settings.email_author_in_body
+- elsif Gitlab::CurrentSettings.email_author_in_body
   %p.details
     #{link_to @note.author_name, user_url(@note.author)} commented:
 

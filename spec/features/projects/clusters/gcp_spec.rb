@@ -32,7 +32,7 @@ feature 'Gcp Cluster', :js do
         before do
           visit project_clusters_path(project)
 
-          click_link 'Add cluster'
+          click_link 'Add Kubernetes cluster'
           click_link 'Create on GKE'
         end
 
@@ -50,19 +50,19 @@ feature 'Gcp Cluster', :js do
 
             fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
             fill_in 'cluster_name', with: 'dev-cluster'
-            click_button 'Create cluster'
+            click_button 'Create Kubernetes cluster'
           end
 
           it 'user sees a cluster details page and creation status' do
-            expect(page).to have_content('Cluster is being created on Google Kubernetes Engine...')
+            expect(page).to have_content('Kubernetes cluster is being created on Google Kubernetes Engine...')
 
             Clusters::Cluster.last.provider.make_created!
 
-            expect(page).to have_content('Cluster was successfully created on Google Kubernetes Engine')
+            expect(page).to have_content('Kubernetes cluster was successfully created on Google Kubernetes Engine')
           end
 
           it 'user sees a error if something worng during creation' do
-            expect(page).to have_content('Cluster is being created on Google Kubernetes Engine...')
+            expect(page).to have_content('Kubernetes cluster is being created on Google Kubernetes Engine...')
 
             Clusters::Cluster.last.provider.make_errored!('Something wrong!')
 
@@ -72,7 +72,7 @@ feature 'Gcp Cluster', :js do
 
         context 'when user filled form with invalid parameters' do
           before do
-            click_button 'Create cluster'
+            click_button 'Create Kubernetes cluster'
           end
 
           it 'user sees a validation error' do
@@ -100,7 +100,7 @@ feature 'Gcp Cluster', :js do
           end
 
           it 'user sees the successful message' do
-            expect(page).to have_content('Cluster was successfully updated.')
+            expect(page).to have_content('Kubernetes cluster was successfully updated.')
           end
         end
 
@@ -111,7 +111,7 @@ feature 'Gcp Cluster', :js do
           end
 
           it 'user sees the successful message' do
-            expect(page).to have_content('Cluster was successfully updated.')
+            expect(page).to have_content('Kubernetes cluster was successfully updated.')
             expect(cluster.reload.platform_kubernetes.namespace).to eq('my-namespace')
           end
         end
@@ -124,8 +124,8 @@ feature 'Gcp Cluster', :js do
           end
 
           it 'user sees creation form with the successful message' do
-            expect(page).to have_content('Cluster integration was successfully removed.')
-            expect(page).to have_link('Add cluster')
+            expect(page).to have_content('Kubernetes cluster integration was successfully removed.')
+            expect(page).to have_link('Add Kubernetes cluster')
           end
         end
       end
@@ -138,16 +138,16 @@ feature 'Gcp Cluster', :js do
 
         visit project_clusters_path(project)
 
-        click_link 'Add cluster'
+        click_link 'Add Kubernetes cluster'
         click_link 'Create on GKE'
 
         fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
         fill_in 'cluster_name', with: 'dev-cluster'
-        click_button 'Create cluster'
+        click_button 'Create Kubernetes cluster'
       end
 
       it 'user sees form with error' do
-        expect(page).to have_content('Please enable billing for one of your projects to be able to create a cluster, then try again.')
+        expect(page).to have_content('Please enable billing for one of your projects to be able to create a Kubernetes cluster, then try again.')
       end
     end
 
@@ -158,12 +158,12 @@ feature 'Gcp Cluster', :js do
 
         visit project_clusters_path(project)
 
-        click_link 'Add cluster'
+        click_link 'Add Kubernetes cluster'
         click_link 'Create on GKE'
 
         fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
         fill_in 'cluster_name', with: 'dev-cluster'
-        click_button 'Create cluster'
+        click_button 'Create Kubernetes cluster'
       end
 
       it 'user sees form with error' do
@@ -176,7 +176,7 @@ feature 'Gcp Cluster', :js do
     before do
       visit project_clusters_path(project)
 
-      click_link 'Add cluster'
+      click_link 'Add Kubernetes cluster'
       click_link 'Create on GKE'
     end
 

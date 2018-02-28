@@ -68,8 +68,9 @@ module Gitlab
         end
       end
 
+      # Disable because of https://gitlab.com/gitlab-org/gitlab-ce/issues/42039
       def page(title:, version: nil, dir: nil)
-        @repository.gitaly_migrate(:wiki_find_page) do |is_enabled|
+        @repository.gitaly_migrate(:wiki_find_page, status: Gitlab::GitalyClient::MigrationStatus::DISABLED) do |is_enabled|
           if is_enabled
             gitaly_find_page(title: title, version: version, dir: dir)
           else
@@ -93,11 +94,23 @@ module Gitlab
       #  :per_page - The number of items per page.
       #  :limit    - Total number of items to return.
       def page_versions(page_path, options = {})
-        current_page = gollum_page_by_path(page_path)
+        @repository.gitaly_migrate(:wiki_page_versions) do |is_enabled|
+          if is_enabled
+            versions = gitaly_wiki_client.page_versions(page_path, options)
 
-        commits_from_page(current_page, options).map do |gitlab_git_commit|
-          gollum_page = gollum_wiki.page(current_page.title, gitlab_git_commit.id)
-          Gitlab::Git::WikiPageVersion.new(gitlab_git_commit, gollum_page&.format)
+            # Gitaly uses gollum-lib to get the versions. Gollum defaults to 20
+            # per page, but also fetches 20 if `limit` or `per_page` < 20.
+            # Slicing returns an array with the expected number of items.
+            slice_bound = options[:limit] || options[:per_page] || Gollum::Page.per_page
+            versions[0..slice_bound]
+          else
+            current_page = gollum_page_by_path(page_path)
+
+            commits_from_page(current_page, options).map do |gitlab_git_commit|
+              gollum_page = gollum_wiki.page(current_page.title, gitlab_git_commit.id)
+              Gitlab::Git::WikiPageVersion.new(gitlab_git_commit, gollum_page&.format)
+            end
+          end
         end
       end
 
@@ -192,7 +205,10 @@ module Gitlab
         assert_type!(format, Symbol)
         assert_type!(commit_details, CommitDetails)
 
-        gollum_wiki.write_page(name, format, content, commit_details.to_h)
+        filename = File.basename(name)
+        dir = (tmp_dir = File.dirname(name)) == '.' ? '' : tmp_dir
+
+        gollum_wiki.write_page(filename, format, content, commit_details.to_h, dir)
 
         nil
       rescue Gollum::DuplicatePageError => e
@@ -210,7 +226,15 @@ module Gitlab
         assert_type!(format, Symbol)
         assert_type!(commit_details, CommitDetails)
 
-        gollum_wiki.update_page(gollum_page_by_path(page_path), title, format, content, commit_details.to_h)
+        page = gollum_page_by_path(page_path)
+        committer = Gollum::Committer.new(page.wiki, commit_details.to_h)
+
+        # Instead of performing two renames if the title has changed,
+        # the update_page will only update the format and content and
+        # the rename_page will do anything related to moving/renaming
+        gollum_wiki.update_page(page, page.name, format, content, committer: committer)
+        gollum_wiki.rename_page(page, title, committer: committer)
+        committer.commit
         nil
       end
 

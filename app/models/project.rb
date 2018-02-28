@@ -4,7 +4,6 @@ class Project < ActiveRecord::Base
   include Gitlab::ConfigHelper
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
-  include Gitlab::CurrentSettings
   include AccessRequestable
   include Avatarable
   include CacheMarkdownField
@@ -23,7 +22,6 @@ class Project < ActiveRecord::Base
   include ::Gitlab::Utils::StrongMemoize
 
   extend Gitlab::ConfigHelper
-  extend Gitlab::CurrentSettings
 
   BoardLimitExceeded = Class.new(StandardError)
 
@@ -51,8 +49,8 @@ class Project < ActiveRecord::Base
   default_value_for :visibility_level, gitlab_config_features.visibility_level
   default_value_for :resolve_outdated_diff_discussions, false
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
-  default_value_for(:repository_storage) { current_application_settings.pick_repository_storage }
-  default_value_for(:shared_runners_enabled) { current_application_settings.shared_runners_enabled }
+  default_value_for(:repository_storage) { Gitlab::CurrentSettings.pick_repository_storage }
+  default_value_for(:shared_runners_enabled) { Gitlab::CurrentSettings.shared_runners_enabled }
   default_value_for :issues_enabled, gitlab_config_features.issues
   default_value_for :merge_requests_enabled, gitlab_config_features.merge_requests
   default_value_for :builds_enabled, gitlab_config_features.builds
@@ -71,6 +69,7 @@ class Project < ActiveRecord::Base
 
   before_destroy :remove_private_deploy_keys
   after_destroy -> { run_after_commit { remove_pages } }
+  after_destroy :remove_exports
 
   after_validation :check_pending_delete
 
@@ -180,6 +179,7 @@ class Project < ActiveRecord::Base
   has_many :releases
   has_many :lfs_objects_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :lfs_objects, through: :lfs_objects_projects
+  has_many :lfs_file_locks
   has_many :project_group_links
   has_many :invited_groups, through: :project_group_links, source: :group
   has_many :pages_domains
@@ -246,8 +246,7 @@ class Project < ActiveRecord::Base
   validates :path,
     presence: true,
     project_path: true,
-    length: { maximum: 255 },
-    uniqueness: { scope: :namespace_id }
+    length: { maximum: 255 }
 
   validates :namespace, presence: true
   validates :name, uniqueness: { scope: :namespace_id }
@@ -262,6 +261,7 @@ class Project < ActiveRecord::Base
   validates :repository_storage,
     presence: true,
     inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
+  validates :variables, variable_duplicates: true
 
   has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
@@ -487,14 +487,14 @@ class Project < ActiveRecord::Base
 
   def auto_devops_enabled?
     if auto_devops&.enabled.nil?
-      current_application_settings.auto_devops_enabled?
+      Gitlab::CurrentSettings.auto_devops_enabled?
     else
       auto_devops.enabled?
     end
   end
 
   def has_auto_devops_implicitly_disabled?
-    auto_devops&.enabled.nil? && !current_application_settings.auto_devops_enabled?
+    auto_devops&.enabled.nil? && !Gitlab::CurrentSettings.auto_devops_enabled?
   end
 
   def empty_repo?
@@ -513,9 +513,12 @@ class Project < ActiveRecord::Base
     @repository ||= Repository.new(full_path, self, disk_path: disk_path)
   end
 
-  def reload_repository!
+  def cleanup
+    @repository&.cleanup
     @repository = nil
   end
+
+  alias_method :reload_repository!, :cleanup
 
   def container_registry_url
     if Gitlab.config.registry.enabled
@@ -1472,14 +1475,14 @@ class Project < ActiveRecord::Base
     # Ensure HEAD points to the default branch in case it is not master
     change_head(default_branch)
 
-    if current_application_settings.default_branch_protection != Gitlab::Access::PROTECTION_NONE && !ProtectedBranch.protected?(self, default_branch)
+    if Gitlab::CurrentSettings.default_branch_protection != Gitlab::Access::PROTECTION_NONE && !ProtectedBranch.protected?(self, default_branch)
       params = {
         name: default_branch,
         push_access_levels_attributes: [{
-          access_level: current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_PUSH ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+          access_level: Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_PUSH ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
         }],
         merge_access_levels_attributes: [{
-          access_level: current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+          access_level: Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
         }]
       }
 
@@ -1528,6 +1531,8 @@ class Project < ActiveRecord::Base
   end
 
   def export_path
+    return nil unless namespace.present? || hashed_storage?(:repository)
+
     File.join(Gitlab::ImportExport.storage_path, disk_path)
   end
 
@@ -1536,8 +1541,9 @@ class Project < ActiveRecord::Base
   end
 
   def remove_exports
-    _, status = Gitlab::Popen.popen(%W(find #{export_path} -not -path #{export_path} -delete))
-    status.zero?
+    return nil unless export_path.present?
+
+    FileUtils.rm_rf(export_path)
   end
 
   def full_path_slug
@@ -1597,7 +1603,7 @@ class Project < ActiveRecord::Base
   def auto_devops_variables
     return [] unless auto_devops_enabled?
 
-    auto_devops&.variables || []
+    (auto_devops || build_auto_devops)&.variables
   end
 
   def append_or_update_attribute(name, value)
@@ -1774,7 +1780,7 @@ class Project < ActiveRecord::Base
   end
 
   def use_hashed_storage
-    if self.new_record? && current_application_settings.hashed_storage_enabled
+    if self.new_record? && Gitlab::CurrentSettings.hashed_storage_enabled
       self.storage_version = LATEST_STORAGE_VERSION
     end
   end

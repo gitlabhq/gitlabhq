@@ -17,6 +17,8 @@ class FileUploader < GitlabUploader
 
   attr_accessor :model
 
+  after :remove, :prune_store_dir
+
   def self.root
     File.join(options.storage_path, 'uploads')
   end
@@ -62,9 +64,13 @@ class FileUploader < GitlabUploader
     SecureRandom.hex
   end
 
-  def initialize(model, secret = nil)
+  attr_accessor :model
+
+  def initialize(model, mounted_as = nil, **uploader_context)
+    super(model, nil, **uploader_context)
+
     @model = model
-    @secret = secret
+    apply_context!(uploader_context)
   end
 
   def base_dir
@@ -107,15 +113,17 @@ class FileUploader < GitlabUploader
     self.file.filename
   end
 
-  # the upload does not hold the secret, but holds the path
-  # which contains the secret: extract it
   def upload=(value)
+    super
+
+    return unless value
+    return if apply_context!(value.uploader_context)
+
+    # fallback to the regex based extraction
     if matches = DYNAMIC_PATH_PATTERN.match(value.path)
       @secret = matches[:secret]
       @identifier = matches[:identifier]
     end
-
-    super
   end
 
   def secret
@@ -123,6 +131,22 @@ class FileUploader < GitlabUploader
   end
 
   private
+
+  def apply_context!(uploader_context)
+    @secret, @identifier = uploader_context.values_at(:secret, :identifier)
+
+    !!(@secret && @identifier)
+  end
+
+  def build_upload
+    super.tap do |upload|
+      upload.secret = secret
+    end
+  end
+
+  def prune_store_dir
+    storage.delete_dir!(store_dir) # only remove when empty
+  end
 
   def markdown_name
     (image_or_video? ? File.basename(filename, File.extname(filename)) : filename).gsub("]", "\\]")
