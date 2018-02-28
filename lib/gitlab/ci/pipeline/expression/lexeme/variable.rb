@@ -10,8 +10,8 @@ module Gitlab
               @name = name
             end
 
-            def evaluate(**variables)
-              variables[@name.to_sym]
+            def evaluate(variables = {})
+              HashWithIndifferentAccess.new(variables).fetch(@name, nil)
             end
 
             def self.build(string)

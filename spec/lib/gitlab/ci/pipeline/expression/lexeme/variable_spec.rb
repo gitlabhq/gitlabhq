@@ -22,6 +22,13 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::Variable do
         .to eq 'my variable'
     end
 
+    it 'allows to use a string as a variable key too' do
+      variable = described_class.new('VARIABLE')
+
+      expect(variable.evaluate('VARIABLE' => 'my variable'))
+        .to eq 'my variable'
+    end
+
     it 'returns nil if it is not defined' do
       variable = described_class.new('VARIABLE')
 

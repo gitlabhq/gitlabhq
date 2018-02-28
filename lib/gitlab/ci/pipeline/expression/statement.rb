@@ -20,7 +20,7 @@ module Gitlab
             return if pipeline.nil?
 
             @variables = pipeline.variables.map do |variable|
-              [variable.key.to_sym, variable.value]
+              [variable.key, variable.value]
             end
           end
 
