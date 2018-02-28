@@ -21,19 +21,6 @@ describe LfsObject do
     end
   end
 
-  describe '#destroy' do
-    subject { create(:lfs_object, :with_file) }
-
-    context 'when running in a Geo primary node' do
-      set(:primary) { create(:geo_node, :primary) }
-      set(:secondary) { create(:geo_node) }
-
-      it 'logs an event to the Geo event log' do
-        expect { subject.destroy }.to change(Geo::LfsObjectDeletedEvent, :count).by(1)
-      end
-    end
-  end
-
   describe '#schedule_background_upload' do
     before do
       stub_lfs_setting(enabled: true)
@@ -78,18 +65,6 @@ describe LfsObject do
             lfs_object = create(:lfs_object)
             lfs_object.file = fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "`/png")
             lfs_object.save!
-          end
-        end
-
-        context 'when is unlicensed' do
-          before do
-            stub_lfs_object_storage(background_upload: true, licensed: false)
-          end
-
-          it 'does not schedule the migration' do
-            expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
-
-            subject
           end
         end
       end
