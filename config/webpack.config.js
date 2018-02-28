@@ -225,34 +225,6 @@ var config = {
       return `${moduleNames[0]}-${hash.substr(0, 6)}`;
     }),
 
-    // create cacheable common library bundle for all vue chunks
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'common_vue',
-      chunks: [
-        'boards',
-        'cycle_analytics',
-        'deploy_keys',
-        'environments',
-        'filtered_search',
-        'groups',
-        'monitoring',
-        'mr_notes',
-        'notebook_viewer',
-        'pdf_viewer',
-        'pipelines',
-        'pipelines_details',
-        'registry_list',
-        'ide',
-        'schedule_form',
-        'schedules_index',
-        'sidebar',
-        'vue_merge_request_widget',
-      ],
-      minChunks: function(module, count) {
-        return module.resource && (/vue_shared/).test(module.resource);
-      },
-    }),
-
     // create cacheable common library bundles
     new webpack.optimize.CommonsChunkPlugin({
       names: ['main', 'common', 'webpack_runtime'],
