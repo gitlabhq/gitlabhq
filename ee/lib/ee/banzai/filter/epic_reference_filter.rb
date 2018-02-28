@@ -26,7 +26,7 @@ module EE
           urls.group_epic_url(group, epic, only_path: context[:only_path])
         end
 
-        def data_attributes_for(text, project, object, link_content: false, link_reference: false)
+        def data_attributes_for(text, group, object, link_content: false, link_reference: false)
           data_attribute(
             original:       text,
             link:           link_content,
