@@ -57,7 +57,6 @@ function generateEntries() {
     sketch_viewer:        './blob/sketch_viewer.js',
     stl_viewer:           './blob/stl_viewer.js',
     terminal:             './terminal/terminal_bundle.js',
-    ui_development_kit:   './ui_development_kit.js',
     two_factor_auth:      './two_factor_auth.js',
 
 
