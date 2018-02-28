@@ -12,10 +12,14 @@ class BuildUserContributedProjectsTable < ActiveRecord::Migration
     else
       MysqlStrategy.new
     end.up
+
+    add_concurrent_index :user_contributed_projects, [:project_id, :user_id], unique: true
   end
 
   def down
     execute "TRUNCATE user_contributed_projects"
+
+    remove_concurrent_index_by_name :user_contributed_projects, 'index_user_contributed_projects_on_project_id_and_user_id'
   end
 
   private
@@ -24,7 +28,7 @@ class BuildUserContributedProjectsTable < ActiveRecord::Migration
     include Gitlab::Database::MigrationHelpers
 
     BATCH_SIZE = 100_000
-    SLEEP_TIME = 30
+    SLEEP_TIME = 5
 
     def up
       with_index(:events, [:author_id, :project_id], name: 'events_user_contributions_temp', where: 'project_id IS NOT NULL') do
@@ -44,10 +48,14 @@ class BuildUserContributedProjectsTable < ActiveRecord::Migration
           records += result.cmd_tuples
           Rails.logger.info "Building user_contributed_projects table, batch ##{iteration} complete, created #{records} overall"
           Kernel.sleep(SLEEP_TIME) if result.cmd_tuples > 0
+        rescue ActiveRecord::InvalidForeignKey => e
+          Rails.logger.info "Retry on InvalidForeignKey: #{e}"
+          retry
         end while result.cmd_tuples > 0
       end
 
       execute "ANALYZE user_contributed_projects"
+
     end
 
     private

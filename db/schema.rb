@@ -1820,7 +1820,7 @@ ActiveRecord::Schema.define(version: 20180304204842) do
     t.integer "project_id", null: false
   end
 
-  add_index "user_contributed_projects", ["user_id", "project_id"], name: "index_user_contributed_projects_on_user_id_and_project_id", unique: true, using: :btree
+  add_index "user_contributed_projects", ["project_id", "user_id"], name: "index_user_contributed_projects_on_project_id_and_user_id", unique: true, using: :btree
 
   create_table "user_custom_attributes", force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
