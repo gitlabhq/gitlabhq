@@ -11,6 +11,16 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
     pipeline.variables.build([key: 'VARIABLE', value: 'my variable'])
   end
 
+  describe '.new' do
+    context 'when pipeline is not provided' do
+      it 'allows to properly initialize the statement' do
+        statement = described_class.new('$VARIABLE')
+
+        expect(statement.evaluate).to be_nil
+      end
+    end
+  end
+
   describe '#parse_tree' do
     context 'when expression is empty' do
       let(:text) { '' }
@@ -23,18 +33,26 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
 
     context 'when expression grammar is incorrect' do
       table = [
-        '$VAR "text"',      # missing operator
-        '== "123"',         # invalid right side
-        "'single quotes'",  # single quotes string
-        '$VAR ==',          # invalid right side
-        '12345',            # unknown syntax
-        ''                  # empty statement
+        '$VAR "text"',   # missing operator
+        '== "123"',      # invalid left side
+        '"some string"', # only string provided
+        '$VAR ==',       # invalid right side
+        '12345',         # unknown syntax
+        ''               # empty statement
       ]
 
       table.each do |syntax|
-        it "raises an error when syntax is `#{syntax}`" do
-          expect { described_class.new(syntax, pipeline).parse_tree }
-            .to raise_error described_class::StatementError
+        context "when expression grammar is #{syntax.inspect}" do
+          let(:text) { syntax }
+
+          it 'aises a statement error exception' do
+            expect { subject.parse_tree }
+              .to raise_error described_class::StatementError
+          end
+
+          it 'is an invalid statement' do
+            expect(subject).not_to be_valid
+          end
         end
       end
     end
@@ -46,6 +64,10 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
         it 'returns a reverse descent parse tree' do
           expect(subject.parse_tree)
             .to be_a Gitlab::Ci::Pipeline::Expression::Lexeme::Equals
+        end
+
+        it 'is a valid statement' do
+          expect(subject).to be_valid
         end
       end
 

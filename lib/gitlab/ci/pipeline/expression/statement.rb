@@ -14,8 +14,10 @@ module Gitlab
             %w[variable]
           ].freeze
 
-          def initialize(statement, pipeline)
+          def initialize(statement, pipeline = nil)
             @lexer = Expression::Lexer.new(statement)
+
+            return if pipeline.nil?
 
             @variables = pipeline.variables.map do |variable|
               [variable.key.to_sym, variable.value]
@@ -34,6 +36,16 @@ module Gitlab
 
           def evaluate
             parse_tree.evaluate(@variables.to_h)
+          end
+
+          def inspect
+            "syntax: #{@lexer.lexemes.join(' ')}"
+          end
+
+          def valid?
+            parse_tree.is_a?(Lexeme::Base)
+          rescue StatementError
+            false
           end
         end
       end

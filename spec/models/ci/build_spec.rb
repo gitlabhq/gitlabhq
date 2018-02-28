@@ -1896,7 +1896,7 @@ describe Ci::Build do
       context 'when there are duplicated YAML variables' do
         before do
           build.yaml_variables = [{ key: 'MYVAR', value: 'first', public: true },
-                                  { key: 'MYVAR', value: 'second', public: true}]
+                                  { key: 'MYVAR', value: 'second', public: true }]
         end
 
         it 'keeps the last occurence of a variable by given key' do

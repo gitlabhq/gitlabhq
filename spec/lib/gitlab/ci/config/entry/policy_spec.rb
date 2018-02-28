@@ -83,6 +83,31 @@ describe Gitlab::Ci::Config::Entry::Policy do
       end
     end
 
+    context 'when specifying valid variables expressions policy' do
+      let(:config) { { variables: ['$VAR == null'] } }
+
+      it 'is a correct configuraton' do
+        expect(entry).to be_valid
+        expect(entry.value).to eq(config)
+      end
+    end
+
+    context 'when specifying variables expressions in invalid format' do
+      let(:config) { { variables: '$MY_VAR' } }
+
+      it 'reports an error about invalid format' do
+        expect(entry.errors).to include /should be an array of strings/
+      end
+    end
+
+    context 'when specifying invalid variables expressions statement' do
+      let(:config) { { variables: ['$MY_VAR =='] } }
+
+      it 'reports an error about invalid statement' do
+        expect(entry.errors).to include /invalid expression syntax: variable equals/
+      end
+    end
+
     context 'when specifying unknown policy' do
       let(:config) { { refs: ['master'], invalid: :something } }
 
