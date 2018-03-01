@@ -8,6 +8,11 @@ module Gitlab
             @nodes = []
           end
 
+          ##
+          # This produces a reverse descent parse tree.
+          #
+          # It currently does not support precedence of operators.
+          #
           def tree
             while token = @tokens.next
               case token.type
