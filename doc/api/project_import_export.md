@@ -44,6 +44,8 @@ curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/a
 
 Status can be one of `none`, `started`, or `finished`.
 
+`_links` are only present when export has finished.
+
 ```json
 {
   "id": 1,
