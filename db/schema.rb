@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180222043024) do
+ActiveRecord::Schema.define(version: 20180301084653) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1866,7 +1866,7 @@ ActiveRecord::Schema.define(version: 20180222043024) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "creator_id"
-    t.integer "namespace_id"
+    t.integer "namespace_id", null: false
     t.datetime "last_activity_at"
     t.string "import_url"
     t.integer "visibility_level", default: 0, null: false

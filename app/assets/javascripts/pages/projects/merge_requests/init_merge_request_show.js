@@ -30,3 +30,7 @@ export default function () {
   howToMerge();
   initWidget();
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master

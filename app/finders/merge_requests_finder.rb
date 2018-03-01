@@ -33,6 +33,7 @@ class MergeRequestsFinder < IssuableFinder
 
   private
 
+<<<<<<< HEAD
   def by_assignee(items)
     if assignee
       items = items.where(assignee_id: assignee.id)
@@ -45,6 +46,8 @@ class MergeRequestsFinder < IssuableFinder
     items
   end
 
+=======
+>>>>>>> upstream/master
   def source_branch
     @source_branch ||= params[:source_branch].presence
   end

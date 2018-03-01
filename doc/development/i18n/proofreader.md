@@ -15,6 +15,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Dutch
 - Esperanto
 - French
+  - Rémy Coutable - [GitLab](https://gitlab.com/rymai), [Crowdin](https://crowdin.com/profile/rymai)
 - German
 - Italian
   - Paolo Falomo - [GitLab](https://gitlab.com/paolofalomo), [Crowdin](https://crowdin.com/profile/paolo.falomo)
