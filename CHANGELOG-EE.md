@@ -207,6 +207,18 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Make scoped issue board specs more reliable.
 
 
+## 10.3.8 (2018-03-01)
+
+### Security (2 changes)
+
+- Project can no longer be shared between groups when both member and group locks are active.
+- Prevent new push rules from using non-RE2 regexes.
+
+### Fixed (1 change)
+
+- Fix LDAP group sync no longer configurable for regular users.
+
+
 ## 10.3.7 (2018-02-05)
 
 ### Security (1 change)
