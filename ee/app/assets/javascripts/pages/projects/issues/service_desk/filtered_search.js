@@ -28,4 +28,3 @@ export default class FilteredSearchServiceDesk extends FilteredSearchManager {
     return onlyValidParams;
   }
 }
-

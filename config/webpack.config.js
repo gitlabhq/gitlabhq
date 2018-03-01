@@ -82,7 +82,6 @@ function generateEntries() {
     mirrors:              'ee/mirrors',
     ee_protected_branches: 'ee/protected_branches',
     service_desk:         'ee/projects/settings_service_desk/service_desk_bundle.js',
-    service_desk_issues:  'ee/service_desk_issues/index.js',
     roadmap:              'ee/roadmap',
   };
 
