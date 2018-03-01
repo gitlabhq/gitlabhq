@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe API::ProjectExport do
   set(:project) { create(:project) }
-  set(:project_none) { create(:project, path: 'export-none') }
-  set(:project_started) { create(:project, path: 'export-started') }
-  set(:project_finished) { create(:project, path: 'export-finished') }
+  set(:project_none) { create(:project) }
+  set(:project_started) { create(:project) }
+  set(:project_finished) { create(:project) }
   set(:user) { create(:user) }
   set(:admin) { create(:admin) }
 
