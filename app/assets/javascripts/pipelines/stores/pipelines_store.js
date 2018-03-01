@@ -5,7 +5,12 @@ export default class PipelinesStore {
     this.state = {};
 
     this.state.pipelines = [];
-    this.state.count = {};
+    this.state.count = {
+      all: 0,
+      finished: 0,
+      pending: 0,
+      running: 0,
+    };
     this.state.pageInfo = {};
   }
 

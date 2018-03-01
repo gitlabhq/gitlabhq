@@ -9,7 +9,12 @@ describe('Pipelines Store', () => {
 
   it('should be initialized with an empty state', () => {
     expect(store.state.pipelines).toEqual([]);
-    expect(store.state.count).toEqual({});
+    expect(store.state.count).toEqual({
+      all: 0,
+      finished: 0,
+      pending: 0,
+      running: 0,
+    });
     expect(store.state.pageInfo).toEqual({});
   });
 
