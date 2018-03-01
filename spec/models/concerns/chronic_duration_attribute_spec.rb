@@ -48,7 +48,7 @@ end
 describe 'ChronicDurationAttribute - reader' do
   let(:source_field) {:used_timeout}
   let(:virtual_field) {:used_timeout_human_readable}
-  subject {Ci::Build.new}
+  subject {Ci::BuildMetadata.new}
 
   it "doesn't contain dynamically created writer method" do
     expect(subject.class).not_to be_public_method_defined("#{virtual_field}=")

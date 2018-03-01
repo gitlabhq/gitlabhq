@@ -115,9 +115,9 @@ export default {
       commit_path: '/root/ci-mock/commit/c58647773a6b5faf066d4ad6ff2c9fbba5f180f6',
     },
   },
-  timeout: {
-    value: '1m 40s',
-    source: 'runner',
+  metadata: {
+    used_timeout_human_readable: '1m 40s',
+    timeout_source: 'runner',
   },
   merge_request: {
     iid: 2,

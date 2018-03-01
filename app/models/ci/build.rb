@@ -6,7 +6,6 @@ module Ci
     include ObjectStorage::BackgroundMove
     include Presentable
     include Importable
-    include ChronicDurationAttribute
 
     MissingDependenciesError = Class.new(StandardError)
 
@@ -24,6 +23,8 @@ module Ci
     has_one :job_artifacts_archive, -> { where(file_type: Ci::JobArtifact.file_types[:archive]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
     has_one :job_artifacts_metadata, -> { where(file_type: Ci::JobArtifact.file_types[:metadata]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
     has_one :job_artifacts_trace, -> { where(file_type: Ci::JobArtifact.file_types[:trace]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
+
+    has_one :metadata, class_name: 'Ci::BuildMetadata'
 
     # The "environment" field for builds is a String, and is the unexpanded name
     def persisted_environment
@@ -84,20 +85,16 @@ module Ci
     before_save :ensure_token
     before_destroy { unscoped_project }
 
+    before_create do |build|
+      build.metadata = Ci::BuildMetadata.new
+    end
+
     after_create unless: :importing? do |build|
       run_after_commit { BuildHooksWorker.perform_async(build.id) }
     end
 
     after_commit :update_project_statistics_after_save, on: [:create, :update]
     after_commit :update_project_statistics, on: :destroy
-
-    chronic_duration_attr_reader :used_timeout_human_readable, :used_timeout
-
-    enum timeout_source: {
-        unknown_timeout_source: nil,
-        project_timeout_source: 1,
-        runner_timeout_source: 2
-    }
 
     class << self
       # This is needed for url_for to work,
@@ -164,8 +161,7 @@ module Ci
       end
 
       before_transition pending: :running do |build|
-        build.used_timeout = build.timeout
-        build.timeout_source = build.timeout < build.project.build_timeout ? :runner_timeout_source : :project_timeout_source
+        build.metadata.save_timeout_state!
       end
     end
 

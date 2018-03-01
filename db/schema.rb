@@ -311,8 +311,6 @@ ActiveRecord::Schema.define(version: 20180327101207) do
     t.integer "artifacts_metadata_store"
     t.boolean "protected"
     t.integer "failure_reason"
-    t.integer "used_timeout"
-    t.integer "timeout_source"
   end
 
   add_index "ci_builds", ["artifacts_expire_at"], name: "index_ci_builds_on_artifacts_expire_at", where: "(artifacts_file <> ''::text)", using: :btree
@@ -330,6 +328,12 @@ ActiveRecord::Schema.define(version: 20180327101207) do
   add_index "ci_builds", ["token"], name: "index_ci_builds_on_token", unique: true, using: :btree
   add_index "ci_builds", ["updated_at"], name: "index_ci_builds_on_updated_at", using: :btree
   add_index "ci_builds", ["user_id"], name: "index_ci_builds_on_user_id", using: :btree
+
+  create_table "ci_builds_metadata", force: :cascade do |t|
+    t.integer "build_id", null: false
+    t.integer "used_timeout"
+    t.integer "timeout_source"
+  end
 
   create_table "ci_group_variables", force: :cascade do |t|
     t.string "key", null: false
@@ -460,8 +464,8 @@ ActiveRecord::Schema.define(version: 20180327101207) do
     t.boolean "run_untagged", default: true, null: false
     t.boolean "locked", default: false, null: false
     t.integer "access_level", default: 0, null: false
-    t.string "ip_address"
     t.integer "maximum_job_timeout"
+    t.string "ip_address"
   end
 
   add_index "ci_runners", ["contacted_at"], name: "index_ci_runners_on_contacted_at", using: :btree
@@ -2031,6 +2035,7 @@ ActiveRecord::Schema.define(version: 20180327101207) do
   add_foreign_key "ci_builds", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_a2141b1522", on_delete: :nullify
   add_foreign_key "ci_builds", "ci_stages", column: "stage_id", name: "fk_3a9eaa254d", on_delete: :cascade
   add_foreign_key "ci_builds", "projects", name: "fk_befce0568a", on_delete: :cascade
+  add_foreign_key "ci_builds_metadata", "ci_builds", column: "build_id", name: "fk_e20479742e", on_delete: :cascade
   add_foreign_key "ci_group_variables", "namespaces", column: "group_id", name: "fk_33ae4d58d8", on_delete: :cascade
   add_foreign_key "ci_job_artifacts", "ci_builds", column: "job_id", on_delete: :cascade
   add_foreign_key "ci_job_artifacts", "projects", on_delete: :cascade

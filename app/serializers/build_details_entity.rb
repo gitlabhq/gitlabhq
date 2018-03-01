@@ -5,10 +5,7 @@ class BuildDetailsEntity < JobEntity
   expose :runner, using: RunnerEntity
   expose :pipeline, using: PipelineEntity
 
-  expose :timeout, if: -> (*) { !build.used_timeout.nil? } do |build|
-    { value: build.used_timeout_human_readable,
-      source: build.present.timeout_source }
-  end
+  expose :metadata, using: BuildMetadataEntity
 
   expose :erased_by, if: -> (*) { build.erased? }, using: UserEntity
   expose :erase_path, if: -> (*) { build.erasable? && can?(current_user, :erase_build, build) } do |build|
