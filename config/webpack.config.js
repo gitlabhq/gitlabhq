@@ -48,7 +48,6 @@ function generateEntries() {
     protected_branches:   './protected_branches',
     registry_list:        './registry/index.js',
     terminal:             './terminal/terminal_bundle.js',
-    two_factor_auth:      './two_factor_auth.js',
 
     common:               './commons/index.js',
     common_vue:           './vue_shared/vue_resource_interceptor.js',
