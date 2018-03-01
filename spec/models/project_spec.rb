@@ -2909,7 +2909,8 @@ describe Project do
     end
 
     it 'is a no-op when there is no namespace' do
-      project.update_column(:namespace_id, nil)
+      project.namespace.delete
+      project.reload
 
       expect_any_instance_of(Projects::UpdatePagesConfigurationService).not_to receive(:execute)
       expect_any_instance_of(Gitlab::PagesTransfer).not_to receive(:rename_project)
@@ -2941,7 +2942,8 @@ describe Project do
     it 'is a no-op on legacy projects when there is no namespace' do
       export_path = legacy_project.export_path
 
-      legacy_project.update_column(:namespace_id, nil)
+      legacy_project.namespace.delete
+      legacy_project.reload
 
       expect(FileUtils).not_to receive(:rm_rf).with(export_path)
 
@@ -2953,7 +2955,8 @@ describe Project do
     it 'runs on hashed storage projects when there is no namespace' do
       export_path = project.export_path
 
-      project.update_column(:namespace_id, nil)
+      project.namespace.delete
+      legacy_project.reload
 
       allow(FileUtils).to receive(:rm_rf).and_call_original
       expect(FileUtils).to receive(:rm_rf).with(export_path).and_call_original

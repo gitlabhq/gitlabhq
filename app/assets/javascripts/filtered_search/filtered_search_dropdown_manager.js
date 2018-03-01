@@ -10,14 +10,22 @@ import DropdownUser from './dropdown_user';
 import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
 
 export default class FilteredSearchDropdownManager {
-  constructor(baseEndpoint = '', tokenizer, page, isGroup, filteredSearchTokenKeys) {
+  constructor({
+    baseEndpoint = '',
+    tokenizer,
+    page,
+    isGroup,
+    isGroupAncestor,
+    filteredSearchTokenKeys,
+  }) {
     this.container = FilteredSearchContainer.container;
     this.baseEndpoint = baseEndpoint.replace(/\/$/, '');
     this.tokenizer = tokenizer;
     this.filteredSearchTokenKeys = filteredSearchTokenKeys || FilteredSearchTokenKeys;
     this.filteredSearchInput = this.container.querySelector('.filtered-search');
     this.page = page;
-    this.groupsOnly = page === 'boards' && isGroup;
+    this.groupsOnly = isGroup;
+    this.groupAncestor = isGroupAncestor;
 
     this.setupMapping();
 
@@ -60,7 +68,7 @@ export default class FilteredSearchDropdownManager {
         reference: null,
         gl: DropdownNonUser,
         extraArguments: {
-          endpoint: `${this.baseEndpoint}/milestones.json${this.groupsOnly ? '?only_group_milestones=true' : ''}`,
+          endpoint: this.getMilestoneEndpoint(),
           symbol: '%',
         },
         element: this.container.querySelector('#js-dropdown-milestone'),
@@ -69,7 +77,7 @@ export default class FilteredSearchDropdownManager {
         reference: null,
         gl: DropdownNonUser,
         extraArguments: {
-          endpoint: `${this.baseEndpoint}/labels.json${this.groupsOnly ? '?only_group_labels=true' : ''}`,
+          endpoint: this.getLabelsEndpoint(),
           symbol: '~',
           preprocessing: DropdownUtils.duplicateLabelPreprocessing,
         },
@@ -94,6 +102,28 @@ export default class FilteredSearchDropdownManager {
     });
 
     this.mapping = allowedMappings;
+  }
+
+  getMilestoneEndpoint() {
+    let endpoint = `${this.baseEndpoint}/milestones.json`;
+
+    // EE-only
+    if (this.groupsOnly) {
+      endpoint = `${endpoint}?only_group_milestones=true`;
+    }
+
+    return endpoint;
+  }
+
+  getLabelsEndpoint() {
+    let endpoint = `${this.baseEndpoint}/labels.json`;
+
+    // EE-only
+    if (this.groupsOnly) {
+      endpoint = `${endpoint}?only_group_labels=true`;
+    }
+
+    return endpoint;
   }
 
   static addWordToInput(tokenName, tokenValue = '', clicked = false) {
