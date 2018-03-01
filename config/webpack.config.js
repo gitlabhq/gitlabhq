@@ -224,23 +224,12 @@ const config = {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common_vue',
       chunks: [
-        'boards',
-        'deploy_keys',
-        'environments',
-        'filtered_search',
-        'groups',
         'monitoring',
         'mr_notes',
         'notebook_viewer',
         'pdf_viewer',
-        'pipelines',
-        'pipelines_details',
         'registry_list',
         'ide',
-        'schedule_form',
-        'schedules_index',
-        'sidebar',
-        'vue_merge_request_widget',
       ],
       minChunks: function(module, count) {
         return module.resource && (/vue_shared/).test(module.resource);
