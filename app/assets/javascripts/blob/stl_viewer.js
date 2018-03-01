@@ -1,6 +1,6 @@
 import Renderer from './3d_viewer';
 
-document.addEventListener('DOMContentLoaded', () => {
+export default () => {
   const viewer = new Renderer(document.getElementById('js-stl-viewer'));
 
   [].slice.call(document.querySelectorAll('.js-material-changer')).forEach((el) => {
@@ -16,4 +16,4 @@ document.addEventListener('DOMContentLoaded', () => {
       viewer.changeObjectMaterials(target.dataset.type);
     });
   });
-});
+};
