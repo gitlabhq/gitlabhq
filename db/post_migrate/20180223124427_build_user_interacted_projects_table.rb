@@ -14,10 +14,16 @@ class BuildUserInteractedProjectsTable < ActiveRecord::Migration
     end.up
 
     add_concurrent_index :user_interacted_projects, [:project_id, :user_id], unique: true
+
+    add_concurrent_foreign_key :user_interacted_projects, :users, column: :user_id, on_delete: :cascade
+    add_concurrent_foreign_key :user_interacted_projects, :projects, column: :project_id, on_delete: :cascade
   end
 
   def down
     execute "TRUNCATE user_interacted_projects"
+
+    remove_foreign_key :user_interacted_projects, :users
+    remove_foreign_key :user_interacted_projects, :projects
 
     remove_concurrent_index_by_name :user_interacted_projects, 'index_user_interacted_projects_on_project_id_and_user_id'
   end

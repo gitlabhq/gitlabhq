@@ -10,9 +10,6 @@ class CreateUserInteractedProjectsTable < ActiveRecord::Migration
       t.references :user, null: false
       t.references :project, null: false
     end
-
-    add_concurrent_foreign_key :user_interacted_projects, :users, column: :user_id, on_delete: :cascade
-    add_concurrent_foreign_key :user_interacted_projects, :projects, column: :project_id, on_delete: :cascade
   end
 
   def down
