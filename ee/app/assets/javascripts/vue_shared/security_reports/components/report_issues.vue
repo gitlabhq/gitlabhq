@@ -1,7 +1,8 @@
 <script>
   import { s__ } from '~/locale';
   import Icon from '~/vue_shared/components/icon.vue';
-  import Modal from './dast_modal.vue';
+  import Modal from '~/vue_shared/components/gl_modal.vue';
+  import ExpandButton from '~/vue_shared/components/expand_button.vue';
 
   const modalDefaultData = {
     modalId: 'modal-mrwidget-issue',
@@ -16,6 +17,7 @@
     components: {
       Modal,
       Icon,
+      ExpandButton,
     },
     props: {
       issues: {
@@ -79,6 +81,11 @@
         return this.type === 'dast';
       },
     },
+    mounted() {
+      $(this.$refs.modal).on('hidden.bs.modal', () => {
+        this.clearModalData();
+      });
+    },
     methods: {
       shouldRenderPriority(issue) {
         return this.hasPriority && issue.priority;
@@ -117,85 +124,140 @@
   };
 </script>
 <template>
-  <ul class="report-block-list">
-    <li
-      :class="{
-        failed: isStatusFailed,
-        success: isStatusSuccess,
-        neutral: isStatusNeutral
-      }"
-      class="report-block-list-item"
-      v-for="(issue, index) in issues"
-      :key="index"
-    >
-      <icon
-        class="report-block-icon"
-        :name="iconName"
-        :size="32"
-      />
-
-      <template v-if="isStatusSuccess && isTypeQuality">{{ fixedLabel }}</template>
-      <template v-if="shouldRenderPriority(issue)">{{ issue.priority }}:</template>
-
-      <template v-if="isTypeDocker">
-        <a
-          v-if="issue.nameLink"
-          :href="issue.nameLink"
-          target="_blank"
-          rel="noopener noreferrer nofollow"
-          class="prepend-left-5"
+  <div>
+    <ul class="report-block-list">
+      <li
+        class="report-block-list-issue"
+        v-for="(issue, index) in issues"
+        :key="index"
+      >
+        <div
+          class="report-block-list-icon append-right-5"
+          :class="{
+            failed: isStatusFailed,
+            success: isStatusSuccess,
+            neutral: isStatusNeutral,
+          }"
         >
-          {{ issue.name }}
-        </a>
-        <template v-else>
-          {{ issue.name }}
-        </template>
-      </template>
-      <template v-else-if="isTypeDast">
-        <button
-          type="button"
-          @click="openDastModal(issue, index)"
-          data-toggle="modal"
-          class="btn-link btn-blank btn-open-modal"
-          :data-target="modalTargetId"
-        >
-          {{ issue.name }}
-        </button>
-      </template>
-      <template v-else>
-        {{ issue.name }}<template v-if="issue.score">:
-        <strong>{{ formatScore(issue.score) }}</strong></template>
-      </template>
+          <icon
+            :name="iconName"
+            :size="32"
+          />
+        </div>
+        <div class="report-block-list-issue-description prepend-top-5 append-bottom-5">
+          <div class="report-block-list-issue-description-text append-right-5">
+            <template v-if="isStatusSuccess && isTypeQuality">{{ fixedLabel }}</template>
+            <template v-if="shouldRenderPriority(issue)">{{ issue.priority }}:</template>
 
-      <template v-if="isTypePerformance && issue.delta != null">
-        ({{ issue.delta >= 0 ? '+' : '' }}{{ formatScore(issue.delta) }})
-      </template>
+            <template v-if="isTypeDocker">
+              <a
+                v-if="issue.nameLink"
+                :href="issue.nameLink"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+              >{{ issue.name }}</a>
+              <template v-else>
+                {{ issue.name }}
+              </template>
+            </template>
+            <template v-else-if="isTypeDast">
+              <button
+                type="button"
+                @click="openDastModal(issue, index)"
+                data-toggle="modal"
+                class="js-modal-dast btn-link btn-blank text-left break-link"
+                :data-target="modalTargetId"
+              >
+                {{ issue.name }}
+              </button>
+            </template>
+            <template v-else>
+              {{ issue.name }}<template v-if="issue.score">:
+              <strong>{{ formatScore(issue.score) }}</strong></template>
+            </template>
 
-      <template v-if="issue.path">
-        in
+            <template v-if="isTypePerformance && issue.delta != null">
+              ({{ issue.delta >= 0 ? '+' : '' }}{{ formatScore(issue.delta) }})
+            </template>
+          </div>
+          <div class="report-block-list-issue-description-link">
+            <template v-if="issue.path">
+              in
 
-        <a
-          v-if="issue.urlPath"
-          :href="issue.urlPath"
-          target="_blank"
-          rel="noopener noreferrer nofollow"
-          class="prepend-left-5"
-        >
-          {{ issue.path }}<template v-if="issue.line">:{{ issue.line }}</template>
-        </a>
-        <template v-else>
-          {{ issue.path }}<template v-if="issue.line">:{{ issue.line }}</template>
-        </template>
-      </template>
-    </li>
+              <a
+                v-if="issue.urlPath"
+                :href="issue.urlPath"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                class="break-link"
+              >
+                {{ issue.path }}<template v-if="issue.line">:{{ issue.line }}</template>
+              </a>
+              <template v-else>
+                {{ issue.path }}<template v-if="issue.line">:{{ issue.line }}</template>
+              </template>
+            </template>
+          </div>
+        </div>
+      </li>
+    </ul>
 
     <modal
-      :target-id="modalId"
-      :title="modalTitle"
-      :hide-footer="true"
-      :description="modalDesc"
-      :instances="modalInstances"
-      @clearData="clearModalData()"
-    />
-  </ul>
+      v-if="isTypeDast"
+      :id="modalId"
+      :header-title-text="modalTitle"
+      ref="modal"
+      class="modal-security-report-dast"
+    >
+
+      <slot>
+        {{ modalDesc }}
+
+        <h5 class="prepend-top-20">
+          {{ s__('ciReport|Instances') }}
+        </h5>
+
+        <ul
+          v-if="modalInstances"
+          class="report-block-list"
+        >
+          <li
+            v-for="(instance, i) in modalInstances"
+            :key="i"
+            class="report-block-list-issue"
+          >
+            <div class="report-block-list-icon append-right-5 failed">
+              <icon
+                name="status_failed_borderless"
+                :size="32"
+              />
+            </div>
+            <div class="report-block-list-issue-description prepend-top-5 append-bottom-5">
+              <div class="report-block-list-issue-description-text append-right-5">
+                {{ instance.method }}
+              </div>
+              <div class="report-block-list-issue-description-link">
+                <a
+                  :href="instance.uri"
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                  class="break-link"
+                >
+                  {{ instance.uri }}
+                </a>
+              </div>
+              <expand-button v-if="instance.evidence">
+                <pre
+                  slot="expanded"
+                  class="block report-block-dast-code prepend-top-10 report-block-issue-code"
+                >{{ instance.evidence }}</pre>
+              </expand-button>
+            </div>
+          </li>
+        </ul>
+      </slot>
+      <div slot="footer">
+      </div>
+    </modal>
+  </div>
 </template>

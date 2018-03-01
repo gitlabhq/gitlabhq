@@ -48,6 +48,8 @@ module API
         optional :scope, type: String, values: %w[created-by-me assigned-to-me all],
                          desc: 'Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`'
         optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
+        optional :source_branch, type: String, desc: 'Return merge requests with the given source branch'
+        optional :target_branch, type: String, desc: 'Return merge requests with the given target branch'
         optional :search, type: String, desc: 'Search merge requests for text present in the title or description'
         use :pagination
       end

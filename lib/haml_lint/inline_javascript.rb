@@ -12,6 +12,12 @@ unless Rails.env.production?
 
         record_lint(node, 'Inline JavaScript is discouraged (https://docs.gitlab.com/ee/development/gotchas.html#do-not-use-inline-javascript-in-views)')
       end
+
+      def visit_tag(node)
+        return unless node.tag_name == 'script'
+
+        record_lint(node, 'Inline JavaScript is discouraged (https://docs.gitlab.com/ee/development/gotchas.html#do-not-use-inline-javascript-in-views)')
+      end
     end
   end
 end

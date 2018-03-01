@@ -118,7 +118,7 @@
             %td= @stats[:merge_requests_merged][index]
             %td= @stats[:total_events][index]
 
-
+  -# haml-lint:disable InlineJavaScript
   %script#js-analytics-data{ type: "application/json" }
     - data = {}
     - data[:labels] = @users.map(&:name)
