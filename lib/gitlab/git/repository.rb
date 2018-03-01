@@ -1038,6 +1038,21 @@ module Gitlab
         end
       end
 
+      def license_short_name
+        gitaly_migrate(:license_short_name) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.license_short_name
+          else
+            begin
+              # The licensee gem creates a Rugged object from the path:
+              # https://github.com/benbalter/licensee/blob/v8.7.0/lib/licensee/projects/git_project.rb
+              Licensee.license(path).try(:key)
+            rescue Rugged::Error
+            end
+          end
+        end
+      end
+
       def with_repo_branch_commit(start_repository, start_branch_name)
         Gitlab::Git.check_namespace!(start_repository)
         start_repository = RemoteRepository.new(start_repository) unless start_repository.is_a?(RemoteRepository)
