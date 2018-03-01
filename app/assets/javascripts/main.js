@@ -33,7 +33,6 @@ import './milestone_select';
 import './projects_dropdown';
 import './render_gfm';
 import initBreadcrumbs from './breadcrumb';
-import { popFlashMessage } from './lib/utils/flash_queue';
 
 import initDispatcher from './dispatcher';
 
@@ -263,5 +262,4 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   initDispatcher();
-  popFlashMessage();
 });

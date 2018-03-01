@@ -2,7 +2,6 @@ import Vue from 'vue';
 import promoteMilestoneModal from '~/pages/milestones/shared/components/promote_milestone_modal.vue';
 import eventHub from '~/pages/milestones/shared/event_hub';
 import axios from '~/lib/utils/axios_utils';
-import * as urlUtility from '~/lib/utils/url_utility';
 import mountComponent from '../../../../helpers/vue_mount_component_helper';
 
 describe('Promote milestone modal', () => {
@@ -54,11 +53,9 @@ describe('Promote milestone modal', () => {
           },
         });
       });
-      const redirectSpy = spyOn(urlUtility, 'redirectTo');
 
       vm.onSubmit()
         .then(() => {
-          expect(redirectSpy).toHaveBeenCalledWith(responseURL);
           expect(eventHub.$emit).toHaveBeenCalledWith('promoteMilestoneModal.requestFinished', { milestoneUrl: milestoneMockData.url, successful: true });
         })
         .then(done)
@@ -73,12 +70,10 @@ describe('Promote milestone modal', () => {
         expect(eventHub.$emit).toHaveBeenCalledWith('promoteMilestoneModal.requestStarted', milestoneMockData.url);
         return Promise.reject(dummyError);
       });
-      const redirectSpy = spyOn(urlUtility, 'redirectTo');
 
       vm.onSubmit()
         .catch((error) => {
           expect(error).toBe(dummyError);
-          expect(redirectSpy).not.toHaveBeenCalled();
           expect(eventHub.$emit).toHaveBeenCalledWith('promoteMilestoneModal.requestFinished', { milestoneUrl: milestoneMockData.url, successful: false });
         })
         .then(done)

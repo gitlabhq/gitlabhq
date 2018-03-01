@@ -1,6 +1,5 @@
 class Projects::LabelsController < Projects::ApplicationController
   include ToggleSubscriptionAction
-  include FlashHelper
 
   before_action :check_issuables_available!
   before_action :label, only: [:edit, :update, :destroy, :promote]
@@ -113,11 +112,14 @@ class Projects::LabelsController < Projects::ApplicationController
     begin
       return render_404 unless promote_service.execute(@label)
 
+      flash[:notice] = "#{@label.title} promoted to group label."
       respond_to do |format|
         format.html do
-          redirect_to(project_labels_path(@project, body_data: get_body_data_page(project_labels_path(@project))), status: 303)
+          redirect_to(project_labels_path(@project), status: 303)
         end
-        format.js
+        format.json do
+          render json: { url: project_labels_path(@project) }
+        end
       end
     rescue ActiveRecord::RecordInvalid => e
       Gitlab::AppLogger.error "Failed to promote label \"#{@label.title}\" to group label"

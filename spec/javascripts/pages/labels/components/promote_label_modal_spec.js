@@ -2,7 +2,6 @@ import Vue from 'vue';
 import promoteLabelModal from '~/pages/projects/labels/components/promote_label_modal.vue';
 import eventHub from '~/pages/projects/labels/event_hub';
 import axios from '~/lib/utils/axios_utils';
-import * as urlUtility from '~/lib/utils/url_utility';
 import mountComponent from '../../../helpers/vue_mount_component_helper';
 
 describe('Promote label modal', () => {
@@ -59,11 +58,9 @@ describe('Promote label modal', () => {
           },
         });
       });
-      const redirectSpy = spyOn(urlUtility, 'redirectTo');
 
       vm.onSubmit()
         .then(() => {
-          expect(redirectSpy).toHaveBeenCalledWith(responseURL);
           expect(eventHub.$emit).toHaveBeenCalledWith('promoteLabelModal.requestFinished', { labelUrl: labelMockData.url, successful: true });
         })
         .then(done)
@@ -78,12 +75,10 @@ describe('Promote label modal', () => {
         expect(eventHub.$emit).toHaveBeenCalledWith('promoteLabelModal.requestStarted', labelMockData.url);
         return Promise.reject(dummyError);
       });
-      const redirectSpy = spyOn(urlUtility, 'redirectTo');
 
       vm.onSubmit()
         .catch((error) => {
           expect(error).toBe(dummyError);
-          expect(redirectSpy).not.toHaveBeenCalled();
           expect(eventHub.$emit).toHaveBeenCalledWith('promoteLabelModal.requestFinished', { labelUrl: labelMockData.url, successful: false });
         })
         .then(done)

@@ -1,10 +1,9 @@
 <script>
   import axios from '~/lib/utils/axios_utils';
-  import { saveFlashMessage } from '~/lib/utils/flash_queue';
   import createFlash from '~/flash';
   import GlModal from '~/vue_shared/components/gl_modal.vue';
-  import { redirectTo } from '~/lib/utils/url_utility';
   import { s__, sprintf } from '~/locale';
+  import { visitUrl } from '~/lib/utils/url_utility';
   import eventHub from '../event_hub';
 
   export default {
@@ -32,7 +31,7 @@
     computed: {
       text() {
         return s__(`Milestones|Promoting this label will make it available for all projects inside the group. 
-        Existing project labels with the same name will be merged. This action cannot be reversed.`);
+        Existing project labels with the same title will be merged. This action cannot be reversed.`);
       },
       title() {
         const label = `<span
@@ -48,13 +47,10 @@
     methods: {
       onSubmit() {
         eventHub.$emit('promoteLabelModal.requestStarted', this.url);
-        return axios.post(this.url)
+        return axios.post(this.url, { params: { format: 'json' } })
           .then((response) => {
             eventHub.$emit('promoteLabelModal.requestFinished', { labelUrl: this.url, successful: true });
-            const responseURL = new URL(response.request.responseURL);
-            const bodyData = responseURL.searchParams.get('body_data');
-            saveFlashMessage(bodyData, `${this.labelTitle} promoted to group label`, 'notice');
-            redirectTo(`${responseURL.protocol}//${responseURL.host}${responseURL.pathname}`);
+            visitUrl(response.data.url);
           })
           .catch((error) => {
             eventHub.$emit('promoteLabelModal.requestFinished', { labelUrl: this.url, successful: false });
