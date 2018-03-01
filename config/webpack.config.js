@@ -45,7 +45,6 @@ function generateEntries() {
   const manualEntries = {
     monitoring:           './monitoring/monitoring_bundle.js',
     mr_notes:             './mr_notes/index.js',
-    pdf_viewer:           './blob/pdf_viewer.js',
     protected_branches:   './protected_branches',
     registry_list:        './registry/index.js',
     sketch_viewer:        './blob/sketch_viewer.js',
@@ -224,7 +223,6 @@ const config = {
       chunks: [
         'monitoring',
         'mr_notes',
-        'pdf_viewer',
         'registry_list',
         'ide',
       ],

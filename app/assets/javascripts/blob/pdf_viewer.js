@@ -1,3 +1,3 @@
 import renderPDF from './pdf';
 
-document.addEventListener('DOMContentLoaded', renderPDF);
+export default renderPDF;
