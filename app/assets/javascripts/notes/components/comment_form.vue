@@ -3,10 +3,11 @@
   import { mapActions, mapGetters } from 'vuex';
   import _ from 'underscore';
   import Autosize from 'autosize';
-  import { __ } from '~/locale';
+  import { __, sprintf } from '~/locale';
   import Flash from '../../flash';
   import Autosave from '../../autosave';
   import TaskList from '../../task_list';
+  import { capitalizeFirstCharacter, convertToCamelCase } from '../../lib/utils/text_utility';
   import * as constants from '../constants';
   import eventHub from '../event_hub';
   import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
@@ -32,6 +33,12 @@
     mixins: [
       issuableStateMixin,
     ],
+    props: {
+      noteableType: {
+        type: String,
+        required: true,
+      },
+    },
     data() {
       return {
         note: '',
@@ -47,37 +54,51 @@
         'getUserData',
         'getNoteableData',
         'getNotesData',
-        'issueState',
+        'openState',
       ]),
+      noteableDisplayName() {
+        return this.noteableType.replace(/_/g, ' ');
+      },
       isLoggedIn() {
         return this.getUserData.id;
       },
       commentButtonTitle() {
         return this.noteType === constants.COMMENT ? 'Comment' : 'Start discussion';
       },
-      isIssueOpen() {
-        return this.issueState === constants.OPENED || this.issueState === constants.REOPENED;
+      isOpen() {
+        return this.openState === constants.OPENED || this.openState === constants.REOPENED;
       },
       canCreateNote() {
         return this.getNoteableData.current_user.can_create_note;
       },
       issueActionButtonTitle() {
-        if (this.note.length) {
-          const actionText = this.isIssueOpen ? 'close' : 'reopen';
+        const openOrClose = this.isOpen ? 'close' : 'reopen';
 
-          return this.noteType === constants.COMMENT ?
-            `Comment & ${actionText} issue` :
-            `Start discussion & ${actionText} issue`;
+        if (this.note.length) {
+          return sprintf(
+            __('%{actionText} & %{openOrClose} %{noteable}'),
+            {
+              actionText: this.commentButtonTitle,
+              openOrClose,
+              noteable: this.noteableDisplayName,
+            },
+          );
         }
 
-        return this.isIssueOpen ? 'Close issue' : 'Reopen issue';
+        return sprintf(
+          __('%{openOrClose} %{noteable}'),
+          {
+            openOrClose: capitalizeFirstCharacter(openOrClose),
+            noteable: this.noteableDisplayName,
+          },
+        );
       },
       actionButtonClassNames() {
         return {
-          'btn-reopen': !this.isIssueOpen,
-          'btn-close': this.isIssueOpen,
-          'js-note-target-close': this.isIssueOpen,
-          'js-note-target-reopen': !this.isIssueOpen,
+          'btn-reopen': !this.isOpen,
+          'btn-close': this.isOpen,
+          'js-note-target-close': this.isOpen,
+          'js-note-target-reopen': !this.isOpen,
         };
       },
       markdownDocsPath() {
@@ -167,7 +188,7 @@
             flashContainer: this.$el,
             data: {
               note: {
-                noteable_type: constants.NOTEABLE_TYPE,
+                noteable_type: this.noteableType,
                 noteable_id: this.getNoteableData.id,
                 note: this.note,
               },
@@ -222,19 +243,29 @@ Please check your network connection and try again.`;
         this.isSubmitting = false;
       },
       toggleIssueState() {
-        if (this.isIssueOpen) {
+        if (this.isOpen) {
           this.closeIssue()
             .then(() => this.enableButton())
             .catch(() => {
               this.enableButton();
-              Flash(__('Something went wrong while closing the issue. Please try again later'));
+              Flash(
+                sprintf(
+                  __('Something went wrong while closing the %{issuable}. Please try again later'),
+                  { issuable: this.noteableDisplayName },
+                ),
+              );
             });
         } else {
           this.reopenIssue()
             .then(() => this.enableButton())
             .catch(() => {
               this.enableButton();
-              Flash(__('Something went wrong while reopening the issue. Please try again later'));
+              Flash(
+                sprintf(
+                  __('Something went wrong while reopening the %{issuable}. Please try again later'),
+                  { issuable: this.noteableDisplayName },
+                ),
+              );
             });
         }
       },
@@ -250,7 +281,6 @@ Please check your network connection and try again.`;
           this.$refs.markdownField.previewMarkdown = false;
         }
 
-        // reset autostave
         this.autosave.reset();
       },
       setNoteType(type) {
@@ -269,10 +299,11 @@ Please check your network connection and try again.`;
       },
       initAutoSave() {
         if (this.isLoggedIn) {
+          const noteableType = capitalizeFirstCharacter(convertToCamelCase(this.noteableType));
+
           this.autosave = new Autosave(
             $(this.$refs.textarea),
-            ['Note', 'Issue', this.getNoteableData.id],
-            'issue',
+            ['Note', noteableType, this.getNoteableData.id],
           );
         }
       },
@@ -378,7 +409,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                       v-html="getSentimentEmoji"
                     >
                     </span>
-                    {{ commentButtonTitle }}
+                    {{ __(commentButtonTitle) }}
                   </button>
                   <button
                     :disabled="isSubmitButtonDisabled"
@@ -406,7 +437,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                         <div class="description">
                           <strong>Comment</strong>
                           <p>
-                            Add a general comment to this issue.
+                            Add a general comment to this {{ noteableDisplayName }}.
                           </p>
                         </div>
                       </button>

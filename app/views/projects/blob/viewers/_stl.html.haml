@@ -1,6 +1,3 @@
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag('stl_viewer')
-
 .file-content.is-stl-loading
   .text-center#js-stl-viewer{ data: { endpoint: blob_raw_path } }
     = icon('spinner spin 2x', class: 'prepend-top-default append-bottom-default', 'aria-hidden' => 'true', 'aria-label' => 'Loading')

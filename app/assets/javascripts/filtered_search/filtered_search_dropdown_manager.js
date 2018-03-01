@@ -10,13 +10,22 @@ import DropdownUser from './dropdown_user';
 import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
 
 export default class FilteredSearchDropdownManager {
-  constructor(baseEndpoint = '', tokenizer, page, isGroup, filteredSearchTokenKeys) {
+  constructor({
+    baseEndpoint = '',
+    tokenizer,
+    page,
+    isGroup,
+    isGroupAncestor,
+    filteredSearchTokenKeys,
+  }) {
     this.container = FilteredSearchContainer.container;
     this.baseEndpoint = baseEndpoint.replace(/\/$/, '');
     this.tokenizer = tokenizer;
     this.filteredSearchTokenKeys = filteredSearchTokenKeys || FilteredSearchTokenKeys;
     this.filteredSearchInput = this.container.querySelector('.filtered-search');
     this.page = page;
+    this.groupsOnly = isGroup;
+    this.groupAncestor = isGroupAncestor;
 
     this.setupMapping();
 
@@ -59,7 +68,7 @@ export default class FilteredSearchDropdownManager {
         reference: null,
         gl: DropdownNonUser,
         extraArguments: {
-          endpoint: `${this.baseEndpoint}/milestones.json`,
+          endpoint: this.getMilestoneEndpoint(),
           symbol: '%',
         },
         element: this.container.querySelector('#js-dropdown-milestone'),
@@ -68,7 +77,7 @@ export default class FilteredSearchDropdownManager {
         reference: null,
         gl: DropdownNonUser,
         extraArguments: {
-          endpoint: `${this.baseEndpoint}/labels.json`,
+          endpoint: this.getLabelsEndpoint(),
           symbol: '~',
           preprocessing: DropdownUtils.duplicateLabelPreprocessing,
         },
@@ -88,6 +97,18 @@ export default class FilteredSearchDropdownManager {
     });
 
     this.mapping = allowedMappings;
+  }
+
+  getMilestoneEndpoint() {
+    const endpoint = `${this.baseEndpoint}/milestones.json`;
+
+    return endpoint;
+  }
+
+  getLabelsEndpoint() {
+    const endpoint = `${this.baseEndpoint}/labels.json`;
+
+    return endpoint;
   }
 
   static addWordToInput(tokenName, tokenValue = '', clicked = false) {

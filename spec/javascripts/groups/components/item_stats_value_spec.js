@@ -2,7 +2,7 @@ import Vue from 'vue';
 
 import itemStatsValueComponent from '~/groups/components/item_stats_value.vue';
 
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 const createComponent = ({ title, cssClass, iconName, tooltipPlacement, value }) => {
   const Component = Vue.extend(itemStatsValueComponent);

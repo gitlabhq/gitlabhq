@@ -2,7 +2,7 @@ import Vue from 'vue';
 
 import projectsListFrequentComponent from '~/projects_dropdown/components/projects_list_frequent.vue';
 
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { mockFrequents } from '../mock_data';
 
 const createComponent = () => {

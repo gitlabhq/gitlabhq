@@ -261,6 +261,8 @@ shared_examples 'variable list' do
     click_button('Save variables')
     wait_for_requests
 
+    expect(all('.js-ci-variable-list-section .js-ci-variable-error-box ul li').count).to eq(1)
+
     # We check the first row because it re-sorts to alphabetical order on refresh
     page.within('.js-ci-variable-list-section') do
       expect(find('.js-ci-variable-error-box')).to have_content(/Validation failed Variables have duplicate values \(.+\)/)
