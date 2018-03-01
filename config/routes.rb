@@ -58,8 +58,6 @@ Rails.application.routes.draw do
     get 'liveness' => 'health#liveness'
     get 'readiness' => 'health#readiness'
     post 'storage_check' => 'health#storage_check'
-    get 'ide' => 'ide#index'
-    get 'ide/*vueroute' => 'ide#index', format: false
     resources :metrics, only: [:index]
     mount Peek::Railtie => '/peek'
 
@@ -78,6 +76,11 @@ Rails.application.routes.draw do
 
     # UserCallouts
     resources :user_callouts, only: [:create]
+
+    ## EE-specific
+    get 'ide' => 'ide#index'
+    get 'ide/*vueroute' => 'ide#index', format: false
+    ## EE-specific
   end
 
   # Koding route
