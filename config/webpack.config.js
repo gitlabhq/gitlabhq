@@ -49,19 +49,10 @@ function generateEntries() {
 
   const manualEntries = {
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
-<<<<<<< HEAD
-    filtered_search:      './filtered_search/filtered_search_bundle.js',
-    help:                 './help/help.js',
-=======
->>>>>>> upstream/master
     monitoring:           './monitoring/monitoring_bundle.js',
     mr_notes:             './mr_notes/index.js',
     notebook_viewer:      './blob/notebook_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
-<<<<<<< HEAD
-    project_import_gl:    './projects/project_import_gitlab_project.js',
-=======
->>>>>>> upstream/master
     protected_branches:   './protected_branches',
     registry_list:        './registry/index.js',
     sketch_viewer:        './blob/sketch_viewer.js',
