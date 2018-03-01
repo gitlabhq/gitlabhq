@@ -249,6 +249,14 @@ module Gitlab
 
         raise Gitlab::Git::OSError.new(response.error) unless response.error.empty?
       end
+
+      def license_short_name
+        request = Gitaly::FindLicenseRequest.new(repository: @gitaly_repo)
+
+        response = GitalyClient.call(@storage, :repository_service, :find_license, request, timeout: GitalyClient.fast_timeout)
+
+        response.license_short_name.presence
+      end
     end
   end
 end

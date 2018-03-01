@@ -1649,6 +1649,35 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#license_short_name' do
+    shared_examples 'acquiring the Licensee license key' do
+      subject { repository.license_short_name }
+
+      context 'when no license file can be found' do
+        let(:project) { create(:project, :repository) }
+        let(:repository) { project.repository.raw_repository }
+
+        before do
+          project.repository.delete_file(project.owner, 'LICENSE', message: 'remove license', branch_name: 'master')
+        end
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when an mit license is found' do
+        it { is_expected.to eq('mit') }
+      end
+    end
+
+    context 'when gitaly is enabled' do
+      it_behaves_like 'acquiring the Licensee license key'
+    end
+
+    context 'when gitaly is disabled', :disable_gitaly do
+      it_behaves_like 'acquiring the Licensee license key'
+    end
+  end
+
   describe '#with_repo_branch_commit' do
     context 'when comparing with the same repository' do
       let(:start_repository) { repository }
