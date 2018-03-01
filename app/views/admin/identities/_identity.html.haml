@@ -1,6 +1,6 @@
 %tr
   %td
-    #{Gitlab::OAuth::Provider.label_for(identity.provider)} (#{identity.provider})
+    #{Gitlab::Auth::OAuth::Provider.label_for(identity.provider)} (#{identity.provider})
   %td
     = identity.extern_uid
   %td
