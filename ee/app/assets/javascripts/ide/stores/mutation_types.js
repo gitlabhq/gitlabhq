@@ -46,3 +46,5 @@ export const SET_EDIT_MODE = 'SET_EDIT_MODE';
 export const TOGGLE_EDIT_MODE = 'TOGGLE_EDIT_MODE';
 
 export const SET_CURRENT_BRANCH = 'SET_CURRENT_BRANCH';
+
+export const UPDATE_VIEWER = 'UPDATE_VIEWER';

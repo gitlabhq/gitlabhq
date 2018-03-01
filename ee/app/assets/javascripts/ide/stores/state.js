@@ -20,4 +20,5 @@ export default () => ({
   leftPanelCollapsed: false,
   rightPanelCollapsed: false,
   panelResizing: false,
+  viewer: 'editor',
 });

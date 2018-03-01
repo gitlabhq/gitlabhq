@@ -15,6 +15,7 @@ export default {
       'leftPanelCollapsed',
       'rightPanelCollapsed',
       'panelResizing',
+      'viewer',
     ]),
     shouldHideEditor() {
       return this.activeFile && this.activeFile.binary && !this.activeFile.raw;
@@ -36,6 +37,9 @@ export default {
       if (isResizing === false) {
         this.editor.updateDimensions();
       }
+    },
+    viewer() {
+      this.createEditorInstance();
     },
   },
   beforeDestroy() {
@@ -66,14 +70,24 @@ export default {
       this.editor.clearEditor();
 
       this.getRawFileData(this.activeFile)
-        .then(() => {
-          this.editor.createInstance(this.$refs.editor);
-        })
-        .then(() => this.setupEditor())
+        .then(() => this.createEditorInstance())
         .catch((err) => {
           flash('Error setting up monaco. Please try again.', 'alert', document, null, false, true);
           throw err;
         });
+    },
+    createEditorInstance() {
+      this.editor.dispose();
+
+      this.$nextTick(() => {
+        if (this.viewer === 'editor') {
+          this.editor.createInstance(this.$refs.editor);
+        } else {
+          this.editor.createDiffInstance(this.$refs.editor);
+        }
+
+        this.setupEditor();
+      });
     },
     setupEditor() {
       if (!this.activeFile) return;

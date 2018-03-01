@@ -1,5 +1,6 @@
 import { normalizeHeaders } from '~/lib/utils/common_utils';
 import flash from '~/flash';
+import eventHub from 'ee/ide/eventhub';
 import service from '../../services';
 import * as types from '../mutation_types';
 import router from '../../ide_router';
@@ -27,6 +28,8 @@ export const closeFile = ({ commit, state, dispatch }, file) => {
   }
 
   dispatch('getLastCommitData');
+
+  eventHub.$emit(`editor.update.model.dispose.${file.path}`);
 };
 
 export const setFileActive = ({ commit, state, getters, dispatch }, file) => {

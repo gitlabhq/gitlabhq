@@ -132,12 +132,32 @@
 
 .multi-file-tabs {
   display: flex;
-  overflow-x: auto;
   background-color: $white-normal;
   box-shadow: inset 0 -1px $white-dark;
 
-  > li {
+  > ul {
+    display: flex;
+    overflow-x: auto;
+  }
+
+  li {
     position: relative;
+  }
+
+  .dropdown {
+    display: flex;
+    margin-left: auto;
+    padding: 0 $grid-size;
+    background-color: $white-light;
+
+    &.shadow {
+      box-shadow: 0 0 10px rgba(0,0,0,.4);
+    }
+
+    .btn {
+      margin-top: auto;
+      margin-bottom: auto;
+    }
   }
 }
 

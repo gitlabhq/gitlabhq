@@ -34,6 +34,10 @@ export default class Editor {
 
   createInstance(domElement) {
     if (!this.instance) {
+      Object.assign(domElement, {
+        innerHTML: '',
+      });
+
       this.disposable.add(
         this.instance = this.monaco.editor.create(domElement, {
           model: null,
@@ -53,11 +57,36 @@ export default class Editor {
     }
   }
 
+  createDiffInstance(domElement) {
+    if (!this.instance) {
+      Object.assign(domElement, {
+        innerHTML: '',
+      });
+
+      this.disposable.add(
+        this.instance = this.monaco.editor.createDiffEditor(domElement, {
+          readOnly: true,
+        }),
+      );
+
+      window.addEventListener('resize', this.debouncedUpdate, false);
+    }
+  }
+
   createModel(file) {
     return this.modelManager.addModel(file);
   }
 
   attachModel(model) {
+    if (this.instance.getEditorType() === 'vs.editor.IDiffEditor') {
+      this.instance.setModel({
+        original: model.getOriginalModel(),
+        modified: model.getModel(),
+      });
+
+      return;
+    }
+
     this.instance.setModel(model.getModel());
     if (this.dirtyDiffController) this.dirtyDiffController.attachModel(model);
 
@@ -113,6 +142,8 @@ export default class Editor {
   }
 
   onPositionChange(cb) {
+    if (!this.instance.onDidChangeCursorPosition) return;
+
     this.disposable.add(
       this.instance.onDidChangeCursorPosition(e => cb(this.instance, e)),
     );

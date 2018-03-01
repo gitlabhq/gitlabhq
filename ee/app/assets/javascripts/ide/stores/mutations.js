@@ -57,6 +57,11 @@ export default {
       lastCommitMsg,
     });
   },
+  [types.UPDATE_VIEWER](state, viewer) {
+    Object.assign(state, {
+      viewer,
+    });
+  },
   ...projectMutations,
   ...fileMutations,
   ...treeMutations,
