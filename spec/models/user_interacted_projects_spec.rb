@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UserContributedProjects do
+describe UserInteractedProjects do
   describe '.track' do
     subject { described_class.track(event) }
     let(:event) { build(:event) }

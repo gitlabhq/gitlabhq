@@ -1,4 +1,4 @@
-class UserContributedProjects < ActiveRecord::Base
+class UserInteractedProjects < ActiveRecord::Base
   belongs_to :user
   belongs_to :project
 
@@ -52,7 +52,7 @@ class UserContributedProjects < ActiveRecord::Base
     private
 
     def cached_exists?(project_id:, user_id:, &block)
-      cache_key = "user_contributed_projects:#{project_id}:#{user_id}"
+      cache_key = "user_interacted_projects:#{project_id}:#{user_id}"
       Rails.cache.fetch(cache_key, expires_in: CACHE_EXPIRY_TIME, &block)
     end
   end
