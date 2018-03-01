@@ -192,7 +192,7 @@ describe('Report section', () => {
 
     it('should show the report by default', () => {
       expect(
-        vm.$el.querySelectorAll('.report-block-list .report-block-list-item').length,
+        vm.$el.querySelectorAll('.report-block-list .report-block-list-issue').length,
       ).toEqual(codequalityParsedIssues.length);
     });
   });
