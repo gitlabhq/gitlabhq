@@ -48,15 +48,10 @@ function generateEntries() {
   autoEntriesCount = Object.keys(autoEntries).length;
 
   const manualEntries = {
-    balsamiq_viewer:      './blob/balsamiq_viewer.js',
     monitoring:           './monitoring/monitoring_bundle.js',
     mr_notes:             './mr_notes/index.js',
-    notebook_viewer:      './blob/notebook_viewer.js',
-    pdf_viewer:           './blob/pdf_viewer.js',
     protected_branches:   './protected_branches',
     registry_list:        './registry/index.js',
-    sketch_viewer:        './blob/sketch_viewer.js',
-    stl_viewer:           './blob/stl_viewer.js',
     terminal:             './terminal/terminal_bundle.js',
     two_factor_auth:      './two_factor_auth.js',
 
@@ -237,33 +232,6 @@ const config = {
         .digest('hex');
 
       return `${moduleNames[0]}-${hash.substr(0, 6)}`;
-    }),
-
-    // create cacheable common library bundle for all vue chunks
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'common_vue',
-      chunks: [
-        'boards',
-        'deploy_keys',
-        'environments',
-        'filtered_search',
-        'groups',
-        'monitoring',
-        'mr_notes',
-        'notebook_viewer',
-        'pdf_viewer',
-        'pipelines',
-        'pipelines_details',
-        'registry_list',
-        'ide',
-        'schedule_form',
-        'schedules_index',
-        'sidebar',
-        'vue_merge_request_widget',
-      ],
-      minChunks: function(module, count) {
-        return module.resource && (/vue_shared/).test(module.resource);
-      },
     }),
 
     // create cacheable common library bundles
