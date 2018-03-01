@@ -62,7 +62,6 @@ function generateEntries() {
     ide:                  './ide/index.js',
     raven:                './raven/index.js',
     test:                 './test.js',
-    u2f:                  ['vendor/u2f'],
     webpack_runtime:      './webpack.js',
 
     // EE-only

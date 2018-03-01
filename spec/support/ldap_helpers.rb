@@ -3,12 +3,15 @@ module LdapHelpers
 
   def ldap_adapter(provider = 'ldapmain', ldap = double(:ldap))
     ::Gitlab::Auth::LDAP::Adapter.new(provider, ldap)
+<<<<<<< HEAD
   end
 
   def fake_ldap_sync_proxy(provider)
     fake_proxy = double(:proxy, adapter: ldap_adapter)
     allow(::EE::Gitlab::Auth::LDAP::Sync::Proxy).to receive(:open).with(provider).and_yield(fake_proxy)
     fake_proxy
+=======
+>>>>>>> upstream/master
   end
 
   def user_dn(uid)

@@ -7,8 +7,11 @@ module Gitlab
   module Auth
     module OAuth
       class User
+<<<<<<< HEAD
         prepend ::EE::Gitlab::Auth::OAuth::User
 
+=======
+>>>>>>> upstream/master
         SignupDisabledError = Class.new(StandardError)
         SigninDisabledForProviderError = Class.new(StandardError)
 
