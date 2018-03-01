@@ -105,4 +105,4 @@
 - upload_checksum
 - web_hook
 
-- object_storage:archive_legacy_trace_worker
+- object_storage:archive_legacy_trace
