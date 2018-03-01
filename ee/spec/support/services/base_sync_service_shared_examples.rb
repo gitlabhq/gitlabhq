@@ -4,11 +4,11 @@ shared_examples 'geo base sync execution' do
 
     context 'when can acquire exclusive lease' do
       before do
-        allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { 12345 }
+        exclusive_lease = double(:exclusive_lease, try_obtain: 12345)
+        expect(subject).to receive(:exclusive_lease).and_return(exclusive_lease)
       end
 
       it 'executes the synchronization' do
-        subject.class.type ||= :wiki
         expect(subject).to receive(:sync_repository)
 
         subject.execute
@@ -17,7 +17,8 @@ shared_examples 'geo base sync execution' do
 
     context 'when exclusive lease is not acquired' do
       before do
-        allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { nil }
+        exclusive_lease = double(:exclusive_lease, try_obtain: nil)
+        expect(subject).to receive(:exclusive_lease).and_return(exclusive_lease)
       end
 
       it 'is does not execute synchronization' do
