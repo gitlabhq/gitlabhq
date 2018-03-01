@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import flash from '~/flash';
 import store from './stores';
-import flash from '../flash';
 import {
   getTreeEntry,
 } from './stores/utils';

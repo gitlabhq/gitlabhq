@@ -2,7 +2,7 @@ import Vue from 'vue';
 import store from 'ee/ide/stores';
 import commitActions from 'ee/ide/components/commit_sidebar/actions.vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
-import { resetStore } from 'spec/repo/helpers';
+import { resetStore } from 'spec/ide/helpers';
 
 describe('IDE commit sidebar actions', () => {
   let vm;

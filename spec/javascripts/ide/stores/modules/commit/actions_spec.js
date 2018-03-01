@@ -4,7 +4,7 @@ import router from 'ee/ide/ide_router';
 import * as urlUtils from '~/lib/utils/url_utility';
 import eventHub from 'ee/ide/eventhub';
 import * as consts from 'ee/ide/stores/modules/commit/constants';
-import { resetStore, file } from 'spec/repo/helpers';
+import { resetStore, file } from 'spec/ide/helpers';
 
 describe('IDE commit module actions', () => {
   afterEach(() => {

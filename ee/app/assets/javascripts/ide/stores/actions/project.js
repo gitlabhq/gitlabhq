@@ -1,5 +1,5 @@
+import flash from '~/flash';
 import service from '../../services';
-import flash from '../../../flash';
 import * as types from '../mutation_types';
 
 // eslint-disable-next-line import/prefer-default-export

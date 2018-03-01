@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueResource from 'vue-resource';
-import Api from '../../api';
+import Api from '~/api';
 
 Vue.use(VueResource);
 

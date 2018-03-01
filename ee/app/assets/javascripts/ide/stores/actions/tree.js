@@ -1,6 +1,6 @@
-import { visitUrl } from '../../../lib/utils/url_utility';
-import { normalizeHeaders } from '../../../lib/utils/common_utils';
-import flash from '../../../flash';
+import { visitUrl } from '~/lib/utils/url_utility';
+import { normalizeHeaders } from '~/lib/utils/common_utils';
+import flash from '~/flash';
 import service from '../../services';
 import * as types from '../mutation_types';
 import router from '../../ide_router';

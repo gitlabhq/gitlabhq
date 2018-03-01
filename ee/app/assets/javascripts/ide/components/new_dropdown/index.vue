@@ -1,7 +1,7 @@
 <script>
+  import icon from '~/vue_shared/components/icon.vue';
   import newModal from './modal.vue';
   import upload from './upload.vue';
-  import icon from '../../../vue_shared/components/icon.vue';
 
   export default {
     components: {

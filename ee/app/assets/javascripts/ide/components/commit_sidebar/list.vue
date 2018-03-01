@@ -1,6 +1,6 @@
 <script>
   import { mapState } from 'vuex';
-  import icon from '../../../vue_shared/components/icon.vue';
+  import icon from '~/vue_shared/components/icon.vue';
   import listItem from './list_item.vue';
   import listCollapsed from './list_collapsed.vue';
 
