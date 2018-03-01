@@ -46,9 +46,9 @@ describe Gitlab::Ci::Pipeline::Expression::Lexer do
     end
 
     it 'limits statement to specified amount of tokens' do
-      lexer = described_class.new("$V1 $V2 $V3 $V4 $V5 $V6")
+      lexer = described_class.new("$V1 $V2 $V3 $V4", max_tokens: 3)
 
-      expect { lexer.tokens(max: 5) }
+      expect { lexer.tokens }
         .to raise_error described_class::SyntaxError
     end
 

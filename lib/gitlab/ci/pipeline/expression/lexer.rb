@@ -16,12 +16,13 @@ module Gitlab
 
           MAX_TOKENS = 100
 
-          def initialize(statement)
+          def initialize(statement, max_tokens: MAX_TOKENS)
             @scanner = StringScanner.new(statement)
+            @max_tokens = max_tokens
           end
 
-          def tokens(max: MAX_TOKENS)
-            strong_memoize(:tokens) { tokenize(max) }
+          def tokens
+            strong_memoize(:tokens) { tokenize }
           end
 
           def lexemes
@@ -30,10 +31,10 @@ module Gitlab
 
           private
 
-          def tokenize(max_tokens)
+          def tokenize
             tokens = []
 
-            max_tokens.times do
+            @max_tokens.times do
               @scanner.skip(/\s+/) # ignore whitespace
 
               return tokens if @scanner.eos?
