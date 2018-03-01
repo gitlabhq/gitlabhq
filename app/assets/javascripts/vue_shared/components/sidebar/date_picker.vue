@@ -14,6 +14,11 @@
       collapsedCalendarIcon,
     },
     props: {
+      blockClass: {
+        type: String,
+        required: false,
+        default: '',
+      },
       collapsed: {
         type: Boolean,
         required: false,
@@ -91,7 +96,10 @@
 </script>
 
 <template>
-  <div class="block">
+  <div
+    class="block"
+    :class="blockClass"
+  >
     <div class="issuable-sidebar-header">
       <toggle-sidebar
         :collapsed="collapsed"

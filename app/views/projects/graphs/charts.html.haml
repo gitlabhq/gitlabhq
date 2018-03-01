@@ -74,6 +74,7 @@
           = _("Commits per day hour (UTC)")
         %canvas#hour-chart
 
+-# haml-lint:disable InlineJavaScript
 %script#projectChartData{ type: "application/json" }
   - projectChartData = {};
   - projectChartData['hour'] = @commits_per_time
