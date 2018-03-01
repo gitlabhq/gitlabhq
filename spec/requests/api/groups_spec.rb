@@ -938,7 +938,7 @@ describe API::Groups do
 
   describe 'POST /groups/:id/ldap_sync' do
     before do
-      allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
+      allow(Gitlab::Auth::LDAP::Config).to receive(:enabled?).and_return(true)
     end
 
     context 'when the ldap_group_sync feature is available' do

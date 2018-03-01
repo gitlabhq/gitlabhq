@@ -12,13 +12,13 @@ module API
       # Example request:
       #   GET /geo_nodes
       desc 'Retrieves the available Geo nodes' do
-        success Entities::GeoNode
+        success EE::API::Entities::GeoNode
       end
 
       get do
         nodes = GeoNode.all
 
-        present paginate(nodes), with: Entities::GeoNode
+        present paginate(nodes), with: EE::API::Entities::GeoNode
       end
 
       # Get all Geo node statuses
@@ -26,12 +26,12 @@ module API
       # Example request:
       #   GET /geo_nodes/status
       desc 'Get status for all Geo nodes' do
-        success Entities::GeoNodeStatus
+        success EE::API::Entities::GeoNodeStatus
       end
       get '/status' do
         status = GeoNodeStatus.all
 
-        present paginate(status), with: Entities::GeoNodeStatus
+        present paginate(status), with: EE::API::Entities::GeoNodeStatus
       end
 
       # Get project registry failures for the current Geo node
@@ -78,12 +78,12 @@ module API
         # Example request:
         #   GET /geo_nodes/:id
         desc 'Get a single GeoNode' do
-          success Entities::GeoNode
+          success EE::API::Entities::GeoNode
         end
         get do
           not_found!('GeoNode') unless geo_node
 
-          present geo_node, with: Entities::GeoNode
+          present geo_node, with: EE::API::Entities::GeoNode
         end
 
         # Get Geo metrics for a single node
@@ -91,14 +91,14 @@ module API
         # Example request:
         #   GET /geo_nodes/:id/status
         desc 'Get metrics for a single Geo node' do
-          success Entities::GeoNodeStatus
+          success EE::API::Entities::GeoNodeStatus
         end
         get 'status' do
           not_found!('GeoNode') unless geo_node
 
           not_found!('Status for Geo node not found') unless geo_node_status
 
-          present geo_node_status, with: Entities::GeoNodeStatus
+          present geo_node_status, with: EE::API::Entities::GeoNodeStatus
         end
 
         # Repair authentication of the Geo node
@@ -106,14 +106,14 @@ module API
         # Example request:
         #   POST /geo_nodes/:id/repair
         desc 'Repair authentication of the Geo node' do
-          success Entities::GeoNodeStatus
+          success EE::API::Entities::GeoNodeStatus
         end
         post 'repair' do
           not_found!('GeoNode') unless geo_node
 
           if !geo_node.missing_oauth_application? || geo_node.repair
             status 200
-            present geo_node_status, with: Entities::GeoNodeStatus
+            present geo_node_status, with: EE::API::Entities::GeoNodeStatus
           else
             render_validation_error!(geo_node)
           end
@@ -124,7 +124,7 @@ module API
         # Example request:
         #   PUT /geo_nodes/:id
         desc 'Edit an existing Geo secondary node' do
-          success Entities::GeoNode
+          success EE::API::Entities::GeoNode
         end
         params do
           optional :enabled, type: Boolean, desc: 'Flag indicating if the Geo node is enabled'
@@ -140,7 +140,7 @@ module API
           if geo_node.primary?
             forbidden!('Primary node cannot be edited')
           elsif geo_node.update_attributes(update_params)
-            present geo_node, with: Entities::GeoNode
+            present geo_node, with: EE::API::Entities::GeoNode
           else
             render_validation_error!(geo_node)
           end

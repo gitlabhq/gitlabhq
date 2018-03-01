@@ -5,13 +5,13 @@ describe LdapAllGroupsSyncWorker do
 
   before do
     allow(Sidekiq.logger).to receive(:info)
-    allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
+    allow(Gitlab::Auth::LDAP::Config).to receive(:enabled?).and_return(true)
   end
 
   describe '#perform' do
     context 'with the default license key' do
       it 'syncs all groups when group_id is nil' do
-        expect(EE::Gitlab::LDAP::Sync::Groups).to receive(:execute)
+        expect(EE::Gitlab::Auth::LDAP::Sync::Groups).to receive(:execute)
 
         subject.perform
       end
@@ -23,7 +23,7 @@ describe LdapAllGroupsSyncWorker do
       end
 
       it 'does not sync all groups' do
-        expect(EE::Gitlab::LDAP::Sync::Groups).not_to receive(:execute)
+        expect(EE::Gitlab::Auth::LDAP::Sync::Groups).not_to receive(:execute)
 
         subject.perform
       end

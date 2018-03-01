@@ -1,3 +1,3 @@
 class GeoNodeStatusSerializer < BaseSerializer
-  entity API::Entities::GeoNodeStatus
+  entity EE::API::Entities::GeoNodeStatus
 end

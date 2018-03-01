@@ -1,0 +1,5 @@
+---
+title: Allow commits endpoint to work over all commits of a repository
+merge_request: 17182
+author:
+type: added

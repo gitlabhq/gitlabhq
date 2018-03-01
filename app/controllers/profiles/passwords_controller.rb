@@ -1,5 +1,6 @@
 class Profiles::PasswordsController < Profiles::ApplicationController
   skip_before_action :check_password_expiration, only: [:new, :create]
+  skip_before_action :check_two_factor_requirement, only: [:new, :create]
 
   before_action :set_user
   before_action :authorize_change_password!

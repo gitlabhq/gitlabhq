@@ -54,7 +54,7 @@ module API
         # The issues list in the correct order in body will be returned as part of #4250
         if result
           present epic.issues(current_user),
-            with: Entities::EpicIssue,
+            with: EE::API::Entities::EpicIssue,
             current_user: current_user
         else
           render_api_error!({ error: "Issue could not be moved!" }, 400)
@@ -62,7 +62,7 @@ module API
       end
 
       desc 'Get issues assigned to the epic' do
-        success Entities::EpicIssue
+        success EE::API::Entities::EpicIssue
       end
       params do
         requires :epic_iid, type: Integer, desc: 'The iid of the epic'
@@ -71,12 +71,12 @@ module API
         authorize_can_read!
 
         present epic.issues(current_user),
-          with: Entities::EpicIssue,
+          with: EE::API::Entities::EpicIssue,
           current_user: current_user
       end
 
       desc 'Assign an issue to the epic' do
-        success Entities::EpicIssueLink
+        success EE::API::Entities::EpicIssueLink
       end
       params do
         requires :epic_iid, type: Integer, desc: 'The iid of the epic'
@@ -93,14 +93,14 @@ module API
         if result[:status] == :success
           epic_issue_link = EpicIssue.find_by!(epic: epic, issue: issue)
 
-          present epic_issue_link, with: Entities::EpicIssueLink
+          present epic_issue_link, with: EE::API::Entities::EpicIssueLink
         else
           render_api_error!(result[:message], result[:http_status])
         end
       end
 
       desc 'Remove an issue from the epic' do
-        success Entities::EpicIssueLink
+        success EE::API::Entities::EpicIssueLink
       end
       params do
         requires :epic_iid, type: Integer, desc: 'The iid of the epic'
@@ -112,7 +112,7 @@ module API
         result = ::EpicIssues::DestroyService.new(link, current_user).execute
 
         if result[:status] == :success
-          present link, with: Entities::EpicIssueLink
+          present link, with: EE::API::Entities::EpicIssueLink
         else
           render_api_error!(result[:message], result[:http_status])
         end

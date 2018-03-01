@@ -337,7 +337,9 @@ module EE
     end
 
     def remove_mirror_repository_reference
-      repository.async_remove_remote(::Repository::MIRROR_REMOTE)
+      run_after_commit do
+        repository.async_remove_remote(::Repository::MIRROR_REMOTE)
+      end
     end
 
     def username_only_import_url
