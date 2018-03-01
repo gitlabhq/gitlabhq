@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import _ from 'underscore';
-import relatedIssuesRoot from 'ee/issuable/related_issues/components/related_issues_root.vue';
-import relatedIssuesService from 'ee/issuable/related_issues/services/related_issues_service';
+import relatedIssuesRoot from 'ee/related_issues/components/related_issues_root.vue';
+import relatedIssuesService from 'ee/related_issues/services/related_issues_service';
 
 import { defaultProps, issuable1, issuable2 } from '../mock_data';
 
