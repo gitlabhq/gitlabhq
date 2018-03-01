@@ -483,7 +483,7 @@ describe Gitlab::Ci::Trace do
 
       context 'when trace is stored in database' do
         let(:build) { create(:ci_build, :success) }
-        let(:trace_content) { IO.read(expand_fixture_path('trace/sample_trace')) }
+        let(:trace_content) { 'Sample trace' }
         let!(:src_checksum) { Digest::SHA256.digest(trace_content) }
 
         before do
