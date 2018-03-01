@@ -49,7 +49,6 @@ function generateEntries() {
     notebook_viewer:      './blob/notebook_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
     protected_branches:   './protected_branches',
-    protected_tags:       './protected_tags',
     registry_list:        './registry/index.js',
     sketch_viewer:        './blob/sketch_viewer.js',
     stl_viewer:           './blob/stl_viewer.js',
