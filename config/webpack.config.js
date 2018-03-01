@@ -48,7 +48,6 @@ function generateEntries() {
   autoEntriesCount = Object.keys(autoEntries).length;
 
   const manualEntries = {
-    balsamiq_viewer:      './blob/balsamiq_viewer.js',
     monitoring:           './monitoring/monitoring_bundle.js',
     mr_notes:             './mr_notes/index.js',
     notebook_viewer:      './blob/notebook_viewer.js',
