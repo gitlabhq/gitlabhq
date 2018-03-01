@@ -62,9 +62,8 @@ class SnippetsFinder < UnionFinder
     # Don't return any project related snippets if the user cannot read cross project
     return table[:id].eq(nil) unless Ability.allowed?(current_user, :read_cross_project)
 
-    projects = Project.public_or_visible_to_user(current_user, use_where_in: false) do |part|
-      part.with_feature_available_for_user(:snippets, current_user)
-    end.select(:id)
+    projects = Project.public_or_visible_to_user(current_user)
+      .with_feature_available_for_user(:snippets, current_user).select(:id)
 
     arel_query = Arel::Nodes::SqlLiteral.new(projects.to_sql)
     table[:project_id].in(arel_query)
