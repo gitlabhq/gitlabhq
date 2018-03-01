@@ -9,6 +9,7 @@
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag 'common_vue'
 
+  -# haml-lint:disable InlineJavaScript
   %script#js-board-template{ type: "text/x-template" }= render "shared/boards/components/board"
   %script#js-board-modal-filter{ type: "text/x-template" }= render "shared/issuable/search_bar", type: :boards_modal
   %script#js-board-promotion{ type: "text/x-template" }= render "shared/promotions/promote_issue_board"

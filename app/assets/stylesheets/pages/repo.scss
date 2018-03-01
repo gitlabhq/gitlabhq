@@ -409,25 +409,30 @@ table.table tr td.multi-file-table-name {
 .multi-file-commit-list {
   flex: 1;
   overflow: auto;
-  padding: $gl-padding;
+  padding: $gl-padding 0;
+  min-height: 60px;
 }
 
 .multi-file-commit-list-item {
   display: flex;
-  margin-bottom: $grid-size;
+  padding: 0;
   align-items: center;
-
-  > svg {
-    min-width: 16px;
-  }
 
   .multi-file-discard-btn {
     display: none;
     margin-left: auto;
     color: $gl-link-color;
+    padding: 0 2px;
+
+    &:focus,
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   &:hover {
+    background: $white-normal;
+
     .multi-file-discard-btn {
       display: block;
     }
@@ -460,7 +465,36 @@ table.table tr td.multi-file-table-name {
 }
 
 .multi-file-commit-list-path {
+  padding: $grid-size / 2;
+  padding-left: $gl-padding;
+  background: none;
+  border: 0;
+  text-align: left;
+  width: 100%;
+  min-width: 0;
+
+  svg {
+    min-width: 16px;
+    vertical-align: middle;
+    display: inline-block;
+  }
+
+  &:hover,
+  &:focus {
+    outline: 0;
+  }
+}
+
+.multi-file-commit-list-file-path {
   @include str-truncated(100%);
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:active {
+    text-decoration: none;
+  }
 }
 
 .multi-file-commit-form {

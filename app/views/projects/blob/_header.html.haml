@@ -22,6 +22,7 @@
 = render 'projects/fork_suggestion'
 
 - if @project.feature_available?(:file_locks)
+  -# haml-lint:disable InlineJavaScript
   %script#js-file-lock{ type: "application/json" }
     - data = {}
     - data[:path] = @path

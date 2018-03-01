@@ -1,5 +1,6 @@
 <script>
   import { mapActions } from 'vuex';
+  import router from '~/ide/ide_router';
   import icon from '../../../vue_shared/components/icon.vue';
 
   export default {
@@ -24,20 +25,27 @@
       ...mapActions([
         'discardFileChanges',
       ]),
+      openFileInEditor(file) {
+        router.push(`/project${file.url}`);
+      },
     },
   };
 </script>
 
 <template>
   <div class="multi-file-commit-list-item">
-    <icon
-      :name="iconName"
-      :size="16"
-      :css-classes="iconClass"
-    />
-    <span class="multi-file-commit-list-path">
-      {{ file.path }}
-    </span>
+    <button
+      type="button"
+      class="multi-file-commit-list-path"
+      @click="openFileInEditor(file)">
+      <span class="multi-file-commit-list-file-path">
+        <icon
+          :name="iconName"
+          :size="16"
+          :css-classes="iconClass"
+        />{{ file.path }}
+      </span>
+    </button>
     <button
       type="button"
       class="btn btn-blank multi-file-discard-btn"
