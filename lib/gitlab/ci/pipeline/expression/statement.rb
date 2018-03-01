@@ -19,7 +19,11 @@ module Gitlab
 
             return if pipeline.nil?
 
-            @variables = pipeline.runtime_variables.map do |variable|
+            @variables = pipeline.variables.map do |variable|
+              [variable.key, variable.value]
+            end
+
+            @variables += pipeline.predefined_variables.map do |variable|
               [variable.fetch(:key), variable.fetch(:value)]
             end
           end
