@@ -768,7 +768,7 @@ export default class Notes {
   }
 
   removeNoteEditForm($note) {
-    var form = $note.find('.current-note-edit-form');
+    var form = $note.find('.diffs .current-note-edit-form');
 
     $note.removeClass('is-editing');
     form.removeClass('current-note-edit-form');

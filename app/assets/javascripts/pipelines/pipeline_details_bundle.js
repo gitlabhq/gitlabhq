@@ -12,9 +12,7 @@ import SastSummaryWidget from 'ee/pipelines/components/security_reports/sast_rep
 
 Vue.use(Translate);
 
-Vue.use(Translate);
-
-document.addEventListener('DOMContentLoaded', () => {
+export default () => {
   const dataset = document.querySelector('.js-pipeline-details-vue').dataset;
 
   const mediator = new PipelinesMediator({ endpoint: dataset.endpoint });
@@ -144,4 +142,4 @@ document.addEventListener('DOMContentLoaded', () => {
       },
     });
   }
-});
+};

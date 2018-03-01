@@ -73,7 +73,7 @@ export default () => {
       el: '#resolve-count-app',
       components: {
         'resolve-count': ResolveCount
-      }
+      },
     });
   }
 
