@@ -69,6 +69,7 @@
   - [storage_migrator, 1]
   - [pages_domain_verification, 1]
   - [plugin, 1]
+  - [object_storage, 1]
 
   # EE-specific queues
   - [ldap_group_sync, 2]
@@ -84,4 +85,3 @@
   - [elastic_commit_indexer, 1]
   - [export_csv, 1]
   - [object_storage_upload, 1]
-  - [object_storage, 1]

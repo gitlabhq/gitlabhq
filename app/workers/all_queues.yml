@@ -62,6 +62,8 @@
 - repository_check:repository_check_clear
 - repository_check:repository_check_single_repository
 
+- object_storage:archive_legacy_trace
+
 - default
 - mailers # ActionMailer::DeliveryJob.queue_name
 

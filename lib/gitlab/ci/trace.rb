@@ -93,7 +93,51 @@ module Gitlab
         job.erase_old_trace!
       end
 
+      def archive!
+        raise 'Already archived' if trace_artifact
+        raise 'Job is not finished yet' unless job.complete?
+
+        if current_path
+          File.open(current_path) do |stream|
+            archive_stream!(stream)
+            FileUtils.rm(current_path)
+          end
+        elsif old_trace
+          StringIO.new(old_trace, 'rb').tap do |stream|
+            archive_stream!(stream)
+            job.erase_old_trace!
+          end
+        end
+      end
+
       private
+
+      def archive_stream!(stream)
+        clone_file!(stream, JobArtifactUploader.workhorse_upload_path) do |clone_path|
+          create_job_trace!(job, clone_path)
+        end
+      end
+
+      def clone_file!(src_stream, temp_dir)
+        FileUtils.mkdir_p(temp_dir)
+        Dir.mktmpdir('tmp-trace', temp_dir) do |dir_path|
+          temp_path = File.join(dir_path, "job.log")
+          FileUtils.touch(temp_path)
+          size = IO.copy_stream(src_stream, temp_path)
+          raise 'Not all saved' unless size == src_stream.size
+
+          yield(temp_path)
+        end
+      end
+
+      def create_job_trace!(job, path)
+        File.open(path) do |stream|
+          job.create_job_artifacts_trace!(
+            project: job.project,
+            file_type: :trace,
+            file: stream)
+        end
+      end
 
       def ensure_path
         return current_path if current_path
