@@ -21,6 +21,8 @@ else
   File.open(hook_path, 'w') do |file|
     IO.copy_stream(DATA, file)
   end
+
+  File.chmod(0755, hook_path)
 end
 
 # Toggle the harness on or off
