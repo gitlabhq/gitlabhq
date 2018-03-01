@@ -1,5 +1,3 @@
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'ldap_group_links'
 %section.ldap-group-links
   = form_for [group, LdapGroupLink.new], html: { class: 'form-horizontal' } do |f|
     .form-holder

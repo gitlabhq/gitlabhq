@@ -73,7 +73,6 @@ function generateEntries() {
     geo_nodes:            'ee/geo_nodes',
     issuable:             'ee/issuable/issuable_bundle.js',
     issues:               'ee/issues/issues_bundle.js',
-    ldap_group_links:     'ee/groups/ldap_group_links.js',
     mirrors:              'ee/mirrors',
     ee_protected_branches: 'ee/protected_branches',
     service_desk:         'ee/projects/settings_service_desk/service_desk_bundle.js',
