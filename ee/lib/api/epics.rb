@@ -46,7 +46,7 @@ module API
 
     resource :groups, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get epics for the group' do
-        success Entities::Epic
+        success EE::API::Entities::Epic
       end
       params do
         optional :order_by, type: String, values: %w[created_at updated_at], default: 'created_at',
@@ -58,11 +58,11 @@ module API
         optional :labels, type: String, desc: 'Comma-separated list of label names'
       end
       get ':id/-/epics' do
-        present find_epics(group_id: user_group.id), with: Entities::Epic
+        present find_epics(group_id: user_group.id), with: EE::API::Entities::Epic
       end
 
       desc 'Get details of an epic' do
-        success Entities::Epic
+        success EE::API::Entities::Epic
       end
       params do
         requires :epic_iid, type: Integer, desc: 'The internal ID of an epic'
@@ -70,11 +70,11 @@ module API
       get ':id/-/epics/:epic_iid' do
         authorize_can_read!
 
-        present epic, with: Entities::Epic
+        present epic, with: EE::API::Entities::Epic
       end
 
       desc 'Create a new epic' do
-        success Entities::Epic
+        success EE::API::Entities::Epic
       end
       params do
         requires :title, type: String, desc: 'The title of an epic'
@@ -88,14 +88,14 @@ module API
 
         epic = ::Epics::CreateService.new(user_group, current_user, declared_params(include_missing: false)).execute
         if epic.valid?
-          present epic, with: Entities::Epic
+          present epic, with: EE::API::Entities::Epic
         else
           render_validation_error!(epic)
         end
       end
 
       desc 'Update an epic' do
-        success Entities::Epic
+        success EE::API::Entities::Epic
       end
       params do
         requires :epic_iid, type: Integer, desc: 'The internal ID of an epic'
@@ -114,14 +114,14 @@ module API
         result = ::Epics::UpdateService.new(user_group, current_user, update_params).execute(epic)
 
         if result.valid?
-          present result, with: Entities::Epic
+          present result, with: EE::API::Entities::Epic
         else
           render_validation_error!(result)
         end
       end
 
       desc 'Destroy an epic' do
-        success Entities::Epic
+        success EE::API::Entities::Epic
       end
       params do
         requires :epic_iid, type: Integer, desc: 'The internal ID of an epic'
