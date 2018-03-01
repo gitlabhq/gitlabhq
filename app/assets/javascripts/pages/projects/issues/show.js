@@ -11,7 +11,3 @@ export default function () {
   new ZenMode(); // eslint-disable-line no-new
   initIssuableSidebar();
 }
-<<<<<<< HEAD
-=======
-
->>>>>>> upstream/master
