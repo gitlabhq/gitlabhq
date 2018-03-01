@@ -125,6 +125,7 @@ if (process.env.BABEL_ENV === 'coverage') {
     './diff_notes/components/resolve_count.js',
     './dispatcher.js',
     './environments/environments_bundle.js',
+    './filtered_search/filtered_search_bundle.js',
     './graphs/graphs_bundle.js',
     './issuable/time_tracking/time_tracking_bundle.js',
     './main.js',

@@ -49,6 +49,7 @@ function generateEntries() {
 
   const manualEntries = {
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
+    filtered_search:      './filtered_search/filtered_search_bundle.js',
     monitoring:           './monitoring/monitoring_bundle.js',
     mr_notes:             './mr_notes/index.js',
     notebook_viewer:      './blob/notebook_viewer.js',
