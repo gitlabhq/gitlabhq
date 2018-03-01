@@ -3,7 +3,6 @@ FactoryBot.define do
     model { build(:project) }
     size 100.kilobytes
     uploader "AvatarUploader"
-    store ObjectStorage::Store::LOCAL
     mount_point :avatar
     secret nil
     store ObjectStorage::Store::LOCAL

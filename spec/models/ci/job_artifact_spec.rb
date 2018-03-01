@@ -18,7 +18,7 @@ describe Ci::JobArtifact do
   describe 'callbacks' do
     subject { create(:ci_job_artifact, :archive) }
 
-    describe '#schedule_migration_to_object_storage' do
+    describe '#schedule_background_upload' do
       context 'when object storage is disabled' do
         before do
           stub_artifacts_object_storage(enabled: false)

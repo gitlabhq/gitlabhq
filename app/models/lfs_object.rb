@@ -15,7 +15,7 @@ class LfsObject < ActiveRecord::Base
 
   after_save if: :file_changed?, on: [:create, :update] do
     run_after_commit do
-      file.schedule_migration_to_object_storage
+      file.schedule_background_upload
     end
   end
 
