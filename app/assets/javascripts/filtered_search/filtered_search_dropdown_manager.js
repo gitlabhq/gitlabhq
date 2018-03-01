@@ -24,12 +24,8 @@ export default class FilteredSearchDropdownManager {
     this.filteredSearchTokenKeys = filteredSearchTokenKeys || FilteredSearchTokenKeys;
     this.filteredSearchInput = this.container.querySelector('.filtered-search');
     this.page = page;
-<<<<<<< HEAD
-    this.groupsOnly = page === 'boards' && isGroup;
-=======
     this.groupsOnly = isGroup;
     this.groupAncestor = isGroupAncestor;
->>>>>>> upstream/master
 
     this.setupMapping();
 
@@ -72,11 +68,7 @@ export default class FilteredSearchDropdownManager {
         reference: null,
         gl: DropdownNonUser,
         extraArguments: {
-<<<<<<< HEAD
-          endpoint: `${this.baseEndpoint}/milestones.json${this.groupsOnly ? '?only_group_milestones=true' : ''}`,
-=======
           endpoint: this.getMilestoneEndpoint(),
->>>>>>> upstream/master
           symbol: '%',
         },
         element: this.container.querySelector('#js-dropdown-milestone'),
@@ -85,11 +77,7 @@ export default class FilteredSearchDropdownManager {
         reference: null,
         gl: DropdownNonUser,
         extraArguments: {
-<<<<<<< HEAD
-          endpoint: `${this.baseEndpoint}/labels.json${this.groupsOnly ? '?only_group_labels=true' : ''}`,
-=======
           endpoint: this.getLabelsEndpoint(),
->>>>>>> upstream/master
           symbol: '~',
           preprocessing: DropdownUtils.duplicateLabelPreprocessing,
         },
@@ -117,13 +105,23 @@ export default class FilteredSearchDropdownManager {
   }
 
   getMilestoneEndpoint() {
-    const endpoint = `${this.baseEndpoint}/milestones.json`;
+    let endpoint = `${this.baseEndpoint}/milestones.json`;
+
+    // EE-only
+    if (this.groupsOnly) {
+      endpoint = `${endpoint}?only_group_milestones=true`;
+    }
 
     return endpoint;
   }
 
   getLabelsEndpoint() {
-    const endpoint = `${this.baseEndpoint}/labels.json`;
+    let endpoint = `${this.baseEndpoint}/labels.json`;
+
+    // EE-only
+    if (this.groupsOnly) {
+      endpoint = `${endpoint}?only_group_labels=true`;
+    }
 
     return endpoint;
   }
