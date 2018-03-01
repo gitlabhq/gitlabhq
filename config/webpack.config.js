@@ -68,11 +68,7 @@ function generateEntries() {
     // EE-only
     add_gitlab_slack_application: 'ee/add_gitlab_slack_application/index.js',
     burndown_chart:       'ee/burndown_chart/index.js',
-    epic_show:            'ee/epics/epic_show/epic_show_bundle.js',
-    new_epic:             'ee/epics/new_epic/new_epic_bundle.js',
     geo_nodes:            'ee/geo_nodes',
-    issuable:             'ee/issuable/issuable_bundle.js',
-    issues:               'ee/issues/issues_bundle.js',
     mirrors:              'ee/mirrors',
     ee_protected_branches: 'ee/protected_branches',
     service_desk:         'ee/projects/settings_service_desk/service_desk_bundle.js',

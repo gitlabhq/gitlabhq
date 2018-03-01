@@ -11,7 +11,6 @@
       - if can?(current_user, :create_epic, @group)
         - content_for :page_specific_javascripts do
           = webpack_bundle_tag 'common_vue'
-          = webpack_bundle_tag 'new_epic'
         #new-epic-app{ data: { endpoint: request.url } }
       = link_to group_epics_path(@group), title: 'List', class: 'btn' do
         %span= _('View epics list')
