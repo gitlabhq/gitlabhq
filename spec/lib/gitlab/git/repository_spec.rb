@@ -895,7 +895,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
           repository.log(options.merge(path: "encoding"))
         end
 
-        it "should not follow renames" do
+        it "does not follow renames" do
           expect(log_commits).to include(commit_with_new_name)
           expect(log_commits).to include(rename_commit)
           expect(log_commits).not_to include(commit_with_old_name)
@@ -907,7 +907,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
           repository.log(options.merge(path: "encoding/CHANGELOG"))
         end
 
-        it "should not follow renames" do
+        it "does not follow renames" do
           expect(log_commits).to include(commit_with_new_name)
           expect(log_commits).to include(rename_commit)
           expect(log_commits).not_to include(commit_with_old_name)
@@ -919,7 +919,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
           repository.log(options.merge(path: "CHANGELOG"))
         end
 
-        it "should not follow renames" do
+        it "does not follow renames" do
           expect(log_commits).to include(commit_with_old_name)
           expect(log_commits).to include(rename_commit)
           expect(log_commits).not_to include(commit_with_new_name)
@@ -931,7 +931,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
           repository.log(options.merge(ref: "refs/heads/fix-blob-path", path: "files/testdir/file.txt"))
         end
 
-        it "should return a list of commits" do
+        it "returns a list of commits" do
           expect(log_commits.size).to eq(1)
         end
       end
@@ -989,6 +989,16 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
       with_them do
         it { expect { repository.log(limit: limit) }.to raise_error(ArgumentError) }
+      end
+    end
+
+    context 'with all' do
+      let(:options) { { all: true, limit: 50 } }
+
+      it 'returns a list of commits' do
+        commits = repository.log(options)
+
+        expect(commits.size).to eq(37)
       end
     end
   end
@@ -1134,6 +1144,20 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'when Gitaly count_commits feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'extended commit counting'
+
+      context "with all" do
+        it "returns the number of commits in the whole repository" do
+          options = { all: true }
+
+          expect(repository.count_commits(options)).to eq(34)
+        end
+      end
+
+      context 'without all or ref being specified' do
+        it "raises an ArgumentError" do
+          expect { repository.count_commits({}) }.to raise_error(ArgumentError, "Please specify a valid ref or set the 'all' attribute to true")
+        end
+      end
     end
   end
 
