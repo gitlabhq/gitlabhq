@@ -1,4 +1,4 @@
-import MirrorPull from './mirror_pull';
+import MirrorPull from 'ee/mirrors/mirror_pull';
 
 document.addEventListener('DOMContentLoaded', () => {
   const mirrorPull = new MirrorPull('.js-project-mirror-push-form');
