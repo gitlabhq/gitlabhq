@@ -32,6 +32,9 @@ export default class BlobViewer {
       case 'balsamiq':
         initViewer(import(/* webpackChunkName: 'balsamiq_viewer' */ '../balsamiq_viewer'));
         break;
+      case 'notebook':
+        initViewer(import(/* webpackChunkName: 'notebook_viewer' */ '../notebook_viewer'));
+        break;
       default:
         break;
     }

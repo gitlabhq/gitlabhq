@@ -50,7 +50,6 @@ function generateEntries() {
   const manualEntries = {
     monitoring:           './monitoring/monitoring_bundle.js',
     mr_notes:             './mr_notes/index.js',
-    notebook_viewer:      './blob/notebook_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
     protected_branches:   './protected_branches',
     registry_list:        './registry/index.js',
@@ -249,7 +248,6 @@ const config = {
         'groups',
         'monitoring',
         'mr_notes',
-        'notebook_viewer',
         'pdf_viewer',
         'pipelines',
         'pipelines_details',
