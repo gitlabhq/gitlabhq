@@ -41,6 +41,9 @@ export default class BlobViewer {
       case 'sketch':
         initViewer(import(/* webpackChunkName: 'sketch_viewer' */ '../sketch_viewer'));
         break;
+      case 'stl':
+        initViewer(import(/* webpackChunkName: 'stl_viewer' */ '../stl_viewer'));
+        break;
       default:
         break;
     }

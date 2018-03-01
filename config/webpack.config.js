@@ -47,7 +47,6 @@ function generateEntries() {
     mr_notes:             './mr_notes/index.js',
     protected_branches:   './protected_branches',
     registry_list:        './registry/index.js',
-    stl_viewer:           './blob/stl_viewer.js',
     terminal:             './terminal/terminal_bundle.js',
     two_factor_auth:      './two_factor_auth.js',
 
