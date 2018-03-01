@@ -316,7 +316,7 @@
           v-if="pipeline.flags.cancelable"
           :endpoint="pipeline.cancel_path"
           css-class="js-pipelines-cancel-button btn-remove"
-          title="Cancel"
+          title="Stop"
           icon="close"
           :pipeline-id="pipeline.id"
           data-toggle="modal"
