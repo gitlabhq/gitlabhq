@@ -7,13 +7,13 @@ module Gitlab
             @expressions = Array(expressions)
           end
 
-          def satisfied_by?(pipeline)
+          def satisfied_by?(pipeline, attributes)
             statements = @expressions.map do |statement|
               ::Gitlab::Ci::Pipeline::Expression::Statement
                 .new(statement, pipeline)
             end
 
-            statements.any? { |statement| statement.truthful? }
+            statements.any?(&:truthful?)
           end
         end
       end

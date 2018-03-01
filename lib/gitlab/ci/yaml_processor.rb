@@ -54,19 +54,21 @@ module Gitlab
       end
 
       def pipeline_stage_builds(stage, pipeline)
-        selected_jobs = @jobs.select do |_, job|
-          next unless job[:stage] == stage
+        builds_attributes = @jobs.map do |job|
+          build_attributes(job[:name])
+        end
+
+        builds_attributes.select do |_, attributes|
+          next unless build[:stage] == stage
 
           only_specs = Gitlab::Ci::Build::Policy
             .fabricate(job.fetch(:only, {}))
           except_specs = Gitlab::Ci::Build::Policy
             .fabricate(job.fetch(:except, {}))
 
-          only_specs.all? { |spec| spec.satisfied_by?(pipeline) } &&
-            except_specs.none? { |spec| spec.satisfied_by?(pipeline) }
+          only_specs.all? { |spec| spec.satisfied_by?(pipeline, attributes) } &&
+            except_specs.none? { |spec| spec.satisfied_by?(pipeline, attributes) }
         end
-
-        selected_jobs.map { |_, job| build_attributes(job[:name]) }
       end
 
       def stage_seeds(pipeline)
