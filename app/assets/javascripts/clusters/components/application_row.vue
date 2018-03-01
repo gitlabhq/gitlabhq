@@ -36,10 +36,6 @@
         type: String,
         required: false,
       },
-      description: {
-        type: String,
-        required: true,
-      },
       status: {
         type: String,
         required: false,
@@ -148,7 +144,7 @@
         class="table-section section-wrap"
         role="gridcell"
       >
-        <div v-html="description"></div>
+        <slot name="description"></slot>
       </div>
       <div
         class="table-section table-button-footer section-align-top"
