@@ -702,7 +702,7 @@ describe API::Runner do
 
       context 'when tace is given' do
         it 'creates a trace artifact' do
-          allow_any_instance_of(BuildFinishedWorker).to receive(:perform).with(job.id) do
+          allow(BuildFinishedWorker).to receive(:perform_async).with(job.id) do
             CreateTraceArtifactWorker.new.perform(job.id)
           end
 
