@@ -2,7 +2,7 @@ module Projects
   module ImportExport
     class ExportService < BaseService
       def execute(_options = {})
-        @shared = Gitlab::ImportExport::Shared.new(project)
+        @shared = project.import_export
         save_all
       end
 

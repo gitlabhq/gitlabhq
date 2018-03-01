@@ -9,7 +9,7 @@ module Gitlab
         @archive_file = project.import_source
         @current_user = project.creator
         @project = project
-        @shared = Gitlab::ImportExport::Shared.new(project)
+        @shared = project.import_export
       end
 
       def execute
