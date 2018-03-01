@@ -249,7 +249,7 @@ module API
       get '/:id/artifacts' do
         job = authenticate_job!
 
-        present_artifacts!(job.artifacts_file, direct_download: params[:direct_download])
+        present_carrierwave_file!(job.artifacts_file, supports_direct_download: params[:direct_download])
       end
     end
   end
