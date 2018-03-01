@@ -16,20 +16,20 @@ import ProtectedTagEditList from 'ee/protected_tags/protected_tag_edit_list';
 document.addEventListener('DOMContentLoaded', () => {
   new UsersSelect();
   new UserCallout();
-  
+
   initDeployKeys();
   initSettingsPanels();
-  
+
   if (document.querySelector('.js-protected-refs-for-users')) {
     new ProtectedBranchCreate();
     new ProtectedBranchEditList();
-    
+
     new ProtectedTagCreate();
     new ProtectedTagEditList();
   } else {
     new CEProtectedBranchCreate();
     new CEProtectedBranchEditList();
-    
+
     new CEProtectedTagCreate();
     new CEProtectedTagEditList();
   }
