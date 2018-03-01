@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.4.5 (2018-03-01)
+
+### Security (1 change)
+
+- Ensure that OTP backup codes are always invalidated.
+
+
 ## 10.4.4 (2018-02-16)
 
 ### Security (1 change)
