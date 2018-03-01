@@ -1,4 +1,4 @@
-import RelatedIssuesStore from 'ee/issuable/related_issues/stores/related_issues_store';
+import RelatedIssuesStore from 'ee/related_issues/stores/related_issues_store';
 
 import { issuable1, issuable2, issuable3, issuable4, issuable5 } from '../mock_data';
 

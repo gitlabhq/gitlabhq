@@ -71,7 +71,6 @@ function generateEntries() {
     epic_show:            'ee/epics/epic_show/epic_show_bundle.js',
     new_epic:             'ee/epics/new_epic/new_epic_bundle.js',
     geo_nodes:            'ee/geo_nodes',
-    issuable:             'ee/issuable/issuable_bundle.js',
     issues:               'ee/issues/issues_bundle.js',
     ldap_group_links:     'ee/groups/ldap_group_links.js',
     mirrors:              'ee/mirrors',
