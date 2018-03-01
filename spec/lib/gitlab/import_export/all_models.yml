@@ -20,6 +20,7 @@ issues:
 - issue_assignees
 - epic_issue
 - epic
+- closed_by
 events:
 - author
 - project
