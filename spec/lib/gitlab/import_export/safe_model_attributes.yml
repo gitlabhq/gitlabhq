@@ -15,7 +15,7 @@ Issue:
 - updated_by_id
 - confidential
 - closed_at
-- closed_by
+- closed_by_id
 - due_date
 - moved_to_id
 - lock_version
