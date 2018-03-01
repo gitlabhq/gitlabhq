@@ -73,6 +73,7 @@ export default () => {
       });
     },
   });
+<<<<<<< HEAD
 
   /**
    * EE only
@@ -142,4 +143,6 @@ export default () => {
       },
     });
   }
+=======
+>>>>>>> upstream/master
 };
