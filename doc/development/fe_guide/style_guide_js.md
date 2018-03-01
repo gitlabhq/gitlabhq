@@ -571,12 +571,6 @@ When using `v-for` you need to provide a *unique* `:key` attribute for each item
       </div>
     ```
 
-1. When using `v-for` with `template` the child item needs a `:key` attribute, since Vue doesn't allow for the `:key` to be in the `template` element.
-    ```html
-      <template v-for="(item, index) in items">
-        <span :key="index"></span>
-      </template>
-    ```
 
 1. When using `v-for` with `template` and there is more than one child element, the `:key` values must be unique. It's advised to use `kebab-case` namespaces.
     ```html
@@ -600,8 +594,6 @@ When using `v-for` you need to provide a *unique* `:key` attribute for each item
           </span>
         </div>
       ```
-  * Do not reuse the parent `:key` in the nested `v-for`
-
 
 
 Useful links:
