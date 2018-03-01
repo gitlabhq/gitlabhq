@@ -161,7 +161,7 @@ module Ci
       end
 
       before_transition pending: :running do |build|
-        build.metadata.save_timeout_state!
+        build.metadata.save_timeout_state! unless build.metadata.nil?
       end
     end
 
