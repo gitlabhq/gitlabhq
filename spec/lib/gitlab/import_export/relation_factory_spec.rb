@@ -29,6 +29,7 @@ describe Gitlab::ImportExport::RelationFactory do
         'service_id' => service_id,
         'push_events' => true,
         'issues_events' => false,
+        'confidential_issues_events' => false,
         'merge_requests_events' => true,
         'tag_push_events' => false,
         'note_events' => true,

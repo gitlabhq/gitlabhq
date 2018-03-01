@@ -27,6 +27,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
         expect(json_response.count).to eq(1)
         expect(json_response.first['url']).to eq("http://example.com")
         expect(json_response.first['issues_events']).to eq(true)
+        expect(json_response.first['confidential_issues_events']).to eq(true)
         expect(json_response.first['push_events']).to eq(true)
         expect(json_response.first['merge_requests_events']).to eq(true)
         expect(json_response.first['tag_push_events']).to eq(true)
@@ -54,6 +55,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['url']).to eq(hook.url)
         expect(json_response['issues_events']).to eq(hook.issues_events)
+        expect(json_response['confidential_issues_events']).to eq(hook.confidential_issues_events)
         expect(json_response['push_events']).to eq(hook.push_events)
         expect(json_response['merge_requests_events']).to eq(hook.merge_requests_events)
         expect(json_response['tag_push_events']).to eq(hook.tag_push_events)
@@ -87,12 +89,13 @@ describe API::ProjectHooks, 'ProjectHooks' do
     it "adds hook to project" do
       expect do
         post v3_api("/projects/#{project.id}/hooks", user),
-          url: "http://example.com", issues_events: true, wiki_page_events: true, build_events: true
+          url: "http://example.com", issues_events: true, confidential_issues_events: true, wiki_page_events: true, build_events: true
       end.to change {project.hooks.count}.by(1)
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['url']).to eq('http://example.com')
       expect(json_response['issues_events']).to eq(true)
+      expect(json_response['confidential_issues_events']).to eq(true)
       expect(json_response['push_events']).to eq(true)
       expect(json_response['merge_requests_events']).to eq(false)
       expect(json_response['tag_push_events']).to eq(false)
@@ -139,6 +142,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['url']).to eq('http://example.org')
       expect(json_response['issues_events']).to eq(hook.issues_events)
+      expect(json_response['confidential_issues_events']).to eq(hook.confidential_issues_events)
       expect(json_response['push_events']).to eq(false)
       expect(json_response['merge_requests_events']).to eq(hook.merge_requests_events)
       expect(json_response['tag_push_events']).to eq(hook.tag_push_events)
