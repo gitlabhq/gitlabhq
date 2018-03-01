@@ -39,6 +39,14 @@ describe Gitlab::UntrustedRegexp do
 
       expect(result).to be_falsy
     end
+
+    it 'can handle regular expressions in multiline mode' do
+      regexp = described_class.new('^\d', multiline: true)
+
+      result = regexp === "Header\n\n1. Content"
+
+      expect(result).to be_truthy
+    end
   end
 
   describe '#scan' do
