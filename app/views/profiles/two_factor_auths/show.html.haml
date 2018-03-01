@@ -4,8 +4,6 @@
 
 
 - content_for :page_specific_javascripts do
-  - if inject_u2f_api?
-    = webpack_bundle_tag('u2f')
   = webpack_bundle_tag('two_factor_auth')
 
 .js-two-factor-auth{ 'data-two-factor-skippable' => "#{two_factor_skippable?}", 'data-two_factor_skip_url' => skip_profile_two_factor_auth_path }
