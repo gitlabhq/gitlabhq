@@ -213,9 +213,10 @@ describe Projects::ClustersController do
     end
 
     def go
-      get :metrics, format: :json, namespace_id: project.namespace,
-          project_id: project,
-          id: cluster
+      get :metrics, format: :json,
+                    namespace_id: project.namespace,
+                    project_id: project,
+                    id: cluster
     end
 
     describe 'security' do
@@ -470,8 +471,8 @@ describe Projects::ClustersController do
 
     def go
       delete :destroy, namespace_id: project.namespace,
-             project_id: project,
-             id: cluster
+                       project_id: project,
+                       id: cluster
     end
   end
 end
