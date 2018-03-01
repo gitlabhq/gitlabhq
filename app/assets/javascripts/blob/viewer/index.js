@@ -38,6 +38,9 @@ export default class BlobViewer {
       case 'pdf':
         initViewer(import(/* webpackChunkName: 'pdf_viewer' */ '../pdf_viewer'));
         break;
+      case 'sketch':
+        initViewer(import(/* webpackChunkName: 'sketch_viewer' */ '../sketch_viewer'));
+        break;
       default:
         break;
     }
