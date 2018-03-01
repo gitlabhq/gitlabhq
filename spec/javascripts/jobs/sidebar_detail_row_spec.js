@@ -53,5 +53,4 @@ describe('Sidebar detail row', () => {
   it('should render help when helpUrl is provided', () => {
     expect(vm.$el.querySelector('.help-button a').getAttribute('href')).toEqual('help url');
   });
-
 });

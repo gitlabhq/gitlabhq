@@ -1,6 +1,5 @@
 module Ci
   class BuildPresenter < Gitlab::View::Presenter::Delegated
-
     presents :build
 
     def erased_by_user?
