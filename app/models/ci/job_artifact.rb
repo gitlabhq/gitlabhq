@@ -6,7 +6,6 @@ module Ci
     belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id
 
     before_save :set_size, if: :file_changed?
-    before_save :set_checksum, if: :file_changed?
 
     mount_uploader :file, JobArtifactUploader
 
@@ -24,10 +23,6 @@ module Ci
 
     def set_size
       self.size = file.size
-    end
-
-    def set_checksum
-      self.checksum = file.checksum
     end
 
     def expire_in

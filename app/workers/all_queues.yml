@@ -104,5 +104,3 @@
 - update_user_activity
 - upload_checksum
 - web_hook
-
-- object_storage:update_artifact_checksum_worker

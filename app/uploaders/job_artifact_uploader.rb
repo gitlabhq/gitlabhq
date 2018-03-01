@@ -9,12 +9,6 @@ class JobArtifactUploader < GitlabUploader
     model.size
   end
 
-  def checksum
-    return calc_checksum if model.checksum.nil?
-
-    model.checksum
-  end
-
   def store_dir
     dynamic_segment
   end
@@ -26,12 +20,6 @@ class JobArtifactUploader < GitlabUploader
   end
 
   private
-
-  def calc_checksum
-    use_file do |file_path|
-      return Digest::SHA256.file(file_path).hexdigest
-    end
-  end
 
   def dynamic_segment
     creation_date = model.created_at.utc.strftime('%Y_%m_%d')
