@@ -125,6 +125,7 @@ module Gitlab
           FileUtils.touch(temp_path)
           size = IO.copy_stream(src_stream, temp_path)
           raise 'Not all saved' unless size == src_stream.size
+
           yield(temp_path)
         end
       end

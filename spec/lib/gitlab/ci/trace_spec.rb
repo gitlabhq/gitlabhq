@@ -439,7 +439,7 @@ describe Gitlab::Ci::Trace do
         expect(build.old_trace).to be_nil
         expect(src_checksum)
           .to eq(Digest::SHA256.file(build.job_artifacts_trace.file.path).digest)
-        end
+      end
     end
 
     shared_examples 'source trace in database stays intact' do |error:|
@@ -463,7 +463,7 @@ describe Gitlab::Ci::Trace do
 
         context 'when failed to create clone file' do
           before do
-            allow_any_instance_of(Gitlab::Ci::Trace)
+            allow_any_instance_of(described_class)
               .to receive(:clone_file!).and_raise('Not all saved')
           end
 
@@ -474,7 +474,7 @@ describe Gitlab::Ci::Trace do
           before do
             allow_any_instance_of(Ci::JobArtifact).to receive(:save).and_return(false)
             allow_any_instance_of(Ci::JobArtifact).to receive_message_chain(:errors, :full_messages)
-              .and_return(["Error", 'Error'])
+              .and_return(%w[Error Error])
           end
 
           it_behaves_like 'source trace file stays intact', error: ActiveRecord::RecordInvalid
@@ -494,7 +494,7 @@ describe Gitlab::Ci::Trace do
 
         context 'when failed to create clone file' do
           before do
-            allow_any_instance_of(Gitlab::Ci::Trace)
+            allow_any_instance_of(described_class)
               .to receive(:clone_file!).and_raise('Not all saved')
           end
 
@@ -505,7 +505,7 @@ describe Gitlab::Ci::Trace do
           before do
             allow_any_instance_of(Ci::JobArtifact).to receive(:save).and_return(false)
             allow_any_instance_of(Ci::JobArtifact).to receive_message_chain(:errors, :full_messages)
-              .and_return(["Error", 'Error'])
+              .and_return(%w[Error Error])
           end
 
           it_behaves_like 'source trace in database stays intact', error: ActiveRecord::RecordInvalid
@@ -519,7 +519,7 @@ describe Gitlab::Ci::Trace do
       end
 
       it 'does not archive' do
-        expect_any_instance_of(Gitlab::Ci::Trace).not_to receive(:archive_stream!)
+        expect_any_instance_of(described_class).not_to receive(:archive_stream!)
         expect { subject }.to raise_error('Already archived')
         expect(build.job_artifacts_trace.file.exists?).to be_truthy
       end
@@ -529,7 +529,7 @@ describe Gitlab::Ci::Trace do
       let!(:build) { create(:ci_build, :running, :trace_live) }
 
       it 'does not archive' do
-        expect_any_instance_of(Gitlab::Ci::Trace).not_to receive(:archive_stream!)
+        expect_any_instance_of(described_class).not_to receive(:archive_stream!)
         expect { subject }.to raise_error('Job is not finished yet')
         expect(build.trace.exist?).to be_truthy
       end
