@@ -2,18 +2,17 @@ module Gitlab
   module Kubernetes
     module Helm
       class Pod
-        def initialize(command, namespace_name, kubeclient)
+        def initialize(command, namespace_name)
           @command = command
           @namespace_name = namespace_name
-          @kubeclient = kubeclient
         end
 
         def generate
           spec = { containers: [container_specification], restartPolicy: 'Never' }
 
-          if command.chart_values_file
-            create_config_map
+          if command.config_map?
             spec[:volumes] = volumes_specification
+            spec[:containers][0][:volumeMounts] = volume_mounts_specification
           end
 
           ::Kubeclient::Resource.new(metadata: metadata, spec: spec)
@@ -21,18 +20,16 @@ module Gitlab
 
         private
 
-        attr_reader :command, :namespace_name, :kubeclient
+        attr_reader :command, :namespace_name, :kubeclient, :config_map
 
         def container_specification
-          container = {
+          {
             name: 'helm',
             image: 'alpine:3.6',
             env: generate_pod_env(command),
             command: %w(/bin/sh),
             args: %w(-c $(COMMAND_SCRIPT))
           }
-          container[:volumeMounts] = volume_mounts_specification if command.chart_values_file
-          container
         end
 
         def labels
@@ -50,13 +47,12 @@ module Gitlab
           }
         end
 
-        def volume_mounts_specification
-          [
-            {
-              name: 'configuration-volume',
-              mountPath: "/data/helm/#{command.name}/config"
-            }
-          ]
+        def generate_pod_env(command)
+          {
+            HELM_VERSION: Gitlab::Kubernetes::Helm::HELM_VERSION,
+            TILLER_NAMESPACE: namespace_name,
+            COMMAND_SCRIPT: command.generate_script
+          }.map { |key, value| { name: key, value: value } }
         end
 
         def volumes_specification
@@ -71,23 +67,13 @@ module Gitlab
           ]
         end
 
-        def generate_pod_env(command)
-          {
-            HELM_VERSION: Gitlab::Kubernetes::Helm::HELM_VERSION,
-            TILLER_NAMESPACE: namespace_name,
-            COMMAND_SCRIPT: command.generate_script(namespace_name)
-          }.map { |key, value| { name: key, value: value } }
-        end
-
-        def create_config_map
-          resource = ::Kubeclient::Resource.new
-          resource.metadata = {
-            name: "values-content-configuration-#{command.name}",
-            namespace: namespace_name,
-            labels: { name: "values-content-configuration-#{command.name}" }
-          }
-          resource.data = { values: File.read(command.chart_values_file) }
-          kubeclient.create_config_map(resource)
+        def volume_mounts_specification
+          [
+            {
+              name: 'configuration-volume',
+              mountPath: "/data/helm/#{command.name}/config"
+            }
+          ]
         end
       end
     end

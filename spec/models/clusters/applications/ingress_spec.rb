@@ -1,15 +1,15 @@
 require 'rails_helper'
 
 describe Clusters::Applications::Ingress do
-  it { is_expected.to belong_to(:cluster) }
-  it { is_expected.to validate_presence_of(:cluster) }
+  let(:ingress) { create(:clusters_applications_ingress) }
+
+  include_examples 'cluster application core specs', :clusters_applications_ingress
+  include_examples 'cluster application status specs', :cluster_application_ingress
 
   before do
     allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)
     allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
   end
-
-  include_examples 'cluster application specs', described_class
 
   describe '#make_installed!' do
     before do
@@ -50,6 +50,29 @@ describe Clusters::Applications::Ingress do
       it 'does not schedule a ClusterWaitForIngressIpAddressWorker' do
         expect(ClusterWaitForIngressIpAddressWorker).not_to have_received(:perform_in)
       end
+    end
+  end
+
+  describe '#install_command' do
+    subject { ingress.install_command }
+
+    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::InstallCommand) }
+
+    it 'should be initialized with ingress arguments' do
+      expect(subject.name).to eq('ingress')
+      expect(subject.chart).to eq('stable/nginx-ingress')
+      expect(subject.values).to eq(ingress.values)
+    end
+  end
+
+  describe '#values' do
+    subject { ingress.values }
+
+    it 'should include ingress valid keys' do
+      is_expected.to include('image')
+      is_expected.to include('repository')
+      is_expected.to include('stats')
+      is_expected.to include('podAnnotations')
     end
   end
 end
