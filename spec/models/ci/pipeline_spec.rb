@@ -167,46 +167,15 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
-  describe 'pipeline variables' do
-    describe '#predefined_variables' do
-      subject { pipeline.predefined_variables }
+  describe '#predefined_variables' do
+    subject { pipeline.predefined_variables }
 
-      it { is_expected.to be_an(Array) }
+    it { is_expected.to be_an(Array) }
 
-      it 'includes the defined keys' do
-        keys = subject.map { |v| v.fetch(:key) }
+    it 'includes the defined keys' do
+      keys = subject.map { |v| v[:key] }
 
-        expect(keys).to include('CI_PIPELINE_ID', 'CI_CONFIG_PATH', 'CI_PIPELINE_SOURCE')
-      end
-
-      it 'includes project-level predefined variables' do
-        keys = subject.map { |v| v.fetch(:key) }
-
-        expect(keys).to include('CI_PROJECT_NAME')
-      end
-    end
-
-    describe '#priority_variables' do
-      before do
-        pipeline.variables.build(key: 'MY_VAR', value: 'my var')
-      end
-
-      it 'returns trigger variables' do
-        expect(pipeline.priority_variables)
-          .to include(key: 'MY_VAR', value: 'my var', public: false)
-      end
-    end
-
-    describe '#runtime_variables' do
-      before do
-        pipeline.variables.build(key: 'MY_VAR', value: 'my var')
-      end
-
-      it 'includes predefined and priority variables' do
-        variables = pipeline.runtime_variables.map { |v| v.fetch(:key) }
-
-        expect(variables).to include('MY_VAR', 'CI_PIPELINE_ID', 'CI_PROJECT_ID')
-      end
+      expect(keys).to include('CI_PIPELINE_ID', 'CI_CONFIG_PATH', 'CI_PIPELINE_SOURCE')
     end
   end
 
@@ -1276,28 +1245,6 @@ describe Ci::Pipeline, :mailer do
 
       it 'retries both builds' do
         expect(latest_status).to contain_exactly('pending', 'created')
-      end
-    end
-  end
-
-  describe '#ref_slug' do
-    {
-      'master'                => 'master',
-      '1-foo'                 => '1-foo',
-      'fix/1-foo'             => 'fix-1-foo',
-      'fix-1-foo'             => 'fix-1-foo',
-      'a' * 63                => 'a' * 63,
-      'a' * 64                => 'a' * 63,
-      'FOO'                   => 'foo',
-      '-' + 'a' * 61 + '-'    => 'a' * 61,
-      '-' + 'a' * 62 + '-'    => 'a' * 62,
-      '-' + 'a' * 63 + '-'    => 'a' * 62,
-      'a' * 62 + ' '          => 'a' * 62
-    }.each do |ref, slug|
-      it "transforms #{ref} to #{slug}" do
-        pipeline.ref = ref
-
-        expect(pipeline.ref_slug).to eq(slug)
       end
     end
   end

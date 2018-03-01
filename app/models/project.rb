@@ -1582,21 +1582,15 @@ class Project < ActiveRecord::Base
   end
 
   def predefined_variables
-    variables = [
+    [
       { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
       { key: 'CI_PROJECT_NAME', value: path, public: true },
       { key: 'CI_PROJECT_PATH', value: full_path, public: true },
       { key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug, public: true },
       { key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true },
       { key: 'CI_PROJECT_URL', value: web_url, public: true },
-      { key: 'CI_PROJECT_VISIBILITY', value: Gitlab::VisibilityLevel.string_level(visibility_level), public: true },
-      { key: 'GITLAB_FEATURES', value: namespace.features.join(','), public: true }
+      { key: 'CI_PROJECT_VISIBILITY', value: Gitlab::VisibilityLevel.string_level(visibility_level), public: true }
     ]
-
-    variables += container_registry_variables
-    variables += auto_devops_variables
-
-    variables
   end
 
   def container_registry_variables

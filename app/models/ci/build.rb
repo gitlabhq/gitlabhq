@@ -35,7 +35,6 @@ module Ci
     serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
 
     delegate :name, to: :project, prefix: true
-    delegate :ref_slug, to: :pipeline
 
     validates :coverage, numericality: true, allow_blank: true
     validates :ref, presence: true
@@ -234,6 +233,17 @@ module Ci
       user == current_user
     end
 
+    # A slugified version of the build ref, suitable for inclusion in URLs and
+    # domain names. Rules:
+    #
+    #   * Lowercased
+    #   * Anything not matching [a-z0-9-] is replaced with a -
+    #   * Maximum length is 63 bytes
+    #   * First/Last Character is not a hyphen
+    def ref_slug
+      Gitlab::Utils.slugify(ref.to_s)
+    end
+
     # Variables whose value does not depend on environment
     def simple_variables
       variables(environment: nil)
@@ -243,18 +253,22 @@ module Ci
     # contain unexpanded variables.
     def variables(environment: persisted_environment)
       variables = predefined_variables
+      variables += project.predefined_variables
       variables += pipeline.predefined_variables
       variables += runner.predefined_variables if runner
+      variables += project.container_registry_variables
       variables += project.deployment_variables if has_environment?
+      variables += project.auto_devops_variables
       variables += yaml_variables
       variables += user_variables
       variables += project.group.secret_variables_for(ref, project).map(&:to_runner_variable) if project.group
       variables += secret_variables(environment: environment)
       variables += trigger_request.user_variables if trigger_request
+      variables += pipeline.variables.map(&:to_runner_variable)
+      variables += pipeline.pipeline_schedule.job_variables if pipeline.pipeline_schedule
       variables += persisted_environment_variables if environment
-      variables += pipeline.priority_variables
 
-      variables.reverse.uniq { |variable| variable.fetch(:key) }.reverse
+      variables
     end
 
     def features
@@ -527,15 +541,25 @@ module Ci
 
     def predefined_variables
       variables = [
+        { key: 'CI', value: 'true', public: true },
+        { key: 'GITLAB_CI', value: 'true', public: true },
+        { key: 'GITLAB_FEATURES', value: project.namespace.features.join(','), public: true },
+        { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
+        { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
+        { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true },
         { key: 'CI_JOB_ID', value: id.to_s, public: true },
         { key: 'CI_JOB_NAME', value: name, public: true },
         { key: 'CI_JOB_STAGE', value: stage, public: true },
         { key: 'CI_JOB_TOKEN', value: token, public: false },
+        { key: 'CI_COMMIT_SHA', value: sha, public: true },
+        { key: 'CI_COMMIT_REF_NAME', value: ref, public: true },
+        { key: 'CI_COMMIT_REF_SLUG', value: ref_slug, public: true },
         { key: 'CI_REGISTRY_USER', value: CI_REGISTRY_USER, public: true },
         { key: 'CI_REGISTRY_PASSWORD', value: token, public: false },
         { key: 'CI_REPOSITORY_URL', value: repo_url, public: false }
       ]
 
+      variables << { key: "CI_COMMIT_TAG", value: ref, public: true } if tag?
       variables << { key: "CI_PIPELINE_TRIGGERED", value: 'true', public: true } if trigger_request
       variables << { key: "CI_JOB_MANUAL", value: 'true', public: true } if action?
       variables.concat(legacy_variables)
