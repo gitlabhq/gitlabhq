@@ -1,7 +1,7 @@
 module API
   class ProjectExport < Grape::API
     before do
-      not_found! unless Gitlab::CurrentSettings.current_application_settings.project_export_enabled?
+      not_found! unless Gitlab::CurrentSettings.project_export_enabled?
       authorize_admin_project
     end
 
