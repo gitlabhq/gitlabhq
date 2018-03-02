@@ -22,11 +22,13 @@ export default class FilteredSearchManager {
     page,
     isGroup = false,
     isGroupAncestor = false,
+    isGroupDecendent = false,
     filteredSearchTokenKeys = FilteredSearchTokenKeys,
     stateFiltersSelector = '.issues-state-filters',
   }) {
     this.isGroup = isGroup;
     this.isGroupAncestor = isGroupAncestor;
+    this.isGroupDecendent = isGroupDecendent;
     this.states = ['opened', 'closed', 'merged', 'all'];
 
     this.page = page;

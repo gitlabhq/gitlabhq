@@ -16,6 +16,7 @@ export default class FilteredSearchDropdownManager {
     page,
     isGroup,
     isGroupAncestor,
+    isGroupDecendent,
     filteredSearchTokenKeys,
   }) {
     this.container = FilteredSearchContainer.container;
@@ -26,6 +27,7 @@ export default class FilteredSearchDropdownManager {
     this.page = page;
     this.groupsOnly = isGroup;
     this.groupAncestor = isGroupAncestor;
+    this.isGroupDecendent = isGroupDecendent;
 
     this.setupMapping();
 
