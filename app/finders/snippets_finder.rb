@@ -61,25 +61,25 @@ class SnippetsFinder < UnionFinder
   # Returns a collection of projects that is either public or visible to the
   # logged in user.
   #
-  # A caller may pass in a block to modify individual parts of
+  # A caller must pass in a block to modify individual parts of
   # the query, e.g. to apply .with_feature_available_for_user on top of it.
   # This is useful for performance as we can stick those additional filters
   # at the bottom of e.g. the UNION.
-  def projects_for_user(&block)
-    return block.call(Project.public_to_user) unless current_user
+  def projects_for_user
+    return yield(Project.public_to_user) unless current_user
 
     # If the current_user is allowed to see all projects,
     # we can shortcut and just return.
-    return block.call(Project.all) if current_user.full_private_access?
+    return yield(Project.all) if current_user.full_private_access?
 
     authorized = current_user
       .project_authorizations
       .select(1)
       .where('project_authorizations.project_id = projects.id')
-    authorized_projects = block.call(Project.where('EXISTS (?)', authorized))
+    authorized_projects = yield(Project.where('EXISTS (?)', authorized))
 
     levels = Gitlab::VisibilityLevel.levels_for_user(current_user)
-    visible_projects = block.call(Project.where(visibility_level: levels))
+    visible_projects = yield(Project.where(visibility_level: levels))
 
     # We use a UNION here instead of OR clauses since this results in better
     # performance.
