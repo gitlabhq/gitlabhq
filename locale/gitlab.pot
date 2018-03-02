@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-01 22:35+0100\n"
-"PO-Revision-Date: 2018-03-01 22:35+0100\n"
+"POT-Creation-Date: 2018-03-02 13:39+0100\n"
+"PO-Revision-Date: 2018-03-02 13:39+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -821,6 +821,9 @@ msgstr ""
 msgid "ClusterIntegration|Copy CA Certificate"
 msgstr ""
 
+msgid "ClusterIntegration|Copy Ingress IP Address to clipboard"
+msgstr ""
+
 msgid "ClusterIntegration|Copy Kubernetes cluster name"
 msgstr ""
 
@@ -867,6 +870,9 @@ msgid "ClusterIntegration|Helm Tiller"
 msgstr ""
 
 msgid "ClusterIntegration|Ingress"
+msgstr ""
+
+msgid "ClusterIntegration|Ingress IP Address"
 msgstr ""
 
 msgid "ClusterIntegration|Install"
@@ -2221,6 +2227,9 @@ msgstr ""
 msgid "Monitoring"
 msgstr ""
 
+msgid "More information"
+msgstr ""
+
 msgid "More information is available|here"
 msgstr ""
 
@@ -3003,6 +3012,9 @@ msgid "Select target branch"
 msgstr ""
 
 msgid "Selective synchronization"
+msgstr ""
+
+msgid "Send email"
 msgstr ""
 
 msgid "Sep"
