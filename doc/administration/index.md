@@ -79,10 +79,18 @@ created in snippets, wikis, and repos.
 - [Sign-up restrictions](../user/admin_area/settings/sign_up_restrictions.md): block email addresses of specific domains, or whitelist only specific domains.
 - [Access restrictions](../user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols): Define which Git access protocols can be used to talk to GitLab (SSH, HTTP, HTTPS).
 - [Authentication/Authorization](../topics/authentication/index.md#gitlab-administrators): Enforce 2FA, configure external authentication with LDAP, SAML, CAS and additional Omniauth providers.
-- [Reply by email](reply_by_email.md): Allow users to comment on issues and merge requests by replying to notification emails.
-  - [Postfix for Reply by email](reply_by_email_postfix_setup.md): Set up a basic Postfix mail
+- [Incoming email](incoming_email.md): Configure incoming emails to allow
+  users to [reply by email], create [issues by email] and
+  [merge requests by email], and to enable [Service Desk].
+  - [Postfix for incoming email](reply_by_email_postfix_setup.md): Set up a
+  basic Postfix mail server with IMAP authentication on Ubuntu for incoming
+  emails.
 server with IMAP authentication on Ubuntu, to be used with Reply by email.
 - [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
+
+[reply by email]: reply_by_email.md
+[issues by email]: ../user/project/issues/create_new_issue.md#new-issue-via-email
+[merge requests by email]: ../user/project/merge_requests/index.md#create-new-merge-requests-by-email
 
 ## Project settings
 

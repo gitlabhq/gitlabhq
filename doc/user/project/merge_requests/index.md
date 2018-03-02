@@ -134,6 +134,10 @@ those conflicts in the GitLab UI.
 
 ## Create new merge requests by email
 
+*This feature needs [incoming email](../../../administration/incoming_email.md)
+to be configured by a GitLab administrator to be available for CE/EE users, and
+it's available on GitLab.com.*
+
 You can create a new merge request by sending an email to a user-specific email
 address. The address can be obtained on the merge requests page by clicking on
 a **Email a new merge request to this project** button.  The subject will be
