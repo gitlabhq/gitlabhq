@@ -454,9 +454,85 @@ wal_keep_segments = 10
 hot_standby = on
 ```
 
+#### Tracking Database for the Secondary nodes
+
+NOTE: **Note**:
+You only need to follow the steps below if you are not using the managed
+PostgreSQL from a Omnibus GitLab package.
+
 Geo secondary nodes use a tracking database to keep track of replication
-status and recover automatically from some replication issues. Follow the
-instructions for [enabling tracking database on the secondary server][tracking].
+status and recover automatically from some replication issues. 
+
+This is a separate PostgreSQL installation that can be configured to use
+FDW to connect with the secondary database for improved performance.
+
+To enable an external PostgreSQL instance as tracking database, follow
+the instructions below:
+
+1. Edit `/etc/gitlab/gitlab.rb` with the connection params and credentials
+
+```ruby
+# note this is shared between both databases, 
+# make sure you define the same password in both
+gitlab_rails['db_password'] = 'mypassword'
+
+geo_secondary['db_host'] = '2.3.4.5' # change to the correct public IP
+geo_secondary['db_port'] = 5431      # change to the correct port
+geo_secondary['db_fdw'] = true       # enable FDW
+geo_postgresql['enable'] = false     # don't use internal managed instance
+```
+
+1. Reconfigure GitLab for the changes to take effect:
+
+    ```bash
+    gitlab-ctl reconfigure
+    ```
+    
+1. Run the tracking database migrations:
+
+    ```bash
+    gitlab-rake geo:db:migrate
+    ```
+
+1. Configure the [PostgreSQL FDW][FDW] connection and credentials:
+
+    Save the script below in a file, ex. `/tmp/geo_fdw.sh` and modify the connection
+    params to match your environment. Execute it to setup the FDW connection.
+    
+    ```bash
+    #!/bin/bash
+  
+    # Secondary Database connection params:
+    DB_HOST="5.6.7.8" # change to the public IP or VPC private IP
+    DB_NAME="gitlabhq_production"
+    DB_USER="gitlab"
+    DB_PORT="5432"
+    
+    # Tracking Database connection params:
+    GEO_DB_HOST="2.3.4.5" # change to the public IP or VPC private IP
+    GEO_DB_NAME="gitlabhq_geo_production"
+    GEO_DB_USER="gitlab_geo"
+    GEO_DB_PORT="5432"
+ 
+    query_exec () {
+      gitlab-psql -h $GEO_DB_HOST -d $GEO_DB_NAME -p $GEO_DB_PORT -c "${1}"
+    }
+ 
+    query_exec "CREATE EXTENSION postgres_fdw;"
+    query_exec "CREATE SERVER gitlab_secondary FOREIGN DATA WRAPPER postgres_fdw OPTIONS (host '${DB_HOST}', dbname '${DB_NAME}', port '${DB_PORT}');"
+    query_exec "CREATE USER MAPPING FOR ${GEO_DB_USER} SERVER gitlab_secondary OPTIONS (user '${DB_USER}');"
+    query_exec "CREATE SCHEMA gitlab_secondary;"
+    query_exec "GRANT USAGE ON FOREIGN SERVER gitlab_secondary TO ${GEO_DB_USER};"
+    ```
+    
+    NOTE: **Note:** The script template above uses `gitlab-psql` as it's intended to be executed from the Geo machine,
+    but you can change it to `psql` and run it from any machine that has access to the database.
+    
+1. Restart GitLab
+
+    ```bash
+    gitlab-ctl restart
+    ```
 
 ## MySQL replication
 
