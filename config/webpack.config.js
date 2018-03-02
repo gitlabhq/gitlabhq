@@ -63,7 +63,6 @@ function generateEntries() {
 
     // EE-only
     geo_nodes:            'ee/geo_nodes',
-    mirrors:              'ee/mirrors',
     service_desk:         'ee/projects/settings_service_desk/service_desk_bundle.js',
   };
 
