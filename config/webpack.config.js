@@ -64,7 +64,6 @@ function generateEntries() {
 
     // EE-only
     add_gitlab_slack_application: 'ee/add_gitlab_slack_application/index.js',
-    burndown_chart:       'ee/burndown_chart/index.js',
     geo_nodes:            'ee/geo_nodes',
     ldap_group_links:     'ee/groups/ldap_group_links.js',
     mirrors:              'ee/mirrors',
