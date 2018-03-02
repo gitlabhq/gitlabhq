@@ -37,7 +37,7 @@ module Projects
       error(e.message)
     ensure
       register_attempt
-      build.erase_artifacts! unless build.has_expiring_artifacts?
+      build.reload.erase_artifacts! unless build.has_expiring_artifacts?
     end
 
     private
