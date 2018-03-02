@@ -541,7 +541,7 @@ POST /projects/:id/merge_requests
 | `labels`                   | string  | no       | Labels for MR as a comma-separated list                                         |
 | `milestone_id`             | integer | no       | The ID of a milestone                                                           |
 | `remove_source_branch`     | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
-| `allow_maintainer_to_push` | boolean | no       | Wether or not a maintainer of the target project can push to the source branch  |
+| `allow_maintainer_to_push` | boolean | no       | Whether or not a maintainer of the target project can push to the source branch  |
 
 ```json
 {
@@ -628,7 +628,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 | `state_event`              | string  | no       | New state (close/reopen)                                                        |
 | `remove_source_branch`     | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
 | `discussion_locked`        | boolean | no       | Flag indicating if the merge request's discussion is locked. If the discussion is locked only project members can add, edit or resolve comments. |
-| `allow_maintainer_to_push` | boolean | no       | Wether or not a maintainer of the target project can push to the source branch |
+| `allow_maintainer_to_push` | boolean | no       | Whether or not a maintainer of the target project can push to the source branch |
 
 Must include at least one non-required attribute from above.
 
