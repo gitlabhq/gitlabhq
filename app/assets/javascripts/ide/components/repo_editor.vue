@@ -19,21 +19,11 @@ export default {
     shouldHideEditor() {
       return this.activeFile && this.activeFile.binary && !this.activeFile.raw;
     },
-    activeFileChanged() {
-      return this.activeFile && this.activeFile.changed;
-    },
   },
   watch: {
     activeFile(oldVal, newVal) {
       if (newVal && !newVal.active) {
         this.initMonaco();
-      }
-    },
-    activeFileChanged(newVal) {
-      if (!this.editor) return;
-
-      if (!newVal && this.model) {
-        this.model.setValue(this.model.getOriginalModel().getValue());
       }
     },
     leftPanelCollapsed() {
@@ -92,11 +82,13 @@ export default {
 
       this.editor.attachModel(this.model);
 
-      this.model.onChange((m) => {
-        if (this.model.file.active) {
+      this.model.onChange((model) => {
+        const { file } = this.model;
+
+        if (file.active) {
           this.changeFileContent({
-            file: this.model.file,
-            content: m.getValue(),
+            file,
+            content: model.getValue(),
           });
         }
       });

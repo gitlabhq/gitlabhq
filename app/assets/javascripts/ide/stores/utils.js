@@ -32,7 +32,7 @@ export const dataStructure = () => ({
   rawPath: '',
   binary: false,
   html: '',
-  raw: '',
+  raw: undefined,
   content: '',
   parentTreeUrl: '',
   renderError: false,
