@@ -319,6 +319,23 @@ module Gitlab
         [signature, signed_text]
       end
 
+      def get_commit_signatures(commit_ids)
+        request = Gitaly::GetCommitSignaturesRequest.new(repository: @gitaly_repo, commit_ids: commit_ids)
+        response = GitalyClient.call(@repository.storage, :commit_service, :get_commit_signatures, request)
+
+        signatures = Hash.new { |h, k| h[k] = [''.b, ''.b] }
+        current_commit_id = nil
+
+        response.each do |message|
+          current_commit_id = message.commit_id if message.commit_id.present?
+
+          signatures[current_commit_id].first << message.signature
+          signatures[current_commit_id].last << message.signed_text
+        end
+
+        signatures
+      end
+
       private
 
       def call_commit_diff(request_params, options = {})
