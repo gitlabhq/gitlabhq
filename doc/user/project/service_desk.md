@@ -53,7 +53,7 @@ Service Desk is enabled on GitLab.com. If you're a
 [Silver subscriber](https://about.gitlab.com/gitlab-com/),
 you can skip the step 1 below; you only need to enable it per project.
 
-1.   [Set up reply by email][reply-by-email] for the GitLab instance. This must
+1.   [Set up incoming email][incoming-email] for the GitLab instance. This must
      support [email sub-addressing][email-sub-addressing].
 2.   Navigate to your project's **Settings** and scroll down to the **Service Desk**
      section.
@@ -119,7 +119,7 @@ does not count toward the license limit count.
 [ee-149]: https://gitlab.com/gitlab-org/gitlab-ee/issues/149 "Service Desk with email"
 [ee]: https://about.gitlab.com/products/ "GitLab Enterprise Edition landing page"
 [eep-9.1]: https://about.gitlab.com/2017/04/22/gitlab-9-1-released/#service-desk-eep
-[reply-by-email]: ../../administration/reply_by_email.md#set-it-up
+[incoming-email]: ../../administration/incoming_email.md#set-it-up
 [email-sub-addressing]: ../../administration/reply_by_email.md#email-sub-addressing
 [confidential]: ./issues/confidential_issues.md "Confidential issues"
 [akismet]: ../../integration/akismet.md
