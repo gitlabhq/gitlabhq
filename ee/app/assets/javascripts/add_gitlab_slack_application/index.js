@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import AddGitlabSlackApplication from './components/add_gitlab_slack_application.vue';
 
-function mountAddGitlabSlackApplication() {
+export default () => {
   const el = document.getElementById('js-add-gitlab-slack-application-entry-point');
 
   if (!el) return;
@@ -23,8 +23,4 @@ function mountAddGitlabSlackApplication() {
       docsPath: initialData.docs_path,
     },
   }).$mount(el);
-}
-
-document.addEventListener('DOMContentLoaded', mountAddGitlabSlackApplication);
-
-export default mountAddGitlabSlackApplication;
+};

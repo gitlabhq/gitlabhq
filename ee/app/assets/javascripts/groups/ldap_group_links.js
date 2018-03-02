@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+export default () => {
   const showGroupLink = () => {
     const $cnLink = $('.cn-link');
     const $filterLink = $('.filter-link');
@@ -12,4 +12,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
   $('input[name="sync_method"]').on('change', showGroupLink);
   showGroupLink();
-});
+};
