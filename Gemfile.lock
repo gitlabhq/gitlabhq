@@ -1108,6 +1108,7 @@ DEPENDENCIES
   grape-entity (~> 0.6.0)
   grape-route-helpers (~> 2.1.0)
   grape_logging (~> 1.7)
+  grpc (~> 1.8.3)
   gssapi
   haml_lint (~> 0.26.0)
   hamlit (~> 2.6.1)
