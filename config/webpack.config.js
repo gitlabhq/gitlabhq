@@ -50,10 +50,7 @@ function generateEntries() {
   const manualEntries = {
     monitoring:           './monitoring/monitoring_bundle.js',
     mr_notes:             './mr_notes/index.js',
-<<<<<<< HEAD
-=======
     protected_branches:   './protected_branches',
->>>>>>> upstream/master
     terminal:             './terminal/terminal_bundle.js',
     two_factor_auth:      './two_factor_auth.js',
 
