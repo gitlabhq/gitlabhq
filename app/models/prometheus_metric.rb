@@ -7,7 +7,6 @@ class PrometheusMetric < ActiveRecord::Base
   validates :group, presence: true
   validates :y_label, presence: true
   validates :unit, presence: true
-  validates :legend, presence: true
 
   GROUP_TITLES = {
     business: _('Business metrics'),

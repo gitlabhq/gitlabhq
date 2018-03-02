@@ -4,10 +4,10 @@
       = s_('PrometheusService|Metrics')
     %p
       = s_('PrometheusService|Common metrics are automatically monitored based on a library of metrics from popular exporters.')
-      = link_to s_('PrometheusService|More information'), help_page_path('user/project/integrations/prometheus')
+      = link_to s_('PrometheusService|More information'), help_page_path('user/project/integrations/prometheus_library/metrics'), target: '_blank'
 
   .col-lg-9
-    .panel.panel-default.custom-monitored-metrics.js-panel-custom-monitored-metrics{ data: { active_custom_metrics: project_prometheus_metrics_path(@project, :json) } }
+    .panel.panel-default.custom-monitored-metrics.js-panel-custom-monitored-metrics{ data: { active_custom_metrics: project_prometheus_metrics_path(@project, :json), environments_data: environments_list_data } }
       .panel-heading
         %h3.panel-title
           = s_('PrometheusService|Custom metrics')

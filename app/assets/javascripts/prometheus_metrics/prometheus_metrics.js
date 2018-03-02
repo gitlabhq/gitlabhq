@@ -70,8 +70,9 @@ export default class PrometheusMetrics {
     });
 
     if (totalMonitoredMetrics === 0) {
+      const docsUrl = 'https://docs.gitlab.com/ee/user/project/integrations/prometheus_library/metrics.html';
       this.$monitoredMetricsEmpty.empty();
-      this.$monitoredMetricsEmpty.append('<p>No common metrics were found</p>');
+      this.$monitoredMetricsEmpty.append(`<p>No <a href="${docsUrl}">common metrics</a>were found</p>`);
       this.showMonitoringMetricsPanelState(PANEL_STATE.EMPTY);
     } else {
       this.$monitoredMetricsCount.text(totalMonitoredMetrics);

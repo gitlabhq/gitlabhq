@@ -2,6 +2,8 @@ import _ from 'underscore';
 import PrometheusMetrics from '~/prometheus_metrics/prometheus_metrics';
 import PANEL_STATE from '~/prometheus_metrics/constants';
 import axios from '~/lib/utils/axios_utils';
+import { s__ } from '~/locale';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
 function customMetricTemplate(metric) {
   return `
@@ -26,8 +28,10 @@ export default class EEPrometheusMetrics extends PrometheusMetrics {
     this.$newCustomMetricButton = this.$monitoredCustomMetricsPanel.find('.js-new-metric-button');
     this.$flashCustomMetricsContainer = this.$wrapperCustomMetrics.find('.flash-container');
     this.customMetrics = [];
+    this.environmentsData = [];
 
     this.activeCustomMetricsEndpoint = this.$monitoredCustomMetricsPanel.data('active-custom-metrics');
+    this.environmentsDataEndpoint = this.$monitoredCustomMetricsPanel.data('environments-data-endpoint');
     this.customMetricsEndpoint = this.activeCustomMetricsEndpoint.replace('.json', '/');
   }
 
@@ -77,12 +81,21 @@ export default class EEPrometheusMetrics extends PrometheusMetrics {
   }
 
   populateCustomMetrics() {
-    this.customMetrics.forEach((metric) => {
+    const sortedMetrics = _(this.customMetrics).chain()
+      .map(metric => ({ ...metric, group: capitalizeFirstCharacter(metric.group) }))
+      .sortBy('title')
+      .sortBy('group')
+      .value();
+
+    sortedMetrics.forEach((metric) => {
       this.$monitoredCustomMetricsList.append(customMetricTemplate(metric));
     });
 
     this.$monitoredCustomMetricsCount.text(this.customMetrics.length);
     this.showMonitoringCustomMetricsPanelState(PANEL_STATE.LIST);
+    if (!this.environmentsData) {
+      this.showFlashMessage(s__('PrometheusService|These metrics will only be monitored after your first deployment to an environment'));
+    }
     this.$monitoredCustomMetricsList.find('.delete-custom-metric').on('click', (event) => {
       this.deleteMetric(event.currentTarget);
     });
@@ -95,19 +108,26 @@ export default class EEPrometheusMetrics extends PrometheusMetrics {
 
   loadActiveCustomMetrics() {
     super.loadActiveMetrics();
-    axios.get(this.activeCustomMetricsEndpoint)
-    .then(resp => resp.data)
-    .then((response) => {
-      if (!response || !response.metrics) {
+    Promise.all([
+      axios.get(this.activeCustomMetricsEndpoint)
+        .then(resp => resp.data)
+        .catch(err => err),
+      axios.get(this.environmentsDataEndpoint)
+        .then(resp => resp.data)
+        .catch(err => err),
+    ])
+      .then(([customMetrics, environmentsData]) => {
+        this.environmentsData = environmentsData.environments;
+        if (!customMetrics || !customMetrics.metrics) {
+          this.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
+        } else {
+          this.customMetrics = customMetrics.metrics;
+          this.populateCustomMetrics(customMetrics.metrics);
+        }
+      })
+      .catch((customMetricError) => {
+        this.showFlashMessage(customMetricError);
         this.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
-      } else {
-        this.customMetrics = response.metrics;
-        this.populateCustomMetrics(response.metrics);
-      }
-    })
-    .catch((err) => {
-      this.showFlashMessage(err);
-      this.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
-    });
+      });
   }
 }

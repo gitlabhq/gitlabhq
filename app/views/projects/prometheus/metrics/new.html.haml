@@ -1,4 +1,3 @@
-- @no_container = true
 - add_to_breadcrumbs "Settings", edit_project_path(@project)
 - add_to_breadcrumbs "Integrations", project_settings_integrations_path(@project)
 - add_to_breadcrumbs "Prometheus", edit_project_service_path(@project, PrometheusService)
@@ -6,7 +5,4 @@
 - page_title "New metric"
 
 %div{ class: container_class }
-  %h3.page-title
-    New metric
-  %hr
   = render 'form', project: @project, metric: @metric

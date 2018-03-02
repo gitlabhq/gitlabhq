@@ -33,11 +33,7 @@ describe Gitlab::PrometheusClient do
         req_stub = stub_prometheus_request(query_url, status: 400)
 
         expect { execute_query }
-<<<<<<< HEAD
-          .to raise_error(Gitlab::PrometheusClient::QueryError, 'Bad data received')
-=======
           .to raise_error(Gitlab::PrometheusClient::Error, 'Bad data received')
->>>>>>> master
         expect(req_stub).to have_been_requested
       end
     end
@@ -85,11 +81,7 @@ describe Gitlab::PrometheusClient do
         expect(req_stub).to have_been_requested
       end
 
-<<<<<<< HEAD
-      it 'raises a Gitlab::PrometheusClient::Error error when a HTTParty::Error is rescued' do
-=======
       it 'raises a Gitlab::PrometheusClient::Error error when a RestClient::Exception is rescued' do
->>>>>>> master
         req_stub = stub_prometheus_request_with_exception(prometheus_url, RestClient::Exception)
 
         expect { subject.send(:get, '/', {}) }
