@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe Groups::LabelsController do
-  let(:group) { create(:group) }
-  let(:user)  { create(:user) }
-  let(:project) { create(:project, namespace: group) }
+  set(:group) { create(:group) }
+  set(:user)  { create(:user) }
+  set(:project) { create(:project, namespace: group) }
 
   before do
     group.add_owner(user)
@@ -12,8 +12,8 @@ describe Groups::LabelsController do
   end
 
   describe 'GET #index' do
-    let!(:label_1) { create(:label, project: project, title: 'label_1') }
-    let!(:group_label_1) { create(:group_label, group: group, title: 'group_label_1') }
+    set(:label_1) { create(:label, project: project, title: 'label_1') }
+    set(:group_label_1) { create(:group_label, group: group, title: 'group_label_1') }
 
     it 'returns group and project labels by default' do
       get :index, group_id: group, format: :json
@@ -23,8 +23,8 @@ describe Groups::LabelsController do
     end
 
     context 'with ancestor group', :nested_groups do
-      let(:subgroup) { create(:group, parent: group) }
-      let!(:subgroup_label_1) { create(:group_label, group: subgroup, title: 'subgroup_label_1') }
+      set(:subgroup) { create(:group, parent: group) }
+      set(:subgroup_label_1) { create(:group_label, group: subgroup, title: 'subgroup_label_1') }
 
       before do
         subgroup.add_owner(user)
