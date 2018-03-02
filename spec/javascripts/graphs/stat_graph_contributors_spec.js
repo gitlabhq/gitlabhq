@@ -1,5 +1,5 @@
-import ContributorsStatGraph from '~/graphs/stat_graph_contributors';
-import { ContributorsGraph } from '~/graphs/stat_graph_contributors_graph';
+import ContributorsStatGraph from '~/pages/projects/graphs/show/stat_graph_contributors';
+import { ContributorsGraph } from '~/pages/projects/graphs/show/stat_graph_contributors_graph';
 
 import { setLanguage } from '../helpers/locale_helper';
 

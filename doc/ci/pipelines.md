@@ -121,8 +121,9 @@ The basic requirements is that there are two numbers separated with one of
 the following (you can even use them interchangeably):
 
 - a space
-- a backslash (`/`)
+- a forward slash (`/`)
 - a colon (`:`)
+- a dot (`.`)
 
 >**Note:**
 More specifically, [it uses][regexp] this regular expression: `\d+[\s:\/\\]+\d+\s*`.

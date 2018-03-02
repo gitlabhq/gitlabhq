@@ -1,6 +1,5 @@
 - breadcrumb_title "Edit Profile"
 - @content_class = "limit-container-width" unless fluid_layout
-= render 'profiles/head'
 
 = bootstrap_form_for @user, url: profile_path, method: :put, html: { multipart: true, class: 'edit-user prepend-top-default js-quick-submit' }, authenticity_token: true do |f|
   = form_errors(@user)
@@ -20,8 +19,8 @@
             or change it at #{link_to Gitlab.config.gravatar.host, 'https://' + Gitlab.config.gravatar.host}
     .col-lg-8
       .clearfix.avatar-image.append-bottom-default
-        = link_to avatar_icon(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
-          = image_tag avatar_icon(@user, 160), alt: '', class: 'avatar s160'
+        = link_to avatar_icon_for_user(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
+          = image_tag avatar_icon_for_user(@user, 160), alt: '', class: 'avatar s160'
       %h5.prepend-top-0= _("Upload new avatar")
       .prepend-top-5.append-bottom-10
         %button.btn.js-choose-user-avatar-button{ type: 'button' }= _("Choose file...")

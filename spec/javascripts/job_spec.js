@@ -10,6 +10,7 @@ describe('Job', () => {
   const JOB_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/-/jobs/1`;
   let mock;
   let response;
+  let job;
 
   function waitForPromise() {
     return new Promise(resolve => requestAnimationFrame(resolve));
@@ -22,6 +23,8 @@ describe('Job', () => {
 
     spyOn(urlUtils, 'visitUrl');
 
+    response = {};
+
     mock = new MockAdapter(axios);
 
     mock.onGet(new RegExp(`${JOB_URL}/trace.json?(.*)`)).reply(() => [200, response]);
@@ -30,7 +33,7 @@ describe('Job', () => {
   afterEach(() => {
     mock.restore();
 
-    response = {};
+    clearTimeout(job.timeout);
   });
 
   describe('class constructor', () => {
@@ -43,15 +46,19 @@ describe('Job', () => {
     });
 
     describe('setup', () => {
-      beforeEach(function () {
-        this.job = new Job();
+      beforeEach(function (done) {
+        job = new Job();
+
+        waitForPromise()
+          .then(done)
+          .catch(done.fail);
       });
 
       it('copies build options', function () {
-        expect(this.job.pagePath).toBe(JOB_URL);
-        expect(this.job.buildStatus).toBe('success');
-        expect(this.job.buildStage).toBe('test');
-        expect(this.job.state).toBe('');
+        expect(job.pagePath).toBe(JOB_URL);
+        expect(job.buildStatus).toBe('success');
+        expect(job.buildStage).toBe('test');
+        expect(job.state).toBe('');
       });
 
       it('only shows the jobs matching the current stage', () => {
@@ -84,12 +91,12 @@ describe('Job', () => {
           complete: false,
         };
 
-        this.job = new Job();
+        job = new Job();
 
         waitForPromise()
           .then(() => {
             expect($('#build-trace .js-build-output').text()).toMatch(/Update/);
-            expect(this.job.state).toBe('newstate');
+            expect(job.state).toBe('newstate');
 
             response = {
               html: '<span>More</span>',
@@ -103,7 +110,7 @@ describe('Job', () => {
           .then(waitForPromise)
           .then(() => {
             expect($('#build-trace .js-build-output').text()).toMatch(/UpdateMore/);
-            expect(this.job.state).toBe('finalstate');
+            expect(job.state).toBe('finalstate');
           })
           .then(done)
           .catch(done.fail);
@@ -117,7 +124,7 @@ describe('Job', () => {
           complete: false,
         };
 
-        this.job = new Job();
+        job = new Job();
 
         waitForPromise()
           .then(() => {
@@ -151,7 +158,7 @@ describe('Job', () => {
             total: 100,
           };
 
-          this.job = new Job();
+          job = new Job();
 
           waitForPromise()
             .then(() => {
@@ -172,7 +179,7 @@ describe('Job', () => {
             total: 100,
           };
 
-          this.job = new Job();
+          job = new Job();
 
           waitForPromise()
             .then(() => {
@@ -191,9 +198,10 @@ describe('Job', () => {
             append: false,
             size: 50,
             total: 100,
+            complete: false,
           };
 
-          this.job = new Job();
+          job = new Job();
 
           waitForPromise()
             .then(() => {
@@ -207,6 +215,7 @@ describe('Job', () => {
                 append: true,
                 size: 10,
                 total: 100,
+                complete: true,
               };
             })
             .then(() => jasmine.clock().tick(4001))
@@ -229,7 +238,7 @@ describe('Job', () => {
             total: 100,
           };
 
-          this.job = new Job();
+          job = new Job();
 
           expect(
             document.querySelector('.js-raw-link').textContent.trim(),
@@ -247,7 +256,7 @@ describe('Job', () => {
             total: 100,
           };
 
-          this.job = new Job();
+          job = new Job();
 
           waitForPromise()
             .then(() => {
@@ -269,7 +278,7 @@ describe('Job', () => {
           total: 100,
         };
 
-        this.job = new Job();
+        job = new Job();
 
         waitForPromise()
           .then(done)
@@ -296,7 +305,7 @@ describe('Job', () => {
     it('should request build trace with state parameter', (done) => {
       spyOn(axios, 'get').and.callThrough();
       // eslint-disable-next-line no-new
-      new Job();
+      job = new Job();
 
       setTimeout(() => {
         expect(axios.get).toHaveBeenCalledWith(

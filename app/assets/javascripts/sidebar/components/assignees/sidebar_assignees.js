@@ -1,6 +1,6 @@
 import Flash from '../../../flash';
 import AssigneeTitle from './assignee_title';
-import Assignees from './assignees';
+import Assignees from './assignees.vue';
 import Store from '../../stores/sidebar_store';
 import eventHub from '../../event_hub';
 
@@ -28,8 +28,8 @@ export default {
     },
   },
   components: {
-    'assignee-title': AssigneeTitle,
-    assignees: Assignees,
+    AssigneeTitle,
+    Assignees,
   },
   methods: {
     assignSelf() {

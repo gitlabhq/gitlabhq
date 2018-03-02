@@ -85,16 +85,16 @@ class Import::GoogleCodeController < Import::BaseController
   end
 
   def create
-    @repo_id = params[:repo_id]
-    repo = client.repo(@repo_id)
-    @target_namespace = current_user.namespace
-    @project_name = repo.name
-
-    namespace = @target_namespace
-
+    repo = client.repo(params[:repo_id])
     user_map = session[:google_code_user_map]
 
-    @project = Gitlab::GoogleCodeImport::ProjectCreator.new(repo, namespace, current_user, user_map).execute
+    project = Gitlab::GoogleCodeImport::ProjectCreator.new(repo, current_user.namespace, current_user, user_map).execute
+
+    if project.persisted?
+      render json: ProjectSerializer.new.represent(project)
+    else
+      render json: { errors: project.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   private

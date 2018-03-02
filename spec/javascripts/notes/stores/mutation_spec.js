@@ -1,7 +1,7 @@
 import mutations from '~/notes/stores/mutations';
 import { note, discussionMock, notesDataMock, userDataMock, noteableDataMock, individualNote } from '../mock_data';
 
-describe('Mutation Notes Store', () => {
+describe('Notes Store mutations', () => {
   describe('ADD_NEW_NOTE', () => {
     let state;
     let noteData;
@@ -103,7 +103,8 @@ describe('Mutation Notes Store', () => {
       };
 
       mutations.SET_INITIAL_NOTES(state, [note]);
-      expect(state.notes).toEqual([note]);
+      expect(state.notes[0].id).toEqual(note.id);
+      expect(state.notes.length).toEqual(1);
     });
   });
 

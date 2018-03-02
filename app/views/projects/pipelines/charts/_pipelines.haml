@@ -1,6 +1,3 @@
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag('pipelines_charts')
-
 %h4= _("Pipelines charts")
 %p
   &nbsp;
@@ -29,6 +26,7 @@
     = _("Pipelines for last year")
   %canvas#yearChart.padded{ height: 250 }
 
+-# haml-lint:disable InlineJavaScript
 %script#pipelinesChartsData{ type: "application/json" }
   - chartData = []
   - [:week, :month, :year].each do |scope|

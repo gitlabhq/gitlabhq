@@ -1,6 +1,7 @@
 module Groups
   class ChildrenController < Groups::ApplicationController
     before_action :group
+    skip_cross_project_access_check :index
 
     def index
       parent = if params[:parent_id].present?

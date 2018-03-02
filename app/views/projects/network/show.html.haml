@@ -1,20 +1,18 @@
 - breadcrumb_title "Graph"
 - page_title "Graph", @ref
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('network')
 = render "head"
 %div{ class: container_class }
   .project-network
     .controls
       = form_tag project_network_path(@project, @id), method: :get, class: 'form-inline network-form' do |f|
-        = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: "Git revision", class: 'search-input form-control input-mx-250 search-sha'
+        = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: _("Git revision"), class: 'search-input form-control input-mx-250 search-sha'
         = button_tag class: 'btn btn-success' do
           = icon('search')
         .inline.prepend-left-20
           .checkbox.light
             = label_tag :filter_ref do
               = check_box_tag :filter_ref, 1, @options[:filter_ref]
-              %span Begin with the selected commit
+              %span= _("Begin with the selected commit")
 
     - if @commit
       .network-graph{ data: { url: @url, commit_url: @commit_url, ref: @ref, commit_id: @commit.id } }

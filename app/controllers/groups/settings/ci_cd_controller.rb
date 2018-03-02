@@ -1,6 +1,7 @@
 module Groups
   module Settings
     class CiCdController < Groups::ApplicationController
+      skip_cross_project_access_check :show
       before_action :authorize_admin_pipeline!
 
       def show

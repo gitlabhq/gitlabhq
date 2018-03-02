@@ -28,9 +28,9 @@ module Gitlab
 
       # encode and clean the bad chars
       message.replace clean(message)
-    rescue ArgumentError
-      return nil
-    rescue
+    rescue ArgumentError => e
+      return unless e.message.include?('unknown encoding name')
+
       encoding = detect ? detect[:encoding] : "unknown"
       "--broken encoding: #{encoding}"
     end

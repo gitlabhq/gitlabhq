@@ -17,7 +17,8 @@ module QA
         start = Time.now
 
         while Time.now - start < max
-          return true if yield
+          result = yield
+          return result if result
 
           sleep(time)
 
@@ -95,6 +96,10 @@ module QA
         end
 
         views.map(&:errors).flatten
+      end
+
+      def self.elements
+        views.map(&:elements).flatten
       end
 
       class DSL

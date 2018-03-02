@@ -1,5 +1,0 @@
----
-title: Execute system hooks after-commit when executing project hooks
-merge_request:
-author:
-type: fixed

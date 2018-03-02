@@ -242,23 +242,73 @@ describe Repository do
   end
 
   describe '#commits' do
-    it 'sets follow when path is a single path' do
-      expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: true)).and_call_original.twice
-
-      repository.commits('master', limit: 1, path: 'README.md')
-      repository.commits('master', limit: 1, path: ['README.md'])
+    context 'when neither the all flag nor a ref are specified' do
+      it 'returns every commit from default branch' do
+        expect(repository.commits(limit: 60).size).to eq(37)
+      end
     end
 
-    it 'does not set follow when path is multiple paths' do
-      expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
+    context 'when ref is passed' do
+      it 'returns every commit from the specified ref' do
+        expect(repository.commits('master', limit: 60).size).to eq(37)
+      end
 
-      repository.commits('master', limit: 1, path: ['README.md', 'CHANGELOG'])
+      context 'when all' do
+        it 'returns every commit from the repository' do
+          expect(repository.commits('master', limit: 60, all: true).size).to eq(60)
+        end
+      end
+
+      context 'with path' do
+        it 'sets follow when it is a single path' do
+          expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: true)).and_call_original.twice
+
+          repository.commits('master', limit: 1, path: 'README.md')
+          repository.commits('master', limit: 1, path: ['README.md'])
+        end
+
+        it 'does not set follow when it is multiple paths' do
+          expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
+
+          repository.commits('master', limit: 1, path: ['README.md', 'CHANGELOG'])
+        end
+      end
+
+      context 'without path' do
+        it 'does not set follow' do
+          expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
+
+          repository.commits('master', limit: 1)
+        end
+      end
     end
 
-    it 'does not set follow when there are no paths' do
-      expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
+    context "when 'all' flag is set" do
+      it 'returns every commit from the repository' do
+        expect(repository.commits(all: true, limit: 60).size).to eq(60)
+      end
+    end
+  end
 
-      repository.commits('master', limit: 1)
+  describe '#new_commits' do
+    let(:new_refs) do
+      double(:git_rev_list, new_refs: %w[
+        c1acaa58bbcbc3eafe538cb8274ba387047b69f8
+        5937ac0a7beb003549fc5fd26fc247adbce4a52e
+      ])
+    end
+
+    it 'delegates to Gitlab::Git::RevList' do
+      expect(Gitlab::Git::RevList).to receive(:new).with(
+        repository.raw,
+        newrev: 'aaaabbbbccccddddeeeeffffgggghhhhiiiijjjj').and_return(new_refs)
+
+      commits = repository.new_commits('aaaabbbbccccddddeeeeffffgggghhhhiiiijjjj')
+
+      expect(commits).to eq([
+        repository.commit('c1acaa58bbcbc3eafe538cb8274ba387047b69f8'),
+        repository.commit('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
+      ])
     end
   end
 
@@ -847,6 +897,18 @@ describe Repository do
     it 'returns nil when the content is not recognizable' do
       repository.create_file(user, 'LICENSE', 'Copyright!',
         message: 'Add LICENSE', branch_name: 'master')
+
+      expect(repository.license_key).to be_nil
+    end
+
+    it 'returns nil when the commit SHA does not exist' do
+      allow(repository.head_commit).to receive(:sha).and_return('1' * 40)
+
+      expect(repository.license_key).to be_nil
+    end
+
+    it 'returns nil when master does not exist' do
+      repository.rm_branch(user, 'master')
 
       expect(repository.license_key).to be_nil
     end

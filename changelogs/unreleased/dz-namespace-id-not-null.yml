@@ -1,0 +1,5 @@
+---
+title: Add NOT NULL constraint to projects.namespace_id
+merge_request: 17448
+author:
+type: other

@@ -159,7 +159,18 @@ class Issue < ActiveRecord::Base
       object.all_references(current_user, extractor: ext)
     end
 
-    ext.merge_requests.sort_by(&:iid)
+    merge_requests = ext.merge_requests.sort_by(&:iid)
+
+    cross_project_filter = -> (merge_requests) do
+      merge_requests.select { |mr| mr.target_project == project }
+    end
+
+    Ability.merge_requests_readable_by_user(
+      merge_requests, current_user,
+      filters: {
+        read_cross_project: cross_project_filter
+      }
+    )
   end
 
   # All branches containing the current issue's ID, except for

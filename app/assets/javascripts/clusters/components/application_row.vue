@@ -32,9 +32,9 @@
         type: String,
         required: false,
       },
-      description: {
+      manageLink: {
         type: String,
-        required: true,
+        required: false,
       },
       status: {
         type: String,
@@ -89,6 +89,12 @@
 
         return label;
       },
+      showManageButton() {
+        return this.manageLink && this.status === APPLICATION_INSTALLED;
+      },
+      manageButtonLabel() {
+        return s__('ClusterIntegration|Manage');
+      },
       hasError() {
         return this.status === APPLICATION_ERROR ||
         this.requestStatus === REQUEST_FAILURE;
@@ -138,12 +144,24 @@
         class="table-section section-wrap"
         role="gridcell"
       >
-        <div v-html="description"></div>
+        <slot name="description"></slot>
       </div>
       <div
-        class="table-section table-button-footer section-15 section-align-top"
+        class="table-section table-button-footer section-align-top"
+        :class="{ 'section-20': showManageButton, 'section-15': !showManageButton }"
         role="gridcell"
       >
+        <div
+          v-if="showManageButton"
+          class="btn-group table-action-buttons"
+        >
+          <a
+            class="btn"
+            :href="manageLink"
+          >
+            {{ manageButtonLabel }}
+          </a>
+        </div>
         <div class="btn-group table-action-buttons">
           <loading-button
             class="js-cluster-application-install-button"

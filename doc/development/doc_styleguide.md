@@ -236,6 +236,11 @@ Inside the document:
 
 ## New features
 
+New features must be shipped with its accompanying documentation and the doc
+reviewed by a technical writer.
+
+### Mentioning GitLab versions and tiers
+
 - Every piece of documentation that comes with a new feature should declare the
   GitLab version that feature got introduced. Right below the heading add a
   note:
@@ -244,7 +249,7 @@ Inside the document:
     > Introduced in GitLab 8.3.
     ```
 
-- If possible every feature should have a link to the MR that introduced it.
+- If possible every feature should have a link to the MR, issue, or epic that introduced it.
   The above note would be then transformed to:
 
     ```
@@ -254,11 +259,12 @@ Inside the document:
     , where the [link identifier](#links) is named after the repository (CE) and
     the MR number.
 
-- If the feature is only in GitLab Enterprise Edition, don't forget to mention
-  it, like:
+- If the feature is only available in GitLab Enterprise Edition, don't forget to mention
+  the [paid tier](https://about.gitlab.com/handbook/marketing/product-marketing/#tiers)
+  the feature is available in:
 
     ```
-    > Introduced in GitLab Enterprise Edition 8.3.
+    > [Introduced][ee-1234] in [GitLab Starter](https://about.gitlab.com/products/) 8.3.
     ```
 
     Otherwise, leave this mention out.

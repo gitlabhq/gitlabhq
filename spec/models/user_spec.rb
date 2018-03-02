@@ -496,6 +496,14 @@ describe User do
         user2.update_tracked_fields!(request)
       end.to change { user2.reload.current_sign_in_at }
     end
+
+    it 'does not write if the DB is in read-only mode' do
+      expect(Gitlab::Database).to receive(:read_only?).and_return(true)
+
+      expect do
+        user.update_tracked_fields!(request)
+      end.not_to change { user.reload.current_sign_in_at }
+    end
   end
 
   shared_context 'user keys' do
@@ -890,6 +898,14 @@ describe User do
 
         expect(key.user.require_ssh_key?).to eq(false)
       end
+    end
+  end
+
+  describe '.find_for_database_authentication' do
+    it 'strips whitespace from login' do
+      user = create(:user)
+
+      expect(described_class.find_for_database_authentication({ login: " #{user.username} " })).to eq user
     end
   end
 
@@ -1586,14 +1602,37 @@ describe User do
   describe '#authorized_groups' do
     let!(:user) { create(:user) }
     let!(:private_group) { create(:group) }
+    let!(:child_group) { create(:group, parent: private_group) }
+
+    let!(:project_group) { create(:group) }
+    let!(:project) { create(:project, group: project_group) }
 
     before do
       private_group.add_user(user, Gitlab::Access::MASTER)
+      project.add_master(user)
     end
 
     subject { user.authorized_groups }
 
-    it { is_expected.to eq([private_group]) }
+    it { is_expected.to contain_exactly private_group, project_group }
+  end
+
+  describe '#membership_groups' do
+    let!(:user) { create(:user) }
+    let!(:parent_group) { create(:group) }
+    let!(:child_group) { create(:group, parent: parent_group) }
+
+    before do
+      parent_group.add_user(user, Gitlab::Access::MASTER)
+    end
+
+    subject { user.membership_groups }
+
+    if Group.supports_nested_groups?
+      it { is_expected.to contain_exactly parent_group, child_group }
+    else
+      it { is_expected.to contain_exactly parent_group }
+    end
   end
 
   describe '#authorized_projects', :delete do

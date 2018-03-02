@@ -1,5 +1,3 @@
-import initGroupsList from '../../../../groups';
+import initGroupsList from '~/groups';
 
-export default () => {
-  initGroupsList();
-};
+document.addEventListener('DOMContentLoaded', initGroupsList);

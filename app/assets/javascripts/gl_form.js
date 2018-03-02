@@ -1,5 +1,4 @@
-/* global autosize */
-
+import autosize from 'autosize';
 import GfmAutoComplete from './gfm_auto_complete';
 import dropzoneInput from './dropzone_input';
 import textUtils from './lib/utils/text_markdown';
@@ -13,7 +12,7 @@ export default class GLForm {
     this.destroy();
     // Setup the form
     this.setupForm();
-    this.form.data('gl-form', this);
+    this.form.data('glForm', this);
   }
 
   destroy() {
@@ -22,7 +21,7 @@ export default class GLForm {
     if (this.autoComplete) {
       this.autoComplete.destroy();
     }
-    this.form.data('gl-form', null);
+    this.form.data('glForm', null);
   }
 
   setupForm() {

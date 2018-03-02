@@ -1,8 +1,7 @@
 %h3 Specific Runners
 
-= render partial: 'ci/runner/how_to_setup_runner',
-         locals: { registration_token: @project.runners_token,
-                   type: 'specific' }
+= render partial: 'ci/runner/how_to_setup_specific_runner',
+         locals: { registration_token: @project.runners_token }
 
 - if @project_runners.any?
   %h4.underlined-title Runners activated for this project

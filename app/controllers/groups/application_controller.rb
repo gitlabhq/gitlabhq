@@ -1,10 +1,12 @@
 class Groups::ApplicationController < ApplicationController
   include RoutableActions
+  include ControllerWithCrossProjectAccessCheck
 
   layout 'group'
 
   skip_before_action :authenticate_user!
   before_action :group
+  requires_cross_project_access
 
   private
 
@@ -14,10 +16,6 @@ class Groups::ApplicationController < ApplicationController
 
   def group_projects
     @projects ||= GroupProjectsFinder.new(group: group, current_user: current_user).execute
-  end
-
-  def group_merge_requests
-    @group_merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id).execute
   end
 
   def authorize_admin_group!

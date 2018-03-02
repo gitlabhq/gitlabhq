@@ -1,5 +1,5 @@
 import ClustersIndex from '~/clusters/clusters_index';
 
-export default () => {
+document.addEventListener('DOMContentLoaded', () => {
   new ClustersIndex(); // eslint-disable-line no-new
-};
+});

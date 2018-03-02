@@ -89,5 +89,5 @@ end
 ## Best practices
 
 1. Note that this type of tests do not run within the transaction, we use
-a truncation database cleanup strategy. Do not depend on transaction being
+a deletion database cleanup strategy. Do not depend on transaction being
 present.

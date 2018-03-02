@@ -2,7 +2,7 @@
 import _ from 'underscore';
 import Cookies from 'js-cookie';
 import { __ } from './locale';
-import { isInIssuePage, updateTooltipTitle } from './lib/utils/common_utils';
+import { isInIssuePage, isInMRPage, hasVueMRDiscussionsCookie, updateTooltipTitle } from './lib/utils/common_utils';
 import flash from './flash';
 import axios from './lib/utils/axios_utils';
 
@@ -50,10 +50,8 @@ class AwardsHandler {
 
     this.registerEventListener('on', $('html'), 'click', (e) => {
       const $target = $(e.target);
-      if (!$target.closest('.emoji-menu-content').length) {
-        $('.js-awards-block.current').removeClass('current');
-      }
       if (!$target.closest('.emoji-menu').length) {
+        $('.js-awards-block.current').removeClass('current');
         if ($('.emoji-menu').is(':visible')) {
           $('.js-add-award.is-active').removeClass('is-active');
           this.hideMenuElement($('.emoji-menu'));
@@ -241,9 +239,9 @@ class AwardsHandler {
   }
 
   addAward(votesBlock, awardUrl, emoji, checkMutuality, callback) {
-    const isMainAwardsBlock = votesBlock.closest('.js-issue-note-awards').length;
+    const isMainAwardsBlock = votesBlock.closest('.js-noteable-awards').length;
 
-    if (isInIssuePage() && !isMainAwardsBlock) {
+    if (this.isInVueNoteablePage() && !isMainAwardsBlock) {
       const id = votesBlock.attr('id').replace('note_', '');
 
       this.hideMenuElement($('.emoji-menu'));
@@ -295,8 +293,16 @@ class AwardsHandler {
     }
   }
 
+  isVueMRDiscussions() {
+    return isInMRPage() && hasVueMRDiscussionsCookie() && !$('#diffs').is(':visible');
+  }
+
+  isInVueNoteablePage() {
+    return isInIssuePage() || this.isVueMRDiscussions();
+  }
+
   getVotesBlock() {
-    if (isInIssuePage()) {
+    if (this.isInVueNoteablePage()) {
       const $el = $('.js-add-award.is-active').closest('.note.timeline-entry');
 
       if ($el.length) {
@@ -314,7 +320,7 @@ class AwardsHandler {
   }
 
   getAwardUrl() {
-    return this.getVotesBlock().data('award-url');
+    return this.getVotesBlock().data('awardUrl');
   }
 
   checkMutuality(votesBlock, emoji) {

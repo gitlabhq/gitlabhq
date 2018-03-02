@@ -46,6 +46,11 @@
         required: false,
         default: '',
       },
+      secondaryButtonLabel: {
+        type: String,
+        required: false,
+        default: '',
+      },
       submitDisabled: {
         type: Boolean,
         required: false,
@@ -129,6 +134,21 @@
             >
               {{ closeButtonLabel }}
             </button>
+
+            <slot
+              v-if="secondaryButtonLabel"
+              name="secondary-button"
+            >
+              <button
+                v-if="secondaryButtonLabel"
+                type="button"
+                class="btn"
+                data-dismiss="modal"
+              >
+                {{ secondaryButtonLabel }}
+              </button>
+            </slot>
+
             <button
               v-if="primaryButtonLabel"
               type="button"

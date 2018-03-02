@@ -61,6 +61,48 @@ export const createNewNote = ({ commit }, { endpoint, data }) => service
 export const removePlaceholderNotes = ({ commit }) =>
   commit(types.REMOVE_PLACEHOLDER_NOTES);
 
+export const toggleResolveNote = ({ commit }, { endpoint, isResolved, discussion }) => service
+  .toggleResolveNote(endpoint, isResolved)
+  .then(res => res.json())
+  .then((res) => {
+    const mutationType = discussion ? types.UPDATE_DISCUSSION : types.UPDATE_NOTE;
+
+    commit(mutationType, res);
+  });
+
+export const closeIssue = ({ commit, dispatch, state }) => service
+  .toggleIssueState(state.notesData.closePath)
+  .then(res => res.json())
+  .then((data) => {
+    commit(types.CLOSE_ISSUE);
+    dispatch('emitStateChangedEvent', data);
+  });
+
+export const reopenIssue = ({ commit, dispatch, state }) => service
+  .toggleIssueState(state.notesData.reopenPath)
+  .then(res => res.json())
+  .then((data) => {
+    commit(types.REOPEN_ISSUE);
+    dispatch('emitStateChangedEvent', data);
+  });
+
+export const emitStateChangedEvent = ({ commit, getters }, data) => {
+  const event = new CustomEvent('issuable_vue_app:change', { detail: {
+    data,
+    isClosed: getters.openState === constants.CLOSED,
+  } });
+
+  document.dispatchEvent(event);
+};
+
+export const toggleIssueLocalState = ({ commit }, newState) => {
+  if (newState === constants.CLOSED) {
+    commit(types.CLOSE_ISSUE);
+  } else if (newState === constants.REOPENED) {
+    commit(types.REOPEN_ISSUE);
+  }
+};
+
 export const saveNote = ({ commit, dispatch }, noteData) => {
   const { note } = noteData.data.note;
   let placeholderText = note;
@@ -141,7 +183,7 @@ const pollSuccessCallBack = (resp, commit, state, getters) => {
     resp.notes.forEach((note) => {
       if (notesById[note.id]) {
         commit(types.UPDATE_NOTE, note);
-      } else if (note.type === constants.DISCUSSION_NOTE) {
+      } else if (note.type === constants.DISCUSSION_NOTE || note.type === constants.DIFF_NOTE) {
         const discussion = utils.findNoteObjectById(state.notes, note.discussion_id);
 
         if (discussion) {

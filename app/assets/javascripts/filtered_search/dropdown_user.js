@@ -1,9 +1,11 @@
 import Flash from '../flash';
 import AjaxFilter from '../droplab/plugins/ajax_filter';
-import './filtered_search_dropdown';
+import FilteredSearchDropdown from './filtered_search_dropdown';
 import { addClassIfElementExists } from '../lib/utils/dom_utils';
+import DropdownUtils from './dropdown_utils';
+import FilteredSearchTokenizer from './filtered_search_tokenizer';
 
-class DropdownUser extends gl.FilteredSearchDropdown {
+export default class DropdownUser extends FilteredSearchDropdown {
   constructor(options = {}) {
     const { tokenKeys } = options;
     super(options);
@@ -12,7 +14,6 @@ class DropdownUser extends gl.FilteredSearchDropdown {
         endpoint: `${gon.relative_url_root || ''}/autocomplete/users.json`,
         searchKey: 'search',
         params: {
-          per_page: 20,
           active: true,
           group_id: this.getGroupId(),
           project_id: this.getProjectId(),
@@ -56,8 +57,8 @@ class DropdownUser extends gl.FilteredSearchDropdown {
   }
 
   getSearchInput() {
-    const query = gl.DropdownUtils.getSearchInput(this.input);
-    const { lastToken } = gl.FilteredSearchTokenizer.processTokens(query, this.tokenKeys.get());
+    const query = DropdownUtils.getSearchInput(this.input);
+    const { lastToken } = FilteredSearchTokenizer.processTokens(query, this.tokenKeys.get());
 
     let value = lastToken || '';
 
@@ -78,6 +79,3 @@ class DropdownUser extends gl.FilteredSearchDropdown {
     this.droplab.addHook(this.input, this.dropdown, [AjaxFilter], this.config).init();
   }
 }
-
-window.gl = window.gl || {};
-gl.DropdownUser = DropdownUser;

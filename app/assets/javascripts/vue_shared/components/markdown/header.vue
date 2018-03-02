@@ -65,7 +65,8 @@
       </li>
       <li
         class="md-header-tab"
-        :class="{ active: previewMarkdown }">
+        :class="{ active: previewMarkdown }"
+      >
         <a
           class="js-preview-link"
           href="#md-preview-holder"

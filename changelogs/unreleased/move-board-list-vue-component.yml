@@ -1,5 +1,0 @@
----
-title: Move BoardList vue component to vue file
-merge_request: 16888
-author: George Tsiolis
-type: performance

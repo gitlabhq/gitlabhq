@@ -47,6 +47,8 @@ Parameters:
 | `author_id`         | integer  | no       | Returns merge requests created by the given user `id`. Combine with `scope=all` or `scope=assigned-to-me`              |
 | `assignee_id`       | integer  | no       | Returns merge requests assigned to the given user `id`                                                                 |
 | `my_reaction_emoji` | string   | no       | Return merge requests reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_ |
+| `source_branch`     | string   | no       | Return merge requests with the given source branch                                                                     |
+| `target_branch`     | string   | no       | Return merge requests with the given target branch                                                                     |
 | `search`            | string   | no       | Search merge requests against their `title` and `description`                                                          |
 
 ```json
@@ -162,6 +164,8 @@ Parameters:
 | `author_id`         | integer        | no       | Returns merge requests created by the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                 |
 | `assignee_id`       | integer        | no       | Returns merge requests assigned to the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                |
 | `my_reaction_emoji` | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_         |
+| `source_branch`     | string   | no       | Return merge requests with the given source branch                                                                     |
+| `target_branch`     | string   | no       | Return merge requests with the given target branch                                                                     |
 | `search`            | string         | no       | Search merge requests against their `title` and `description`                                                                  |
 
 ```json

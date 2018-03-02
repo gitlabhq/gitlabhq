@@ -13,7 +13,7 @@ module Gitlab
       authentication_abilities.include?(:download_code) && user_access.can_do_action?(:download_wiki_code)
     end
 
-    def check_single_change_access(change)
+    def check_single_change_access(change, _options = {})
       unless user_access.can_do_action?(:create_wiki)
         raise UnauthorizedError, ERROR_MESSAGES[:write_to_wiki]
       end
@@ -27,6 +27,12 @@ module Gitlab
 
     def push_to_read_only_message
       ERROR_MESSAGES[:read_only]
+    end
+
+    private
+
+    def repository
+      project.wiki.repository
     end
   end
 end

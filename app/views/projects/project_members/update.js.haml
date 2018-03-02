@@ -1,4 +1,0 @@
-:plain
-  var $listItem = $('#{escape_javascript(render('shared/members/member', member: @project_member))}');
-  $("##{dom_id(@project_member)} .list-item-name").replaceWith($listItem.find('.list-item-name'));
-  gl.utils.localTimeAgo($('.js-timeago'), $("##{dom_id(@project_member)}"));

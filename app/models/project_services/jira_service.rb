@@ -10,6 +10,8 @@ class JiraService < IssueTrackerService
 
   before_update :reset_password
 
+  alias_method :project_url, :url
+
   # This is confusing, but JiraService does not really support these events.
   # The values here are required to display correct options in the service
   # configuration screen.

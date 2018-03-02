@@ -1,0 +1,11 @@
+%p
+  Following a verification check, your GitLab Pages custom domain has been
+  enabled. You should now be able to view your content at #{link_to @domain.url, @domain.url}
+%p
+  Project: #{link_to @project.human_name, project_url(@project)}
+%p
+  Domain: #{link_to @domain.domain, project_pages_domain_url(@project, @domain)}
+%p
+  Please visit
+  = link_to 'these instructions', help_page_url('user/project/pages/getting_started_part_three.md', anchor: 'dns-txt-record')
+  for more information about custom domain verification.

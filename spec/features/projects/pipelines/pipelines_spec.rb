@@ -109,7 +109,8 @@ describe 'Pipelines', :js do
 
         context 'when canceling' do
           before do
-            accept_confirm { find('.js-pipelines-cancel-button').click }
+            find('.js-pipelines-cancel-button').click
+            find('.js-primary-button').click
             wait_for_requests
           end
 
@@ -140,6 +141,7 @@ describe 'Pipelines', :js do
         context 'when retrying' do
           before do
             find('.js-pipelines-retry-button').click
+            find('.js-primary-button').click
             wait_for_requests
           end
 
@@ -238,7 +240,8 @@ describe 'Pipelines', :js do
 
           context 'when canceling' do
             before do
-              accept_alert { find('.js-pipelines-cancel-button').click }
+              find('.js-pipelines-cancel-button').click
+              find('.js-primary-button').click
             end
 
             it 'indicates that pipeline was canceled' do
@@ -362,23 +365,6 @@ describe 'Pipelines', :js do
 
             expect(page).to have_content('canceled')
             expect(build.reload).to be_canceled
-          end
-        end
-
-        context 'dropdown jobs list' do
-          it 'should keep the dropdown open when the user ctr/cmd + clicks in the job name' do
-            find('.js-builds-dropdown-button').click
-            dropdown_item = find('.mini-pipeline-graph-dropdown-item').native
-
-            %i(alt control).each do |meta_key|
-              page.driver.browser.action
-                .key_down(meta_key)
-                .click(dropdown_item)
-                .key_up(meta_key)
-                .perform
-            end
-
-            expect(page).to have_selector('.js-ci-action-icon')
           end
         end
       end

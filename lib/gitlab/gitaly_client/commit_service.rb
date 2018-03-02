@@ -105,11 +105,12 @@ module Gitlab
         entry unless entry.oid.blank?
       end
 
-      def tree_entries(repository, revision, path)
+      def tree_entries(repository, revision, path, recursive)
         request = Gitaly::GetTreeEntriesRequest.new(
           repository: @gitaly_repo,
           revision: encode_binary(revision),
-          path: path.present? ? encode_binary(path) : '.'
+          path: path.present? ? encode_binary(path) : '.',
+          recursive: recursive
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :get_tree_entries, request, timeout: GitalyClient.medium_timeout)
@@ -222,14 +223,25 @@ module Gitlab
       end
 
       def find_commit(revision)
-        request = Gitaly::FindCommitRequest.new(
-          repository: @gitaly_repo,
-          revision: encode_binary(revision)
-        )
+        if RequestStore.active?
+          # We don't use RequeStstore.fetch(key) { ... } directly because `revision`
+          # can be a branch name, so we can't use it as a key as it could point
+          # to another commit later on (happens a lot in tests).
+          key = {
+            storage: @gitaly_repo.storage_name,
+            relative_path: @gitaly_repo.relative_path,
+            commit_id: revision
+          }
+          return RequestStore[key] if RequestStore.exist?(key)
 
-        response = GitalyClient.call(@repository.storage, :commit_service, :find_commit, request, timeout: GitalyClient.medium_timeout)
+          commit = call_find_commit(revision)
+          return unless commit
 
-        response.commit
+          key[:commit_id] = commit.id
+          RequestStore[key] = commit
+        else
+          call_find_commit(revision)
+        end
       end
 
       def patch(revision)
@@ -307,6 +319,23 @@ module Gitlab
         [signature, signed_text]
       end
 
+      def get_commit_signatures(commit_ids)
+        request = Gitaly::GetCommitSignaturesRequest.new(repository: @gitaly_repo, commit_ids: commit_ids)
+        response = GitalyClient.call(@repository.storage, :commit_service, :get_commit_signatures, request)
+
+        signatures = Hash.new { |h, k| h[k] = [''.b, ''.b] }
+        current_commit_id = nil
+
+        response.each do |message|
+          current_commit_id = message.commit_id if message.commit_id.present?
+
+          signatures[current_commit_id].first << message.signature
+          signatures[current_commit_id].last << message.signed_text
+        end
+
+        signatures
+      end
+
       private
 
       def call_commit_diff(request_params, options = {})
@@ -345,6 +374,17 @@ module Gitlab
 
       def encode_repeated(a)
         Google::Protobuf::RepeatedField.new(:bytes, a.map { |s| encode_binary(s) } )
+      end
+
+      def call_find_commit(revision)
+        request = Gitaly::FindCommitRequest.new(
+          repository: @gitaly_repo,
+          revision: encode_binary(revision)
+        )
+
+        response = GitalyClient.call(@repository.storage, :commit_service, :find_commit, request, timeout: GitalyClient.medium_timeout)
+
+        response.commit
       end
     end
   end

@@ -28,11 +28,44 @@ we still need to merge changes from GitLab CE to EE. To help us get there,
 we should make sure that we no longer edit CE files in place in order to
 implement EE features.
 
-Instead, all EE codes should be put inside the `ee/` top-level directory, and
-tests should be put inside `spec/ee/`. We don't use `ee/spec` for now due to
-technical limitation. The rest of codes should be as close as to the CE files.
+Instead, all EE code should be put inside the `ee/` top-level directory. The
+rest of the code should be as close to the CE files as possible.
 
 [single code base]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2952#note_41016454
+
+### Detection of EE-only files
+
+For each commit (except on `master`), the `ee-files-location-check` CI job tries
+to detect if there are any new files that are EE-only. If any file is detected,
+the job fails with an explanation of why and what to do to make it pass.
+
+Basically, the fix is simple: `git mv <file> ee/<file>`.
+
+#### How to name your branches?
+
+For any EE branch, the job will try to detect its CE counterpart by removing any
+`ee-` prefix or `-ee` suffix from the EE branch name, and matching the last
+branch that contains it.
+
+For instance, from the EE branch `new-shiny-feature-ee` (or
+`ee-new-shiny-feature`), the job would find the corresponding CE branches:
+
+- `new-shiny-feature`
+- `ce-new-shiny-feature`
+- `new-shiny-feature-ce`
+- `my-super-new-shiny-feature-in-ce`
+
+#### Whitelist some EE-only files that cannot be moved to `ee/`
+
+The `ee-files-location-check` CI job provides a whitelist of files or folders
+that cannot or should not be moved to `ee/`. Feel free to open an issue to
+discuss adding a new file/folder to this whitelist.
+
+For instance, it was decided that moving EE-only files from `qa/` to `ee/qa/`
+would make it difficult to build the `gitLab-{ce,ee}-qa` Docker images and it
+was [not worth the complexity].
+
+[not worth the complexity]: https://gitlab.com/gitlab-org/gitlab-ee/issues/4997#note_59764702
 
 ### EE-only features
 
@@ -52,6 +85,11 @@ is applied not only to models. Here's a list of other examples:
 - `ee/app/services/foo/create_service.rb`
 - `ee/app/validators/foo_attr_validator.rb`
 - `ee/app/workers/foo_worker.rb`
+
+This works because for every path that are present in CE's eager-load/auto-load
+paths, we add the same `ee/`-prepended path in [`config/application.rb`].
+
+[`config/application.rb`]: https://gitlab.com/gitlab-org/gitlab-ee/blob/d278b76d6600a0e27d8019a0be27971ba23ab640/config/application.rb#L41-51
 
 ### EE features based on CE features
 
@@ -318,7 +356,7 @@ When you're testing EE-only features, avoid adding examples to the
 existing CE specs. Also do no change existing CE examples, since they
 should remain working as-is when EE is running without a license.
 
-Instead place EE specs in the `spec/ee/spec` folder.
+Instead place EE specs in the `ee/spec` folder.
 
 ## JavaScript code in `assets/javascripts/`
 

@@ -7,7 +7,7 @@ describe API::Projects do
   let(:user3) { create(:user) }
   let(:admin) { create(:admin) }
   let(:project) { create(:project, namespace: user.namespace) }
-  let(:project2) { create(:project, path: 'project2', namespace: user.namespace) }
+  let(:project2) { create(:project, namespace: user.namespace) }
   let(:snippet) { create(:project_snippet, :public, author: user, project: project, title: 'example') }
   let(:project_member) { create(:project_member, :developer, user: user3, project: project) }
   let(:user4) { create(:user) }
@@ -315,7 +315,7 @@ describe API::Projects do
 
       context 'and with all query parameters' do
         let!(:project5) { create(:project, :public, path: 'gitlab5', namespace: create(:namespace)) }
-        let!(:project6) { create(:project, :public, path: 'project6', namespace: user.namespace) }
+        let!(:project6) { create(:project, :public, namespace: user.namespace) }
         let!(:project7) { create(:project, :public, path: 'gitlab7', namespace: user.namespace) }
         let!(:project8) { create(:project, path: 'gitlab8', namespace: user.namespace) }
         let!(:project9) { create(:project, :public, path: 'gitlab9') }
@@ -460,7 +460,7 @@ describe API::Projects do
       expect(response).to have_gitlab_http_status(201)
 
       project.each_pair do |k, v|
-        next if %i[has_external_issue_tracker issues_enabled merge_requests_enabled wiki_enabled].include?(k)
+        next if %i[has_external_issue_tracker issues_enabled merge_requests_enabled wiki_enabled storage_version].include?(k)
 
         expect(json_response[k.to_s]).to eq(v)
       end
@@ -622,12 +622,8 @@ describe API::Projects do
   end
 
   describe 'POST /projects/user/:id' do
-    before do
-      expect(project).to be_persisted
-    end
-
     it 'creates new project without path but with name and return 201' do
-      expect { post api("/projects/user/#{user.id}", admin), name: 'Foo Project' }.to change {Project.count}.by(1)
+      expect { post api("/projects/user/#{user.id}", admin), name: 'Foo Project' }.to change { Project.count }.by(1)
       expect(response).to have_gitlab_http_status(201)
 
       project = Project.last
@@ -666,8 +662,9 @@ describe API::Projects do
       post api("/projects/user/#{user.id}", admin), project
 
       expect(response).to have_gitlab_http_status(201)
+
       project.each_pair do |k, v|
-        next if %i[has_external_issue_tracker path].include?(k)
+        next if %i[has_external_issue_tracker path storage_version].include?(k)
 
         expect(json_response[k.to_s]).to eq(v)
       end

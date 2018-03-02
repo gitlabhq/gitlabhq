@@ -41,7 +41,7 @@ module Gitlab
       end
 
       def apply_gitattributes(revision)
-        request = Gitaly::ApplyGitattributesRequest.new(repository: @gitaly_repo, revision: revision)
+        request = Gitaly::ApplyGitattributesRequest.new(repository: @gitaly_repo, revision: encode_binary(revision))
         GitalyClient.call(@storage, :repository_service, :apply_gitattributes, request)
       end
 
@@ -127,6 +127,23 @@ module Gitlab
           @storage,
           :repository_service,
           :is_rebase_in_progress,
+          request,
+          timeout: GitalyClient.default_timeout
+        )
+
+        response.in_progress
+      end
+
+      def squash_in_progress?(squash_id)
+        request = Gitaly::IsSquashInProgressRequest.new(
+          repository: @gitaly_repo,
+          squash_id: squash_id.to_s
+        )
+
+        response = GitalyClient.call(
+          @storage,
+          :repository_service,
+          :is_squash_in_progress,
           request,
           timeout: GitalyClient.default_timeout
         )
@@ -231,6 +248,14 @@ module Gitlab
         )
 
         raise Gitlab::Git::OSError.new(response.error) unless response.error.empty?
+      end
+
+      def license_short_name
+        request = Gitaly::FindLicenseRequest.new(repository: @gitaly_repo)
+
+        response = GitalyClient.call(@storage, :repository_service, :find_license, request, timeout: GitalyClient.fast_timeout)
+
+        response.license_short_name.presence
       end
     end
   end

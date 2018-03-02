@@ -128,7 +128,7 @@ class Member < ActiveRecord::Base
       find_by(invite_token: invite_token)
     end
 
-    def add_user(source, user, access_level, existing_members: nil, current_user: nil, expires_at: nil)
+    def add_user(source, user, access_level, existing_members: nil, current_user: nil, expires_at: nil, ldap: false)
       # `user` can be either a User object, User ID or an email to be invited
       member = retrieve_member(source, user, existing_members)
       access_level = retrieve_access_level(access_level)
@@ -143,11 +143,13 @@ class Member < ActiveRecord::Base
 
       if member.request?
         ::Members::ApproveAccessRequestService.new(
-          source,
           current_user,
-          id: member.id,
           access_level: access_level
-        ).execute
+        ).execute(
+          member,
+          skip_authorization: ldap,
+          skip_log_audit_event: ldap
+        )
       else
         member.save
       end
@@ -314,7 +316,7 @@ class Member < ActiveRecord::Base
   end
 
   def notification_setting
-    @notification_setting ||= user.notification_settings_for(source)
+    @notification_setting ||= user&.notification_settings_for(source)
   end
 
   def notifiable?(type, opts = {})

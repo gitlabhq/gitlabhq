@@ -1,5 +1,0 @@
----
-title: Fix JIRA not working when a trailing slash is included
-merge_request:
-author:
-type: fixed

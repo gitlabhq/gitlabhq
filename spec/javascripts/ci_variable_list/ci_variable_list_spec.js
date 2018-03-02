@@ -1,5 +1,7 @@
 import VariableList from '~/ci_variable_list/ci_variable_list';
-import getSetTimeoutPromise from '../helpers/set_timeout_promise_helper';
+import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
+
+const HIDE_CLASS = 'hide';
 
 describe('VariableList', () => {
   preloadFixtures('pipeline_schedules/edit.html.raw');
@@ -92,14 +94,14 @@ describe('VariableList', () => {
         const $inputValue = $row.find('.js-ci-variable-input-value');
         const $placeholder = $row.find('.js-secret-value-placeholder');
 
-        expect($placeholder.hasClass('hide')).toBe(false);
-        expect($inputValue.hasClass('hide')).toBe(true);
+        expect($placeholder.hasClass(HIDE_CLASS)).toBe(false);
+        expect($inputValue.hasClass(HIDE_CLASS)).toBe(true);
 
         // Reveal values
         $wrapper.find('.js-secret-value-reveal-button').click();
 
-        expect($placeholder.hasClass('hide')).toBe(true);
-        expect($inputValue.hasClass('hide')).toBe(false);
+        expect($placeholder.hasClass(HIDE_CLASS)).toBe(true);
+        expect($inputValue.hasClass(HIDE_CLASS)).toBe(false);
       });
     });
   });
@@ -126,7 +128,7 @@ describe('VariableList', () => {
 
           // Check for the correct default in the new row
           const $protectedInput = $wrapper.find('.js-row:last-child').find('.js-ci-variable-input-protected');
-          expect($protectedInput.val()).toBe('true');
+          expect($protectedInput.val()).toBe('false');
         })
         .then(done)
         .catch(done.fail);
@@ -177,6 +179,37 @@ describe('VariableList', () => {
       variableList.toggleEnableRow(true);
 
       expect($wrapper.find('.js-ci-variable-input-key:not([disabled])').length).toBe(3);
+    });
+  });
+
+  describe('hideValues', () => {
+    beforeEach(() => {
+      loadFixtures('projects/ci_cd_settings.html.raw');
+      $wrapper = $('.js-ci-variable-list-section');
+
+      variableList = new VariableList({
+        container: $wrapper,
+        formField: 'variables',
+      });
+      variableList.init();
+    });
+
+    it('should hide value input and show placeholder stars', () => {
+      const $row = $wrapper.find('.js-row');
+      const $inputValue = $row.find('.js-ci-variable-input-value');
+      const $placeholder = $row.find('.js-secret-value-placeholder');
+
+      $row.find('.js-ci-variable-input-value')
+        .val('foo')
+        .trigger('input');
+
+      expect($placeholder.hasClass(HIDE_CLASS)).toBe(true);
+      expect($inputValue.hasClass(HIDE_CLASS)).toBe(false);
+
+      variableList.hideValues();
+
+      expect($placeholder.hasClass(HIDE_CLASS)).toBe(false);
+      expect($inputValue.hasClass(HIDE_CLASS)).toBe(true);
     });
   });
 });

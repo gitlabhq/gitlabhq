@@ -1,7 +1,9 @@
 module Gitlab
   class SearchResults
     class FoundBlob
-      attr_reader :id, :filename, :basename, :ref, :startline, :data
+      include EncodingHelper
+
+      attr_reader :id, :filename, :basename, :ref, :startline, :data, :project_id
 
       def initialize(opts = {})
         @id = opts.fetch(:id, nil)
@@ -9,8 +11,9 @@ module Gitlab
         @basename = opts.fetch(:basename, nil)
         @ref = opts.fetch(:ref, nil)
         @startline = opts.fetch(:startline, nil)
-        @data = opts.fetch(:data, nil)
+        @data = encode_utf8(opts.fetch(:data, nil))
         @per_page = opts.fetch(:per_page, 20)
+        @project_id = opts.fetch(:project_id, nil)
       end
 
       def path

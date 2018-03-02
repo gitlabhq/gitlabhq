@@ -96,9 +96,7 @@ export default {
             cb.call(null, data);
           }
         })
-        .catch(() => {
-          new Flash('Something went wrong. Please try again.'); // eslint-disable-line
-        });
+        .catch(() => new Flash('Something went wrong. Please try again.'));
     },
     initPolling() {
       this.pollingInterval = new SmartInterval({
@@ -146,12 +144,11 @@ export default {
             Project.initRefSwitcher();
           }
         })
-        .catch(() => {
-          new Flash('Something went wrong. Please try again.'); // eslint-disable-line
-        });
+        .catch(() => new Flash('Something went wrong. Please try again.'));
     },
     handleNotification(data) {
       if (data.ci_status === this.mr.ciStatus) return;
+      if (!data.pipeline) return;
 
       const label = data.pipeline.details.status.label;
       const title = `Pipeline ${label}`;

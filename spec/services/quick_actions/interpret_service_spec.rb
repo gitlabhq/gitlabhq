@@ -522,6 +522,22 @@ describe QuickActions::InterpretService do
       let(:issuable) { merge_request }
     end
 
+    context 'only group milestones available' do
+      let(:group) { create(:group) }
+      let(:project) { create(:project, :public, namespace: group) }
+      let(:milestone) { create(:milestone, group: group, title: '10.0') }
+
+      it_behaves_like 'milestone command' do
+        let(:content) { "/milestone %#{milestone.title}" }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'milestone command' do
+        let(:content) { "/milestone %#{milestone.title}" }
+        let(:issuable) { merge_request }
+      end
+    end
+
     it_behaves_like 'remove_milestone command' do
       let(:content) { '/remove_milestone' }
       let(:issuable) { issue }

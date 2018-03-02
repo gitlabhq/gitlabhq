@@ -1,5 +1,0 @@
----
-title: Reduce the number of Prometheus metrics
-merge_request: 16443
-author:
-type: performance

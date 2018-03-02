@@ -16,11 +16,11 @@ module Gitlab
         lfs_objects_missing: 'LFS objects are missing. Ensure LFS is properly set up or try a manual "git lfs push --all".'
       }.freeze
 
-      attr_reader :user_access, :project, :skip_authorization, :protocol, :oldrev, :newrev, :ref, :branch_name, :tag_name
+      attr_reader :user_access, :project, :skip_authorization, :skip_lfs_integrity_check, :protocol, :oldrev, :newrev, :ref, :branch_name, :tag_name
 
       def initialize(
         change, user_access:, project:, skip_authorization: false,
-        protocol:
+        skip_lfs_integrity_check: false, protocol:
       )
         @oldrev, @newrev, @ref = change.values_at(:oldrev, :newrev, :ref)
         @branch_name = Gitlab::Git.branch_name(@ref)
@@ -28,16 +28,18 @@ module Gitlab
         @user_access = user_access
         @project = project
         @skip_authorization = skip_authorization
+        @skip_lfs_integrity_check = skip_lfs_integrity_check
         @protocol = protocol
       end
 
-      def exec
+      def exec(skip_commits_check: false)
         return true if skip_authorization
 
         push_checks
         branch_checks
         tag_checks
-        lfs_objects_exist_check
+        lfs_objects_exist_check unless skip_lfs_integrity_check
+        commits_check unless skip_commits_check
 
         true
       end
@@ -117,7 +119,30 @@ module Gitlab
         end
       end
 
+      def commits_check
+        return if deletion? || newrev.nil?
+        return unless should_run_commit_validations?
+
+        # n+1: https://gitlab.com/gitlab-org/gitlab-ee/issues/3593
+        ::Gitlab::GitalyClient.allow_n_plus_1_calls do
+          commits.each do |commit|
+            commit_check.validate(commit, validations_for_commit(commit))
+          end
+        end
+
+        commit_check.validate_file_paths
+      end
+
+      # Method overwritten in EE to inject custom validations
+      def validations_for_commit(_)
+        []
+      end
+
       private
+
+      def should_run_commit_validations?
+        commit_check.validate_lfs_file_locks?
+      end
 
       def updated_from_web?
         protocol == 'web'
@@ -149,6 +174,14 @@ module Gitlab
         if lfs_check.objects_missing?
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:lfs_objects_missing]
         end
+      end
+
+      def commit_check
+        @commit_check ||= Gitlab::Checks::CommitCheck.new(project, user_access.user, newrev, oldrev)
+      end
+
+      def commits
+        @commits ||= project.repository.new_commits(newrev)
       end
     end
   end

@@ -126,10 +126,15 @@ class ApplicationController < ActionController::Base
     Ability.allowed?(object, action, subject)
   end
 
-  def access_denied!
+  def access_denied!(message = nil)
     respond_to do |format|
-      format.json { head :not_found }
-      format.any { render "errors/access_denied", layout: "errors", status: 404 }
+      format.any { head :not_found }
+      format.html do
+        render "errors/access_denied",
+               layout: "errors",
+               status: 404,
+               locals: { message: message }
+      end
     end
   end
 
@@ -186,7 +191,7 @@ class ApplicationController < ActionController::Base
     return unless signed_in? && session[:service_tickets]
 
     valid = session[:service_tickets].all? do |provider, ticket|
-      Gitlab::OAuth::Session.valid?(provider, ticket)
+      Gitlab::Auth::OAuth::Session.valid?(provider, ticket)
     end
 
     unless valid
@@ -210,7 +215,7 @@ class ApplicationController < ActionController::Base
     if current_user && current_user.requires_ldap_check?
       return unless current_user.try_obtain_ldap_lease
 
-      unless Gitlab::LDAP::Access.allowed?(current_user)
+      unless Gitlab::Auth::LDAP::Access.allowed?(current_user)
         sign_out current_user
         flash[:alert] = "Access denied for your LDAP account."
         redirect_to new_user_session_path
@@ -225,7 +230,7 @@ class ApplicationController < ActionController::Base
   end
 
   def gitlab_ldap_access(&block)
-    Gitlab::LDAP::Access.open { |access| yield(access) }
+    Gitlab::Auth::LDAP::Access.open { |access| yield(access) }
   end
 
   # JSON for infinite scroll via Pager object
@@ -279,7 +284,7 @@ class ApplicationController < ActionController::Base
   end
 
   def github_import_configured?
-    Gitlab::OAuth::Provider.enabled?(:github)
+    Gitlab::Auth::OAuth::Provider.enabled?(:github)
   end
 
   def gitlab_import_enabled?
@@ -287,7 +292,7 @@ class ApplicationController < ActionController::Base
   end
 
   def gitlab_import_configured?
-    Gitlab::OAuth::Provider.enabled?(:gitlab)
+    Gitlab::Auth::OAuth::Provider.enabled?(:gitlab)
   end
 
   def bitbucket_import_enabled?
@@ -295,7 +300,7 @@ class ApplicationController < ActionController::Base
   end
 
   def bitbucket_import_configured?
-    Gitlab::OAuth::Provider.enabled?(:bitbucket)
+    Gitlab::Auth::OAuth::Provider.enabled?(:bitbucket)
   end
 
   def google_code_import_enabled?

@@ -34,23 +34,22 @@ function UsersSelect(currentUser, els, options = {}) {
       var options = {};
       var $block, $collapsedSidebar, $dropdown, $loading, $selectbox, $value, abilityName, assignTo, assigneeTemplate, collapsedAssigneeTemplate, defaultLabel, defaultNullUser, firstUser, issueURL, selectedId, selectedIdDefault, showAnyUser, showNullUser, showMenuAbove;
       $dropdown = $(dropdown);
-      options.projectId = $dropdown.data('project-id');
-      options.groupId = $dropdown.data('group-id');
-      options.showCurrentUser = $dropdown.data('current-user');
-      options.todoFilter = $dropdown.data('todo-filter');
-      options.todoStateFilter = $dropdown.data('todo-state-filter');
-      options.perPage = $dropdown.data('per-page');
-      showNullUser = $dropdown.data('null-user');
-      defaultNullUser = $dropdown.data('null-user-default');
+      options.projectId = $dropdown.data('projectId');
+      options.groupId = $dropdown.data('groupId');
+      options.showCurrentUser = $dropdown.data('currentUser');
+      options.todoFilter = $dropdown.data('todoFilter');
+      options.todoStateFilter = $dropdown.data('todoStateFilter');
+      showNullUser = $dropdown.data('nullUser');
+      defaultNullUser = $dropdown.data('nullUserDefault');
       showMenuAbove = $dropdown.data('showMenuAbove');
-      showAnyUser = $dropdown.data('any-user');
-      firstUser = $dropdown.data('first-user');
-      options.authorId = $dropdown.data('author-id');
-      defaultLabel = $dropdown.data('default-label');
+      showAnyUser = $dropdown.data('anyUser');
+      firstUser = $dropdown.data('firstUser');
+      options.authorId = $dropdown.data('authorId');
+      defaultLabel = $dropdown.data('defaultLabel');
       issueURL = $dropdown.data('issueUpdate');
       $selectbox = $dropdown.closest('.selectbox');
       $block = $selectbox.closest('.block');
-      abilityName = $dropdown.data('ability-name');
+      abilityName = $dropdown.data('abilityName');
       $value = $block.find('.value');
       $collapsedSidebar = $block.find('.sidebar-collapsed-user');
       $loading = $block.find('.block-loading').fadeOut();
@@ -63,7 +62,7 @@ function UsersSelect(currentUser, els, options = {}) {
 
       const assignYourself = function () {
         const unassignedSelected = $dropdown.closest('.selectbox')
-          .find(`input[name='${$dropdown.data('field-name')}'][value=0]`);
+          .find(`input[name='${$dropdown.data('fieldName')}'][value=0]`);
 
         if (unassignedSelected) {
           unassignedSelected.remove();
@@ -72,7 +71,7 @@ function UsersSelect(currentUser, els, options = {}) {
         // Save current selected user to the DOM
         const input = document.createElement('input');
         input.type = 'hidden';
-        input.name = $dropdown.data('field-name');
+        input.name = $dropdown.data('fieldName');
 
         const currentUserInfo = $dropdown.data('currentUserInfo');
 
@@ -96,7 +95,7 @@ function UsersSelect(currentUser, els, options = {}) {
 
       const getSelectedUserInputs = function() {
         return $selectbox
-          .find(`input[name="${$dropdown.data('field-name')}"]`);
+          .find(`input[name="${$dropdown.data('fieldName')}"]`);
       };
 
       const getSelected = function() {
@@ -106,14 +105,14 @@ function UsersSelect(currentUser, els, options = {}) {
       };
 
       const checkMaxSelect = function() {
-        const maxSelect = $dropdown.data('max-select');
+        const maxSelect = $dropdown.data('maxSelect');
         if (maxSelect) {
           const selected = getSelected();
 
           if (selected.length > maxSelect) {
             const firstSelectedId = selected[0];
             const firstSelected = $dropdown.closest('.selectbox')
-              .find(`input[name='${$dropdown.data('field-name')}'][value=${firstSelectedId}]`);
+              .find(`input[name='${$dropdown.data('fieldName')}'][value=${firstSelectedId}]`);
 
             firstSelected.remove();
             emitSidebarEvent('sidebar.removeAssignee', {
@@ -158,7 +157,7 @@ function UsersSelect(currentUser, els, options = {}) {
           const currentUserInfo = $dropdown.data('currentUserInfo');
           $dropdown.find('.dropdown-toggle-text').text(getMultiSelectDropdownTitle(currentUserInfo)).removeClass('is-default');
         } else {
-          const $input = $(`input[name="${$dropdown.data('field-name')}"]`);
+          const $input = $(`input[name="${$dropdown.data('fieldName')}"]`);
           $input.val(gon.current_user_id);
           selectedId = $input.val();
           $dropdown.find('.dropdown-toggle-text').text(gon.current_user_fullname).removeClass('is-default');
@@ -293,10 +292,10 @@ function UsersSelect(currentUser, els, options = {}) {
               const selected = getSelected().filter(i => i !== 0);
 
               if (selected.length > 0) {
-                if ($dropdown.data('dropdown-header')) {
+                if ($dropdown.data('dropdownHeader')) {
                   showDivider += 1;
                   users.splice(showDivider, 0, {
-                    header: $dropdown.data('dropdown-header'),
+                    header: $dropdown.data('dropdownHeader'),
                   });
                 }
 
@@ -327,7 +326,7 @@ function UsersSelect(currentUser, els, options = {}) {
           fields: ['name', 'username']
         },
         selectable: true,
-        fieldName: $dropdown.data('field-name'),
+        fieldName: $dropdown.data('fieldName'),
         toggleLabel: function(selected, el, glDropdown) {
           const inputValue = glDropdown.filterInput.val();
 
@@ -362,7 +361,7 @@ function UsersSelect(currentUser, els, options = {}) {
             emitSidebarEvent('sidebar.saveAssignees');
           }
 
-          if (!$dropdown.data('always-show-selectbox')) {
+          if (!$dropdown.data('alwaysShowSelectbox')) {
             $selectbox.hide();
 
             // Recalculate where .value is because vue might have changed it
@@ -373,7 +372,7 @@ function UsersSelect(currentUser, els, options = {}) {
           }
         },
         multiSelect: $dropdown.hasClass('js-multiselect'),
-        inputMeta: $dropdown.data('input-meta'),
+        inputMeta: $dropdown.data('inputMeta'),
         clicked: function(options) {
           const { $el, e, isMarking } = options;
           const user = options.selectedObj;
@@ -381,7 +380,7 @@ function UsersSelect(currentUser, els, options = {}) {
           if ($dropdown.hasClass('js-multiselect')) {
             const isActive = $el.hasClass('is-active');
             const previouslySelected = $dropdown.closest('.selectbox')
-                .find("input[name='" + ($dropdown.data('field-name')) + "'][value!=0]");
+                .find("input[name='" + ($dropdown.data('fieldName')) + "'][value!=0]");
 
             // Enables support for limiting the number of users selected
             // Automatically removes the first on the list if more users are selected
@@ -400,7 +399,7 @@ function UsersSelect(currentUser, els, options = {}) {
 
               // Remove unassigned selection (if it was previously selected)
               const unassignedSelected = $dropdown.closest('.selectbox')
-                .find("input[name='" + ($dropdown.data('field-name')) + "'][value=0]");
+                .find("input[name='" + ($dropdown.data('fieldName')) + "'][value=0]");
 
               if (unassignedSelected) {
                 unassignedSelected.remove();
@@ -408,7 +407,7 @@ function UsersSelect(currentUser, els, options = {}) {
             } else {
               if (previouslySelected.length === 0) {
               // Select unassigned because there is no more selected users
-                this.addInput($dropdown.data('field-name'), 0, {});
+                this.addInput($dropdown.data('fieldName'), 0, {});
               }
 
               // User unselected
@@ -440,7 +439,7 @@ function UsersSelect(currentUser, els, options = {}) {
             return;
           }
           if ($el.closest('.add-issues-modal').length) {
-            gl.issueBoards.ModalStore.store.filter[$dropdown.data('field-name')] = user.id;
+            gl.issueBoards.ModalStore.store.filter[$dropdown.data('fieldName')] = user.id;
           } else if (handleClick) {
             e.preventDefault();
             handleClick(user, isMarking);
@@ -449,15 +448,15 @@ function UsersSelect(currentUser, els, options = {}) {
           } else if ($dropdown.hasClass('js-filter-submit')) {
             return $dropdown.closest('form').submit();
           } else if (!$dropdown.hasClass('js-multiselect')) {
-            selected = $dropdown.closest('.selectbox').find("input[name='" + ($dropdown.data('field-name')) + "']").val();
+            selected = $dropdown.closest('.selectbox').find("input[name='" + ($dropdown.data('fieldName')) + "']").val();
             return assignTo(selected);
           }
 
           // Automatically close dropdown after assignee is selected
           // since CE has no multiple assignees
           // EE does not have a max-select
-          if ($dropdown.data('max-select') &&
-              getSelected().length === $dropdown.data('max-select')) {
+          if ($dropdown.data('maxSelect') &&
+              getSelected().length === $dropdown.data('maxSelect')) {
             // Close the dropdown
             $dropdown.dropdown('toggle');
           }
@@ -469,7 +468,7 @@ function UsersSelect(currentUser, els, options = {}) {
           const $el = $(e.currentTarget);
           const selected = getSelected();
           if ($dropdown.hasClass('js-issue-board-sidebar') && selected.length === 0) {
-            this.addInput($dropdown.data('field-name'), 0, {});
+            this.addInput($dropdown.data('fieldName'), 0, {});
           }
           $el.find('.is-active').removeClass('is-active');
 
@@ -485,7 +484,7 @@ function UsersSelect(currentUser, els, options = {}) {
             highlightSelected(selectedId);
           }
         },
-        updateLabel: $dropdown.data('dropdown-title'),
+        updateLabel: $dropdown.data('dropdownTitle'),
         renderRow: function(user) {
           var avatar, img, listClosingTags, listWithName, listWithUserName, username;
           username = user.username ? "@" + user.username : "";
@@ -533,15 +532,15 @@ function UsersSelect(currentUser, els, options = {}) {
       var firstUser, showAnyUser, showEmailUser, showNullUser;
       var options = {};
       options.skipLdap = $(select).hasClass('skip_ldap');
-      options.projectId = $(select).data('project-id');
-      options.groupId = $(select).data('group-id');
-      options.showCurrentUser = $(select).data('current-user');
-      options.authorId = $(select).data('author-id');
-      options.skipUsers = $(select).data('skip-users');
-      showNullUser = $(select).data('null-user');
-      showAnyUser = $(select).data('any-user');
-      showEmailUser = $(select).data('email-user');
-      firstUser = $(select).data('first-user');
+      options.projectId = $(select).data('projectId');
+      options.groupId = $(select).data('groupId');
+      options.showCurrentUser = $(select).data('currentUser');
+      options.authorId = $(select).data('authorId');
+      options.skipUsers = $(select).data('skipUsers');
+      showNullUser = $(select).data('nullUser');
+      showAnyUser = $(select).data('anyUser');
+      showEmailUser = $(select).data('emailUser');
+      firstUser = $(select).data('firstUser');
       return $(select).select2({
         placeholder: "Search for a user",
         multiple: $(select).hasClass('multiselect'),
@@ -669,7 +668,6 @@ UsersSelect.prototype.users = function(query, options, callback) {
   const url = this.buildUrl(this.usersPath);
   const params = {
     search: query,
-    per_page: options.perPage || 20,
     active: true,
     project_id: options.projectId || null,
     group_id: options.groupId || null,

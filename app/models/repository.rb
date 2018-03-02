@@ -139,7 +139,7 @@ class Repository
     end
   end
 
-  def commits(ref, path: nil, limit: nil, offset: nil, skip_merges: false, after: nil, before: nil)
+  def commits(ref = nil, path: nil, limit: nil, offset: nil, skip_merges: false, after: nil, before: nil, all: nil)
     options = {
       repo: raw_repository,
       ref: ref,
@@ -149,7 +149,8 @@ class Repository
       after: after,
       before: before,
       follow: Array(path).length == 1,
-      skip_merges: skip_merges
+      skip_merges: skip_merges,
+      all: all
     }
 
     commits = Gitlab::Git::Commit.where(options)
@@ -162,6 +163,13 @@ class Repository
     commits = Gitlab::Git::Commit.between(raw_repository, from, to)
     commits = Commit.decorate(commits, @project) if commits.present?
     commits
+  end
+
+  # Returns a list of commits that are not present in any reference
+  def new_commits(newrev)
+    refs = ::Gitlab::Git::RevList.new(raw, newrev: newrev).new_refs
+
+    refs.map { |sha| commit(sha.strip) }
   end
 
   # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/384
@@ -485,12 +493,8 @@ class Repository
   end
 
   def root_ref
-    if raw_repository
-      raw_repository.root_ref
-    else
-      # When the repo does not exist we raise this error so no data is cached.
-      raise Gitlab::Git::Repository::NoRepository
-    end
+    # When the repo does not exist, or there is no root ref, we raise this error so no data is cached.
+    raw_repository&.root_ref or raise Gitlab::Git::Repository::NoRepository # rubocop:disable Style/AndOr
   end
   cache_method :root_ref
 
@@ -586,7 +590,7 @@ class Repository
   def license_key
     return unless exists?
 
-    Licensee.license(path).try(:key)
+    raw_repository.license_short_name
   end
   cache_method :license_key
 

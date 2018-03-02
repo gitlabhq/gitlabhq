@@ -10,14 +10,26 @@ AllCops:
   Exclude:
     - 'vendor/**/*'
     - 'node_modules/**/*'
-    - 'db/*'
+    - 'db/**/*'
     - 'db/fixtures/**/*'
-    - 'db/geo/*'
+    - 'ee/db/**/*'
     - 'tmp/**/*'
     - 'bin/**/*'
     - 'generator_templates/**/*'
     - 'builds/**/*'
+    - 'plugins/**/*'
   CacheRootDirectory: tmp
+
+# This cop checks whether some constant value isn't a
+# mutable literal (e.g. array or hash).
+Style/MutableConstant:
+  Enabled: true
+  Exclude:
+    - 'db/migrate/**/*'
+    - 'db/post_migrate/**/*'
+    - 'ee/db/migrate/**/*'
+    - 'ee/db/post_migrate/**/*'
+    - 'ee/db/geo/migrate/**/*'
 
 # Gitlab ###################################################################
 
@@ -33,3 +45,16 @@ Gitlab/ModuleWithInstanceVariables:
     # We ignore spec helpers because it usually doesn't matter
     - spec/support/**/*.rb
     - features/steps/**/*.rb
+
+GitlabSecurity/PublicSend:
+  Enabled: true
+  Exclude:
+    - 'config/**/*'
+    - 'db/**/*'
+    - 'features/**/*'
+    - 'lib/**/*.rake'
+    - 'qa/**/*'
+    - 'spec/**/*'
+    - 'ee/db/**/*'
+    - 'ee/lib/**/*.rake'
+    - 'ee/spec/**/*'

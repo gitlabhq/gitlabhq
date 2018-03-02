@@ -1,6 +1,6 @@
 /* eslint-disable jasmine/no-global-setup */
 import $ from 'jquery';
-import 'jasmine-jquery';
+import 'vendor/jasmine-jquery';
 import '~/commons';
 
 import Vue from 'vue';
@@ -37,6 +37,7 @@ window.$ = window.jQuery = $;
 window.gl = window.gl || {};
 window.gl.TEST_HOST = 'http://test.host';
 window.gon = window.gon || {};
+window.gon.test_env = true;
 
 let hasUnhandledPromiseRejections = false;
 
@@ -113,7 +114,9 @@ if (process.env.BABEL_ENV === 'coverage') {
   // exempt these files from the coverage report
   const troubleMakers = [
     './blob_edit/blob_bundle.js',
-    './boards/boards_bundle.js',
+    './boards/components/modal/empty_state.js',
+    './boards/components/modal/footer.js',
+    './boards/components/modal/header.js',
     './cycle_analytics/cycle_analytics_bundle.js',
     './cycle_analytics/components/stage_plan_component.js',
     './cycle_analytics/components/stage_staging_component.js',
@@ -124,7 +127,6 @@ if (process.env.BABEL_ENV === 'coverage') {
     './diff_notes/components/resolve_count.js',
     './dispatcher.js',
     './environments/environments_bundle.js',
-    './filtered_search/filtered_search_bundle.js',
     './graphs/graphs_bundle.js',
     './issuable/time_tracking/time_tracking_bundle.js',
     './main.js',
@@ -144,6 +146,9 @@ if (process.env.BABEL_ENV === 'coverage') {
 
   describe('Uncovered files', function () {
     const sourceFiles = require.context('~', true, /\.js$/);
+
+    $.holdReady(true);
+
     sourceFiles.keys().forEach(function (path) {
       // ignore if there is a matching spec file
       if (testsContext.keys().indexOf(`${path.replace(/\.js$/, '')}_spec`) > -1) {
