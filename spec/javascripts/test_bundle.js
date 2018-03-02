@@ -36,6 +36,7 @@ window.$ = window.jQuery = $;
 window.gl = window.gl || {};
 window.gl.TEST_HOST = 'http://test.host';
 window.gon = window.gon || {};
+window.gon.test_env = true;
 
 let hasUnhandledPromiseRejections = false;
 

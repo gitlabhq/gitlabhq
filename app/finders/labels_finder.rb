@@ -61,10 +61,18 @@ class LabelsFinder < UnionFinder
 
   def group_ids
     strong_memoize(:group_ids) do
-      group = Group.find(params[:group_id])
-      groups = params[:include_ancestor_groups].present? ? group.self_and_ancestors : [group]
-      groups_user_can_read_labels(groups).map(&:id)
+      groups_user_can_read_labels(groups_to_include).map(&:id)
     end
+  end
+
+  def groups_to_include
+    group = Group.find(params[:group_id])
+    groups = [group]
+
+    groups += group.ancestors if params[:include_ancestor_groups].present?
+    groups += group.descendants if params[:include_descendant_groups].present?
+
+    groups
   end
 
   def group?

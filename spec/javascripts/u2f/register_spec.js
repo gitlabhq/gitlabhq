@@ -5,12 +5,12 @@ import MockU2FDevice from './mock_u2f_device';
 describe('U2FRegister', () => {
   preloadFixtures('u2f/register.html.raw');
 
-  beforeEach(() => {
+  beforeEach((done) => {
     loadFixtures('u2f/register.html.raw');
     this.u2fDevice = new MockU2FDevice();
     this.container = $('#js-register-u2f');
     this.component = new U2FRegister(this.container, $('#js-register-u2f-templates'), {}, 'token');
-    return this.component.start();
+    this.component.start().then(done).catch(done.fail);
   });
 
   it('allows registering a U2F device', () => {

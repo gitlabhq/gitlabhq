@@ -26,7 +26,6 @@ describe Gitlab::Auth::LDAP::User do
   let(:auth_hash_upper_case) do
     OmniAuth::AuthHash.new(uid: 'uid=John Smith,ou=People,dc=example,dc=com', provider: 'ldapmain', info: info_upper_case)
   end
-  let!(:fake_proxy) { fake_ldap_sync_proxy('ldapmain') }
 
   describe '#changed?' do
     it "marks existing ldap user as changed" do
