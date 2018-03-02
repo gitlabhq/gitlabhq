@@ -1,6 +1,8 @@
 module Gitlab
   module Ci
     class Trace
+      ArchiveError = Class.new(StandardError)
+
       attr_reader :job
 
       delegate :old_trace, to: :job
@@ -94,8 +96,8 @@ module Gitlab
       end
 
       def archive!
-        raise 'Already archived' if trace_artifact
-        raise 'Job is not finished yet' unless job.complete?
+        raise ArchiveError, 'Already archived' if trace_artifact
+        raise ArchiveError, 'Job is not finished yet' unless job.complete?
 
         if current_path
           File.open(current_path) do |stream|
@@ -124,7 +126,7 @@ module Gitlab
           temp_path = File.join(dir_path, "job.log")
           FileUtils.touch(temp_path)
           size = IO.copy_stream(src_stream, temp_path)
-          raise 'Not all saved' unless size == src_stream.size
+          raise ArchiveError, 'Failed to copy stream' unless size == src_stream.size
 
           yield(temp_path)
         end

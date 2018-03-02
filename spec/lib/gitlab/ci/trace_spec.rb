@@ -463,11 +463,10 @@ describe Gitlab::Ci::Trace do
 
         context 'when failed to create clone file' do
           before do
-            allow_any_instance_of(described_class)
-              .to receive(:clone_file!).and_raise('Not all saved')
+            allow(IO).to receive(:copy_stream).and_return(0)
           end
 
-          it_behaves_like 'source trace file stays intact', error: 'Not all saved'
+          it_behaves_like 'source trace file stays intact', error: Gitlab::Ci::Trace::ArchiveError
         end
 
         context 'when failed to create job artifact record' do
@@ -494,11 +493,10 @@ describe Gitlab::Ci::Trace do
 
         context 'when failed to create clone file' do
           before do
-            allow_any_instance_of(described_class)
-              .to receive(:clone_file!).and_raise('Not all saved')
+            allow(IO).to receive(:copy_stream).and_return(0)
           end
 
-          it_behaves_like 'source trace in database stays intact', error: 'Not all saved'
+          it_behaves_like 'source trace in database stays intact', error: Gitlab::Ci::Trace::ArchiveError
         end
 
         context 'when failed to create job artifact record' do
