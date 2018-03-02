@@ -5,6 +5,7 @@ module Clusters
 
       include ::Clusters::Concerns::ApplicationCore
       include ::Clusters::Concerns::ApplicationStatus
+      include ::Clusters::Concerns::ApplicationData
       include AfterCommitQueue
 
       default_value_for :ingress_type, :nginx
@@ -29,12 +30,12 @@ module Clusters
         'stable/nginx-ingress'
       end
 
-      def chart_values_file
-        "#{Rails.root}/vendor/#{name}/values.yaml"
-      end
-
       def install_command
-        Gitlab::Kubernetes::Helm::InstallCommand.new(name, chart: chart, chart_values_file: chart_values_file)
+        Gitlab::Kubernetes::Helm::InstallCommand.new(
+          name,
+          chart: chart,
+          values: values
+        )
       end
 
       def schedule_status_update

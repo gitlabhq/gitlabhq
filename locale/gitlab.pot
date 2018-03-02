@@ -8,8 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2018-03-01 22:35+0100\n"
 "PO-Revision-Date: 2018-03-01 22:35+0100\n"
+=======
+"POT-Creation-Date: 2018-03-01 18:03+0100\n"
+"PO-Revision-Date: 2018-03-01 18:03+0100\n"
+>>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -138,9 +143,12 @@ msgstr ""
 msgid "Add Contribution guide"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Add Group Webhooks and GitLab Enterprise Edition."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Add Kubernetes cluster"
 msgstr ""
 
@@ -273,9 +281,12 @@ msgstr ""
 msgid "An error occurred while making the request."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "An error occurred while removing approver"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "An error occurred while rendering KaTeX"
 msgstr ""
 
@@ -414,6 +425,7 @@ msgstr ""
 msgid "Begin with the selected commit"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Billing"
 msgstr ""
 
@@ -468,6 +480,8 @@ msgstr ""
 msgid "BillingPlans|per user"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Branch (%{branch_count})"
 msgid_plural "Branches (%{branch_count})"
 msgstr[0] ""
@@ -1052,9 +1066,12 @@ msgstr ""
 msgid "ClusterIntegration|properly configured"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Collapse"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Comment and resolve discussion"
 msgstr ""
 
@@ -1454,9 +1471,12 @@ msgstr ""
 msgid "Emails"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Enable"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Enable Auto DevOps"
 msgstr ""
 
@@ -1592,6 +1612,7 @@ msgstr ""
 msgid "Explore public groups"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "External Classification Policy Authorization"
 msgstr ""
 
@@ -1607,6 +1628,8 @@ msgstr ""
 msgid "ExternalAuthorizationService|When no classification label is set the default label `%{default_label}` will be used."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Failed Jobs"
 msgstr ""
 
@@ -1947,6 +1970,7 @@ msgstr ""
 msgid "Import repository"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Improve Issue boards with GitLab Enterprise Edition."
 msgstr ""
 
@@ -1956,6 +1980,8 @@ msgstr ""
 msgid "Improve search with Advanced Global Search and GitLab Enterprise Edition."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Install Runner on Kubernetes"
 msgstr ""
 
@@ -2841,9 +2867,12 @@ msgstr ""
 msgid "Push to create a project"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "PushRule|Committer restriction"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Quick actions can be used in the issues description and comment boxes."
 msgstr ""
 
@@ -3038,6 +3067,7 @@ msgstr ""
 msgid "Setup a specific Runner automatically"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "SharedRunnersMinutesSettings|By resetting the pipeline minutes for this namespace, the currently used minutes will be set to zero."
 msgstr ""
 
@@ -3047,6 +3077,8 @@ msgstr ""
 msgid "SharedRunnersMinutesSettings|Reset used pipeline minutes"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Show command"
 msgstr ""
 
@@ -3092,9 +3124,12 @@ msgid "Something went wrong when toggling the button"
 msgstr ""
 
 msgid "Something went wrong while closing the %{issuable}. Please try again later"
+<<<<<<< HEAD
 msgstr ""
 
 msgid "Something went wrong while fetching SAST."
+=======
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Something went wrong while fetching the projects."
@@ -3667,12 +3702,15 @@ msgstr ""
 msgid "Tip:"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Title"
 msgstr ""
 
 msgid "To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. Only epics in the past 3 months and the next 3 months are shown."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Todo"
 msgstr ""
 
@@ -3814,12 +3852,15 @@ msgstr ""
 msgid "Web IDE"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
 msgstr ""
 
 msgid "Weight"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Wiki"
 msgstr ""
 
@@ -3952,6 +3993,9 @@ msgstr ""
 msgid "You can also create a project from the command line."
 msgstr ""
 
+msgid "You can also create a project from the command line."
+msgstr ""
+
 msgid "You can also star a label to make it a priority label."
 msgstr ""
 
@@ -4045,6 +4089,7 @@ msgstr ""
 msgid "branch name"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "by"
 msgstr ""
 
@@ -4111,6 +4156,11 @@ msgstr ""
 msgid "commit"
 msgstr ""
 
+=======
+msgid "command line instructions"
+msgstr ""
+
+>>>>>>> upstream/master
 msgid "confidentiality|You are going to turn off the confidentiality. This means <strong>everyone</strong> will be able to see and leave a comment on this issue."
 msgstr ""
 

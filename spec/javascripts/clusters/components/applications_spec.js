@@ -38,11 +38,9 @@ describe('Applications', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-prometheus')).toBeDefined();
     });
 
-    /* * /
     it('renders a row for GitLab Runner', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-runner')).toBeDefined();
     });
-    /* */
   });
 
   describe('Ingress application', () => {
