@@ -2,6 +2,10 @@ module Gitlab
   module Middleware
     class ReadOnly
       class Controller
+        DISALLOWED_METHODS = %w(POST PATCH PUT DELETE).freeze
+        APPLICATION_JSON = 'application/json'.freeze
+        ERROR_MESSAGE = 'You cannot perform write operations on a read-only instance'.freeze
+
         def initialize(app, env)
           @app = app
           @env = env
@@ -10,12 +14,11 @@ module Gitlab
         def call
           if disallowed_request? && Gitlab::Database.read_only?
             Rails.logger.debug('GitLab ReadOnly: preventing possible non read-only operation')
-            error_message = 'You cannot do writing operations on a read-only GitLab instance'
 
             if json_request?
-              return [403, { 'Content-Type' => 'application/json' }, [{ 'message' => error_message }.to_json]]
+              return [403, { 'Content-Type' => APPLICATION_JSON }, [{ 'message' => ERROR_MESSAGE }.to_json]]
             else
-              rack_flash.alert = error_message
+              rack_flash.alert = ERROR_MESSAGE
               rack_session['flash'] = rack_flash.to_session_value
 
               return [301, { 'Location' => last_visited_url }, []]

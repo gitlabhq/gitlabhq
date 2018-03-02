@@ -1,8 +1,6 @@
 module Gitlab
   module Middleware
     class ReadOnly
-      DISALLOWED_METHODS = %w(POST PATCH PUT DELETE).freeze
-      APPLICATION_JSON = 'application/json'.freeze
       API_VERSIONS = (3..4)
 
       def self.internal_routes

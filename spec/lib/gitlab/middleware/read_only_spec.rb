@@ -14,14 +14,14 @@ describe Gitlab::Middleware::ReadOnly do
       alert = middleware.env['rack.session'].to_hash
         .dig('flash', 'flashes', 'alert')
 
-      alert&.include?('You cannot do writing operations')
+      alert&.include?('You cannot perform write operations')
     end
   end
 
   RSpec::Matchers.define :disallow_request_in_json do
     match do |response|
       json_response = JSON.parse(response.body)
-      response.body.include?('You cannot do writing operations') && json_response.key?('message')
+      response.body.include?('You cannot perform write operations') && json_response.key?('message')
     end
   end
 
@@ -47,13 +47,13 @@ describe Gitlab::Middleware::ReadOnly do
     end
   end
 
-  subject do
-    app = described_class.new(fake_app)
-    app.extend(observe_env)
-    app
-  end
-
   let(:request) { Rack::MockRequest.new(rack_stack) }
+
+  subject do
+    described_class.new(fake_app).tap do |app|
+      app.extend(observe_env)
+    end
+  end
 
   context 'normal requests to a read-only Gitlab instance' do
     let(:fake_app) { lambda { |env| [200, { 'Content-Type' => 'text/plain' }, ['OK']] } }
