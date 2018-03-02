@@ -41,7 +41,7 @@ class ProjectsController < Projects::ApplicationController
       cookies[:issue_board_welcome_hidden] = { path: project_path(@project), value: nil, expires: Time.at(0) }
 
       redirect_to(
-        project_path(@project),
+        project_path(@project, custom_import_params),
         notice: _("Project '%{project_name}' was successfully created.") % { project_name: @project.name }
       )
     else
@@ -103,7 +103,7 @@ class ProjectsController < Projects::ApplicationController
 
   def show
     if @project.import_in_progress?
-      redirect_to project_import_path(@project)
+      redirect_to project_import_path(@project, custom_import_params)
       return
     end
 
@@ -357,6 +357,10 @@ class ProjectsController < Projects::ApplicationController
         wiki_access_level
       ]
     ]
+  end
+
+  def custom_import_params
+    {}
   end
 
   def repo_exists?
