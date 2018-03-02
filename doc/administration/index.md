@@ -87,12 +87,15 @@ created in snippets, wikis, and repos.
 - [Sign-up restrictions](../user/admin_area/settings/sign_up_restrictions.md): block email addresses of specific domains, or whitelist only specific domains.
 - [Access restrictions](../user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols): Define which Git access protocols can be used to talk to GitLab (SSH, HTTP, HTTPS).
 - [Authentication/Authorization](../topics/authentication/index.md#gitlab-administrators): Enforce 2FA, configure external authentication with LDAP, SAML, CAS and additional Omniauth providers.
+<<<<<<< HEAD
   - **(Starter/Premium)** [Sync LDAP](auth/ldap-ee.md)
   - **(Starter/Premium)** [Kerberos authentication](../integration/kerberos.md)
 - **(Starter/Premium)** [Email users](../tools/email.md): Email GitLab users from within GitLab.
 - [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
 - **(Starter/Premium)** [Audit logs and events](audit_events.md): View the changes made within the GitLab server.
 - **(Premium)** [Auditor users](auditor_users.md): Users with read-only access to all projects, groups, and other resources on the GitLab instance.
+=======
+>>>>>>> upstream/master
 - [Incoming email](incoming_email.md): Configure incoming emails to allow
   users to [reply by email], create [issues by email] and
   [merge requests by email], and to enable [Service Desk].
@@ -105,7 +108,10 @@ server with IMAP authentication on Ubuntu, to be used with Reply by email.
 [reply by email]: reply_by_email.md
 [issues by email]: ../user/project/issues/create_new_issue.md#new-issue-via-email
 [merge requests by email]: ../user/project/merge_requests/index.md#create-new-merge-requests-by-email
+<<<<<<< HEAD
 [Service Desk]: ../user/project/service_desk.md
+=======
+>>>>>>> upstream/master
 
 ## Project settings
 
