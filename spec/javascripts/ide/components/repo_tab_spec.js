@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import store from 'ee/ide/stores';
 import repoTab from 'ee/ide/components/repo_tab.vue';
+import router from 'ee/ide/ide_router';
 import { file, resetStore } from '../helpers';
 
 describe('RepoTab', () => {
@@ -14,6 +15,10 @@ describe('RepoTab', () => {
       propsData,
     }).$mount();
   }
+
+  beforeEach(() => {
+    spyOn(router, 'push');
+  });
 
   afterEach(() => {
     resetStore(vm.$store);

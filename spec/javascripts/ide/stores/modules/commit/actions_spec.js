@@ -7,6 +7,10 @@ import * as consts from 'ee/ide/stores/modules/commit/constants';
 import { resetStore, file } from 'spec/ide/helpers';
 
 describe('IDE commit module actions', () => {
+  beforeEach(() => {
+    spyOn(router, 'push');
+  });
+
   afterEach(() => {
     resetStore(store);
   });
@@ -170,7 +174,6 @@ describe('IDE commit module actions', () => {
 
     beforeEach(() => {
       spyOn(eventHub, '$emit');
-      spyOn(router, 'push');
 
       f = file('changedFile');
       Object.assign(f, {
@@ -287,7 +290,7 @@ describe('IDE commit module actions', () => {
 
   describe('commitChanges', () => {
     beforeEach(() => {
-      spyOn(router, 'push');
+      spyOn(urlUtils, 'visitUrl');
 
       document.body.innerHTML += '<div class="flash-container"></div>';
 
@@ -380,8 +383,6 @@ describe('IDE commit module actions', () => {
       });
 
       it('redirects to new merge request page', (done) => {
-        spyOn(urlUtils, 'visitUrl');
-
         store.state.commit.commitAction = '3';
 
         store.dispatch('commit/commitChanges')

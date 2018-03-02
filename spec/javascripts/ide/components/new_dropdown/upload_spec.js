@@ -2,6 +2,7 @@ import Vue from 'vue';
 import upload from 'ee/ide/components/new_dropdown/upload.vue';
 import store from 'ee/ide/stores';
 import service from 'ee/ide/services';
+import router from 'ee/ide/ide_router';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { resetStore } from '../../helpers';
 
@@ -37,6 +38,8 @@ describe('new dropdown upload', () => {
         submodules: [{ name: 'submodule' }],
       }),
     }));
+
+    spyOn(router, 'push');
 
     const Component = Vue.extend(upload);
 

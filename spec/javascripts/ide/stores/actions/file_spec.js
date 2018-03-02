@@ -1,9 +1,14 @@
 import Vue from 'vue';
 import store from 'ee/ide/stores';
 import service from 'ee/ide/services';
+import router from 'ee/ide/ide_router';
 import { file, resetStore } from '../../helpers';
 
 describe('Multi-file store file actions', () => {
+  beforeEach(() => {
+    spyOn(router, 'push');
+  });
+
   afterEach(() => {
     resetStore(store);
   });

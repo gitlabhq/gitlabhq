@@ -2,6 +2,7 @@ import Vue from 'vue';
 import store from 'ee/ide/stores';
 import service from 'ee/ide/services';
 import modal from 'ee/ide/components/new_dropdown/modal.vue';
+import router from 'ee/ide/ide_router';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { file, resetStore } from '../../helpers';
 
@@ -38,6 +39,8 @@ describe('new file modal component', () => {
         submodules: [{ name: 'submodule' }],
       }),
     }));
+
+    spyOn(router, 'push');
   });
 
   afterEach(() => {

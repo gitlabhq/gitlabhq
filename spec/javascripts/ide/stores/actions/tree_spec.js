@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import store from 'ee/ide/stores';
 import service from 'ee/ide/services';
+import router from 'ee/ide/ide_router';
 import { file, resetStore } from '../../helpers';
 
 describe('Multi-file store tree actions', () => {
@@ -13,6 +14,8 @@ describe('Multi-file store tree actions', () => {
   };
 
   beforeEach(() => {
+    spyOn(router, 'push');
+
     store.state.currentProjectId = 'abcproject';
     store.state.currentBranchId = 'master';
     store.state.projects.abcproject = {
