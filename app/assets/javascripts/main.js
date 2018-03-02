@@ -13,6 +13,7 @@ window.$ = jQuery;
 import { handleLocationHash, addSelectOnFocusBehaviour } from './lib/utils/common_utils';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import { getLocationHash, visitUrl } from './lib/utils/url_utility';
+import axios from './lib/utils/axios_utils';
 
 // behaviors
 import './behaviors/';
@@ -33,8 +34,8 @@ import './milestone_select';
 import './projects_dropdown';
 import './render_gfm';
 import initBreadcrumbs from './breadcrumb';
-
 import initDispatcher from './dispatcher';
+import clientTimingStats from './client_timing_stats';
 
 // eslint-disable-next-line global-require, import/no-commonjs
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
@@ -49,6 +50,8 @@ document.addEventListener('beforeunload', () => {
   // Close any open popover
   $('[data-toggle="popover"]').popover('destroy');
 });
+
+clientTimingStats();
 
 window.addEventListener('hashchange', handleLocationHash);
 window.addEventListener('load', function onLoad() {

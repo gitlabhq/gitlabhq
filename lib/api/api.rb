@@ -156,6 +156,7 @@ module API
     mount ::API::SystemHooks
     mount ::API::Tags
     mount ::API::Templates
+    mount ::API::Timing
     mount ::API::Todos
     mount ::API::Triggers
     mount ::API::Users
