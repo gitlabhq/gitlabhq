@@ -94,6 +94,8 @@ export const updateFilesAfterCommit = (
       raw: entry.content,
     }, { root: true });
 
+    commit(rootTypes.DISCARD_FILE_CHANGES, entry, { root: true });
+
     eventHub.$emit(`editor.update.model.content.${entry.path}`, entry.raw);
   });
 
