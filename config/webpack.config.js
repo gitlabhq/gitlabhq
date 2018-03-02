@@ -63,6 +63,7 @@ function generateEntries() {
     webpack_runtime:      './webpack.js',
 
     // EE-only
+    ide:                  'ee/ide/index.js',
     add_gitlab_slack_application: 'ee/add_gitlab_slack_application/index.js',
     burndown_chart:       'ee/burndown_chart/index.js',
     geo_nodes:            'ee/geo_nodes',
