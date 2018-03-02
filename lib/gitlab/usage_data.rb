@@ -9,6 +9,7 @@ module Gitlab
         license_usage_data.merge(system_usage_data)
                           .merge(features_usage_data)
                           .merge(components_usage_data)
+                          .merge(cycle_analytics_usage_data)
       end
 
       def to_json(force_refresh: false)
@@ -106,6 +107,10 @@ module Gitlab
                                            author: User.support_bot,
                                            confidential: true).count
         }
+      end
+
+      def cycle_analytics_usage_data
+        Gitlab::CycleAnalytics::UsageData.new.to_json
       end
 
       def features_usage_data

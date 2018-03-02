@@ -49,6 +49,7 @@ describe Gitlab::UsageData do
         geo
         git
         database
+        avg_cycle_analytics
       ))
     end
 

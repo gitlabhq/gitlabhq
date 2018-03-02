@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import { convertPermissionToBoolean } from '~/lib/utils/common_utils';
-import RelatedIssuesRoot from './related_issues/components/related_issues_root.vue';
+import RelatedIssuesRoot from './components/related_issues_root.vue';
 
-document.addEventListener('DOMContentLoaded', () => {
+export default function initRelatedIssues() {
   const relatedIssuesRootElement = document.querySelector('.js-related-issues-root');
   if (relatedIssuesRootElement) {
     // eslint-disable-next-line no-new
@@ -22,4 +22,4 @@ document.addEventListener('DOMContentLoaded', () => {
       }),
     });
   }
-});
+}

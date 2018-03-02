@@ -50,8 +50,6 @@ function generateEntries() {
   const manualEntries = {
     monitoring:           './monitoring/monitoring_bundle.js',
     mr_notes:             './mr_notes/index.js',
-    protected_branches:   './protected_branches',
-    registry_list:        './registry/index.js',
     terminal:             './terminal/terminal_bundle.js',
     two_factor_auth:      './two_factor_auth.js',
 
@@ -62,21 +60,14 @@ function generateEntries() {
     ide:                  './ide/index.js',
     raven:                './raven/index.js',
     test:                 './test.js',
-    u2f:                  ['vendor/u2f'],
     webpack_runtime:      './webpack.js',
 
     // EE-only
     add_gitlab_slack_application: 'ee/add_gitlab_slack_application/index.js',
     burndown_chart:       'ee/burndown_chart/index.js',
-    epic_show:            'ee/epics/epic_show/epic_show_bundle.js',
-    new_epic:             'ee/epics/new_epic/new_epic_bundle.js',
     geo_nodes:            'ee/geo_nodes',
-    issuable:             'ee/issuable/issuable_bundle.js',
-    issues:               'ee/issues/issues_bundle.js',
     ldap_group_links:     'ee/groups/ldap_group_links.js',
-    ee_protected_branches: 'ee/protected_branches',
     service_desk:         'ee/projects/settings_service_desk/service_desk_bundle.js',
-    roadmap:              'ee/roadmap',
   };
 
   return Object.assign(manualEntries, autoEntries);
