@@ -7,6 +7,7 @@ import ProtectedTagCreate from 'ee/protected_tags/protected_tag_create';
 import ProtectedTagEditList from 'ee/protected_tags/protected_tag_edit_list';
 import CEProtectedTagCreate from '~/protected_tags/protected_tag_create';
 import CEProtectedTagEditList from '~/protected_tags/protected_tag_edit_list';
+import MirrorPull from 'ee/mirrors/mirror_pull';
 
 document.addEventListener('DOMContentLoaded', () => {
   new UsersSelect();
@@ -20,4 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   initDeployKeys();
   initSettingsPanels();
+
+  const mirrorPull = new MirrorPull('.js-project-mirror-push-form');
+
+  if (mirrorPull) {
+    mirrorPull.init();
+  }
 });
