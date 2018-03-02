@@ -6,4 +6,4 @@ import './terminal';
 
 window.Terminal = Terminal;
 
-$(() => new gl.Terminal({ selector: '#terminal' }));
+export default () => new gl.Terminal({ selector: '#terminal' });
