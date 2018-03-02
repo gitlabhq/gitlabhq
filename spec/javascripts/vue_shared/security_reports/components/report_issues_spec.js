@@ -159,5 +159,20 @@ describe('Report issues', () => {
       expect(vm.$el.textContent).toContain(parsedDast[0].name);
       expect(vm.$el.textContent).toContain(parsedDast[0].priority);
     });
+
+    it('opens modal with more information and list of instances', (done) => {
+      vm.$el.querySelector('.js-modal-dast').click();
+
+      Vue.nextTick(() => {
+        expect(vm.$el.querySelector('.modal-title').textContent.trim()).toEqual('Low (Medium): Absence of Anti-CSRF Tokens');
+        expect(vm.$el.querySelector('.modal-body').textContent).toContain('No Anti-CSRF tokens were found in a HTML submission form.');
+
+        const instance = vm.$el.querySelector('.modal-body li').textContent;
+        expect(instance).toContain('http://192.168.32.236:3001/explore?sort=latest_activity_desc');
+        expect(instance).toContain('GET');
+
+        done();
+      });
+    });
   });
 });

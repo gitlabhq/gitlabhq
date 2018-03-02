@@ -3,12 +3,6 @@
 
 - page_title "Service Desk"
 
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'common_vue'
-  = webpack_bundle_tag 'filtered_search'
-  = webpack_bundle_tag 'service_desk_issues'
-  = webpack_bundle_tag 'issues'
-
 - content_for :breadcrumbs_extra do
   = render "projects/issues/nav_btns", show_export_button: false, show_rss_button: false
 

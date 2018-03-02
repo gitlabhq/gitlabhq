@@ -312,7 +312,7 @@ module API
             merge_request = user_project.merge_requests.find(params[:merge_request_id])
 
             authorize! :read_merge_request, merge_request
-            present merge_request, with: ::API::Entities::MergeRequestApprovals, current_user: current_user
+            present merge_request, with: EE::API::Entities::MergeRequestApprovals, current_user: current_user
           end
 
           # Approve a merge request
@@ -332,7 +332,7 @@ module API
               .new(user_project, current_user)
               .execute(merge_request)
 
-            present merge_request, with: ::API::Entities::MergeRequestApprovals, current_user: current_user
+            present merge_request, with: EE::API::Entities::MergeRequestApprovals, current_user: current_user
           end
 
           delete "#{path}/unapprove" do
@@ -344,7 +344,7 @@ module API
               .new(user_project, current_user)
               .execute(merge_request)
 
-            present merge_request, with: ::API::Entities::MergeRequestApprovals, current_user: current_user
+            present merge_request, with: EE::API::Entities::MergeRequestApprovals, current_user: current_user
           end
         end
       end

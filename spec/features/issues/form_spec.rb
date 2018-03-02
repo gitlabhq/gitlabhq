@@ -193,6 +193,18 @@ describe 'New/edit issue', :js do
       expect(find('.js-label-select')).to have_content('Labels')
     end
 
+    it 'clears label search input field when a label is selected' do
+      click_button 'Labels'
+
+      page.within '.dropdown-menu-labels' do
+        search_field = find('input[type="search"]')
+
+        search_field.set(label2.title)
+        click_link label2.title
+        expect(search_field.value).to eq ''
+      end
+    end
+
     it 'correctly updates the selected user when changing assignee' do
       click_button 'Unassigned'
 

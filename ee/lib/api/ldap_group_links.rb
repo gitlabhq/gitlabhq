@@ -7,7 +7,7 @@ module API
     end
     resource :groups do
       desc 'Add a linked LDAP group to group' do
-        success Entities::LdapGroupLink
+        success EE::API::Entities::LdapGroupLink
       end
       params do
         requires 'cn', type: String, desc: 'The CN of a LDAP group'
@@ -21,7 +21,7 @@ module API
 
         ldap_group_link = group.ldap_group_links.new(declared_params(include_missing: false))
         if ldap_group_link.save
-          present ldap_group_link, with: Entities::LdapGroupLink
+          present ldap_group_link, with: EE::API::Entities::LdapGroupLink
         else
           render_api_error!(ldap_group_link.errors.full_messages.first, 409)
         end

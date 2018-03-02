@@ -1,6 +1,6 @@
 <script>
 import { mapGetters, mapActions, mapState } from 'vuex';
-import modal from '../../vue_shared/components/modal.vue';
+import modal from '~/vue_shared/components/modal.vue';
 
 export default {
   components: {

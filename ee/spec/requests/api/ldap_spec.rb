@@ -14,8 +14,8 @@ describe API::Ldap do
       OpenStruct.new(cn: 'students')
     ]
 
-    allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
-    allow(Gitlab::LDAP::Adapter).to receive(:new).and_return(adapter)
+    allow(Gitlab::Auth::LDAP::Config).to receive(:enabled?).and_return(true)
+    allow(Gitlab::Auth::LDAP::Adapter).to receive(:new).and_return(adapter)
     allow(adapter).to receive_messages(groups: groups)
   end
 

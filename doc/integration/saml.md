@@ -109,8 +109,7 @@ in your SAML IdP:
 1.  Change the value of `issuer` to a unique name, which will identify the application
     to the IdP.
 
-1.  [Reconfigure][] or [restart GitLab][] for the changes to take effect if you
-    installed GitLab via Omnibus or from source respectively.
+1.  For the changes to take effect, you must [reconfigure][] GitLab if you installed via Omnibus or [restart GitLab][] if you installed from source.
 
 1.  Register the GitLab SP in your SAML 2.0 IdP, using the application name specified
     in `issuer`.

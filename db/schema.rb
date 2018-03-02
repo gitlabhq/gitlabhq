@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180216121030) do
+ActiveRecord::Schema.define(version: 20180301084653) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -518,6 +518,7 @@ ActiveRecord::Schema.define(version: 20180216121030) do
     t.boolean "run_untagged", default: true, null: false
     t.boolean "locked", default: false, null: false
     t.integer "access_level", default: 0, null: false
+    t.string "ip_address"
   end
 
   add_index "ci_runners", ["contacted_at"], name: "index_ci_runners_on_contacted_at", using: :btree
@@ -1865,7 +1866,7 @@ ActiveRecord::Schema.define(version: 20180216121030) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "creator_id"
-    t.integer "namespace_id"
+    t.integer "namespace_id", null: false
     t.datetime "last_activity_at"
     t.string "import_url"
     t.integer "visibility_level", default: 0, null: false

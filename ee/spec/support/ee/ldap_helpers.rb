@@ -1,25 +1,25 @@
 module EE
   module LdapHelpers
     def proxy(adapter, provider = 'ldapmain')
-      EE::Gitlab::LDAP::Sync::Proxy.new(provider, adapter)
+      EE::Gitlab::Auth::LDAP::Sync::Proxy.new(provider, adapter)
     end
 
     # Stub an LDAP group search and provide the return entry. Specify `nil` for
     # `entry` to simulate when an LDAP group is not found
     #
     # Example:
-    #  adapter = ::Gitlab::LDAP::Adapter.new('ldapmain', double(:ldap))
+    #  adapter = ::Gitlab::Auth::LDAP::Adapter.new('ldapmain', double(:ldap))
     #  ldap_group1 = ldap_group_entry('uid=user,ou=users,dc=example,dc=com')
     #
     #  stub_ldap_group_find_by_cn('ldap_group1', ldap_group1, adapter)
     def stub_ldap_group_find_by_cn(cn, entry, adapter = nil)
       if entry.present?
-        return_value = EE::Gitlab::LDAP::Group.new(entry, adapter)
+        return_value = EE::Gitlab::Auth::LDAP::Group.new(entry, adapter)
       end
 
-      allow(EE::Gitlab::LDAP::Group)
+      allow(EE::Gitlab::Auth::LDAP::Group)
         .to receive(:find_by_cn)
-          .with(cn, kind_of(::Gitlab::LDAP::Adapter)).and_return(return_value)
+          .with(cn, kind_of(::Gitlab::Auth::LDAP::Adapter)).and_return(return_value)
     end
 
     # Create an LDAP group entry with any number of members. By default, creates
@@ -94,7 +94,7 @@ module EE
     # Stub Active Directory range member retrieval.
     #
     # Example:
-    #  adapter = ::Gitlab::LDAP::Adapter.new('ldapmain', double(:ldap))
+    #  adapter = ::Gitlab::Auth::LDAP::Adapter.new('ldapmain', double(:ldap))
     #  group_entry_page1 = ldap_group_entry_with_member_range(
     #    [user_dn('user1'), user_dn('user2'), user_dn('user3')],
     #    range_start: '0',
@@ -105,7 +105,7 @@ module EE
     #    range_start: '3',
     #    range_end: '*'
     #  )
-    #  group = EE::Gitlab::LDAP::Group.new(group_entry_page1, adapter)
+    #  group = EE::Gitlab::Auth::LDAP::Group.new(group_entry_page1, adapter)
     #
     #  stub_ldap_adapter_group_members_in_range(group_entry_page2, adapter, range_start: '3')
     def stub_ldap_adapter_group_members_in_range(
@@ -118,7 +118,7 @@ module EE
     end
 
     def stub_ldap_adapter_nested_groups(parent_dn, entries = [], adapter = ldap_adapter)
-      groups = entries.map { |entry| EE::Gitlab::LDAP::Group.new(entry, adapter) }
+      groups = entries.map { |entry| EE::Gitlab::Auth::LDAP::Group.new(entry, adapter) }
 
       allow(adapter).to receive(:nested_groups).with(parent_dn).and_return(groups)
     end

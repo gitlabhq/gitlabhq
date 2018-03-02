@@ -146,7 +146,7 @@ class Repository
     end
   end
 
-  def commits(ref, path: nil, limit: nil, offset: nil, skip_merges: false, after: nil, before: nil)
+  def commits(ref = nil, path: nil, limit: nil, offset: nil, skip_merges: false, after: nil, before: nil, all: nil)
     options = {
       repo: raw_repository,
       ref: ref,
@@ -156,7 +156,8 @@ class Repository
       after: after,
       before: before,
       follow: Array(path).length == 1,
-      skip_merges: skip_merges
+      skip_merges: skip_merges,
+      all: all
     }
 
     commits = Gitlab::Git::Commit.where(options)

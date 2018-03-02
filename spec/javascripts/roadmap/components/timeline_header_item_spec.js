@@ -93,6 +93,9 @@ describe('TimelineHeaderItemComponent', () => {
           timeframeIndex,
           timeframeItem,
         });
+
+        vm.currentYear = mockTimeframe[timeframeIndex].getFullYear();
+        vm.currentMonth = mockTimeframe[timeframeIndex].getMonth() + 1;
         expect(vm.timelineHeaderClass).toBe('label-dark');
       });
     });

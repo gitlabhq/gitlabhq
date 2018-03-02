@@ -24,7 +24,8 @@ class RemoteMirror < ActiveRecord::Base
   after_save :set_override_remote_mirror_available, unless: -> { Gitlab::CurrentSettings.current_application_settings.mirror_available }
   after_save :refresh_remote, if: :mirror_url_changed?
   after_update :reset_fields, if: :mirror_url_changed?
-  after_destroy :remove_remote
+
+  after_commit :remove_remote, on: :destroy
 
   scope :enabled, -> { where(enabled: true) }
   scope :started, -> { with_update_status(:started) }

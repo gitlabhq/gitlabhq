@@ -1,6 +1,7 @@
 /* global monaco */
 import Disposable from './disposable';
-import eventHub from '../../eventhub';
+
+import eventHub from 'ee/ide/eventhub'; // eslint-disable-line import/first
 
 export default class Model {
   constructor(monaco, file) {

@@ -1,4 +1,4 @@
-- if Gitlab::LDAP::Config.group_sync_enabled? && can?(current_user, :admin_ldap_group_links, @group)
+- if Gitlab::Auth::LDAP::Config.group_sync_enabled? && can?(current_user, :admin_ldap_group_links, @group)
   = nav_link(path: 'ldap_group_links#index') do
     = link_to group_ldap_group_links_path(@group), title: 'LDAP Group' do
       %span

@@ -1064,7 +1064,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Adds abitlity to render deploy boards in the frontend side. !1233
 - Add filtered search to MR page. !1243
 - Update project list API returns with approvals_before_merge attribute. !1245 (Geoff Webster)
-- Catch Net::LDAP::DN exceptions in EE::Gitlab::LDAP::Group. !1260
+- Catch Net::LDAP::DN exceptions in EE::Gitlab::Auth::LDAP::Group. !1260
 - API: Use `post ":id/#{type}/:subscribable_id/subscribe"` to subscribe and `post ":id/#{type}/:subscribable_id/unsubscribe"` to unsubscribe from a resource. !1274 (Robert Schilling)
 - API: Remove deprecated fields Notes#upvotes and Notes#downvotes. !1275 (Robert Schilling)
 - Deploy board backend. !1278

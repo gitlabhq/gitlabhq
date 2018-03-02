@@ -7,14 +7,14 @@ describe LdapGroupSyncWorker do
 
   def expect_fake_proxy(provider)
     fake = double
-    expect(EE::Gitlab::LDAP::Sync::Proxy)
+    expect(EE::Gitlab::Auth::LDAP::Sync::Proxy)
       .to receive(:open).with(provider).and_yield(fake)
     fake
   end
 
   before do
     allow(Sidekiq.logger).to receive(:info)
-    allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
+    allow(Gitlab::Auth::LDAP::Config).to receive(:enabled?).and_return(true)
   end
 
   describe '#perform' do
@@ -63,16 +63,16 @@ describe LdapGroupSyncWorker do
 
   describe '#sync_group' do
     it 'syncs a single provider when a provider was given' do
-      proxy = EE::Gitlab::LDAP::Sync::Proxy.new('ldapmain', ldap_adapter)
+      proxy = EE::Gitlab::Auth::LDAP::Sync::Proxy.new('ldapmain', ldap_adapter)
 
-      expect(EE::Gitlab::LDAP::Sync::Group).to receive(:execute)
+      expect(EE::Gitlab::Auth::LDAP::Sync::Group).to receive(:execute)
                                                    .with(group, proxy)
 
       subject.sync_group(group, proxy: proxy)
     end
 
     it 'syncs all providers when no proxy was given' do
-      expect(EE::Gitlab::LDAP::Sync::Group).to receive(:execute_all_providers)
+      expect(EE::Gitlab::Auth::LDAP::Sync::Group).to receive(:execute_all_providers)
                                                    .with(group)
 
       subject.sync_group(group)

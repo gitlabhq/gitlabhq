@@ -8,13 +8,11 @@ restore your original configuration. This process consists of two steps:
 
 ## Configure the former primary to be a secondary
 
-Since the former primary will be out of sync with the current primary, the first
-step is to bring the former primary up to date. There is one downside though,
-some uploads and repositories that have been deleted during an idle period of a
-primary node, will not be deleted from the disk but the overall sync will be
-much faster. As an alternative, you can set up a
-[GitLab instance from scratch](../replication/index.md#setup-instructions) to
-workaround this downside.
+Since the former primary will be out of sync with the current primary, the first step is 
+to bring the former primary up to date. Note, deletion of data stored on disk like 
+repositories and uploads will not be replayed when bringing the former primary in back 
+into sync, which may result in increased disk usage.
+Alternatively, you can [setup a new secondary GitLab instance][setup-geo] to avoid this.
 
 To bring the former primary up to date:
 
@@ -25,24 +23,24 @@ To bring the former primary up to date:
     sudo gitlab-ctl start
     ```
 
-    NOTE: **Note:** If you [disabled the primary permanently](index.md#step-2-permanently-disable-the-primary),
+    NOTE: **Note:** If you [disabled primary permanently][disaster-recovery-disable-primary], 
     you need to undo those steps now. For Debian/Ubuntu you just need to run
-    `sudo systemctl enable gitlab-runsvdir`. For CentOS 6, you need to install
+    `sudo systemctl enable gitlab-runsvdir`. For CentoOS 6, you need to install
     the GitLab instance from scratch and setup it as a secondary node by
-    following the [setup instructions](../replication/index.md#setup-instructions).
+    following [Setup instructions][setup-geo].
     In this case you don't need to follow the next step.
 
-1. [Setup database replication](../replication/database.md). Note that in this
+1. [Setup database replication][database-replication]. Note that in this
    case, primary refers to the current primary, and secondary refers to the
    former primary.
 
 If you have lost your original primary, follow the
-[setup instructions](../replication/index.md#setup-instructions) to set up a new secondary.
+[setup instructions][setup-geo] to set up a new secondary.
 
 ## Promote the secondary to primary
 
 When the initial replication is complete and the primary and secondary are
-closely in sync, you can do a [planned failover](planned_failover.md).
+closely in sync, you can do a [planned failover].
 
 ## Restore the secondary node
 
@@ -50,3 +48,8 @@ If your objective is to have two nodes again, you need to bring your secondary
 node back online as well by repeating the first step
 ([configure the former primary to be a secondary](#configure-the-former-primary-to-be-a-secondary))
 for the secondary node.
+
+[setup-geo]: ../replication/index.md#setup-instructions
+[database-replication]: ../replication/database.md
+[disaster-recovery-disable-primary]: index.md#step-2-permanently-disable-the-primary
+[planned failover]: planned_failover.md

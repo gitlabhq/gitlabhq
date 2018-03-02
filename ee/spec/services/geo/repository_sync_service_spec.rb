@@ -115,6 +115,19 @@ describe Geo::RepositorySyncService do
       expect(Geo::ProjectRegistry.last.repository_retry_count).to eq(1)
     end
 
+    it 'marks sync as successful if no repository found' do
+      registry = create(:geo_project_registry, project: project)
+
+      allow(repository).to receive(:fetch_as_mirror)
+        .with(url_to_repo, remote_name: 'geo', forced: true)
+        .and_raise(Gitlab::Shell::Error.new(Gitlab::GitAccess::ERROR_MESSAGES[:no_repo]))
+
+      subject.execute
+
+      expect(registry.reload.resync_repository).to be false
+      expect(registry.reload.last_repository_successful_sync_at).not_to be nil
+    end
+
     context 'tracking database' do
       it 'creates a new registry if does not exists' do
         expect { subject.execute }.to change(Geo::ProjectRegistry, :count).by(1)
@@ -205,7 +218,7 @@ describe Geo::RepositorySyncService do
       it 'tries to fetch repo' do
         create(:geo_project_registry, project: project, repository_retry_count: Geo::BaseSyncService::RETRY_BEFORE_REDOWNLOAD - 1)
 
-        expect_any_instance_of(described_class).to receive(:fetch_project_repository).with(false)
+        expect(subject).to receive(:sync_repository).with(no_args)
 
         subject.execute
       end
@@ -221,7 +234,7 @@ describe Geo::RepositorySyncService do
       it 'tries to redownload repo' do
         create(:geo_project_registry, project: project, repository_retry_count: Geo::BaseSyncService::RETRY_BEFORE_REDOWNLOAD + 1)
 
-        expect(subject).to receive(:fetch_project_repository).with(true).and_call_original
+        expect(subject).to receive(:sync_repository).with(true).and_call_original
         expect(subject.gitlab_shell).to receive(:mv_repository).exactly(2).times.and_call_original
         expect(subject.gitlab_shell).to receive(:remove_repository).exactly(3).times.and_call_original
 
@@ -242,7 +255,7 @@ describe Geo::RepositorySyncService do
           force_to_redownload_repository: true
         )
 
-        expect_any_instance_of(described_class).to receive(:fetch_project_repository).with(true)
+        expect(subject).to receive(:sync_repository).with(true)
 
         subject.execute
       end

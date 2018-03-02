@@ -3,7 +3,7 @@
 >**Note:**
 This is the documentation for installations from source. For installations
 using the Omnibus GitLab packages, follow the
-[**database replication for Omnibus GitLab**](database.md) guide.
+[**database replication for Omnibus GitLab**][database] guide.
 
 >**Note:**
 The stages of the setup process must be completed in the documented order.
@@ -26,8 +26,7 @@ connect to secondary database servers (which are read-only too).
 In many databases documentation you will see "primary" being referenced as "master"
 and "secondary" as either "slave" or "standby" server (read-only).
 
-We recommend using [PostgreSQL replication
-slots](https://medium.com/@tk512/replication-slots-in-postgresql-b4b03d277c75)
+We recommend using [PostgreSQL replication slots][replication-slots-article]
 to ensure the primary retains all the data necessary for the secondaries to
 recover. See below for more details.
 
@@ -60,8 +59,12 @@ The following guide assumes that:
 
 1. Create a [replication user] named `gitlab_replicator`:
 
-    ```bash
-    sudo -u postgres psql -c "CREATE USER gitlab_replicator REPLICATION ENCRYPTED PASSWORD 'thepassword';"
+    ```sql
+    --- Create a new user 'replicator'
+    CREATE USER gitlab_replicator;
+    
+    --- Set/change a password and grants replication privilege 
+    ALTER USER gitlab_replicator WITH REPLICATION ENCRYPTED PASSWORD 'replicationpasswordhere';
     ```
     
 1. Make sure your the `gitlab` database user has a password defined
@@ -149,12 +152,11 @@ The following guide assumes that:
 
     The `listen_address` option opens PostgreSQL up to external connections
     with the interface corresponding to the given IP. See [the PostgreSQL
-    documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-connection.html)
-    for more details.
+    documentation][pg-docs-runtime-conn] for more details.
 
     You may also want to edit the `wal_keep_segments` and `max_wal_senders` to
-    match your database replication requirements. Consult the [PostgreSQL - Replication documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-replication.html)
-    for more information.
+    match your database replication requirements. Consult the 
+    [PostgreSQL - Replication documentation][pg-docs-runtime-replication] for more information.
 
 1. Set the access control on the primary to allow TCP connections using the
    server's public IP and set the connection from the secondary to require a
@@ -162,8 +164,7 @@ The following guide assumes that:
    `/etc/postgresql/9.x/main/pg_hba.conf`):
 
     ```bash
-    host    all             all                      127.0.0.1/32    trust
-    host    all             all                      1.2.3.4/32      trust
+    host    all             all                      1.2.3.4/32      md5
     host    replication     gitlab_replicator        5.6.7.8/32      md5
     ```
 
@@ -173,8 +174,7 @@ The following guide assumes that:
     address:
 
     ```bash
-    host    all             all                      127.0.0.1/32    trust
-    host    all             all                      1.2.3.4/32      trust
+    host    all             all                      1.2.3.4/32      md5
     host    replication     gitlab_replicator        5.6.7.8/32      md5
     host    replication     gitlab_replicator        11.22.33.44/32  md5
     ```
@@ -200,13 +200,9 @@ The following guide assumes that:
    `netstat -plnt` to make sure that PostgreSQL is listening to the server's
    public IP.
 
-### Step 2. Add the secondary GitLab node
+### Step 2. Configure the secondary server
 
-Follow the steps in ["add the secondary GitLab node"](database.md#step-2-add-the-secondary-gitlab-node).
-
-### Step 3. Configure the secondary server
-
-Follow the first steps in ["configure the secondary server"](database.md#step-3-configure-the-secondary-server),
+Follow the first steps in ["configure the secondary server"][database-replication],
 but note that since you are installing from source, the username and
 group listed as `gitlab-psql` in those steps should be replaced by `postgres`
 instead. After completing the "Test that the `gitlab-psql` user can connect to
@@ -266,34 +262,38 @@ node.
 1. Configure the [PostgreSQL FDW][FDW] connection and credentials:
 
     Save the script below in a file, ex. `/tmp/geo_fdw.sh` and modify the connection
-    params to match your environment.
+    params to match your environment. Execute it to setup the FDW connection.
     
     ```bash
     #!/bin/bash
  
     # Secondary Database connection params:
-    DB_HOST="/var/opt/gitlab/postgresql"
+    DB_HOST="/var/opt/gitlab/postgresql" # change to the public IP or VPC private IP if its an external server
     DB_NAME="gitlabhq_production"
     DB_USER="gitlab"
     DB_PORT="5432"
     
     # Tracking Database connection params:
-    GEO_DB_HOST="/var/opt/gitlab/geo-postgresql"
+    GEO_DB_HOST="/var/opt/gitlab/geo-postgresql" # change to the public IP or VPC private IP if its an external server
     GEO_DB_NAME="gitlabhq_geo_production"
     GEO_DB_USER="gitlab_geo"
     GEO_DB_PORT="5432"
  
-    sudo -u postgres psql -h $GEO_DB_HOST -d $GEO_DB_NAME -p $GEO_DB_PORT -c "CREATE EXTENSION postgres_fdw;"
-    sudo -u postgres psql -h $GEO_DB_HOST -d $GEO_DB_NAME -p $GEO_DB_PORT -c "CREATE SERVER gitlab_secondary FOREIGN DATA WRAPPER postgres_fdw OPTIONS (host '$(DB_HOST)', dbname '$(DB_NAME)', port '$(DB_PORT)' );"
-    sudo -u postgres psql -h $GEO_DB_HOST -d $GEO_DB_NAME -p $GEO_DB_PORT -c "CREATE USER MAPPING FOR $(GEO_DB_USER) SERVER gitlab_secondary OPTIONS (user '$(DB_USER)');"
-    sudo -u postgres psql -h $GEO_DB_HOST -d $GEO_DB_NAME -p $GEO_DB_PORT -c "CREATE SCHEMA gitlab_secondary;"
-    sudo -u postgres psql -h $GEO_DB_HOST -d $GEO_DB_NAME -p $GEO_DB_PORT -c "GRANT USAGE ON FOREIGN SERVER gitlab_secondary TO $(GEO_DB_USER);"
+    query_exec () {
+      gitlab-psql -h $GEO_DB_HOST -d $GEO_DB_NAME -p $GEO_DB_PORT -c "${1}"
+    }
+ 
+    query_exec "CREATE EXTENSION postgres_fdw;"
+    query_exec "CREATE SERVER gitlab_secondary FOREIGN DATA WRAPPER postgres_fdw OPTIONS (host '${DB_HOST}', dbname '${DB_NAME}', port '${DB_PORT}');"
+    query_exec "CREATE USER MAPPING FOR ${GEO_DB_USER} SERVER gitlab_secondary OPTIONS (user '${DB_USER}');"
+    query_exec "CREATE SCHEMA gitlab_secondary;"
+    query_exec "GRANT USAGE ON FOREIGN SERVER gitlab_secondary TO ${GEO_DB_USER};"
     ```
 
     And edit the content of `database_geo.yml` and to add `fdw: true` to
     the  `production:` block.
 
-### Step 4. Initiate the replication process
+### Step 3. Initiate the replication process
 
 Below we provide a script that connects the database on the secondary node to
 the database on the primary node, replicates the database, and creates the
@@ -315,7 +315,7 @@ data before running `pg_basebackup`.
 1. Save the snippet below in a file, let's say `/tmp/replica.sh`. Modify the
    embedded paths if necessary:
 
-    ```bash
+    ```
     #!/bin/bash
 
     PORT="5432"
@@ -332,7 +332,8 @@ data before running `pg_basebackup`.
     read SSLMODE
 
     echo Stopping PostgreSQL and all GitLab services
-    gitlab-ctl stop
+    sudo service gitlab stop
+    sudo service postgresql stop
 
     echo Backing up postgresql.conf
     sudo -u postgres mv /var/opt/gitlab/postgresql/data/postgresql.conf /var/opt/gitlab/postgresql/
@@ -356,8 +357,8 @@ data before running `pg_basebackup`.
     echo Restoring postgresql.conf
     sudo -u postgres mv /var/opt/gitlab/postgresql/postgresql.conf /var/opt/gitlab/postgresql/data/
 
-    echo Starting PostgreSQL and all GitLab services
-    gitlab-ctl start
+    echo Starting PostgreSQL
+    sudo service postgresql start
     ```
 
 1. Run it with:
@@ -375,7 +376,7 @@ data before running `pg_basebackup`.
     **not** safe over the public Internet!
 
     You can read more details about each `sslmode` in the
-    [PostgreSQL documentation](https://www.postgresql.org/docs/9.6/static/libpq-ssl.html#LIBPQ-SSL-PROTECTION);
+    [PostgreSQL documentation][pg-docs-ssl];
     the instructions above are carefully written to ensure protection against
     both passive eavesdroppers and active "man-in-the-middle" attackers.
 
@@ -389,7 +390,14 @@ MySQL replication is not supported for Geo.
 
 Read the [troubleshooting document](troubleshooting.md).
 
+[replication-slots-article]: https://medium.com/@tk512/replication-slots-in-postgresql-b4b03d277c75
 [pgback]: http://www.postgresql.org/docs/9.6/static/app-pgbasebackup.html
 [replication user]:https://wiki.postgresql.org/wiki/Streaming_Replication
 [FDW]: https://www.postgresql.org/docs/9.6/static/postgres-fdw.html
 [toc]: index.md#using-gitlab-installed-from-source
+[database]: database.md
+[add-geo-node]: configuration.md#step-3-add-the-secondary-gitlab-node
+[database-replication]: database.md#step-2-configure-the-secondary-server
+[pg-docs-ssl]: https://www.postgresql.org/docs/9.6/static/libpq-ssl.html#LIBPQ-SSL-PROTECTION
+[pg-docs-runtime-conn]: https://www.postgresql.org/docs/9.6/static/runtime-config-connection.html
+[pg-docs-runtime-replication]: https://www.postgresql.org/docs/9.6/static/runtime-config-replication.html

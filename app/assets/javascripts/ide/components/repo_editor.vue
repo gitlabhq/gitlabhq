@@ -1,7 +1,7 @@
 <script>
 /* global monaco */
 import { mapState, mapGetters, mapActions } from 'vuex';
-import flash from '../../flash';
+import flash from '~/flash';
 import monacoLoader from '../monaco_loader';
 import Editor from '../lib/editor';
 

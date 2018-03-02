@@ -328,6 +328,16 @@ describe Project do
     end
   end
 
+  describe 'updating import_url' do
+    it 'removes previous remote' do
+      project = create(:project, :repository, :mirror)
+
+      expect(RepositoryRemoveRemoteWorker).to receive(:perform_async).with(project.id, ::Repository::MIRROR_REMOTE).and_call_original
+
+      project.update_attributes(import_url: "http://test.com")
+    end
+  end
+
   describe '#mirror_waiting_duration' do
     it 'returns in seconds the time spent in the queue' do
       project = create(:project, :mirror, :import_scheduled)

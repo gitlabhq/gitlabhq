@@ -32,7 +32,7 @@ feature 'Admin updates settings' do
   describe 'LDAP settings' do
     context 'with LDAP enabled' do
       scenario 'Change allow group owners to manage ldap' do
-        allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
+        allow(Gitlab::Auth::LDAP::Config).to receive(:enabled?).and_return(true)
         visit admin_application_settings_path
 
         find('#application_setting_allow_group_owners_to_manage_ldap').set(false)
