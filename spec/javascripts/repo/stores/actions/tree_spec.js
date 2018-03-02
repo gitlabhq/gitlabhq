@@ -426,5 +426,63 @@ describe('Multi-file store tree actions', () => {
         done();
       }).catch(done.fail);
     });
+
+    it('does not add changed file with same name but different path', (done) => {
+      const f = file('openedFile');
+      const tree = {
+        tree: [],
+      };
+      const data = {
+        trees: [{ name: 'tree' }],
+        submodules: [{ name: 'submodule' }],
+        blobs: [f],
+      };
+
+      store.state.changedFiles.push({
+        ...f,
+        type: 'blob',
+        path: `src/${f.name}`,
+        changed: true,
+      });
+
+      store.dispatch('updateDirectoryData', {
+        data,
+        tree,
+        clearTree: false,
+      }).then(() => {
+        expect(tree.tree[2].changed).toBeFalsy();
+
+        done();
+      }).catch(done.fail);
+    });
+
+    it('does not add opened file with same name but different path', (done) => {
+      const f = file('openedFile');
+      const tree = {
+        tree: [],
+      };
+      const data = {
+        trees: [{ name: 'tree' }],
+        submodules: [{ name: 'submodule' }],
+        blobs: [f],
+      };
+
+      store.state.openFiles.push({
+        ...f,
+        type: 'blob',
+        path: `src/${f.name}`,
+        opened: true,
+      });
+
+      store.dispatch('updateDirectoryData', {
+        data,
+        tree,
+        clearTree: false,
+      }).then(() => {
+        expect(tree.tree[2].opened).toBeFalsy();
+
+        done();
+      }).catch(done.fail);
+    });
   });
 });
