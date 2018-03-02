@@ -71,10 +71,7 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
   end
 
   def move_tmp_file_to_storage(object, path)
-    File.open(path) do |f|
-      object.file = f
-    end
-
+    object.file = File.open(path)
     object.file.store!
     object.save
   end

@@ -20,7 +20,7 @@ describe ObjectStorageUploadWorker do
         stub_lfs_object_storage(background_upload: true)
       end
 
-      it 'uploads object to storage' d
+      it 'uploads object to storage' do
         expect { perform }.to change { lfs_object.reload.file_store }.from(local).to(remote)
       end
 

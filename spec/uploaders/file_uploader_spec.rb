@@ -89,29 +89,6 @@ describe FileUploader do
     end
   end
 
-  describe 'callbacks' do
-    describe '#prune_store_dir after :remove' do
-      before do
-        uploader.store!(fixture_file_upload('spec/fixtures/doc_sample.txt'))
-      end
-
-      def store_dir
-        File.expand_path(uploader.store_dir, uploader.root)
-      end
-
-      it 'is called' do
-        expect(uploader).to receive(:prune_store_dir).once
-
-        uploader.remove!
-      end
-
-      it 'prune the store directory' do
-        expect { uploader.remove! }
-          .to change { File.exist?(store_dir) }.from(true).to(false)
-      end
-    end
-  end
-
   describe "#migrate!" do
     before do
       uploader.store!(fixture_file_upload(Rails.root.join('spec/fixtures/dk.png')))
@@ -137,8 +114,5 @@ describe FileUploader do
 
       uploader.upload = upload
     end
-
-    it_behaves_like "migrates", to_store: described_class::Store::REMOTE
-    it_behaves_like "migrates", from_store: described_class::Store::REMOTE, to_store: described_class::Store::LOCAL
   end
 end
