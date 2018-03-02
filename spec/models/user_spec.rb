@@ -1604,6 +1604,32 @@ describe User do
     it { is_expected.to eq([private_group]) }
   end
 
+  describe '#authorizations_for_projects' do
+    let!(:user) { create(:user) }
+    subject { Project.where("EXISTS (?)", user.authorizations_for_projects) }
+
+    it 'includes projects that belong to a user, but no other projects' do
+      owned = create(:project, :private, namespace: user.namespace)
+      member = create(:project, :private).tap { |p| p.add_master(user) }
+      other = create(:project)
+
+      expect(subject).to include(owned)
+      expect(subject).to include(member)
+      expect(subject).not_to include(other)
+    end
+
+    it 'includes projects a user has access to, but no other projects' do
+      other_user = create(:user)
+      accessible = create(:project, :private, namespace: other_user.namespace) do |project|
+        project.add_developer(user)
+      end
+      other = create(:project)
+
+      expect(subject).to include(accessible)
+      expect(subject).not_to include(other)
+    end
+  end
+
   describe '#authorized_projects', :delete do
     context 'with a minimum access level' do
       it 'includes projects for which the user is an owner' do

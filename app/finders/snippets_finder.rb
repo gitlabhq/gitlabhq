@@ -69,11 +69,7 @@ class SnippetsFinder < UnionFinder
     # we can shortcut and just return.
     return yield(Project.all) if current_user.full_private_access?
 
-    authorized = current_user
-      .project_authorizations
-      .select(1)
-      .where('project_authorizations.project_id = projects.id')
-    authorized_projects = yield(Project.where('EXISTS (?)', authorized))
+    authorized_projects = yield(Project.where('EXISTS (?)', current_user.authorizations_for_projects))
 
     levels = Gitlab::VisibilityLevel.levels_for_user(current_user)
     visible_projects = yield(Project.where(visibility_level: levels))
