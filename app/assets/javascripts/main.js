@@ -13,7 +13,6 @@ window.$ = jQuery;
 import { handleLocationHash, addSelectOnFocusBehaviour } from './lib/utils/common_utils';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import { getLocationHash, visitUrl } from './lib/utils/url_utility';
-import axios from './lib/utils/axios_utils';
 
 // behaviors
 import './behaviors/';
