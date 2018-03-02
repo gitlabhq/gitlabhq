@@ -8,11 +8,8 @@ module Gitlab
   module Auth
     module LDAP
       class User < Gitlab::Auth::OAuth::User
-<<<<<<< HEAD
         prepend ::EE::Gitlab::Auth::LDAP::User
 
-=======
->>>>>>> upstream/master
         class << self
           def find_by_uid_and_provider(uid, provider)
             identity = ::Identity.with_extern_uid(provider, uid).take

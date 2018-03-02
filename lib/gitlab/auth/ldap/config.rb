@@ -3,11 +3,8 @@ module Gitlab
   module Auth
     module LDAP
       class Config
-<<<<<<< HEAD
         include ::EE::Gitlab::Auth::LDAP::Config
 
-=======
->>>>>>> upstream/master
         NET_LDAP_ENCRYPTION_METHOD = {
           simple_tls: :simple_tls,
           start_tls:  :start_tls,
@@ -16,11 +13,8 @@ module Gitlab
 
         attr_accessor :provider, :options
 
-<<<<<<< HEAD
         InvalidProvider = Class.new(StandardError)
 
-=======
->>>>>>> upstream/master
         def self.enabled?
           Gitlab.config.ldap.enabled
         end
@@ -32,11 +26,7 @@ module Gitlab
         def self.available_servers
           return [] unless enabled?
 
-<<<<<<< HEAD
           ::License.feature_available?(:multiple_ldap_servers) ? servers : Array.wrap(servers.first)
-=======
-          Array.wrap(servers.first)
->>>>>>> upstream/master
         end
 
         def self.providers
@@ -48,11 +38,7 @@ module Gitlab
         end
 
         def self.invalid_provider(provider)
-<<<<<<< HEAD
           raise InvalidProvider.new("Unknown provider (#{provider}). Available providers: #{providers}")
-=======
-          raise "Unknown provider (#{provider}). Available providers: #{providers}"
->>>>>>> upstream/master
         end
 
         def initialize(provider)
@@ -102,24 +88,17 @@ module Gitlab
         end
 
         def base
-<<<<<<< HEAD
           @base ||= Person.normalize_dn(options['base'])
-=======
-          options['base']
->>>>>>> upstream/master
         end
 
         def uid
           options['uid']
         end
 
-<<<<<<< HEAD
         def label
           options['label']
         end
 
-=======
->>>>>>> upstream/master
         def sync_ssh_keys?
           sync_ssh_keys.present?
         end
@@ -161,13 +140,10 @@ module Gitlab
           options['timeout'].to_i
         end
 
-<<<<<<< HEAD
         def external_groups
           options['external_groups']
         end
 
-=======
->>>>>>> upstream/master
         def has_auth?
           options['password'] || options['bind_dn']
         end

@@ -14,7 +14,6 @@ module Gitlab
           def external_groups
             options[:external_groups]
           end
-<<<<<<< HEAD
 
           def required_groups
             Array(options[:required_groups])
@@ -23,8 +22,6 @@ module Gitlab
           def admin_groups
             options[:admin_groups]
           end
-=======
->>>>>>> upstream/master
         end
       end
     end

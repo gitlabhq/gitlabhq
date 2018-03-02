@@ -18,7 +18,6 @@ module Gitlab
           user ||= find_or_build_ldap_user if auto_link_ldap_user?
           user ||= build_new_user if signup_enabled?
 
-<<<<<<< HEAD
           if user_in_required_group?
             unblock_user(user, "in required group") if user.persisted? && user.blocked?
           elsif user.persisted?
@@ -30,12 +29,6 @@ module Gitlab
           if user
             user.external = !(auth_hash.groups & Gitlab::Auth::Saml::Config.external_groups).empty? if external_users_enabled?
             user.admin = !(auth_hash.groups & Gitlab::Auth::Saml::Config.admin_groups).empty? if admin_groups_enabled?
-=======
-          if external_users_enabled? && user
-            # Check if there is overlap between the user's groups and the external groups
-            # setting then set user as external or internal.
-            user.external = !(auth_hash.groups & Gitlab::Auth::Saml::Config.external_groups).empty?
->>>>>>> upstream/master
           end
 
           user
@@ -49,7 +42,6 @@ module Gitlab
 
         protected
 
-<<<<<<< HEAD
         def block_user(user, reason)
           user.ldap_block
           log_user_changes(user, "#{reason}, blocking")
@@ -72,8 +64,6 @@ module Gitlab
           required_groups.empty? || !(auth_hash.groups & required_groups).empty?
         end
 
-=======
->>>>>>> upstream/master
         def auto_link_saml_user?
           Gitlab.config.omniauth.auto_link_saml_user
         end
@@ -85,13 +75,10 @@ module Gitlab
         def auth_hash=(auth_hash)
           @auth_hash = Gitlab::Auth::Saml::AuthHash.new(auth_hash)
         end
-<<<<<<< HEAD
 
         def admin_groups_enabled?
           !Gitlab::Auth::Saml::Config.admin_groups.nil?
         end
-=======
->>>>>>> upstream/master
       end
     end
   end

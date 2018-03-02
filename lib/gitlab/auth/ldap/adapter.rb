@@ -2,11 +2,8 @@ module Gitlab
   module Auth
     module LDAP
       class Adapter
-<<<<<<< HEAD
         prepend ::EE::Gitlab::Auth::LDAP::Adapter
 
-=======
->>>>>>> upstream/master
         attr_reader :provider, :ldap
 
         def self.open(provider, &block)

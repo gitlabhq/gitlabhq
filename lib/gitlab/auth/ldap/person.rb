@@ -1,17 +1,11 @@
-<<<<<<< HEAD
 # Contains methods common to both GitLab CE and EE.
 # All EE methods should be in `EE::Gitlab::Auth::LDAP::Person` only.
-=======
->>>>>>> upstream/master
 module Gitlab
   module Auth
     module LDAP
       class Person
-<<<<<<< HEAD
         prepend ::EE::Gitlab::Auth::LDAP::Person
 
-=======
->>>>>>> upstream/master
         # Active Directory-specific LDAP filter that checks if bit 2 of the
         # userAccountControl attribute is set.
         # Source: http://ctogonewild.com/2009/09/03/bitmask-searches-in-ldap/

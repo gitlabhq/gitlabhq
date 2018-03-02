@@ -4,11 +4,8 @@ module Gitlab
   module Auth
     module OAuth
       class AuthHash
-<<<<<<< HEAD
         prepend ::EE::Gitlab::Auth::OAuth::AuthHash
 
-=======
->>>>>>> upstream/master
         attr_reader :auth_hash
         def initialize(auth_hash)
           @auth_hash = auth_hash
