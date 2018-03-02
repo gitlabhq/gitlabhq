@@ -34,7 +34,6 @@ describe('RepoEditor', () => {
 
     resetStore(vm.$store);
 
-    Editor.editorInstance.dirtyDiffController.dispose();
     Editor.editorInstance.modelManager.dispose();
   });
 
@@ -66,6 +65,8 @@ describe('RepoEditor', () => {
     it('creates new model', () => {
       spyOn(vm.editor, 'createModel').and.callThrough();
 
+      Editor.editorInstance.modelManager.dispose();
+
       vm.setupEditor();
 
       expect(vm.editor.createModel).toHaveBeenCalledWith(vm.$store.getters.activeFile);
@@ -75,6 +76,8 @@ describe('RepoEditor', () => {
     it('attaches model to editor', () => {
       spyOn(vm.editor, 'attachModel').and.callThrough();
 
+      Editor.editorInstance.modelManager.dispose();
+
       vm.setupEditor();
 
       expect(vm.editor.attachModel).toHaveBeenCalledWith(vm.model);
@@ -83,6 +86,8 @@ describe('RepoEditor', () => {
     it('adds callback methods', () => {
       spyOn(vm.editor, 'onPositionChange').and.callThrough();
 
+      Editor.editorInstance.modelManager.dispose();
+
       vm.setupEditor();
 
       expect(vm.editor.onPositionChange).toHaveBeenCalled();
@@ -90,8 +95,6 @@ describe('RepoEditor', () => {
     });
 
     it('updates state when model content changed', (done) => {
-      vm.setupEditor();
-
       vm.model.setValue('testing 123');
 
       setTimeout(() => {
