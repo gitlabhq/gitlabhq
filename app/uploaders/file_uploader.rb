@@ -32,8 +32,11 @@ class FileUploader < GitlabUploader
     )
   end
 
-  def self.base_dir(model)
-    model_path_segment(model)
+  def self.base_dir(model, store = Store::LOCAL)
+    decorated_model = model
+    decorated_model = Storage::HashedProject.new(model) if store == Store::REMOTE
+
+    model_path_segment(decorated_model)
   end
 
   # used in migrations and import/exports
@@ -51,19 +54,22 @@ class FileUploader < GitlabUploader
   #
   # Returns a String without a trailing slash
   def self.model_path_segment(model)
-    if model.hashed_storage?(:attachments)
-      model.disk_path
+    case model
+    when Storage::HashedProject then model.disk_path
     else
-      model.full_path
+      model.hashed_storage?(:attachments) ? model.disk_path : model.full_path
     end
-  end
-
-  def self.upload_path(secret, identifier)
-    File.join(secret, identifier)
   end
 
   def self.generate_secret
     SecureRandom.hex
+  end
+
+  def upload_paths(filename)
+    [
+      File.join(secret, filename),
+      File.join(base_dir(Store::REMOTE), secret, filename)
+    ]
   end
 
   attr_accessor :model
@@ -75,8 +81,10 @@ class FileUploader < GitlabUploader
     apply_context!(uploader_context)
   end
 
-  def base_dir
-    self.class.base_dir(@model)
+  # enforce the usage of Hashed storage when storing to
+  # remote store as the FileMover doesn't support OS
+  def base_dir(store = nil)
+    self.class.base_dir(@model, store || object_store)
   end
 
   # we don't need to know the actual path, an uploader instance should be
@@ -86,15 +94,19 @@ class FileUploader < GitlabUploader
   end
 
   def upload_path
-    self.class.upload_path(dynamic_segment, identifier)
+    if file_storage?
+      # Legacy path relative to project.full_path
+      File.join(dynamic_segment, identifier)
+    else
+      File.join(store_dir, identifier)
+    end
   end
 
-  def model_path_segment
-    self.class.model_path_segment(@model)
-  end
-
-  def store_dir
-    File.join(base_dir, dynamic_segment)
+  def store_dirs
+    {
+      Store::LOCAL => File.join(base_dir, dynamic_segment),
+      Store::REMOTE => File.join(base_dir(ObjectStorage::Store::REMOTE), dynamic_segment)
+    }
   end
 
   def markdown_link
