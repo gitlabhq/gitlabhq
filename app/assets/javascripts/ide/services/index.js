@@ -16,7 +16,7 @@ export default {
       return Promise.resolve(file.content);
     }
 
-    if (file.raw !== undefined) {
+    if (file.raw) {
       return Promise.resolve(file.raw);
     }
 
