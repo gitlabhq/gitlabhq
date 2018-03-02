@@ -508,8 +508,8 @@ describe Gitlab::Shell do
     end
 
     shared_examples 'fetch_remote' do |gitaly_on|
-      def fetch_remote(ssh_auth = nil)
-        gitlab_shell.fetch_remote(repository.raw_repository, 'remote-name', ssh_auth: ssh_auth)
+      def fetch_remote(ssh_auth = nil, prune = true)
+        gitlab_shell.fetch_remote(repository.raw_repository, 'remote-name', ssh_auth: ssh_auth, prune: prune)
       end
 
       def expect_gitlab_projects(fail = false, options = {})
@@ -555,27 +555,33 @@ describe Gitlab::Shell do
       end
 
       it 'returns true when the command succeeds' do
-        expect_call(false, force: false, tags: true)
+        expect_call(false, force: false, tags: true, prune: true)
 
         expect(fetch_remote).to be_truthy
       end
 
+      it 'returns true when the command succeeds' do
+        expect_call(false, force: false, tags: true, prune: false)
+
+        expect(fetch_remote(nil, false)).to be_truthy
+      end
+
       it 'raises an exception when the command fails' do
-        expect_call(true, force: false, tags: true)
+        expect_call(true, force: false, tags: true, prune: true)
 
         expect { fetch_remote }.to raise_error(Gitlab::Shell::Error)
       end
 
       it 'allows forced and no_tags to be changed' do
-        expect_call(false, force: true, tags: false)
+        expect_call(false, force: true, tags: false, prune: true)
 
-        result = gitlab_shell.fetch_remote(repository.raw_repository, 'remote-name', forced: true, no_tags: true)
+        result = gitlab_shell.fetch_remote(repository.raw_repository, 'remote-name', forced: true, no_tags: true, prune: true)
         expect(result).to be_truthy
       end
 
       context 'SSH auth' do
         it 'passes the SSH key if specified' do
-          expect_call(false, force: false, tags: true, ssh_key: 'foo')
+          expect_call(false, force: false, tags: true, prune: true, ssh_key: 'foo')
 
           ssh_auth = build_ssh_auth(ssh_key_auth?: true, ssh_private_key: 'foo')
 
@@ -583,7 +589,7 @@ describe Gitlab::Shell do
         end
 
         it 'does not pass an empty SSH key' do
-          expect_call(false, force: false, tags: true)
+          expect_call(false, force: false, tags: true, prune: true)
 
           ssh_auth = build_ssh_auth(ssh_key_auth: true, ssh_private_key: '')
 
@@ -591,7 +597,7 @@ describe Gitlab::Shell do
         end
 
         it 'does not pass the key unless SSH key auth is to be used' do
-          expect_call(false, force: false, tags: true)
+          expect_call(false, force: false, tags: true, prune: true)
 
           ssh_auth = build_ssh_auth(ssh_key_auth: false, ssh_private_key: 'foo')
 
@@ -599,7 +605,7 @@ describe Gitlab::Shell do
         end
 
         it 'passes the known_hosts data if specified' do
-          expect_call(false, force: false, tags: true, known_hosts: 'foo')
+          expect_call(false, force: false, tags: true, prune: true, known_hosts: 'foo')
 
           ssh_auth = build_ssh_auth(ssh_known_hosts: 'foo')
 
@@ -607,7 +613,7 @@ describe Gitlab::Shell do
         end
 
         it 'does not pass empty known_hosts data' do
-          expect_call(false, force: false, tags: true)
+          expect_call(false, force: false, tags: true, prune: true)
 
           ssh_auth = build_ssh_auth(ssh_known_hosts: '')
 
@@ -615,7 +621,7 @@ describe Gitlab::Shell do
         end
 
         it 'does not pass known_hosts data unless SSH is to be used' do
-          expect_call(false, force: false, tags: true)
+          expect_call(false, force: false, tags: true, prune: true)
 
           ssh_auth = build_ssh_auth(ssh_import?: false, ssh_known_hosts: 'foo')
 
@@ -642,7 +648,7 @@ describe Gitlab::Shell do
 
         it 'passes the correct params to the gitaly service' do
           expect(repository.gitaly_repository_client).to receive(:fetch_remote)
-            .with(remote_name, ssh_auth: ssh_auth, forced: true, no_tags: true, timeout: timeout)
+            .with(remote_name, ssh_auth: ssh_auth, forced: true, no_tags: true, prune: true, timeout: timeout)
 
           subject
         end
