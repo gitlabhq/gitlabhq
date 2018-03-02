@@ -62,7 +62,6 @@ function generateEntries() {
     webpack_runtime:      './webpack.js',
 
     // EE-only
-    add_gitlab_slack_application: 'ee/add_gitlab_slack_application/index.js',
     geo_nodes:            'ee/geo_nodes',
     ldap_group_links:     'ee/groups/ldap_group_links.js',
     mirrors:              'ee/mirrors',
