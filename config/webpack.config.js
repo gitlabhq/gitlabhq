@@ -21,6 +21,7 @@ const NO_COMPRESSION = process.env.NO_COMPRESSION;
 
 let autoEntriesCount = 0;
 let watchAutoEntries = [];
+const defaultEntries = ['./webpack', './commons', './main'];
 
 function generateEntries() {
   // generate automatic entry points
@@ -33,7 +34,7 @@ function generateEntries() {
   function generateAutoEntries(path, prefix = '.') {
     const chunkPath = path.replace(/\/index\.js$/, '');
     const chunkName = chunkPath.replace(/\//g, '.');
-    autoEntries[chunkName] = `${prefix}/${path}`;
+    autoEntries[chunkName] = defaultEntries.concat(`${prefix}/${path}`);
   }
 
   pageEntries.forEach(path => generateAutoEntries(path));
@@ -41,10 +42,7 @@ function generateEntries() {
   autoEntriesCount = Object.keys(autoEntries).length;
 
   const manualEntries = {
-    common: './commons/index.js',
-    main: './main.js',
     raven: './raven/index.js',
-    webpack_runtime: './webpack.js',
     ide: './ide/index.js',
   };
 
@@ -52,6 +50,8 @@ function generateEntries() {
 }
 
 const config = {
+  mode: IS_PRODUCTION ? 'production' : 'development',
+
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
 
   entry: generateEntries,
@@ -61,6 +61,33 @@ const config = {
     publicPath: '/assets/webpack/',
     filename: IS_PRODUCTION ? '[name].[chunkhash].bundle.js' : '[name].bundle.js',
     chunkFilename: IS_PRODUCTION ? '[name].[chunkhash].chunk.js' : '[name].chunk.js',
+  },
+
+  optimization: {
+    nodeEnv: false,
+    runtimeChunk: 'single',
+    splitChunks: {
+      maxInitialRequests: 4,
+      cacheGroups: {
+        default: false,
+        common: () => ({
+          priority: 20,
+          name: 'main',
+          chunks: 'initial',
+          minChunks: autoEntriesCount * 0.9,
+        }),
+        vendors: {
+          priority: 10,
+          chunks: 'async',
+          test: /[\\/](node_modules|vendor[\\/]assets[\\/]javascripts)[\\/]/,
+        },
+        commons: {
+          chunks: 'all',
+          minChunks: 2,
+          reuseExistingChunk: true,
+        },
+      },
+    },
   },
 
   module: {
@@ -209,11 +236,6 @@ const config = {
       return `${moduleNames[0]}-${hash.substr(0, 6)}`;
     }),
 
-    // create cacheable common library bundles
-    new webpack.optimize.CommonsChunkPlugin({
-      names: ['main', 'common', 'webpack_runtime'],
-    }),
-
     // copy pre-compiled vendor libraries verbatim
     new CopyWebpackPlugin([
       {
@@ -260,20 +282,6 @@ const config = {
 
 if (IS_PRODUCTION) {
   config.devtool = 'source-map';
-  config.plugins.push(
-    new webpack.NoEmitOnErrorsPlugin(),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true,
-      debug: false,
-    }),
-    new webpack.optimize.ModuleConcatenationPlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
-    }),
-    new webpack.DefinePlugin({
-      'process.env': { NODE_ENV: JSON.stringify('production') },
-    })
-  );
 
   // compression can require a lot of compute time and is disabled in CI
   if (!NO_COMPRESSION) {
@@ -294,7 +302,7 @@ if (IS_DEV_SERVER) {
   };
   config.plugins.push(
     // watch node_modules for changes if we encounter a missing module compile error
-    new WatchMissingNodeModulesPlugin(path.join(ROOT_PATH, 'node_modules')),
+    // new WatchMissingNodeModulesPlugin(path.join(ROOT_PATH, 'node_modules')),
 
     // watch for changes to our automatic entry point modules
     {
