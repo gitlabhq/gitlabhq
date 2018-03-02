@@ -72,7 +72,6 @@ function generateEntries() {
     mirrors:              'ee/mirrors',
     ee_protected_branches: 'ee/protected_branches',
     service_desk:         'ee/projects/settings_service_desk/service_desk_bundle.js',
-    roadmap:              'ee/roadmap',
   };
 
   return Object.assign(manualEntries, autoEntries);

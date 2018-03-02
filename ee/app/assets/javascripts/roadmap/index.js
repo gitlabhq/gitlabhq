@@ -13,7 +13,7 @@ import roadmapApp from './components/app.vue';
 
 Vue.use(Translate);
 
-document.addEventListener('DOMContentLoaded', () => {
+export default () => {
   const el = document.getElementById('js-roadmap');
 
   if (!el) {
@@ -57,4 +57,4 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     },
   });
-});
+};
