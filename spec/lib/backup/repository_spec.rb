@@ -28,6 +28,23 @@ describe Backup::Repository do
   end
 
   describe '#restore' do
+    subject { described_class.new }
+
+    let(:timestamp) { Time.utc(2017, 3, 22) }
+    let(:temp_dirs) do
+      Gitlab.config.repositories.storages.map do |name, storage|
+        File.join(storage['path'], '..', 'repositories.old.' + timestamp.to_i.to_s)
+      end
+    end
+
+    around do |example|
+      Timecop.freeze(timestamp) { example.run }
+    end
+
+    after do
+      temp_dirs.each { |path| FileUtils.rm_rf(path) }
+    end
+
     describe 'command failure' do
       before do
         allow(Gitlab::Popen).to receive(:popen).and_return(['error', 1])
@@ -35,7 +52,7 @@ describe Backup::Repository do
 
       context 'hashed storage' do
         it 'shows the appropriate error' do
-          described_class.new.restore
+          subject.restore
 
           expect(progress).to have_received(:puts).with("Ignoring error on #{project.full_path} (#{project.disk_path}) - error")
         end
@@ -45,7 +62,7 @@ describe Backup::Repository do
         let!(:project) { create(:project, :legacy_storage) }
 
         it 'shows the appropriate error' do
-          described_class.new.restore
+          subject.restore
 
           expect(progress).to have_received(:puts).with("Ignoring error on #{project.full_path} - error")
         end
