@@ -48,10 +48,6 @@ function generateEntries() {
   autoEntriesCount = Object.keys(autoEntries).length;
 
   const manualEntries = {
-    monitoring:           './monitoring/monitoring_bundle.js',
-    mr_notes:             './mr_notes/index.js',
-    terminal:             './terminal/terminal_bundle.js',
-
     common:               './commons/index.js',
     common_vue:           './vue_shared/vue_resource_interceptor.js',
     locale:               './locale/index.js',
