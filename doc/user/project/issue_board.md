@@ -304,7 +304,7 @@ If you don't have editing permission in a board, you're still able to see the co
 
 ## Group Issue Boards
 
-> Introduced in [GitLab Enterprise Edition 10.0 Premium](https://about.gitlab.com/2017/09/22/gitlab-10-0-released/#group-issue-boards).
+> Introduced in [GitLab Enterprise Edition 10.0](https://about.gitlab.com/2017/09/22/gitlab-10-0-released/#group-issue-boards).
 
 Group issue boards are analogous to project-level issue boards and they are accessible at the group
 navigation level. A group-level issue board allows you to view all issues from all projects in that group
