@@ -665,6 +665,7 @@ ActiveRecord::Schema.define(version: 20180301084653) do
     t.string "version", null: false
     t.string "cluster_ip"
     t.text "status_reason"
+    t.string "external_ip"
   end
 
   create_table "clusters_applications_prometheus", force: :cascade do |t|

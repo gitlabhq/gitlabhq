@@ -1,4 +1,5 @@
 import { s__ } from '../../locale';
+import { INGRESS } from '../constants';
 
 export default class ClusterStore {
   constructor() {
@@ -21,6 +22,7 @@ export default class ClusterStore {
           statusReason: null,
           requestStatus: null,
           requestReason: null,
+          externalIp: null,
         },
         runner: {
           title: s__('ClusterIntegration|GitLab Runner'),
@@ -40,9 +42,10 @@ export default class ClusterStore {
     };
   }
 
-  setHelpPaths(helpPath, ingressHelpPath) {
+  setHelpPaths(helpPath, ingressHelpPath, ingressDnsHelpPath) {
     this.state.helpPath = helpPath;
     this.state.ingressHelpPath = ingressHelpPath;
+    this.state.ingressDnsHelpPath = ingressDnsHelpPath;
   }
 
   setManagePrometheusPath(managePrometheusPath) {
@@ -64,6 +67,7 @@ export default class ClusterStore {
   updateStateFromServer(serverState = {}) {
     this.state.status = serverState.status;
     this.state.statusReason = serverState.status_reason;
+
     serverState.applications.forEach((serverAppEntry) => {
       const {
         name: appId,
@@ -76,6 +80,10 @@ export default class ClusterStore {
         status,
         statusReason,
       };
+
+      if (appId === INGRESS) {
+        this.state.applications.ingress.externalIp = serverAppEntry.external_ip;
+      }
     });
   }
 }

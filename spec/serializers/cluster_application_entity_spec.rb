@@ -26,5 +26,19 @@ describe ClusterApplicationEntity do
         expect(subject[:status_reason]).to eq(application.status_reason)
       end
     end
+
+    context 'for ingress application' do
+      let(:application) do
+        build(
+          :clusters_applications_ingress,
+          :installed,
+          external_ip: '111.222.111.222'
+        )
+      end
+
+      it 'includes external_ip' do
+        expect(subject[:external_ip]).to eq('111.222.111.222')
+      end
+    end
   end
 end
