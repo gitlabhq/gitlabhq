@@ -1,5 +1,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import Icon from '~/vue_shared/components/icon.vue';
 import resolveSvg from 'icons/_icon_resolve_discussion.svg';
 import resolvedSvg from 'icons/_icon_status_success_solid.svg';
 import mrIssueSvg from 'icons/_icon_mr_issue.svg';
@@ -9,6 +10,9 @@ import discussionNavigation from '../mixins/discussion_navigation';
 import tooltip from '../../vue_shared/directives/tooltip';
 
 export default {
+  components: {
+    Icon,
+  },
   directives: {
     tooltip,
   },
@@ -80,10 +84,10 @@ export default {
         </span>
       </div>
       <div
-        v-if="resolveAllDiscussionsIssuePath && !allResolved"
         class="btn-group"
         role="group">
         <a
+          v-if="resolveAllDiscussionsIssuePath && !allResolved"
           v-tooltip
           :href="resolveAllDiscussionsIssuePath"
           :title="s__('Resolve all discussions in new issue')"
@@ -91,12 +95,19 @@ export default {
           class="new-issue-for-discussion btn btn-default discussion-create-issue-btn">
           <span v-html="mrIssueSvg"></span>
         </a>
-      </div>
-      <div
-        v-if="isLoggedIn && !allResolved"
-        class="btn-group"
-        role="group">
         <button
+          v-if="!allResolved"
+          v-tooltip
+          data-target="#modal_download_as_patch"
+          data-toggle="modal"
+          :title="s__('Download unresolved discussions as code comments')"
+          data-container="body"
+          class="btn btn-default"
+          type="button">
+          <icon name="download" />
+        </button>
+        <button
+          v-if="isLoggedIn && !allResolved"
           v-tooltip
           title="Jump to first unresolved discussion"
           data-container="body"

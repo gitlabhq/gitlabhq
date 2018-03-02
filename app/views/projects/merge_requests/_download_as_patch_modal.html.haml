@@ -1,0 +1,44 @@
+#modal_download_as_patch.merge-request-modal.modal{ tabindex: '-1' }
+  .modal-dialog.modal-lg
+    .modal-content
+      .modal-header
+        %h3.modal-title Download unresolved discussions as code comments
+        %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
+          %span{ "aria-hidden": true } &times;
+      .modal-body
+        %p
+          %strong Step 1.
+          Fetch and check out the branch for this merge request
+        = clipboard_button(target: "pre#download-as-patch-1", title: "Copy commands to clipboard")
+        %pre.dark#download-as-patch-1
+          - if @merge_request.for_fork?
+            :preserve
+              git fetch #{h default_url_to_repo(@merge_request.source_project)} #{h @merge_request.source_branch}
+              git checkout -b #{h @merge_request.source_project_path}-#{h @merge_request.source_branch} FETCH_HEAD
+          - else
+            :preserve
+              git fetch origin
+              git checkout -b #{h @merge_request.source_branch} origin/#{h @merge_request.source_branch}
+
+        %p
+          %strong Step 2.
+          Download patch that will add a code comment for every unresolved discussion on the latest version of the diff, and apply it to your working copy
+
+        - url = discussions_project_merge_request_url(@project, @merge_request, format: :patch)
+        - if @project.public?
+          = clipboard_button(target: "pre#download-as-patch-2", title: "Copy commands to clipboard")
+          %pre.dark#download-as-patch-2
+            :preserve
+              curl #{h url} | git apply
+        - else
+          - filename = "merge-request-#{@merge_request.iid}-discussions.patch"
+          %p
+            = link_to %Q{Download patch as "#{filename}"}, url, class: "btn", download: filename
+          = clipboard_button(target: "pre#download-as-patch-2", title: "Copy commands to clipboard")
+          %pre.dark#download-as-patch-2
+            :preserve
+              git apply #{h filename}
+
+        %p
+          %strong Step 3.
+          Find the newly added 'FIXME' comments and update the code as appropriate

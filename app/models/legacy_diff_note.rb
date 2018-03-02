@@ -43,6 +43,10 @@ class LegacyDiffNote < Note
     self.line_code
   end
 
+  def position
+    @position ||= diff_file.position_for_line_code(self.line_code) if active?
+  end
+
   # Check if this note is part of an "active" discussion
   #
   # This will always return true for anything except MergeRequest noteables,

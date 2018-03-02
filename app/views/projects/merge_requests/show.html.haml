@@ -6,14 +6,15 @@
 - page_description @merge_request.description
 - page_card_attributes @merge_request.card_attributes
 
+= render "projects/merge_requests/download_as_patch_modal"
+- if @merge_request.source_branch_exists?
+  = render "projects/merge_requests/how_to_merge_modal"
+
 .merge-request{ data: { mr_action: j(params[:tab].presence || 'show'), url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project) } }
   = render "projects/merge_requests/mr_title"
 
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
     = render "projects/merge_requests/mr_box"
-
-    - if @merge_request.source_branch_exists?
-      = render "projects/merge_requests/how_to_merge"
 
     -# haml-lint:disable InlineJavaScript
     :javascript

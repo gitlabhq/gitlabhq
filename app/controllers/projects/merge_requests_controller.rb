@@ -77,6 +77,26 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     end
   end
 
+  def discussions
+    respond_to do |format|
+      format.json do
+        super
+      end
+
+      format.patch do
+        return render_404 unless commit = commit_with_unresolved_discussions
+
+        send_git_patch @project.repository, commit.diff_refs
+      end
+
+      format.diff do
+        return render_404 unless commit = commit_with_unresolved_discussions
+
+        send_git_diff @project.repository, commit.diff_refs
+      end
+    end
+  end
+
   def commits
     # Get commits from repository
     # or from cache if already merged
@@ -352,5 +372,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def whitelist_query_limiting
     # Also see https://gitlab.com/gitlab-org/gitlab-ce/issues/42441
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42438')
+  end
+
+  def commit_with_unresolved_discussions
+    @commit_with_unresolved_discussions ||= Discussions::CommitWithUnresolvedDiscussionsService.new(project, current_user).execute(merge_request)
   end
 end

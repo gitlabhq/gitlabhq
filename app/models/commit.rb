@@ -464,7 +464,7 @@ class Commit
     # We don't want to do anything for `Commit` model, so this is empty.
   end
 
-  WIP_REGEX = /\A\s*(((?i)(\[WIP\]|WIP:|WIP)\s|WIP$))|(fixup!|squash!)\s/.freeze
+  WIP_REGEX = /\A\s*(((?i)(\[WIP\]|WIP:|WIP)\s|WIP$))|(fixup!|squash!|FIXME:)\s/.freeze
 
   def work_in_progress?
     !!(title =~ WIP_REGEX)
