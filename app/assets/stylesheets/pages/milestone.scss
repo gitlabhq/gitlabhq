@@ -194,3 +194,27 @@
 .issuable-row {
   background-color: $white-light;
 }
+
+.milestone-deprecation-message {
+  .popup {
+    max-width: 300px;
+    position: absolute;
+    left: 30px;
+
+    .body {
+      padding: $gl-padding-8;
+    }
+    
+    .footer {
+      padding: $gl-padding-8 $gl-padding;
+    }
+  }
+
+  .instructions-list {
+    padding: 0 0 0 30px;
+  }
+
+  .text-container {
+    position: relative;
+  }
+}
