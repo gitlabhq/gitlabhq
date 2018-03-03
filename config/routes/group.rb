@@ -80,7 +80,6 @@ constraints(GroupUrlConstrainer.new) do
     end
 
     resources :billings, only: [:index]
-
     resources :epics do
       member do
         get :realtime_changes
