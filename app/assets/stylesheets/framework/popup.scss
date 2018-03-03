@@ -6,15 +6,6 @@
     $popup-triangle-border-size
   );
 
-  &.small-triangle {
-    @include triangle(
-      $gray-lighter,
-      $gray-darker,
-      $popup-triangle-size / 2,
-      $popup-triangle-border-size /2
-    );
-  }
-
   border: 1px solid $gray-darker;
   box-shadow: 0 5px 8px $popup-box-shadow-color;
   position: relative;
