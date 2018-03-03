@@ -1,22 +1,24 @@
-(() => {
-  $(() => {
-    const { protocol, host, pathname } = location;
+export default () => {
+  const { protocol, host, pathname } = location;
+  const shareBtn = document.querySelector('#share-btn');
+  const embedBtn = document.querySelector('#embed-btn');
+  const snippetUrlArea = document.querySelector('#snippet-url-area');
+  const embedAction = document.querySelector('#embed-action');
 
-    $('#share-btn').click((event) => {
-      event.preventDefault();
-      $('#share-btn').addClass('is-active');
-      $('#embed-btn').removeClass('is-active');
-      $('#snippet-url-area').val(`${protocol}//${host + pathname}`);
-      $('#embed-action').html('Share');
-    });
-
-    $('#embed-btn').click((event) => {
-      event.preventDefault();
-      $('#embed-btn').addClass('is-active');
-      $('#share-btn').removeClass('is-active');
-      const scriptTag = `<script src="${protocol}//${host + pathname}.js"></script>`;
-      $('#snippet-url-area').val(scriptTag);
-      $('#embed-action').html('Embed');
-    });
+  shareBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    shareBtn.classList.add('is-active');
+    embedBtn.classList.remove('is-active');
+    snippetUrlArea.value = `${protocol}//${host + pathname}`;
+    embedAction.innerHTML = 'Share';
   });
-}).call(window);
+
+  embedBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    embedBtn.classList.add('is-active');
+    shareBtn.classList.remove('is-active');
+    const scriptTag = `<script src="${protocol}//${host + pathname}.js"></script>`;
+    snippetUrlArea.value = scriptTag;
+    embedAction.innerHTML = 'Embed';
+  });
+};

@@ -1,6 +1,3 @@
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('snippet_embed')
-
 .detail-page-header
   .detail-page-header-body
     .snippet-box.has-tooltip.inline.append-right-5{ title: snippet_visibility_level_description(@snippet.visibility_level, @snippet), data: { container: "body" } }
@@ -36,7 +33,7 @@
     .embed-snippet
       .input-group
         .input-group-btn
-          %a.btn.embed-toggle{ 'data-toggle': 'dropdown' }
+          %button.btn.embed-toggle{ 'data-toggle': 'dropdown' }
             %span#embed-action Embed
             = sprite_icon('angle-down', size: 12)
           %ul.dropdown-menu.dropdown-menu-selectable.embed-toggle-list
