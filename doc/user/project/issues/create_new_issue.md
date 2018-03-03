@@ -58,7 +58,6 @@ body becomes the issue description. [Markdown] and [quick actions] are
 supported.
 
 ![Bottom of a project issues page](img/new_issue_from_email.png)
-<<<<<<< HEAD
 
 ## New issue via Service Desk
 
@@ -85,5 +84,3 @@ create issues for the same project.
 
 [Markdown]: ../../markdown.md
 [quick actions]: ../quick_actions.md
-=======
->>>>>>> upstream/master
