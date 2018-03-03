@@ -166,7 +166,7 @@ describe IconsHelper do
   describe '#external_snippet_icon' do
     it 'returns external snippet icon' do
       expect(external_snippet_icon('download').to_s)
-        .to eq("<img src=\"#{asset_url('/assets/ext_snippet_icons/download.png')}\" width=\"16px\" height=\"16px\"></img>")
+        .to eq("<span class=\"gl-snippet-icon gl-snippet-icon-download\"></span>")
     end
   end
 end
