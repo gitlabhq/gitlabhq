@@ -312,8 +312,7 @@ Parameters:
     "human_time_estimate": null,
     "human_total_time_spent": null
   },
-  "approvals_before_merge": null
-  },
+  "approvals_before_merge": null,
   "closed_at": "2018-01-19T14:36:11.086Z",
   "latest_build_started_at": null,
   "latest_build_finished_at": null,
