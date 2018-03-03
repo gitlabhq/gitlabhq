@@ -102,6 +102,12 @@ variable to `1`:
 export ENABLE_SPRING=1
 ```
 
+Alternatively you can use the following on each spec run,
+
+```
+bundle exec spring rspec some_spec.rb
+```
+
 ## Compile Frontend Assets
 
 You shouldn't ever need to compile frontend assets manually in development, but
