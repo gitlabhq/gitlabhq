@@ -44,7 +44,7 @@ module IconsHelper
   end
 
   def external_snippet_icon(name)
-    content_tag(:img, "", src: "#{image_url('/assets/ext_snippet_icons')}/#{name}.png", width: '16px', height: '16px')
+    content_tag(:span, "", class: "gl-snippet-icon gl-snippet-icon-#{name}")
   end
 
   def audit_icon(names, options = {})
