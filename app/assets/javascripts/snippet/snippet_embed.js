@@ -6,7 +6,6 @@ export default () => {
   const embedAction = document.querySelector('#embed-action');
 
   shareBtn.addEventListener('click', (event) => {
-    event.preventDefault();
     shareBtn.classList.add('is-active');
     embedBtn.classList.remove('is-active');
     snippetUrlArea.value = `${protocol}//${host + pathname}`;
@@ -14,7 +13,6 @@ export default () => {
   });
 
   embedBtn.addEventListener('click', (event) => {
-    event.preventDefault();
     embedBtn.classList.add('is-active');
     shareBtn.classList.remove('is-active');
     const scriptTag = `<script src="${protocol}//${host + pathname}.js"></script>`;
