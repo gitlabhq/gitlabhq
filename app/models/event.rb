@@ -395,6 +395,6 @@ class Event < ActiveRecord::Base
     # Note the call to .available? is due to earlier migrations
     # that would otherwise conflict with the call to .track
     # (because the table does not exist yet).
-    UserInteractedProjects.track(self) if UserInteractedProjects.available?
+    UserInteractedProject.track(self) if UserInteractedProject.available?
   end
 end
