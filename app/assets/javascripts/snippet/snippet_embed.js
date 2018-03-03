@@ -5,14 +5,14 @@ export default () => {
   const snippetUrlArea = document.querySelector('#snippet-url-area');
   const embedAction = document.querySelector('#embed-action');
 
-  shareBtn.addEventListener('click', (event) => {
+  shareBtn.addEventListener('click', () => {
     shareBtn.classList.add('is-active');
     embedBtn.classList.remove('is-active');
     snippetUrlArea.value = `${protocol}//${host + pathname}`;
     embedAction.innerHTML = 'Share';
   });
 
-  embedBtn.addEventListener('click', (event) => {
+  embedBtn.addEventListener('click', () => {
     embedBtn.classList.add('is-active');
     shareBtn.classList.remove('is-active');
     const scriptTag = `<script src="${protocol}//${host + pathname}.js"></script>`;
