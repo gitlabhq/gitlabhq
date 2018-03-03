@@ -119,6 +119,8 @@ Example response:
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
+
 ## List group issues
 
 Get a list of a group's issues.
@@ -226,6 +228,8 @@ Example response:
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## List project issues
 
@@ -343,6 +347,8 @@ Example response:
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
+
 ## Single issue
 
 Get a single project issue.
@@ -434,6 +440,8 @@ Example response:
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
+
 ## New issue
 
 Creates a new project issue.
@@ -510,6 +518,8 @@ Example response:
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## Edit issue
 
@@ -597,6 +607,8 @@ Example response:
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## Delete an issue
 
@@ -699,6 +711,8 @@ Example response:
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
+
 ## Subscribe to an issue
 
 Subscribes the authenticated user to an issue to receive notifications.
@@ -778,6 +792,9 @@ Example response:
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## Unsubscribe from an issue
 
@@ -941,6 +958,9 @@ Example response:
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## Set a time estimate for an issue
 
@@ -1223,3 +1243,4 @@ Example response:
 
 [ce-13004]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13004
 [ce-14016]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14016
+[ce-17042]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17042
