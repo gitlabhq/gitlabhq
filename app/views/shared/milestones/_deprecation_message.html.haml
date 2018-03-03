@@ -1,0 +1,23 @@
+.milestone-deprecation-message.prepend-top-default.js-toggle-container
+  = image_tag 'illustrations/milestone_removing-page.svg', class: 'append-right-default'
+  .inline.vertical-align-middle.text-container
+    %strong This page will be removed in a future release.
+    %p.append-bottom-default.prepend-top-5
+      Use group milestones to manage issues from multiple projects in the same milestone.
+      %br
+      = button_tag 'Promote these project milestones into a group milestone.', class: 'btn-link js-toggle-button'
+
+    .popup.js-toggle-content.hide.small-triangle
+      .body
+        %ol.instructions-list
+          %li
+            Click any
+            %strong project name
+            in the project list below to navigate to the project milestone.
+          %li
+            Click the
+            %strong Promote
+            button in the top right corner to promote it to a group milestone.
+      .footer= link_to 'Learn more', help_page_url('user/project/milestones', anchor: 'promoting-project-milestones-to-group-milestones'), class: 'btn-link'
+
+    %div= link_to 'Learn more', help_page_url('user/project/milestones', anchor: 'promoting-project-milestones-to-group-milestones'), class: 'btn btn-default'

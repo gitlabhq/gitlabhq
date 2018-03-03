@@ -30,15 +30,7 @@
         - else
           = link_to 'Reopen Milestone', group_milestone_route(milestone, {state_event: :activate }), method: :put, class: "btn btn-grouped btn-reopen"
 
-.prepend-top-default
-  = image_tag 'illustrations/milestone_removing-page.svg', class: 'append-right-default'
-  .inline.vertical-align-middle
-    %strong This page will be removed in a future release.
-    %p.append-bottom-default.prepend-top-default
-      Use group milestones to manage issues from multiple projects in the same milestone.
-      %br
-      = button_tag 'Promote these project milestones into a group milestone.', class: 'btn-link'
-    %div= link_to 'Learn more', help_page_url('user/project/milestones', anchor: 'promoting-project-milestones-to-group-milestones'), class: 'btn btn-default'
+= render 'shared/milestones/deprecation_message'
 
 .detail-page-description.milestone-detail
   %h2.title
