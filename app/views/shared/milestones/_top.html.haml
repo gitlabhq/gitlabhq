@@ -30,7 +30,7 @@
         - else
           = link_to 'Reopen Milestone', group_milestone_route(milestone, {state_event: :activate }), method: :put, class: "btn btn-grouped btn-reopen"
 
-= render 'shared/milestones/deprecation_message'
+= render 'shared/milestones/deprecation_message' if @milestone.legacy_group_milestone? || @milestone.dashboard_milestone?
 
 .detail-page-description.milestone-detail
   %h2.title
