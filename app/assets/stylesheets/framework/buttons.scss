@@ -424,27 +424,27 @@
 
 .btn-link {
   padding: 0;
-}
 
-.btn-link.btn-secondary-hover-link {
-  color: $gl-text-color-secondary;
-
-  &:hover,
-  &:active,
-  &:focus {
-    color: $gl-link-color;
-    text-decoration: none;
+  &.btn-secondary-hover-link {
+    color: $gl-text-color-secondary;
+  
+    &:hover,
+    &:active,
+    &:focus {
+      color: $gl-link-color;
+      text-decoration: none;
+    }
   }
-}
-
-.btn-link.btn-primary-hover-link {
-  color: inherit;
-
-  &:hover,
-  &:active,
-  &:focus {
-    color: $gl-link-color;
-    text-decoration: none;
+  
+  &.btn-primary-hover-link {
+    color: inherit;
+  
+    &:hover,
+    &:active,
+    &:focus {
+      color: $gl-link-color;
+      text-decoration: none;
+    }
   }
 }
 
