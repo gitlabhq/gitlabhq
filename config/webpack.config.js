@@ -52,11 +52,11 @@ function generateEntries() {
     common_vue:           './vue_shared/vue_resource_interceptor.js',
     locale:               './locale/index.js',
     main:                 './main.js',
-    ide:                  './ide/index.js',
     raven:                './raven/index.js',
     webpack_runtime:      './webpack.js',
 
     // EE-only
+    ide:                  'ee/ide/index.js',
     geo_nodes:            'ee/geo_nodes',
     service_desk:         'ee/projects/settings_service_desk/service_desk_bundle.js',
   };
