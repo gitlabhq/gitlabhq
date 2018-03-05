@@ -24,4 +24,8 @@ class LfsObject < ActiveRecord::Base
         .where(lfs_objects_projects: { id: nil })
         .destroy_all
   end
+
+  def self.calculate_oid(path)
+    Digest::SHA256.file(path).hexdigest
+  end
 end

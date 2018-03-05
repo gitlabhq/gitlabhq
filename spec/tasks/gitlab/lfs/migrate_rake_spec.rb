@@ -2,7 +2,7 @@ require 'rake_helper'
 
 describe 'gitlab:lfs namespace rake task' do
   before :all do
-    Rake.application.rake_require 'tasks/gitlab/lfs'
+    Rake.application.rake_require 'tasks/gitlab/lfs/migrate'
   end
 
   describe 'migrate' do
