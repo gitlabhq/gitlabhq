@@ -9,11 +9,11 @@ describe PrometheusMetric do
   it { is_expected.to validate_presence_of(:group) }
 
   describe '#group_title' do
-    shared_examples 'group_title' do |group, text|
+    shared_examples 'group_title' do |group, title|
       subject { build(:prometheus_metric, group: group).group_title }
 
-      it "returns text #{text} for group #{group}" do
-        expect(subject).to eq(text)
+      it "returns text #{title} for group #{group}" do
+        expect(subject).to eq(title)
       end
     end
 

@@ -5,7 +5,7 @@ FactoryBot.define do
     y_label 'y_label'
     unit 'm/s'
     group :business
-    legend 'legend'
     project
+    legend 'legend'
   end
 end
