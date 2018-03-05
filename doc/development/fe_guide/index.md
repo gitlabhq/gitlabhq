@@ -11,7 +11,7 @@ Ensure that your frontend contribution starts off in the right direction.
 
 High level overview of where we are going from a frontend perspective.
 
-## [Development](development.md)
+## [Development](development/index.md)
 
 Guidance on topics related to development.
 
