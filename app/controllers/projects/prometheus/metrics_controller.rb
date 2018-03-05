@@ -1,8 +1,6 @@
 module Projects
   module Prometheus
     class MetricsController < Projects::ApplicationController
-      include PrometheusAdapterLocator
-
       before_action :authorize_admin_project!
       before_action :require_prometheus_metrics!
 
@@ -21,6 +19,10 @@ module Projects
       end
 
       private
+
+      def prometheus_adapter
+        @prometheus_adapter ||= Prometheus::AdapterService.new(project).prometheus_adapter
+      end
 
       def require_prometheus_metrics!
         render_404 unless prometheus_adapter.can_query?

@@ -1,6 +1,4 @@
 class Environment < ActiveRecord::Base
-  include PrometheusAdapterLocator
-
   # Used to generate random suffixes for the slug
   LETTERS = 'a'..'z'
   NUMBERS = '0'..'9'
@@ -157,6 +155,10 @@ class Environment < ActiveRecord::Base
 
   def additional_metrics
     prometheus_adapter.query(:additional_metrics_environment, self) if has_metrics?
+  end
+
+  def prometheus_adapter
+    @prometheus_adapter ||= Prometheus::AdapterService.new(project, deployment_platform).prometheus_adapter
   end
 
   def slug
