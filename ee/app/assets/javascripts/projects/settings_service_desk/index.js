@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { convertPermissionToBoolean } from '~/lib/utils/common_utils';
 import serviceDeskRoot from './components/service_desk_root.vue';
 
-document.addEventListener('DOMContentLoaded', () => {
+export default () => {
   const serviceDeskRootElement = document.querySelector('.js-service-desk-setting-root');
   if (serviceDeskRootElement) {
     // eslint-disable-next-line no-new
@@ -32,4 +32,4 @@ document.addEventListener('DOMContentLoaded', () => {
       },
     });
   }
-});
+};
