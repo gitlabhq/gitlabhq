@@ -22,7 +22,9 @@
   .js-cluster-application-notice
     .flash-container
 
-  = render 'health'
+  -# EE-specific
+  - if @cluster.project.feature_available?(:cluster_health)
+    = render 'health'
 
   %section.settings.no-animate.expanded#cluster-integration
     = render 'banner'
