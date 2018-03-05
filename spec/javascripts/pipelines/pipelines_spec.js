@@ -183,10 +183,10 @@ describe('Pipelines', () => {
       });
 
       it('does not render tabs nor buttons', () => {
-        expect(vm.$el.querySelector('.js-pipelines-tab-all')).toBe(null);
-        expect(vm.$el.querySelector('.js-run-pipeline')).toBe(null);
-        expect(vm.$el.querySelector('.js-ci-lint')).toBe(null);
-        expect(vm.$el.querySelector('.js-clear-cache')).toBe(null);
+        expect(vm.$el.querySelector('.js-pipelines-tab-all')).toBeNull();
+        expect(vm.$el.querySelector('.js-run-pipeline')).toBeNull();
+        expect(vm.$el.querySelector('.js-ci-lint')).toBeNull();
+        expect(vm.$el.querySelector('.js-clear-cache')).toBeNull();
       });
     });
 
@@ -222,7 +222,7 @@ describe('Pipelines', () => {
       });
 
       it('renders error state', () => {
-        expect(vm.$el.querySelector('.empty-state').textContent.trim()).toContain('There was an error with fetching the pipelines.');
+        expect(vm.$el.querySelector('.empty-state').textContent.trim()).toContain('There was an error fetching the pipelines.');
       });
     });
   });
@@ -254,9 +254,9 @@ describe('Pipelines', () => {
       });
 
       it('does not render buttons', () => {
-        expect(vm.$el.querySelector('.js-run-pipeline')).toBe(null);
-        expect(vm.$el.querySelector('.js-ci-lint')).toBe(null);
-        expect(vm.$el.querySelector('.js-clear-cache')).toBe(null);
+        expect(vm.$el.querySelector('.js-run-pipeline')).toBeNull();
+        expect(vm.$el.querySelector('.js-ci-lint')).toBeNull();
+        expect(vm.$el.querySelector('.js-clear-cache')).toBeNull();
       });
 
       it('renders pipelines table', () => {
@@ -291,9 +291,9 @@ describe('Pipelines', () => {
       });
 
       it('does not render buttons', () => {
-        expect(vm.$el.querySelector('.js-run-pipeline')).toBe(null);
-        expect(vm.$el.querySelector('.js-ci-lint')).toBe(null);
-        expect(vm.$el.querySelector('.js-clear-cache')).toBe(null);
+        expect(vm.$el.querySelector('.js-run-pipeline')).toBeNull();
+        expect(vm.$el.querySelector('.js-ci-lint')).toBeNull();
+        expect(vm.$el.querySelector('.js-clear-cache')).toBeNull();
       });
 
       it('renders tab empty state', () => {
@@ -324,14 +324,14 @@ describe('Pipelines', () => {
 
       it('renders empty state without button to set CI', () => {
         expect(vm.$el.querySelector('.js-empty-state').textContent.trim()).toEqual('This project is not currently set up to run pipelines.');
-        expect(vm.$el.querySelector('.js-get-started-pipelines')).toBe(null);
+        expect(vm.$el.querySelector('.js-get-started-pipelines')).toBeNull();
       });
 
-      it('does not render tabs nor buttons', () => {
-        expect(vm.$el.querySelector('.js-pipelines-tab-all')).toBe(null);
-        expect(vm.$el.querySelector('.js-run-pipeline')).toBe(null);
-        expect(vm.$el.querySelector('.js-ci-lint')).toBe(null);
-        expect(vm.$el.querySelector('.js-clear-cache')).toBe(null);
+      it('does not render tabs or buttons', () => {
+        expect(vm.$el.querySelector('.js-pipelines-tab-all')).toBeNull();
+        expect(vm.$el.querySelector('.js-run-pipeline')).toBeNull();
+        expect(vm.$el.querySelector('.js-ci-lint')).toBeNull();
+        expect(vm.$el.querySelector('.js-clear-cache')).toBeNull();
       });
     });
 
@@ -361,13 +361,13 @@ describe('Pipelines', () => {
       });
 
       it('does not renders buttons', () => {
-        expect(vm.$el.querySelector('.js-run-pipeline')).toBe(null);
-        expect(vm.$el.querySelector('.js-ci-lint')).toBe(null);
-        expect(vm.$el.querySelector('.js-clear-cache')).toBe(null);
+        expect(vm.$el.querySelector('.js-run-pipeline')).toBeNull();
+        expect(vm.$el.querySelector('.js-ci-lint')).toBeNull();
+        expect(vm.$el.querySelector('.js-clear-cache')).toBeNull();
       });
 
       it('renders error state', () => {
-        expect(vm.$el.querySelector('.empty-state').textContent.trim()).toContain('There was an error with fetching the pipelines.');
+        expect(vm.$el.querySelector('.empty-state').textContent.trim()).toContain('There was an error fetching the pipelines.');
       });
     });
   });
@@ -527,10 +527,10 @@ describe('Pipelines', () => {
     describe('tabs', () => {
       it('returns default tabs', () => {
         expect(vm.tabs).toEqual([
-          { name: 'All', scope: 'all', count: 0, isActive: true },
-          { name: 'Pending', scope: 'pending', count: 0, isActive: false },
-          { name: 'Running', scope: 'running', count: 0, isActive: false },
-          { name: 'Finished', scope: 'finished', count: 0, isActive: false },
+          { name: 'All', scope: 'all', count: undefined, isActive: true },
+          { name: 'Pending', scope: 'pending', count: undefined, isActive: false },
+          { name: 'Running', scope: 'running', count: undefined, isActive: false },
+          { name: 'Finished', scope: 'finished', count: undefined, isActive: false },
           { name: 'Branches', scope: 'branches', isActive: false },
           { name: 'Tags', scope: 'tags', isActive: false },
         ]);
@@ -646,7 +646,7 @@ describe('Pipelines', () => {
         });
       });
 
-      it('returs true when state is empty tab & has already made the first request', (done) => {
+      it('returns true when state is empty tab & has already made the first request', (done) => {
         vm.isLoading = false;
         vm.state.count.all = 10;
         vm.hasMadeRequest = true;

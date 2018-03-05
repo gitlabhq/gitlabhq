@@ -43,7 +43,7 @@
           <div class="text-center">
             <a
               :href="helpPagePath"
-              class="btn btn-info js-get-started-pipelines"
+              class="btn btn-primary js-get-started-pipelines"
             >
               {{ s__('Pipelines|Get started with Pipelines') }}
             </a>

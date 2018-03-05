@@ -323,7 +323,7 @@
       <svg-blank-state
         v-else-if="stateToRender === $options.stateMap.error"
         :svg-path="errorStateSvgPath"
-        :message="s__(`Pipelines|There was an error with fetching the pipelines.
+        :message="s__(`Pipelines|There was an error fetching the pipelines.
         Try again in a few moments or contact your support team.`)"
       />
 

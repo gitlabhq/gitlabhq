@@ -12,14 +12,13 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
     pipelinesComponent,
   },
   data() {
-    const store = new PipelinesStore();
-
     return {
-      store,
-      dataset: document.querySelector(this.$options.el).dataset,
+      store: new PipelinesStore(),
     };
   },
-
+  created() {
+    this.dataset = document.querySelector(this.$options.el).dataset;
+  },
   render(createElement) {
     return createElement('pipelines-component', {
       props: {
