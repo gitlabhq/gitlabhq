@@ -161,4 +161,17 @@ describe('Multi-file store file mutations', () => {
       expect(localState.changedFiles.length).toBe(0);
     });
   });
+
+  describe('TOGGLE_FILE_CHANGED', () => {
+    it('updates file changed status', () => {
+      const f = file();
+
+      mutations.TOGGLE_FILE_CHANGED(localState, {
+        file: f,
+        changed: true,
+      });
+
+      expect(f.changed).toBeTruthy();
+    });
+  });
 });
