@@ -23,11 +23,17 @@ class UserInteractedProject < ActiveRecord::Base
       }
 
       cached_exists?(attributes) do
-        begin
-          find_or_create_by!(attributes)
-          true # not caching the whole record here for now
-        rescue ActiveRecord::RecordNotUnique
-          retry
+        transaction(requires_new: true) do
+          begin
+            where(attributes).select(1).first || create!(attributes)
+            true # not caching the whole record here for now
+          rescue ActiveRecord::RecordNotUnique
+            # Note, above queries are not atomic and prone
+            # to race conditions (similar like #find_or_create!).
+            # We retry and make sure the outer transaction (if any)
+            # is not aborted because of this.
+            retry
+          end
         end
       end
     end
