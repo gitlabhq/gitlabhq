@@ -15,6 +15,8 @@
   - [Between the 1st and the 7th](#between-the-1st-and-the-7th)
   - [On the 7th](#on-the-7th)
   - [After the 7th](#after-the-7th)
+- [Regressions](#regressions)
+  - [How to manage a regression](#how-to-manage-a-regression)
 - [Release retrospective and kickoff](#release-retrospective-and-kickoff)
   - [Retrospective](#retrospective)
   - [Kickoff](#kickoff)
@@ -216,7 +218,7 @@ For example, it is likely that an exception will be made for a trivial 1-5 line 
 
 All MRs which have had exceptions granted must be merged by the 15th.
 
-### Regressions
+## Regressions
 
 A regression for a particular monthly release is a bug that exists in that
 release, but wasn't present in the release before. This includes bugs in
@@ -234,10 +236,33 @@ month. When we say 'the most recent monthly release', this can refer to either
 the version currently running on GitLab.com, or the most recent version
 available in the package repositories.
 
-A regression issue should be labeled with the appropriate [subject label](../CONTRIBUTING.md#subject-labels-wiki-container-registry-ldap-api-etc)
-and [team label](../CONTRIBUTING.md#team-labels-ci-discussion-edge-platform-etc),
-just like any other issue, to help GitLab team members focus on issues that are
-relevant to [their area of responsibility](https://about.gitlab.com/handbook/engineering/workflow/#choosing-something-to-work-on).
+### How to manage a regression
+
+Regressions are very important, and they should be considered high priority 
+issues that should be solved as soon as possible, expecially if they affect
+users. Anyway, ~regression label itself is not a [priority label], and this
+means that regressions should still follow the scheduling process.
+
+When a regression is found:
+1. Create an issue describing the problem in the most detailed way possible
+2. Label the issue properly, using the [team label](../CONTRIBUTING.md#team-labels-ci-discussion-edge-platform-etc),
+   the [subject label](../CONTRIBUTING.md#subject-labels-wiki-container-registry-ldap-api-etc)
+   and any other label that may apply in the specific case
+3. Add the ~regression label
+4. Add the proper milestone
+4. Ping the Product Manager, see [product categories](https://about.gitlab.com/handbook/product/categories/)
+   to find who manages that specific area of the Product
+
+A very important step is helping the PM to understand the impact the regression
+may have on users, by providing examples and how to reproduce it. This will
+allow proper scheduling with a [priority label]. Normally it will be
+~"Next Patch Release" if after the final release, or ~Deliverable if between the
+feature freeze and the final release.
+
+In case of very urgent fixes, a developer can choose to pick up the issue even
+before it is properly scheduled, in order to speed up the process. The PM should
+be pinged in the issue anyway to get confirmation about the actual priority as
+soon as possible.
 
 ## Release retrospective and kickoff
 
@@ -312,3 +337,4 @@ still an issue I encourage you to open it on the [GitLab.com issue tracker](http
 [done]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#definition-of-done
 [automatic_ce_ee_merge]: https://docs.gitlab.com/ce/development/automatic_ce_ee_merge.html
 [ee_features]: https://docs.gitlab.com/ce/development/ee_features.html
+[priority label]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#priority-labels-deliverable-stretch-next-patch-release
