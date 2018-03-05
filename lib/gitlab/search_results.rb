@@ -62,22 +62,6 @@ module Gitlab
       without_count ? collection.without_count : collection
     end
 
-    def projects_count
-      @projects_count ||= projects.count
-    end
-
-    def issues_count
-      @issues_count ||= issues.count
-    end
-
-    def merge_requests_count
-      @merge_requests_count ||= merge_requests.count
-    end
-
-    def milestones_count
-      @milestones_count ||= milestones.count
-    end
-
     def limited_projects_count
       @limited_projects_count ||= projects.limit(count_limit).count
     end

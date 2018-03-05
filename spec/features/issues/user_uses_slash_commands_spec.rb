@@ -59,7 +59,6 @@ feature 'Issues > User uses quick actions', :js do
         it 'does not create a note, and sets the due date accordingly' do
           write_note("/due 2016-08-28")
 
-          expect(page).to have_content '/due 2016-08-28'
           expect(page).not_to have_content 'Commands applied'
 
           issue.reload
@@ -99,7 +98,6 @@ feature 'Issues > User uses quick actions', :js do
         it 'does not create a note, and sets the due date accordingly' do
           write_note("/remove_due_date")
 
-          expect(page).to have_content '/remove_due_date'
           expect(page).not_to have_content 'Commands applied'
 
           issue.reload
@@ -147,7 +145,6 @@ feature 'Issues > User uses quick actions', :js do
         it 'does not create a note, and does not mark the issue as a duplicate' do
           write_note("/duplicate ##{original_issue.to_reference}")
 
-          expect(page).to have_content "/duplicate ##{original_issue.to_reference}"
           expect(page).not_to have_content 'Commands applied'
           expect(page).not_to have_content "marked this issue as a duplicate of #{original_issue.to_reference}"
 
