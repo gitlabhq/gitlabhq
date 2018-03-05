@@ -4,6 +4,9 @@ We use [Airbnb's JavaScript Style Guide](https://github.com/airbnb/javascript) t
 
 In addition to the style guidelines set by Airbnb, we also have a few specific rules listed below.
 
+> **Tip:**
+You can lint your JavaScript locally by running `yarn eslint`
+
 ## Arrays
 
 <a name="avoid-foreach"></a><a name="1.1"></a>
