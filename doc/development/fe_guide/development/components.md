@@ -107,7 +107,7 @@ In Vue, we initialize tooltips by importing our [tooltip directive][tooltip-dire
 </span>
 ```
 
-[gitlab-svgs-initative]: ../initatives.md
+[gitlab-svgs-initative]: ../../initatives.md
 [gitlab-svgs-project]: https://gitlab.com/gitlab-org/gitlab-svgs
 [svg-previewer]: http://gitlab-org.gitlab.io/gitlab-svgs/
 [icon-vue]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/vue_shared/components/icon.vue
