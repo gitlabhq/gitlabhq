@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-02 13:39+0100\n"
-"PO-Revision-Date: 2018-03-05 03:36-0500\n"
+"PO-Revision-Date: 2018-03-05 03:53-0500\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -191,37 +191,37 @@ msgid "AdminHealthPageLink|health page"
 msgstr "страница работоспособности"
 
 msgid "AdminProjects|Delete"
-msgstr ""
+msgstr "Удалить"
 
 msgid "AdminProjects|Delete Project %{projectName}?"
-msgstr ""
+msgstr "Удалить Проект %{projectName}?"
 
 msgid "AdminProjects|Delete project"
-msgstr ""
+msgstr "Удалить проект"
 
 msgid "AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages."
 msgstr ""
 
 msgid "AdminUsers|Block user"
-msgstr ""
+msgstr "Заблокировать пользователя"
 
 msgid "AdminUsers|Delete User %{username} and contributions?"
-msgstr ""
+msgstr "Удалить Пользователя %{username} и внесённые им изменения ?"
 
 msgid "AdminUsers|Delete User %{username}?"
-msgstr ""
+msgstr "Удалить пользователя %{username} ?"
 
 msgid "AdminUsers|Delete user"
-msgstr ""
+msgstr "Удалить пользователя"
 
 msgid "AdminUsers|Delete user and contributions"
-msgstr ""
+msgstr "Удалить пользователя и внесённые им изменения"
 
 msgid "AdminUsers|To confirm, type %{projectName}"
-msgstr ""
+msgstr "Для подтверждения, введите %{projectName}"
 
 msgid "AdminUsers|To confirm, type %{username}"
-msgstr ""
+msgstr "Для подтверждения, введите %{username}"
 
 msgid "Advanced"
 msgstr ""
@@ -239,7 +239,7 @@ msgid "Allows you to add and manage Kubernetes clusters."
 msgstr ""
 
 msgid "An error occurred previewing the blob"
-msgstr ""
+msgstr "Произошла ошибка при предварительном просмотре объекта"
 
 msgid "An error occurred when toggling the notification subscription"
 msgstr "Произошла ошибка при переключении подписки на оповещения"
@@ -248,70 +248,70 @@ msgid "An error occurred when updating the issue weight"
 msgstr "Произошла ошибка при обновлении веса обсуждения"
 
 msgid "An error occurred while adding approver"
-msgstr ""
+msgstr "Произошла ошибка при добавлении утверждающего"
 
 msgid "An error occurred while detecting host keys"
-msgstr ""
+msgstr "Произошла ошибка при обнаружении ключей хоста"
 
 msgid "An error occurred while dismissing the feature highlight. Refresh the page and try dismissing again."
-msgstr ""
+msgstr "Произошла ошибка при отключении уведомления о функции. Обновите страницу и повторите попытку."
 
 msgid "An error occurred while fetching markdown preview"
-msgstr ""
+msgstr "Произошла ошибка при предварительном просмотре markdown"
 
 msgid "An error occurred while fetching sidebar data"
 msgstr "Произошла ошибка при получении денег данных для боковой панели"
 
 msgid "An error occurred while fetching the pipeline."
-msgstr ""
+msgstr "Произошла ошибка при получении сборочной линии."
 
 msgid "An error occurred while getting projects"
-msgstr ""
+msgstr "Произошла ошибка при получении списка проектов"
 
 msgid "An error occurred while importing project"
-msgstr ""
+msgstr "Произошла ошибка при импорте проекта"
 
 msgid "An error occurred while initializing path locks"
-msgstr ""
+msgstr "Произошла ошибка при инициализации блокировок пути"
 
 msgid "An error occurred while loading commits"
-msgstr ""
+msgstr "Произошла ошибка при загрузке коммитов"
 
 msgid "An error occurred while loading diff"
-msgstr ""
+msgstr "Произошла ошибка при загрузке различий"
 
 msgid "An error occurred while loading filenames"
-msgstr ""
+msgstr "Произошла ошибка при загрузке списка файлов"
 
 msgid "An error occurred while loading the file"
-msgstr ""
+msgstr "Произошла ошибка при загрузке файла"
 
 msgid "An error occurred while making the request."
-msgstr ""
+msgstr "Произошла ошибка при выполнении запроса."
 
 msgid "An error occurred while removing approver"
-msgstr ""
+msgstr "Произошла ошибка при удалении утверждающего"
 
 msgid "An error occurred while rendering KaTeX"
-msgstr ""
+msgstr "Произошла ошибка при рендеринге KaTeX"
 
 msgid "An error occurred while rendering preview broadcast message"
-msgstr ""
+msgstr "Произошла ошибка при визуализации просмотра широковещательного сообщения"
 
 msgid "An error occurred while retrieving calendar activity"
-msgstr ""
+msgstr "Произошла ошибка при получении календаря активности"
 
 msgid "An error occurred while retrieving diff"
-msgstr ""
+msgstr "Произошла ошибка при получении различий"
 
 msgid "An error occurred while saving LDAP override status. Please try again."
-msgstr ""
+msgstr "Произошла ошибка при сохранении статуса настроенного LDAP. Пожалуйста, попробуйте еще раз."
 
 msgid "An error occurred while saving assignees"
-msgstr ""
+msgstr "Произошла ошибка при сохранении исполнителя"
 
 msgid "An error occurred while validating username"
-msgstr ""
+msgstr "Произошла ошибка при проверке имени пользователя"
 
 msgid "An error occurred. Please try again."
 msgstr "Произошла ошибка. Пожалуйста, попробуйте снова."
@@ -1139,7 +1139,7 @@ msgid "Commits per weekday"
 msgstr ""
 
 msgid "Commits|An error occurred while fetching merge requests data."
-msgstr ""
+msgstr "Произошла ошибка при получении данных запроса на слияния."
 
 msgid "Commits|Commit: %{commitText}"
 msgstr ""
