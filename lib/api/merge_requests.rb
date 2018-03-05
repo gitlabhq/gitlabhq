@@ -234,7 +234,7 @@ module API
       get ':id/merge_requests/:merge_request_iid/changes' do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
-        present merge_request, with: Entities::MergeRequestChanges, current_user: current_user
+        present merge_request, with: Entities::MergeRequestChanges, current_user: current_user, project: user_project
       end
 
       desc 'Get the merge request pipelines' do

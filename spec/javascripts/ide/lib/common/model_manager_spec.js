@@ -61,6 +61,14 @@ describe('Multi-file editor library model manager', () => {
     });
   });
 
+  describe('getModel', () => {
+    it('returns cached model', () => {
+      instance.addModel(file('path-name'));
+
+      expect(instance.getModel('path-name')).not.toBeNull();
+    });
+  });
+
   describe('dispose', () => {
     it('clears cached models', () => {
       instance.addModel(file());

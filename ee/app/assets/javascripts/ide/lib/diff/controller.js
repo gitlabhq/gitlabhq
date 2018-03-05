@@ -59,7 +59,8 @@ export default class DirtyDiffController {
 
   decorate({ data }) {
     const decorations = data.changes.map(change => getDecorator(change));
-    this.decorationsController.addDecorations(data.path, 'dirtyDiff', decorations);
+    const model = this.modelManager.getModel(data.path);
+    this.decorationsController.addDecorations(model, 'dirtyDiff', decorations);
   }
 
   dispose() {

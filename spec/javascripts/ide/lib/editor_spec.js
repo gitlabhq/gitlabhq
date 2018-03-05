@@ -22,6 +22,10 @@ describe('Multi-file editor library', () => {
     expect(editor.editorInstance).not.toBeNull();
   });
 
+  it('creates instance returns cached instance', () => {
+    expect(editor.create(monaco)).toEqual(instance);
+  });
+
   describe('createInstance', () => {
     let el;
 
@@ -41,6 +45,12 @@ describe('Multi-file editor library', () => {
       instance.createInstance(el);
 
       expect(instance.dirtyDiffController).not.toBeNull();
+    });
+
+    it('creates model manager', () => {
+      instance.createInstance(el);
+
+      expect(instance.modelManager).not.toBeNull();
     });
   });
 
@@ -123,6 +133,22 @@ describe('Multi-file editor library', () => {
       instance.dispose();
 
       expect(instance.instance).toBeNull();
+    });
+
+    it('does not dispose modelManager', () => {
+      spyOn(instance.modelManager, 'dispose');
+
+      instance.dispose();
+
+      expect(instance.modelManager.dispose).not.toHaveBeenCalled();
+    });
+
+    it('does not dispose decorationsController', () => {
+      spyOn(instance.decorationsController, 'dispose');
+
+      instance.dispose();
+
+      expect(instance.decorationsController.dispose).not.toHaveBeenCalled();
     });
   });
 });

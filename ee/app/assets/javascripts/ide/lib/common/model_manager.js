@@ -12,9 +12,13 @@ export default class ModelManager {
     return this.models.has(path);
   }
 
+  getModel(path) {
+    return this.models.get(path);
+  }
+
   addModel(file) {
     if (this.hasCachedModel(file.path)) {
-      return this.models.get(file.path);
+      return this.getModel(file.path);
     }
 
     const model = new Model(this.monaco, file);

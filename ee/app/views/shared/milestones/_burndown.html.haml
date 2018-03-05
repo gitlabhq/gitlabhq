@@ -3,9 +3,6 @@
 - burndown = local_assigns[:burndown]
 - warning = data_warning_for(burndown)
 
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'burndown_chart'
-
 = warning
 
 - if can_generate_chart?(burndown)

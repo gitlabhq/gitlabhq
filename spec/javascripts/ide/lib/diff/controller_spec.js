@@ -22,7 +22,7 @@ describe('Multi-file editor library dirty diff controller', () => {
       modelManager = new ModelManager(monaco);
       decorationsController = new DecorationsController(editorInstance);
 
-      model = modelManager.addModel(file());
+      model = modelManager.addModel(file('path'));
 
       controller = new DirtyDiffController(modelManager, decorationsController);
 
@@ -128,7 +128,7 @@ describe('Multi-file editor library dirty diff controller', () => {
 
       controller.decorate({ data: { changes: [], path: 'path' } });
 
-      expect(controller.decorationsController.addDecorations).toHaveBeenCalledWith('path', 'dirtyDiff', jasmine.anything());
+      expect(controller.decorationsController.addDecorations).toHaveBeenCalledWith(model, 'dirtyDiff', jasmine.anything());
     });
 
     it('adds decorations into editor', () => {

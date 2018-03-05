@@ -22,6 +22,8 @@ are very appreciative of the work done by translators and proofreaders!
 - Japanese
 - Korean
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
+- Polish
+  - Filip Mech - [GitLab](https://gitlab.com/mehenz), [Crowdin](https://crowdin.com/profile/mehenz)
 - Portuguese, Brazilian
   - Paulo George Gomes Bezerra - [GitLab](https://gitlab.com/paulobezerra), [Crowdin](https://crowdin.com/profile/paulogomes.rep)
 - Russian

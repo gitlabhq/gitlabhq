@@ -121,8 +121,8 @@ export const getTreeEntry = (store, treeId, path) => {
   return fileList ? fileList.find(file => file.path === path) : null;
 };
 
-export const findEntry = (tree, type, name) => tree.find(
-  f => f.type === type && f.name === name,
+export const findEntry = (tree, type, name, prop = 'name') => tree.find(
+  f => f.type === type && f[prop] === name,
 );
 
 export const findIndexOfFile = (state, file) => state.findIndex(f => f.path === file.path);
@@ -163,7 +163,7 @@ export const createOrMergeEntry = ({ projectId,
                                      level,
                                      state }) => {
   if (state.changedFiles.length) {
-    const foundChangedFile = findEntry(state.changedFiles, type, entry.name);
+    const foundChangedFile = findEntry(state.changedFiles, type, entry.path, 'path');
 
     if (foundChangedFile) {
       return foundChangedFile;
@@ -171,7 +171,7 @@ export const createOrMergeEntry = ({ projectId,
   }
 
   if (state.openFiles.length) {
-    const foundOpenFile = findEntry(state.openFiles, type, entry.name);
+    const foundOpenFile = findEntry(state.openFiles, type, entry.path, 'path');
 
     if (foundOpenFile) {
       return foundOpenFile;
