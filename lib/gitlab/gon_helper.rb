@@ -20,6 +20,7 @@ module Gitlab
       gon.sprite_icons           = IconsHelper.sprite_icon_path
       gon.sprite_file_icons      = IconsHelper.sprite_file_icons_path
       gon.test_env               = Rails.env.test?
+      gon.suggested_label_colors = LabelsHelper.suggested_colors
 
       if current_user
         gon.current_user_id = current_user.id
