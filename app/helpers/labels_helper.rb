@@ -1,4 +1,5 @@
 module LabelsHelper
+  extend self
   include ActionView::Helpers::TagHelper
 
   def show_label_issuables_link?(label, issuables_type, current_user: nil, project: nil)
