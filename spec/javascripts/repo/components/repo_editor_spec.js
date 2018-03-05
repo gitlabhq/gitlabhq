@@ -2,6 +2,7 @@ import Vue from 'vue';
 import store from '~/ide/stores';
 import repoEditor from '~/ide/components/repo_editor.vue';
 import monacoLoader from '~/ide/monaco_loader';
+import Editor from '~/ide/lib/editor';
 import { file, resetStore } from '../helpers';
 
 describe('RepoEditor', () => {
@@ -32,6 +33,8 @@ describe('RepoEditor', () => {
     vm.$destroy();
 
     resetStore(vm.$store);
+
+    Editor.editorInstance.modelManager.dispose();
   });
 
   it('renders an ide container', (done) => {
@@ -58,16 +61,46 @@ describe('RepoEditor', () => {
     });
   });
 
-  describe('computed', () => {
-    describe('activeFileChanged', () => {
-      it('returns false when file has no changes', () => {
-        expect(vm.activeFileChanged).toBeFalsy();
-      });
+  describe('setupEditor', () => {
+    it('creates new model', () => {
+      spyOn(vm.editor, 'createModel').and.callThrough();
 
-      it('returns true when file has changes', () => {
-        vm.$store.getters.activeFile.changed = true;
+      Editor.editorInstance.modelManager.dispose();
 
-        expect(vm.activeFileChanged).toBeTruthy();
+      vm.setupEditor();
+
+      expect(vm.editor.createModel).toHaveBeenCalledWith(vm.$store.getters.activeFile);
+      expect(vm.model).not.toBeNull();
+    });
+
+    it('attaches model to editor', () => {
+      spyOn(vm.editor, 'attachModel').and.callThrough();
+
+      Editor.editorInstance.modelManager.dispose();
+
+      vm.setupEditor();
+
+      expect(vm.editor.attachModel).toHaveBeenCalledWith(vm.model);
+    });
+
+    it('adds callback methods', () => {
+      spyOn(vm.editor, 'onPositionChange').and.callThrough();
+
+      Editor.editorInstance.modelManager.dispose();
+
+      vm.setupEditor();
+
+      expect(vm.editor.onPositionChange).toHaveBeenCalled();
+      expect(vm.model.events.size).toBe(1);
+    });
+
+    it('updates state when model content changed', (done) => {
+      vm.model.setValue('testing 123');
+
+      setTimeout(() => {
+        expect(vm.$store.getters.activeFile.content).toBe('testing 123');
+
+        done();
       });
     });
   });

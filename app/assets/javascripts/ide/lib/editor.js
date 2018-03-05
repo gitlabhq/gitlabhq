@@ -9,6 +9,8 @@ import gitlabTheme from 'ee/ide/lib/themes/gl_theme'; // eslint-disable-line imp
 
 export default class Editor {
   static create(monaco) {
+    if (this.editorInstance) return this.editorInstance;
+
     this.editorInstance = new Editor(monaco);
 
     return this.editorInstance;
@@ -20,18 +22,14 @@ export default class Editor {
     this.instance = null;
     this.dirtyDiffController = null;
     this.disposable = new Disposable();
-
-    this.disposable.add(
-      this.modelManager = new ModelManager(this.monaco),
-      this.decorationsController = new DecorationsController(this),
-    );
+    this.modelManager = new ModelManager(this.monaco);
+    this.decorationsController = new DecorationsController(this);
 
     this.setupMonacoTheme();
 
     this.debouncedUpdate = _.debounce(() => {
       this.updateDimensions();
     }, 200);
-    window.addEventListener('resize', this.debouncedUpdate, false);
   }
 
   createInstance(domElement) {
@@ -50,6 +48,8 @@ export default class Editor {
           this.modelManager, this.decorationsController,
         ),
       );
+
+      window.addEventListener('resize', this.debouncedUpdate, false);
     }
   }
 
