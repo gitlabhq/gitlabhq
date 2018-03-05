@@ -250,7 +250,8 @@ When a regression is found:
    and any other label that may apply in the specific case
 3. Add the ~regression label
 4. Add the proper milestone
-4. Ping the Product Manager, see [product categories](https://about.gitlab.com/handbook/product/categories/)
+4. Ping the Product Manager for proper scheduling, see
+   [product categories](https://about.gitlab.com/handbook/product/categories/)
    to find who manages that specific area of the Product
 
 A very important step is helping the PM to understand the impact the regression
