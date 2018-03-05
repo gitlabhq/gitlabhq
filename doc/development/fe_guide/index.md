@@ -3,27 +3,27 @@
 This guide contains all the information to successfully contribute to GitLab's frontend.
 This is a living document, and we welcome contributions, feedback and suggestions.
 
-## Principles
+### [Principles](principles.md)
 
 Ensure that your frontend contribution starts off in the right direction.
 
-## Initiatives
+## [Initiatives](initiatives.md)
 
 High level overview of where we are going from a frontend perspective.
 
-## Development
+## [Development](development.md)
 
 Guidance on topics related to development.
 
-## Style
-
-Style guides to keep our code consistent.
-
-## Dependencies
+## [Dependencies](dependencies.md)
 
 Learn about all the dependencies that make up our frontend, including some of our own custom built libraries.
 
-## Tips
+## [Style](style.md)
+
+Style guides to keep our code consistent.
+
+## [Tips](tips.md)
 
 Tips from our frontend team to develop more efficiently and effectively.
 
