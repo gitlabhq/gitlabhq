@@ -65,7 +65,7 @@ Edit /etc/fstab on client as below to mount the remote shares automatically at b
 
 ```
 #/etc/fstab
-165.227.159.85:/home       /nfs/home      nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nobootwait,lookupcache=positive 0 2
+165.227.159.85:/home       /nfs/home      nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
 ```
 Reboot the client and confirm that the mount point is mounted automatically.
 
