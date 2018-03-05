@@ -34,5 +34,9 @@ module EE
         mailer.mirror_was_hard_failed_email(project.id, recipient.user.id).deliver_later
       end
     end
+
+    def project_mirror_user_changed(new_mirror_user, deleted_user_name, project)
+      mailer.project_mirror_user_changed_email(new_mirror_user.id, deleted_user_name, project.id).deliver_later
+    end
   end
 end
