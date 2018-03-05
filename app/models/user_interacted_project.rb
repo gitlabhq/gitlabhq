@@ -17,12 +17,6 @@ class UserInteractedProject < ActiveRecord::Base
       # is not related to any project).
       return unless event.project_id
 
-      # This is a precaution because the cache lookup
-      # will work just fine without an author.
-      #
-      # However, this should never happen (tm).
-      raise 'event#author not present unexpectedly' unless event.author
-
       attributes = {
         project_id: event.project_id,
         user_id: event.author_id
