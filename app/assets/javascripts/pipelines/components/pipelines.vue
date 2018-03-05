@@ -133,7 +133,7 @@
           return stateMap.tableList;
         }
 
-        if (this.hasGitlabCi) {
+        if ((this.scope !== 'all' && this.scope !== null) || this.hasGitlabCi) {
           return stateMap.emptyTab;
         }
 
