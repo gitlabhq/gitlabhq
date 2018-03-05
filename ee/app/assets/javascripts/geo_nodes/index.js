@@ -10,7 +10,7 @@ import geoNodesApp from './components/app.vue';
 
 Vue.use(Translate);
 
-document.addEventListener('DOMContentLoaded', () => {
+export default () => {
   const el = document.getElementById('js-geo-nodes');
 
   if (!el) {
@@ -48,4 +48,4 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     },
   });
-});
+};

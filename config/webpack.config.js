@@ -57,7 +57,6 @@ function generateEntries() {
 
     // EE-only
     ide:                  'ee/ide/index.js',
-    geo_nodes:            'ee/geo_nodes',
     service_desk:         'ee/projects/settings_service_desk/service_desk_bundle.js',
   };
 
