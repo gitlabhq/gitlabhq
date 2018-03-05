@@ -163,13 +163,6 @@ class PrometheusService < MonitoringService
     cluster.application_prometheus.proxy_client
   end
 
-  def rename_field(old_field, new_field)
-    -> (metrics) do
-      metrics[new_field] = metrics.delete(old_field)
-      metrics
-    end
-  end
-
   def synchronize_service_state!
     self.active = prometheus_installed? || manual_configuration?
 
