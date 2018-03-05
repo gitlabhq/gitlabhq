@@ -86,6 +86,11 @@ class Issue < ActiveRecord::Base
     before_transition any => :closed do |issue|
       issue.closed_at = Time.zone.now
     end
+
+    before_transition closed: :opened do |issue|
+      issue.closed_at = nil
+      issue.closed_by = nil
+    end
   end
 
   class << self
