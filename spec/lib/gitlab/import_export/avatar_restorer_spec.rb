@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::ImportExport::AvatarRestorer do
   include UploadHelpers
 
-  let(:shared) { project.import_export }
+  let(:shared) { project.import_export_shared }
   let(:project) { create(:project) }
 
   before do

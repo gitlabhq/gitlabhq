@@ -2,7 +2,7 @@ module Projects
   module ImportExport
     class ExportService < BaseService
       def execute(_options = {})
-        @shared = project.import_export
+        @shared = project.import_export_shared
         save_all
       end
 
