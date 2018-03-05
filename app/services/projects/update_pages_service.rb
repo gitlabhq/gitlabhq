@@ -1,6 +1,7 @@
 module Projects
   class UpdatePagesService < BaseService
     InvaildStateError = Class.new(StandardError)
+    FailedToExtractError = Class.new(StandardError)
 
     BLOCK_SIZE = 32.kilobytes
     MAX_SIZE = 1.terabyte
@@ -30,13 +31,13 @@ module Projects
 
         # Check if we did extract public directory
         archive_public_path = File.join(archive_path, 'public')
-        raise InvaildStateError, 'pages miss the public folder' unless Dir.exist?(archive_public_path)
+        raise FailedToExtractError, 'pages miss the public folder' unless Dir.exist?(archive_public_path)
         raise InvaildStateError, 'pages are outdated' unless latest?
 
         deploy_page!(archive_public_path)
         success
       end
-    rescue InvaildStateError => e
+    rescue InvaildStateError, FailedToExtractError => e
       register_failure
       error(e.message)
     end
@@ -75,7 +76,7 @@ module Projects
       elsif artifacts.ends_with?('.zip')
         extract_zip_archive!(temp_path)
       else
-        raise 'unsupported artifacts format'
+        raise FailedToExtractError, 'unsupported artifacts format'
       end
     end
 
@@ -84,17 +85,17 @@ module Projects
                                %W(dd bs=#{BLOCK_SIZE} count=#{blocks}),
                                %W(tar -x -C #{temp_path} #{SITE_PATH}),
                                err: '/dev/null')
-      raise 'pages failed to extract' unless results.compact.all?(&:success?)
+      raise FailedToExtractError, 'pages failed to extract' unless results.compact.all?(&:success?)
     end
 
     def extract_zip_archive!(temp_path)
-      raise 'missing artifacts metadata' unless build.artifacts_metadata?
+      raise FailedToExtractError, 'missing artifacts metadata' unless build.artifacts_metadata?
 
       # Calculate page size after extract
       public_entry = build.artifacts_metadata_entry(SITE_PATH, recursive: true)
 
       if public_entry.total_size > max_size
-        raise "artifacts for pages are too large: #{public_entry.total_size}"
+        raise FailedToExtractError, "artifacts for pages are too large: #{public_entry.total_size}"
       end
 
       # Requires UnZip at least 6.00 Info-ZIP.
@@ -103,7 +104,7 @@ module Projects
       # We add * to end of SITE_PATH, because we want to extract SITE_PATH and all subdirectories
       site_path = File.join(SITE_PATH, '*')
       unless system(*%W(unzip -qq -n #{artifacts} #{site_path} -d #{temp_path}))
-        raise 'pages failed to extract'
+        raise FailedToExtractError, 'pages failed to extract'
       end
     end
 
