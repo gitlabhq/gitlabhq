@@ -21,7 +21,7 @@ feature 'Projects > Members > User requests access', :js do
     perform_enqueued_jobs { click_link 'Request Access' }
 
     expect(ActionMailer::Base.deliveries.last.to).to eq [master.notification_email]
-    expect(ActionMailer::Base.deliveries.last.subject).to eq "Request to join the #{project.name_with_namespace} project"
+    expect(ActionMailer::Base.deliveries.last.subject).to eq "Request to join the #{project.full_name} project"
 
     expect(project.requesters.exists?(user_id: user)).to be_truthy
     expect(page).to have_content 'Your request for access has been queued for review.'
