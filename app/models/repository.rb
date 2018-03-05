@@ -146,7 +146,7 @@ class Repository
     end
   end
 
-  def commits(ref, path: nil, limit: nil, offset: nil, skip_merges: false, after: nil, before: nil)
+  def commits(ref = nil, path: nil, limit: nil, offset: nil, skip_merges: false, after: nil, before: nil, all: nil)
     options = {
       repo: raw_repository,
       ref: ref,
@@ -156,7 +156,8 @@ class Repository
       after: after,
       before: before,
       follow: Array(path).length == 1,
-      skip_merges: skip_merges
+      skip_merges: skip_merges,
+      all: all
     }
 
     commits = Gitlab::Git::Commit.where(options)
@@ -596,15 +597,7 @@ class Repository
   def license_key
     return unless exists?
 
-    # The licensee gem creates a Rugged object from the path:
-    # https://github.com/benbalter/licensee/blob/v8.7.0/lib/licensee/projects/git_project.rb
-    begin
-      Licensee.license(path).try(:key)
-    # Normally we would rescue Rugged::Error, but that is banned by lint-rugged
-    # and we need to migrate this endpoint to Gitaly:
-    # https://gitlab.com/gitlab-org/gitaly/issues/1026
-    rescue
-    end
+    raw_repository.license_short_name
   end
   cache_method :license_key
 

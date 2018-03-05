@@ -78,7 +78,7 @@ module ApplicationSettingsHelper
 
       label_tag(checkbox_name, class: css_class) do
         check_box_tag(checkbox_name, source, !disabled,
-                      autocomplete: 'off') + Gitlab::OAuth::Provider.label_for(source)
+                      autocomplete: 'off') + Gitlab::Auth::OAuth::Provider.label_for(source)
       end
     end
   end

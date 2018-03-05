@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import securityReportApp from '~/pipelines/components/security_reports/security_report_app.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
-import { parsedSastIssuesHead } from '../../vue_shared/security_reports/mock_data';
+import securityReportApp from 'ee/pipelines/components/security_reports/security_report_app.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { parsedSastIssuesHead } from 'spec/vue_shared/security_reports/mock_data';
 
 describe('Security Report App', () => {
   let vm;

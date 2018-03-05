@@ -895,7 +895,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
           repository.log(options.merge(path: "encoding"))
         end
 
-        it "should not follow renames" do
+        it "does not follow renames" do
           expect(log_commits).to include(commit_with_new_name)
           expect(log_commits).to include(rename_commit)
           expect(log_commits).not_to include(commit_with_old_name)
@@ -907,7 +907,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
           repository.log(options.merge(path: "encoding/CHANGELOG"))
         end
 
-        it "should not follow renames" do
+        it "does not follow renames" do
           expect(log_commits).to include(commit_with_new_name)
           expect(log_commits).to include(rename_commit)
           expect(log_commits).not_to include(commit_with_old_name)
@@ -919,7 +919,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
           repository.log(options.merge(path: "CHANGELOG"))
         end
 
-        it "should not follow renames" do
+        it "does not follow renames" do
           expect(log_commits).to include(commit_with_old_name)
           expect(log_commits).to include(rename_commit)
           expect(log_commits).not_to include(commit_with_new_name)
@@ -931,7 +931,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
           repository.log(options.merge(ref: "refs/heads/fix-blob-path", path: "files/testdir/file.txt"))
         end
 
-        it "should return a list of commits" do
+        it "returns a list of commits" do
           expect(log_commits.size).to eq(1)
         end
       end
@@ -989,6 +989,16 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
       with_them do
         it { expect { repository.log(limit: limit) }.to raise_error(ArgumentError) }
+      end
+    end
+
+    context 'with all' do
+      let(:options) { { all: true, limit: 50 } }
+
+      it 'returns a list of commits' do
+        commits = repository.log(options)
+
+        expect(commits.size).to eq(37)
       end
     end
   end
@@ -1134,6 +1144,20 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'when Gitaly count_commits feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'extended commit counting'
+
+      context "with all" do
+        it "returns the number of commits in the whole repository" do
+          options = { all: true }
+
+          expect(repository.count_commits(options)).to eq(34)
+        end
+      end
+
+      context 'without all or ref being specified' do
+        it "raises an ArgumentError" do
+          expect { repository.count_commits({}) }.to raise_error(ArgumentError, "Please specify a valid ref or set the 'all' attribute to true")
+        end
+      end
     end
   end
 
@@ -1406,78 +1430,94 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe "#copy_gitattributes" do
-    let(:attributes_path) { File.join(SEED_STORAGE_PATH, TEST_REPO_PATH, 'info/attributes') }
-
-    it "raises an error with invalid ref" do
-      expect { repository.copy_gitattributes("invalid") }.to raise_error(Gitlab::Git::Repository::InvalidRef)
-    end
-
-    context "with no .gitattrbutes" do
-      before do
-        repository.copy_gitattributes("master")
-      end
-
-      it "does not have an info/attributes" do
-        expect(File.exist?(attributes_path)).to be_falsey
-      end
+    shared_examples 'applying git attributes' do
+      let(:attributes_path) { File.join(SEED_STORAGE_PATH, TEST_REPO_PATH, 'info/attributes') }
 
       after do
-        FileUtils.rm_rf(attributes_path)
+        FileUtils.rm_rf(attributes_path) if Dir.exist?(attributes_path)
+      end
+
+      it "raises an error with invalid ref" do
+        expect { repository.copy_gitattributes("invalid") }.to raise_error(Gitlab::Git::Repository::InvalidRef)
+      end
+
+      context 'when forcing encoding issues' do
+        let(:branch_name) { "ʕ•ᴥ•ʔ" }
+
+        before do
+          repository.create_branch(branch_name, "master")
+        end
+
+        after do
+          repository.rm_branch(branch_name, user: build(:admin))
+        end
+
+        it "doesn't raise with a valid unicode ref" do
+          expect { repository.copy_gitattributes(branch_name) }.not_to raise_error
+
+          repository
+        end
+      end
+
+      context "with no .gitattrbutes" do
+        before do
+          repository.copy_gitattributes("master")
+        end
+
+        it "does not have an info/attributes" do
+          expect(File.exist?(attributes_path)).to be_falsey
+        end
+      end
+
+      context "with .gitattrbutes" do
+        before do
+          repository.copy_gitattributes("gitattributes")
+        end
+
+        it "has an info/attributes" do
+          expect(File.exist?(attributes_path)).to be_truthy
+        end
+
+        it "has the same content in info/attributes as .gitattributes" do
+          contents = File.open(attributes_path, "rb") { |f| f.read }
+          expect(contents).to eq("*.md binary\n")
+        end
+      end
+
+      context "with updated .gitattrbutes" do
+        before do
+          repository.copy_gitattributes("gitattributes")
+          repository.copy_gitattributes("gitattributes-updated")
+        end
+
+        it "has an info/attributes" do
+          expect(File.exist?(attributes_path)).to be_truthy
+        end
+
+        it "has the updated content in info/attributes" do
+          contents = File.read(attributes_path)
+          expect(contents).to eq("*.txt binary\n")
+        end
+      end
+
+      context "with no .gitattrbutes in HEAD but with previous info/attributes" do
+        before do
+          repository.copy_gitattributes("gitattributes")
+          repository.copy_gitattributes("master")
+        end
+
+        it "does not have an info/attributes" do
+          expect(File.exist?(attributes_path)).to be_falsey
+        end
       end
     end
 
-    context "with .gitattrbutes" do
-      before do
-        repository.copy_gitattributes("gitattributes")
-      end
-
-      it "has an info/attributes" do
-        expect(File.exist?(attributes_path)).to be_truthy
-      end
-
-      it "has the same content in info/attributes as .gitattributes" do
-        contents = File.open(attributes_path, "rb") { |f| f.read }
-        expect(contents).to eq("*.md binary\n")
-      end
-
-      after do
-        FileUtils.rm_rf(attributes_path)
-      end
+    context 'when gitaly is enabled' do
+      it_behaves_like 'applying git attributes'
     end
 
-    context "with updated .gitattrbutes" do
-      before do
-        repository.copy_gitattributes("gitattributes")
-        repository.copy_gitattributes("gitattributes-updated")
-      end
-
-      it "has an info/attributes" do
-        expect(File.exist?(attributes_path)).to be_truthy
-      end
-
-      it "has the updated content in info/attributes" do
-        contents = File.read(attributes_path)
-        expect(contents).to eq("*.txt binary\n")
-      end
-
-      after do
-        FileUtils.rm_rf(attributes_path)
-      end
-    end
-
-    context "with no .gitattrbutes in HEAD but with previous info/attributes" do
-      before do
-        repository.copy_gitattributes("gitattributes")
-        repository.copy_gitattributes("master")
-      end
-
-      it "does not have an info/attributes" do
-        expect(File.exist?(attributes_path)).to be_falsey
-      end
-
-      after do
-        FileUtils.rm_rf(attributes_path)
-      end
+    context 'when gitaly is disabled', :disable_gitaly do
+      it_behaves_like 'applying git attributes'
     end
   end
 
@@ -1646,6 +1686,35 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'with rugged', :skip_gitaly_mock do
       it_behaves_like 'languages'
+    end
+  end
+
+  describe '#license_short_name' do
+    shared_examples 'acquiring the Licensee license key' do
+      subject { repository.license_short_name }
+
+      context 'when no license file can be found' do
+        let(:project) { create(:project, :repository) }
+        let(:repository) { project.repository.raw_repository }
+
+        before do
+          project.repository.delete_file(project.owner, 'LICENSE', message: 'remove license', branch_name: 'master')
+        end
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when an mit license is found' do
+        it { is_expected.to eq('mit') }
+      end
+    end
+
+    context 'when gitaly is enabled' do
+      it_behaves_like 'acquiring the Licensee license key'
+    end
+
+    context 'when gitaly is disabled', :disable_gitaly do
+      it_behaves_like 'acquiring the Licensee license key'
     end
   end
 
@@ -2281,6 +2350,20 @@ describe Gitlab::Git::Repository, seed_helper: true do
           allow(repository).to receive(:run_git!).with(%W(diff --binary #{start_sha}...#{end_sha})).and_return(diff.force_encoding('ASCII-8BIT'))
 
           expect(subject).to match(/\h{40}/)
+        end
+      end
+
+      context 'with trailing whitespace in an invalid patch', :skip_gitaly_mock do
+        let(:diff) { "diff --git a/README.md b/README.md\nindex faaf198..43c5edf 100644\n--- a/README.md\n+++ b/README.md\n@@ -1,4 +1,4 @@\n-testme\n+   \n ======   \n \n Sample repo for testing gitlab features\n" }
+
+        it 'does not include whitespace warnings in the error' do
+          allow(repository).to receive(:run_git!).and_call_original
+          allow(repository).to receive(:run_git!).with(%W(diff --binary #{start_sha}...#{end_sha})).and_return(diff.force_encoding('ASCII-8BIT'))
+
+          expect { subject }.to raise_error do |error|
+            expect(error).to be_a(described_class::GitError)
+            expect(error.message).not_to include('trailing whitespace')
+          end
         end
       end
     end

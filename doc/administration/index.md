@@ -89,17 +89,23 @@ created in snippets, wikis, and repos.
 - [Authentication/Authorization](../topics/authentication/index.md#gitlab-administrators): Enforce 2FA, configure external authentication with LDAP, SAML, CAS and additional Omniauth providers.
   - **(Starter/Premium)** [Sync LDAP](auth/ldap-ee.md)
   - **(Starter/Premium)** [Kerberos authentication](../integration/kerberos.md)
-- [Reply by email](reply_by_email.md): Allow users to comment on issues and merge requests by replying to notification emails.
-  - [Postfix for Reply by email](reply_by_email_postfix_setup.md): Set up a basic Postfix mail
-server with IMAP authentication on Ubuntu, to be used with Reply by email.
 - **(Starter/Premium)** [Email users](../tools/email.md): Email GitLab users from within GitLab.
 - [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
 - **(Starter/Premium)** [Audit logs and events](audit_events.md): View the changes made within the GitLab server.
 - **(Premium)** [Auditor users](auditor_users.md): Users with read-only access to all projects, groups, and other resources on the GitLab instance.
-- [Reply by email](reply_by_email.md): Allow users to comment on issues and merge requests by replying to notification emails.
-  - [Postfix for Reply by email](reply_by_email_postfix_setup.md): Set up a basic Postfix mail
+- [Incoming email](incoming_email.md): Configure incoming emails to allow
+  users to [reply by email], create [issues by email] and
+  [merge requests by email], and to enable [Service Desk].
+  - [Postfix for incoming email](reply_by_email_postfix_setup.md): Set up a
+  basic Postfix mail server with IMAP authentication on Ubuntu for incoming
+  emails.
 server with IMAP authentication on Ubuntu, to be used with Reply by email.
 - [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
+
+[reply by email]: reply_by_email.md
+[issues by email]: ../user/project/issues/create_new_issue.md#new-issue-via-email
+[merge requests by email]: ../user/project/merge_requests/index.md#create-new-merge-requests-by-email
+[Service Desk]: ../user/project/service_desk.md
 
 ## Project settings
 

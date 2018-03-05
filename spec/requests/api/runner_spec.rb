@@ -122,6 +122,15 @@ describe API::Runner do
           end
         end
       end
+
+      it "sets the runner's ip_address" do
+        post api('/runners'),
+          { token: registration_token },
+          { 'REMOTE_ADDR' => '123.111.123.111' }
+
+        expect(response).to have_gitlab_http_status 201
+        expect(Ci::Runner.first.ip_address).to eq('123.111.123.111')
+      end
     end
 
     describe 'DELETE /api/v4/runners' do
@@ -424,6 +433,15 @@ describe API::Runner do
             end
           end
 
+          it "sets the runner's ip_address" do
+            post api('/jobs/request'),
+              { token: runner.token },
+              { 'User-Agent' => user_agent, 'REMOTE_ADDR' => '123.222.123.222' }
+
+            expect(response).to have_gitlab_http_status 201
+            expect(runner.reload.ip_address).to eq('123.222.123.222')
+          end
+
           context 'when concurrently updating a job' do
             before do
               expect_any_instance_of(Ci::Build).to receive(:run!)
@@ -684,7 +702,7 @@ describe API::Runner do
 
       context 'when tace is given' do
         it 'creates a trace artifact' do
-          allow_any_instance_of(BuildFinishedWorker).to receive(:perform).with(job.id) do
+          allow(BuildFinishedWorker).to receive(:perform_async).with(job.id) do
             CreateTraceArtifactWorker.new.perform(job.id)
           end
 

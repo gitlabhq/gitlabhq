@@ -337,7 +337,9 @@ module EE
     end
 
     def remove_mirror_repository_reference
-      repository.async_remove_remote(::Repository::MIRROR_REMOTE)
+      run_after_commit do
+        repository.async_remove_remote(::Repository::MIRROR_REMOTE)
+      end
     end
 
     def username_only_import_url
@@ -490,7 +492,7 @@ module EE
     def load_licensed_feature_available(feature)
       globally_available = License.feature_available?(feature)
 
-      if namespace && ::Gitlab::CurrentSettings.should_check_namespace_plan?
+      if ::Gitlab::CurrentSettings.should_check_namespace_plan? && namespace
         globally_available &&
           (public? && namespace.public? || namespace.feature_available_in_plan?(feature))
       else

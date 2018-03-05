@@ -2,16 +2,17 @@
 
 import _ from 'underscore';
 import Vue from 'vue';
-import Flash from '../flash';
-import { __ } from '../locale';
+
+import Flash from '~/flash';
+import { __ } from '~/locale';
+import '~/vue_shared/models/label';
+
 import FilteredSearchBoards from './filtered_search_boards';
 import eventHub from './eventhub';
-import sidebarEventHub from '../sidebar/event_hub';
+import sidebarEventHub from '~/sidebar/event_hub'; // eslint-disable-line import/first
 import './models/issue';
-import './models/label';
 import './models/list';
 import './models/milestone';
-import './models/project';
 import './models/assignee';
 import './stores/boards_store';
 import './stores/modal_store';
@@ -23,12 +24,13 @@ import './components/board';
 import './components/board_sidebar';
 import './components/new_list_dropdown';
 import './components/modal/index';
-import '../vue_shared/vue_resource_interceptor';
+import '~/vue_shared/vue_resource_interceptor'; // eslint-disable-line import/first
 
-import './components/boards_selector';
-import collapseIcon from './icons/fullscreen_collapse.svg';
-import expandIcon from './icons/fullscreen_expand.svg';
-import tooltip from '../vue_shared/directives/tooltip';
+import 'ee/boards/models/project'; // eslint-disable-line import/first
+import 'ee/boards/components/boards_selector'; // eslint-disable-line import/first
+import collapseIcon from 'ee/boards/icons/fullscreen_collapse.svg'; // eslint-disable-line import/first
+import expandIcon from 'ee/boards/icons/fullscreen_expand.svg'; // eslint-disable-line import/first
+import tooltip from '~/vue_shared/directives/tooltip'; // eslint-disable-line import/first
 
 export default () => {
   const $boardApp = document.getElementById('board-app');

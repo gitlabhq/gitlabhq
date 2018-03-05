@@ -4,7 +4,6 @@
 
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag('common_vue')
-  = webpack_bundle_tag('deploy_keys')
 
 = render "projects/push_rules/index"
 = render "projects/mirrors/show"
@@ -14,8 +13,9 @@
 -# Those are used throughout the actual views. These `shared` views are then
 -# reused in EE.
 - if @project.feature_available?(:protected_refs_for_users, current_user)
-  = render "projects/protected_branches/ee/index"
-  = render "projects/protected_tags/ee/index"
+  .js-protected-refs-for-users
+    = render "projects/protected_branches/ee/index"
+    = render "projects/protected_tags/ee/index"
 - else
   = render "projects/protected_branches/index"
   = render "projects/protected_tags/index"

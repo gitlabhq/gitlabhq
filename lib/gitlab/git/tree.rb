@@ -14,14 +14,14 @@ module Gitlab
         # Uses rugged for raw objects
         #
         # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/320
-        def where(repository, sha, path = nil)
+        def where(repository, sha, path = nil, recursive = false)
           path = nil if path == '' || path == '/'
 
           Gitlab::GitalyClient.migrate(:tree_entries) do |is_enabled|
             if is_enabled
-              repository.gitaly_commit_client.tree_entries(repository, sha, path)
+              repository.gitaly_commit_client.tree_entries(repository, sha, path, recursive)
             else
-              tree_entries_from_rugged(repository, sha, path)
+              tree_entries_from_rugged(repository, sha, path, recursive)
             end
           end
         end
@@ -57,7 +57,22 @@ module Gitlab
           end
         end
 
-        def tree_entries_from_rugged(repository, sha, path)
+        def tree_entries_from_rugged(repository, sha, path, recursive)
+          current_path_entries = get_tree_entries_from_rugged(repository, sha, path)
+          ordered_entries = []
+
+          current_path_entries.each do |entry|
+            ordered_entries << entry
+
+            if recursive && entry.dir?
+              ordered_entries.concat(tree_entries_from_rugged(repository, sha, entry.path, true))
+            end
+          end
+
+          ordered_entries
+        end
+
+        def get_tree_entries_from_rugged(repository, sha, path)
           commit = repository.lookup(sha)
           root_tree = commit.tree
 

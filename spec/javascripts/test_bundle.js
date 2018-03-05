@@ -36,6 +36,7 @@ window.$ = window.jQuery = $;
 window.gl = window.gl || {};
 window.gl.TEST_HOST = 'http://test.host';
 window.gon = window.gon || {};
+window.gon.test_env = true;
 
 let hasUnhandledPromiseRejections = false;
 
@@ -125,7 +126,6 @@ if (process.env.BABEL_ENV === 'coverage') {
     './diff_notes/components/resolve_count.js',
     './dispatcher.js',
     './environments/environments_bundle.js',
-    './filtered_search/filtered_search_bundle.js',
     './graphs/graphs_bundle.js',
     './issuable/time_tracking/time_tracking_bundle.js',
     './main.js',

@@ -6,14 +6,13 @@ import PipelinesMediator from './pipeline_details_mediator';
 import pipelineGraph from './components/graph/graph_component.vue';
 import pipelineHeader from './components/header_component.vue';
 import eventHub from './event_hub';
-import SecurityReportApp from './components/security_reports/security_report_app.vue';
-import SastSummaryWidget from './components/security_reports/sast_report_summary_widget.vue';
+
+import SecurityReportApp from 'ee/pipelines/components/security_reports/security_report_app.vue'; // eslint-disable-line import/first
+import SastSummaryWidget from 'ee/pipelines/components/security_reports/sast_report_summary_widget.vue'; // eslint-disable-line import/first
 
 Vue.use(Translate);
 
-Vue.use(Translate);
-
-document.addEventListener('DOMContentLoaded', () => {
+export default () => {
   const dataset = document.querySelector('.js-pipeline-details-vue').dataset;
 
   const mediator = new PipelinesMediator({ endpoint: dataset.endpoint });
@@ -143,4 +142,4 @@ document.addEventListener('DOMContentLoaded', () => {
       },
     });
   }
-});
+};

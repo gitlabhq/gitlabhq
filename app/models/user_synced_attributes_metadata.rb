@@ -26,6 +26,6 @@ class UserSyncedAttributesMetadata < ActiveRecord::Base
   private
 
   def sync_profile_from_provider?
-    Gitlab::OAuth::Provider.sync_profile_from_provider?(provider)
+    Gitlab::Auth::OAuth::Provider.sync_profile_from_provider?(provider)
   end
 end

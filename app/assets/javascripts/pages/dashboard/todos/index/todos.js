@@ -2,9 +2,9 @@
 import { visitUrl } from '~/lib/utils/url_utility';
 import UsersSelect from '~/users_select';
 import { isMetaClick } from '~/lib/utils/common_utils';
-import { __ } from '../../../../locale';
-import flash from '../../../../flash';
-import axios from '../../../../lib/utils/axios_utils';
+import { __ } from '~/locale';
+import flash from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 
 export default class Todos {
   constructor() {

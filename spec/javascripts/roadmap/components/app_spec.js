@@ -7,9 +7,8 @@ import appComponent from 'ee/roadmap/components/app.vue';
 import RoadmapStore from 'ee/roadmap/store/roadmap_store';
 import RoadmapService from 'ee/roadmap/service/roadmap_service';
 
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { mockTimeframe, mockGroupId, epicsPath, rawEpics, mockSvgPath } from '../mock_data';
-
-import mountComponent from '../../helpers/vue_mount_component_helper';
 
 const createComponent = () => {
   const Component = Vue.extend(appComponent);

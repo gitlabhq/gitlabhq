@@ -103,6 +103,7 @@
 .issuable-show-labels {
   a {
     margin-bottom: 5px;
+    margin-right: 5px;
     display: inline-block;
 
     .color-label {
@@ -116,6 +117,12 @@
   }
 
   &.has-labels {
+    // this font size is a fix to
+    // prevent unintended spacing between labels
+    // which shows up when rendering markup has white-space
+    // characters present.
+    // see: https://css-tricks.com/fighting-the-space-between-inline-block-elements/#article-header-id-3
+    font-size: 0;
     margin-bottom: -5px;
   }
 }

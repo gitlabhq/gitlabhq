@@ -1,3 +1,4 @@
+<!---
 Please read this!
 
 Before opening a new issue, make sure to search for keywords in the issues
@@ -14,10 +15,7 @@ For the Enterprise Edition issue tracker:
 - https://gitlab.com/gitlab-org/gitlab-ee/issues?label_name%5B%5D=bug
 
 and verify the issue you're about to submit isn't a duplicate.
-
-Please remove this notice if you're confident your issue isn't a duplicate.
-
-------
+--->
 
 ### Summary
 

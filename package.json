@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "dev-server": "nodemon -w 'config/webpack.config.js' -w 'app/assets/javascripts/dispatcher.js' -w 'app/assets/javascripts/pages/**/index.js' --exec 'webpack-dev-server --config config/webpack.config.js'",
+    "dev-server": "nodemon -w 'config/webpack.config.js' --exec 'webpack-dev-server --config config/webpack.config.js'",
     "eslint": "eslint --max-warnings 0 --ext .js,.vue .",
     "eslint-fix": "eslint --max-warnings 0 --ext .js,.vue --fix .",
     "eslint-report": "eslint --max-warnings 0 --ext .js,.vue --format html --output-file ./eslint-report.html .",
@@ -118,6 +118,6 @@
     "karma-webpack": "2.0.7",
     "nodemon": "^1.15.1",
     "prettier": "1.9.2",
-    "webpack-dev-server": "^2.11.1"
+    "webpack-dev-server": "^2.11.2"
   }
 }

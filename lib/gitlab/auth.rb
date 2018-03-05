@@ -56,7 +56,7 @@ module Gitlab
           #   LDAP users are only authenticated via LDAP
           if user.nil? || user.ldap_user?
             # Second chance - try LDAP authentication
-            Gitlab::LDAP::Authentication.login(login, password)
+            Gitlab::Auth::LDAP::Authentication.login(login, password)
           elsif Gitlab::CurrentSettings.password_authentication_enabled_for_git?
             user if user.active? && user.valid_password?(password)
           end
@@ -87,7 +87,7 @@ module Gitlab
       private
 
       def authenticate_using_internal_or_ldap_password?
-        Gitlab::CurrentSettings.password_authentication_enabled_for_git? || Gitlab::LDAP::Config.enabled?
+        Gitlab::CurrentSettings.password_authentication_enabled_for_git? || Gitlab::Auth::LDAP::Config.enabled?
       end
 
       def service_request_check(login, password, project)

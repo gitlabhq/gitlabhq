@@ -25,6 +25,8 @@ module Projects
         return error("Could not set the default branch") unless project.change_head(params[:default_branch])
       end
 
+      ensure_wiki_exists if enabling_wiki?
+
       if project.update_attributes(params.except(:default_branch))
         if project.previous_changes.include?('path')
           project.rename_repo
@@ -61,6 +63,19 @@ module Projects
 
       new_branch && project.repository.exists? &&
         new_branch != project.default_branch
+    end
+
+    def enabling_wiki?
+      return false if @project.wiki_enabled?
+
+      params[:project_feature_attributes][:wiki_access_level].to_i > ProjectFeature::DISABLED
+    end
+
+    def ensure_wiki_exists
+      ProjectWiki.new(project, project.owner).wiki
+    rescue ProjectWiki::CouldNotCreateWikiError
+      log_error("Could not create wiki for #{project.full_name}")
+      Gitlab::Metrics.counter(:wiki_can_not_be_created_total, 'Counts the times we failed to create a wiki')
     end
   end
 end

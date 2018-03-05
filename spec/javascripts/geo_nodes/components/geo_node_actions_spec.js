@@ -1,9 +1,8 @@
 import Vue from 'vue';
 
 import geoNodeActionsComponent from 'ee/geo_nodes/components/geo_node_actions.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { mockNodes } from '../mock_data';
-
-import mountComponent from '../../helpers/vue_mount_component_helper';
 
 const createComponent = (node = mockNodes[0], nodeEditAllowed = true, nodeMissingOauth = false) => {
   const Component = Vue.extend(geoNodeActionsComponent);

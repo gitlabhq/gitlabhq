@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import eventHub from '~/issuable/related_issues/event_hub';
-import addIssuableForm from '~/issuable/related_issues/components/add_issuable_form.vue';
+import eventHub from 'ee/related_issues/event_hub';
+import addIssuableForm from 'ee/related_issues/components/add_issuable_form.vue';
 
 const issuable1 = {
   id: 200,

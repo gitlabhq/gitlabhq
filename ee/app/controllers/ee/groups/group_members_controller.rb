@@ -5,13 +5,11 @@ module EE
 
       # rubocop:disable Gitlab/ModuleWithInstanceVariables
       def override
-        @group_member = @group.group_members.find(params[:id])
+        member = @group.members.find_by!(id: params[:id])
+        updated_member = ::Members::UpdateService.new(current_user, override_params)
+          .execute(member, permission: :override)
 
-        return render_403 unless can?(current_user, :override_group_member, @group_member)
-
-        if @group_member.update_attributes(override_params)
-          log_audit_event(@group_member, action: :override)
-
+        if updated_member.valid?
           respond_to do |format|
             format.js { head :ok }
           end

@@ -29,30 +29,6 @@ describe Gitlab::SearchResults do
       end
     end
 
-    describe '#projects_count' do
-      it 'returns the total amount of projects' do
-        expect(results.projects_count).to eq(1)
-      end
-    end
-
-    describe '#issues_count' do
-      it 'returns the total amount of issues' do
-        expect(results.issues_count).to eq(1)
-      end
-    end
-
-    describe '#merge_requests_count' do
-      it 'returns the total amount of merge requests' do
-        expect(results.merge_requests_count).to eq(1)
-      end
-    end
-
-    describe '#milestones_count' do
-      it 'returns the total amount of milestones' do
-        expect(results.milestones_count).to eq(1)
-      end
-    end
-
     context "when count_limit is lower than total amount" do
       before do
         allow(results).to receive(:count_limit).and_return(1)
@@ -183,7 +159,7 @@ describe Gitlab::SearchResults do
       expect(issues).not_to include security_issue_3
       expect(issues).not_to include security_issue_4
       expect(issues).not_to include security_issue_5
-      expect(results.issues_count).to eq 1
+      expect(results.limited_issues_count).to eq 1
     end
 
     it 'does not list confidential issues for project members with guest role' do
@@ -199,7 +175,7 @@ describe Gitlab::SearchResults do
       expect(issues).not_to include security_issue_3
       expect(issues).not_to include security_issue_4
       expect(issues).not_to include security_issue_5
-      expect(results.issues_count).to eq 1
+      expect(results.limited_issues_count).to eq 1
     end
 
     it 'lists confidential issues for author' do
@@ -212,7 +188,7 @@ describe Gitlab::SearchResults do
       expect(issues).to include security_issue_3
       expect(issues).not_to include security_issue_4
       expect(issues).not_to include security_issue_5
-      expect(results.issues_count).to eq 3
+      expect(results.limited_issues_count).to eq 3
     end
 
     it 'lists confidential issues for assignee' do
@@ -225,7 +201,7 @@ describe Gitlab::SearchResults do
       expect(issues).not_to include security_issue_3
       expect(issues).to include security_issue_4
       expect(issues).not_to include security_issue_5
-      expect(results.issues_count).to eq 3
+      expect(results.limited_issues_count).to eq 3
     end
 
     it 'lists confidential issues for project members' do
@@ -241,7 +217,7 @@ describe Gitlab::SearchResults do
       expect(issues).to include security_issue_3
       expect(issues).not_to include security_issue_4
       expect(issues).not_to include security_issue_5
-      expect(results.issues_count).to eq 4
+      expect(results.limited_issues_count).to eq 4
     end
 
     it 'lists all issues for admin' do
@@ -254,7 +230,7 @@ describe Gitlab::SearchResults do
       expect(issues).to include security_issue_3
       expect(issues).to include security_issue_4
       expect(issues).not_to include security_issue_5
-      expect(results.issues_count).to eq 5
+      expect(results.limited_issues_count).to eq 5
     end
   end
 

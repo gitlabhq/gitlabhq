@@ -3,9 +3,8 @@ import Vue from 'vue';
 import timelineHeaderItemComponent from 'ee/roadmap/components/timeline_header_item.vue';
 import { TIMELINE_CELL_MIN_WIDTH } from 'ee/roadmap/constants';
 
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { mockTimeframe, mockShellWidth } from '../mock_data';
-
-import mountComponent from '../../helpers/vue_mount_component_helper';
 
 const mockTimeframeIndex = 0;
 
@@ -94,6 +93,9 @@ describe('TimelineHeaderItemComponent', () => {
           timeframeIndex,
           timeframeItem,
         });
+
+        vm.currentYear = mockTimeframe[timeframeIndex].getFullYear();
+        vm.currentMonth = mockTimeframe[timeframeIndex].getMonth() + 1;
         expect(vm.timelineHeaderClass).toBe('label-dark');
       });
     });

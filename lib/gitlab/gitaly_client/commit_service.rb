@@ -105,11 +105,12 @@ module Gitlab
         entry unless entry.oid.blank?
       end
 
-      def tree_entries(repository, revision, path)
+      def tree_entries(repository, revision, path, recursive)
         request = Gitaly::GetTreeEntriesRequest.new(
           repository: @gitaly_repo,
           revision: encode_binary(revision),
-          path: path.present? ? encode_binary(path) : '.'
+          path: path.present? ? encode_binary(path) : '.',
+          recursive: recursive
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :get_tree_entries, request, timeout: GitalyClient.medium_timeout)
@@ -316,6 +317,23 @@ module Gitlab
         return if signature.blank? && signed_text.blank?
 
         [signature, signed_text]
+      end
+
+      def get_commit_signatures(commit_ids)
+        request = Gitaly::GetCommitSignaturesRequest.new(repository: @gitaly_repo, commit_ids: commit_ids)
+        response = GitalyClient.call(@repository.storage, :commit_service, :get_commit_signatures, request)
+
+        signatures = Hash.new { |h, k| h[k] = [''.b, ''.b] }
+        current_commit_id = nil
+
+        response.each do |message|
+          current_commit_id = message.commit_id if message.commit_id.present?
+
+          signatures[current_commit_id].first << message.signature
+          signatures[current_commit_id].last << message.signed_text
+        end
+
+        signatures
       end
 
       private

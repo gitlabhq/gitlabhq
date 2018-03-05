@@ -24,6 +24,7 @@ describe('note_app', () => {
 
   beforeEach(() => {
     jasmine.addMatchers(vueMatchers);
+    $('body').attr('data-page', 'projects:merge_requests:show');
 
     const IssueNotesApp = Vue.extend(notesApp);
 
@@ -119,8 +120,8 @@ describe('note_app', () => {
       vm = mountComponent();
     });
 
-    it('should render loading icon', () => {
-      expect(vm).toIncludeElement('.js-loading');
+    it('renders skeleton notes', () => {
+      expect(vm).toIncludeElement('.animation-container');
     });
 
     it('should render form', () => {

@@ -9,7 +9,8 @@ module Gitlab
 
         def install(command)
           @namespace.ensure_exists!
-          @kubeclient.create_pod(pod_resource(command))
+          create_config_map(command) if command.config_map?
+          @kubeclient.create_pod(command.pod_resource)
         end
 
         ##
@@ -33,8 +34,10 @@ module Gitlab
 
         private
 
-        def pod_resource(command)
-          Gitlab::Kubernetes::Helm::Pod.new(command, @namespace.name, @kubeclient).generate
+        def create_config_map(command)
+          command.config_map_resource.tap do |config_map_resource|
+            @kubeclient.create_config_map(config_map_resource)
+          end
         end
       end
     end

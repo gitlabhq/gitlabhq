@@ -1,4 +1,4 @@
-# pack-refs with: peeled fully-peeled 
+# pack-refs with: peeled fully-peeled sorted 
 0b4bc9a49b562e85de7cc9e834518ea6828729b9 refs/heads/feature
 12d65c8dd2b2676fa3ac47d955accc085a37a9c1 refs/heads/fix
 6473c90867124755509e100d0d35ebdc85a0b6ae refs/heads/fix-blob-path

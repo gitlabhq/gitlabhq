@@ -36,6 +36,15 @@ If you are asynchronously adding content which contains lazy images then you nee
 `gl.lazyLoader.searchLazyImages()` which will search for lazy images and load them if needed. 
 But in general it should be handled automatically through a `MutationObserver` in the lazy loading function.
 
+### Animations
+
+Only animate `opacity` & `transform` properties. Other properties (such as `top`, `left`, `margin`, and `padding`) all cause
+Layout to be recalculated, which is much more expensive. For details on this, see "Styles that Affect Layout" in
+[High Performance Animations][high-perf-animations].
+
+If you _do_ need to change layout (e.g. a sidebar that pushes main content over), prefer [FLIP][flip] to change expensive
+properties once, and handle the actual animation with transforms.
+
 ## Reducing Asset Footprint
 
 ### Page-specific JavaScript
@@ -87,6 +96,7 @@ General tips:
 - Compress and minify assets wherever possible (For CSS/JS, Sprockets and webpack do this for us).
 - If some functionality can reasonably be achieved without adding extra libraries, avoid them.
 - Use page-specific JavaScript as described above to dynamically load libraries that are only needed on certain pages.
+- [High Performance Animations][high-perf-animations]
 
 -------
 
@@ -105,3 +115,5 @@ General tips:
 [d3]: https://d3js.org/
 [chartjs]: http://www.chartjs.org/
 [page-specific-js-example]: https://gitlab.com/gitlab-org/gitlab-ce/blob/13bb9ed77f405c5f6ee4fdbc964ecf635c9a223f/app/views/projects/graphs/_head.html.haml#L6-8
+[high-perf-animations]: https://www.html5rocks.com/en/tutorials/speed/high-performance-animations/
+[flip]: https://aerotwist.com/blog/flip-your-animations/

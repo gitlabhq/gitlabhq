@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import reportSection from 'ee/vue_shared/security_reports/components/report_section.vue';
-import mountComponent from '../../../helpers/vue_mount_component_helper';
-import { codequalityParsedIssues } from '../../../vue_mr_widget/mock_data';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { codequalityParsedIssues } from 'spec/vue_mr_widget/mock_data';
 
 describe('Report section', () => {
   let vm;
@@ -192,7 +192,7 @@ describe('Report section', () => {
 
     it('should show the report by default', () => {
       expect(
-        vm.$el.querySelectorAll('.report-block-list .report-block-list-item').length,
+        vm.$el.querySelectorAll('.report-block-list .report-block-list-issue').length,
       ).toEqual(codequalityParsedIssues.length);
     });
   });

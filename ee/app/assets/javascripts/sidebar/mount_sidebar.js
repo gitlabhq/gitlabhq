@@ -25,7 +25,10 @@ function mountWeightComponent(mediator) {
 function mountEpic() {
   const el = document.querySelector('#js-vue-sidebar-item-epic');
 
-  return new Vue({
+  if (!el) return;
+
+  // eslint-disable-next-line no-new
+  new Vue({
     el,
     components: {
       SidebarItemEpic,

@@ -79,13 +79,13 @@ module API
         expose :lfs_enabled?, as: :lfs_enabled
         expose :creator_id
         expose :namespace, using: 'API::Entities::Namespace'
-        expose :forked_from_project, using: ::API::Entities::BasicProjectDetails, if: lambda { |project, options| project.forked? }
+        expose :forked_from_project, using: ::API::Entities::BasicProjectDetails, if: ->(project, options) { project.forked? }
         expose :avatar_url do |user, options|
           user.avatar_url(only_path: false)
         end
         expose :star_count, :forks_count
-        expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) && project.default_issues_tracker? }
-        expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
+        expose :open_issues_count, if: ->(project, options) { project.feature_available?(:issues, options[:current_user]) && project.default_issues_tracker? }
+        expose :runners_token, if: ->(_project, options) { options[:user_can_admin_project] }
         expose :public_builds
         expose :shared_with_groups do |project, options|
           ::API::Entities::SharedGroup.represent(project.project_group_links.all, options)
@@ -148,13 +148,6 @@ module API
 
       class Group < Grape::Entity
         expose :id, :name, :path, :description, :visibility_level
-
-        # EE-only
-        expose :ldap_cn, :ldap_access
-        expose :ldap_group_links,
-               using: ::API::Entities::LdapGroupLink,
-               if: lambda { |group, options| group.ldap_group_links.any? }
-        # EE-only
 
         expose :lfs_enabled?, as: :lfs_enabled
         expose :avatar_url do |user, options|
@@ -267,8 +260,9 @@ module API
 
       class ProjectService < Grape::Entity
         expose :id, :title, :created_at, :updated_at, :active
-        expose :push_events, :issues_events, :merge_requests_events
-        expose :tag_push_events, :note_events, :pipeline_events
+        expose :push_events, :issues_events, :confidential_issues_events
+        expose :merge_requests_events, :tag_push_events, :note_events
+        expose :pipeline_events
         expose :job_events, as: :build_events
         # Expose serialized properties
         expose :properties do |service, options|
@@ -277,8 +271,9 @@ module API
       end
 
       class ProjectHook < ::API::Entities::Hook
-        expose :project_id, :issues_events, :merge_requests_events
-        expose :note_events, :pipeline_events, :wiki_page_events
+        expose :project_id, :issues_events, :confidential_issues_events
+        expose :merge_requests_events, :note_events, :pipeline_events
+        expose :wiki_page_events
         expose :job_events, as: :build_events
       end
 
@@ -302,7 +297,6 @@ module API
         expose :upvotes, :downvotes
         expose :due_date
         expose :confidential
-        expose :weight, if: ->(issue, _) { issue.supports_weight? }
 
         expose :web_url do |issue, options|
           Gitlab::UrlBuilder.build(issue)
@@ -321,3 +315,6 @@ module API
     end
   end
 end
+
+API::Entities.prepend_entity(::API::V3::Entities::Group, with: EE::API::Entities::Group)
+API::Entities.prepend_entity(::API::V3::Entities::IssueBasic, with: EE::API::Entities::IssueBasic)

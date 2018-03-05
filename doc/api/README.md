@@ -27,6 +27,7 @@ following locations:
 - [GitLab CI Config templates](templates/gitlab_ci_ymls.md)
 - [Groups](groups.md)
 - [Group Access Requests](access_requests.md)
+- [Group Badges](group_badges.md)
 - [Group Members](members.md)
 - [Issues](issues.md)
 - [Issue Boards](boards.md)
@@ -48,6 +49,7 @@ following locations:
 - [Pipeline Schedules](pipeline_schedules.md)
 - [Projects](projects.md) including setting Webhooks
 - [Project Access Requests](access_requests.md)
+- [Project Badges](project_badges.md)
 - [Project import/export](project_import_export.md)
 - [Project Members](members.md)
 - [Project Snippets](project_snippets.md)

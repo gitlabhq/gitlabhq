@@ -62,7 +62,7 @@
 
         = render partial: "namespaces/shared_runner_status", locals: { namespace: @group }
 
-    - if Gitlab::LDAP::Config.group_sync_enabled? && @group.ldap_synced?
+    - if Gitlab::Auth::LDAP::Config.group_sync_enabled? && @group.ldap_synced?
       .panel.panel-default
         .panel-heading Active synchronizations
         %ul.well-list

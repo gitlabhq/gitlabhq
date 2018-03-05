@@ -1,58 +1,77 @@
+.pipeline-tab-content {
+  .space-children,
+  .space-children > span {
+    display: flex;
+  }
+
+  .media {
+    align-items: center;
+  }
+}
+
 .report-block-container {
   border-top: 1px solid $gray-darker;
   padding: $gl-padding-top;
   background-color: $gray-light;
   margin: $gl-padding #{-$gl-padding} #{-$gl-padding};
-}
 
-.report-block-dast-code {
-  margin-left: 26px;
+  // Clean MR widget CSS
+  line-height: 20px;
 }
 
 .report-block-list {
   list-style: none;
   padding: 0 1px;
   margin: 0;
-  line-height: $code_line_height;
+}
 
-  .btn-open-modal {
-    padding: 0 5px 4px;
-  }
+.report-block-list-icon {
+  display: flex;
 
-  .report-block-list-item {
-    display: flex;
-  }
-
-  .report-block-list-item-modal {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  .failed .report-block-icon {
+  &.failed {
     color: $red-500;
   }
 
-  .success .report-block-icon {
+  &.success {
     color: $green-500;
   }
 
-  .neutral .report-block-icon {
+  &.neutral {
     color: $theme-gray-700;
-  }
-
-  .report-block-icon {
-    margin: -5px 4px 0 0;
-    fill: currentColor;
   }
 }
 
-.pipeline-tab-content {
-  .space-children,
-  .space-children > * {
-    display: flex;
-  }
+.report-block-list-issue {
+  display: flex;
+  align-items: flex-start;
+  align-content: flex-start;
+}
 
-  .media {
-    align-items: center;
+.report-block-list-issue-description {
+  align-content: space-around;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  display: flex;
+  align-self: center;
+}
+
+.report-block {
+  .break-link {
+    word-wrap: break-word;
+    word-break: break-all;
+  }
+}
+
+.report-block-issue-code {
+  width: $modal-lg - 70px;
+}
+
+.modal-security-report-dast {
+  .modal-dialog {
+    width: $modal-lg;
+  }
+  // TODO remove this when gl_modal support not rendering the footer
+  .modal-footer {
+    display: none;
   }
 }

@@ -113,6 +113,18 @@ describe Groups::EpicsController do
           expect(item['end_date']).to eq(epic.end_date)
           expect(item['web_url']).to eq(group_epic_path(group, epic))
         end
+
+        context 'using label_name filter' do
+          let(:label) { create(:label) }
+          let!(:labeled_epic) { create(:labeled_epic, group: group, labels: [label]) }
+
+          it 'returns all epics with given label' do
+            get :index, group_id: group, label_name: label.title, format: :json
+
+            expect(json_response.size).to eq(1)
+            expect(json_response.first['id']).to eq(labeled_epic.id)
+          end
+        end
       end
     end
 

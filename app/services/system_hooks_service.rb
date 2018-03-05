@@ -13,6 +13,8 @@ class SystemHooksService
     SystemHook.hooks_for(hooks_scope).find_each do |hook|
       hook.async_execute(data, 'system_hooks')
     end
+
+    Gitlab::Plugin.execute_all_async(data)
   end
 
   private
