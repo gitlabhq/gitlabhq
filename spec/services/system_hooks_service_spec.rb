@@ -70,6 +70,14 @@ describe SystemHooksService do
       expect(data[:project_visibility]).to eq('private')
     end
 
+    it 'handles nil datetime columns' do
+      user.update_attributes(created_at: nil, updated_at: nil)
+      data = event_data(user, :destroy)
+
+      expect(data[:created_at]).to be(nil)
+      expect(data[:updated_at]).to be(nil)
+    end
+
     context 'group_rename' do
       it 'contains old and new path' do
         allow(group).to receive(:path_was).and_return('old-path')
