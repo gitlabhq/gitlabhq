@@ -1,5 +1,9 @@
 module Projects
   class UpdatePagesService < BaseService
+    ArtifactNotFoundError = Class.new(StandardError)
+    PublicFolderNotFoundError = Class.new(StandardError)
+    PageOutdateError = Class.new(StandardError)
+
     BLOCK_SIZE = 32.kilobytes
     MAX_SIZE = 1.terabyte
     SITE_PATH = 'public/'.freeze
@@ -16,8 +20,8 @@ module Projects
       @status.enqueue!
       @status.run!
 
-      raise 'missing pages artifacts' unless build.artifacts?
-      raise 'pages are outdated' unless latest?
+      raise ArtifactNotFoundError, 'missing pages artifacts' unless build.artifacts?
+      raise PageOutdateError, 'pages are outdated' unless latest?
 
       # Create temporary directory in which we will extract the artifacts
       FileUtils.mkdir_p(tmp_path)
@@ -26,32 +30,35 @@ module Projects
 
         # Check if we did extract public directory
         archive_public_path = File.join(archive_path, 'public')
-        raise 'pages miss the public folder' unless Dir.exist?(archive_public_path)
-        raise 'pages are outdated' unless latest?
+        raise ArtifactNotFoundError, 'pages miss the public folder' unless Dir.exist?(archive_public_path)
+        raise PageOutdateError, 'pages are outdated' unless latest?
 
         deploy_page!(archive_public_path)
         success
       end
     rescue => e
       register_failure
-      error(e.message)
+      error(e)
     ensure
       register_attempt
-      build.reload.erase_artifacts! unless build.has_expiring_artifacts?
     end
 
     private
 
     def success
-      @status.success
+      @status.success!
+      delete_artifact!
       super
     end
 
-    def error(message, http_status = nil)
-      log_error("Projects::UpdatePagesService: #{message}")
+    def error(e, http_status = nil)
+      log_error("Projects::UpdatePagesService: #{e.message}")
       @status.allow_failure = !latest?
-      @status.description = message
+      @status.description = e.message
       @status.drop(:script_failure)
+      if e.instance_of(PublicFolderNotFoundError) || e.instance_of(PageOutdateError)
+        delete_artifact!
+      end
       super
     end
 
@@ -161,6 +168,11 @@ module Projects
 
     def artifacts
       build.artifacts_file.path
+    end
+
+    def delete_artifact!
+      build.reload
+      build.erase_artifacts! unless build.has_expiring_artifacts?
     end
 
     def latest_sha
