@@ -1,6 +1,6 @@
 # JavaScript style guide
 
-We use [Airbnb's JavaScript Style Guide](https://github.com/airbnb/javascript) to manage most of our JavaScript styling guidelines. We also use their eslint present to make sure we follow those guidelines.
+We use [Airbnb's JavaScript Style Guide](https://github.com/airbnb/javascript) to manage most of our JavaScript styling guidelines. We also use their eslint preset to make sure we follow those guidelines.
 
 In addition to the style guidelines set by Airbnb, we also have a few specific rules listed below.
 
