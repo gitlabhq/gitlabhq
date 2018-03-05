@@ -142,10 +142,9 @@ feature 'Issues > User uses quick actions', :js do
           visit project_issue_path(project, issue)
         end
 
-        it 'creates a note, and does not set the weight' do
+        it 'does not create a note or set the weight' do
           write_note("/weight 5")
 
-          expect(page).to have_content '/weight 5'
           expect(page).not_to have_content 'Commands applied'
 
           issue.reload
@@ -180,10 +179,9 @@ feature 'Issues > User uses quick actions', :js do
           visit project_issue_path(project, issue)
         end
 
-        it 'creates a note, and does not set the weight' do
+        it 'does create a note or set the weight' do
           write_note("/clear_weight")
 
-          expect(page).to have_content '/clear_weight'
           expect(page).not_to have_content 'Commands applied'
 
           issue.reload
