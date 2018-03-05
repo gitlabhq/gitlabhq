@@ -64,6 +64,25 @@ class myClass {
 }
 ```
 
+<a name="element-container"></a><a name="3.2"></a>
+- [3.2](#element-container) **Pass element container to constructor** When your class manipulates the DOM, receive the element container as a parameter.
+
+```
+// bad
+class a {
+  constructor() {
+    document.querySelector('.b');
+  }
+}
+
+// good
+class a {
+  constructor(options) {
+    document.querySelector(`${options.container} .b`);
+  }
+}
+```
+
 ## Type Casting & Coercion
 
 <a name="use-parseint"></a><a name="4.1"></a>
@@ -119,7 +138,7 @@ import GitLabStyleGuide from '~/GitLabStyleGuide';
 - [6.3](#global-namespace) **Do not add to global namespace**
 
 <a name="domcontentloaded"></a><a name="6.4"></a>
-- [6.4](domcontentloaded) **Do not use DOMContentLoaded in non-page modules** Imported modules should act the same each time they are loaded. `DOMContentLoaded` events are only allowed on modules loaded in the `/pages/*` directory because those are loaded dynamically with webpack.
+- [6.4](#domcontentloaded) **Do not use DOMContentLoaded in non-page modules** Imported modules should act the same each time they are loaded. `DOMContentLoaded` events are only allowed on modules loaded in the `/pages/*` directory because those are loaded dynamically with webpack.
 
 ## ESLint
 
