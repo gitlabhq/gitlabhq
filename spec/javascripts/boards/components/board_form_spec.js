@@ -24,6 +24,37 @@ describe('board_form.vue', () => {
   });
 
   describe('methods', () => {
+    describe('handleLabelClick', () => {
+      const label = {
+        id: 1,
+        title: 'Foo',
+        color: ['#BADA55'],
+        text_color: '#FFFFFF',
+      };
+
+      it('initializes `board.labels` as empty array when `label.isAny` is `true`', () => {
+        const labelIsAny = { isAny: true };
+        vm.handleLabelClick(labelIsAny);
+        expect(Array.isArray(vm.board.labels)).toBe(true);
+        expect(vm.board.labels.length).toBe(0);
+      });
+
+      it('adds provided `label` to board.labels', () => {
+        vm.handleLabelClick(label);
+        expect(vm.board.labels.length).toBe(1);
+        expect(vm.board.labels[0].id).toBe(label.id);
+        vm.handleLabelClick(label);
+      });
+
+      it('filters board.labels to exclude provided `label` if it is already present in `board.labels`', () => {
+        const label2 = Object.assign({}, label, { id: 2 });
+        vm.handleLabelClick(label);
+        vm.handleLabelClick(label2);
+        expect(vm.board.labels.length).toBe(1);
+        expect(vm.board.labels[0].id).toBe(label2.id);
+      });
+    });
+
     describe('cancel', () => {
       it('resets currentPage', (done) => {
         vm.cancel();
