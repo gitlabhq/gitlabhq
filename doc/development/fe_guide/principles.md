@@ -19,3 +19,7 @@ There are multiple ways of writing code to accomplish the same results. We shoul
 
 - Use jQuery when interactiong with Bootstrap JavaScript components
 - Consider not using jQuery if an alternative exists because we are slowly moving away from it [#43559](https://gitlab.com/gitlab-org/gitlab-ce/issues/43559)
+
+## Mixing Vue and jQuery
+
+Mixing Vue and jQuery is not recommended. If you have to use a jQuery dependency in Vue, create a Vue wrapper for the jQuery dependency. The Vue docs has a great example on this for [select2](https://vuejs.org/v2/examples/select2.html).

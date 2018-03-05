@@ -11,3 +11,6 @@
 ## Dropdown
 
 ## Modals
+
+## Tooltips
+<!-- Mention about how to use tooltips in vue -->

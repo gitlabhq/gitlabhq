@@ -6,4 +6,5 @@
 
 ## Implementing Vue
 
+Grab data from backend using data attributes
 

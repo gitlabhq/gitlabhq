@@ -17,7 +17,7 @@
 
 <a name="blank-links"></a><a name="2.1"></a>
 - [2.1](#blank-links) **Use rel for target blank** Use `rel="noopener noreferrer"` whenever your links `target="_blank"`.
-This prevents a security vulnerability documented by [JitBit](https://www.jitbit.com/alexblog/256-targetblank---the-most-underestimated-vulnerability-ever/)
+This prevents a security vulnerability documented by [JitBit][JitBit]
 
 ```
 // bad
@@ -26,3 +26,5 @@ This prevents a security vulnerability documented by [JitBit](https://www.jitbit
 // good
 <a href="url" target="_blank" rel="noopener noreferrer"></a>
 ```
+
+[JitBit]: https://www.jitbit.com/alexblog/256-targetblank---the-most-underestimated-vulnerability-ever/

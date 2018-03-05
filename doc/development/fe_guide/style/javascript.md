@@ -1,6 +1,6 @@
 # JavaScript style guide
 
-We use [Airbnb's JavaScript Style Guide](https://github.com/airbnb/javascript) to manage most of our JavaScript styling guidelines. We also use their eslint preset to make sure we follow those guidelines.
+We use [Airbnb's JavaScript Style Guide][airbnb-style-guide] to manage most of our JavaScript styling guidelines. We also use their eslint preset to make sure we follow those guidelines.
 
 In addition to the style guidelines set by Airbnb, we also have a few specific rules listed below.
 
@@ -10,7 +10,7 @@ You can lint your JavaScript locally by running `yarn eslint`
 ## Arrays
 
 <a name="avoid-foreach"></a><a name="1.1"></a>
-- [1.1](#avoid-foreach) **Avoid ForEach when mutating data** Use `map`, `reduce` or `filter` instead of `forEach` when mutating data. This will minimize mutations in functions ([which is aligned with Airbnb's style guide](https://github.com/airbnb/javascript#testing--for-real))
+- [1.1](#avoid-foreach) **Avoid ForEach when mutating data** Use `map`, `reduce` or `filter` instead of `forEach` when mutating data. This will minimize mutations in functions ([which is aligned with Airbnb's style guide][airbnb-minimize-mutations])
 
 ```
 // bad
@@ -151,7 +151,12 @@ import GitLabStyleGuide from '~/GitLabStyleGuide';
 <a name="disable-eslint-rule"></a><a name="7.2"></a>
 - [7.2](#disable-eslint-rule) **Disabling ESLint rule** Do not disable specific ESLint rules. Due to technical debt, you may disable the following rules only if you are invoking/instantiating existing code modules
 
-  - [no-new](http://eslint.org/docs/rules/no-new)
-  - [class-method-use-this](http://eslint.org/docs/rules/class-methods-use-this)
+  - [no-new][no-new]
+  - [class-method-use-this][class-method-use-this]
 
 > Note: Disable these rules on a per line basis. This makes it easier to refactor in the future. E.g. use `eslint-disable-next-line` or `eslint-disable-line`
+
+[airbnb-style-guide]: https://github.com/airbnb/javascript
+[airbnb-minimize-mutations]: https://github.com/airbnb/javascript#testing--for-real
+[no-new]: http://eslint.org/docs/rules/no-new
+[class-method-use-this]: http://eslint.org/docs/rules/class-methods-use-this

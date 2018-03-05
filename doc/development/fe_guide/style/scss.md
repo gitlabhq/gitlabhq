@@ -10,10 +10,12 @@ You can autofix your lint errors locally by using [CSSComb][cssComb]. After inst
 
 ## Selectors
 
-- 1.1 **Avoid styling js- classes** CSS class names with a `js-` prefix are not used for styling. They are purely used for querying the DOM.
+<a name="js-class"></a><a name="1.1"></a>
+- [1.1](#js-class) **Avoid styling js- classes** CSS class names with a `js-` prefix are not used for styling. They are purely used for querying the DOM.
 
 
-- 1.2 **Avoid ID selectors**
+<a name="id-selectors"></a><a name="1.2"></a>
+- [1.2](#id-selectors) **Avoid ID selectors**
 
 ```
 // Bad
@@ -29,11 +31,13 @@ You can autofix your lint errors locally by using [CSSComb][cssComb]. After inst
 
 ## Variables
 
-- 2.1 **Avoid creating new variables** Check to see if there is a similar variable before adding a new variable.
+<a name="new-variables"></a><a name="2.1"></a>
+- [2.1](#new-variables) **Avoid creating new variables** Check to see if there is a similar variable before adding a new variable.
 
 ## SCSS Lint
 
-- 3.1 **Disabling SCSS Lint rule** Avoid disable specific SCSS Lint rules. If you absolutely have to, make sure you comment a reason above the `disable` rule.
+<a name="disable-scss-lint"></a><a name="3.1"></a>
+- [3.1](#disable-scss-lint) **Disabling SCSS Lint rule** Avoid disable specific SCSS Lint rules. If you absolutely have to, make sure you comment a reason above the `disable` rule.
 
 ```
 // This lint rule is disabled because the class name comes from a gem.
@@ -45,3 +49,4 @@ You can autofix your lint errors locally by using [CSSComb][cssComb]. After inst
 ```
 
 [scss-lint]: https://github.com/brigade/scss-lint
+[cssComb]: http://csscomb.com/
