@@ -226,6 +226,8 @@ class Project < ActiveRecord::Base
   has_one :auto_devops, class_name: 'ProjectAutoDevops'
   has_many :custom_attributes, class_name: 'ProjectCustomAttribute'
 
+  has_many :project_badges, class_name: 'ProjectBadge'
+
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true
   accepts_nested_attributes_for :import_data
@@ -1770,6 +1772,17 @@ class Project < ActiveRecord::Base
 
     Gitlab::SidekiqStatus
       .set(import_jid, StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION)
+  end
+
+  def badges
+    return project_badges unless group
+
+    group_badges_rel = GroupBadge.where(group: group.self_and_ancestors)
+
+    union = Gitlab::SQL::Union.new([project_badges.select(:id),
+                                    group_badges_rel.select(:id)])
+
+    Badge.where("id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
   end
 
   private
