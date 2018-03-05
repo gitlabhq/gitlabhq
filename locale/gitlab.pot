@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-23 13:23+0100\n"
-"PO-Revision-Date: 2018-02-23 13:23+0100\n"
+"POT-Creation-Date: 2018-03-02 13:39+0100\n"
+"PO-Revision-Date: 2018-03-02 13:39+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -51,6 +51,9 @@ msgid_plural "%s additional commits have been omitted to prevent performance iss
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{actionText} & %{openOrClose} %{noteable}"
+msgstr ""
+
 msgid "%{commit_author_link} authored %{commit_timeago}"
 msgstr ""
 
@@ -69,6 +72,9 @@ msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow 
 msgstr ""
 
 msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will not retry automatically. Reset storage information when the problem is resolved."
+msgstr ""
+
+msgid "%{openOrClose} %{noteable}"
 msgstr ""
 
 msgid "%{storage_name}: failed storage access attempt on host:"
@@ -758,6 +764,9 @@ msgstr ""
 msgid "CircuitBreakerApiLink|circuitbreaker api"
 msgstr ""
 
+msgid "Click the button below to begin the install process by navigating to the Kubernetes page"
+msgstr ""
+
 msgid "Click to expand text"
 msgstr ""
 
@@ -812,6 +821,9 @@ msgstr ""
 msgid "ClusterIntegration|Copy CA Certificate"
 msgstr ""
 
+msgid "ClusterIntegration|Copy Ingress IP Address to clipboard"
+msgstr ""
+
 msgid "ClusterIntegration|Copy Kubernetes cluster name"
 msgstr ""
 
@@ -858,6 +870,9 @@ msgid "ClusterIntegration|Helm Tiller"
 msgstr ""
 
 msgid "ClusterIntegration|Ingress"
+msgstr ""
+
+msgid "ClusterIntegration|Ingress IP Address"
 msgstr ""
 
 msgid "ClusterIntegration|Install"
@@ -909,9 +924,6 @@ msgid "ClusterIntegration|Kubernetes clusters can be used to deploy applications
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about %{link_to_documentation}"
-msgstr ""
-
-msgid "ClusterIntegration|Learn more about Kubernetes"
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about environments"
@@ -1049,6 +1061,12 @@ msgstr ""
 msgid "Collapse"
 msgstr ""
 
+msgid "Comment and resolve discussion"
+msgstr ""
+
+msgid "Comment and unresolve discussion"
+msgstr ""
+
 msgid "Comments"
 msgstr ""
 
@@ -1072,6 +1090,9 @@ msgid "Commit message"
 msgstr ""
 
 msgid "Commit statistics for %{ref} %{start_time} - %{end_time}"
+msgstr ""
+
+msgid "Commit to %{branchName} branch"
 msgstr ""
 
 msgid "CommitBoxTitle|Commit"
@@ -1230,6 +1251,12 @@ msgstr ""
 msgid "Create New Directory"
 msgstr ""
 
+msgid "Create a new branch"
+msgstr ""
+
+msgid "Create a new branch and merge request"
+msgstr ""
+
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
 msgstr ""
 
@@ -1279,6 +1306,12 @@ msgid "CreateTag|Tag"
 msgstr ""
 
 msgid "CreateTokenToCloneLink|create a personal access token"
+msgstr ""
+
+msgid "Creates a new branch from %{branchName}"
+msgstr ""
+
+msgid "Creates a new branch from %{branchName} and re-directs to create a new merge request"
 msgstr ""
 
 msgid "Creating epic"
@@ -1368,6 +1401,9 @@ msgid "Directory name"
 msgstr ""
 
 msgid "Disable"
+msgstr ""
+
+msgid "Discard draft"
 msgstr ""
 
 msgid "Discover GitLab Geo."
@@ -1488,6 +1524,12 @@ msgid "Epics Roadmap"
 msgstr ""
 
 msgid "Epics let you manage your portfolio of projects more efficiently and with less effort"
+msgstr ""
+
+msgid "Error checking branch data. Please try again."
+msgstr ""
+
+msgid "Error committing changes. Please try again."
 msgstr ""
 
 msgid "Error creating epic"
@@ -1637,6 +1679,9 @@ msgid "From issue creation until deploy to production"
 msgstr ""
 
 msgid "From merge request merge until deploy to production"
+msgstr ""
+
+msgid "From the Kubernetes cluster details view, install Runner from the applications list"
 msgstr ""
 
 msgid "GPG Keys"
@@ -1917,6 +1962,9 @@ msgstr ""
 msgid "Improve search with Advanced Global Search and GitLab Enterprise Edition."
 msgstr ""
 
+msgid "Install Runner on Kubernetes"
+msgstr ""
+
 msgid "Install a Runner compatible with GitLab CI"
 msgstr ""
 
@@ -2050,6 +2098,9 @@ msgstr ""
 msgid "Learn more"
 msgstr ""
 
+msgid "Learn more about Kubernetes"
+msgstr ""
+
 msgid "Learn more about protected branches"
 msgstr ""
 
@@ -2128,9 +2179,6 @@ msgstr ""
 msgid "Members"
 msgstr ""
 
-msgid "Merge Request"
-msgstr ""
-
 msgid "Merge Requests"
 msgstr ""
 
@@ -2177,6 +2225,9 @@ msgid "Modal|Close"
 msgstr ""
 
 msgid "Monitoring"
+msgstr ""
+
+msgid "More information"
 msgstr ""
 
 msgid "More information is available|here"
@@ -2877,6 +2928,9 @@ msgstr ""
 msgid "Reset runners registration token"
 msgstr ""
 
+msgid "Resolve discussion"
+msgstr ""
+
 msgid "Reveal value"
 msgid_plural "Reveal values"
 msgstr[0] ""
@@ -2945,6 +2999,9 @@ msgstr ""
 msgid "Select a timezone"
 msgstr ""
 
+msgid "Select an existing Kubernetes cluster or create a new one"
+msgstr ""
+
 msgid "Select assignee"
 msgstr ""
 
@@ -2955,6 +3012,9 @@ msgid "Select target branch"
 msgstr ""
 
 msgid "Selective synchronization"
+msgstr ""
+
+msgid "Send email"
 msgstr ""
 
 msgid "Sep"
@@ -2985,6 +3045,9 @@ msgid "SetPasswordToCloneLink|set a password"
 msgstr ""
 
 msgid "Settings"
+msgstr ""
+
+msgid "Setup a specific Runner automatically"
 msgstr ""
 
 msgid "SharedRunnersMinutesSettings|By resetting the pipeline minutes for this namespace, the currently used minutes will be set to zero."
@@ -3040,7 +3103,7 @@ msgstr ""
 msgid "Something went wrong when toggling the button"
 msgstr ""
 
-msgid "Something went wrong while closing the issue. Please try again later"
+msgid "Something went wrong while closing the %{issuable}. Please try again later"
 msgstr ""
 
 msgid "Something went wrong while fetching SAST."
@@ -3052,7 +3115,10 @@ msgstr ""
 msgid "Something went wrong while fetching the registry list."
 msgstr ""
 
-msgid "Something went wrong while reopening the issue. Please try again later"
+msgid "Something went wrong while reopening the %{issuable}. Please try again later"
+msgstr ""
+
+msgid "Something went wrong while resolving this discussion. Please try again."
 msgstr ""
 
 msgid "Something went wrong. Please try again."
@@ -3670,6 +3736,9 @@ msgstr ""
 msgid "Unlocked"
 msgstr ""
 
+msgid "Unresolve discussion"
+msgstr ""
+
 msgid "Unstar"
 msgstr ""
 
@@ -3752,6 +3821,9 @@ msgid "We don't have enough data to show this stage."
 msgstr ""
 
 msgid "We want to be sure it is you, please confirm you are not a robot."
+msgstr ""
+
+msgid "Web IDE"
 msgstr ""
 
 msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
@@ -3874,6 +3946,9 @@ msgstr ""
 msgid "Withdraw Access Request"
 msgstr ""
 
+msgid "Write a commit message..."
+msgstr ""
+
 msgid "You are going to remove %{group_name}. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?"
 msgstr ""
 
@@ -3890,6 +3965,9 @@ msgid "You can also create a project from the command line."
 msgstr ""
 
 msgid "You can also star a label to make it a priority label."
+msgstr ""
+
+msgid "You can easily install a Runner on a Kubernetes cluster. %{link_to_help_page}"
 msgstr ""
 
 msgid "You can move around the graph by using the arrow keys."
@@ -3956,6 +4034,9 @@ msgid "You'll need to use different branch names to get a valid comparison."
 msgstr ""
 
 msgid "Your Kubernetes cluster information on this page is still editable, but you are advised to disable and reconfigure"
+msgstr ""
+
+msgid "Your changes have been committed. Commit %{commitId} %{commitStats}"
 msgstr ""
 
 msgid "Your comment will not be visible to the public."
@@ -4073,6 +4154,9 @@ msgstr[1] ""
 msgid "mrWidget| Please restore it or use a different %{missingBranchName} branch"
 msgstr ""
 
+msgid "mrWidget|Add approval"
+msgstr ""
+
 msgid "mrWidget|An error occured while removing your approval."
 msgstr ""
 
@@ -4083,9 +4167,6 @@ msgid "mrWidget|An error occured while submitting your approval."
 msgstr ""
 
 msgid "mrWidget|Approve"
-msgstr ""
-
-msgid "mrWidget|Add approval"
 msgstr ""
 
 msgid "mrWidget|Approved by"
@@ -4265,4 +4346,7 @@ msgid "username"
 msgstr ""
 
 msgid "uses Kubernetes clusters to deploy your code!"
+msgstr ""
+
+msgid "with %{additions} additions, %{deletions} deletions."
 msgstr ""

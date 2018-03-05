@@ -508,7 +508,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import * as actions from './actions';
 import * as getters from './getters';
-import * as mutations from './mutations';
+import mutations from './mutations';
 
 Vue.use(Vuex);
 
@@ -527,7 +527,7 @@ _Note:_ If the state of the application is too complex, an individual file for t
 An action commits a mutatation. In this file, we will write the actions that will call the respective mutation:
 
 ```javascript
-  import * as types from './mutation-types'
+  import * as types from './mutation_types';
 
   export const addUser = ({ commit }, user) => {
     commit(types.ADD_USER, user);
@@ -577,7 +577,8 @@ import { mapGetters } from 'vuex';
 The only way to actually change state in a Vuex store is by committing a mutation.
 
 ```javascript
-  import * as types from './mutation-types'
+  import * as types from './mutation_types';
+
   export default {
     [types.ADD_USER](state, user) {
       state.users.push(user);
@@ -686,4 +687,3 @@ describe('component', () => {
 [vuex-testing]: https://vuex.vuejs.org/en/testing.html
 [axios]: https://github.com/axios/axios
 [axios-interceptors]: https://github.com/axios/axios#interceptors
-

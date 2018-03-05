@@ -48,28 +48,16 @@ function generateEntries() {
   autoEntriesCount = Object.keys(autoEntries).length;
 
   const manualEntries = {
-    monitoring:           './monitoring/monitoring_bundle.js',
-    mr_notes:             './mr_notes/index.js',
-    terminal:             './terminal/terminal_bundle.js',
-    two_factor_auth:      './two_factor_auth.js',
-
     common:               './commons/index.js',
     common_vue:           './vue_shared/vue_resource_interceptor.js',
     locale:               './locale/index.js',
     main:                 './main.js',
-    ide:                  './ide/index.js',
     raven:                './raven/index.js',
-    test:                 './test.js',
-    u2f:                  ['vendor/u2f'],
     webpack_runtime:      './webpack.js',
 
     // EE-only
-    add_gitlab_slack_application: 'ee/add_gitlab_slack_application/index.js',
-    burndown_chart:       'ee/burndown_chart/index.js',
+    ide:                  'ee/ide/index.js',
     geo_nodes:            'ee/geo_nodes',
-    ldap_group_links:     'ee/groups/ldap_group_links.js',
-    mirrors:              'ee/mirrors',
-    service_desk:         'ee/projects/settings_service_desk/service_desk_bundle.js',
   };
 
   return Object.assign(manualEntries, autoEntries);

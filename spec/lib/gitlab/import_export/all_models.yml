@@ -308,6 +308,7 @@ project:
 - custom_attributes
 - prometheus_metrics
 - lfs_file_locks
+- project_badges
 award_emoji:
 - awardable
 - user
@@ -329,3 +330,5 @@ epic_issues:
 - epic
 lfs_file_locks:
 - user
+project_badges:
+- project

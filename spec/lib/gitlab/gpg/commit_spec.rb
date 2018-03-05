@@ -38,7 +38,7 @@ describe Gitlab::Gpg::Commit do
           end
 
           before do
-            allow(Gitlab::Git::Commit).to receive(:extract_signature)
+            allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
             .with(Gitlab::Git::Repository, commit_sha)
             .and_return(
               [
@@ -101,7 +101,7 @@ describe Gitlab::Gpg::Commit do
           end
 
           before do
-            allow(Gitlab::Git::Commit).to receive(:extract_signature)
+            allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
             .with(Gitlab::Git::Repository, commit_sha)
             .and_return(
               [
@@ -140,7 +140,7 @@ describe Gitlab::Gpg::Commit do
           end
 
           before do
-            allow(Gitlab::Git::Commit).to receive(:extract_signature)
+            allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
             .with(Gitlab::Git::Repository, commit_sha)
             .and_return(
               [
@@ -175,7 +175,7 @@ describe Gitlab::Gpg::Commit do
           end
 
           before do
-            allow(Gitlab::Git::Commit).to receive(:extract_signature)
+            allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
             .with(Gitlab::Git::Repository, commit_sha)
             .and_return(
               [
@@ -211,7 +211,7 @@ describe Gitlab::Gpg::Commit do
         end
 
         before do
-          allow(Gitlab::Git::Commit).to receive(:extract_signature)
+          allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
           .with(Gitlab::Git::Repository, commit_sha)
           .and_return(
             [
@@ -241,7 +241,7 @@ describe Gitlab::Gpg::Commit do
       let!(:commit) { create :commit, project: project, sha: commit_sha }
 
       before do
-        allow(Gitlab::Git::Commit).to receive(:extract_signature)
+        allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
           .with(Gitlab::Git::Repository, commit_sha)
           .and_return(
             [

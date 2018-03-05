@@ -263,20 +263,20 @@ Parameters:
   "upvotes": 0,
   "downvotes": 0,
   "author": {
-    "id": 1,
-    "username": "admin",
-    "email": "admin@example.com",
-    "name": "Administrator",
-    "state": "active",
-    "created_at": "2012-04-29T08:46:00Z"
+    "state" : "active",
+    "web_url" : "https://gitlab.example.com/root",
+    "avatar_url" : null,
+    "username" : "root",
+    "id" : 1,
+    "name" : "Administrator"
   },
   "assignee": {
-    "id": 1,
-    "username": "admin",
-    "email": "admin@example.com",
-    "name": "Administrator",
-    "state": "active",
-    "created_at": "2012-04-29T08:46:00Z"
+    "state" : "active",
+    "web_url" : "https://gitlab.example.com/root",
+    "avatar_url" : null,
+    "username" : "root",
+    "id" : 1,
+    "name" : "Administrator"
   },
   "source_project_id": 2,
   "target_project_id": 3,
@@ -312,7 +312,27 @@ Parameters:
     "human_time_estimate": null,
     "human_total_time_spent": null
   },
-  "approvals_before_merge": null
+  "approvals_before_merge": null,
+  "closed_at": "2018-01-19T14:36:11.086Z",
+  "latest_build_started_at": null,
+  "latest_build_finished_at": null,
+  "first_deployed_to_production_at": null,
+  "pipeline": {
+    "id": 8,
+    "ref": "master",
+    "sha": "2dc6aa325a317eda67812f05600bdf0fcdc70ab0",
+    "status": "created"
+  },
+  "merged_by": null,
+  "merged_at": null,
+  "closed_by": {
+    "state" : "active",
+    "web_url" : "https://gitlab.example.com/root",
+    "avatar_url" : null,
+    "username" : "root",
+    "id" : 1,
+    "name" : "Administrator"
+  }
 }
 ```
 

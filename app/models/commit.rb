@@ -19,6 +19,7 @@ class Commit
   attr_accessor :project, :author
   attr_accessor :redacted_description_html
   attr_accessor :redacted_title_html
+  attr_reader :gpg_commit
 
   DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines]
 
@@ -110,6 +111,7 @@ class Commit
     @raw = raw_commit
     @project = project
     @statuses = {}
+    @gpg_commit = Gitlab::Gpg::Commit.new(self) if project
   end
 
   def id
@@ -451,9 +453,5 @@ class Commit
 
   def merged_merge_request_no_cache(user)
     MergeRequestsFinder.new(user, project_id: project.id).find_by(merge_commit_sha: id) if merge_commit?
-  end
-
-  def gpg_commit
-    @gpg_commit ||= Gitlab::Gpg::Commit.new(self)
   end
 end

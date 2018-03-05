@@ -568,3 +568,12 @@ LfsFileLock:
 - user_id
 - project_id
 - created_at
+Badge:
+- id
+- link_url
+- image_url
+- project_id
+- group_id
+- created_at
+- updated_at
+- type

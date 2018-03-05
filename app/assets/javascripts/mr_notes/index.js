@@ -3,7 +3,7 @@ import notesApp from '../notes/components/notes_app.vue';
 import discussionCounter from '../notes/components/discussion_counter.vue';
 import store from '../notes/stores';
 
-document.addEventListener('DOMContentLoaded', () => {
+export default function initMrNotes() {
   new Vue({ // eslint-disable-line
     el: '#js-vue-mr-discussions',
     components: {
@@ -38,4 +38,4 @@ document.addEventListener('DOMContentLoaded', () => {
       return createElement('discussion-counter');
     },
   });
-});
+}

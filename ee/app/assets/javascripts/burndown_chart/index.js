@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import BurndownChart from './burndown_chart';
 
-$(() => {
+export default () => {
   // handle hint dismissal
   const hint = $('.burndown-hint');
   hint.on('click', '.dismiss-icon', () => {
@@ -47,4 +47,4 @@ $(() => {
     window.addEventListener('resize', () => chart.animateResize(1));
     $(document).on('click', '.js-sidebar-toggle', () => chart.animateResize(2));
   }
-});
+};
