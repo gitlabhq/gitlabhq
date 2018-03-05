@@ -8,6 +8,20 @@ describe('Dashboard', () => {
   const fixtureName = 'environments/metrics/metrics.html.raw';
   let DashboardComponent;
   let component;
+  const propsData = {
+    hasMetrics: 'false',
+    documentationPath: '/path/to/docs',
+    settingsPath: '/path/to/settings',
+    clustersPath: '/path/to/clusters',
+    tagsPath: '/path/to/tags',
+    projectPath: '/path/to/project',
+    metricsEndpoint: mockApiEndpoint,
+    deploymentEndpoint: '/endpoint/deployments',
+    emptyGettingStartedSvgPath: '/path/to/getting-started.svg',
+    emptyLoadingSvgPath: '/path/to/loading.svg',
+    emptyUnableToConnectSvgPath: '/path/to/unable-to-connect.svg',
+  };
+
   preloadFixtures(fixtureName);
 
   beforeEach(() => {
@@ -19,6 +33,7 @@ describe('Dashboard', () => {
     it('shows a getting started empty state when no metrics are present', () => {
       component = new DashboardComponent({
         el: document.querySelector('#prometheus-graphs'),
+        propsData,
       });
 
       component.$mount();
@@ -30,7 +45,6 @@ describe('Dashboard', () => {
   describe('requests information to the server', () => {
     let mock;
     beforeEach(() => {
-      document.querySelector('#prometheus-graphs').setAttribute('data-has-metrics', 'true');
       mock = new MockAdapter(axios);
       mock.onGet(mockApiEndpoint).reply(200, {
         metricsGroupsAPIResponse,
@@ -44,6 +58,7 @@ describe('Dashboard', () => {
     it('shows up a loading state', (done) => {
       component = new DashboardComponent({
         el: document.querySelector('#prometheus-graphs'),
+        propsData: { ...propsData, hasMetrics: 'true' },
       });
       component.$mount();
       Vue.nextTick(() => {
