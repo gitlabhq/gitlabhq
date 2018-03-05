@@ -13,7 +13,7 @@ For more details about this initative, please visit issue [#42325](https://gitla
 
 ## Improve webpack code splitting
 
-<!-- TODO:  -->
+> TODO: Add information about webpack code splitting
 
 For more details about this initative, please visit issue #TODO
 

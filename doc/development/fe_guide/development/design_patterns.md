@@ -2,9 +2,14 @@
 
 ## Mediator
 
+> TODO: Add Info
+
 ## Running code
+
+> TODO: Add Info
 
 ## Implementing Vue
 
-Grab data from backend using data attributes
+> TODO: Add Info
 
+> TODO: Grab data from backend using data attributes
