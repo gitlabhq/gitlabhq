@@ -100,7 +100,7 @@ Number('10')
 parseInt('10', 10);
 ```
 
-## CSS
+## CSS Selectors
 
 <a name="use-js-prefix"></a><a name="5.1"></a>
 - [5.1](#use-js-prefix) **Use js prefix** If a CSS class is only being used in JavaScript as a reference to the element, prefix the class name with `js-`
