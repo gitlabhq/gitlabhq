@@ -6,6 +6,10 @@ These principles will ensure that your frontend contribution starts off in the r
 
 Discuss your architecture design in an issue before writing code. This helps decrease the review time and also provides good practice for writing and thinking about system design.
 
+## Be consistent
+
+There are multiple ways of writing code to accomplish the same results. We should be as consistent in how we write code across our codebases whenever we can. This makes it more easier for someone to maintain code across GitLab.
+
 ## When to use Vue
 
 - Use Vue for features that perform a lot of read and write operations to the DOM because it is more performant (E.g. features that require real time updates)
