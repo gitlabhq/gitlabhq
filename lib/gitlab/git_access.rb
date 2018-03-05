@@ -53,7 +53,7 @@ module Gitlab
       ensure_project_on_push!(cmd, changes)
 
       check_project_accessibility!
-      check_project_moved!
+      add_project_moved_message!
       check_repository_existence!
 
       case cmd
@@ -125,16 +125,12 @@ module Gitlab
       end
     end
 
-    def check_project_moved!
+    def add_project_moved_message!
       return if redirected_path.nil?
 
       project_moved = Checks::ProjectMoved.new(project, user, protocol, redirected_path)
 
-      if project_moved.permanent_redirect?
-        project_moved.add_message
-      else
-        raise ProjectMovedError, project_moved.message(rejected: true)
-      end
+      project_moved.add_message
     end
 
     def check_command_disabled!(cmd)
