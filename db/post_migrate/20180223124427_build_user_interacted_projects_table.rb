@@ -13,22 +13,55 @@ class BuildUserInteractedProjectsTable < ActiveRecord::Migration
       MysqlStrategy.new
     end.up
 
-    add_concurrent_index :user_interacted_projects, [:project_id, :user_id], unique: true
+    unless index_exists?(:user_interacted_projects, [:project_id, :user_id])
+      add_concurrent_index :user_interacted_projects, [:project_id, :user_id], unique: true
+    end
 
-    add_concurrent_foreign_key :user_interacted_projects, :users, column: :user_id, on_delete: :cascade
-    add_concurrent_foreign_key :user_interacted_projects, :projects, column: :project_id, on_delete: :cascade
+    unless foreign_key_exists?(:user_interacted_projects, :user_id)
+      add_concurrent_foreign_key :user_interacted_projects, :users, column: :user_id, on_delete: :cascade
+    end
+
+    unless foreign_key_exists?(:user_interacted_projects, :project_id)
+      add_concurrent_foreign_key :user_interacted_projects, :projects, column: :project_id, on_delete: :cascade
+    end
   end
 
   def down
     execute "TRUNCATE user_interacted_projects"
 
-    remove_foreign_key :user_interacted_projects, :users
-    remove_foreign_key :user_interacted_projects, :projects
+    if foreign_key_exists?(:user_interacted_projects, :user_id)
+      remove_foreign_key :user_interacted_projects, :users
+    end
 
-    remove_concurrent_index_by_name :user_interacted_projects, 'index_user_interacted_projects_on_project_id_and_user_id'
+    if foreign_key_exists?(:user_interacted_projects, :project_id)
+      remove_foreign_key :user_interacted_projects, :projects
+    end
+
+    if index_exists_by_name?(:user_interacted_projects, 'index_user_interacted_projects_on_project_id_and_user_id')
+      remove_concurrent_index_by_name :user_interacted_projects, 'index_user_interacted_projects_on_project_id_and_user_id'
+    end
   end
 
   private
+
+  # Rails' index_exists? doesn't work when you only give it a table and index
+  # name. As such we have to use some extra code to check if an index exists for
+  # a given name.
+  def index_exists_by_name?(table, index)
+    indexes_for_table[table].include?(index)
+  end
+
+  def indexes_for_table
+    @indexes_for_table ||= Hash.new do |hash, table_name|
+      hash[table_name] = indexes(table_name).map(&:name)
+    end
+  end
+
+  def foreign_key_exists?(table, column)
+    foreign_keys(table).any? do |key|
+      key.options[:column] == column.to_s
+    end
+  end
 
   class PostgresStrategy < ActiveRecord::Migration
     include Gitlab::Database::MigrationHelpers
