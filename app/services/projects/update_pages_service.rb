@@ -166,7 +166,7 @@ module Projects
     end
 
     def delete_artifact!
-      build.reload
+      build.reload # Reload stable object to prevent erase artifacts with old state
       build.erase_artifacts! unless build.has_expiring_artifacts?
     end
 
