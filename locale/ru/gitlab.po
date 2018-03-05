@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-02 13:39+0100\n"
-"PO-Revision-Date: 2018-03-05 03:20-0500\n"
+"PO-Revision-Date: 2018-03-05 03:36-0500\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -56,10 +56,10 @@ msgstr[3] "%d запросов на слияние"
 
 msgid "%s additional commit has been omitted to prevent performance issues."
 msgid_plural "%s additional commits have been omitted to prevent performance issues."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s дополнительный коммит был пропущен для предотвращения проблем с производительностью."
+msgstr[1] "%s дополнительных коммита было пропущено для предотвращения проблем с производительностью."
+msgstr[2] "%s дополнительных коммитов было пропущено для предотвращения проблем с производительностью."
+msgstr[3] "%s дополнительных коммитов было пропущено для предотвращения проблем с производительностью."
 
 msgid "%{actionText} & %{openOrClose} %{noteable}"
 msgstr ""
@@ -173,19 +173,19 @@ msgid "Add todo"
 msgstr ""
 
 msgid "AdminArea|Stop all jobs"
-msgstr ""
+msgstr "Остановить все задания"
 
 msgid "AdminArea|Stop all jobs?"
-msgstr ""
+msgstr "Остановить все задания?"
 
 msgid "AdminArea|Stop jobs"
-msgstr ""
+msgstr "Остановить задания"
 
 msgid "AdminArea|Stopping jobs failed"
-msgstr ""
+msgstr "Остановка заданий не удалась"
 
 msgid "AdminArea|You’re about to stop all jobs.This will halt all current jobs that are running."
-msgstr ""
+msgstr "Вы собираетесь остановить все задания. Это действие остановит все текущие задания, находящиеся в процессе выполнения."
 
 msgid "AdminHealthPageLink|health page"
 msgstr "страница работоспособности"
@@ -1638,7 +1638,7 @@ msgid "ExternalAuthorizationService|When no classification label is set the defa
 msgstr ""
 
 msgid "Failed Jobs"
-msgstr ""
+msgstr "Невыполненные Задания"
 
 msgid "Failed to change the owner"
 msgstr "Не удалось изменить владельца"
@@ -2046,7 +2046,7 @@ msgid "January"
 msgstr "Январь"
 
 msgid "Jobs"
-msgstr ""
+msgstr "Задания"
 
 msgid "Jul"
 msgstr "Июл."
@@ -2915,13 +2915,13 @@ msgid "Related Commits"
 msgstr "Связанные коммиты"
 
 msgid "Related Deployed Jobs"
-msgstr "Связанные задачи выгрузки"
+msgstr "Связанные Задания Развертывания"
 
 msgid "Related Issues"
 msgstr "Связанные Обсуждения"
 
 msgid "Related Jobs"
-msgstr "Связанные задачи"
+msgstr "Связанные Задания"
 
 msgid "Related Merge Requests"
 msgstr "Связанные Запросы на Слияние"
@@ -3524,7 +3524,7 @@ msgid "This job depends on a user to trigger its process. Often they are used to
 msgstr ""
 
 msgid "This job depends on upstream jobs that need to succeed in order for this job to be triggered"
-msgstr ""
+msgstr "Это задание зависит от рабочих заданий на верхнем уровне, которые должны завершиться успешно, чтобы это задание было запущено"
 
 msgid "This job has not been triggered yet"
 msgstr ""
