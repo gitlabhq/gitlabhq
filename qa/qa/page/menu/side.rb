@@ -39,6 +39,12 @@ module QA
           end
         end
 
+        def click_ci_cd_kubernetes
+          hover_ci_cd do
+            click_link('Kubernetes')
+          end
+        end
+
         def go_to_settings
           within_sidebar do
             click_on 'Settings'
@@ -56,6 +62,14 @@ module QA
         def hover_settings
           within_sidebar do
             find('.qa-settings-item').hover
+
+            yield
+          end
+        end
+
+        def hover_ci_cd
+          within_sidebar do
+            find('.shortcuts-pipelines').hover
 
             yield
           end

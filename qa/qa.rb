@@ -34,6 +34,7 @@ module QA
       autoload :SecretVariable, 'qa/factory/resource/secret_variable'
       autoload :Runner, 'qa/factory/resource/runner'
       autoload :PersonalAccessToken, 'qa/factory/resource/personal_access_token'
+      autoload :Cluster, 'qa/factory/resource/cluster'
     end
 
     module Repository
@@ -137,6 +138,14 @@ module QA
         autoload :New, 'qa/page/project/issue/new'
         autoload :Show, 'qa/page/project/issue/show'
         autoload :Index, 'qa/page/project/issue/index'
+      end
+
+      module Clusters
+        autoload :Index, 'qa/page/project/clusters/index'
+        autoload :New, 'qa/page/project/clusters/new'
+        module UserProvided
+          autoload :New, 'qa/page/project/clusters/user_provided/new'
+        end
       end
     end
 

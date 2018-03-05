@@ -8,6 +8,11 @@ module QA
 
         dependency Factory::Resource::Group, as: :group
 
+        def initialize
+          @name = "generated-project-name-#{SecureRandom.hex(8)}"
+          @description = "Generated project name"
+        end
+
         def name=(name)
           @name = "#{name}-#{SecureRandom.hex(8)}"
           @description = 'My awesome project'
