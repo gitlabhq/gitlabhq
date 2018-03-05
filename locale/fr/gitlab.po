@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-02 13:39+0100\n"
-"PO-Revision-Date: 2018-03-05 03:22-0500\n"
+"PO-Revision-Date: 2018-03-05 06:10-0500\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -763,7 +763,7 @@ msgid "CircuitBreakerApiLink|circuitbreaker api"
 msgstr "CircuitBreaker API"
 
 msgid "Click the button below to begin the install process by navigating to the Kubernetes page"
-msgstr ""
+msgstr "Cliquez sur le bouton ci-dessous pour lancer le processus d’installation en accédant à la page Kubernetes"
 
 msgid "Click to expand text"
 msgstr "Cliquez pour agrandir le texte"
@@ -820,7 +820,7 @@ msgid "ClusterIntegration|Copy CA Certificate"
 msgstr "Copier le certificat CA"
 
 msgid "ClusterIntegration|Copy Ingress IP Address to clipboard"
-msgstr ""
+msgstr "Copier l’adresse IP entrante dans le presse-papiers"
 
 msgid "ClusterIntegration|Copy Kubernetes cluster name"
 msgstr "Copier le nom du cluster Kubernetes"
@@ -871,7 +871,7 @@ msgid "ClusterIntegration|Ingress"
 msgstr "Ingress"
 
 msgid "ClusterIntegration|Ingress IP Address"
-msgstr ""
+msgstr "Adresse IP entrante"
 
 msgid "ClusterIntegration|Install"
 msgstr "Installer"
@@ -1060,7 +1060,7 @@ msgid "Collapse"
 msgstr "Réduire"
 
 msgid "Comment and resolve discussion"
-msgstr ""
+msgstr "Commenter et résoudre la discussion"
 
 msgid "Comment and unresolve discussion"
 msgstr ""
@@ -1250,10 +1250,10 @@ msgid "Create New Directory"
 msgstr "Créer un nouveau dossier"
 
 msgid "Create a new branch"
-msgstr ""
+msgstr "Créer une nouvelle branche"
 
 msgid "Create a new branch and merge request"
-msgstr ""
+msgstr "Créer une nouvelle branche et demande de fusion"
 
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
 msgstr "Créer un jeton d’accès personnel pour votre compte afin de récupérer ou pousser par %{protocol}."
@@ -1307,10 +1307,10 @@ msgid "CreateTokenToCloneLink|create a personal access token"
 msgstr "Créer un jeton d'accès personnel"
 
 msgid "Creates a new branch from %{branchName}"
-msgstr ""
+msgstr "Crée une nouvelle branche à partir de %{branchName}"
 
 msgid "Creates a new branch from %{branchName} and re-directs to create a new merge request"
-msgstr ""
+msgstr "Crée une nouvelle branche à partir de %{branchName} et redirige pour créer une nouvelle demande de fusion"
 
 msgid "Creating epic"
 msgstr "Création de l'épopée en cours"
@@ -1402,7 +1402,7 @@ msgid "Disable"
 msgstr "Désactiver"
 
 msgid "Discard draft"
-msgstr ""
+msgstr "Supprimer le brouillon"
 
 msgid "Discover GitLab Geo."
 msgstr "Découvrez GitLab Geo."
@@ -1525,10 +1525,10 @@ msgid "Epics let you manage your portfolio of projects more efficiently and with
 msgstr "Les épopées vous permettent de gérer votre portefeuille de projets plus efficacement et avec moins d'effort"
 
 msgid "Error checking branch data. Please try again."
-msgstr ""
+msgstr "Erreur lors de la vérification des données de branche. Merci d’essayer à nouveau."
 
 msgid "Error committing changes. Please try again."
-msgstr ""
+msgstr "Erreur lors de la validation des modifications. Merci d’essayer à nouveau."
 
 msgid "Error creating epic"
 msgstr "Erreur lors de la création de l’épopée"
@@ -1680,7 +1680,7 @@ msgid "From merge request merge until deploy to production"
 msgstr "Depuis la fusion de la demande de fusion jusqu'au déploiement en production"
 
 msgid "From the Kubernetes cluster details view, install Runner from the applications list"
-msgstr ""
+msgstr "À partir de l’affichage des détails du cluster Kubernetes, installez un Exécuteur à partir de la liste des applications"
 
 msgid "GPG Keys"
 msgstr "Clés GPG"
@@ -1961,7 +1961,7 @@ msgid "Improve search with Advanced Global Search and GitLab Enterprise Edition.
 msgstr "Améliorer la recherche avec la Recherche Globale Avancée et GitLab Enterprise Edition."
 
 msgid "Install Runner on Kubernetes"
-msgstr ""
+msgstr "Installez un Exécuteur sur Kubernetes"
 
 msgid "Install a Runner compatible with GitLab CI"
 msgstr "Installez un Exécuteur compatible avec l'intégration continue de GitLab"
@@ -2097,7 +2097,7 @@ msgid "Learn more"
 msgstr "En savoir plus"
 
 msgid "Learn more about Kubernetes"
-msgstr ""
+msgstr "En savoir plus sur Kubernetes"
 
 msgid "Learn more about protected branches"
 msgstr "En savoir plus sur les branches protégées"
@@ -2226,7 +2226,7 @@ msgid "Monitoring"
 msgstr "Surveillance"
 
 msgid "More information"
-msgstr ""
+msgstr "Plus d’informations"
 
 msgid "More information is available|here"
 msgstr "ici"
@@ -2927,7 +2927,7 @@ msgid "Reset runners registration token"
 msgstr "Réinitialiser le jeton d’inscription des exécuteurs"
 
 msgid "Resolve discussion"
-msgstr ""
+msgstr "Résoudre la discussion"
 
 msgid "Reveal value"
 msgid_plural "Reveal values"
@@ -2998,7 +2998,7 @@ msgid "Select a timezone"
 msgstr "Sélectionnez un fuseau horaire"
 
 msgid "Select an existing Kubernetes cluster or create a new one"
-msgstr ""
+msgstr "Sélectionnez un cluster Kubernetes existant ou créez-en un nouveau"
 
 msgid "Select assignee"
 msgstr "Sélectionner une personne assignée"
@@ -3013,7 +3013,7 @@ msgid "Selective synchronization"
 msgstr "Synchronisation sélective"
 
 msgid "Send email"
-msgstr ""
+msgstr "Envoyer un courriel"
 
 msgid "Sep"
 msgstr "Sept."
@@ -3046,7 +3046,7 @@ msgid "Settings"
 msgstr "Paramètres"
 
 msgid "Setup a specific Runner automatically"
-msgstr ""
+msgstr "Configurer un Exécuteur spécifique automatiquement"
 
 msgid "SharedRunnersMinutesSettings|By resetting the pipeline minutes for this namespace, the currently used minutes will be set to zero."
 msgstr "En réinitialisant les minutes du pipeline pour cet espace de noms, les minutes actuellement utilisées seront remises à zéro."
@@ -3102,7 +3102,7 @@ msgid "Something went wrong when toggling the button"
 msgstr "Une erreur s’est produite lors du basculement du bouton"
 
 msgid "Something went wrong while closing the %{issuable}. Please try again later"
-msgstr ""
+msgstr "Une erreur s’est produite lors de la fermeture du/de la %{issuable}. Veuillez réessayer plus tard"
 
 msgid "Something went wrong while fetching SAST."
 msgstr "Une erreur s’est produite lors de la récupération de la SAST."
@@ -3114,7 +3114,7 @@ msgid "Something went wrong while fetching the registry list."
 msgstr "Une erreur s'est produite lors de la récupération de la liste du registre."
 
 msgid "Something went wrong while reopening the %{issuable}. Please try again later"
-msgstr ""
+msgstr "Une erreur s’est produite lors de la réouverture du / de la %{issuable}. Veuillez réessayer plus tard"
 
 msgid "Something went wrong while resolving this discussion. Please try again."
 msgstr ""
@@ -3822,7 +3822,7 @@ msgid "We want to be sure it is you, please confirm you are not a robot."
 msgstr "Nous voulons être sûrs que c'est bien vous, merci de confirmer que vous n’êtes pas un robot."
 
 msgid "Web IDE"
-msgstr ""
+msgstr "Web IDE"
 
 msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
 msgstr "Les webhooks vous permettent d’appeler une URL si, par exemple, du nouveau code est poussé ou un nouveau ticket est créé. Vous pouvez configurer les webhooks pour écouter les événements spécifiques comme des poussées de code, des tickets ou des demandes de fusion. Les webhooks de groupes s’appliqueront à tous les projets dans un groupe, ce qui vous permet de normaliser la fonctionnalité du webhook dans votre groupe entier."
@@ -3945,7 +3945,7 @@ msgid "Withdraw Access Request"
 msgstr "Retirer la demande d'accès"
 
 msgid "Write a commit message..."
-msgstr ""
+msgstr "Écrire un message de commit…"
 
 msgid "You are going to remove %{group_name}. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?"
 msgstr "Vous êtes sur le point de supprimer %{group_name}. Les groupes supprimés NE PEUVENT PAS être restaurés ! Êtes vous ABSOLUMENT sûr·e ?"
@@ -3966,7 +3966,7 @@ msgid "You can also star a label to make it a priority label."
 msgstr "Vous pouvez marquer un label comme important pour en faire un label prioritaire."
 
 msgid "You can easily install a Runner on a Kubernetes cluster. %{link_to_help_page}"
-msgstr ""
+msgstr "Vous pouvez facilement installer un Exécuteur sur un cluster Kubernetes. %{link_to_help_page}"
 
 msgid "You can move around the graph by using the arrow keys."
 msgstr "Vous pouvez vous déplacer dans le graphique en utilisant les touches fléchées."
@@ -4035,7 +4035,7 @@ msgid "Your Kubernetes cluster information on this page is still editable, but y
 msgstr "Vos informations de cluster Kubernetes sur cette page sont toujours modifiables, mais il est conseillé de désactiver et reconfigurer"
 
 msgid "Your changes have been committed. Commit %{commitId} %{commitStats}"
-msgstr ""
+msgstr "Vos modifications ont été validées. Commit %{commitId} %{commitStats}"
 
 msgid "Your comment will not be visible to the public."
 msgstr "Votre commentaire ne sera pas visible publiquement."
@@ -4347,5 +4347,5 @@ msgid "uses Kubernetes clusters to deploy your code!"
 msgstr "utilise les clusters Kubernetes pour déployer votre code !"
 
 msgid "with %{additions} additions, %{deletions} deletions."
-msgstr ""
+msgstr "avec %{additions} ajouts, %{deletions} suppressions."
 
