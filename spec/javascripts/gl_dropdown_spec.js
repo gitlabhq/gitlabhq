@@ -50,7 +50,7 @@ describe('glDropdown', function describeDropdown() {
       search: {
         fields: ['name']
       },
-      text: project => (project.full_name || project.name),
+      text: project => (project.name_with_namespace || project.name),
       id: project => project.id,
     }, extraOpts);
     this.dropdownButtonElement = $('#js-project-dropdown', this.dropdownContainerElement).glDropdown(options);
@@ -76,7 +76,7 @@ describe('glDropdown', function describeDropdown() {
   });
 
   it('escapes HTML as text', () => {
-    this.projectsData[0].full_name = '<script>alert("testing");</script>';
+    this.projectsData[0].name_with_namespace = '<script>alert("testing");</script>';
 
     initDropDown.call(this, false);
 
@@ -88,7 +88,7 @@ describe('glDropdown', function describeDropdown() {
   });
 
   it('should output HTML when highlighting', () => {
-    this.projectsData[0].full_name = 'testing';
+    this.projectsData[0].name_with_namespace = 'testing';
     $('.dropdown-input .dropdown-input-field').val('test');
 
     initDropDown.call(this, false, true, {

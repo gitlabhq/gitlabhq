@@ -24,7 +24,7 @@ describe('ProjectsStore', () => {
       const processedProjects = store.getSearchedProjects();
       expect(processedProjects.length).toBe(1);
       expect(processedProjects[0].id).toBe(mockRawProject.id);
-      expect(processedProjects[0].namespace).toBe(mockRawProject.full_name);
+      expect(processedProjects[0].namespace).toBe(mockRawProject.name_with_namespace);
       expect(processedProjects[0].webUrl).toBe(mockRawProject.web_url);
       expect(processedProjects[0].avatarUrl).toBe(mockRawProject.avatar_url);
     });
