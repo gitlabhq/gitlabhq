@@ -75,6 +75,18 @@ describe NotesFinder do
       end
     end
 
+    context 'for target type' do
+      let(:project) { create(:project, :repository) }
+      let!(:note1) { create :note_on_issue, project: project }
+      let!(:note2) { create :note_on_commit, project: project }
+
+      it 'finds only notes for the selected type' do
+        notes = described_class.new(project, user, target_type: 'issue').execute
+
+        expect(notes).to eq([note1])
+      end
+    end
+
     context 'for target' do
       let(:project) { create(:project, :repository) }
       let(:note1) { create :note_on_commit, project: project }

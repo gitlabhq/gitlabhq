@@ -36,6 +36,7 @@ module Gitlab
       def notes_count
         @notes_count ||= notes.total_count
       end
+      alias_method :limited_notes_count, :notes_count
 
       def wiki_blobs_count
         @wiki_blobs_count ||= wiki_blobs.total_count
