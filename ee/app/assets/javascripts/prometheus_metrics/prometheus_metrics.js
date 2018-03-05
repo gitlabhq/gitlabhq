@@ -9,7 +9,7 @@ function customMetricTemplate(metric) {
   return `
       <li class="custom-metric">
         <a href="${metric.edit_path}">
-          ${metric.group} / ${metric.title}
+          ${_.escape(metric.group)} / ${_.escape(metric.title)} (${_.escape(metric.unit)})
         </a>
       </li>
     `;
@@ -33,28 +33,6 @@ export default class EEPrometheusMetrics extends PrometheusMetrics {
     this.activeCustomMetricsEndpoint = this.$monitoredCustomMetricsPanel.data('active-custom-metrics');
     this.environmentsDataEndpoint = this.$monitoredCustomMetricsPanel.data('environments-data-endpoint');
     this.customMetricsEndpoint = this.activeCustomMetricsEndpoint.replace('.json', '/');
-  }
-
-  deleteMetricEndpoint(id) {
-    return `${this.customMetricsEndpoint}${id}`;
-  }
-
-  deleteMetric(currentTarget) {
-    const targetId = currentTarget.dataset.metricId;
-    axios.delete(this.deleteMetricEndpoint(targetId))
-      .then(() => {
-        currentTarget.parentElement.parentElement.remove();
-        const elementToFind = { id: parseInt(targetId, 10) };
-        const indexToDelete = _.findLastIndex(this.customMetrics, elementToFind);
-        this.customMetrics.splice(indexToDelete, 1);
-        this.$monitoredCustomMetricsCount.text(this.customMetrics.length);
-        if (this.customMetrics.length === 0) {
-          this.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
-        }
-      })
-      .catch((err) => {
-        this.showFlashMessage(err);
-      });
   }
 
   showMonitoringCustomMetricsPanelState(stateName) {
@@ -96,9 +74,6 @@ export default class EEPrometheusMetrics extends PrometheusMetrics {
     if (!this.environmentsData) {
       this.showFlashMessage(s__('PrometheusService|These metrics will only be monitored after your first deployment to an environment'));
     }
-    this.$monitoredCustomMetricsList.find('.delete-custom-metric').on('click', (event) => {
-      this.deleteMetric(event.currentTarget);
-    });
   }
 
   showFlashMessage(message) {

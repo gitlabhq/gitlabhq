@@ -5,9 +5,9 @@
 .row.prepend-top-default.append-bottom-default
   %h3.page-title.text-center
     - if metric.persisted?
-      Edit metric
+      = s_('Metrics|Edit metric')
     - else
-      New metric
+      = s_('Metrics|New metric')
   = form_for [project.namespace.becomes(Namespace), project, metric], html: { class: 'col-lg-8 col-lg-offset-2' } do |f|
     = form_errors(metric)
     .form-group
@@ -28,14 +28,14 @@
         = f.radio_button :group, :system
         = f.label :group_system, s_("Metrics|System"), class: 'label-light'
 
-      %p.custom-metrics-light-text
+      %p.text-tertiary
         = s_('Metrics|For grouping similar metrics')
     .form-group
       = f.label :query, s_('Metrics|Query'), class: 'label-light'
       = f.text_field :query, required: true, class: 'form-control', placeholder: s_('Metrics|e.g. rate(http_requests_total[5m])')
       %span.help-block
         = s_('Metrics|Must be a valid PromQL query.')
-        = link_to "https://prometheus.io/docs/prometheus/latest/querying/basics/", target: "_blank" do
+        = link_to "https://prometheus.io/docs/prometheus/latest/querying/basics/", target: "_blank", rel: "noopener noreferrer" do
           = sprite_icon("external-link", size: 12)
           = s_('Metrics|Prometheus Query Documentation')
     .form-group

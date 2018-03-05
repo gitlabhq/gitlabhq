@@ -9,9 +9,9 @@ class PrometheusMetric < ActiveRecord::Base
   validates :unit, presence: true
 
   GROUP_TITLES = {
-    business: _('Business metrics'),
-    response: _('Response metrics'),
-    system: _('System metrics')
+    business: _('Business'),
+    response: _('Response'),
+    system: _('System')
   }.freeze
 
   def group_title

@@ -1,3 +1,4 @@
+import { s__, n__, sprintf } from '~/locale';
 import axios from '../lib/utils/axios_utils';
 import PANEL_STATE from './constants';
 import { backOff } from '../lib/utils/common_utils';
@@ -59,23 +60,33 @@ export default class PrometheusMetrics {
   populateActiveMetrics(metrics) {
     let totalMonitoredMetrics = 0;
     let totalMissingEnvVarMetrics = 0;
+    let totalExporters = 0;
 
     metrics.forEach((metric) => {
-      this.$monitoredMetricsList.append(`<li>${metric.group}<span class="badge">${metric.active_metrics}</span></li>`);
-      totalMonitoredMetrics += metric.active_metrics;
-      if (metric.metrics_missing_requirements > 0) {
-        this.$missingEnvVarMetricsList.append(`<li>${metric.group}</li>`);
-        totalMissingEnvVarMetrics += 1;
+      if (metric.active_metrics > 0) {
+        totalExporters += 1;
+        this.$monitoredMetricsList.append(`<li>${metric.group}<span class="badge">${metric.active_metrics}</span></li>`);
+        totalMonitoredMetrics += metric.active_metrics;
+        if (metric.metrics_missing_requirements > 0) {
+          this.$missingEnvVarMetricsList.append(`<li>${metric.group}</li>`);
+          totalMissingEnvVarMetrics += 1;
+        }
       }
     });
 
     if (totalMonitoredMetrics === 0) {
-      const docsUrl = 'https://docs.gitlab.com/ee/user/project/integrations/prometheus_library/metrics.html';
+      const emptyCommonMetricsText = sprintf(s__('PrometheusService|<p class="text-tertiary">No <a href="%{docsUrl}">common metrics</a> were found</p>'), {
+        docsUrl: '/help/user/project/integrations/prometheus_library/metrics',
+      }, false);
       this.$monitoredMetricsEmpty.empty();
-      this.$monitoredMetricsEmpty.append(`<p>No <a href="${docsUrl}">common metrics</a>were found</p>`);
+      this.$monitoredMetricsEmpty.append(emptyCommonMetricsText);
       this.showMonitoringMetricsPanelState(PANEL_STATE.EMPTY);
     } else {
-      this.$monitoredMetricsCount.text(totalMonitoredMetrics);
+      const metricsCountText = sprintf(s__('PrometheusService|%{exporters} with %{metrics} were found'), {
+        exporters: `${totalExporters} ${n__('exporter', 'exporters', totalExporters)}`,
+        metrics: `${totalMonitoredMetrics} ${n__('metric', 'metrics', totalMonitoredMetrics)}`,
+      });
+      this.$monitoredMetricsCount.text(metricsCountText);
       this.showMonitoringMetricsPanelState(PANEL_STATE.LIST);
 
       if (totalMissingEnvVarMetrics > 0) {
