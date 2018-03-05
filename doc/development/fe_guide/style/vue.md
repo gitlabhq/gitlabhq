@@ -6,15 +6,20 @@ In addition to the style guidelines set by Vue, we also have a few specific rule
 
 ## Structure
 
-- 1.1 **Use vue extension** Use `.vue` extension for Vue components
+<a name="vue-extension"></a><a name="1.1"></a>
+- [1.1](#vue-extension) **Use vue extension** Use `.vue` extension for Vue components
 
-- 1.2 **Do not use singleton for service or store**
+<a name="no-singleton"></a><a name="1.2"></a>
+- [1.2](#no-singleton) **Do not use singleton for service or store**
 
-- 1.3 **Separate service into it's own file**
+<a name="service-file"></a><a name="1.3"></a>
+- [1.3](#service-file) **Separate service into it's own file**
 
-- 1.4 **Separate store into it's own file**
+<a name="store-file"></a><a name="1.4"></a>
+- [1.4](#store-file) **Separate store into it's own file**
 
-- 1.5 **Initialize root Vue components** Use a function in the bundle file to instantiate Vue components
+<a name="init"></a><a name="1.5"></a>
+- [1.5](#init) **Initialize root Vue components** Use a function in the bundle file to instantiate Vue components
 
 ```
 // bad
@@ -34,7 +39,8 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
 }));
 ```
 
-- 1.6 **Tag ordering in vue file** Always define `<script>`, `<template>` and `<style>` (if any)
+<a name="tag-order"></a><a name="1.6"></a>
+- [1.6](#tag-order) **Tag ordering in vue file** Always define `<script>`, `<template>` and `<style>` (if any)
 
 ```
 <script>
@@ -51,7 +57,8 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
 </style>
 ```
 
-- 1.7 **Imported module names** Imported module names should use `PascalCase`
+<a name="import-name"></a><a name="1.7"></a>
+- [1.7](#import-name) **Imported module names** Imported module names should use `PascalCase`
 
 ```
 // bad
@@ -63,11 +70,13 @@ import CardBoard from 'cardBoard.vue'
 
 ## Attributes
 
-- 2.1 **Avoid DOM component prop names**
+<a name="dom-prop"></a><a name="2.1"></a>
+- [2.1](#dom-prop) **Avoid DOM component prop names**
 
 > TODO: Add good and bad example
 
-- 2.2 **Use kebab-case for prop names** Template prop attribute names should use kebab-case.
+<a name="kebab-prop"></a><a name="2.2"></a>
+- [2.2](#kebab-prop) **Use kebab-case for prop names** Template prop attribute names should use kebab-case.
 
 ```
 // bad
@@ -76,8 +85,8 @@ import CardBoard from 'cardBoard.vue'
 // good
 <component my-prop="prop" />
 ```
-
-- 2.3 **Multiple attributes** If an element contains more than one attribute, each attribute should be listed on a new line.
+<a name="multiple-attr"></a><a name="2.3"></a>
+- [2.3](#multiple-attr) **Multiple attributes** If an element contains more than one attribute, each attribute should be listed on a new line.
 
 ```
 // bad
@@ -92,8 +101,8 @@ import CardBoard from 'cardBoard.vue'
   Click me
 </button>
 ```
-
-- 2.4 **Single attributes** If an element has one attribute, the contents (if any), should be on a new line.
+<a name="single-attr"></a><a name="2.4"></a>
+- [2.4](#single-attr) **Single attributes** If an element has one attribute, the contents (if any), should be on a new line.
 
 ```
 // bad
@@ -105,7 +114,8 @@ import CardBoard from 'cardBoard.vue'
 </a>
 ```
 
-- 2.5 **Attribute values inside template** Use double quotes for attribute values inside templates.
+<a name="template-attr"></a><a name="2.5"></a>
+- [2.5](#template-attr) **Attribute values inside template** Use double quotes for attribute values inside templates.
 
 ```
 // bad
@@ -115,7 +125,8 @@ import CardBoard from 'cardBoard.vue'
 <img src="#" />
 ```
 
-- 2.6 **Use shorthand** Use the shorthand syntax whenever it is available
+<a name="shorthand"></a><a name="2.6"></a>
+- [2.6](#shorthand) **Use shorthand** Use the shorthand syntax whenever it is available
 
 ```
 // bad
@@ -125,7 +136,8 @@ import CardBoard from 'cardBoard.vue'
 <component @click="eventHandler"/>
 ```
 
-- 2.7 **Use self closing tags** If a component or element is self closing, use the self closing tag.
+<a name="self-closing"></a><a name="2.7"></a>
+- [2.7](#self-closing) **Use self closing tags** If a component or element is self closing, use the self closing tag.
 
 ```
 // bad
