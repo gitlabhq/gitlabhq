@@ -329,10 +329,9 @@ ActiveRecord::Schema.define(version: 20180327101207) do
   add_index "ci_builds", ["updated_at"], name: "index_ci_builds_on_updated_at", using: :btree
   add_index "ci_builds", ["user_id"], name: "index_ci_builds_on_user_id", using: :btree
 
-  create_table "ci_builds_metadata", force: :cascade do |t|
-    t.integer "build_id", null: false
+  create_table "ci_builds_metadata", primary_key: "build_id", force: :cascade do |t|
     t.integer "used_timeout"
-    t.integer "timeout_source"
+    t.integer "timeout_source", default: 1, null: false
   end
 
   create_table "ci_group_variables", force: :cascade do |t|
@@ -2035,7 +2034,7 @@ ActiveRecord::Schema.define(version: 20180327101207) do
   add_foreign_key "ci_builds", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_a2141b1522", on_delete: :nullify
   add_foreign_key "ci_builds", "ci_stages", column: "stage_id", name: "fk_3a9eaa254d", on_delete: :cascade
   add_foreign_key "ci_builds", "projects", name: "fk_befce0568a", on_delete: :cascade
-  add_foreign_key "ci_builds_metadata", "ci_builds", column: "build_id", name: "fk_e20479742e", on_delete: :cascade
+  add_foreign_key "ci_builds_metadata", "ci_builds", column: "build_id", on_delete: :cascade
   add_foreign_key "ci_group_variables", "namespaces", column: "group_id", name: "fk_33ae4d58d8", on_delete: :cascade
   add_foreign_key "ci_job_artifacts", "ci_builds", column: "job_id", on_delete: :cascade
   add_foreign_key "ci_job_artifacts", "projects", on_delete: :cascade

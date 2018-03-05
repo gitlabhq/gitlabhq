@@ -1,4 +1,6 @@
 module Ci
+  # The purpose of this class is to store Build related data that can be disposed.
+  # Data that should be persisted forever, should be stored with Ci::Build model.
   class BuildMetadata < ActiveRecord::Base
     extend Gitlab::Ci::Model
     include Presentable
@@ -11,14 +13,18 @@ module Ci
     chronic_duration_attr_reader :used_timeout_human_readable, :used_timeout
 
     enum timeout_source: {
-        unknown_timeout_source: nil,
-        project_timeout_source: 1,
-        runner_timeout_source: 2
+        unknown_timeout_source: 1,
+        project_timeout_source: 2,
+        runner_timeout_source: 3
     }
 
     def save_timeout_state!
-      self.used_timeout = build.timeout
-      self.timeout_source = build.timeout < build.project.build_timeout ? :runner_timeout_source : :project_timeout_source
+      project_timeout = build.project&.build_timeout
+      timeout = [project_timeout, build.runner&.maximum_job_timeout].compact.min
+
+      self.used_timeout = timeout
+      self.timeout_source = timeout < project_timeout ? :runner_timeout_source : :project_timeout_source
+
       save!
     end
   end
