@@ -84,7 +84,7 @@ RSpec.describe 'Dashboard Issues' do
 
       wait_for_requests
 
-      project_path = "/#{project.path_with_namespace}"
+      project_path = "/#{project.full_path}"
       project_json = { name: project.name_with_namespace, url: project_path }.to_json
 
       # simulate selection, and prevent overlap by dropdown menu

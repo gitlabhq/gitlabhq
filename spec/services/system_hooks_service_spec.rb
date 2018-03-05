@@ -30,6 +30,7 @@ describe SystemHooksService do
         :old_path_with_namespace
       )
     end
+
     it do
       project.old_path_with_namespace = 'transfered_from_path'
       expect(event_data(project, :transfer)).to include(
@@ -45,18 +46,21 @@ describe SystemHooksService do
         :owner_name, :owner_email
       )
     end
+
     it do
       expect(event_data(group, :destroy)).to include(
         :event_name, :name, :created_at, :updated_at, :path, :group_id,
         :owner_name, :owner_email
       )
     end
+
     it do
       expect(event_data(group_member, :create)).to include(
         :event_name, :created_at, :updated_at, :group_name, :group_path,
         :group_id, :user_id, :user_username, :user_name, :user_email, :group_access
       )
     end
+
     it do
       expect(event_data(group_member, :destroy)).to include(
         :event_name, :created_at, :updated_at, :group_name, :group_path,
