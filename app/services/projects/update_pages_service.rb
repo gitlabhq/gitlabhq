@@ -1,5 +1,6 @@
 module Projects
   class UpdatePagesService < BaseService
+    InvaildStateError = Class.new(StandardError)
     BLOCK_SIZE = 32.kilobytes
     MAX_SIZE = 1.terabyte
     SITE_PATH = 'public/'.freeze
@@ -11,13 +12,15 @@ module Projects
     end
 
     def execute
+      register_attempt
+
       # Create status notifying the deployment of pages
       @status = create_status
       @status.enqueue!
       @status.run!
 
-      raise 'missing pages artifacts' unless build.artifacts?
-      raise 'pages are outdated' unless latest?
+      raise InvaildStateError, 'missing pages artifacts' unless build.artifacts?
+      raise InvaildStateError, 'pages are outdated' unless latest?
 
       # Create temporary directory in which we will extract the artifacts
       FileUtils.mkdir_p(tmp_path)
@@ -26,24 +29,22 @@ module Projects
 
         # Check if we did extract public directory
         archive_public_path = File.join(archive_path, 'public')
-        raise 'pages miss the public folder' unless Dir.exist?(archive_public_path)
-        raise 'pages are outdated' unless latest?
+        raise InvaildStateError, 'pages miss the public folder' unless Dir.exist?(archive_public_path)
+        raise InvaildStateError, 'pages are outdated' unless latest?
 
         deploy_page!(archive_public_path)
         success
       end
-    rescue => e
+    rescue InvaildStateError => e
       register_failure
       error(e.message)
-    ensure
-      register_attempt
-      build.erase_artifacts! unless build.has_expiring_artifacts?
     end
 
     private
 
     def success
       @status.success
+      delete_artifact!
       super
     end
 
@@ -52,6 +53,7 @@ module Projects
       @status.allow_failure = !latest?
       @status.description = message
       @status.drop(:script_failure)
+      delete_artifact!
       super
     end
 
@@ -161,6 +163,11 @@ module Projects
 
     def artifacts
       build.artifacts_file.path
+    end
+
+    def delete_artifact!
+      build.reload
+      build.erase_artifacts! unless build.has_expiring_artifacts?
     end
 
     def latest_sha
