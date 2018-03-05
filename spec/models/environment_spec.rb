@@ -623,36 +623,10 @@ describe Environment do
   end
 
   describe '#prometheus_adapter' do
-    let(:cluster) { create(:cluster, :provided_by_user, environment_scope: '*', projects: [project]) }
+    it 'calls prometheus adapter service' do
+      expect_any_instance_of(Prometheus::AdapterService).to receive(:prometheus_adapter)
 
-    context 'prometheus service can execute queries' do
-      let(:prometheus_service) { double(:prometheus_service, can_query?: true) }
-
-      before do
-        allow(environment.project).to receive(:find_or_initialize_service).with('prometheus').and_return prometheus_service
-      end
-
-      it 'return prometheus service as prometheus adapter' do
-        expect(environment.prometheus_adapter).to eq(prometheus_service)
-      end
-    end
-
-    context "prometheus service can't execute queries" do
-      let(:prometheus_service) { double(:prometheus_service, can_query?: false) }
-
-      context 'with cluster with prometheus installed' do
-        let!(:prometheus) { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
-
-        it 'returns application handling all environments' do
-          expect(environment.prometheus_adapter).to eq(prometheus)
-        end
-      end
-
-      context 'with cluster without prometheus installed' do
-        it 'returns nil' do
-          expect(environment.prometheus_adapter).to be_nil
-        end
-      end
+      subject.prometheus_adapter
     end
   end
 end
