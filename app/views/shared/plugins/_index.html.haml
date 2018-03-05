@@ -13,7 +13,6 @@
       %ul.content-list
         - plugins.each do |file|
           %li
-            = boolean_to_icon true
             = File.basename(file)
     - else
       %p.light-well.text-center
