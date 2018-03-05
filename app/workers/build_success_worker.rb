@@ -7,6 +7,7 @@ class BuildSuccessWorker
   def perform(build_id)
     Ci::Build.find_by(id: build_id).try do |build|
       create_deployment(build) if build.has_environment?
+      PagesService.new.execute(build).execute
     end
   end
 
