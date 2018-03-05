@@ -6,7 +6,8 @@ In addition to the style guidelines set by Airbnb, we also have a few specific r
 
 ## Arrays
 
-- 1.1 **Avoid ForEach when mutating data** Use `map`, `reduce` or `filter` instead of `forEach` when mutating data. This will minimize mutations in functions ([which is aligned with Airbnb's style guide](https://github.com/airbnb/javascript#testing--for-real))
+<a name="avoid-foreach"></a><a name="1.1"></a>
+- [1.1](#avoid-foreach) **Avoid ForEach when mutating data** Use `map`, `reduce` or `filter` instead of `forEach` when mutating data. This will minimize mutations in functions ([which is aligned with Airbnb's style guide](https://github.com/airbnb/javascript#testing--for-real))
 
 ```
 // bad
@@ -22,7 +23,8 @@ const usersWithId = users.map((user, index) => {
 
 ## Functions
 
-- 2.1 **Limit number of parameters** If your function or method has more than 3 parameters, use an object as a parameter instead.
+<a name="limit-params"></a><a name="2.1"></a>
+- [2.1](#limit-params) **Limit number of parameters** If your function or method has more than 3 parameters, use an object as a parameter instead.
 
 ```
 // bad
@@ -38,7 +40,8 @@ function a(p) {
 
 ## Classes & constructors
 
-- 3.1 **Avoid side effects in constructors**
+<a name="avoid-constructor-side-effects"></a><a name="3.1"></a>
+- [3.1](#avoid-constructor-side-effects) **Avoid side effects in constructors**
 
 ```
 // bad
@@ -63,7 +66,8 @@ class myClass {
 
 ## Type Casting & Coercion
 
-- 4.1 **Use ParseInt** Use `ParseInt` when converting a numeric string into a number.
+<a name="use-parseint"></a><a name="4.1"></a>
+- [4.1](#use-parseint) **Use ParseInt** Use `ParseInt` when converting a numeric string into a number.
 
 ```
 // bad
@@ -76,7 +80,8 @@ parseInt('10', 10);
 
 ## CSS
 
-- 5.1 **Use js prefix** If a CSS class is only being used in JavaScript as a reference to the element, prefix the class name with `js-`
+<a name="use-js-prefix"></a><a name="5.1"></a>
+- [5.1](#use-js-prefix) **Use js prefix** If a CSS class is only being used in JavaScript as a reference to the element, prefix the class name with `js-`
 
 ```
 // bad
@@ -88,7 +93,8 @@ parseInt('10', 10);
 
 ## Modules
 
-- 6.1 **Use absolute paths** Use absolute paths if the module you are importing is less than two levels up.
+<a name="use-absolute-paths"></a><a name="6.1"></a>
+- [6.1](#use-absolute-paths) **Use absolute paths** Use absolute paths if the module you are importing is less than two levels up.
 
 ```
 // bad
@@ -98,7 +104,8 @@ import GitLabStyleGuide from '~/guides/GitLabStyleGuide';
 import GitLabStyleGuide from '../GitLabStyleGuide';
 ```
 
-- 6.2 **Use relative paths** If the module you are importing is two or more levels up, use a relative path instead of an absolute path.
+<a name="use-relative-paths"></a><a name="6.2"></a>
+- [6.2](#use-relative-paths) **Use relative paths** If the module you are importing is two or more levels up, use a relative path instead of an absolute path.
 
 ```
 // bad
@@ -108,15 +115,19 @@ import GitLabStyleGuide from '../../../guides/GitLabStyleGuide';
 import GitLabStyleGuide from '~/GitLabStyleGuide';
 ```
 
-- 6.3 **Do not add to global namepsace**
+<a name="global-namespace"></a><a name="6.3"></a>
+- [6.3](#global-namespace) **Do not add to global namespace**
 
-- 6.4 **Do not use DOMContentLoaded in non-page modules** Imported modules should act the same each time they are loaded. `DOMContentLoaded` events are only allowed on modules loaded in the `/pages/*` directory because those are loaded dynamically with webpack.
+<a name="domcontentloaded"></a><a name="6.4"></a>
+- [6.4](domcontentloaded) **Do not use DOMContentLoaded in non-page modules** Imported modules should act the same each time they are loaded. `DOMContentLoaded` events are only allowed on modules loaded in the `/pages/*` directory because those are loaded dynamically with webpack.
 
 ## ESLint
 
-- 7.1 **Disabling ESLint in new files** Do not disable ESLint when creating new files. Existing files may have existing rules disabled due to legacy compataiblity reasons but they are in the process of being refactored.
+<a name="disable-eslint-file"></a><a name="7.1"></a>
+- [7.1](#disable-eslint-file) **Disabling ESLint in new files** Do not disable ESLint when creating new files. Existing files may have existing rules disabled due to legacy compataiblity reasons but they are in the process of being refactored.
 
-- 7.2 **Disabling ESLint rule** Do not disable specific ESLint rules. Due to technical debt, you may disable the following rules only if you are invoking/instantiating existing code modules
+<a name="disable-eslint-rule"></a><a name="7.2"></a>
+- [7.2](#disable-eslint-rule) **Disabling ESLint rule** Do not disable specific ESLint rules. Due to technical debt, you may disable the following rules only if you are invoking/instantiating existing code modules
 
   - [no-new](http://eslint.org/docs/rules/no-new)
   - [class-method-use-this](http://eslint.org/docs/rules/class-methods-use-this)
