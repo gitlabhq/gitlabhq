@@ -10,7 +10,6 @@ module Issues
         execute_hooks(issue, 'reopen')
         invalidate_cache_counts(issue, users: issue.assignees)
         issue.update_project_counter_caches
-        issue.update(closed_by: nil, closed_at: nil)
       end
 
       issue
