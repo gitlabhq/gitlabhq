@@ -425,8 +425,8 @@ describe Projects::ClustersController do
           it "destroys and redirects back to clusters list" do
             expect { go }
               .to change { Clusters::Cluster.count }.by(-1)
-                    .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
-                           .and change { Clusters::Providers::Gcp.count }.by(-1)
+              .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
+              .and change { Clusters::Providers::Gcp.count }.by(-1)
 
             expect(response).to redirect_to(project_clusters_path(project))
             expect(flash[:notice]).to eq('Kubernetes cluster integration was successfully removed.')
@@ -439,7 +439,7 @@ describe Projects::ClustersController do
           it "destroys and redirects back to clusters list" do
             expect { go }
               .to change { Clusters::Cluster.count }.by(-1)
-                    .and change { Clusters::Providers::Gcp.count }.by(-1)
+              .and change { Clusters::Providers::Gcp.count }.by(-1)
 
             expect(response).to redirect_to(project_clusters_path(project))
             expect(flash[:notice]).to eq('Kubernetes cluster integration was successfully removed.')
@@ -453,8 +453,8 @@ describe Projects::ClustersController do
         it "destroys and redirects back to clusters list" do
           expect { go }
             .to change { Clusters::Cluster.count }.by(-1)
-                  .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
-                         .and change { Clusters::Providers::Gcp.count }.by(0)
+            .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
+            .and change { Clusters::Providers::Gcp.count }.by(0)
 
           expect(response).to redirect_to(project_clusters_path(project))
           expect(flash[:notice]).to eq('Kubernetes cluster integration was successfully removed.')
