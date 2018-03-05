@@ -37,6 +37,10 @@ module Gitlab
         end
 
         def path
+          nil
+        end
+
+        def url
           @uri.to_s
         end
 
