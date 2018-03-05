@@ -9,9 +9,6 @@ module Projects
     def execute
       update_file(pages_config_file, pages_config.to_json)
       reload_daemon
-      success
-    rescue => e
-      error(e.message)
     end
 
     private

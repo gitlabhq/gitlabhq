@@ -30,37 +30,22 @@ module Projects
 
         # Check if we did extract public directory
         archive_public_path = File.join(archive_path, 'public')
-        raise ArtifactNotFoundError, 'pages miss the public folder' unless Dir.exist?(archive_public_path)
+        raise PublicFolderNotFoundError, 'pages miss the public folder' unless Dir.exist?(archive_public_path)
         raise PageOutdateError, 'pages are outdated' unless latest?
 
         deploy_page!(archive_public_path)
-        success
+        @status.success!
+        delete_artifact!
       end
-    rescue => e
-      register_failure
-      error(e)
-    ensure
-      register_attempt
-    end
-
-    private
-
-    def success
-      @status.success!
-      delete_artifact!
-      super
-    end
-
-    def error(e, http_status = nil)
+    rescue ArtifactNotFoundError, PageOutdateError, PublicFolderNotFoundError => e
       log_error("Projects::UpdatePagesService: #{e.message}")
       @status.allow_failure = !latest?
       @status.description = e.message
       @status.drop(:script_failure)
-      if e.instance_of(PublicFolderNotFoundError) || e.instance_of(PageOutdateError)
-        delete_artifact!
-      end
-      super
+      delete_artifact! if e.is_instance_of(PageOutdateError) || e.is_instance_of(PublicFolderNotFoundError)
     end
+
+    private
 
     def create_status
       GenericCommitStatus.new(
@@ -181,22 +166,6 @@ module Projects
 
     def sha
       build.sha
-    end
-
-    def register_attempt
-      pages_deployments_total_counter.increment
-    end
-
-    def register_failure
-      pages_deployments_failed_total_counter.increment
-    end
-
-    def pages_deployments_total_counter
-      @pages_deployments_total_counter ||= Gitlab::Metrics.counter(:pages_deployments_total, "Counter of GitLab Pages deployments triggered")
-    end
-
-    def pages_deployments_failed_total_counter
-      @pages_deployments_failed_total_counter ||= Gitlab::Metrics.counter(:pages_deployments_failed_total, "Counter of GitLab Pages deployments which failed")
     end
   end
 end
