@@ -9,6 +9,7 @@ module Boards
     before_action :authorize_read_issue, only: [:index]
     before_action :authorize_create_issue, only: [:create]
     before_action :authorize_update_issue, only: [:update]
+    skip_before_action :authenticate_user!, only: [:index]
 
     def index
       issues = Boards::Issues::ListService.new(board_parent, current_user, filter_params).execute
@@ -74,13 +75,11 @@ module Boards
     end
 
     def project
-      @project ||= begin
-        if board.group_board?
-          Project.find(issue_params[:project_id])
-        else
-          board_parent
-        end
-      end
+      @project ||= if board.group_board?
+                     Project.find(issue_params[:project_id])
+                   else
+                     board_parent
+                   end
     end
 
     def move_params

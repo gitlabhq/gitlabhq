@@ -39,13 +39,11 @@ module BoardsHelper
   end
 
   def current_board_path(board)
-    @current_board_path ||= begin
-      if board.group_board?
-        group_board_path(current_board_parent, board)
-      else
-        project_board_path(current_board_parent, board)
-      end
-    end
+    @current_board_path ||= if board.group_board?
+                              group_board_path(current_board_parent, board)
+                            else
+                              project_board_path(current_board_parent, board)
+                            end
   end
 
   def current_board_parent
