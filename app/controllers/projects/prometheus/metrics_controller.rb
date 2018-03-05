@@ -24,7 +24,6 @@ module Projects
         @prometheus_adapter ||= ::Prometheus::AdapterService.new(project).prometheus_adapter
       end
 
-
       def require_prometheus_metrics!
         render_404 unless prometheus_adapter.can_query?
       end
