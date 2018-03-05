@@ -1605,7 +1605,6 @@ ActiveRecord::Schema.define(version: 20180327101207) do
     t.string "path", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "permanent"
   end
 
   add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
