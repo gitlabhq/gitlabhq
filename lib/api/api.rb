@@ -108,6 +108,7 @@ module API
     mount ::API::AccessRequests
     mount ::API::Applications
     mount ::API::AwardEmoji
+    mount ::API::Badges
     mount ::API::Boards
     mount ::API::Branches
     mount ::API::BroadcastMessages

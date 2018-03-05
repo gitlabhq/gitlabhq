@@ -109,7 +109,7 @@ describe MergeRequestsFinder do
       end
     end
 
-    context 'with created_after and created_before params' do
+    context 'filtering by created_at/updated_at' do
       let(:new_project) { create(:project, forked_from_project: project1) }
 
       let!(:new_merge_request) do
@@ -117,15 +117,18 @@ describe MergeRequestsFinder do
                :simple,
                author: user,
                created_at: 1.week.from_now,
+               updated_at: 1.week.from_now,
                source_project: new_project,
-               target_project: project1)
+               target_project: new_project)
       end
 
       let!(:old_merge_request) do
         create(:merge_request,
                :simple,
                author: user,
+               source_branch: 'feature_1',
                created_at: 1.week.ago,
+               updated_at: 1.week.ago,
                source_project: new_project,
                target_project: new_project)
       end
@@ -135,7 +138,7 @@ describe MergeRequestsFinder do
       end
 
       it 'filters by created_after' do
-        params = { project_id: project1.id, created_after: new_merge_request.created_at }
+        params = { project_id: new_project.id, created_after: new_merge_request.created_at }
 
         merge_requests = described_class.new(user, params).execute
 
@@ -143,11 +146,51 @@ describe MergeRequestsFinder do
       end
 
       it 'filters by created_before' do
-        params = { project_id: new_project.id, created_before: old_merge_request.created_at + 1.second }
+        params = { project_id: new_project.id, created_before: old_merge_request.created_at }
 
         merge_requests = described_class.new(user, params).execute
 
         expect(merge_requests).to contain_exactly(old_merge_request)
+      end
+
+      it 'filters by created_after and created_before' do
+        params = {
+          project_id: new_project.id,
+          created_after: old_merge_request.created_at,
+          created_before: new_merge_request.created_at
+        }
+
+        merge_requests = described_class.new(user, params).execute
+
+        expect(merge_requests).to contain_exactly(old_merge_request, new_merge_request)
+      end
+
+      it 'filters by updated_after' do
+        params = { project_id: new_project.id, updated_after: new_merge_request.updated_at }
+
+        merge_requests = described_class.new(user, params).execute
+
+        expect(merge_requests).to contain_exactly(new_merge_request)
+      end
+
+      it 'filters by updated_before' do
+        params = { project_id: new_project.id, updated_before: old_merge_request.updated_at }
+
+        merge_requests = described_class.new(user, params).execute
+
+        expect(merge_requests).to contain_exactly(old_merge_request)
+      end
+
+      it 'filters by updated_after and updated_before' do
+        params = {
+          project_id: new_project.id,
+          updated_after: old_merge_request.updated_at,
+          updated_before: new_merge_request.updated_at
+        }
+
+        merge_requests = described_class.new(user, params).execute
+
+        expect(merge_requests).to contain_exactly(old_merge_request, new_merge_request)
       end
     end
   end
