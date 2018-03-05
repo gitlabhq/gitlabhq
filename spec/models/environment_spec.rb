@@ -495,7 +495,7 @@ describe Environment do
       it 'returns the metrics from the deployment service' do
         expect(environment.prometheus_adapter)
           .to receive(:query).with(:environment, environment)
-                .and_return(:fake_metrics)
+          .and_return(:fake_metrics)
 
         is_expected.to eq(:fake_metrics)
       end
@@ -548,66 +548,6 @@ describe Environment do
     subject { environment.metrics }
 
     context 'when the environment has metrics' do
-      before do
-        allow(environment).to receive(:has_metrics?).and_return(true)
-      end
-
-      it 'returns the metrics from the deployment service' do
-        expect(environment.prometheus_adapter)
-          .to receive(:query).with(:environment, environment)
-          .and_return(:fake_metrics)
-
-        is_expected.to eq(:fake_metrics)
-      end
-    end
-
-    context 'when the environment does not have metrics' do
-      before do
-        allow(environment).to receive(:has_metrics?).and_return(false)
-      end
-
-      it { is_expected.to be_nil }
-    end
-  end
-
-  describe '#has_metrics?' do
-    subject { environment.has_metrics? }
-
-    context 'when the enviroment is available' do
-      context 'with a deployment service' do
-        let(:project) { create(:prometheus_project) }
-
-        context 'and a deployment' do
-          let!(:deployment) { create(:deployment, environment: environment) }
-          it { is_expected.to be_truthy }
-        end
-
-        context 'but no deployments' do
-          it { is_expected.to be_falsy }
-        end
-      end
-
-      context 'without a monitoring service' do
-        it { is_expected.to be_falsy }
-      end
-    end
-
-    context 'when the environment is unavailable' do
-      let(:project) { create(:prometheus_project) }
-
-      before do
-        environment.stop
-      end
-
-      it { is_expected.to be_falsy }
-    end
-  end
-
-  describe '#additional_metrics' do
-    let(:project) { create(:prometheus_project) }
-    subject { environment.additional_metrics }
-
-    context 'when the environment has additional metrics' do
       before do
         allow(environment).to receive(:has_metrics?).and_return(true)
       end
@@ -724,36 +664,10 @@ describe Environment do
   end
 
   describe '#prometheus_adapter' do
-    let(:cluster) { create(:cluster, :provided_by_user, environment_scope: '*', projects: [project]) }
+    it 'calls prometheus adapter service' do
+      expect_any_instance_of(Prometheus::AdapterService).to receive(:prometheus_adapter)
 
-    context 'prometheus service can execute queries' do
-      let(:prometheus_service) { double(:prometheus_service, can_query?: true) }
-
-      before do
-        allow(environment.project).to receive(:find_or_initialize_service).with('prometheus').and_return prometheus_service
-      end
-
-      it 'return prometheus service as prometheus adapter' do
-        expect(environment.prometheus_adapter).to eq(prometheus_service)
-      end
-    end
-
-    context "prometheus service can't execute queries" do
-      let(:prometheus_service) { double(:prometheus_service, can_query?: false) }
-
-      context 'with cluster with prometheus installed' do
-        let!(:prometheus) { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
-
-        it 'returns application handling all environments' do
-          expect(environment.prometheus_adapter).to eq(prometheus)
-        end
-      end
-
-      context 'with cluster without prometheus installed' do
-        it 'returns nil' do
-          expect(environment.prometheus_adapter).to be_nil
-        end
-      end
+      subject.prometheus_adapter
     end
   end
 end

@@ -165,6 +165,10 @@ class Environment < ActiveRecord::Base
     prometheus_adapter.query(:additional_metrics_environment, self) if has_metrics?
   end
 
+  def prometheus_adapter
+    @prometheus_adapter ||= Prometheus::AdapterService.new(project, deployment_platform).prometheus_adapter
+  end
+
   def slug
     super.presence || generate_slug
   end
@@ -228,25 +232,8 @@ class Environment < ActiveRecord::Base
     self.environment_type || self.name
   end
 
-  def prometheus_adapter
-    @prometheus_adapter ||= if service_prometheus_adapter.can_query?
-                              service_prometheus_adapter
-                            else
-                              cluster_prometheus_adapter
-                            end
-  end
-
-  def service_prometheus_adapter
-    project.find_or_initialize_service('prometheus')
-  end
-
-  def cluster_prometheus_adapter
-    return unless deployment_platform.respond_to?(:cluster)
-
-    cluster = deployment_platform.cluster
-    return unless cluster.application_prometheus&.installed?
-
-    cluster.application_prometheus
+  def deployment_platform
+    project.deployment_platform
   end
 
   private

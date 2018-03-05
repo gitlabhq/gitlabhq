@@ -21,7 +21,7 @@ module Projects
       private
 
       def prometheus_adapter
-        project.prometheus_service
+        @prometheus_adapter ||= ::Prometheus::AdapterService.new(project).prometheus_adapter
       end
 
       def require_prometheus_metrics!

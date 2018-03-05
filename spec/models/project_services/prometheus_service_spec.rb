@@ -6,7 +6,6 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
 
   let(:project) { create(:prometheus_project) }
   let(:service) { project.prometheus_service }
-  let(:environment_query) { Gitlab::Prometheus::Queries::EnvironmentQuery }
 
   describe "Associations" do
     it { is_expected.to belong_to :project }
