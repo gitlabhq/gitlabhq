@@ -57,7 +57,6 @@ function generateEntries() {
 
     // EE-only
     ide:                  'ee/ide/index.js',
-    geo_nodes:            'ee/geo_nodes',
   };
 
   return Object.assign(manualEntries, autoEntries);
