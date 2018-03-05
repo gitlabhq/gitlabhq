@@ -1450,3 +1450,7 @@ POST /projects/:id/mirror/pull
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+
+## Project badges
+
+Read more in the [Project Badges](project_badges.md) documentation.

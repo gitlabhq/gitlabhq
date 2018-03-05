@@ -241,6 +241,19 @@ ActiveRecord::Schema.define(version: 20180301084653) do
   add_index "award_emoji", ["awardable_type", "awardable_id"], name: "index_award_emoji_on_awardable_type_and_awardable_id", using: :btree
   add_index "award_emoji", ["user_id", "name"], name: "index_award_emoji_on_user_id_and_name", using: :btree
 
+  create_table "badges", force: :cascade do |t|
+    t.string "link_url", null: false
+    t.string "image_url", null: false
+    t.integer "project_id"
+    t.integer "group_id"
+    t.string "type", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+  end
+
+  add_index "badges", ["group_id"], name: "index_badges_on_group_id", using: :btree
+  add_index "badges", ["project_id"], name: "index_badges_on_project_id", using: :btree
+
   create_table "board_assignees", force: :cascade do |t|
     t.integer "board_id", null: false
     t.integer "assignee_id", null: false
@@ -2501,6 +2514,8 @@ ActiveRecord::Schema.define(version: 20180301084653) do
 
   add_foreign_key "approvals", "merge_requests", name: "fk_310d714958", on_delete: :cascade
   add_foreign_key "approver_groups", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "badges", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "badges", "projects", on_delete: :cascade
   add_foreign_key "board_assignees", "boards", on_delete: :cascade
   add_foreign_key "board_assignees", "users", column: "assignee_id", on_delete: :cascade
   add_foreign_key "board_labels", "boards", on_delete: :cascade

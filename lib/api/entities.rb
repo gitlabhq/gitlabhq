@@ -1238,6 +1238,24 @@ module API
       expose :project_id
     end
 
+    class BasicBadgeDetails < Grape::Entity
+      expose :link_url
+      expose :image_url
+      expose :rendered_link_url do |badge, options|
+        badge.rendered_link_url(options.fetch(:project, nil))
+      end
+      expose :rendered_image_url do |badge, options|
+        badge.rendered_image_url(options.fetch(:project, nil))
+      end
+    end
+
+    class Badge < BasicBadgeDetails
+      expose :id
+      expose :kind do |badge|
+        badge.type == 'ProjectBadge' ? 'project' : 'group'
+      end
+    end
+
     def self.prepend_entity(klass, with: nil)
       if with.nil?
         raise ArgumentError, 'You need to pass either the :with or :namespace option!'

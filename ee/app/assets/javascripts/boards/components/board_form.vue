@@ -1,12 +1,13 @@
 <script>
+/* global ListLabel */
 /* global BoardService */
 
 import Flash from '~/flash';
 import modal from '~/vue_shared/components/modal.vue';
+import BoardLabelsSelect from '~/vue_shared/components/sidebar/labels_select/base.vue';
 import { visitUrl } from '~/lib/utils/url_utility';
 import BoardMilestoneSelect from './milestone_select.vue';
 import BoardWeightSelect from './weight_select.vue';
-import BoardLabelsSelect from './labels_select.vue';
 import AssigneeSelect from './assignee_select.vue';
 
 window.gl = window.gl || {};
@@ -143,6 +144,22 @@ export default {
     }
   },
   methods: {
+    handleLabelClick(label) {
+      if (label.isAny) {
+        this.board.labels = [];
+      } else if (!this.board.labels.find(l => l.id === label.id)) {
+        this.board.labels.push(new ListLabel({
+          id: label.id,
+          title: label.title,
+          color: label.color[0],
+          textColor: label.text_color,
+        }));
+      } else {
+        let labels = this.board.labels;
+        labels = labels.filter(selected => selected.id !== label.id);
+        this.board.labels = labels;
+      }
+    },
     submit() {
       if (this.board.name.length === 0) return;
       this.isLoading = true;
@@ -251,10 +268,14 @@ export default {
             />
 
             <board-labels-select
-              :board="board"
-              :can-edit="canAdminBoard"
+              ability-name="issue"
+              :context="board"
               :labels-path="labelsPath"
-            />
+              :can-edit="canAdminBoard"
+              @onLabelClick="handleLabelClick"
+            >
+              {{ __('Any Label') }}
+            </board-labels-select>
 
             <assignee-select
               any-user-text="Any assignee"

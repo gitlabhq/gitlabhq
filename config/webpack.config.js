@@ -57,7 +57,6 @@ function generateEntries() {
 
     // EE-only
     ide:                  'ee/ide/index.js',
-    service_desk:         'ee/projects/settings_service_desk/service_desk_bundle.js',
   };
 
   return Object.assign(manualEntries, autoEntries);
