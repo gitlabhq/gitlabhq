@@ -427,7 +427,7 @@
 
   &.btn-secondary-hover-link {
     color: $gl-text-color-secondary;
-  
+
     &:hover,
     &:active,
     &:focus {
@@ -435,10 +435,10 @@
       text-decoration: none;
     }
   }
-  
+
   &.btn-primary-hover-link {
     color: inherit;
-  
+
     &:hover,
     &:active,
     &:focus {
