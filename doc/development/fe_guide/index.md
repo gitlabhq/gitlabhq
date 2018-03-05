@@ -3,7 +3,7 @@
 This guide contains all the information to successfully contribute to GitLab's frontend.
 This is a living document, and we welcome contributions, feedback and suggestions.
 
-### [Principles](principles.md)
+## [Principles](principles.md)
 
 Ensure that your frontend contribution starts off in the right direction.
 
@@ -19,7 +19,7 @@ Guidance on topics related to development.
 
 Learn about all the dependencies that make up our frontend, including some of our own custom built libraries.
 
-## [Style](style.md)
+## [Style](style/index.md)
 
 Style guides to keep our code consistent.
 
