@@ -1,6 +1,8 @@
 - visibility_level = params.dig(:project, :visibility_level) || default_project_visibility
+- ci_cd_only = local_assigns.fetch(:ci_cd_only, false)
 
 .row{ id: project_name_id }
+  = f.hidden_field :ci_cd_only, value: ci_cd_only
   .form-group.project-path.col-sm-6
     = f.label :namespace_id, class: 'label-light' do
       %span

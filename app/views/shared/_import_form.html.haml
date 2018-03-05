@@ -1,24 +1,29 @@
+- ci_cd_only = local_assigns.fetch(:ci_cd_only, false)
+
 .form-group.import-url-data
   = f.label :import_url, class: 'label-light' do
-    %span Git repository URL
+    %span
+      = _('Git repository URL')
 
-  = f.text_field :import_url, autocomplete: 'off', class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git'
+  = f.text_field :import_url, autocomplete: 'off', class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git', required: true
 
   .well.prepend-top-20
     %ul
       %li
-        The repository must be accessible over <code>http://</code>, <code>https://</code> or <code>git://</code>.
+        = _('The repository must be accessible over <code>http://</code>, <code>https://</code> or <code>git://</code>.').html_safe
       %li
-        If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>.
+        = _('If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>.').html_safe
       %li
-        The import will time out after #{time_interval_in_words(Gitlab.config.gitlab_shell.git_timeout)}.
-        For repositories that take longer, use a clone/push combination.
+        = import_will_timeout_message(ci_cd_only)
       %li
-        To migrate an SVN repository, check out #{link_to "this document", help_page_path('user/project/import/svn')}.
+        = import_svn_message(ci_cd_only)
       %li
-        The Git LFS objects will <strong>not</strong> be imported.
-      %li
-        Once imported, repositories can be mirrored over SSH. Read more
-        = link_to 'here', help_page_path('/workflow/repository_mirroring.md', anchor: 'ssh-authentication')
+        The Git LFS objects will be ignored.
+      - unless ci_cd_only
+        %li
+          - ssh_link = link_to _('here'), help_page_path('/workflow/repository_mirroring.md', anchor: 'ssh-authentication')
+          = _('Once imported, repositories can be mirrored over SSH. Read more %{ssh_link}').html_safe % { ssh_link: ssh_link }
 
-= render 'shared/ee/import_form', f: f
+-# EE-specific start
+= render 'shared/ee/import_form', f: f unless ci_cd_only
+-# EE-specific end
