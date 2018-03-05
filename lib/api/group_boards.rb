@@ -44,7 +44,7 @@ module API
       end
       segment ':id/boards/:board_id' do
         desc 'Get the lists of a group board' do
-          detail 'Does not include backlog and closed lists. This feature was introduced in 10.4'
+          detail 'Does not include backlog and closed lists. This feature was introduced in 10.6'
           success Entities::List
         end
         params do
