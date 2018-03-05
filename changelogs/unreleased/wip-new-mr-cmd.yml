@@ -1,4 +1,3 @@
----
-title: wip slash command option on merge request creation
-merge_request: 8982
+title: Port /wip quick action command to Merge Request creation (on description)
+merge_request: 17463
 author: Adam Pahlevi
