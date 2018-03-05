@@ -1,6 +1,7 @@
 module Projects
   class UpdatePagesService < BaseService
     InvaildStateError = Class.new(StandardError)
+
     BLOCK_SIZE = 32.kilobytes
     MAX_SIZE = 1.terabyte
     SITE_PATH = 'public/'.freeze
