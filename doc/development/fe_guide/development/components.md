@@ -2,7 +2,7 @@
 
 ## Icons
 
-In light of our [use gitlab-svgs initative][gitlab-svgs-initative], all new icons should be added to the [gitlab-svgs project][gitlab-svgs-project]. Once new icons are added to the gitlab-svgs project, please have the maintainer update the gitlab-svgs dependency on npm and on gitlab-ce (gitlab-ee will automatically adopt those changes through our CE => EE routine job).
+In light of our [use gitlab-svgs initiative][gitlab-svgs-initiative], all new icons should be added to the [gitlab-svgs project][gitlab-svgs-project]. Once new icons are added to the gitlab-svgs project, please have the maintainer update the gitlab-svgs dependency on npm and on gitlab-ce (gitlab-ee will automatically adopt those changes through our CE => EE routine job).
 
 ### Using icons in HAML
 
@@ -107,7 +107,7 @@ In Vue, we initialize tooltips by importing our [tooltip directive][tooltip-dire
 </span>
 ```
 
-[gitlab-svgs-initative]: ../../initatives.md
+[gitlab-svgs-initiative]: ../initiatives.md
 [gitlab-svgs-project]: https://gitlab.com/gitlab-org/gitlab-svgs
 [svg-previewer]: http://gitlab-org.gitlab.io/gitlab-svgs/
 [icon-vue]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/vue_shared/components/icon.vue
