@@ -13,8 +13,8 @@
       %ul.content-list
         - plugins.each do |file|
           %li
-            %span.title
-              = File.basename(file)
+            = boolean_to_icon true
+            = File.basename(file)
     - else
-      %p.settings-message.text-center.append-bottom-0
+      %p.light-well.text-center
         No plugins found.
