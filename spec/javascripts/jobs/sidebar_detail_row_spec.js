@@ -46,6 +46,7 @@ describe('Sidebar detail row', () => {
     vm = new SidebarDetailRow({
       propsData: {
         helpUrl: 'help url',
+        value: 'foo',
       },
     }).$mount();
   });

@@ -19,8 +19,8 @@ module ChronicDurationAttribute
 
     def chronic_duration_attr_writer(virtual_attribute, source_attribute)
       define_method("#{virtual_attribute}=") do |value|
-        new_value = ChronicDuration.parse(value).to_i
-        new_value = nil if new_value <= 0
+        new_value = ChronicDuration.parse(value).to_i unless value.nil?
+        new_value = nil if !new_value.nil? && new_value <= 0
 
         self.send("#{source_attribute}=", new_value) # rubocop:disable GitlabSecurity/PublicSend
 

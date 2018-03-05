@@ -29,10 +29,28 @@ shared_examples 'ChronicDurationAttribute writer' do
     expect(subject.send(source_field)).to eq(600)
   end
 
-  it 'writes null when empty input is used' do
+  it 'writes nil when empty input is used' do
     subject.send("#{virtual_field}=", '')
 
     expect(subject.send(source_field)).to be_nil
+  end
+
+  it 'writes nil when negative input is used' do
+    allow(ChronicDuration).to receive(:parse).and_return(-10)
+
+    subject.send("#{virtual_field}=", '-10m')
+
+    expect(subject.send(source_field)).to be_nil
+  end
+
+  it 'writes nil when nil input is used' do
+    subject.send("#{virtual_field}=", nil)
+
+    expect(subject.send(source_field)).to be_nil
+  end
+
+  it "doesn't raise exception when nil input is used" do
+    expect { subject.send("#{virtual_field}=", nil) }.not_to raise_error(NoMethodError)
   end
 end
 
