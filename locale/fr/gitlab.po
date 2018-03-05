@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-02 13:39+0100\n"
-"PO-Revision-Date: 2018-03-05 06:10-0500\n"
+"PO-Revision-Date: 2018-03-05 06:24-0500\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -50,7 +50,7 @@ msgstr[0] "%s validation supplémentaire a été masquée afin d'éviter de cré
 msgstr[1] "%s commits supplémentaires ont été masqués afin d'éviter un problème de performance."
 
 msgid "%{actionText} & %{openOrClose} %{noteable}"
-msgstr ""
+msgstr "%{actionText} et %{openOrClose} %{noteable}"
 
 msgid "%{commit_author_link} authored %{commit_timeago}"
 msgstr "%{commit_author_link} a créé %{commit_timeago}"
@@ -73,7 +73,7 @@ msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will not re
 msgstr "%{number_of_failures} échecs sur %{maximum_failures}. GitLab ne va plus réessayer automatiquement. Réinitialisez les informations de stockage lorsque le problème est résolu."
 
 msgid "%{openOrClose} %{noteable}"
-msgstr ""
+msgstr "%{openOrClose} %{noteable}"
 
 msgid "%{storage_name}: failed storage access attempt on host:"
 msgid_plural "%{storage_name}: %{failed_attempts} failed storage access attempts:"
@@ -296,7 +296,7 @@ msgid "An error occurred while validating username"
 msgstr "Une erreur s’est produite lors de la validation du nom d’utilisateur•rice"
 
 msgid "An error occurred. Please try again."
-msgstr "Une erreur est survenue. Merci de réessayer."
+msgstr "Une erreur s’est produite. Veuillez réessayer."
 
 msgid "Appearance"
 msgstr "Apparence"
@@ -1525,10 +1525,10 @@ msgid "Epics let you manage your portfolio of projects more efficiently and with
 msgstr "Les épopées vous permettent de gérer votre portefeuille de projets plus efficacement et avec moins d'effort"
 
 msgid "Error checking branch data. Please try again."
-msgstr "Erreur lors de la vérification des données de branche. Merci d’essayer à nouveau."
+msgstr "Erreur lors de la vérification des données de branche. Veuillez réessayer."
 
 msgid "Error committing changes. Please try again."
-msgstr "Erreur lors de la validation des modifications. Merci d’essayer à nouveau."
+msgstr "Erreur lors de la validation des modifications. Veuillez réessayer."
 
 msgid "Error creating epic"
 msgstr "Erreur lors de la création de l’épopée"
