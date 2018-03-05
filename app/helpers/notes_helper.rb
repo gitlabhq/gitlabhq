@@ -11,7 +11,7 @@ module NotesHelper
   end
 
   def note_supports_quick_actions?(note)
-    Notes::QuickActionsService.supported?(note, current_user)
+    Notes::QuickActionsService.supported?(note)
   end
 
   def noteable_json(noteable)
