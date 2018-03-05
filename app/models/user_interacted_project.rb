@@ -2,8 +2,8 @@ class UserInteractedProject < ActiveRecord::Base
   belongs_to :user
   belongs_to :project
 
-  validates :project, presence: true
-  validates :user, presence: true
+  validates :project_id, presence: true
+  validates :user_id, presence: true
 
   CACHE_EXPIRY_TIME = 1.day
 
@@ -15,7 +15,7 @@ class UserInteractedProject < ActiveRecord::Base
       # For events without a project, we simply don't care.
       # An example of this is the creation of a snippet (which
       # is not related to any project).
-      return unless event.project
+      return unless event.project_id
 
       # This is a precaution because the cache lookup
       # will work just fine without an author.

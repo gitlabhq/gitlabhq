@@ -55,6 +55,6 @@ describe UserInteractedProject do
     end
   end
 
-  it { is_expected.to validate_presence_of(:project) }
-  it { is_expected.to validate_presence_of(:user) }
+  it { is_expected.to validate_presence_of(:project_id) }
+  it { is_expected.to validate_presence_of(:user_id) }
 end
