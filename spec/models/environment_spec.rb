@@ -543,9 +543,9 @@ describe Environment do
     end
   end
 
-  describe '#metrics' do
+  describe '#additional_metrics' do
     let(:project) { create(:prometheus_project) }
-    subject { environment.metrics }
+    subject { environment.additional_metrics }
 
     context 'when the environment has metrics' do
       before do

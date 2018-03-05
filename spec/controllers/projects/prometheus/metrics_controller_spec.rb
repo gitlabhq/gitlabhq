@@ -8,7 +8,7 @@ describe Projects::Prometheus::MetricsController do
 
   before do
     allow(controller).to receive(:project).and_return(project)
-    allow(project).to receive(:prometheus_service).and_return(prometheus_adapter)
+    allow(controller).to receive(:prometheus_adapter).and_return(prometheus_adapter)
 
     project.add_master(user)
     sign_in(user)
