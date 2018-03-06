@@ -27,16 +27,12 @@ Example response:
 [
   {
     "id": 1,
-<<<<<<< HEAD
     "name:": "group issue board",
     "group_id": 5,
     "milestone":   {
       "id": 12
       "title": "10.0"
     },
-=======
-    "group_id": 5,
->>>>>>> upstream/master
     "lists" : [
       {
         "id" : 1,
@@ -92,7 +88,6 @@ Example response:
 ```json
   {
     "id": 1,
-<<<<<<< HEAD
     "name:": "group issue board",
     "group_id": 5,
     "milestone":   {
@@ -159,9 +154,6 @@ Example response:
       "id": 12
       "title": "10.0"
     },
-=======
-    "group_id": 5,
->>>>>>> upstream/master
     "lists" : [
       {
         "id" : 1,
@@ -194,7 +186,6 @@ Example response:
   }
 ```
 
-<<<<<<< HEAD
 ## Delete a board
 
 Deletes a board.
@@ -212,8 +203,6 @@ DELETE /groups/:id/boards/:board_id
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/5/boards/1
 ```
 
-=======
->>>>>>> upstream/master
 ## List board lists
 
 Get a list of the board's lists.

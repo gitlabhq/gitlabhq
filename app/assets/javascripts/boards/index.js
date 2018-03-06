@@ -259,11 +259,8 @@ export default () => {
       return {
         modal: ModalStore.store,
         store: Store.state,
-<<<<<<< HEAD
         isFullscreen: false,
         focusModeAvailable: $boardApp.hasAttribute('data-focus-mode-available'),
-=======
->>>>>>> upstream/master
         canAdminList: this.$options.el.hasAttribute('data-can-admin-list'),
       };
     },

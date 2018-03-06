@@ -13,7 +13,6 @@ describe 'layouts/nav/sidebar/_project' do
 
   describe 'issue boards' do
     it 'has board tab' do
-<<<<<<< HEAD
       render
 
       expect(rendered).to have_css('a[title="Boards"]')
@@ -23,8 +22,6 @@ describe 'layouts/nav/sidebar/_project' do
       allow(License).to receive(:feature_available?).and_call_original
       allow(License).to receive(:feature_available?).with(:multiple_project_issue_boards) { false }
 
-=======
->>>>>>> upstream/master
       render
 
       expect(rendered).to have_css('a[title="Board"]')

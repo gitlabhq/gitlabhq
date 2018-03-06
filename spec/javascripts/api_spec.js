@@ -138,17 +138,10 @@ describe('Api', () => {
       });
     });
 
-<<<<<<< HEAD
     it('creates a new group label', (done) => {
       const namespace = 'some namespace';
       const labelData = { some: 'data' };
       const expectedUrl = Api.buildUrl(Api.groupLabelsPath).replace(':namespace_path', namespace);
-=======
-    it('creates a group label', (done) => {
-      const namespace = 'group/subgroup';
-      const labelData = { some: 'data' };
-      const expectedUrl = `${dummyUrlRoot}/groups/${namespace}/-/labels`;
->>>>>>> upstream/master
       const expectedData = {
         label: labelData,
       };
@@ -160,11 +153,7 @@ describe('Api', () => {
         }];
       });
 
-<<<<<<< HEAD
       Api.newLabel(namespace, null, labelData, (response) => {
-=======
-      Api.newLabel(namespace, undefined, labelData, (response) => {
->>>>>>> upstream/master
         expect(response.name).toBe('test');
         done();
       });

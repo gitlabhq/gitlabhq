@@ -276,7 +276,6 @@ ActiveRecord::Schema.define(version: 20180307012445) do
     t.integer "project_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-<<<<<<< HEAD
     t.string "name", default: "Development", null: false
     t.integer "milestone_id"
     t.integer "group_id"
@@ -285,12 +284,6 @@ ActiveRecord::Schema.define(version: 20180307012445) do
 
   add_index "boards", ["group_id"], name: "index_boards_on_group_id", using: :btree
   add_index "boards", ["milestone_id"], name: "index_boards_on_milestone_id", using: :btree
-=======
-    t.integer "group_id"
-  end
-
-  add_index "boards", ["group_id"], name: "index_boards_on_group_id", using: :btree
->>>>>>> upstream/master
   add_index "boards", ["project_id"], name: "index_boards_on_project_id", using: :btree
 
   create_table "broadcast_messages", force: :cascade do |t|
@@ -2529,15 +2522,11 @@ ActiveRecord::Schema.define(version: 20180307012445) do
   add_foreign_key "approver_groups", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "badges", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "badges", "projects", on_delete: :cascade
-<<<<<<< HEAD
   add_foreign_key "board_assignees", "boards", on_delete: :cascade
   add_foreign_key "board_assignees", "users", column: "assignee_id", on_delete: :cascade
   add_foreign_key "board_labels", "boards", on_delete: :cascade
   add_foreign_key "board_labels", "labels", on_delete: :cascade
   add_foreign_key "boards", "namespaces", column: "group_id", name: "fk_1e9a074a35", on_delete: :cascade
-=======
-  add_foreign_key "boards", "namespaces", column: "group_id", on_delete: :cascade
->>>>>>> upstream/master
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
   add_foreign_key "ci_build_trace_section_names", "projects", on_delete: :cascade

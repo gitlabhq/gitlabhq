@@ -1,8 +1,5 @@
 class Groups::BoardsController < Groups::ApplicationController
-<<<<<<< HEAD
   prepend EE::Boards::BoardsController
-=======
->>>>>>> upstream/master
   include BoardsResponses
 
   before_action :assign_endpoint_vars

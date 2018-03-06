@@ -423,11 +423,7 @@ constraints(ProjectUrlConstrainer.new) do
       get 'noteable/:target_type/:target_id/notes' => 'notes#index', as: 'noteable_notes'
 
       # On CE only index and show are needed
-<<<<<<< HEAD
       resources :boards, only: [:index, :show, :create, :update, :destroy]
-=======
-      resources :boards, only: [:index, :show]
->>>>>>> upstream/master
 
       resources :todos, only: [:create]
 

@@ -1697,13 +1697,6 @@ class Project < ActiveRecord::Base
   # Overridden on EE module
   def multiple_issue_boards_available?
     false
-<<<<<<< HEAD
-=======
-  end
-
-  def issue_board_milestone_available?(user = nil)
-    feature_available?(:issue_board_milestone, user)
->>>>>>> upstream/master
   end
 
   def full_path_was
