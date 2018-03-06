@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CreateTraceArtifactWorker do
+describe ArchiveTraceWorker do
   describe '#perform' do
     subject { described_class.new.perform(job&.id) }
 
@@ -8,8 +8,7 @@ describe CreateTraceArtifactWorker do
       let(:job) { create(:ci_build) }
 
       it 'executes service' do
-        expect_any_instance_of(Ci::CreateTraceArtifactService)
-          .to receive(:execute).with(job)
+        expect_any_instance_of(Gitlab::Ci::Trace).to receive(:archive!)
 
         subject
       end
@@ -19,8 +18,7 @@ describe CreateTraceArtifactWorker do
       let(:job) { nil }
 
       it 'does not execute service' do
-        expect_any_instance_of(Ci::CreateTraceArtifactService)
-          .not_to receive(:execute)
+        expect_any_instance_of(Gitlab::Ci::Trace).not_to receive(:archive!)
 
         subject
       end
