@@ -36,16 +36,6 @@ module ImportHelper
     _('Please wait while we import the repository for you. Refresh at will.')
   end
 
-  def import_will_timeout_message(_ci_cd_only)
-    timeout = time_interval_in_words(Gitlab.config.gitlab_shell.git_timeout)
-    _('The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination.') % { timeout: timeout }
-  end
-
-  def import_svn_message(_ci_cd_only)
-    svn_link = link_to _('this document'), help_page_path('user/project/import/svn')
-    _('To import an SVN repository, check out %{svn_link}.').html_safe % { svn_link: svn_link }
-  end
-
   def import_in_progress_title
     if @project.forked?
       _('Forking in progress')
