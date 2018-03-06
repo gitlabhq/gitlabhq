@@ -725,7 +725,7 @@ module Gitlab
       end
 
       def add_tag(tag_name, user:, target:, message: nil)
-        gitaly_migrate(:operation_user_add_tag) do |is_enabled|
+        gitaly_migrate(:operation_user_add_tag, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_add_tag(tag_name, user: user, target: target, message: message)
           else
