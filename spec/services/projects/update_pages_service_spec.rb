@@ -170,6 +170,9 @@ describe Projects::UpdatePagesService do
 
         it 'raises an error' do
           expect { execute }.to raise_error(SocketError)
+
+          build.reload
+          expect(build.artifacts?).to eq(true)
         end
       end
     end
