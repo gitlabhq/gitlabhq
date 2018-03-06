@@ -28,6 +28,12 @@ describe Gitlab::Ci::Trace::HttpIO do
   describe '#path' do
     subject { http_io.path }
 
+    it { is_expected.to be_nil }
+  end
+
+  describe '#url' do
+    subject { http_io.url }
+
     it { is_expected.to eq(url) }
   end
 
