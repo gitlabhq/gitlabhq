@@ -9,6 +9,7 @@ module Gitlab
         license_usage_data.merge(system_usage_data)
                           .merge(features_usage_data)
                           .merge(components_usage_data)
+                          .merge(cycle_analytics_usage_data)
       end
 
       def to_json(force_refresh: false)
@@ -32,6 +33,7 @@ module Gitlab
 
         if license
           usage_data[:license_md5] = license.md5
+          usage_data[:license_id] = license.license_id
           usage_data[:historical_max_users] = ::HistoricalData.max_historical_user_count
           usage_data[:licensee] = license.licensee
           usage_data[:license_user_count] = license.restricted_user_count
@@ -105,6 +107,10 @@ module Gitlab
                                            author: User.support_bot,
                                            confidential: true).count
         }
+      end
+
+      def cycle_analytics_usage_data
+        Gitlab::CycleAnalytics::UsageData.new.to_json
       end
 
       def features_usage_data

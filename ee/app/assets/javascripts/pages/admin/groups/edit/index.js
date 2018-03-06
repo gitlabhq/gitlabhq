@@ -1,3 +1,7 @@
-import initLDAPGroupsSelect from '../../../../ldap_groups_select';
+import initLDAPGroupsSelect from 'ee/ldap_groups_select';
+import initLDAPGroupLinks from 'ee/groups/ldap_group_links';
 
-export default () => initLDAPGroupsSelect();
+document.addEventListener('DOMContentLoaded', () => {
+  initLDAPGroupsSelect();
+  initLDAPGroupLinks();
+});

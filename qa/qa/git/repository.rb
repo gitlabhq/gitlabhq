@@ -36,6 +36,10 @@ module QA
         `git clone #{opts} #{@uri.to_s} ./ #{suppress_output}`
       end
 
+      def checkout(branch_name)
+        `git checkout "#{branch_name}"`
+      end
+
       def shallow_clone
         clone('--depth 1')
       end

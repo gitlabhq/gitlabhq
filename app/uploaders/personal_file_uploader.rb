@@ -4,7 +4,7 @@ class PersonalFileUploader < FileUploader
     options.storage_path
   end
 
-  def self.base_dir(model)
+  def self.base_dir(model, _store = nil)
     File.join(options.base_dir, model_path_segment(model))
   end
 
@@ -12,6 +12,12 @@ class PersonalFileUploader < FileUploader
     return 'temp/' unless model
 
     File.join(model.class.to_s.underscore, model.id.to_s)
+  end
+
+  # model_path_segment does not require a model to be passed, so we can always
+  # generate a path, even when there's no model.
+  def model_valid?
+    true
   end
 
   def object_store
@@ -28,7 +34,7 @@ class PersonalFileUploader < FileUploader
   def store_dirs
     {
       Store::LOCAL => File.join(base_dir, dynamic_segment),
-      Store::REMOTE => File.join(model_path_segment, dynamic_segment)
+      Store::REMOTE => File.join(self.class.model_path_segment(model), dynamic_segment)
     }
   end
 

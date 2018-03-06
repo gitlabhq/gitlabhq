@@ -640,4 +640,10 @@ describe 'project routing' do
       end
     end
   end
+
+  describe Projects::PipelinesController, 'routing' do
+    it 'to #security' do
+      expect(get('/gitlab/gitlabhq/pipelines/12/security')).to route_to('projects/pipelines#security', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '12')
+    end
+  end
 end

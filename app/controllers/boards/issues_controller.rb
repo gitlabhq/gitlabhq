@@ -57,7 +57,7 @@ module Boards
     end
 
     def issue
-      @issue ||= issues_finder.execute.find(params[:id])
+      @issue ||= issues_finder.find(params[:id])
     end
 
     def filter_params

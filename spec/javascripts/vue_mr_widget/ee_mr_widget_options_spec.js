@@ -4,19 +4,23 @@ import axios from '~/lib/utils/axios_utils';
 import mrWidgetOptions from 'ee/vue_merge_request_widget/mr_widget_options';
 import MRWidgetService from 'ee/vue_merge_request_widget/services/mr_widget_service';
 import MRWidgetStore from 'ee/vue_merge_request_widget/stores/mr_widget_store';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import mockData, {
   baseIssues,
   headIssues,
   basePerformance,
   headPerformance,
-  securityIssuesBase,
-  securityIssues,
+} from './mock_data';
+import {
+  sastIssues,
+  sastIssuesBase,
   dockerReport,
   dockerReportParsed,
   dast,
   parsedDast,
-} from './mock_data';
-import mountComponent from '../helpers/vue_mount_component_helper';
+  sastBaseAllIssues,
+  sastHeadAllIssues,
+} from '../vue_shared/security_reports/mock_data';
 
 describe('ee merge request widget options', () => {
   let vm;
@@ -60,8 +64,8 @@ describe('ee merge request widget options', () => {
 
       beforeEach(() => {
         mock = mock = new MockAdapter(axios);
-        mock.onGet('path.json').reply(200, securityIssuesBase);
-        mock.onGet('head_path.json').reply(200, securityIssues);
+        mock.onGet('path.json').reply(200, sastIssuesBase);
+        mock.onGet('head_path.json').reply(200, sastIssues);
         vm = mountComponent(Component);
       });
 
@@ -74,6 +78,31 @@ describe('ee merge request widget options', () => {
           expect(
             vm.$el.querySelector('.js-sast-widget .js-code-text').textContent.trim(),
           ).toEqual('SAST improved on 1 security vulnerability and degraded on 2 security vulnerabilities');
+          done();
+        }, 0);
+      });
+    });
+
+    describe('with full report and no added or fixed issues', () => {
+      let mock;
+
+      beforeEach(() => {
+        mock = mock = new MockAdapter(axios);
+        mock.onGet('path.json').reply(200, sastBaseAllIssues);
+        mock.onGet('head_path.json').reply(200, sastHeadAllIssues);
+
+        vm = mountComponent(Component);
+      });
+
+      afterEach(() => {
+        mock.restore();
+      });
+
+      it('renders no new vulnerabilities message', (done) => {
+        setTimeout(() => {
+          expect(
+            vm.$el.querySelector('.js-sast-widget .js-code-text').textContent.trim(),
+          ).toEqual('SAST detected no new security vulnerabilities');
           done();
         }, 0);
       });
@@ -414,17 +443,17 @@ describe('ee merge request widget options', () => {
             vm.$el.querySelector('.js-docker-widget .js-code-text').textContent.trim(),
           ).toEqual('SAST:container found 3 vulnerabilities, of which 1 is approved');
 
-          vm.$el.querySelector('.js-docker-widget button').click();
+          vm.$el.querySelector('.js-docker-widget .js-collapse-btn').click();
 
           Vue.nextTick(() => {
             expect(
-              vm.$el.querySelector('.js-docker-widget .mr-widget-code-quality-info').textContent.trim(),
+              vm.$el.querySelector('.js-docker-widget .report-block-info').textContent.trim(),
             ).toContain('Unapproved vulnerabilities (red) can be marked as approved.');
             expect(
-              vm.$el.querySelector('.js-docker-widget .mr-widget-code-quality-info a').textContent.trim(),
+              vm.$el.querySelector('.js-docker-widget .report-block-info a').textContent.trim(),
             ).toContain('Learn more about whitelisting');
 
-            const firstVulnerability = vm.$el.querySelector('.js-docker-widget .mr-widget-code-quality-list').textContent.trim();
+            const firstVulnerability = vm.$el.querySelector('.js-docker-widget .report-block-list').textContent.trim();
 
             expect(firstVulnerability).toContain(dockerReportParsed.unapproved[0].name);
             expect(firstVulnerability).toContain(dockerReportParsed.unapproved[0].path);
@@ -503,7 +532,7 @@ describe('ee merge request widget options', () => {
           vm.$el.querySelector('.js-dast-widget button').click();
 
           Vue.nextTick(() => {
-            const firstVulnerability = vm.$el.querySelector('.js-dast-widget .mr-widget-code-quality-list').textContent.trim();
+            const firstVulnerability = vm.$el.querySelector('.js-dast-widget .report-block-list').textContent.trim();
             expect(firstVulnerability).toContain(parsedDast[0].name);
             expect(firstVulnerability).toContain(parsedDast[0].priority);
             done();

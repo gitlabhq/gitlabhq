@@ -17,7 +17,7 @@ module IssuableCollections
     set_pagination
     return if redirect_out_of_range(@total_pages)
 
-    if params[:label_name].present?
+    if params[:label_name].present? && @project
       labels_params = { project_id: @project.id, title: params[:label_name] }
       @labels = LabelsFinder.new(current_user, labels_params).execute
     end
@@ -103,7 +103,7 @@ module IssuableCollections
       # @filter_params[:authorized_only] = true
     end
 
-    @filter_params.permit(IssuableFinder::VALID_PARAMS)
+    @filter_params.permit(finder_type.valid_params)
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
@@ -148,7 +148,7 @@ module IssuableCollections
 
   def finder
     strong_memoize(:finder) do
-      issuable_finder_for(@finder_type) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+      issuable_finder_for(finder_type)
     end
   end
 

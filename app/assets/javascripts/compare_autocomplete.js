@@ -9,7 +9,7 @@ export default function initCompareAutocomplete() {
     $dropdown = $(this);
     selected = $dropdown.data('selected');
     const $dropdownContainer = $dropdown.closest('.dropdown');
-    const $fieldInput = $(`input[name="${$dropdown.data('field-name')}"]`, $dropdownContainer);
+    const $fieldInput = $(`input[name="${$dropdown.data('fieldName')}"]`, $dropdownContainer);
     const $filterInput = $('input[type="search"]', $dropdownContainer);
     $dropdown.glDropdown({
       data: function(term, callback) {
@@ -25,7 +25,7 @@ export default function initCompareAutocomplete() {
       selectable: true,
       filterable: true,
       filterRemote: true,
-      fieldName: $dropdown.data('field-name'),
+      fieldName: $dropdown.data('fieldName'),
       filterInput: 'input[type="search"]',
       renderRow: function(ref) {
         var link;

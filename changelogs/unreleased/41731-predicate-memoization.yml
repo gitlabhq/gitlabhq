@@ -1,5 +1,0 @@
----
-title: Properly memoize some predicate methods
-merge_request: 16329
-author:
-type: performance

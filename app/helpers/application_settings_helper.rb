@@ -78,7 +78,7 @@ module ApplicationSettingsHelper
 
       label_tag(checkbox_name, class: css_class) do
         check_box_tag(checkbox_name, source, !disabled,
-                      autocomplete: 'off') + Gitlab::OAuth::Provider.label_for(source)
+                      autocomplete: 'off') + Gitlab::Auth::OAuth::Provider.label_for(source)
       end
     end
   end
@@ -200,6 +200,7 @@ module ApplicationSettingsHelper
       :metrics_port,
       :metrics_sample_interval,
       :metrics_timeout,
+      :pages_domain_verification_enabled,
       :password_authentication_enabled_for_web,
       :password_authentication_enabled_for_git,
       :performance_bar_allowed_group_id,

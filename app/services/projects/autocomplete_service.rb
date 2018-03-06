@@ -50,16 +50,7 @@ module Projects
 
       return [] unless noteable&.is_a?(Issuable)
 
-      opts = {
-        project: project,
-        issuable: noteable,
-        current_user: current_user
-      }
-      QuickActions::InterpretService.command_definitions.map do |definition|
-        next unless definition.available?(opts)
-
-        definition.to_h(opts)
-      end.compact
+      QuickActions::InterpretService.new(project, current_user).available_commands(noteable)
     end
   end
 end

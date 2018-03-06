@@ -34,6 +34,12 @@ describe MergeRequests::RemoveApprovalService do
 
         execute!
       end
+
+      it 'resets the cache for approvals' do
+        expect(merge_request).to receive(:reset_approval_cache!)
+
+        execute!
+      end
     end
 
     context 'with an approved merge request' do

@@ -1,16 +1,33 @@
 import _ from 'underscore';
 import DropLab from '~/droplab/drop_lab';
 import FilteredSearchContainer from './container';
+import FilteredSearchTokenKeys from './filtered_search_token_keys';
+import DropdownUtils from './dropdown_utils';
+import DropdownHint from './dropdown_hint';
+import DropdownEmoji from './dropdown_emoji';
+import DropdownNonUser from './dropdown_non_user';
+import DropdownUser from './dropdown_user';
+import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
 
-class FilteredSearchDropdownManager {
-  constructor(baseEndpoint = '', tokenizer, page, isGroup, filteredSearchTokenKeys) {
+export default class FilteredSearchDropdownManager {
+  constructor({
+    baseEndpoint = '',
+    tokenizer,
+    page,
+    isGroup,
+    isGroupAncestor,
+    isGroupDecendent,
+    filteredSearchTokenKeys,
+  }) {
     this.container = FilteredSearchContainer.container;
     this.baseEndpoint = baseEndpoint.replace(/\/$/, '');
     this.tokenizer = tokenizer;
-    this.filteredSearchTokenKeys = filteredSearchTokenKeys;
+    this.filteredSearchTokenKeys = filteredSearchTokenKeys || FilteredSearchTokenKeys;
     this.filteredSearchInput = this.container.querySelector('.filtered-search');
     this.page = page;
-    this.groupsOnly = page === 'boards' && isGroup;
+    this.groupsOnly = isGroup;
+    this.groupAncestor = isGroupAncestor;
+    this.isGroupDecendent = isGroupDecendent;
 
     this.setupMapping();
 
@@ -34,48 +51,48 @@ class FilteredSearchDropdownManager {
     const allowedMappings = {
       hint: {
         reference: null,
-        gl: 'DropdownHint',
+        gl: DropdownHint,
         element: this.container.querySelector('#js-dropdown-hint'),
       },
     };
     const availableMappings = {
       author: {
         reference: null,
-        gl: 'DropdownUser',
+        gl: DropdownUser,
         element: this.container.querySelector('#js-dropdown-author'),
-      },
-      label: {
-        reference: null,
-        gl: 'DropdownNonUser',
-        extraArguments: {
-          endpoint: `${this.baseEndpoint}/labels.json${this.groupsOnly ? '?only_group_labels=true' : ''}`,
-          symbol: '~',
-          preprocessing: gl.DropdownUtils.duplicateLabelPreprocessing,
-        },
-        element: this.container.querySelector('#js-dropdown-label'),
       },
       assignee: {
         reference: null,
-        gl: 'DropdownUser',
+        gl: DropdownUser,
         element: this.container.querySelector('#js-dropdown-assignee'),
       },
       milestone: {
         reference: null,
-        gl: 'DropdownNonUser',
+        gl: DropdownNonUser,
         extraArguments: {
-          endpoint: `${this.baseEndpoint}/milestones.json${this.groupsOnly ? '?only_group_milestones=true' : ''}`,
+          endpoint: this.getMilestoneEndpoint(),
           symbol: '%',
         },
         element: this.container.querySelector('#js-dropdown-milestone'),
       },
+      label: {
+        reference: null,
+        gl: DropdownNonUser,
+        extraArguments: {
+          endpoint: this.getLabelsEndpoint(),
+          symbol: '~',
+          preprocessing: DropdownUtils.duplicateLabelPreprocessing,
+        },
+        element: this.container.querySelector('#js-dropdown-label'),
+      },
       'my-reaction': {
         reference: null,
-        gl: 'DropdownEmoji',
+        gl: DropdownEmoji,
         element: this.container.querySelector('#js-dropdown-my-reaction'),
       },
       weight: {
         reference: null,
-        gl: 'DropdownNonUser',
+        gl: DropdownNonUser,
         element: this.container.querySelector('#js-dropdown-weight'),
       },
     };
@@ -89,14 +106,36 @@ class FilteredSearchDropdownManager {
     this.mapping = allowedMappings;
   }
 
+  getMilestoneEndpoint() {
+    let endpoint = `${this.baseEndpoint}/milestones.json`;
+
+    // EE-only
+    if (this.groupsOnly) {
+      endpoint = `${endpoint}?only_group_milestones=true`;
+    }
+
+    return endpoint;
+  }
+
+  getLabelsEndpoint() {
+    let endpoint = `${this.baseEndpoint}/labels.json`;
+
+    // EE-only
+    if (this.groupsOnly) {
+      endpoint = `${endpoint}?only_group_labels=true`;
+    }
+
+    return endpoint;
+  }
+
   static addWordToInput(tokenName, tokenValue = '', clicked = false) {
     const input = FilteredSearchContainer.container.querySelector('.filtered-search');
 
-    gl.FilteredSearchVisualTokens.addFilterVisualToken(tokenName, tokenValue);
+    FilteredSearchVisualTokens.addFilterVisualToken(tokenName, tokenValue);
     input.value = '';
 
     if (clicked) {
-      gl.FilteredSearchVisualTokens.moveInputToTheRight();
+      FilteredSearchVisualTokens.moveInputToTheRight();
     }
   }
 
@@ -137,9 +176,9 @@ class FilteredSearchDropdownManager {
       const extraArguments = mappingKey.extraArguments || {};
       const glArguments = Object.assign({}, defaultArguments, extraArguments);
 
-      // Passing glArguments to `new gl[glClass](<arguments>)`
+      // Passing glArguments to `new glClass(<arguments>)`
       mappingKey.reference =
-        new (Function.prototype.bind.apply(gl[glClass], [null, glArguments]))();
+        new (Function.prototype.bind.apply(glClass, [null, glArguments]))();
     }
 
     if (firstLoad) {
@@ -177,7 +216,7 @@ class FilteredSearchDropdownManager {
   }
 
   setDropdown() {
-    const query = gl.DropdownUtils.getSearchQuery(true);
+    const query = DropdownUtils.getSearchQuery(true);
     const { lastToken, searchToken } =
       this.tokenizer.processTokens(query, this.filteredSearchTokenKeys.getKeys());
 
@@ -222,6 +261,3 @@ class FilteredSearchDropdownManager {
     this.droplab.destroy();
   }
 }
-
-window.gl = window.gl || {};
-gl.FilteredSearchDropdownManager = FilteredSearchDropdownManager;

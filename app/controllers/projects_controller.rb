@@ -43,11 +43,11 @@ class ProjectsController < Projects::ApplicationController
       cookies[:issue_board_welcome_hidden] = { path: project_path(@project), value: nil, expires: Time.at(0) }
 
       redirect_to(
-        project_path(@project),
+        project_path(@project, custom_import_params),
         notice: _("Project '%{project_name}' was successfully created.") % { project_name: @project.name }
       )
     else
-      render 'new'
+      render 'new', locals: { active_tab: active_new_project_tab }
     end
   end
 
@@ -104,9 +104,8 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def show
-    # If we're importing while we do have a repository, we're simply updating the mirror.
-    if @project.import_in_progress? && !@project.updating_mirror?
-      redirect_to project_import_path(@project)
+    if @project.import_in_progress?
+      redirect_to project_import_path(@project, custom_import_params)
       return
     end
 
@@ -117,6 +116,8 @@ class ProjectsController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         @notification_setting = current_user.notification_settings_for(@project) if current_user
+        @project = @project.present(current_user: current_user)
+
         render_landing_page
       end
 
@@ -282,7 +283,6 @@ class ProjectsController < Projects::ApplicationController
         @project_wiki = @project.wiki
         @wiki_home = @project_wiki.find_page('home', params[:version_id])
       elsif @project.feature_available?(:issues, current_user)
-        @finder_type = IssuesFinder
         @issues = issuables_collection.page(params[:page])
         @collection_type = 'Issue'
         @issuable_meta_data = issuable_meta_data(@issues, @collection_type)
@@ -290,6 +290,10 @@ class ProjectsController < Projects::ApplicationController
 
       render :show
     end
+  end
+
+  def finder_type
+    IssuesFinder
   end
 
   def determine_layout
@@ -355,6 +359,14 @@ class ProjectsController < Projects::ApplicationController
         wiki_access_level
       ]
     ]
+  end
+
+  def custom_import_params
+    {}
+  end
+
+  def active_new_project_tab
+    project_params[:import_url].present? ? 'import' : 'blank'
   end
 
   def repo_exists?

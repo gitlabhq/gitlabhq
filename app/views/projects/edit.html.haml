@@ -5,7 +5,6 @@
 
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag('common_vue')
-  = webpack_bundle_tag('service_desk')
 
 .project-edit-container
   %section.settings.general-settings.no-animate{ class: ('expanded' if expanded) }
@@ -36,6 +35,8 @@
               Project description
               %span.light (optional)
             = f.text_area :description, class: "form-control", rows: 3, maxlength: 250
+
+          = render 'projects/ee/classification_policy_settings',  f: f
 
           - unless @project.empty_repo?
             .form-group
@@ -77,6 +78,7 @@
         Enable or disable certain project features and choose access levels.
     .settings-content
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "sharing-permissions-form" }, authenticity_token: true do |f|
+        -# haml-lint:disable InlineJavaScript
         %script.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data(@project)
         .js-project-permissions-form
         = f.submit 'Save changes', class: "btn btn-save"
@@ -96,7 +98,7 @@
 
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "merge-request-settings-form" }, authenticity_token: true do |f|
         = render 'projects/ee/merge_request_settings', form: f
-        = f.submit 'Save changes', class: "btn btn-save"
+        = f.submit 'Save changes', class: "btn btn-save qa-save-merge-request-changes"
 
   = render 'projects/ee/service_desk_settings'
 

@@ -15,12 +15,15 @@ are very appreciative of the work done by translators and proofreaders!
 - Dutch
 - Esperanto
 - French
+  - Rémy Coutable - [GitLab](https://gitlab.com/rymai), [Crowdin](https://crowdin.com/profile/rymai)
 - German
 - Italian
   - Paolo Falomo - [GitLab](https://gitlab.com/paolofalomo), [Crowdin](https://crowdin.com/profile/paolo.falomo)
 - Japanese
 - Korean
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
+- Polish
+  - Filip Mech - [GitLab](https://gitlab.com/mehenz), [Crowdin](https://crowdin.com/profile/mehenz)
 - Portuguese, Brazilian
   - Paulo George Gomes Bezerra - [GitLab](https://gitlab.com/paulobezerra), [Crowdin](https://crowdin.com/profile/paulogomes.rep)
 - Russian
@@ -37,12 +40,31 @@ are very appreciative of the work done by translators and proofreaders!
 > sure that you have a history of contributing translations to the GitLab
 > project.
 
-1. Once your translations have been accepted,
-   [open a merge request](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/new)
-   to request Proofreader permissions and add yourself to the list above.
+1. Contribute translations to GitLab. See instructions for
+   [translating GitLab](translation.md).
+
+    Translating GitLab is a community effort that requires team work and
+    attention to detail. Proofreaders play an important role helping new
+    contributors, and ensuring the consistency and quality of translations.
+    Your conduct and contributions as a translator should reflect this before
+    requesting to be a proofreader.
+
+1. Request proofreader permissions by opening a merge request to add yourself
+   to the list of proofreaders.
+
+    Open the [proofreader.md source file][proofreader-src] and click **Edit**.
+
+    Add your language in alphabetical order, and add yourself to the list
+    including:
+
+    - name
+    - link to your GitLab profile
+    - link to your CrowdIn profile
 
     In the merge request description, please include links to any projects you
     have previously translated.
 
 1. Your request to become a proofreader will be considered on the merits of
    your previous translations.
+
+[proofreader-src]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/development/i18n/proofreader.md

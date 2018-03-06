@@ -6,7 +6,3 @@
   "empty-state-svg-path" => image_path('illustrations/pipelines_empty.svg'),
   "error-state-svg-path" => image_path('illustrations/pipelines_failed.svg'),
 } }
-
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_vue')
-  = page_specific_javascript_bundle_tag('commit_pipelines')

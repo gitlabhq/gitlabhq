@@ -1,9 +1,12 @@
-# How to configure LDAP with GitLab EE
+---
+author: Chris Wilson
+author_gitlab: MrChrisW
+level: intermediary
+article_type: admin guide
+date: 2017-05-03
+---
 
-> **[Article Type](../../../development/writing_documentation.html#types-of-technical-articles):** admin guide ||
-> **Level:** intermediary ||
-> **Author:** [Chris Wilson](https://gitlab.com/MrChrisW) ||
-> **Publication date:** 2017/05/03
+# How to configure LDAP with GitLab EE
 
 ## Introduction
 

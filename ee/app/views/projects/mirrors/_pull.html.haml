@@ -47,6 +47,15 @@
           = f.label :only_mirror_protected_branches, class: 'label-light'
           = link_to icon('question-circle'), help_page_path('user/project/protected_branches')
 
+      .form-group
+        = f.check_box :mirror_overwrites_diverged_branches, class: 'pull-left'
+        .prepend-left-20
+          = f.label :mirror_overwrites_diverged_branches, "Overwrite diverged branches", class: 'label-light'
+          .help-block
+            If disabled, a diverged local branch will not be automatically updated with commits from its remote counterpart,
+            to prevent local data loss. If the default branch (#{@project.default_branch}) has diverged and cannot be updated,
+            mirroring will fail. Other diverged branches are silently ignored.
+
       - if @project.builds_enabled?
         = render "shared/mirror_trigger_builds_setting", f: f
 

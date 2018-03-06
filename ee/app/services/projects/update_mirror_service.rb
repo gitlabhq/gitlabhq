@@ -45,10 +45,7 @@ module Projects
         elsif local_branch.dereferenced_target == upstream_branch.dereferenced_target
           # Already up to date
         elsif repository.diverged_from_upstream?(name)
-          # Cannot be updated
-          if name == project.default_branch
-            errors << "The default branch (#{project.default_branch}) has diverged from its upstream counterpart and could not be updated automatically."
-          end
+          handle_diverged_branch(upstream_branch, local_branch, name, errors)
         else
           begin
             repository.ff_merge(current_user, upstream_branch.dereferenced_target, name)
@@ -93,6 +90,20 @@ module Projects
       end
 
       fetch_result
+    end
+
+    def handle_diverged_branch(upstream, local, branch_name, errors)
+      if project.mirror_overwrites_diverged_branches?
+        newrev = upstream.dereferenced_target.sha
+        oldrev = local.dereferenced_target.sha
+
+        repository.update_branch(current_user, branch_name, newrev, oldrev)
+      elsif branch_name == project.default_branch
+        # Cannot be updated
+        errors << "The default branch (#{project.default_branch}) has diverged from its upstream counterpart and could not be updated automatically."
+      else
+        # We ignore diverged branches other than the default branch
+      end
     end
 
     # In Git is possible to tag blob objects, and those blob objects don't point to a Git commit so those tags

@@ -137,6 +137,7 @@ class Note < ActiveRecord::Base
 
     def find_discussion(discussion_id)
       notes = where(discussion_id: discussion_id).fresh.to_a
+
       return if notes.empty?
 
       Discussion.build(notes)

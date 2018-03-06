@@ -1,5 +1,0 @@
----
-title: 'Geo: Reset force_redownload flag after successful sync'
-merge_request:
-author:
-type: fixed

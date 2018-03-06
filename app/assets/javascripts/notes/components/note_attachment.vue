@@ -30,8 +30,7 @@
         rel="noopener noreferrer">
         <i
           class="fa fa-paperclip"
-          aria-hidden="true"
-        >
+          aria-hidden="true">
         </i>
         {{ attachment.filename }}
       </a>

@@ -1,5 +1,7 @@
 module Issues
   class MoveService < Issues::BaseService
+    prepend ::EE::Issues::MoveService
+
     MoveError = Class.new(StandardError)
 
     def execute(issue, new_project)
@@ -19,19 +21,10 @@ module Issues
       # on rewriting notes (unfolding references)
       #
       ActiveRecord::Base.transaction do
-        # New issue tasks
-        #
         @new_issue = create_new_issue
 
-        rewrite_notes
-        rewrite_issue_award_emoji
-        add_note_moved_from
-
-        # Old issue tasks
-        #
-        add_note_moved_to
-        close_issue
-        mark_as_moved
+        update_new_issue
+        update_old_issue
       end
 
       notify_participants
@@ -41,11 +34,24 @@ module Issues
 
     private
 
+    def update_new_issue
+      rewrite_notes
+      rewrite_issue_award_emoji
+      add_note_moved_from
+    end
+
+    def update_old_issue
+      add_note_moved_to
+      close_issue
+      mark_as_moved
+    end
+
     def create_new_issue
       new_params = { id: nil, iid: nil, label_ids: cloneable_label_ids,
                      milestone_id: cloneable_milestone_id,
                      project: @new_project, author: @old_issue.author,
-                     description: rewrite_content(@old_issue.description) }
+                     description: rewrite_content(@old_issue.description),
+                     assignee_ids: @old_issue.assignee_ids }
 
       new_params = @old_issue.serializable_hash.symbolize_keys.merge(new_params)
       CreateService.new(@new_project, @current_user, new_params).execute

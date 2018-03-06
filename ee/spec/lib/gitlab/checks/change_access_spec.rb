@@ -236,7 +236,7 @@ describe Gitlab::Checks::ChangeAccess do
               old_rev = new_rev if new_rev
               new_rev = project.repository.create_file(user, file_path, "commit #{file_path}", message: "commit #{file_path}", branch_name: "master")
 
-              allow(project.repository).to receive(:new_commits).and_return(
+              allow(subject).to receive(:commits).and_return(
                 project.repository.commits_between(old_rev, new_rev)
               )
 

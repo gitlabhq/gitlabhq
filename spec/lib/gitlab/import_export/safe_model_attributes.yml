@@ -473,6 +473,7 @@ Project:
 - merge_requests_ff_only_enabled
 - merge_requests_rebase_enabled
 - jobs_cache_index
+- external_authorization_classification_label
 Author:
 - name
 ProjectFeature:
@@ -556,3 +557,12 @@ LfsFileLock:
 - user_id
 - project_id
 - created_at
+Badge:
+- id
+- link_url
+- image_url
+- project_id
+- group_id
+- created_at
+- updated_at
+- type

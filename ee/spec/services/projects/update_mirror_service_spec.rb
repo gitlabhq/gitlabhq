@@ -55,6 +55,8 @@ describe Projects::UpdateMirrorService do
     end
 
     describe "updating branches" do
+      subject { described_class.new(project, project.owner) }
+
       context 'when mirror only protected branches option is set' do
         let(:new_protected_branch_name) { 'new-branch' }
         let(:protected_branch_name) { 'existing-branch' }
@@ -69,7 +71,7 @@ describe Projects::UpdateMirrorService do
 
           stub_fetch_mirror(project)
 
-          described_class.new(project, project.owner).execute
+          subject.execute
 
           expect(project.repository.branch_names).to include(new_protected_branch_name)
         end
@@ -88,7 +90,7 @@ describe Projects::UpdateMirrorService do
 
           stub_fetch_mirror(project)
 
-          described_class.new(project, project.owner).execute
+          subject.execute
 
           expect(project.repository.find_branch(protected_branch_name).dereferenced_target)
             .to eq(project.repository.find_branch('master').dereferenced_target)
@@ -97,7 +99,7 @@ describe Projects::UpdateMirrorService do
         it "does not update unprotected branches" do
           stub_fetch_mirror(project)
 
-          described_class.new(project, project.owner).execute
+          subject.execute
 
           expect(project.repository.find_branch(protected_branch_name).dereferenced_target)
             .not_to eq(project.repository.find_branch('master').dereferenced_target)
@@ -107,7 +109,7 @@ describe Projects::UpdateMirrorService do
       it "creates new branches" do
         stub_fetch_mirror(project)
 
-        described_class.new(project, project.owner).execute
+        subject.execute
 
         expect(project.repository.branch_names).to include('new-branch')
       end
@@ -115,19 +117,49 @@ describe Projects::UpdateMirrorService do
       it "updates existing branches" do
         stub_fetch_mirror(project)
 
-        described_class.new(project, project.owner).execute
+        subject.execute
 
         expect(project.repository.find_branch('existing-branch').dereferenced_target)
           .to eq(project.repository.find_branch('master').dereferenced_target)
       end
 
-      it "doesn't update diverged branches" do
-        stub_fetch_mirror(project)
+      context 'with diverged branches' do
+        before do
+          stub_fetch_mirror(project)
+        end
 
-        described_class.new(project, project.owner).execute
+        context 'when mirror_overwrites_diverged_branches is true' do
+          it 'update diverged branches' do
+            project.mirror_overwrites_diverged_branches = true
 
-        expect(project.repository.find_branch('markdown').dereferenced_target)
-          .not_to eq(project.repository.find_branch('master').dereferenced_target)
+            subject.execute
+
+            expect(project.repository.find_branch('markdown').dereferenced_target)
+                .to eq(project.repository.find_branch('master').dereferenced_target)
+          end
+        end
+
+        context 'when mirror_overwrites_diverged_branches is false' do
+          it "doesn't update diverged branches" do
+            project.mirror_overwrites_diverged_branches = false
+
+            subject.execute
+
+            expect(project.repository.find_branch('markdown').dereferenced_target)
+                .not_to eq(project.repository.find_branch('master').dereferenced_target)
+          end
+        end
+
+        context 'when mirror_overwrites_diverged_branches is nil' do
+          it "doesn't update diverged branches" do
+            project.mirror_overwrites_diverged_branches = nil
+
+            subject.execute
+
+            expect(project.repository.find_branch('markdown').dereferenced_target)
+                .not_to eq(project.repository.find_branch('master').dereferenced_target)
+          end
+        end
       end
 
       describe 'when project is empty' do
@@ -139,7 +171,7 @@ describe Projects::UpdateMirrorService do
           allow(project).to receive(:fetch_mirror) { create_file(repository) }
           expect(CreateBranchService).not_to receive(:create_master_branch)
 
-          described_class.new(project, project.owner).execute
+          subject.execute
 
           expect(repository.branch_names).not_to include('master')
         end

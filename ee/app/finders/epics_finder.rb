@@ -11,6 +11,7 @@ class EpicsFinder < IssuableFinder
     items = by_search(items)
     items = by_author(items)
     items = by_timeframe(items)
+    items = by_label(items)
 
     sort(items)
   end

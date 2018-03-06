@@ -55,7 +55,11 @@ constraints(ProjectUrlConstrainer.new) do
       end
 
       resource :pages, only: [:show, :destroy] do
-        resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains', constraints: { id: %r{[^/]+} }
+        resources :domains, except: :index, controller: 'pages_domains', constraints: { id: %r{[^/]+} } do
+          member do
+            post :verify
+          end
+        end
       end
 
       resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do
@@ -74,7 +78,9 @@ constraints(ProjectUrlConstrainer.new) do
       resource :mattermost, only: [:new, :create]
 
       namespace :prometheus do
-        get :active_metrics
+        resources :metrics, constraints: { id: %r{[^\/]+} }, only: [] do
+          get :active_common, on: :collection
+        end
       end
 
       resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create, :edit, :update] do
@@ -106,6 +112,7 @@ constraints(ProjectUrlConstrainer.new) do
 
           post :remove_wip
           post :assign_related_issues
+          get :discussions, format: :json
           post :rebase
 
           scope constraints: { format: nil }, action: :show do
@@ -212,6 +219,7 @@ constraints(ProjectUrlConstrainer.new) do
           get :builds
           get :failures
           get :status
+          get :security
         end
       end
 

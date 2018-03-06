@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180208183958) do
+ActiveRecord::Schema.define(version: 20180301084653) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -180,6 +180,10 @@ ActiveRecord::Schema.define(version: 20180208183958) do
     t.boolean "mirror_available", default: true, null: false
     t.string "auto_devops_domain"
     t.integer "default_project_creation", default: 2, null: false
+    t.boolean "external_authorization_service_enabled", default: false, null: false
+    t.string "external_authorization_service_url"
+    t.string "external_authorization_service_default_label"
+    t.boolean "pages_domain_verification_enabled", default: true, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -236,6 +240,19 @@ ActiveRecord::Schema.define(version: 20180208183958) do
 
   add_index "award_emoji", ["awardable_type", "awardable_id"], name: "index_award_emoji_on_awardable_type_and_awardable_id", using: :btree
   add_index "award_emoji", ["user_id", "name"], name: "index_award_emoji_on_user_id_and_name", using: :btree
+
+  create_table "badges", force: :cascade do |t|
+    t.string "link_url", null: false
+    t.string "image_url", null: false
+    t.integer "project_id"
+    t.integer "group_id"
+    t.string "type", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+  end
+
+  add_index "badges", ["group_id"], name: "index_badges_on_group_id", using: :btree
+  add_index "badges", ["project_id"], name: "index_badges_on_project_id", using: :btree
 
   create_table "board_assignees", force: :cascade do |t|
     t.integer "board_id", null: false
@@ -514,6 +531,7 @@ ActiveRecord::Schema.define(version: 20180208183958) do
     t.boolean "run_untagged", default: true, null: false
     t.boolean "locked", default: false, null: false
     t.integer "access_level", default: 0, null: false
+    t.string "ip_address"
   end
 
   add_index "ci_runners", ["contacted_at"], name: "index_ci_runners_on_contacted_at", using: :btree
@@ -660,6 +678,7 @@ ActiveRecord::Schema.define(version: 20180208183958) do
     t.string "version", null: false
     t.string "cluster_ip"
     t.text "status_reason"
+    t.string "external_ip"
   end
 
   create_table "clusters_applications_prometheus", force: :cascade do |t|
@@ -670,6 +689,19 @@ ActiveRecord::Schema.define(version: 20180208183958) do
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
   end
+
+  create_table "clusters_applications_runners", force: :cascade do |t|
+    t.integer "cluster_id", null: false
+    t.integer "runner_id"
+    t.integer "status", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.string "version", null: false
+    t.text "status_reason"
+  end
+
+  add_index "clusters_applications_runners", ["cluster_id"], name: "index_clusters_applications_runners_on_cluster_id", unique: true, using: :btree
+  add_index "clusters_applications_runners", ["runner_id"], name: "index_clusters_applications_runners_on_runner_id", using: :btree
 
   create_table "container_repositories", force: :cascade do |t|
     t.integer "project_id", null: false
@@ -1711,10 +1743,16 @@ ActiveRecord::Schema.define(version: 20180208183958) do
     t.string "encrypted_key_iv"
     t.string "encrypted_key_salt"
     t.string "domain"
+    t.datetime_with_timezone "verified_at"
+    t.string "verification_code", null: false
+    t.datetime_with_timezone "enabled_until"
   end
 
   add_index "pages_domains", ["domain"], name: "index_pages_domains_on_domain", unique: true, using: :btree
+  add_index "pages_domains", ["project_id", "enabled_until"], name: "index_pages_domains_on_project_id_and_enabled_until", using: :btree
   add_index "pages_domains", ["project_id"], name: "index_pages_domains_on_project_id", using: :btree
+  add_index "pages_domains", ["verified_at", "enabled_until"], name: "index_pages_domains_on_verified_at_and_enabled_until", using: :btree
+  add_index "pages_domains", ["verified_at"], name: "index_pages_domains_on_verified_at", using: :btree
 
   create_table "path_locks", force: :cascade do |t|
     t.string "path", null: false
@@ -1855,7 +1893,7 @@ ActiveRecord::Schema.define(version: 20180208183958) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "creator_id"
-    t.integer "namespace_id"
+    t.integer "namespace_id", null: false
     t.datetime "last_activity_at"
     t.string "import_url"
     t.integer "visibility_level", default: 0, null: false
@@ -1913,12 +1951,15 @@ ActiveRecord::Schema.define(version: 20180208183958) do
     t.boolean "only_mirror_protected_branches"
     t.boolean "pull_mirror_available_overridden"
     t.integer "jobs_cache_index"
+    t.boolean "mirror_overwrites_diverged_branches"
+    t.string "external_authorization_classification_label"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
   add_index "projects", ["created_at"], name: "index_projects_on_created_at", using: :btree
   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree
   add_index "projects", ["description"], name: "index_projects_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
+  add_index "projects", ["id"], name: "index_projects_on_id_partial_for_visibility", unique: true, where: "(visibility_level = ANY (ARRAY[10, 20]))", using: :btree
   add_index "projects", ["last_activity_at"], name: "index_projects_on_last_activity_at", using: :btree
   add_index "projects", ["last_repository_check_failed"], name: "index_projects_on_last_repository_check_failed", using: :btree
   add_index "projects", ["last_repository_updated_at"], name: "index_projects_on_last_repository_updated_at", using: :btree
@@ -2473,6 +2514,8 @@ ActiveRecord::Schema.define(version: 20180208183958) do
 
   add_foreign_key "approvals", "merge_requests", name: "fk_310d714958", on_delete: :cascade
   add_foreign_key "approver_groups", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "badges", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "badges", "projects", on_delete: :cascade
   add_foreign_key "board_assignees", "boards", on_delete: :cascade
   add_foreign_key "board_assignees", "users", column: "assignee_id", on_delete: :cascade
   add_foreign_key "board_labels", "boards", on_delete: :cascade
@@ -2516,6 +2559,8 @@ ActiveRecord::Schema.define(version: 20180208183958) do
   add_foreign_key "clusters", "users", on_delete: :nullify
   add_foreign_key "clusters_applications_helm", "clusters", on_delete: :cascade
   add_foreign_key "clusters_applications_ingress", "clusters", on_delete: :cascade
+  add_foreign_key "clusters_applications_runners", "ci_runners", column: "runner_id", name: "fk_02de2ded36", on_delete: :nullify
+  add_foreign_key "clusters_applications_runners", "clusters", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade

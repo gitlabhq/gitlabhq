@@ -10,5 +10,27 @@ module EE
         super
       end
     end
+
+    private
+
+    def get_group_sidebar_links
+      links = super
+
+      if can?(current_user, :read_cross_project)
+        if @group.feature_available?(:contribution_analytics) || show_promotions?
+          links << :contribution_analytics
+        end
+
+        if @group.feature_available?(:group_issue_boards)
+          links << :boards
+        end
+
+        if @group.feature_available?(:epics)
+          links << :epics
+        end
+      end
+
+      links
+    end
   end
 end

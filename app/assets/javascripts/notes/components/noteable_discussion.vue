@@ -1,5 +1,7 @@
 <script>
   import { mapActions, mapGetters } from 'vuex';
+  import resolveDiscussionsSvg from 'icons/_icon_mr_issue.svg';
+  import nextDiscussionsSvg from 'icons/_next_discussion.svg';
   import Flash from '../../flash';
   import { SYSTEM_NOTE } from '../constants';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -8,13 +10,19 @@
   import noteSignedOutWidget from './note_signed_out_widget.vue';
   import noteEditedText from './note_edited_text.vue';
   import noteForm from './note_form.vue';
+  import diffWithNote from './diff_with_note.vue';
   import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
   import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
   import autosave from '../mixins/autosave';
+  import noteable from '../mixins/noteable';
+  import resolvable from '../mixins/resolvable';
+  import tooltip from '../../vue_shared/directives/tooltip';
+  import { scrollToElement } from '../../lib/utils/common_utils';
 
   export default {
     components: {
       noteableNote,
+      diffWithNote,
       userAvatarLink,
       noteHeader,
       noteSignedOutWidget,
@@ -23,8 +31,13 @@
       placeholderNote,
       placeholderSystemNote,
     },
+    directives: {
+      tooltip,
+    },
     mixins: [
       autosave,
+      noteable,
+      resolvable,
     ],
     props: {
       note: {
@@ -35,14 +48,25 @@
     data() {
       return {
         isReplying: false,
+        isResolving: false,
+        resolveAsThread: true,
       };
     },
     computed: {
       ...mapGetters([
         'getNoteableData',
+        'discussionCount',
+        'resolvedDiscussionCount',
+        'unresolvedDiscussions',
       ]),
       discussion() {
-        return this.note.notes[0];
+        return {
+          ...this.note.notes[0],
+          truncatedDiffLines: this.note.truncated_diff_lines,
+          diffFile: this.note.diff_file,
+          diffDiscussion: this.note.diff_discussion,
+          imageDiffHtml: this.note.image_diff_html,
+        };
       },
       author() {
         return this.discussion.author;
@@ -71,26 +95,40 @@
 
         return null;
       },
+      hasUnresolvedDiscussion() {
+        return this.unresolvedDiscussions.length > 0;
+      },
+      wrapperComponent() {
+        return (this.discussion.diffDiscussion && this.discussion.diffFile) ? diffWithNote : 'div';
+      },
+      wrapperClass() {
+        return this.isDiffDiscussion ? '' : 'panel panel-default';
+      },
     },
     mounted() {
       if (this.isReplying) {
-        this.initAutoSave();
+        this.initAutoSave(this.discussion.noteable_type);
       }
     },
     updated() {
       if (this.isReplying) {
         if (!this.autosave) {
-          this.initAutoSave();
+          this.initAutoSave(this.discussion.noteable_type);
         } else {
           this.setAutoSave();
         }
       }
+    },
+    created() {
+      this.resolveDiscussionsSvg = resolveDiscussionsSvg;
+      this.nextDiscussionsSvg = nextDiscussionsSvg;
     },
     methods: {
       ...mapActions([
         'saveNote',
         'toggleDiscussion',
         'removePlaceholderNotes',
+        'toggleResolveNote',
       ]),
       componentName(note) {
         if (note.isPlaceholderNote) {
@@ -103,7 +141,7 @@
         return noteableNote;
       },
       componentData(note) {
-        return note.isPlaceholderNote ? note.notes[0] : note;
+        return note.isPlaceholderNote ? this.note.notes[0] : note;
       },
       toggleDiscussionHandler() {
         this.toggleDiscussion({ discussionId: this.note.id });
@@ -128,7 +166,7 @@
           flashContainer: this.$el,
           data: {
             in_reply_to_discussion_id: this.note.reply_id,
-            target_type: 'issue',
+            target_type: this.noteableType,
             target_id: this.discussion.noteable_id,
             note: { note: noteText },
           },
@@ -152,12 +190,27 @@ Please check your network connection and try again.`;
             });
           });
       },
+      jumpToDiscussion() {
+        const unresolvedIds = this.unresolvedDiscussions.map(d => d.id);
+        const index = unresolvedIds.indexOf(this.note.id);
+
+        if (index >= 0 && index !== unresolvedIds.length) {
+          const nextId = unresolvedIds[index + 1];
+          const el = document.querySelector(`[data-discussion-id="${nextId}"]`);
+
+          if (el) {
+            scrollToElement(el);
+          }
+        }
+      },
     },
   };
 </script>
 
 <template>
-  <li class="note note-discussion timeline-entry">
+  <li
+    :data-discussion-id="note.id"
+    class="note note-discussion timeline-entry">
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
         <user-avatar-link
@@ -175,6 +228,7 @@ Please check your network connection and try again.`;
               :created-at="discussion.created_at"
               :note-id="discussion.id"
               :include-toggle="true"
+              :expanded="note.expanded"
               @toggleHandler="toggleDiscussionHandler"
               action-text="started a discussion"
               class="discussion"
@@ -187,43 +241,103 @@ Please check your network connection and try again.`;
               class-name="discussion-headline-light js-discussion-headline"
             />
           </div>
-        </div>
-        <div
-          v-if="note.expanded"
-          class="discussion-body">
-          <div class="panel panel-default">
-            <div class="discussion-notes">
-              <ul class="notes">
-                <component
-                  v-for="note in note.notes"
-                  :is="componentName(note)"
-                  :note="componentData(note)"
-                  :key="note.id"
-                />
-              </ul>
-              <div
-                :class="{ 'is-replying': isReplying }"
-                class="discussion-reply-holder">
-                <button
-                  v-if="canReply && !isReplying"
-                  @click="showReplyForm"
-                  type="button"
-                  class="js-vue-discussion-reply btn btn-text-field"
-                  title="Add a reply">
-                  Reply...
-                </button>
-                <note-form
-                  v-if="isReplying"
-                  save-button-title="Comment"
-                  :discussion="note"
-                  :is-editing="false"
-                  @handleFormUpdate="saveReply"
-                  @cancelFormEdition="cancelReplyForm"
-                  ref="noteForm"
-                />
-                <note-signed-out-widget v-if="!canReply" />
+          <div
+            v-if="note.expanded"
+            class="discussion-body">
+            <component
+              :is="wrapperComponent"
+              :discussion="discussion"
+              :class="wrapperClass"
+            >
+              <div class="discussion-notes">
+                <ul class="notes">
+                  <component
+                    v-for="note in note.notes"
+                    :is="componentName(note)"
+                    :note="componentData(note)"
+                    :key="note.id"
+                  />
+                </ul>
+                <div
+                  :class="{ 'is-replying': isReplying }"
+                  class="discussion-reply-holder">
+                  <template v-if="!isReplying && canReply">
+                    <div
+                      class="btn-group-justified discussion-with-resolve-btn"
+                      role="group">
+                      <div
+                        class="btn-group"
+                        role="group">
+                        <button
+                          @click="showReplyForm"
+                          type="button"
+                          class="js-vue-discussion-reply btn btn-text-field"
+                          title="Add a reply">Reply...</button>
+                      </div>
+                      <div
+                        v-if="note.resolvable"
+                        class="btn-group"
+                        role="group">
+                        <button
+                          @click="resolveHandler()"
+                          type="button"
+                          class="btn btn-default"
+                        >
+                          <i
+                            v-if="isResolving"
+                            aria-hidden="true"
+                            class="fa fa-spinner fa-spin"
+                          ></i>
+                          {{ resolveButtonTitle }}
+                        </button>
+                      </div>
+                      <div
+                        class="btn-group discussion-actions"
+                        role="group">
+                        <div
+                          v-if="note.resolvable && !discussionResolved"
+                          class="btn-group"
+                          role="group">
+                          <a
+                            :href="note.resolve_with_issue_path"
+                            v-tooltip
+                            class="new-issue-for-discussion btn
+                              btn-default discussion-create-issue-btn"
+                            title="Resolve this discussion in a new issue"
+                            data-container="body"
+                          >
+                            <span v-html="resolveDiscussionsSvg"></span>
+                          </a>
+                        </div>
+                        <div
+                          v-if="hasUnresolvedDiscussion"
+                          class="btn-group"
+                          role="group">
+                          <button
+                            @click="jumpToDiscussion"
+                            v-tooltip
+                            class="btn btn-default discussion-next-btn"
+                            title="Jump to next unresolved discussion"
+                            data-container="body"
+                          >
+                            <span v-html="nextDiscussionsSvg"></span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+                  <note-form
+                    v-if="isReplying"
+                    save-button-title="Comment"
+                    :note="note"
+                    :is-editing="false"
+                    @handleFormUpdate="saveReply"
+                    @cancelFormEdition="cancelReplyForm"
+                    ref="noteForm" />
+                  <note-signed-out-widget v-if="!canReply" />
+                </div>
               </div>
-            </div>
+            </component>
           </div>
         </div>
       </div>

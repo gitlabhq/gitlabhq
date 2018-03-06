@@ -19,7 +19,7 @@
             %span.light #{label}:
             %strong= value
 
-    .panel.panel-default
+    .panel.panel-default.js-license-info-panel
       .panel-heading
         Details
       %ul.well-list
@@ -39,9 +39,11 @@
             - else
               Expires:
           - if @license.will_expire? && @license.active?
-            %strong= time_ago_with_tooltip(@license.expires_at)
             - if @license.trial?
-              %span Free trial will expire in #{pluralize(@license.remaining_days, 'day')}
+              %strong.has-tooltip{ title: @license.expires_at.to_formatted_s(:long), data: { placement: 'top' } }
+                Free trial will expire in #{pluralize(@license.remaining_days, 'day')}
+            - else
+              %strong= time_ago_with_tooltip(@license.expires_at)
           - else
             %strong Never
 

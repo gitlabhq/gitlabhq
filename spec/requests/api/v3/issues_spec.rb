@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::Issues, :mailer do
+describe API::V3::Issues do
   set(:user)        { create(:user) }
   set(:user2)       { create(:user) }
   set(:non_member)  { create(:user) }
@@ -782,18 +782,6 @@ describe API::V3::Issues, :mailer do
       expect(json_response['error']).to eq('confidential is invalid')
     end
 
-    it "sends notifications for subscribers of newly added labels" do
-      label = project.labels.first
-      label.toggle_subscription(user2, project)
-
-      perform_enqueued_jobs do
-        post v3_api("/projects/#{project.id}/issues", user),
-          title: 'new issue', labels: label.title
-      end
-
-      should_email(user2)
-    end
-
     it "returns a 400 bad request if title not given" do
       post v3_api("/projects/#{project.id}/issues", user), labels: 'label, label2'
 
@@ -1047,18 +1035,6 @@ describe API::V3::Issues, :mailer do
       expect(json_response['labels']).to eq([label.title])
     end
 
-    it "sends notifications for subscribers of newly added labels when issue is updated" do
-      label = create(:label, title: 'foo', color: '#FFAABB', project: project)
-      label.toggle_subscription(user2, project)
-
-      perform_enqueued_jobs do
-        put v3_api("/projects/#{project.id}/issues/#{issue.id}", user),
-          title: 'updated title', labels: label.title
-      end
-
-      should_email(user2)
-    end
-
     it 'removes all labels' do
       put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), labels: ''
 
@@ -1231,7 +1207,7 @@ describe API::V3::Issues, :mailer do
 
     context 'when issue does not exist' do
       it 'returns 404 when trying to move an issue' do
-        delete v3_api("/projects/#{project.id}/issues/123", user)
+        delete v3_api("/projects/#{project.id}/issues/999999", user)
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -1239,7 +1215,7 @@ describe API::V3::Issues, :mailer do
   end
 
   describe '/projects/:id/issues/:issue_id/move' do
-    let!(:target_project) { create(:project, path: 'project2', creator_id: user.id, namespace: user.namespace ) }
+    let!(:target_project) { create(:project, creator_id: user.id, namespace: user.namespace ) }
     let!(:target_project2) { create(:project, creator_id: non_member.id, namespace: non_member.namespace ) }
 
     it 'moves an issue' do
@@ -1280,7 +1256,7 @@ describe API::V3::Issues, :mailer do
 
     context 'when issue does not exist' do
       it 'returns 404 when trying to move an issue' do
-        post v3_api("/projects/#{project.id}/issues/123/move", user),
+        post v3_api("/projects/#{project.id}/issues/999999/move", user),
                  to_project_id: target_project.id
 
         expect(response).to have_gitlab_http_status(404)
@@ -1290,7 +1266,7 @@ describe API::V3::Issues, :mailer do
 
     context 'when source project does not exist' do
       it 'returns 404 when trying to move an issue' do
-        post v3_api("/projects/123/issues/#{issue.id}/move", user),
+        post v3_api("/projects/0/issues/#{issue.id}/move", user),
                  to_project_id: target_project.id
 
         expect(response).to have_gitlab_http_status(404)
@@ -1301,7 +1277,7 @@ describe API::V3::Issues, :mailer do
     context 'when target project does not exist' do
       it 'returns 404 when trying to move an issue' do
         post v3_api("/projects/#{project.id}/issues/#{issue.id}/move", user),
-                 to_project_id: 123
+                 to_project_id: 0
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -1323,7 +1299,7 @@ describe API::V3::Issues, :mailer do
     end
 
     it 'returns 404 if the issue is not found' do
-      post v3_api("/projects/#{project.id}/issues/123/subscription", user)
+      post v3_api("/projects/#{project.id}/issues/999999/subscription", user)
 
       expect(response).to have_gitlab_http_status(404)
     end
@@ -1350,7 +1326,7 @@ describe API::V3::Issues, :mailer do
     end
 
     it 'returns 404 if the issue is not found' do
-      delete v3_api("/projects/#{project.id}/issues/123/subscription", user)
+      delete v3_api("/projects/#{project.id}/issues/999999/subscription", user)
 
       expect(response).to have_gitlab_http_status(404)
     end

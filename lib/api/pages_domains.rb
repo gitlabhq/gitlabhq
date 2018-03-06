@@ -2,6 +2,8 @@ module API
   class PagesDomains < Grape::API
     include PaginationParams
 
+    PAGES_DOMAINS_ENDPOINT_REQUIREMENTS = API::PROJECT_ENDPOINT_REQUIREMENTS.merge(domain: API::NO_SLASH_URL_PART_REGEX)
+
     before do
       authenticate!
     end
@@ -48,7 +50,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       before do
         require_pages_enabled!
       end
@@ -71,7 +73,7 @@ module API
       params do
         requires :domain, type: String, desc: 'The domain'
       end
-      get ":id/pages/domains/:domain", requirements: { domain: %r{[^/]+} } do
+      get ":id/pages/domains/:domain", requirements: PAGES_DOMAINS_ENDPOINT_REQUIREMENTS do
         authorize! :read_pages, user_project
 
         present pages_domain, with: Entities::PagesDomain
@@ -105,7 +107,7 @@ module API
         optional :certificate, allow_blank: false, types: [File, String], desc: 'The certificate'
         optional :key, allow_blank: false, types: [File, String], desc: 'The key'
       end
-      put ":id/pages/domains/:domain", requirements: { domain: %r{[^/]+} } do
+      put ":id/pages/domains/:domain", requirements: PAGES_DOMAINS_ENDPOINT_REQUIREMENTS do
         authorize! :update_pages, user_project
 
         pages_domain_params = declared(params, include_parent_namespaces: false)
@@ -126,7 +128,7 @@ module API
       params do
         requires :domain, type: String, desc: 'The domain'
       end
-      delete ":id/pages/domains/:domain", requirements: { domain: %r{[^/]+} } do
+      delete ":id/pages/domains/:domain", requirements: PAGES_DOMAINS_ENDPOINT_REQUIREMENTS do
         authorize! :update_pages, user_project
 
         status 204

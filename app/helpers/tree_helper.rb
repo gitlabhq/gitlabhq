@@ -55,7 +55,9 @@ module TreeHelper
   def tree_edit_branch(project = @project, ref = @ref)
     return unless can_edit_tree?(project, ref)
 
-    if can_push_branch?(project, ref)
+    project = project.present(current_user: current_user)
+
+    if project.can_current_user_push_to_branch?(ref)
       ref
     else
       project = tree_edit_project(project)
@@ -79,6 +81,10 @@ module TreeHelper
   def edit_in_new_fork_notice
     "You're not allowed to make changes to this project directly." +
       " A fork of this project has been created that you can make changes in, so you can submit a merge request."
+  end
+
+  def edit_in_new_fork_notice_action(action)
+    edit_in_new_fork_notice + " Try to #{action} this file again."
   end
 
   def commit_in_fork_help

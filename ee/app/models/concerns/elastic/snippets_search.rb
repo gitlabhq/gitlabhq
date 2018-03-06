@@ -66,7 +66,7 @@ module Elastic
                      bool: {
                        should: [
                          { term: { author_id: user.id } },
-                         { terms: { project_id: user.authorized_projects.pluck(:id) } },
+                         { terms: { project_id: authorized_project_ids_for_user(user) } },
                          {
                            bool: {
                              filter: { terms: { visibility_level: [Snippet::PUBLIC, Snippet::INTERNAL] } },
@@ -87,6 +87,14 @@ module Elastic
 
         query_hash[:query][:bool][:filter] = filter
         query_hash
+      end
+
+      def self.authorized_project_ids_for_user(user)
+        if Ability.allowed?(user, :read_cross_project)
+          user.authorized_projects.pluck(:id)
+        else
+          []
+        end
       end
     end
   end

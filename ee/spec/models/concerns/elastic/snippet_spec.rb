@@ -80,6 +80,22 @@ describe Snippet, elastic: true do
         expect(result.records).to match_array [public_snippet, internal_snippet, private_snippet, project_public_snippet, project_internal_snippet, project_private_snippet]
       end
     end
+
+    describe 'when the user cannot read cross project' do
+      before do
+        allow(Ability).to receive(:allowed?).and_call_original
+      end
+
+      it 'returns public, internal snippets, but not project snippets' do
+        member = create(:user)
+        project.add_developer(member)
+        expect(Ability).to receive(:allowed?).with(member, :read_cross_project) { false }
+
+        result = described_class.elastic_search_code('password', options: { user: member })
+
+        expect(result.records).to match_array [public_snippet, internal_snippet]
+      end
+    end
   end
 
   it 'searches snippets by title and file_name' do

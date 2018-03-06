@@ -1,6 +1,0 @@
----
-title: Fixed error 500 when removing an identity with synced attributes and visiting
-  the profile page
-merge_request: 17054
-author:
-type: fixed

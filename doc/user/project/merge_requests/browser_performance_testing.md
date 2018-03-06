@@ -4,13 +4,20 @@
 
 ## Overview
 
-If your application offers a web interface and you are using [GitLab CI/CD](../../../ci/README.md), you can quickly determine the performance impact of pending code changes. GitLab uses [Sitespeed.io](https://www.sitespeed.io), a free and open source tool for measuring the performance of web sites, to analyze the performance of specific pages.
+If your application offers a web interface and you are using
+[GitLab CI/CD](../../../ci/README.md), you can quickly determine the performance
+impact of pending code changes.
 
-GitLab runs the [Sitespeed.io container](https://hub.docker.com/r/sitespeedio/sitespeed.io/) and compares the performance scores for each page between the source and target branches of a merge request. The [Sitespeed.io performance score](https://examples.sitespeed.io/6.0/2017-11-23-23-43-35/help.html#performanceAdvice) is a composite value based on best practices, and we will be expanding support for [additional metrics](https://gitlab.com/gitlab-org/gitlab-ee/issues/4370) in a subsequent release.
+GitLab uses [Sitespeed.io](https://www.sitespeed.io), a free and open source
+tool for measuring the performance of web sites, and has built a simple
+[Sitespeed plugin](https://gitlab.com/gitlab-org/gl-performance)
+which outputs the results in a file called `performance.json`. This plugin
+outputs the performance score for each page that is analyzed.
 
-The difference for each page is then shown right on the merge request:
-
-![Performance Widget](img/browser_performance_testing.png)
+The [Sitespeed.io performance score](https://examples.sitespeed.io/6.0/2017-11-23-23-43-35/help.html#performanceAdvice)
+is a composite value based on best practices, and we will be expanding support
+for [additional metrics](https://gitlab.com/gitlab-org/gitlab-ee/issues/4370)
+in a future release.
 
 ## Use cases
 
@@ -25,14 +32,20 @@ For instance, consider the following workflow:
 
 ## How it works
 
-In order to easily consume the Sitespeed results across multiple pages, GitLab has built a simple [Sitespeed plugin](https://gitlab.com/gitlab-org/gl-performance) which outputs `performance.json`. This plugin outputs the performance score for each page that is analyzed. [Additional metrics](https://gitlab.com/gitlab-org/gitlab-ee/issues/4370) are planned to be supported in a future release.
+First of all, you need to define a job named `performance` in your `.gitlab-ci.yml`
+file. [Check how the `performance` job should look like](../../../ci/examples/browser_performance.md).
 
-In order for the report to show in the merge request, you need to specify a
-`performance` job (exact name) that will analyze the code and upload the resulting
-`performance.json` as an artifact. GitLab will then check this file and show
-the information inside the merge request.
+GitLab runs the [Sitespeed.io container](https://hub.docker.com/r/sitespeedio/sitespeed.io/)
+and compares key performance metrics for each page between the source and target
+branches of a merge request. The difference for each page is then shown right on
+the merge request.
 
-Presently `performance.json` needs to be the only artifact file for the job. We are working on adding support to be able to [include other artifact files](https://gitlab.com/gitlab-org/gitlab-ee/issues/2877), like the broader HTML report, in a subsequent release.
+In order for the report to show in the merge request, there are two
+prerequisites:
+
+- the specified job **must** be named `performance`
+- the resulting report **must** be named `performance.json` and uploaded as an
+  artifact
 
 If the performance report doesn't have anything to compare to, no information
 will be displayed in the merge request area. That is the case when you add the
@@ -40,5 +53,4 @@ will be displayed in the merge request area. That is the case when you add the
 Consecutive merge requests will have something to compare to and the performance
 report will be shown properly.
 
-For more information on how the `performance` job should look, check the
-example on [analyzing a project's performance with Sitespeed.io](../../../ci/examples/browser_performance.md).
+![Performance Widget](img/browser_performance_testing.png)

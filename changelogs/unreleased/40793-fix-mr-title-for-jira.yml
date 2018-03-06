@@ -1,5 +1,0 @@
----
-title: Prevent JIRA issue identifier from being humanized.
-merge_request: 16491
-author: Andrew McCallum
-type: fixed

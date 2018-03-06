@@ -23,7 +23,7 @@ There's also a collection of repositories with [example projects](https://gitlab
 - **Scala**: [Test a Scala application](test-scala-application.md)
 - **Clojure**: [Test a Clojure application](test-clojure-application.md)
 - **Elixir**:
-  - [Test a Phoenix application](test-phoenix-application.md)
+  - [Testing a Phoenix application with GitLab CI/CD](test_phoenix_app_with_gitlab_ci_cd/index.md)
   - [Building an Elixir Release into a Docker image using GitLab CI](https://about.gitlab.com/2016/08/11/building-an-elixir-release-into-docker-image-using-gitlab-ci-part-1/)
 - **iOS and macOS**:
   - [Setting up GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/)
@@ -43,7 +43,7 @@ There's also a collection of repositories with [example projects](https://gitlab
 
 ### Static Application Security Testing (SAST)
 
-- **(Ultimate)** [Scan your code for vulnerabilities](https://docs.gitlab.com/ee/ci/examples/sast.html)
+- **(Ultimate)** [Scan your code for vulnerabilities](sast.md)
 - [Scan your Docker images for vulnerabilities](sast_docker.md)
 
 ### Dynamic Application Security Testing (DAST)

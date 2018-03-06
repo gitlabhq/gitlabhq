@@ -21,23 +21,23 @@ export default class LabelsSelect {
     }
 
     $els.each(function(i, dropdown) {
-      var $block, $colorPreview, $dropdown, $form, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, defaultLabel, enableLabelCreateButton, issueURLSplit, issueUpdateURL, labelHTMLTemplate, labelNoneHTMLTemplate, labelUrl, namespacePath, projectPath, saveLabelData, selectedLabel, showAny, showNo, $sidebarLabelTooltip, initialSelected, $toggleText, fieldName, useId, propertyName, showMenuAbove, $container, $dropdownContainer;
+      var $block, $colorPreview, $dropdown, $form, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, defaultLabel, enableLabelCreateButton, issueURLSplit, issueUpdateURL, labelUrl, namespacePath, projectPath, saveLabelData, selectedLabel, showAny, showNo, $sidebarLabelTooltip, initialSelected, $toggleText, fieldName, useId, propertyName, showMenuAbove, $container, $dropdownContainer;
       $dropdown = $(dropdown);
       $dropdownContainer = $dropdown.closest('.labels-filter');
       $toggleText = $dropdown.find('.dropdown-toggle-text');
-      namespacePath = $dropdown.data('namespace-path');
-      projectPath = $dropdown.data('project-path');
+      namespacePath = $dropdown.data('namespacePath');
+      projectPath = $dropdown.data('projectPath');
       labelUrl = $dropdown.data('labels');
       issueUpdateURL = $dropdown.data('issueUpdate');
       selectedLabel = $dropdown.data('selected');
       if ((selectedLabel != null) && !$dropdown.hasClass('js-multiselect')) {
         selectedLabel = selectedLabel.split(',');
       }
-      showNo = $dropdown.data('show-no');
-      showAny = $dropdown.data('show-any');
+      showNo = $dropdown.data('showNo');
+      showAny = $dropdown.data('showAny');
       showMenuAbove = $dropdown.data('showMenuAbove');
-      defaultLabel = $dropdown.data('default-label');
-      abilityName = $dropdown.data('ability-name');
+      defaultLabel = $dropdown.data('defaultLabel');
+      abilityName = $dropdown.data('abilityName');
       $selectbox = $dropdown.closest('.selectbox');
       $block = $selectbox.closest('.block');
       $form = $dropdown.closest('form, .js-issuable-update');
@@ -45,21 +45,14 @@ export default class LabelsSelect {
       $sidebarLabelTooltip = $block.find('.js-sidebar-labels-tooltip');
       $value = $block.find('.value');
       $loading = $block.find('.block-loading').fadeOut();
-      fieldName = $dropdown.data('field-name');
+      fieldName = $dropdown.data('fieldName');
       useId = $dropdown.is('.js-issuable-form-dropdown, .js-filter-bulk-update, .js-label-sidebar-dropdown');
       propertyName = useId ? 'id' : 'title';
       initialSelected = $selectbox
-        .find('input[name="' + $dropdown.data('field-name') + '"]')
+        .find('input[name="' + $dropdown.data('fieldName') + '"]')
         .map(function () {
           return this.value;
         }).get();
-      if (issueUpdateURL != null) {
-        issueURLSplit = issueUpdateURL.split('/');
-      }
-      if (issueUpdateURL) {
-        labelHTMLTemplate = _.template('<% _.each(labels, function(label){ %> <a href="<%- ["",issueURLSplit[1], issueURLSplit[2],""].join("/") %>issues?label_name[]=<%- encodeURIComponent(label.title) %>"> <span class="label has-tooltip color-label" title="<%- label.description %>" style="background-color: <%- label.color %>; color: <%- label.text_color %>;"> <%- label.title %> </span> </a> <% }); %>');
-        labelNoneHTMLTemplate = '<span class="no-value">None</span>';
-      }
       const handleClick = options.handleClick;
 
       $sidebarLabelTooltip.tooltip();
@@ -91,14 +84,17 @@ export default class LabelsSelect {
             $loading.fadeOut();
             $dropdown.trigger('loaded.gl.dropdown');
             $selectbox.hide();
-            data.issueURLSplit = issueURLSplit;
+            data.issueUpdateURL = issueUpdateURL;
             labelCount = 0;
-            if (data.labels.length) {
-              template = labelHTMLTemplate(data);
+            if (data.labels.length && issueUpdateURL) {
+              template = LabelsSelect.getLabelTemplate({
+                labels: data.labels,
+                issueUpdateURL,
+              });
               labelCount = data.labels.length;
             }
             else {
-              template = labelNoneHTMLTemplate;
+              template = '<span class="no-value">None</span>';
             }
             $value.removeAttr('style').html(template);
             $sidebarCollapsedValue.text(labelCount);
@@ -213,7 +209,7 @@ export default class LabelsSelect {
             }
           }
           if (label.duplicate) {
-            color = gl.DropdownUtils.duplicateLabelColor(label.color);
+            color = DropdownUtils.duplicateLabelColor(label.color);
           }
           else {
             if (label.color != null) {
@@ -242,9 +238,15 @@ export default class LabelsSelect {
         filterable: true,
         selected: $dropdown.data('selected') || [],
         toggleLabel: function(selected, el) {
+          var $dropdownParent = $dropdown.parent();
+          var $dropdownInputField = $dropdownParent.find('.dropdown-input-field');
           var isSelected = el !== null ? el.hasClass('is-active') : false;
           var title = selected.title;
           var selectedLabels = this.selected;
+
+          if ($dropdownInputField.length && $dropdownInputField.val().length) {
+            $dropdownParent.find('.dropdown-input-clear').trigger('click');
+          }
 
           if (selected.id === 0) {
             this.selected = [];
@@ -268,7 +270,7 @@ export default class LabelsSelect {
             return defaultLabel;
           }
         },
-        fieldName: $dropdown.data('field-name'),
+        fieldName: $dropdown.data('fieldName'),
         id: function(label) {
           if (label.id <= 0) return label.title;
 
@@ -316,7 +318,7 @@ export default class LabelsSelect {
         },
         multiSelect: $dropdown.hasClass('js-multiselect'),
         vue: $dropdown.hasClass('js-issue-board-sidebar'),
-        clicked: function(clickEvent) {
+        clicked: function (clickEvent) {
           const { $el, e, isMarking } = clickEvent;
           const label = clickEvent.selectedObj;
 
@@ -410,6 +412,26 @@ export default class LabelsSelect {
       _this.setOriginalDropdownData($dropdownContainer, $dropdown);
     });
     this.bindEvents();
+  }
+
+  static getLabelTemplate(tplData) {
+    // We could use ES6 template string here
+    // and properly indent markup for readability
+    // but that also introduces unintended white-space
+    // so best approach is to use traditional way of
+    // concatenation
+    // see: http://2ality.com/2016/05/template-literal-whitespace.html#joining-arrays
+    const tpl = _.template([
+      '<% _.each(labels, function(label){ %>',
+      '<a href="<%- issueUpdateURL.slice(0, issueUpdateURL.lastIndexOf("/")) %>?label_name[]=<%- encodeURIComponent(label.title) %>">',
+      '<span class="label has-tooltip color-label" title="<%- label.description %>" style="background-color: <%- label.color %>; color: <%- label.text_color %>;">',
+      '<%- label.title %>',
+      '</span>',
+      '</a>',
+      '<% }); %>',
+    ].join(''));
+
+    return tpl(tplData);
   }
 
   bindEvents() {

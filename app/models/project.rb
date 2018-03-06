@@ -15,6 +15,7 @@ class Project < ActiveRecord::Base
   include ValidAttribute
   include ProjectFeaturesCompatibility
   include SelectForProjectAuthorization
+  include Presentable
   include Routable
   include GroupDescendant
   include Gitlab::SQL::Pattern
@@ -225,6 +226,8 @@ class Project < ActiveRecord::Base
   has_one :auto_devops, class_name: 'ProjectAutoDevops'
   has_many :custom_attributes, class_name: 'ProjectCustomAttribute'
 
+  has_many :project_badges, class_name: 'ProjectBadge'
+
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true
   accepts_nested_attributes_for :import_data
@@ -323,14 +326,9 @@ class Project < ActiveRecord::Base
   # logged in user.
   def self.public_or_visible_to_user(user = nil)
     if user
-      authorized = user
-        .project_authorizations
-        .select(1)
-        .where('project_authorizations.project_id = projects.id')
-
-      levels = Gitlab::VisibilityLevel.levels_for_user(user)
-
-      where('EXISTS (?) OR projects.visibility_level IN (?)', authorized, levels)
+      where('EXISTS (?) OR projects.visibility_level IN (?)',
+            user.authorizations_for_projects,
+            Gitlab::VisibilityLevel.levels_for_user(user))
     else
       public_to_user
     end
@@ -351,14 +349,11 @@ class Project < ActiveRecord::Base
     elsif user
       column = ProjectFeature.quoted_access_level_column(feature)
 
-      authorized = user.project_authorizations.select(1)
-        .where('project_authorizations.project_id = projects.id')
-
       with_project_feature
         .where("#{column} IN (?) OR (#{column} = ? AND EXISTS (?))",
               visible,
               ProjectFeature::PRIVATE,
-              authorized)
+              user.authorizations_for_projects)
     else
       with_feature_access_level(feature, visible)
     end
@@ -1023,6 +1018,9 @@ class Project < ActiveRecord::Base
   end
 
   def user_can_push_to_empty_repo?(user)
+    return false unless empty_repo?
+    return false unless Ability.allowed?(user, :push_code, self)
+
     !ProtectedBranch.default_branch_protected? || team.max_member_access(user.id) > Gitlab::Access::DEVELOPER
   end
 
@@ -1774,6 +1772,17 @@ class Project < ActiveRecord::Base
 
     Gitlab::SidekiqStatus
       .set(import_jid, StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION)
+  end
+
+  def badges
+    return project_badges unless group
+
+    group_badges_rel = GroupBadge.where(group: group.self_and_ancestors)
+
+    union = Gitlab::SQL::Union.new([project_badges.select(:id),
+                                    group_badges_rel.select(:id)])
+
+    Badge.where("id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
   end
 
   private

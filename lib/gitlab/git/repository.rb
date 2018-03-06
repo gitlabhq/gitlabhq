@@ -467,7 +467,8 @@ module Gitlab
           follow: false,
           skip_merges: false,
           after: nil,
-          before: nil
+          before: nil,
+          all: false
         }
 
         options = default_options.merge(options)
@@ -478,8 +479,9 @@ module Gitlab
           raise ArgumentError.new("invalid Repository#log limit: #{limit.inspect}")
         end
 
+        # TODO support options[:all] in Gitaly https://gitlab.com/gitlab-org/gitaly/issues/1049
         gitaly_migrate(:find_commits) do |is_enabled|
-          if is_enabled
+          if is_enabled && !options[:all]
             gitaly_commit_client.find_commits(options)
           else
             raw_log(options).map { |c| Commit.decorate(self, c) }
@@ -489,13 +491,16 @@ module Gitlab
 
       # Used in gitaly-ruby
       def raw_log(options)
-        actual_ref = options[:ref] || root_ref
-        begin
-          sha = sha_from_ref(actual_ref)
-        rescue Rugged::OdbError, Rugged::InvalidError, Rugged::ReferenceError
-          # Return an empty array if the ref wasn't found
-          return []
-        end
+        sha =
+          unless options[:all]
+            actual_ref = options[:ref] || root_ref
+            begin
+              sha_from_ref(actual_ref)
+            rescue Rugged::OdbError, Rugged::InvalidError, Rugged::ReferenceError
+              # Return an empty array if the ref wasn't found
+              return []
+            end
+          end
 
         log_by_shell(sha, options)
       end
@@ -503,8 +508,9 @@ module Gitlab
       def count_commits(options)
         count_commits_options = process_count_commits_options(options)
 
+        # TODO add support for options[:all] in Gitaly https://gitlab.com/gitlab-org/gitaly/issues/1050
         gitaly_migrate(:count_commits) do |is_enabled|
-          if is_enabled
+          if is_enabled && !options[:all]
             count_commits_by_gitaly(count_commits_options)
           else
             count_commits_by_shelling_out(count_commits_options)
@@ -939,6 +945,10 @@ module Gitlab
         nil
       end
 
+      def update_branch(user, branch_name, newrev, oldrev)
+        Gitlab::Git::OperationService.new(user, self).update_branch(branch_name, newrev, oldrev)
+      end
+
       AUTOCRLF_VALUES = {
         "true" => true,
         "false" => false,
@@ -1027,6 +1037,21 @@ module Gitlab
 
             languages.sort do |x, y|
               y[:value] <=> x[:value]
+            end
+          end
+        end
+      end
+
+      def license_short_name
+        gitaly_migrate(:license_short_name) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.license_short_name
+          else
+            begin
+              # The licensee gem creates a Rugged object from the path:
+              # https://github.com/benbalter/licensee/blob/v8.7.0/lib/licensee/projects/git_project.rb
+              Licensee.license(path).try(:key)
+            rescue Rugged::Error
             end
           end
         end
@@ -1234,7 +1259,13 @@ module Gitlab
       end
 
       def squash_in_progress?(squash_id)
-        fresh_worktree?(worktree_path(SQUASH_WORKTREE_PREFIX, squash_id))
+        gitaly_migrate(:squash_in_progress) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.squash_in_progress?(squash_id)
+          else
+            fresh_worktree?(worktree_path(SQUASH_WORKTREE_PREFIX, squash_id))
+          end
+        end
       end
 
       def push_remote_branches(remote_name, branch_names, forced: true)
@@ -1349,7 +1380,7 @@ module Gitlab
           if is_enabled
             gitaly_ref_client.branch_names_contains_sha(sha)
           else
-            refs_contains_sha(:branch, sha)
+            refs_contains_sha('refs/heads/', sha)
           end
         end
       end
@@ -1359,7 +1390,7 @@ module Gitlab
           if is_enabled
             gitaly_ref_client.tag_names_contains_sha(sha)
           else
-            refs_contains_sha(:tag, sha)
+            refs_contains_sha('refs/tags/', sha)
           end
         end
       end
@@ -1458,19 +1489,25 @@ module Gitlab
         end
       end
 
-      def refs_contains_sha(ref_type, sha)
-        args = %W(#{ref_type} --contains #{sha})
-        names = run_git(args).first
+      def refs_contains_sha(refs_prefix, sha)
+        refs_prefix << "/" unless refs_prefix.ends_with?('/')
 
-        return [] unless names.respond_to?(:split)
+        # By forcing the output to %(refname) each line wiht a ref will start with
+        # the ref prefix. All other lines can be discarded.
+        args = %W(for-each-ref --contains=#{sha} --format=%(refname) #{refs_prefix})
+        names, code = run_git(args)
 
-        names = names.split("\n").map(&:strip)
+        return [] unless code.zero?
 
-        names.each do |name|
-          name.slice! '* '
+        refs = []
+        left_slice_count = refs_prefix.length
+        names.lines.each do |line|
+          next unless line.start_with?(refs_prefix)
+
+          refs << line.rstrip[left_slice_count..-1]
         end
 
-        names
+        refs
       end
 
       def rugged_write_config(full_path:)
@@ -1689,7 +1726,12 @@ module Gitlab
         cmd << '--no-merges' if options[:skip_merges]
         cmd << "--after=#{options[:after].iso8601}" if options[:after]
         cmd << "--before=#{options[:before].iso8601}" if options[:before]
-        cmd << sha
+
+        if options[:all]
+          cmd += %w[--all --reverse]
+        else
+          cmd << sha
+        end
 
         # :path can be a string or an array of strings
         if options[:path].present?
@@ -1906,7 +1948,16 @@ module Gitlab
         cmd << "--before=#{options[:before].iso8601}" if options[:before]
         cmd << "--max-count=#{options[:max_count]}" if options[:max_count]
         cmd << "--left-right" if options[:left_right]
-        cmd += %W[--count #{options[:ref]}]
+        cmd << '--count'
+
+        cmd << if options[:all]
+                 '--all'
+               elsif options[:ref]
+                 options[:ref]
+               else
+                 raise ArgumentError, "Please specify a valid ref or set the 'all' attribute to true"
+               end
+
         cmd += %W[-- #{options[:path]}] if options[:path].present?
         cmd
       end
@@ -2188,13 +2239,14 @@ module Gitlab
         )
         diff_range = "#{start_sha}...#{end_sha}"
         diff_files = run_git!(
-          %W(diff --name-only --diff-filter=a --binary #{diff_range})
+          %W(diff --name-only --diff-filter=ar --binary #{diff_range})
         ).chomp
 
         with_worktree(squash_path, branch, sparse_checkout_files: diff_files, env: env) do
           # Apply diff of the `diff_range` to the worktree
           diff = run_git!(%W(diff --binary #{diff_range}))
-          run_git!(%w(apply --index), chdir: squash_path, env: env) do |stdin|
+          run_git!(%w(apply --index --whitespace=nowarn), chdir: squash_path, env: env) do |stdin|
+            stdin.binmode
             stdin.write(diff)
           end
 

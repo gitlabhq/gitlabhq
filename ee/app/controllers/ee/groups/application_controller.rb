@@ -1,6 +1,8 @@
 module EE
   module Groups
     module ApplicationController
+      extend ActiveSupport::Concern
+
       def check_group_feature_available!(feature)
         render_404 unless group.feature_available?(feature)
       end

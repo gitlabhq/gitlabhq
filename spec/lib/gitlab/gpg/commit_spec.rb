@@ -38,7 +38,7 @@ describe Gitlab::Gpg::Commit do
           end
 
           before do
-            allow(Gitlab::Git::Commit).to receive(:extract_signature)
+            allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
             .with(Gitlab::Git::Repository, commit_sha)
             .and_return(
               [
@@ -49,7 +49,9 @@ describe Gitlab::Gpg::Commit do
           end
 
           it 'returns a valid signature' do
-            expect(described_class.new(commit).signature).to have_attributes(
+            signature = described_class.new(commit).signature
+
+            expect(signature).to have_attributes(
               commit_sha: commit_sha,
               project: project,
               gpg_key: gpg_key,
@@ -58,9 +60,31 @@ describe Gitlab::Gpg::Commit do
               gpg_key_user_email: GpgHelpers::User1.emails.first,
               verification_status: 'verified'
             )
+            expect(signature.persisted?).to be_truthy
           end
 
           it_behaves_like 'returns the cached signature on second call'
+
+          context 'read-only mode' do
+            before do
+              allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+            end
+
+            it 'does not create a cached signature' do
+              signature = described_class.new(commit).signature
+
+              expect(signature).to have_attributes(
+                commit_sha: commit_sha,
+                project: project,
+                gpg_key: gpg_key,
+                gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
+                gpg_key_user_name: GpgHelpers::User1.names.first,
+                gpg_key_user_email: GpgHelpers::User1.emails.first,
+                verification_status: 'verified'
+              )
+              expect(signature.persisted?).to be_falsey
+            end
+          end
         end
 
         context 'commit signed with a subkey' do
@@ -77,7 +101,7 @@ describe Gitlab::Gpg::Commit do
           end
 
           before do
-            allow(Gitlab::Git::Commit).to receive(:extract_signature)
+            allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
             .with(Gitlab::Git::Repository, commit_sha)
             .and_return(
               [
@@ -116,7 +140,7 @@ describe Gitlab::Gpg::Commit do
           end
 
           before do
-            allow(Gitlab::Git::Commit).to receive(:extract_signature)
+            allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
             .with(Gitlab::Git::Repository, commit_sha)
             .and_return(
               [
@@ -151,7 +175,7 @@ describe Gitlab::Gpg::Commit do
           end
 
           before do
-            allow(Gitlab::Git::Commit).to receive(:extract_signature)
+            allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
             .with(Gitlab::Git::Repository, commit_sha)
             .and_return(
               [
@@ -187,7 +211,7 @@ describe Gitlab::Gpg::Commit do
         end
 
         before do
-          allow(Gitlab::Git::Commit).to receive(:extract_signature)
+          allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
           .with(Gitlab::Git::Repository, commit_sha)
           .and_return(
             [
@@ -217,7 +241,7 @@ describe Gitlab::Gpg::Commit do
       let!(:commit) { create :commit, project: project, sha: commit_sha }
 
       before do
-        allow(Gitlab::Git::Commit).to receive(:extract_signature)
+        allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
           .with(Gitlab::Git::Repository, commit_sha)
           .and_return(
             [

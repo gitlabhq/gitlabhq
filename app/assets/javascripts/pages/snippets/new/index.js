@@ -1,3 +1,7 @@
+import initSnippet from '~/snippet/snippet_bundle';
 import form from '../form';
 
-export default form;
+document.addEventListener('DOMContentLoaded', () => {
+  initSnippet();
+  form();
+});

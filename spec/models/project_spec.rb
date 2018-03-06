@@ -81,6 +81,7 @@ describe Project do
     it { is_expected.to have_many(:members_and_requesters) }
     it { is_expected.to have_many(:clusters) }
     it { is_expected.to have_many(:custom_attributes).class_name('ProjectCustomAttribute') }
+    it { is_expected.to have_many(:project_badges).class_name('ProjectBadge') }
     it { is_expected.to have_many(:lfs_file_locks) }
 
     context 'after initialized' do
@@ -1627,6 +1628,13 @@ describe Project do
 
       expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
     end
+
+    it 'returns false when the repo is not empty' do
+      project.add_master(user)
+      expect(project).to receive(:empty_repo?).and_return(false)
+
+      expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
+    end
   end
 
   describe '#container_registry_url' do
@@ -2902,7 +2910,8 @@ describe Project do
     end
 
     it 'is a no-op when there is no namespace' do
-      project.update_column(:namespace_id, nil)
+      project.namespace.delete
+      project.reload
 
       expect_any_instance_of(Projects::UpdatePagesConfigurationService).not_to receive(:execute)
       expect_any_instance_of(Gitlab::PagesTransfer).not_to receive(:rename_project)
@@ -2934,7 +2943,8 @@ describe Project do
     it 'is a no-op on legacy projects when there is no namespace' do
       export_path = legacy_project.export_path
 
-      legacy_project.update_column(:namespace_id, nil)
+      legacy_project.namespace.delete
+      legacy_project.reload
 
       expect(FileUtils).not_to receive(:rm_rf).with(export_path)
 
@@ -2946,7 +2956,8 @@ describe Project do
     it 'runs on hashed storage projects when there is no namespace' do
       export_path = project.export_path
 
-      project.update_column(:namespace_id, nil)
+      project.namespace.delete
+      legacy_project.reload
 
       allow(FileUtils).to receive(:rm_rf).and_call_original
       expect(FileUtils).to receive(:rm_rf).with(export_path).and_call_original
@@ -3752,6 +3763,38 @@ describe Project do
           project.execute_hooks({ data: 'data' }, :merge_request_hooks)
         end
       end.not_to raise_error # Sidekiq::Worker::EnqueueFromTransactionError
+    end
+  end
+
+  describe '#badges' do
+    let(:project_group) { create(:group) }
+    let(:project) {  create(:project, path: 'avatar', namespace: project_group) }
+
+    before do
+      create_list(:project_badge, 2, project: project)
+      create(:group_badge, group: project_group)
+    end
+
+    it 'returns the project and the project group badges' do
+      create(:group_badge, group: create(:group))
+
+      expect(Badge.count).to eq 4
+      expect(project.badges.count).to eq 3
+    end
+
+    if Group.supports_nested_groups?
+      context 'with nested_groups' do
+        let(:parent_group) { create(:group) }
+
+        before do
+          create_list(:group_badge, 2, group: project_group)
+          project_group.update(parent: parent_group)
+        end
+
+        it 'returns the project and the project nested groups badges' do
+          expect(project.badges.count).to eq 5
+        end
+      end
     end
   end
 end

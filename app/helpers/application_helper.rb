@@ -34,7 +34,7 @@ module ApplicationHelper
 
   def project_icon(project_id, options = {})
     project =
-      if project_id.is_a?(Project)
+      if project_id.respond_to?(:avatar_url)
         project_id
       else
         Project.find_by_full_path(project_id)
@@ -322,10 +322,6 @@ module ApplicationHelper
 
   def collapsed_sidebar?
     cookies["sidebar_collapsed"] == "true"
-  end
-
-  def show_new_ide?(project)
-    cookies["new_repo"] == "true" && project.feature_available?(:ide)
   end
 
   def locale_path

@@ -18,11 +18,6 @@ class Issue < ActiveRecord::Base
 
   ignore_column :assignee_id, :branch_name, :deleted_at
 
-  WEIGHT_RANGE = 1..9
-  WEIGHT_ALL = 'Everything'.freeze
-  WEIGHT_ANY = 'Any Weight'.freeze
-  WEIGHT_NONE = 'No Weight'.freeze
-
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
   AnyDueDate    = DueDateStruct.new('Any Due Date', '').freeze
@@ -61,9 +56,6 @@ class Issue < ActiveRecord::Base
 
   scope :order_due_date_asc, -> { reorder('issues.due_date IS NULL, issues.due_date ASC') }
   scope :order_due_date_desc, -> { reorder('issues.due_date IS NULL, issues.due_date DESC') }
-
-  scope :order_weight_desc, -> { reorder('weight IS NOT NULL, weight DESC') }
-  scope :order_weight_asc, -> { reorder('weight ASC') }
 
   scope :preload_associations, -> { preload(:labels, project: :namespace) }
 
@@ -128,9 +120,6 @@ class Issue < ActiveRecord::Base
     when 'due_date'      then order_due_date_asc
     when 'due_date_asc'  then order_due_date_asc
     when 'due_date_desc' then order_due_date_desc
-    when 'weight'        then order_weight_asc
-    when 'weight_asc'    then order_weight_asc
-    when 'weight_desc'   then order_weight_desc
     else
       super
     end
@@ -177,7 +166,18 @@ class Issue < ActiveRecord::Base
       object.all_references(current_user, extractor: ext)
     end
 
-    ext.merge_requests.sort_by(&:iid)
+    merge_requests = ext.merge_requests.sort_by(&:iid)
+
+    cross_project_filter = -> (merge_requests) do
+      merge_requests.select { |mr| mr.target_project == project }
+    end
+
+    Ability.merge_requests_readable_by_user(
+      merge_requests, current_user,
+      filters: {
+        read_cross_project: cross_project_filter
+      }
+    )
   end
 
   # All branches containing the current issue's ID, except for
@@ -202,7 +202,11 @@ class Issue < ActiveRecord::Base
                        .preload(preload)
                        .reorder('issue_link_id')
 
-    Ability.issues_readable_by_user(related_issues, current_user)
+    cross_project_filter = -> (issues) { issues.where(project: project) }
+    Ability.issues_readable_by_user(
+      related_issues, current_user,
+      filters: { read_cross_project: cross_project_filter }
+    )
   end
 
   # Returns boolean if a related branch exists for the current issue
@@ -236,14 +240,6 @@ class Issue < ActiveRecord::Base
     else
       []
     end
-  end
-
-  def self.weight_filter_options
-    WEIGHT_RANGE.to_a
-  end
-
-  def self.weight_options
-    [WEIGHT_NONE] + WEIGHT_RANGE.to_a
   end
 
   def moved?

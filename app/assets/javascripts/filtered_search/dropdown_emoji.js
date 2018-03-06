@@ -1,9 +1,10 @@
 import Flash from '../flash';
 import Ajax from '../droplab/plugins/ajax';
 import Filter from '../droplab/plugins/filter';
-import './filtered_search_dropdown';
+import FilteredSearchDropdown from './filtered_search_dropdown';
+import DropdownUtils from './dropdown_utils';
 
-class DropdownEmoji extends gl.FilteredSearchDropdown {
+export default class DropdownEmoji extends FilteredSearchDropdown {
   constructor(options = {}) {
     super(options);
     this.config = {
@@ -49,7 +50,7 @@ class DropdownEmoji extends gl.FilteredSearchDropdown {
   itemClicked(e) {
     super.itemClicked(e, (selected) => {
       const name = selected.querySelector('.js-data-value').innerText.trim();
-      return gl.DropdownUtils.getEscapedText(name);
+      return DropdownUtils.getEscapedText(name);
     });
   }
 
@@ -76,6 +77,3 @@ class DropdownEmoji extends gl.FilteredSearchDropdown {
       .addHook(this.input, this.dropdown, [Ajax, Filter], this.config).init();
   }
 }
-
-window.gl = window.gl || {};
-gl.DropdownEmoji = DropdownEmoji;

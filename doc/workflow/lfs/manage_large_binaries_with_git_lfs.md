@@ -34,7 +34,7 @@ Documentation for GitLab instance administrators is under [LFS administration do
   credentials store is recommended
 * Git LFS always assumes HTTPS so if you have GitLab server on HTTP you will have
   to add the URL to Git config manually (see [troubleshooting](#troubleshooting))
-  
+
 >**Note**: With 8.12 GitLab added LFS support to SSH. The Git LFS communication
  still goes over HTTP, but now the SSH client passes the correct credentials
  to the Git LFS client, so no action is required by the user.
@@ -84,6 +84,8 @@ git lfs fetch master
 ```
 
 ## File Locking
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/35856) in GitLab 10.5.
 
 The first thing to do before using File Locking is to tell Git LFS which
 kind of files are lockable. The following command will store PNG files

@@ -129,6 +129,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(@project.custom_attributes.count).to eq(2)
       end
 
+      it 'has badges' do
+        expect(@project.project_badges.count).to eq(2)
+      end
+
       it 'restores the correct service' do
         expect(CustomIssueTrackerService.first).not_to be_nil
       end

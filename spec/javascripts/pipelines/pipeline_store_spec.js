@@ -1,4 +1,5 @@
 import PipelineStore from '~/pipelines/stores/pipeline_store';
+import securityState from 'ee/vue_shared/security_reports/helpers/state';
 
 describe('Pipeline Store', () => {
   let store;
@@ -8,7 +9,6 @@ describe('Pipeline Store', () => {
   });
 
   it('should set defaults', () => {
-    expect(store.state).toEqual({ pipeline: {} });
     expect(store.state.pipeline).toEqual({});
   });
 
@@ -23,5 +23,12 @@ describe('Pipeline Store', () => {
       store.storePipeline({ foo: 'bar' });
       expect(store.state.pipeline).toEqual({ foo: 'bar' });
     });
+  });
+
+  /**
+   * EE only
+   */
+  it('should set default security state', () => {
+    expect(store.state.securityReports).toEqual(securityState);
   });
 });

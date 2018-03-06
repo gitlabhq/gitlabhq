@@ -149,6 +149,11 @@ feature 'Project > Members > Share with Group', :js do
         create(:group).add_owner(master)
 
         visit project_settings_members_path(project)
+
+        click_link 'Share with group'
+
+        find('.ajax-groups-select.select2-container')
+
         execute_script 'GROUP_SELECT_PER_PAGE = 1;'
         open_select2 '#link_group_id'
       end

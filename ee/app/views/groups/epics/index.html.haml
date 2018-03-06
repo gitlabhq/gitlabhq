@@ -1,14 +1,9 @@
 - page_title "Epics"
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'common_vue'
-  = webpack_bundle_tag 'filtered_search'
 
 .top-area
   = render 'shared/issuable/epic_nav', type: :epics
   .nav-controls
     - if can?(current_user, :create_epic, @group)
-      - content_for :page_specific_javascripts do
-        = webpack_bundle_tag 'new_epic'
       #new-epic-app{ data: { endpoint: request.url, 'align-right' => true } }
 
 = render 'shared/epic/search_bar', type: :epics

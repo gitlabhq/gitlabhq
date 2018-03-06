@@ -149,6 +149,18 @@ describe API::Commits do
         end
       end
 
+      context 'all optional parameter' do
+        it 'returns all project commits' do
+          commit_count = project.repository.count_commits(all: true)
+
+          get api("/projects/#{project_id}/repository/commits?all=true", user)
+
+          expect(response).to include_pagination_headers
+          expect(response.headers['X-Total']).to eq(commit_count.to_s)
+          expect(response.headers['X-Page']).to eql('1')
+        end
+      end
+
       context 'with pagination params' do
         let(:page) { 1 }
         let(:per_page) { 5 }
@@ -706,6 +718,7 @@ describe API::Commits do
         get api(route, current_user)
 
         expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response.size).to be >= 1
         expect(json_response.first.keys).to include 'diff'
       end

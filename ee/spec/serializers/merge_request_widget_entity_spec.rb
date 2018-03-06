@@ -7,6 +7,10 @@ describe MergeRequestWidgetEntity do
   let(:request) { double('request', current_user: user) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
+  before do
+    project.add_developer(user)
+  end
+
   subject do
     described_class.new(merge_request, request: request)
   end
@@ -23,7 +27,7 @@ describe MergeRequestWidgetEntity do
   it 'has performance data' do
     build = create(:ci_build, name: 'job')
 
-    allow(subject).to receive(:expose_performance_data?).and_return(true)
+    allow(merge_request).to receive(:expose_performance_data?).and_return(true)
     allow(merge_request).to receive(:base_performance_artifact).and_return(build)
     allow(merge_request).to receive(:head_performance_artifact).and_return(build)
 
@@ -31,9 +35,9 @@ describe MergeRequestWidgetEntity do
   end
 
   it 'has sast data' do
-    build = create(:ci_build, name: 'sast')
+    build = create(:ci_build, name: 'sast', pipeline: pipeline)
 
-    allow(subject).to receive(:expose_sast_data?).and_return(true)
+    allow(merge_request).to receive(:expose_sast_data?).and_return(true)
     allow(merge_request).to receive(:has_base_sast_data?).and_return(true)
     allow(merge_request).to receive(:base_sast_artifact).and_return(build)
     allow(merge_request).to receive(:head_sast_artifact).and_return(build)
@@ -44,9 +48,9 @@ describe MergeRequestWidgetEntity do
   end
 
   it 'has sast_container data' do
-    build = create(:ci_build, name: 'sast:image')
+    build = create(:ci_build, name: 'sast:image', pipeline: pipeline)
 
-    allow(subject).to receive(:expose_sast_container_data?).and_return(true)
+    allow(merge_request).to receive(:expose_sast_container_data?).and_return(true)
     allow(merge_request).to receive(:sast_container_artifact).and_return(build)
 
     expect(subject.as_json).to include(:sast_container)

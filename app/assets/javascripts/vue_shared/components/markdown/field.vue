@@ -59,7 +59,7 @@
       return new GLForm($(this.$refs['gl-form']), this.enableAutocomplete);
     },
     beforeDestroy() {
-      const glForm = $(this.$refs['gl-form']).data('gl-form');
+      const glForm = $(this.$refs['gl-form']).data('glForm');
       if (glForm) {
         glForm.destroy();
       }

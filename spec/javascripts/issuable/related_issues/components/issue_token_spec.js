@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import eventHub from '~/issuable/related_issues/event_hub';
-import issueToken from '~/issuable/related_issues/components/issue_token.vue';
+import eventHub from 'ee/related_issues/event_hub';
+import issueToken from 'ee/related_issues/components/issue_token.vue';
 
 describe('IssueToken', () => {
   const idKey = 200;

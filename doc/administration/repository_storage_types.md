@@ -29,7 +29,7 @@ Any change in the URL will need to be reflected on disk (when groups / users or
 projects are renamed). This can add a lot of load in big installations,
 especially if using any type of network based filesystem.
 
-For GitLab Geo in particular: Geo does work with legacy storage, but in some
+For Geo in particular: Geo does work with legacy storage, but in some
 edge cases due to race conditions it can lead to errors when a project is
 renamed multiple times in short succession, or a project is deleted and
 recreated under the same name very quickly. We expect these race events to be

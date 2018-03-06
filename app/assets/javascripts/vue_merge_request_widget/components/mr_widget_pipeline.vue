@@ -1,9 +1,9 @@
 <script>
   /* eslint-disable vue/require-default-prop */
-  import pipelineStage from '../../pipelines/components/stage.vue';
-  import ciIcon from '../../vue_shared/components/ci_icon.vue';
-  import icon from '../../vue_shared/components/icon.vue';
-  import linkedPipelinesMiniList from '../../vue_shared/components/linked_pipelines_mini_list.vue';
+  import pipelineStage from '~/pipelines/components/stage.vue';
+  import ciIcon from '~/vue_shared/components/ci_icon.vue';
+  import icon from '~/vue_shared/components/icon.vue';
+  import linkedPipelinesMiniList from 'ee/vue_shared/components/linked_pipelines_mini_list.vue';
 
   export default {
     name: 'MRWidgetPipeline',
@@ -80,6 +80,7 @@
         >
           <ci-icon :status="status" />
         </a>
+
         <div class="media-body">
           Pipeline
           <a

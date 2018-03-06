@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { placeholderImage } from '~/lazy_loader';
 import userAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
-import mountComponent from '../../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 const DEFAULT_PROPS = {
   size: 99,

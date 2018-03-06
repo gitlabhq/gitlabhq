@@ -48,6 +48,8 @@ module API
         optional :scope, type: String, values: %w[created-by-me assigned-to-me all],
                          desc: 'Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`'
         optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
+        optional :source_branch, type: String, desc: 'Return merge requests with the given source branch'
+        optional :target_branch, type: String, desc: 'Return merge requests with the given target branch'
         optional :search, type: String, desc: 'Search merge requests for text present in the title or description'
         use :pagination
       end
@@ -232,7 +234,7 @@ module API
       get ':id/merge_requests/:merge_request_iid/changes' do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
-        present merge_request, with: Entities::MergeRequestChanges, current_user: current_user
+        present merge_request, with: Entities::MergeRequestChanges, current_user: current_user, project: user_project
       end
 
       desc 'Get the merge request pipelines' do
@@ -366,12 +368,12 @@ module API
       #   GET /projects/:id/merge_requests/:merge_request_iid/approvals
       #
       desc "List a merge request's approvals" do
-        success Entities::MergeRequestApprovals
+        success EE::API::Entities::MergeRequestApprovals
       end
       get ':id/merge_requests/:merge_request_iid/approvals' do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
-        present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
+        present merge_request, with: EE::API::Entities::MergeRequestApprovals, current_user: current_user
       end
 
       # Approve a merge request
@@ -383,7 +385,7 @@ module API
       #   POST /projects/:id/merge_requests/:merge_request_iid/approve
       #
       desc 'Approve a merge request' do
-        success Entities::MergeRequestApprovals
+        success EE::API::Entities::MergeRequestApprovals
       end
       params do
         optional :sha, type: String, desc: 'When present, must have the HEAD SHA of the source branch'
@@ -399,11 +401,11 @@ module API
           .new(user_project, current_user)
           .execute(merge_request)
 
-        present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
+        present merge_request, with: EE::API::Entities::MergeRequestApprovals, current_user: current_user
       end
 
       desc 'Remove an approval from a merge request' do
-        success Entities::MergeRequestApprovals
+        success EE::API::Entities::MergeRequestApprovals
       end
       post ':id/merge_requests/:merge_request_iid/unapprove' do
         merge_request = find_project_merge_request(params[:merge_request_iid])
@@ -414,7 +416,7 @@ module API
           .new(user_project, current_user)
           .execute(merge_request)
 
-        present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
+        present merge_request, with: EE::API::Entities::MergeRequestApprovals, current_user: current_user
       end
 
       desc 'List issues that will be closed on merge' do

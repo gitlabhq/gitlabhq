@@ -52,8 +52,22 @@ module Geo
 
     private
 
+    def fetch_repository(redownload)
+      log_info("Trying to fetch #{type}")
+      update_registry!(started_at: DateTime.now)
+
+      if redownload
+        log_info("Redownloading #{type}")
+        fetch_geo_mirror(build_temporary_repository)
+        set_temp_repository_as_main
+      else
+        ensure_repository
+        fetch_geo_mirror(repository)
+      end
+    end
+
     def retry_count
-      registry.public_send("#{type}_retry_count") || 0 # rubocop:disable GitlabSecurity/PublicSend
+      registry.public_send("#{type}_retry_count") || -1 # rubocop:disable GitlabSecurity/PublicSend
     end
 
     def should_be_retried?
@@ -66,10 +80,6 @@ module Geo
       return true if registry.public_send("force_to_redownload_#{type}") # rubocop:disable GitlabSecurity/PublicSend
 
       (RETRY_BEFORE_REDOWNLOAD..RETRY_LIMIT) === retry_count
-    end
-
-    def sync_repository
-      raise NotImplementedError, 'This class should implement sync_repository method'
     end
 
     def current_node
@@ -164,6 +174,11 @@ module Geo
       unless gitlab_shell.add_repository(project.repository_storage, disk_path_temp)
         raise Gitlab::Shell::Error, 'Can not create a temporary repository'
       end
+
+      log_info(
+        'Created temporary repository',
+        temp_path: disk_path_temp
+      )
 
       repository.clone.tap { |repo| repo.disk_path = disk_path_temp }
     end

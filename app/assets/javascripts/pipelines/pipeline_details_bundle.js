@@ -1,11 +1,18 @@
 import Vue from 'vue';
-import Flash from '../flash';
-import PipelinesMediator from './pipeline_details_mediatior';
+import Flash from '~/flash';
+import Translate from '~/vue_shared/translate';
+import { __ } from '~/locale';
+import PipelinesMediator from './pipeline_details_mediator';
 import pipelineGraph from './components/graph/graph_component.vue';
 import pipelineHeader from './components/header_component.vue';
 import eventHub from './event_hub';
 
-document.addEventListener('DOMContentLoaded', () => {
+import SecurityReportApp from 'ee/pipelines/components/security_reports/security_report_app.vue'; // eslint-disable-line import/first
+import SastSummaryWidget from 'ee/pipelines/components/security_reports/sast_report_summary_widget.vue'; // eslint-disable-line import/first
+
+Vue.use(Translate);
+
+export default () => {
   const dataset = document.querySelector('.js-pipeline-details-vue').dataset;
 
   const mediator = new PipelinesMediator({ endpoint: dataset.endpoint });
@@ -54,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
       postAction(action) {
         this.mediator.service.postAction(action.path)
           .then(() => this.mediator.refreshPipeline())
-          .catch(() => new Flash('An error occurred while making the request.'));
+          .catch(() => Flash(__('An error occurred while making the request.')));
       },
     },
     render(createElement) {
@@ -66,4 +73,73 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     },
   });
-});
+
+  /**
+   * EE only
+   */
+
+  const securityTab = document.getElementById('js-security-report-app');
+  const sastSummary = document.querySelector('.js-sast-summary');
+
+  // They are being rendered under the same condition
+  if (securityTab && sastSummary) {
+    const datasetOptions = securityTab.dataset;
+    const endpoint = datasetOptions.endpoint;
+    const blobPath = datasetOptions.blobPath;
+
+    mediator.fetchSastReport(endpoint, blobPath)
+      .then(() => {
+        // update the badge
+        if (mediator.store.state.securityReports.sast.newIssues.length) {
+          const badge = document.querySelector('.js-sast-counter');
+          badge.textContent = mediator.store.state.securityReports.sast.newIssues.length;
+          badge.classList.remove('hidden');
+        }
+      })
+      .catch(() => {
+        Flash(__('Something went wrong while fetching SAST.'));
+      });
+
+    // Widget summary
+    // eslint-disable-next-line no-new
+    new Vue({
+      el: sastSummary,
+      components: {
+        SastSummaryWidget,
+      },
+      data() {
+        return {
+          mediator,
+        };
+      },
+      render(createElement) {
+        return createElement('sast-summary-widget', {
+          props: {
+            unresolvedIssues: this.mediator.store.state.securityReports.sast.newIssues,
+          },
+        });
+      },
+    });
+
+    // Tab content
+    // eslint-disable-next-line no-new
+    new Vue({
+      el: securityTab,
+      components: {
+        SecurityReportApp,
+      },
+      data() {
+        return {
+          mediator,
+        };
+      },
+      render(createElement) {
+        return createElement('security-report-app', {
+          props: {
+            securityReports: this.mediator.store.state.securityReports,
+          },
+        });
+      },
+    });
+  }
+};

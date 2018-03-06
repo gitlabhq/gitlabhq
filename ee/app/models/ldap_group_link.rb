@@ -29,14 +29,14 @@ class LdapGroupLink < ActiveRecord::Base
   end
 
   def config
-    Gitlab::LDAP::Config.new(provider)
-  rescue Gitlab::LDAP::Config::InvalidProvider
+    Gitlab::Auth::LDAP::Config.new(provider)
+  rescue Gitlab::Auth::LDAP::Config::InvalidProvider
     nil
   end
 
   # default to the first LDAP server
   def provider
-    read_attribute(:provider) || Gitlab::LDAP::Config.providers.first
+    read_attribute(:provider) || Gitlab::Auth::LDAP::Config.providers.first
   end
 
   def provider_label

@@ -3,7 +3,7 @@ import axios from '~/lib/utils/axios_utils';
 import flash from '~/flash';
 import { __ } from '~/locale';
 
-export default function initBroadcastMessagesForm() {
+export default () => {
   $('input#broadcast_message_color').on('input', function onMessageColorInput() {
     const previewColor = $(this).val();
     $('div.broadcast-message-preview').css('background-color', previewColor);
@@ -14,7 +14,7 @@ export default function initBroadcastMessagesForm() {
     $('div.broadcast-message-preview').css('color', previewColor);
   });
 
-  const previewPath = $('textarea#broadcast_message_message').data('preview-path');
+  const previewPath = $('textarea#broadcast_message_message').data('previewPath');
 
   $('textarea#broadcast_message_message').on('input', _.debounce(function onMessageInput() {
     const message = $(this).val();
@@ -32,4 +32,4 @@ export default function initBroadcastMessagesForm() {
       .catch(() => flash(__('An error occurred while rendering preview broadcast message')));
     }
   }, 250));
-}
+};

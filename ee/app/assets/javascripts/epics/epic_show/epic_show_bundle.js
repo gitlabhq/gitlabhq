@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import EpicShowApp from './components/epic_show_app.vue';
 
-document.addEventListener('DOMContentLoaded', () => {
+export default () => {
   const el = document.querySelector('#epic-show-app');
   const metaData = JSON.parse(el.dataset.meta);
   const initialData = JSON.parse(el.dataset.initial);
@@ -21,4 +21,4 @@ document.addEventListener('DOMContentLoaded', () => {
       props,
     }),
   });
-});
+};

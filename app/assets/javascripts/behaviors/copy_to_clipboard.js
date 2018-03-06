@@ -2,7 +2,7 @@ import Clipboard from 'clipboard';
 
 function showTooltip(target, title) {
   const $target = $(target);
-  const originalTitle = $target.data('original-title');
+  const originalTitle = $target.data('originalTitle');
 
   if (!$target.data('hideTooltip')) {
     $target

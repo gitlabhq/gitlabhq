@@ -11,41 +11,48 @@ describe MergeRequest do
     it { is_expected.to have_many(:approvals).dependent(:delete_all) }
     it { is_expected.to have_many(:approvers).dependent(:delete_all) }
     it { is_expected.to have_many(:approver_groups).dependent(:delete_all) }
+    it { is_expected.to have_many(:approved_by_users) }
   end
 
   describe '#squash_in_progress?' do
-    # Create merge request and project before we stub file calls
-    before do
-      subject
+    shared_examples 'checking whether a squash is in progress' do
+      let(:repo_path) { subject.source_project.repository.path }
+      let(:squash_path) { File.join(repo_path, "gitlab-worktree", "squash-#{subject.id}") }
+
+      before do
+        system(*%W(#{Gitlab.config.git.bin_path} -C #{repo_path} worktree add --detach #{squash_path} master))
+      end
+
+      it 'returns true when there is a current squash directory' do
+        expect(subject.squash_in_progress?).to be_truthy
+      end
+
+      it 'returns false when there is no squash directory' do
+        FileUtils.rm_rf(squash_path)
+
+        expect(subject.squash_in_progress?).to be_falsey
+      end
+
+      it 'returns false when the squash directory has expired' do
+        time = 20.minutes.ago.to_time
+        File.utime(time, time, squash_path)
+
+        expect(subject.squash_in_progress?).to be_falsey
+      end
+
+      it 'returns false when the source project has been removed' do
+        allow(subject).to receive(:source_project).and_return(nil)
+
+        expect(subject.squash_in_progress?).to be_falsey
+      end
     end
 
-    it 'returns true when there is a current squash directory' do
-      allow(File).to receive(:exist?).and_return(true)
-      allow(File).to receive(:mtime).and_return(Time.now)
-
-      expect(subject.squash_in_progress?).to be_truthy
+    context 'when Gitaly squash_in_progress is enabled' do
+      it_behaves_like 'checking whether a squash is in progress'
     end
 
-    it 'returns false when there is no squash directory' do
-      allow(File).to receive(:exist?).and_return(false)
-
-      expect(subject.squash_in_progress?).to be_falsey
-    end
-
-    it 'returns false when the squash directory has expired' do
-      allow(File).to receive(:exist?).and_return(true)
-      allow(File).to receive(:mtime).and_return(20.minutes.ago)
-
-      expect(subject.squash_in_progress?).to be_falsey
-    end
-
-    it 'returns false when the source project has been removed' do
-      allow(subject).to receive(:source_project).and_return(nil)
-      allow(File).to receive(:exist?).and_return(true)
-      allow(File).to receive(:mtime).and_return(Time.now)
-
-      expect(File).not_to have_received(:exist?)
-      expect(subject.squash_in_progress?).to be_falsey
+    context 'when Gitaly squash_in_progress is disabled', :disable_gitaly do
+      it_behaves_like 'checking whether a squash is in progress'
     end
   end
 
@@ -217,5 +224,18 @@ describe MergeRequest do
 
   describe '#dast_artifact' do
     it { is_expected.to delegate_method(:dast_artifact).to(:head_pipeline) }
+  end
+
+  %w(sast dast performance sast_container).each do |type|
+    method = "expose_#{type}_data?"
+
+    describe "##{method}" do
+      before do
+        allow(merge_request).to receive(:"has_#{type}_data?").and_return(true)
+        allow(merge_request.project).to receive(:feature_available?).and_return(true)
+      end
+
+      it { expect(merge_request.send(method.to_sym)).to be_truthy }
+    end
   end
 end

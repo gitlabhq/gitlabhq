@@ -24,7 +24,7 @@ module UploadsActions
   #   - or redirect to its URL
   #
   def show
-    return render_404 unless uploader.exists?
+    return render_404 unless uploader&.exists?
 
     if uploader.file_storage?
       disposition = uploader.image_or_video? ? 'inline' : 'attachment'
@@ -62,16 +62,27 @@ module UploadsActions
   end
 
   def build_uploader_from_upload
-    return nil unless params[:secret] && params[:filename]
+    return unless uploader = build_uploader
 
-    upload_path = uploader_class.upload_path(params[:secret], params[:filename])
-    upload = Upload.find_by(uploader: uploader_class.to_s, path: upload_path)
+    upload_paths = uploader.upload_paths(params[:filename])
+    upload = Upload.find_by(uploader: uploader_class.to_s, path: upload_paths)
     upload&.build_uploader
   end
 
   def build_uploader_from_params
-    uploader = uploader_class.new(model, secret: params[:secret])
+    return unless uploader = build_uploader
+
     uploader.retrieve_from_store!(params[:filename])
+    uploader
+  end
+
+  def build_uploader
+    return unless params[:secret] && params[:filename]
+
+    uploader = uploader_class.new(model, secret: params[:secret])
+
+    return unless uploader.model_valid?
+
     uploader
   end
 

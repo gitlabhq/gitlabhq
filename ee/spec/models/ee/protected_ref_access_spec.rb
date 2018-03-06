@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe EE::ProtectedRefAccess do
+  include ExternalAuthorizationServiceHelpers
   included_in_classes = [ProtectedBranch::MergeAccessLevel,
                          ProtectedBranch::PushAccessLevel,
                          ProtectedTag::CreateAccessLevel]
@@ -69,6 +70,22 @@ describe EE::ProtectedRefAccess do
 
         expect(subject).to be_valid
       end
+    end
+  end
+
+  describe '#check_access' do
+    subject(:protected_ref_access) do
+      create(:protected_branch, :masters_can_push).push_access_levels.first
+    end
+
+    let(:project) { protected_ref_access.project }
+
+    it 'is false if external authorization denies access' do
+      master = create(:user)
+      project.add_master(master)
+      external_service_deny_access(master, project)
+
+      expect(protected_ref_access.check_access(master)).to be_falsey
     end
   end
 end

@@ -241,6 +241,10 @@ export default class MergeRequestTabs {
     return newState;
   }
 
+  getCurrentAction() {
+    return this.currentAction;
+  }
+
   loadCommits(source) {
     if (this.commitsLoaded) {
       return;
@@ -361,7 +365,7 @@ export default class MergeRequestTabs {
   }
 
   diffViewType() {
-    return $('.inline-parallel-buttons a.active').data('view-type');
+    return $('.inline-parallel-buttons a.active').data('viewType');
   }
 
   isDiffAction(action) {

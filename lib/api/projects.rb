@@ -277,6 +277,7 @@ module API
           [
             :jobs_enabled,
             :resolve_outdated_diff_discussions,
+            :ci_config_path,
             :container_registry_enabled,
             :default_branch,
             :description,

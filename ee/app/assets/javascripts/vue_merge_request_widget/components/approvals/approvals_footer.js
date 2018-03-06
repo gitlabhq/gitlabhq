@@ -1,5 +1,5 @@
 import Flash from '~/flash';
-import LinkToMemberAvatar from '~/vue_shared/components/link_to_member_avatar';
+import LinkToMemberAvatar from 'ee/vue_shared/components/link_to_member_avatar';
 import { s__ } from '~/locale';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 

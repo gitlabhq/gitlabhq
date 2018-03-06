@@ -1,5 +1,18 @@
 module EE
   module Issue
+    extend ActiveSupport::Concern
+    extend ::Gitlab::Utils::Override
+
+    prepended do
+      WEIGHT_RANGE = 1..9
+      WEIGHT_ALL = 'Everything'.freeze
+      WEIGHT_ANY = 'Any Weight'.freeze
+      WEIGHT_NONE = 'No Weight'.freeze
+
+      scope :order_weight_desc, -> { reorder ::Gitlab::Database.nulls_last_order('weight', 'DESC') }
+      scope :order_weight_asc, -> { reorder ::Gitlab::Database.nulls_last_order('weight') }
+    end
+
     # override
     def check_for_spam?
       author.support_bot? || super
@@ -34,8 +47,46 @@ module EE
       super if supports_weight?
     end
 
+    # The functionality here is duplicated from the `IssuePolicy` and the
+    # `EE::IssuePolicy` for better performace
+    #
+    # Make sure to keep this in sync with the policies.
+    override :readable_by?
+    def readable_by?(user)
+      return super if user.full_private_access?
+
+      super && ::EE::Gitlab::ExternalAuthorization
+                 .access_allowed?(user, project.external_authorization_classification_label)
+    end
+
+    override :publicly_visible?
+    def publicly_visible?
+      super && !::EE::Gitlab::ExternalAuthorization.enabled?
+    end
+
     def supports_weight?
       project&.feature_available?(:issue_weights)
+    end
+
+    module ClassMethods
+      # override
+      def sort(method, excluded_labels: [])
+        case method.to_s
+        when 'weight'        then order_weight_asc
+        when 'weight_asc'    then order_weight_asc
+        when 'weight_desc'   then order_weight_desc
+        else
+          super
+        end
+      end
+
+      def weight_filter_options
+        WEIGHT_RANGE.to_a
+      end
+
+      def weight_options
+        [WEIGHT_NONE] + WEIGHT_RANGE.to_a
+      end
     end
   end
 end

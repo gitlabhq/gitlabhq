@@ -193,6 +193,18 @@ describe 'New/edit issue', :js do
       expect(find('.js-label-select')).to have_content('Labels')
     end
 
+    it 'clears label search input field when a label is selected' do
+      click_button 'Labels'
+
+      page.within '.dropdown-menu-labels' do
+        search_field = find('input[type="search"]')
+
+        search_field.set(label2.title)
+        click_link label2.title
+        expect(search_field.value).to eq ''
+      end
+    end
+
     it 'correctly updates the selected user when changing assignee' do
       click_button 'Unassigned'
 
@@ -272,6 +284,18 @@ describe 'New/edit issue', :js do
       fill_in 'issue_description', with: '@'
 
       expect(page).to have_selector('.atwho-view')
+    end
+  end
+
+  context 'inline edit' do
+    before do
+      visit project_issue_path(project, issue)
+    end
+
+    it 'opens inline edit form with shortcut' do
+      find('body').send_keys('e')
+
+      expect(page).to have_selector('.detail-page-description form')
     end
   end
 

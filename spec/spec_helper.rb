@@ -168,6 +168,22 @@ RSpec.configure do |config|
     Sidekiq.redis(&:flushall)
   end
 
+  # The :each scope runs "inside" the example, so this hook ensures the DB is in the
+  # correct state before any examples' before hooks are called. This prevents a
+  # problem where `ScheduleIssuesClosedAtTypeChange` (or any migration that depends
+  # on background migrations being run inline during test setup) can be broken by
+  # altering Sidekiq behavior in an unrelated spec like so:
+  #
+  # around do |example|
+  #   Sidekiq::Testing.fake! do
+  #     example.run
+  #   end
+  # end
+  config.before(:context, :migration) do
+    schema_migrate_down!
+  end
+
+  # Each example may call `migrate!`, so we must ensure we are migrated down every time
   config.before(:each, :migration) do
     schema_migrate_down!
   end
@@ -186,6 +202,18 @@ RSpec.configure do |config|
 
   config.around(:each, :postgresql) do |example|
     example.run if Gitlab::Database.postgresql?
+  end
+
+  config.around(:each, :mysql) do |example|
+    example.run if Gitlab::Database.mysql?
+  end
+
+  # This makes sure the `ApplicationController#can?` method is stubbed with the
+  # original implementation for all view specs.
+  config.before(:each, type: :view) do
+    allow(view).to receive(:can?) do |*args|
+      Ability.allowed?(*args)
+    end
   end
 end
 

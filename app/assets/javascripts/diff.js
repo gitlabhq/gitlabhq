@@ -68,7 +68,7 @@ export default class Diff {
     }
 
     const file = $target.parents('.diff-file');
-    const link = file.data('blob-diff-path');
+    const link = file.data('blobDiffPath');
     const view = file.data('view');
 
     const params = { since, to, bottom, offset, unfold, view };
@@ -121,7 +121,7 @@ export default class Diff {
   }
   // eslint-disable-next-line class-methods-use-this
   diffViewType() {
-    return $('.inline-parallel-buttons a.active').data('view-type');
+    return $('.inline-parallel-buttons a.active').data('viewType');
   }
   // eslint-disable-next-line class-methods-use-this
   lineNumbers(line) {

@@ -123,6 +123,7 @@ module Gitlab
 
       def commits_check
         return if deletion? || newrev.nil?
+        return unless should_run_commit_validations?
 
         # n+1: https://gitlab.com/gitlab-org/gitlab-ee/issues/3593
         ::Gitlab::GitalyClient.allow_n_plus_1_calls do
@@ -140,6 +141,10 @@ module Gitlab
       end
 
       private
+
+      def should_run_commit_validations?
+        commit_check.validate_lfs_file_locks?
+      end
 
       def updated_from_web?
         protocol == 'web'
@@ -178,7 +183,7 @@ module Gitlab
       end
 
       def commits
-        project.repository.new_commits(newrev)
+        @commits ||= project.repository.new_commits(newrev)
       end
     end
   end

@@ -1,3 +1,3 @@
 import AdminEmailSelect from './admin_email_select';
 
-export default () => new AdminEmailSelect();
+document.addEventListener('DOMContentLoaded', () => new AdminEmailSelect());

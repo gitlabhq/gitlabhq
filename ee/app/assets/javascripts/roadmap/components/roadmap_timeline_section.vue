@@ -44,8 +44,8 @@
     },
     methods: {
       handleEpicsListScroll(scrollTop) {
-        // Add class only when content are scrolled at half the height of header
-        this.scrolledHeaderClass = (scrollTop > this.$el.clientHeight / 2) ? 'scrolled-ahead' : '';
+        // Add class only when epics list is scrolled at 1% the height of header
+        this.scrolledHeaderClass = (scrollTop > this.$el.clientHeight / 100) ? 'scrolled-ahead' : '';
       },
     },
   };

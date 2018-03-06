@@ -150,7 +150,7 @@ describe 'Git HTTP requests' do
       let(:path) { "/#{wiki.repository.full_path}.git" }
 
       context "when the project is public" do
-        let(:project) { create(:project, :repository, :public, :wiki_enabled) }
+        let(:project) { create(:project, :wiki_repo, :public, :wiki_enabled) }
 
         it_behaves_like 'pushes require Basic HTTP Authentication'
 
@@ -177,7 +177,7 @@ describe 'Git HTTP requests' do
             end
 
             context 'but the repo is disabled' do
-              let(:project) { create(:project, :repository, :public, :repository_disabled, :wiki_enabled) }
+              let(:project) { create(:project, :wiki_repo, :public, :repository_disabled, :wiki_enabled) }
 
               it_behaves_like 'pulls are allowed'
               it_behaves_like 'pushes are allowed'
@@ -198,7 +198,7 @@ describe 'Git HTTP requests' do
       end
 
       context "when the project is private" do
-        let(:project) { create(:project, :repository, :private, :wiki_enabled) }
+        let(:project) { create(:project, :wiki_repo, :private, :wiki_enabled) }
 
         it_behaves_like 'pulls require Basic HTTP Authentication'
         it_behaves_like 'pushes require Basic HTTP Authentication'
@@ -210,7 +210,7 @@ describe 'Git HTTP requests' do
             end
 
             context 'but the repo is disabled' do
-              let(:project) { create(:project, :repository, :private, :repository_disabled, :wiki_enabled) }
+              let(:project) { create(:project, :wiki_repo, :private, :repository_disabled, :wiki_enabled) }
 
               it 'allows clones' do
                 download(path, user: user.username, password: user.password) do |response|
@@ -506,8 +506,8 @@ describe 'Git HTTP requests' do
 
                 context 'when LDAP is configured' do
                   before do
-                    allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
-                    allow_any_instance_of(Gitlab::LDAP::Authentication)
+                    allow(Gitlab::Auth::LDAP::Config).to receive(:enabled?).and_return(true)
+                    allow_any_instance_of(Gitlab::Auth::LDAP::Authentication)
                       .to receive(:login).and_return(nil)
                   end
 
@@ -597,7 +597,7 @@ describe 'Git HTTP requests' do
         context "when a gitlab ci token is provided" do
           let(:project) { create(:project, :repository) }
           let(:build) { create(:ci_build, :running) }
-          let(:other_project) { create(:project) }
+          let(:other_project) { create(:project, :repository) }
 
           before do
             build.update!(project: project) # can't associate it on factory create
@@ -648,10 +648,10 @@ describe 'Git HTTP requests' do
               context 'when the repo does not exist' do
                 let(:project) { create(:project) }
 
-                it 'rejects pulls with 403 Forbidden' do
+                it 'rejects pulls with 404 Not Found' do
                   clone_get path, env
 
-                  expect(response).to have_gitlab_http_status(:forbidden)
+                  expect(response).to have_gitlab_http_status(:not_found)
                   expect(response.body).to eq(git_access_error(:no_repo))
                 end
               end
@@ -919,9 +919,9 @@ describe 'Git HTTP requests' do
     let(:path) { 'doesnt/exist.git' }
 
     before do
-      allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
-      allow(Gitlab::LDAP::Authentication).to receive(:login).and_return(nil)
-      allow(Gitlab::LDAP::Authentication).to receive(:login).with(user.username, user.password).and_return(user)
+      allow(Gitlab::Auth::LDAP::Config).to receive(:enabled?).and_return(true)
+      allow(Gitlab::Auth::LDAP::Authentication).to receive(:login).and_return(nil)
+      allow(Gitlab::Auth::LDAP::Authentication).to receive(:login).with(user.username, user.password).and_return(user)
     end
 
     it_behaves_like 'pulls require Basic HTTP Authentication'

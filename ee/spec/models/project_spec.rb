@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Project do
+  include ExternalAuthorizationServiceHelpers
   using RSpec::Parameterized::TableSyntax
 
   describe 'associations' do
@@ -327,6 +328,16 @@ describe Project do
     end
   end
 
+  describe 'updating import_url' do
+    it 'removes previous remote' do
+      project = create(:project, :repository, :mirror)
+
+      expect(RepositoryRemoveRemoteWorker).to receive(:perform_async).with(project.id, ::Repository::MIRROR_REMOTE).and_call_original
+
+      project.update_attributes(import_url: "http://test.com")
+    end
+  end
+
   describe '#mirror_waiting_duration' do
     it 'returns in seconds the time spent in the queue' do
       project = create(:project, :mirror, :import_scheduled)
@@ -348,7 +359,7 @@ describe Project do
     end
   end
 
-  describe '#scheduled_mirror?' do
+  describe '#mirror_about_to_update?' do
     context 'when mirror is expected to run soon' do
       it 'returns true' do
         timestamp = Time.now
@@ -356,15 +367,15 @@ describe Project do
         project.mirror_last_update_at = timestamp - 3.minutes
         project.mirror_data.next_execution_timestamp = timestamp - 2.minutes
 
-        expect(project.scheduled_mirror?).to be true
+        expect(project.mirror_about_to_update?).to be true
       end
     end
 
     context 'when mirror was scheduled' do
-      it 'returns true' do
+      it 'returns false' do
         project = create(:project, :mirror, :import_scheduled, :repository)
 
-        expect(project.scheduled_mirror?).to be true
+        expect(project.mirror_about_to_update?).to be false
       end
     end
 
@@ -372,7 +383,68 @@ describe Project do
       it 'returns false' do
         project = create(:project, :mirror, :import_hard_failed)
 
-        expect(project.scheduled_mirror?).to be false
+        expect(project.mirror_about_to_update?).to be false
+      end
+    end
+  end
+
+  describe '#import_in_progress?' do
+    let(:traits) { [] }
+    let(:project) { create(:project, *traits, import_url: Project::UNKNOWN_IMPORT_URL) }
+
+    shared_examples 'import in progress' do
+      context 'when project is a mirror' do
+        before do
+          traits << :mirror
+        end
+
+        context 'when repository is empty' do
+          it 'returns true' do
+            expect(project.import_in_progress?).to be_truthy
+          end
+        end
+
+        context 'when repository is not empty' do
+          before do
+            traits << :repository
+          end
+
+          it 'returns false' do
+            expect(project.import_in_progress?).to be_falsey
+          end
+        end
+      end
+
+      context 'when project is not a mirror' do
+        it 'returns true' do
+          expect(project.import_in_progress?).to be_truthy
+        end
+      end
+    end
+
+    context 'when import status is scheduled' do
+      before do
+        traits << :import_scheduled
+      end
+
+      it_behaves_like 'import in progress'
+    end
+
+    context 'when import status is started' do
+      before do
+        traits << :import_started
+      end
+
+      it_behaves_like 'import in progress'
+    end
+
+    context 'when import status is finished' do
+      before do
+        traits << :import_finished
+      end
+
+      it 'returns false' do
+        expect(project.import_in_progress?).to be_falsey
       end
     end
   end
@@ -394,9 +466,17 @@ describe Project do
       end
     end
 
-    context 'when mirror is in progress' do
+    context 'when mirror is started' do
       it 'returns true' do
         project = create(:project, :mirror, :import_started, :repository)
+
+        expect(project.updating_mirror?).to be true
+      end
+    end
+
+    context 'when mirror is scheduled' do
+      it 'returns true' do
+        project = create(:project, :mirror, :import_scheduled, :repository)
 
         expect(project.updating_mirror?).to be true
       end
@@ -1153,6 +1233,46 @@ describe Project do
 
       expect(projects).to include(project1)
       expect(projects).not_to include(project2)
+    end
+  end
+
+  describe '#external_authorization_classification_label' do
+    it 'falls back to the default when none is configured' do
+      enable_external_authorization_service
+
+      expect(build(:project).external_authorization_classification_label)
+        .to eq('default_label')
+    end
+
+    it 'returns `nil` if the feature is disabled' do
+      stub_licensed_features(external_authorization_service: false)
+
+      project = build(:project,
+                      external_authorization_classification_label: 'hello')
+
+      expect(project.external_authorization_classification_label)
+        .to eq(nil)
+    end
+
+    it 'returns the classification label if it was configured on the project' do
+      enable_external_authorization_service
+
+      project = build(:project,
+                      external_authorization_classification_label: 'hello')
+
+      expect(project.external_authorization_classification_label)
+        .to eq('hello')
+    end
+  end
+
+  describe '#user_can_push_to_empty_repo?' do
+    it 'returns false when the external service denies access' do
+      user = create(:user)
+      project = create(:project)
+      project.add_master(user)
+      external_service_deny_access(user, project)
+
+      expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
     end
   end
 end

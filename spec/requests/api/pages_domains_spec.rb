@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe API::PagesDomains do
-  set(:project) { create(:project) }
+  set(:project) { create(:project, path: 'my.project') }
   set(:user) { create(:user) }
   set(:admin) { create(:admin) }
 
@@ -16,6 +16,7 @@ describe API::PagesDomains do
 
   let(:route) { "/projects/#{project.id}/pages/domains" }
   let(:route_domain) { "/projects/#{project.id}/pages/domains/#{pages_domain.domain}" }
+  let(:route_domain_path) { "/projects/#{project.path_with_namespace.gsub('/', '%2F')}/pages/domains/#{pages_domain.domain}" }
   let(:route_secure_domain) { "/projects/#{project.id}/pages/domains/#{pages_domain_secure.domain}" }
   let(:route_expired_domain) { "/projects/#{project.id}/pages/domains/#{pages_domain_expired.domain}" }
   let(:route_vacant_domain) { "/projects/#{project.id}/pages/domains/www.vacant-domain.test" }
@@ -136,6 +137,16 @@ describe API::PagesDomains do
     shared_examples_for 'get pages domain' do
       it 'returns pages domain' do
         get api(route_domain, user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
+        expect(json_response['domain']).to eq(pages_domain.domain)
+        expect(json_response['url']).to eq(pages_domain.url)
+        expect(json_response['certificate']).to be_nil
+      end
+
+      it 'returns pages domain with project path' do
+        get api(route_domain_path, user)
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to match_response_schema('public_api/v4/pages_domain/detail')

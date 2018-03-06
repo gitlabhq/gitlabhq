@@ -1,5 +1,5 @@
-import NewBranchForm from '../../../../new_branch_form';
+import NewBranchForm from '~/new_branch_form';
 
-export default () => {
+document.addEventListener('DOMContentLoaded', () => {
   new NewBranchForm($('.js-new-pipeline-form')); // eslint-disable-line no-new
-};
+});

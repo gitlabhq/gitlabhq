@@ -31,7 +31,7 @@ module Gitlab
       return false unless can_access_git?
 
       if user.requires_ldap_check? && user.try_obtain_ldap_lease
-        return false unless Gitlab::LDAP::Access.allowed?(user)
+        return false unless Gitlab::Auth::LDAP::Access.allowed?(user)
       end
 
       true
@@ -65,7 +65,7 @@ module Gitlab
       return false unless can_access_git?
 
       if protected?(ProtectedBranch, project, ref)
-        return true if project.empty_repo? && project.user_can_push_to_empty_repo?(user)
+        return true if project.user_can_push_to_empty_repo?(user)
 
         protected_branch_accessible_to?(ref, action: :push)
       else

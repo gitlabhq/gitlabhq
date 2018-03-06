@@ -1,5 +1,5 @@
 <script>
-  /* eslint-disable no-alert, vue/require-default-prop */
+  /* eslint-disable no-alert */
 
   import eventHub from '../event_hub';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
@@ -10,7 +10,6 @@
     directives: {
       tooltip,
     },
-
     components: {
       loadingIcon,
       icon,
@@ -32,12 +31,15 @@
         type: String,
         required: true,
       },
-      id: {
+      pipelineId: {
         type: Number,
         required: true,
       },
+      type: {
+        type: String,
+        required: true,
+      },
     },
-
     data() {
       return {
         isLoading: false,
@@ -48,17 +50,27 @@
         return `btn ${this.cssClass}`;
       },
     },
+    created() {
+      // We're using eventHub to listen to the modal here instead of
+      // using props because it would would make the parent components
+      // much more complex to keep track of the loading state of each button
+      eventHub.$on('postAction', this.setLoading);
+    },
+    beforeDestroy() {
+      eventHub.$off('postAction', this.setLoading);
+    },
     methods: {
       onClick() {
-        eventHub.$emit('actionConfirmationModal', {
-          id: this.id,
-          callback: this.makeRequest,
+        eventHub.$emit('openConfirmationModal', {
+          pipelineId: this.pipelineId,
+          endpoint: this.endpoint,
+          type: this.type,
         });
       },
-      makeRequest() {
-        this.isLoading = true;
-
-        eventHub.$emit('postAction', this.endpoint);
+      setLoading(endpoint) {
+        if (endpoint === this.endpoint) {
+          this.isLoading = true;
+        }
       },
     },
   };

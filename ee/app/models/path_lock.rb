@@ -33,9 +33,9 @@ class PathLock < ActiveRecord::Base
     return unless existed_lock
 
     if existed_lock.downstream?(path)
-      errors.add(:path, 'is invalid because there is downstream lock')
+      errors.add(:path, _('is invalid because there is downstream lock'))
     elsif existed_lock.upstream?(path)
-      errors.add(:path, 'is invalid because there is upstream lock')
+      errors.add(:path, _('is invalid because there is upstream lock'))
     end
   end
 end

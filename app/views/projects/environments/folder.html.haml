@@ -1,10 +1,6 @@
 - @no_container = true
 - page_title "Environments"
 
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_vue')
-  = page_specific_javascript_bundle_tag("environments_folder")
-
 #environments-folder-list-view{ data: { endpoint: folder_project_environments_path(@project, @folder, format: :json),
   "folder-name" => @folder,
   "can-create-deployment" => can?(current_user, :create_deployment, @project).to_s,

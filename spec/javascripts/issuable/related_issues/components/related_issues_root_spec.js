@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import _ from 'underscore';
-import relatedIssuesRoot from '~/issuable/related_issues/components/related_issues_root.vue';
-import relatedIssuesService from '~/issuable/related_issues/services/related_issues_service';
+import relatedIssuesRoot from 'ee/related_issues/components/related_issues_root.vue';
+import relatedIssuesService from 'ee/related_issues/services/related_issues_service';
 
 import { defaultProps, issuable1, issuable2 } from '../mock_data';
 
@@ -140,12 +140,10 @@ describe('RelatedIssuesRoot', () => {
         vm.onPendingFormSubmit();
 
         setTimeout(() => {
-          Vue.nextTick(() => {
-            expect(vm.state.pendingReferences.length).toEqual(0);
-            expect(vm.state.relatedIssues.length).toEqual(0);
+          expect(vm.state.pendingReferences.length).toEqual(0);
+          expect(vm.state.relatedIssues.length).toEqual(0);
 
-            done();
-          });
+          done();
         });
       });
 
@@ -167,15 +165,13 @@ describe('RelatedIssuesRoot', () => {
         vm.onPendingFormSubmit();
 
         setTimeout(() => {
-          Vue.nextTick(() => {
-            expect(vm.state.pendingReferences.length).toEqual(0);
-            expect(vm.state.relatedIssues.length).toEqual(1);
-            expect(vm.state.relatedIssues[0].id).toEqual(issuable1.id);
+          expect(vm.state.pendingReferences.length).toEqual(0);
+          expect(vm.state.relatedIssues.length).toEqual(1);
+          expect(vm.state.relatedIssues[0].id).toEqual(issuable1.id);
 
-            Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+          Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
 
-            done();
-          });
+          done();
         });
       });
 
@@ -197,16 +193,14 @@ describe('RelatedIssuesRoot', () => {
         vm.onPendingFormSubmit();
 
         setTimeout(() => {
-          Vue.nextTick(() => {
-            expect(vm.state.pendingReferences.length).toEqual(0);
-            expect(vm.state.relatedIssues.length).toEqual(2);
-            expect(vm.state.relatedIssues[0].id).toEqual(issuable1.id);
-            expect(vm.state.relatedIssues[1].id).toEqual(issuable2.id);
+          expect(vm.state.pendingReferences.length).toEqual(0);
+          expect(vm.state.relatedIssues.length).toEqual(2);
+          expect(vm.state.relatedIssues[0].id).toEqual(issuable1.id);
+          expect(vm.state.relatedIssues[1].id).toEqual(issuable2.id);
 
-            Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+          Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
 
-            done();
-          });
+          done();
         });
       });
     });
@@ -230,63 +224,46 @@ describe('RelatedIssuesRoot', () => {
     });
 
     describe('fetchRelatedIssues', () => {
+      const interceptor = (request, next) => {
+        next(request.respondWith(JSON.stringify([issuable1, issuable2]), {
+          status: 200,
+        }));
+      };
+
       beforeEach((done) => {
+        Vue.http.interceptors.push(interceptor);
+
         vm = new RelatedIssuesRoot({
           propsData: defaultProps,
         }).$mount();
 
         // wait for internal call to fetchRelatedIssues to resolve
-        setTimeout(() => Vue.nextTick(done));
+        setTimeout(done);
       });
 
-      describe('when the network has not responded yet', () => {
-        it('should be fetching', (done) => {
-          vm.fetchRelatedIssues();
-          expect(vm.isFetching).toEqual(true);
+      afterEach(() => {
+        Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+      });
 
-          setTimeout(() => Vue.nextTick(done));
+      it('sets isFetching while fetching', (done) => {
+        vm.fetchRelatedIssues();
+
+        expect(vm.isFetching).toEqual(true);
+
+        setTimeout(() => {
+          expect(vm.isFetching).toEqual(false);
+
+          done();
         });
       });
 
-      describe('when the network responds', () => {
-        const interceptor = (request, next) => {
-          next(request.respondWith(JSON.stringify([issuable1, issuable2]), {
-            status: 200,
-          }));
-        };
+      it('should fetch related issues', (done) => {
+        Vue.nextTick(() => {
+          expect(vm.state.relatedIssues.length).toEqual(2);
+          expect(vm.state.relatedIssues[0].id).toEqual(issuable1.id);
+          expect(vm.state.relatedIssues[1].id).toEqual(issuable2.id);
 
-        beforeEach(() => {
-          Vue.http.interceptors.push(interceptor);
-        });
-
-        afterEach(() => {
-          Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
-        });
-
-        it('should be done fetching', (done) => {
-          vm.fetchRelatedIssues();
-
-          setTimeout(() => {
-            Vue.nextTick(() => {
-              expect(vm.isFetching).toEqual(false);
-
-              done();
-            });
-          });
-        });
-
-        it('should fetch related issues', (done) => {
-          vm.fetchRelatedIssues();
-
-          setTimeout(() => {
-            Vue.nextTick(() => {
-              expect(vm.state.relatedIssues.length).toEqual(2);
-              expect(vm.state.relatedIssues[0].id).toEqual(issuable1.id);
-              expect(vm.state.relatedIssues[1].id).toEqual(issuable2.id);
-
-              done();
-            });
-          });
+          done();
         });
       });
     });

@@ -67,4 +67,14 @@ describe JobArtifactUploader do
     it { is_expected.to include("/#{job_artifact.job_id}/#{job_artifact.id}/") }
     it { is_expected.to end_with("ci_build_artifacts.zip") }
   end
+
+  describe "#migrate!" do
+    before do
+      uploader.store!(fixture_file_upload(Rails.root.join('spec/fixtures/trace/sample_trace')))
+      stub_artifacts_object_storage
+    end
+
+    it_behaves_like "migrates", to_store: described_class::Store::REMOTE
+    it_behaves_like "migrates", from_store: described_class::Store::REMOTE, to_store: described_class::Store::LOCAL
+  end
 end

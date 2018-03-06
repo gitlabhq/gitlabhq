@@ -95,6 +95,7 @@ merge_requests:
 - timelogs
 - head_pipeline
 - latest_merge_request_diff
+- approved_by_users
 merge_request_diff:
 - merge_request
 - merge_request_diff_commits
@@ -306,6 +307,7 @@ project:
 - fork_network
 - custom_attributes
 - lfs_file_locks
+- project_badges
 award_emoji:
 - awardable
 - user
@@ -325,3 +327,5 @@ epic_issues:
 - epic
 lfs_file_locks:
 - user
+project_badges:
+- project

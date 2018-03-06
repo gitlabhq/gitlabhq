@@ -228,6 +228,9 @@ On each Consul node perform the following:
       server: true,
       retry_join: %w(Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z)
     }
+    
+    # Disable auto migrations
+    gitlab_rails['auto_migrate'] = false
     #
     # END user configuration
     ```

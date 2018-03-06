@@ -54,4 +54,9 @@ describe MergeRequest, elastic: true do
 
     expect(merge_request.as_indexed_json).to eq(expected_hash)
   end
+
+  it_behaves_like 'no results when the user cannot read cross project' do
+    let(:record1) { create(:merge_request, source_project: project, title: 'test-mr') }
+    let(:record2) { create(:merge_request, source_project: project2, title: 'test-mr') }
+  end
 end

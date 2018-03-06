@@ -34,6 +34,8 @@ module Gitlab
     end
 
     def events_by_date(date)
+      return Event.none unless can_read_cross_project?
+
       events = Event.contributions.where(author_id: contributor.id)
         .where(created_at: date.beginning_of_day..date.end_of_day)
         .where(project_id: projects)
@@ -52,6 +54,10 @@ module Gitlab
     end
 
     private
+
+    def can_read_cross_project?
+      Ability.allowed?(current_user, :read_cross_project)
+    end
 
     def event_counts(date_from, feature)
       t = Event.arel_table

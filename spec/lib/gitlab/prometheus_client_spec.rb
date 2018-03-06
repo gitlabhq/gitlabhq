@@ -19,41 +19,41 @@ describe Gitlab::PrometheusClient do
   # - execute_query: A query call
   shared_examples 'failure response' do
     context 'when request returns 400 with an error message' do
-      it 'raises a Gitlab::PrometheusError error' do
+      it 'raises a Gitlab::PrometheusClient::Error error' do
         req_stub = stub_prometheus_request(query_url, status: 400, body: { error: 'bar!' })
 
         expect { execute_query }
-          .to raise_error(Gitlab::PrometheusError, 'bar!')
+          .to raise_error(Gitlab::PrometheusClient::Error, 'bar!')
         expect(req_stub).to have_been_requested
       end
     end
 
     context 'when request returns 400 without an error message' do
-      it 'raises a Gitlab::PrometheusError error' do
+      it 'raises a Gitlab::PrometheusClient::Error error' do
         req_stub = stub_prometheus_request(query_url, status: 400)
 
         expect { execute_query }
-          .to raise_error(Gitlab::PrometheusError, 'Bad data received')
+          .to raise_error(Gitlab::PrometheusClient::Error, 'Bad data received')
         expect(req_stub).to have_been_requested
       end
     end
 
     context 'when request returns 500' do
-      it 'raises a Gitlab::PrometheusError error' do
+      it 'raises a Gitlab::PrometheusClient::Error error' do
         req_stub = stub_prometheus_request(query_url, status: 500, body: { message: 'FAIL!' })
 
         expect { execute_query }
-          .to raise_error(Gitlab::PrometheusError, '500 - {"message":"FAIL!"}')
+          .to raise_error(Gitlab::PrometheusClient::Error, '500 - {"message":"FAIL!"}')
         expect(req_stub).to have_been_requested
       end
     end
 
     context 'when request returns non json data' do
-      it 'raises a Gitlab::PrometheusError error' do
+      it 'raises a Gitlab::PrometheusClient::Error error' do
         req_stub = stub_prometheus_request(query_url, status: 200, body: 'not json')
 
         expect { execute_query }
-          .to raise_error(Gitlab::PrometheusError, 'Parsing response failed')
+          .to raise_error(Gitlab::PrometheusClient::Error, 'Parsing response failed')
         expect(req_stub).to have_been_requested
       end
     end
@@ -65,27 +65,27 @@ describe Gitlab::PrometheusClient do
     subject { described_class.new(RestClient::Resource.new(prometheus_url)) }
 
     context 'exceptions are raised' do
-      it 'raises a Gitlab::PrometheusError error when a SocketError is rescued' do
+      it 'raises a Gitlab::PrometheusClient::Error error when a SocketError is rescued' do
         req_stub = stub_prometheus_request_with_exception(prometheus_url, SocketError)
 
         expect { subject.send(:get, '/', {}) }
-          .to raise_error(Gitlab::PrometheusError, "Can't connect to #{prometheus_url}")
+          .to raise_error(Gitlab::PrometheusClient::Error, "Can't connect to #{prometheus_url}")
         expect(req_stub).to have_been_requested
       end
 
-      it 'raises a Gitlab::PrometheusError error when a SSLError is rescued' do
+      it 'raises a Gitlab::PrometheusClient::Error error when a SSLError is rescued' do
         req_stub = stub_prometheus_request_with_exception(prometheus_url, OpenSSL::SSL::SSLError)
 
         expect { subject.send(:get, '/', {}) }
-          .to raise_error(Gitlab::PrometheusError, "#{prometheus_url} contains invalid SSL data")
+          .to raise_error(Gitlab::PrometheusClient::Error, "#{prometheus_url} contains invalid SSL data")
         expect(req_stub).to have_been_requested
       end
 
-      it 'raises a Gitlab::PrometheusError error when a RestClient::Exception is rescued' do
+      it 'raises a Gitlab::PrometheusClient::Error error when a RestClient::Exception is rescued' do
         req_stub = stub_prometheus_request_with_exception(prometheus_url, RestClient::Exception)
 
         expect { subject.send(:get, '/', {}) }
-          .to raise_error(Gitlab::PrometheusError, "Network connection error")
+          .to raise_error(Gitlab::PrometheusClient::Error, "Network connection error")
         expect(req_stub).to have_been_requested
       end
     end

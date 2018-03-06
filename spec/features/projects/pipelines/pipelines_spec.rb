@@ -367,23 +367,6 @@ describe 'Pipelines', :js do
             expect(build.reload).to be_canceled
           end
         end
-
-        context 'dropdown jobs list' do
-          it 'should keep the dropdown open when the user ctr/cmd + clicks in the job name' do
-            find('.js-builds-dropdown-button').click
-            dropdown_item = find('.mini-pipeline-graph-dropdown-item').native
-
-            %i(alt control).each do |meta_key|
-              page.driver.browser.action
-                .key_down(meta_key)
-                .click(dropdown_item)
-                .key_up(meta_key)
-                .perform
-            end
-
-            expect(page).to have_selector('.js-ci-action-icon')
-          end
-        end
       end
 
       context 'with pagination' do

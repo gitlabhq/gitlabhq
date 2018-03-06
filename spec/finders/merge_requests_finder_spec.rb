@@ -18,7 +18,7 @@ describe MergeRequestsFinder do
   let(:project4) { create(:project, :public, group: subgroup) }
 
   let!(:merge_request1) { create(:merge_request, :simple, author: user, source_project: project2, target_project: project1) }
-  let!(:merge_request2) { create(:merge_request, :simple, author: user, source_project: project2, target_project: project1, state: 'closed') }
+  let!(:merge_request2) { create(:merge_request, :conflict, author: user, source_project: project2, target_project: project1, state: 'closed') }
   let!(:merge_request3) { create(:merge_request, :simple, author: user, source_project: project2, target_project: project2) }
   let!(:merge_request4) { create(:merge_request, :simple, author: user, source_project: project3, target_project: project3) }
   let!(:merge_request5) { create(:merge_request, :simple, author: user, source_project: project4, target_project: project4) }
@@ -78,6 +78,22 @@ describe MergeRequestsFinder do
       merge_requests = described_class.new(user, params).execute
 
       expect(merge_requests).to contain_exactly(merge_request1)
+    end
+
+    it 'filters by source branch' do
+      params = { source_branch: merge_request2.source_branch }
+
+      merge_requests = described_class.new(user, params).execute
+
+      expect(merge_requests).to contain_exactly(merge_request2)
+    end
+
+    it 'filters by target branch' do
+      params = { target_branch: merge_request2.target_branch }
+
+      merge_requests = described_class.new(user, params).execute
+
+      expect(merge_requests).to contain_exactly(merge_request2)
     end
 
     context 'filtering by group milestone' do

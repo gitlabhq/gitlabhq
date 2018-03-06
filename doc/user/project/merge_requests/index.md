@@ -31,10 +31,10 @@ With GitLab merge requests, you can:
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
 
-- View the deployment process across projects with [Multi-Project Pipeline Graphs](../../../ci/multi_project_pipeline_graphs.md) (available only in GitLab Premium)
-- Request [approvals](#merge-request-approvals) from your managers (available in GitLab Starter)
-- [Squash and merge](#squash-and-merge) for a cleaner commit history (available in GitLab Starter)
-- Analyze the impact of your changes with [Code Quality reports](#code-quality-reports) (available in GitLab Starter)
+- View the deployment process across projects with [Multi-Project Pipeline Graphs](https://docs.gitlab.com/ee/ci/multi_project_pipeline_graphs.html#multi-project-pipeline-graphs) (available only in GitLab Premium)
+- Request [approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your managers (available in GitLab Starter)
+- [Squash and merge](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html) for a cleaner commit history (available in GitLab Starter)
+- Analyze the impact of your changes with [Code Quality reports](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html) (available in GitLab Starter)
 - Determine the performance impact of changes with [Browser Performance Testing](#browser-performance-testing) (available in GitLab Premium)
 
 ## Use cases
@@ -142,6 +142,10 @@ those conflicts in the GitLab UI.
 
 ## Create new merge requests by email
 
+*This feature needs [incoming email](../../../administration/incoming_email.md)
+to be configured by a GitLab administrator to be available for CE/EE users, and
+it's available on GitLab.com.*
+
 You can create a new merge request by sending an email to a user-specific email
 address. The address can be obtained on the merge requests page by clicking on
 a **Email a new merge request to this project** button.  The subject will be
@@ -233,6 +237,18 @@ Going a step further, GitLab can show the vulnerability report right in the
 merge request widget area.
 
 [Read more about SAST Docker images reports.](sast_docker.md)
+
+## Dynamic Application Security Testing
+
+> Introduced in [GitLab Ultimate][products] 10.4.
+
+If you are using [GitLab CI/CD][ci], you can analyze your running web
+application(s) for known vulnerabilities using Dynamic Application Security
+Testing (DAST).
+Going a step further, GitLab can show the vulnerability report right in the
+merge request widget area.
+
+[Read more about Dynamic Application Security Testing reports.](dast.md)
 
 ## Browser Performance Testing
 

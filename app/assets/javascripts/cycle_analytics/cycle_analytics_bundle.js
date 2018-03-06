@@ -14,10 +14,10 @@ import CycleAnalyticsStore from './cycle_analytics_store';
 
 Vue.use(Translate);
 
-$(() => {
+export default () => {
   const OVERVIEW_DIALOG_COOKIE = 'cycle_analytics_help_dismissed';
 
-  gl.cycleAnalyticsApp = new Vue({
+  new Vue({ // eslint-disable-line no-new
     el: '#cycle-analytics',
     name: 'CycleAnalytics',
     components: {
@@ -132,4 +132,4 @@ $(() => {
       },
     },
   });
-});
+};

@@ -12,7 +12,7 @@ import {
   REQUEST_FAILURE,
 } from '~/clusters/constants';
 import applicationRow from '~/clusters/components/application_row.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { DEFAULT_APPLICATION_STATE } from '../services/mock_data';
 
 describe('Application Row', () => {

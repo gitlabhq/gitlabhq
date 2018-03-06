@@ -64,20 +64,6 @@ class Projects::IssuesController < Projects::ApplicationController
     respond_with(@issue)
   end
 
-  def discussions
-    notes = @issue.notes
-      .inc_relations_for_view
-      .includes(:noteable)
-      .fresh
-
-    notes = prepare_notes_for_rendering(notes)
-    notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
-
-    discussions = Discussion.build_collection(notes, @issue)
-
-    render json: DiscussionSerializer.new(project: @project, noteable: @issue, current_user: current_user).represent(discussions)
-  end
-
   def create
     create_params = issue_params.merge(spammable_params).merge(
       merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],
@@ -247,9 +233,8 @@ class Projects::IssuesController < Projects::ApplicationController
     Issues::UpdateService.new(project, current_user, update_params)
   end
 
-  def set_issuables_index
-    @finder_type = IssuesFinder
-    super
+  def finder_type
+    IssuesFinder
   end
 
   def whitelist_query_limiting
