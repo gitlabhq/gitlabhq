@@ -111,7 +111,6 @@ module MergeRequests
 
     private
 
-<<<<<<< HEAD
     def reset_approvals(merge_request)
       target_project = merge_request.target_project
 
@@ -120,8 +119,6 @@ module MergeRequests
       end
     end
 
-=======
->>>>>>> upstream/master
     def create_branch_change_note(issuable, branch_type, old_branch, new_branch)
       SystemNoteService.change_branch(
         issuable, issuable.project, current_user, branch_type,
