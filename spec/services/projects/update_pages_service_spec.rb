@@ -164,7 +164,7 @@ describe Projects::UpdatePagesService do
 
       context 'when timeout happens by DNS error' do
         before do
-          allow_any_instance_of(Projects::UpdatePagesService)
+          allow_any_instance_of(described_class)
             .to receive(:extract_zip_archive!).and_raise(SocketError)
         end
 
