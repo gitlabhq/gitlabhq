@@ -1,7 +1,5 @@
 - @no_container = true
 - page_title "Cycle Analytics"
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag('common_vue')
 
 #cycle-analytics{ class: container_class, "v-cloak" => "true", data: { request_path: project_cycle_analytics_path(@project) } }
   - if @cycle_analytics_no_data
