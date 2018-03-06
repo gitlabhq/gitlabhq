@@ -413,7 +413,7 @@ describe Gitlab::Ci::Trace do
         expect(build.job_artifacts_trace.file.filename).to eq('job.log')
         expect(File.exist?(src_path)).to be_falsy
         expect(src_checksum)
-          .to eq(Digest::SHA256.file(build.job_artifacts_trace.file.path).digest)
+          .to eq(Digest::SHA256.file(build.job_artifacts_trace.file.path).hexdigest)
         expect(build.job_artifacts_trace.file_sha256).to eq(src_checksum)
       end
     end
@@ -439,7 +439,7 @@ describe Gitlab::Ci::Trace do
         expect(build.job_artifacts_trace.file.filename).to eq('job.log')
         expect(build.old_trace).to be_nil
         expect(src_checksum)
-          .to eq(Digest::SHA256.file(build.job_artifacts_trace.file.path).digest)
+          .to eq(Digest::SHA256.file(build.job_artifacts_trace.file.path).hexdigest)
         expect(build.job_artifacts_trace.file_sha256).to eq(src_checksum)
       end
     end
@@ -459,7 +459,7 @@ describe Gitlab::Ci::Trace do
       context 'when trace file stored in default path' do
         let!(:build) { create(:ci_build, :success, :trace_live) }
         let!(:src_path) { trace.read { |s| return s.path } }
-        let!(:src_checksum) { Digest::SHA256.file(src_path).digest }
+        let!(:src_checksum) { Digest::SHA256.file(src_path).hexdigest }
 
         it_behaves_like 'archive trace file'
 
@@ -485,7 +485,7 @@ describe Gitlab::Ci::Trace do
       context 'when trace is stored in database' do
         let(:build) { create(:ci_build, :success) }
         let(:trace_content) { 'Sample trace' }
-        let!(:src_checksum) { Digest::SHA256.digest(trace_content) }
+        let!(:src_checksum) { Digest::SHA256.hexdigest(trace_content) }
 
         before do
           build.update_column(:trace, trace_content)
