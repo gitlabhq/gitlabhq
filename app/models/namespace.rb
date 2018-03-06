@@ -232,7 +232,7 @@ class Namespace < ActiveRecord::Base
     has_parent?
   end
 
-  # Overriden on EE module
+  # Overridden on EE module
   def multiple_issue_boards_available?
     false
   end
