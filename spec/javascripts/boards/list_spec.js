@@ -6,8 +6,8 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import _ from 'underscore';
+import '~/vue_shared/models/label';
 import '~/boards/models/issue';
-import '~/boards/models/label';
 import '~/boards/models/list';
 import '~/boards/models/assignee';
 import '~/boards/services/board_service';

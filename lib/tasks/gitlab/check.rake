@@ -336,7 +336,7 @@ namespace :gitlab do
       warn_user_is_not_gitlab
       start_checking "LDAP"
 
-      if Gitlab::LDAP::Config.enabled?
+      if Gitlab::Auth::LDAP::Config.enabled?
         check_ldap(args.limit)
       else
         puts 'LDAP is disabled in config/gitlab.yml'
@@ -346,13 +346,13 @@ namespace :gitlab do
     end
 
     def check_ldap(limit)
-      servers = Gitlab::LDAP::Config.providers
+      servers = Gitlab::Auth::LDAP::Config.providers
 
       servers.each do |server|
         puts "Server: #{server}"
 
         begin
-          Gitlab::LDAP::Adapter.open(server) do |adapter|
+          Gitlab::Auth::LDAP::Adapter.open(server) do |adapter|
             check_ldap_auth(adapter)
 
             puts "LDAP users with access to your GitLab server (only showing the first #{limit} results)"

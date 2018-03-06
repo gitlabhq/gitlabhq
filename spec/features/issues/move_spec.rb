@@ -73,7 +73,7 @@ feature 'issue move to another project' do
         wait_for_requests
 
         page.within '.js-sidebar-move-issue-block' do
-          expect(page).to have_content new_project.name_with_namespace
+          expect(page).to have_content new_project.full_name
         end
       end
     end

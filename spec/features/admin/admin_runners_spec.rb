@@ -76,8 +76,8 @@ describe "Admin Runners" do
 
     describe 'projects' do
       it 'contains project names' do
-        expect(page).to have_content(@project1.name_with_namespace)
-        expect(page).to have_content(@project2.name_with_namespace)
+        expect(page).to have_content(@project1.full_name)
+        expect(page).to have_content(@project2.full_name)
       end
     end
 
@@ -89,8 +89,8 @@ describe "Admin Runners" do
       end
 
       it 'contains name of correct project' do
-        expect(page).to have_content(@project1.name_with_namespace)
-        expect(page).not_to have_content(@project2.name_with_namespace)
+        expect(page).to have_content(@project1.full_name)
+        expect(page).not_to have_content(@project2.full_name)
       end
     end
 

@@ -36,3 +36,25 @@ From an Issue Board, create a new issue by clicking on the plus sign (**+**) on 
 It opens a new issue for that project labeled after its respective list.
 
 ![From the issue board](img/new_issue_from_issue_board.png)
+
+## New issue via email
+
+*This feature needs [incoming email](../../../administration/incoming_email.md)
+to be configured by a GitLab administrator to be available for CE/EE users, and
+it's available on GitLab.com.*
+
+At the bottom of a project's issue page, click
+**Email a new issue to this project**, and you will find an email address
+which belongs to you. You could add this address to your contact.
+
+This is a private email address, generated just for you.
+**Keep it to yourself** as anyone who gets ahold of it can create issues or
+merge requests as if they were you. You can add this address to your contact
+list for easy access.
+
+Sending an email to this address will create a new issue on your behalf for
+this project, where the email subject becomes the issue title, and the email
+body becomes the issue description. [Markdown] and [quick actions] are
+supported.
+
+![Bottom of a project issues page](img/new_issue_from_email.png)

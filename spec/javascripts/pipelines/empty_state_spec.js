@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import emptyStateComp from '~/pipelines/components/empty_state.vue';
+import mountComponent from '../helpers/vue_mount_component_helper';
 
 describe('Pipelines Empty State', () => {
   let component;
@@ -8,12 +9,15 @@ describe('Pipelines Empty State', () => {
   beforeEach(() => {
     EmptyStateComponent = Vue.extend(emptyStateComp);
 
-    component = new EmptyStateComponent({
-      propsData: {
-        helpPagePath: 'foo',
-        emptyStateSvgPath: 'foo',
-      },
-    }).$mount();
+    component = mountComponent(EmptyStateComponent, {
+      helpPagePath: 'foo',
+      emptyStateSvgPath: 'foo',
+      canSetCi: true,
+    });
+  });
+
+  afterEach(() => {
+    component.$destroy();
   });
 
   it('should render empty state SVG', () => {
@@ -24,16 +28,16 @@ describe('Pipelines Empty State', () => {
     expect(component.$el.querySelector('h4').textContent).toContain('Build with confidence');
 
     expect(
-      component.$el.querySelector('p').textContent.trim().replace(/[\r\n]+/g, ' '),
-    ).toContain('Continous Integration can help catch bugs by running your tests automatically');
+      component.$el.querySelector('p').innerHTML.trim().replace(/\n+\s+/m, ' ').replace(/\s\s+/g, ' '),
+    ).toContain('Continous Integration can help catch bugs by running your tests automatically,');
 
     expect(
-      component.$el.querySelector('p').textContent.trim().replace(/[\r\n]+/g, ' '),
-    ).toContain('Continuous Deployment can help you deliver code to your product environment');
+      component.$el.querySelector('p').innerHTML.trim().replace(/\n+\s+/m, ' ').replace(/\s\s+/g, ' '),
+    ).toContain('while Continuous Deployment can help you deliver code to your product environment');
   });
 
   it('should render a link with provided help path', () => {
-    expect(component.$el.querySelector('.btn-info').getAttribute('href')).toEqual('foo');
-    expect(component.$el.querySelector('.btn-info').textContent).toContain('Get started with Pipelines');
+    expect(component.$el.querySelector('.js-get-started-pipelines').getAttribute('href')).toEqual('foo');
+    expect(component.$el.querySelector('.js-get-started-pipelines').textContent).toContain('Get started with Pipelines');
   });
 });

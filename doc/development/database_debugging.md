@@ -53,3 +53,38 @@ bundle exec rails db RAILS_ENV=development
  - `CREATE TABLE board_labels();`: Create a table called `board_labels`
  - `SELECT * FROM schema_migrations WHERE version = '20170926203418';`: Check if a migration was run
  - `DELETE FROM schema_migrations WHERE version = '20170926203418';`: Manually remove a migration
+
+
+## FAQ
+
+### `ActiveRecord::PendingMigrationError` with Spring
+
+When running specs with the [Spring preloader](./rake_tasks.md#speed-up-tests-rake-tasks-and-migrations),
+the test database can get into a corrupted state. Trying to run the migration or
+dropping/resetting the test database has no effect.
+
+```sh
+$ bundle exec spring rspec some_spec.rb
+...
+Failure/Error: ActiveRecord::Migration.maintain_test_schema!
+
+ActiveRecord::PendingMigrationError:
+
+
+  Migrations are pending. To resolve this issue, run:
+
+    bin/rake db:migrate RAILS_ENV=test
+# ~/.rvm/gems/ruby-2.3.3/gems/activerecord-4.2.10/lib/active_record/migration.rb:392:in `check_pending!'
+...
+0 examples, 0 failures, 1 error occurred outside of examples
+```
+
+To resolve, you can kill the spring server and app that lives between spec runs.
+
+```sh
+$ ps aux | grep spring
+eric             87304   1.3  2.9  3080836 482596   ??  Ss   10:12AM   4:08.36 spring app    | gitlab | started 6 hours ago | test mode
+eric             37709   0.0  0.0  2518640   7524 s006  S    Wed11AM   0:00.79 spring server | gitlab | started 29 hours ago
+$ kill 87304
+$ kill 37709
+```

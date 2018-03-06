@@ -479,9 +479,8 @@ module Gitlab
           raise ArgumentError.new("invalid Repository#log limit: #{limit.inspect}")
         end
 
-        # TODO support options[:all] in Gitaly https://gitlab.com/gitlab-org/gitaly/issues/1049
         gitaly_migrate(:find_commits) do |is_enabled|
-          if is_enabled && !options[:all]
+          if is_enabled
             gitaly_commit_client.find_commits(options)
           else
             raw_log(options).map { |c| Commit.decorate(self, c) }
@@ -508,9 +507,8 @@ module Gitlab
       def count_commits(options)
         count_commits_options = process_count_commits_options(options)
 
-        # TODO add support for options[:all] in Gitaly https://gitlab.com/gitlab-org/gitaly/issues/1050
         gitaly_migrate(:count_commits) do |is_enabled|
-          if is_enabled && !options[:all]
+          if is_enabled
             count_commits_by_gitaly(count_commits_options)
           else
             count_commits_by_shelling_out(count_commits_options)
@@ -1033,6 +1031,21 @@ module Gitlab
 
             languages.sort do |x, y|
               y[:value] <=> x[:value]
+            end
+          end
+        end
+      end
+
+      def license_short_name
+        gitaly_migrate(:license_short_name) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.license_short_name
+          else
+            begin
+              # The licensee gem creates a Rugged object from the path:
+              # https://github.com/benbalter/licensee/blob/v8.7.0/lib/licensee/projects/git_project.rb
+              Licensee.license(path).try(:key)
+            rescue Rugged::Error
             end
           end
         end

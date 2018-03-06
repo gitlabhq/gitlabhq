@@ -4,8 +4,8 @@
 
 import Vue from 'vue';
 
+import '~/vue_shared/models/label';
 import '~/boards/models/issue';
-import '~/boards/models/label';
 import '~/boards/models/list';
 import '~/boards/models/assignee';
 import '~/boards/stores/boards_store';

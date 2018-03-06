@@ -14,7 +14,14 @@ class Groups::LabelsController < Groups::ApplicationController
       end
 
       format.json do
-        available_labels = LabelsFinder.new(current_user, group_id: @group.id).execute
+        available_labels = LabelsFinder.new(
+          current_user,
+          group_id: @group.id,
+          only_group_labels: params[:only_group_labels],
+          include_ancestor_groups: params[:include_ancestor_groups],
+          include_descendant_groups: params[:include_descendant_groups]
+        ).execute
+
         render json: LabelSerializer.new.represent_appearance(available_labels)
       end
     end

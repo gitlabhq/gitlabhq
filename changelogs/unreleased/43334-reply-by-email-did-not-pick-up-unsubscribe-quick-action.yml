@@ -1,0 +1,5 @@
+---
+title: Fix quick actions for users who cannot update issues and merge requests
+merge_request: 17482
+author:
+type: fixed
