@@ -12,6 +12,7 @@ class License < ActiveRecord::Base
     contribution_analytics
     elastic_search
     export_issues
+    external_files_in_gitlab_ci
     group_webhooks
     issuable_default_templates
     issue_board_focus_mode
@@ -39,7 +40,6 @@ class License < ActiveRecord::Base
     db_load_balancing
     deploy_board
     extended_audit_events
-    external_files_in_gitlab_ci
     file_locks
     geo
     group_issue_boards
