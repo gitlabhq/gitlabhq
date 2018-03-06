@@ -463,7 +463,7 @@ ActiveRecord::Schema.define(version: 20180327101207) do
     t.boolean "run_untagged", default: true, null: false
     t.boolean "locked", default: false, null: false
     t.integer "access_level", default: 0, null: false
-    t.integer "maximum_job_timeout"
+    t.integer "maximum_timeout"
     t.string "ip_address"
   end
 

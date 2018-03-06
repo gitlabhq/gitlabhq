@@ -112,19 +112,19 @@ describe API::Runner do
       context 'when maximum job timeout is specified' do
         it 'creates runner' do
           post api('/runners'), token: registration_token,
-                                maximum_job_timeout: '2h 30m'
+                                maximum_timeout: '2h 30m'
 
           expect(response).to have_gitlab_http_status 201
-          expect(Ci::Runner.first.maximum_job_timeout).to eq(9000)
+          expect(Ci::Runner.first.maximum_timeout).to eq(9000)
         end
 
         context 'when maximum job timeout is empty' do
           it 'creates runner' do
             post api('/runners'), token: registration_token,
-                                  maximum_job_timeout: ''
+                                  maximum_timeout: ''
 
             expect(response).to have_gitlab_http_status 201
-            expect(Ci::Runner.first.maximum_job_timeout).to be_nil
+            expect(Ci::Runner.first.maximum_timeout).to be_nil
           end
         end
       end
@@ -681,7 +681,7 @@ describe API::Runner do
               end
 
               context 'when runner specifies lower timeout' do
-                let(:runner) { create(:ci_runner, maximum_job_timeout: 1000) }
+                let(:runner) { create(:ci_runner, maximum_timeout: 1000) }
 
                 it 'contains info about timeout overridden by runner' do
                   request_job
@@ -692,7 +692,7 @@ describe API::Runner do
               end
 
               context 'when runner specifies bigger timeout' do
-                let(:runner) { create(:ci_runner, maximum_job_timeout: 2000) }
+                let(:runner) { create(:ci_runner, maximum_timeout: 2000) }
 
                 it 'contains info about timeout not overridden by runner' do
                   request_job

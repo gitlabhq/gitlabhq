@@ -55,8 +55,8 @@ shared_examples 'ChronicDurationAttribute writer' do
 end
 
 describe 'ChronicDurationAttribute' do
-  let(:source_field) {:maximum_job_timeout}
-  let(:virtual_field) {:maximum_job_timeout_human_readable}
+  let(:source_field) {:maximum_timeout}
+  let(:virtual_field) {:maximum_timeout_human_readable}
 
   subject { Ci::Runner.new }
 

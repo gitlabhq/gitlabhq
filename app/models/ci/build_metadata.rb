@@ -20,7 +20,7 @@ module Ci
 
     def save_timeout_state!
       project_timeout = build.project&.build_timeout
-      timeout = [project_timeout, build.runner&.maximum_job_timeout].compact.min
+      timeout = [project_timeout, build.runner&.maximum_timeout].compact.min
 
       self.used_timeout = timeout
       self.timeout_source = timeout < project_timeout ? :runner_timeout_source : :project_timeout_source

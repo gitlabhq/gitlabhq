@@ -951,7 +951,7 @@ module API
       expose :tag_list
       expose :run_untagged
       expose :locked
-      expose :maximum_job_timeout
+      expose :maximum_timeout
       expose :access_level
       expose :version, :revision, :platform, :architecture
       expose :contacted_at
