@@ -715,7 +715,7 @@ module Gitlab
       end
 
       def add_branch(branch_name, user:, target:)
-        gitaly_migrate(:operation_user_create_branch) do |is_enabled|
+        gitaly_migrate(:operation_user_create_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_add_branch(branch_name, user, target)
           else
