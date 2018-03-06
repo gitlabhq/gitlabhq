@@ -59,6 +59,7 @@ constraints(GroupUrlConstrainer.new) do
       end
     end
 
+<<<<<<< HEAD
     ## EE-specific
     resource :analytics, only: [:show]
     resource :ldap, only: [] do
@@ -101,6 +102,10 @@ constraints(GroupUrlConstrainer.new) do
 
     ## EE-specific
     resource :roadmap, only: [:show], controller: 'roadmap'
+=======
+    # On CE only index and show actions are needed
+    resources :boards, only: [:index, :show]
+>>>>>>> upstream/master
   end
 
   scope(path: '*id',

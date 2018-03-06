@@ -1,7 +1,11 @@
 /* eslint-disable no-unused-vars, no-mixed-operators, comma-dangle */
 /* global DocumentTouch */
 
+<<<<<<< HEAD
 import sortableConfig from 'ee/sortable/sortable_config';
+=======
+import sortableConfig from '../../sortable/sortable_config';
+>>>>>>> upstream/master
 
 window.gl = window.gl || {};
 window.gl.issueBoards = window.gl.issueBoards || {};

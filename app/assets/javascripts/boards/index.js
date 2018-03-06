@@ -13,6 +13,7 @@ import sidebarEventHub from '~/sidebar/event_hub'; // eslint-disable-line import
 import './models/issue';
 import './models/list';
 import './models/milestone';
+import './models/project';
 import './models/assignee';
 import './stores/boards_store';
 import './stores/modal_store';
@@ -258,8 +259,11 @@ export default () => {
       return {
         modal: ModalStore.store,
         store: Store.state,
+<<<<<<< HEAD
         isFullscreen: false,
         focusModeAvailable: $boardApp.hasAttribute('data-focus-mode-available'),
+=======
+>>>>>>> upstream/master
         canAdminList: this.$options.el.hasAttribute('data-can-admin-list'),
       };
     },

@@ -1,7 +1,10 @@
 FactoryBot.define do
   factory :board do
+<<<<<<< HEAD
     sequence(:name) { |n| "board#{n}" }
 
+=======
+>>>>>>> upstream/master
     transient do
       project nil
       group nil

@@ -1,6 +1,10 @@
 <script>
 import eventHub from '../eventhub';
+<<<<<<< HEAD
 import ProjectSelect from 'ee/boards/components/project_select.vue'; // eslint-disable-line import/first
+=======
+import ProjectSelect from './project_select.vue';
+>>>>>>> upstream/master
 import ListIssue from '../models/issue';
 
 const Store = gl.issueBoards.BoardsStore;
@@ -140,3 +144,4 @@ export default {
     </div>
   </div>
 </template>
+

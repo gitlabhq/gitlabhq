@@ -329,6 +329,16 @@ Click the button at the top right to toggle focus mode on and off. In focus mode
 [Developers and up](../permissions.md) can use all the functionality of the
 Issue Board, that is create/delete lists and drag issues around.
 
+##  Group Issue Board
+
+>Introduced in GitLab 10.6
+
+Group issue board is analogous to project-level issue board and it is accessible at the group
+navigation level. A group-level issue board allows you to view all issues from all projects in that group
+(currently, it does not see issues from projects in subgroups). Similarly, you can only filter by group labels for these
+boards. When updating milestones and labels for an issue through the sidebar update mechanism, again only
+group-level objects are available.
+
 ## Tips
 
 A few things to remember:

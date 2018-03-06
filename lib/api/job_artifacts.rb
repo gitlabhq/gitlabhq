@@ -9,8 +9,11 @@ module API
       end
     end
 
+<<<<<<< HEAD
     prepend EE::API::JobArtifacts
 
+=======
+>>>>>>> upstream/master
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end

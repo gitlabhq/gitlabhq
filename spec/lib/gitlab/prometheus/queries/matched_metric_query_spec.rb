@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Prometheus::Queries::MatchedMetricsQuery do
+describe Gitlab::Prometheus::Queries::MatchedMetricQuery do
   include Prometheus::MetricBuilders
 
   let(:metric_group_class) { Gitlab::Prometheus::MetricGroup }

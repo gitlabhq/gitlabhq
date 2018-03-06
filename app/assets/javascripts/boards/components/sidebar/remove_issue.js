@@ -43,6 +43,7 @@ gl.issueBoards.RemoveIssueBtn = Vue.extend({
         labelIds = [''];
       }
 
+<<<<<<< HEAD
       let assigneeIds = issue.assignees
         .map(assignee => assignee.id)
         .filter(id => id !== board.assignee.id);
@@ -51,6 +52,8 @@ gl.issueBoards.RemoveIssueBtn = Vue.extend({
         assigneeIds = ['0'];
       }
 
+=======
+>>>>>>> upstream/master
       const data = {
         issue: {
           label_ids: labelIds,
@@ -58,6 +61,7 @@ gl.issueBoards.RemoveIssueBtn = Vue.extend({
         },
       };
 
+<<<<<<< HEAD
       if (board.milestone_id) {
         data.issue.milestone_id = -1;
       }
@@ -66,6 +70,8 @@ gl.issueBoards.RemoveIssueBtn = Vue.extend({
         data.issue.weight = null;
       }
 
+=======
+>>>>>>> upstream/master
       // Post the remove data
       Vue.http.patch(this.updateUrl, data).catch(() => {
         Flash(__('Failed to remove issue from board, please try again.'));

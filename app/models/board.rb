@@ -1,6 +1,9 @@
 class Board < ActiveRecord::Base
+<<<<<<< HEAD
   prepend EE::Board
 
+=======
+>>>>>>> upstream/master
   belongs_to :group
   belongs_to :project
 

@@ -132,6 +132,7 @@ module API
     mount ::API::Events
     mount ::API::Features
     mount ::API::Files
+    mount ::API::GroupBoards
     mount ::API::Groups
     mount ::API::GroupBoards
     mount ::API::GroupMilestones

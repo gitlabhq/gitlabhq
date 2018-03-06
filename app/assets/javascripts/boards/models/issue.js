@@ -4,7 +4,11 @@
 /* global ListAssignee */
 
 import Vue from 'vue';
+<<<<<<< HEAD
 import IssueProject from 'ee/boards/models/project';
+=======
+import IssueProject from './project';
+>>>>>>> upstream/master
 
 class ListIssue {
   constructor (obj, defaultAvatar) {
@@ -29,7 +33,10 @@ class ListIssue {
     this.toggleSubscriptionEndpoint = obj.toggle_subscription_endpoint;
     this.milestone_id = obj.milestone_id;
     this.project_id = obj.project_id;
+<<<<<<< HEAD
     this.weight = obj.weight;
+=======
+>>>>>>> upstream/master
 
     if (obj.project) {
       this.project = new IssueProject(obj.project);

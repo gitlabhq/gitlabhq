@@ -39,7 +39,11 @@ describe Groups::BoardsController do
 
     context 'when format is JSON' do
       it 'return an array with one group board' do
+<<<<<<< HEAD
         create(:board, group: group, milestone: create(:milestone, group: group))
+=======
+        create(:board, group: group)
+>>>>>>> upstream/master
 
         list_boards format: :json
 
