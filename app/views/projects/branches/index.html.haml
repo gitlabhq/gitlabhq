@@ -45,11 +45,8 @@
         = link_to new_project_branch_path(@project), class: 'btn btn-create' do
           = s_('Branches|New branch')
 
-<<<<<<< HEAD
   = render 'projects/commits/mirror_status'
 
-  - if @branches.any?
-=======
   - if can?(current_user, :admin_project, @project)
     - project_settings_link = link_to s_('Branches|project settings'), project_protected_branches_path(@project)
     .row-content-block
@@ -61,7 +58,6 @@
     = render "projects/branches/panel", branches: @stale_branches, state: 'stale', panel_title: s_('Branches|Stale branches'), show_more_text: s_('Branches|Show more stale branches'), project: @project, overview_max_branches: @overview_max_branches
 
   - elsif @branches.any?
->>>>>>> upstream/master
     %ul.content-list.all-branches
       - @branches.each do |branch|
         = render "projects/branches/branch", branch: branch, merged: @merged_branch_names.include?(branch.name)
