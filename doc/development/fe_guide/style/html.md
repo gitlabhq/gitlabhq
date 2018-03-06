@@ -27,4 +27,15 @@ This prevents a security vulnerability documented by [JitBit][JitBit]
 <a href="url" target="_blank" rel="noopener noreferrer"></a>
 ```
 
+<a name="fake-links"></a><a name="2.2"></a>
+- [2.2](#fake-links) **Avoid using fake links** Buttons should be used if a link only invokes JavaScript click event handlers.
+
+```
+// bad
+<a class="js-do-something" href="#"></a>
+
+// good
+<button class="js-do-something" type="button"></button>
+```
+
 [JitBit]: https://www.jitbit.com/alexblog/256-targetblank---the-most-underestimated-vulnerability-ever/
