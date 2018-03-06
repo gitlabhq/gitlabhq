@@ -21,6 +21,7 @@ class Project < ActiveRecord::Base
   include Gitlab::SQL::Pattern
   include DeploymentPlatform
   include ::Gitlab::Utils::StrongMemoize
+  include AtomicInternalId::Scope
 
   extend Gitlab::ConfigHelper
 
@@ -318,6 +319,8 @@ class Project < ActiveRecord::Base
   scope :with_merge_requests_enabled, -> { with_feature_enabled(:merge_requests) }
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
+
+  scopes_internal_id :issues_iid
 
   # Returns a collection of projects that is either public or visible to the
   # logged in user.

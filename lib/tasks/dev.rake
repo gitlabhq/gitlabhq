@@ -12,4 +12,15 @@ namespace :dev do
   task load: :environment do
     Rails.application.eager_load!
   end
+
+  task idtest: :environment do
+    project = Project.where(name: 'lkjlkjlkjlkj').first
+    user = User.second
+    i = 0
+    begin
+      Issue.create(author: user, title: "Issue #{i}", project: project)
+      i += 1
+      puts i
+    end while true
+  end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180308052825) do
+ActiveRecord::Schema.define(version: 20180308104821) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -866,6 +866,10 @@ ActiveRecord::Schema.define(version: 20180308052825) do
 
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
 
+  create_table "internal_ids", force: :cascade do |t|
+    t.integer "last_value", null: false
+  end
+
   create_table "issue_assignees", id: false, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "issue_id", null: false
@@ -1503,6 +1507,7 @@ ActiveRecord::Schema.define(version: 20180308052825) do
     t.boolean "merge_requests_ff_only_enabled", default: false
     t.boolean "merge_requests_rebase_enabled", default: false, null: false
     t.integer "jobs_cache_index"
+    t.integer "issues_iid"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -2105,6 +2110,7 @@ ActiveRecord::Schema.define(version: 20180308052825) do
   add_foreign_key "project_group_links", "projects", name: "fk_daa8cee94c", on_delete: :cascade
   add_foreign_key "project_import_data", "projects", name: "fk_ffb9ee3a10", on_delete: :cascade
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
+  add_foreign_key "projects", "internal_ids", column: "issues_iid", name: "fk_ead3629613", on_delete: :nullify
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches", name: "fk_8a3072ccb3", on_delete: :cascade
   add_foreign_key "protected_branch_push_access_levels", "protected_branches", name: "fk_9ffc86a3d9", on_delete: :cascade
   add_foreign_key "protected_branches", "projects", name: "fk_7a9c6d93e7", on_delete: :cascade

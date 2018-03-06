@@ -1,7 +1,7 @@
 require 'carrierwave/orm/activerecord'
 
 class Issue < ActiveRecord::Base
-  include NonatomicInternalId
+  include AtomicInternalId
   include Issuable
   include Noteable
   include Referable
@@ -23,6 +23,8 @@ class Issue < ActiveRecord::Base
 
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
+
+  has_internal_id :iid, scope: :project, through: :issues_iid, init: ->(o) { o.project.issues.maximum(:iid) }
 
   has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
