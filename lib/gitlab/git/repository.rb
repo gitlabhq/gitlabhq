@@ -903,7 +903,7 @@ module Gitlab
       #   create_branch("feature")
       #   create_branch("other-feature", "master")
       def create_branch(ref, start_point = "HEAD")
-        gitaly_migrate(:create_branch) do |is_enabled|
+        gitaly_migrate(:create_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.create_branch(ref, start_point)
           else
