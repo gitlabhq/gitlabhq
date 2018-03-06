@@ -1527,14 +1527,32 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def import_export_shared
+    @import_export_shared ||= Gitlab::ImportExport::Shared.new(self)
+  end
+
   def export_path
     return nil unless namespace.present? || hashed_storage?(:repository)
 
-    File.join(Gitlab::ImportExport.storage_path, disk_path)
+    import_export_shared.archive_path
   end
 
   def export_project_path
     Dir.glob("#{export_path}/*export.tar.gz").max_by { |f| File.ctime(f) }
+  end
+
+  def export_status
+    if export_in_progress?
+      :started
+    elsif export_project_path
+      :finished
+    else
+      :none
+    end
+  end
+
+  def export_in_progress?
+    import_export_shared.active_export_count > 0
   end
 
   def remove_exports
