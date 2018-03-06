@@ -414,6 +414,7 @@ describe Gitlab::Ci::Trace do
         expect(File.exist?(src_path)).to be_falsy
         expect(src_checksum)
           .to eq(Digest::SHA256.file(build.job_artifacts_trace.file.path).digest)
+        expect(build.job_artifacts_trace.file_sha256).to eq(src_checksum)
       end
     end
 
@@ -439,6 +440,7 @@ describe Gitlab::Ci::Trace do
         expect(build.old_trace).to be_nil
         expect(src_checksum)
           .to eq(Digest::SHA256.file(build.job_artifacts_trace.file.path).digest)
+        expect(build.job_artifacts_trace.file_sha256).to eq(src_checksum)
       end
     end
 
