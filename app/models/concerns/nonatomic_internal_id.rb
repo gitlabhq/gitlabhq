@@ -1,4 +1,4 @@
-module InternalId
+module NonatomicInternalId
   extend ActiveSupport::Concern
 
   included do

@@ -4,7 +4,7 @@ class Issue < ActiveRecord::Base
   prepend EE::Issue
   prepend EE::RelativePositioning
 
-  include InternalId
+  include NonatomicInternalId
   include Issuable
   include Noteable
   include Referable
