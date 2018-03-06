@@ -9,7 +9,7 @@ describe('Dashboard', () => {
   let DashboardComponent;
   let component;
   const propsData = {
-    hasMetrics: 'false',
+    hasMetrics: false,
     documentationPath: '/path/to/docs',
     settingsPath: '/path/to/settings',
     clustersPath: '/path/to/clusters',
@@ -58,7 +58,7 @@ describe('Dashboard', () => {
     it('shows up a loading state', (done) => {
       component = new DashboardComponent({
         el: document.querySelector('#prometheus-graphs'),
-        propsData: { ...propsData, hasMetrics: 'true' },
+        propsData: { ...propsData, hasMetrics: true },
       });
       component.$mount();
       Vue.nextTick(() => {
