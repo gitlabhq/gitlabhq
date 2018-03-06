@@ -272,13 +272,14 @@ to another list the label changes and a system not is recorded.
 > Introduced in [GitLab Enterprise Edition 8.13](https://about.gitlab.com/2016/10/22/gitlab-8-13-released/#multiple-issue-boards-ee).
 
 Multiple Issue Boards, as the name suggests, allow for more than one Issue Board
-for a given project. This is great for large projects with more than one team
+for a given project or group. This is great for large projects with more than one team
 or in situations where a repository is used to host the code of multiple
 products.
 
 Clicking on the current board name in the upper left corner will reveal a
 menu from where you can create another Issue Board and rename or delete the
 existing one.
+Multiple issue boards feature is available for **projects in GitLab Starter Edition** and for **groups in GitLab Premium Edition**.
 
 ![Multiple Issue Boards](img/issue_boards_multiple.png)
 

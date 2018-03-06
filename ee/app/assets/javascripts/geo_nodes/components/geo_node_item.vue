@@ -112,14 +112,16 @@ export default {
       }
     },
     handleMounted() {
-      eventHub.$emit('pollNodeDetails', this.node.id);
+      eventHub.$emit('pollNodeDetails', this.node);
     },
   },
 };
 </script>
 
 <template>
-  <li>
+  <li
+    :class="{ 'node-action-active': node.nodeActionActive }"
+  >
     <div class="row">
       <div class="col-md-8">
         <div class="row">
@@ -128,7 +130,7 @@ export default {
               {{ node.url }}
             </strong>
             <loading-icon
-              v-if="isNodeDetailsLoading"
+              v-if="isNodeDetailsLoading || node.nodeActionActive"
               class="node-details-loading prepend-left-10 pull-left inline"
               size="1"
             />

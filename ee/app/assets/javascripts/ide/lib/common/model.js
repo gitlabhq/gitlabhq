@@ -61,14 +61,14 @@ export default class Model {
     this.events.set(
       this.path,
       this.disposable.add(
-        this.model.onDidChangeContent(e => cb(this.model, e)),
+        this.model.onDidChangeContent(e => cb(this, e)),
       ),
     );
   }
 
   updateContent(content) {
-    this.getModel().setValue(content);
     this.getOriginalModel().setValue(content);
+    this.getModel().setValue(content);
   }
 
   dispose() {

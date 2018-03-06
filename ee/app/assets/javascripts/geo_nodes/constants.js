@@ -1,9 +1,6 @@
-export const NODE_ACTION_BASE_PATH = '/admin/geo_nodes/';
-
 export const NODE_ACTIONS = {
-  TOGGLE: '/toggle',
-  EDIT: '/edit',
-  REPAIR: '/repair',
+  TOGGLE: 'toggle',
+  REMOVE: 'remove',
 };
 
 export const VALUE_TYPE = {

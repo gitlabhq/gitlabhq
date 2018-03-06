@@ -700,10 +700,10 @@ describe API::Runner do
         end
       end
 
-      context 'when tace is given' do
+      context 'when trace is given' do
         it 'creates a trace artifact' do
           allow(BuildFinishedWorker).to receive(:perform_async).with(job.id) do
-            CreateTraceArtifactWorker.new.perform(job.id)
+            ArchiveTraceWorker.new.perform(job.id)
           end
 
           update_job(state: 'success', trace: 'BUILD TRACE UPDATED')

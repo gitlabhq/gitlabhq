@@ -20,7 +20,19 @@ module EE
       return if note.author == support_bot
       return unless issue.subscribed?(support_bot, issue.project)
 
-      Notify.service_desk_new_note_email(issue.id, note.id).deliver_later
+      mailer.service_desk_new_note_email(issue.id, note.id).deliver_later
+    end
+
+    def mirror_was_hard_failed(project)
+      recipients = project.members.owners_and_masters
+
+      unless recipients.present?
+        recipients = project.group.members.owners_and_masters
+      end
+
+      recipients.each do |recipient|
+        mailer.mirror_was_hard_failed_email(project.id, recipient.user.id).deliver_later
+      end
     end
   end
 end

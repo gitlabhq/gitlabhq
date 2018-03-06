@@ -97,6 +97,10 @@
         return this.showAdvanceItems ? 'angle-up' : 'angle-down';
       },
       nodeVersion() {
+        if (this.nodeDetails.version == null &&
+            this.nodeDetails.revision == null) {
+          return __('Unknown');
+        }
         return `${this.nodeDetails.version} (${this.nodeDetails.revision})`;
       },
       replicationSlotWAL() {
@@ -113,7 +117,8 @@
 
           return stringifyTime(parsedTime);
         }
-        return 'Unknown';
+
+        return __('Unknown');
       },
       lastEventStatus() {
         return {
@@ -150,6 +155,7 @@
       },
       syncSettings() {
         return {
+          syncStatusUnavailable: this.nodeDetails.syncStatusUnavailable,
           selectiveSyncType: this.nodeDetails.selectiveSyncType,
           lastEvent: this.nodeDetails.lastEvent,
           cursorLastEvent: this.nodeDetails.cursorLastEvent,

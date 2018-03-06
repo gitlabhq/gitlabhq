@@ -6,7 +6,6 @@ module EE
     EMPTY_SCOPE_STATE = [nil, -1].freeze
 
     prepended do
-      belongs_to :group
       belongs_to :milestone
 
       has_many :board_labels
@@ -20,19 +19,6 @@ module EE
       has_many :labels, through: :board_labels
 
       validates :name, presence: true
-      validates :group, presence: true, unless: :project
-    end
-
-    def project_needed?
-      !group
-    end
-
-    def parent
-      @parent ||= group || project
-    end
-
-    def group_board?
-      group_id.present?
     end
 
     def milestone
