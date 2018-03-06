@@ -235,7 +235,9 @@ to another list the label changes and a system not is recorded.
 [Developers and up](../permissions.md) can use all the functionality of the
 Issue Board, that is create/delete lists and drag issues around.
 
-## Group Issue Board
+##  Group Issue Board
+
+>Introduced in GitLab 10.6
 
 Group issue board is analogous to project-level issue board and it is accessible at the group
 navigation level. A group-level issue board allows you to view all issues from all projects in that group
