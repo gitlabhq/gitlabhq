@@ -86,7 +86,7 @@ class CampfireService < Service
     after = push[:after]
 
     message = ""
-    message << "[#{project.name_with_namespace}] "
+    message << "[#{project.full_name}] "
     message << "#{push[:user_name]} "
 
     if Gitlab::Git.blank_ref?(before)

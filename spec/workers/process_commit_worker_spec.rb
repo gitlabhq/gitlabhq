@@ -20,32 +20,6 @@ describe ProcessCommitWorker do
       worker.perform(project.id, -1, commit.to_hash)
     end
 
-    context 'when commit is a merge request merge commit' do
-      let(:merge_request) do
-        create(:merge_request,
-               description: "Closes #{issue.to_reference}",
-               source_branch: 'feature-merged',
-               target_branch: 'master',
-               source_project: project)
-      end
-
-      let(:commit) do
-        project.repository.create_branch('feature-merged', 'feature')
-
-        sha = project.repository.merge(user,
-                                       merge_request.diff_head_sha,
-                                       merge_request,
-                                       "Closes #{issue.to_reference}")
-        project.repository.commit(sha)
-      end
-
-      it 'it does not close any issues from the commit message' do
-        expect(worker).not_to receive(:close_issues)
-
-        worker.perform(project.id, user.id, commit.to_hash)
-      end
-    end
-
     it 'processes the commit message' do
       expect(worker).to receive(:process_commit_message).and_call_original
 
@@ -73,10 +47,18 @@ describe ProcessCommitWorker do
 
   describe '#process_commit_message' do
     context 'when pushing to the default branch' do
-      it 'closes issues that should be closed per the commit message' do
+      before do
         allow(commit).to receive(:safe_message).and_return("Closes #{issue.to_reference}")
+      end
 
+      it 'closes issues that should be closed per the commit message' do
         expect(worker).to receive(:close_issues).with(project, user, user, commit, [issue])
+
+        worker.process_commit_message(project, commit, user, user, true)
+      end
+
+      it 'creates cross references' do
+        expect(commit).to receive(:create_cross_references!).with(user, [issue])
 
         worker.process_commit_message(project, commit, user, user, true)
       end
@@ -90,12 +72,44 @@ describe ProcessCommitWorker do
 
         worker.process_commit_message(project, commit, user, user, false)
       end
+
+      it 'does not create cross references' do
+        expect(commit).to receive(:create_cross_references!).with(user, [])
+
+        worker.process_commit_message(project, commit, user, user, false)
+      end
     end
 
-    it 'creates cross references' do
-      expect(commit).to receive(:create_cross_references!)
+    context 'when commit is a merge request merge commit to the default branch' do
+      let(:merge_request) do
+        create(:merge_request,
+               description: "Closes #{issue.to_reference}",
+               source_branch: 'feature-merged',
+               target_branch: 'master',
+               source_project: project)
+      end
 
-      worker.process_commit_message(project, commit, user, user)
+      let(:commit) do
+        project.repository.create_branch('feature-merged', 'feature')
+
+        MergeRequests::MergeService
+          .new(project, merge_request.author)
+          .execute(merge_request)
+
+        merge_request.reload.merge_commit
+      end
+
+      it 'does not close any issues from the commit message' do
+        expect(worker).not_to receive(:close_issues)
+
+        worker.process_commit_message(project, commit, user, user, true)
+      end
+
+      it 'still creates cross references' do
+        expect(commit).to receive(:create_cross_references!).with(user, [])
+
+        worker.process_commit_message(project, commit, user, user, true)
+      end
     end
   end
 

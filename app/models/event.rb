@@ -164,7 +164,7 @@ class Event < ActiveRecord::Base
 
   def project_name
     if project
-      project.name_with_namespace
+      project.full_name
     else
       "(deleted project)"
     end
