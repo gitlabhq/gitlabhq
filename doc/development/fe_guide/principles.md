@@ -10,6 +10,10 @@ Discuss your architecture design in an issue before writing code. This helps dec
 
 There are multiple ways of writing code to accomplish the same results. We should be as consistent in how we write code across our codebases whenever we can. This makes it more easier for someone to maintain code across GitLab.
 
+## Enhance progressively
+
+Whenever you interact with existing code that does not follow our current style guide. Please update them progressively. Refrain from changing everything but each merge request should progressively enhance our codebase and reduce technical debt.
+
 ## When to use Vue
 
 - Use Vue for features that perform a lot of read and write operations to the DOM because it is more performant (E.g. features that require real time updates)
