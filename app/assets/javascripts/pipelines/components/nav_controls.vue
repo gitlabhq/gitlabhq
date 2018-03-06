@@ -1,67 +1,52 @@
 <script>
-export default {
-  name: 'PipelineNavControls',
-  props: {
-    newPipelinePath: {
-      type: String,
-      required: true,
-    },
+  export default {
+    name: 'PipelineNavControls',
+    props: {
+      newPipelinePath: {
+        type: String,
+        required: false,
+        default: null,
+      },
 
-    hasCiEnabled: {
-      type: Boolean,
-      required: true,
-    },
+      resetCachePath: {
+        type: String,
+        required: false,
+        default: null,
+      },
 
-    helpPagePath: {
-      type: String,
-      required: true,
+      ciLintPath: {
+        type: String,
+        required: false,
+        default: null,
+      },
     },
-
-    resetCachePath: {
-      type: String,
-      required: true,
-    },
-
-    ciLintPath: {
-      type: String,
-      required: true,
-    },
-
-    canCreatePipeline: {
-      type: Boolean,
-      required: true,
-    },
-  },
-};
+  };
 </script>
 <template>
   <div class="nav-controls">
     <a
-      v-if="canCreatePipeline"
+      v-if="newPipelinePath"
       :href="newPipelinePath"
-      class="btn btn-create">
-      Run Pipeline
+      class="btn btn-create js-run-pipeline"
+    >
+      {{ s__('Pipelines|Run Pipeline') }}
     </a>
 
     <a
-      v-if="!hasCiEnabled"
-      :href="helpPagePath"
-      class="btn btn-info">
-      Get started with Pipelines
-    </a>
-
-    <a
+      v-if="resetCachePath"
       data-method="post"
-      rel="nofollow"
       :href="resetCachePath"
-      class="btn btn-default">
-      Clear runner caches
+      class="btn btn-default js-clear-cache"
+    >
+      {{ s__('Pipelines|Clear Runner Caches') }}
     </a>
 
     <a
+      v-if="ciLintPath"
       :href="ciLintPath"
-      class="btn btn-default">
-      CI Lint
+      class="btn btn-default js-ci-lint"
+    >
+      {{ s__('Pipelines|CI Lint') }}
     </a>
   </div>
 </template>
