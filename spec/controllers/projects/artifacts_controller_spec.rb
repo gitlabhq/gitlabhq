@@ -118,6 +118,7 @@ describe Projects::ArtifactsController do
 
       shared_examples 'a valid file' do
         it 'serves the file using workhorse' do
+          binding.pry
           subject
 
           expect(response).to have_gitlab_http_status(200)

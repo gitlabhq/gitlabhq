@@ -162,19 +162,15 @@ describe Ci::Build do
     end
 
     context 'when legacy artifacts are used' do
-      context 'artifacts archive does not exist' do
-        let(:build) { create(:ci_build) }
-
-        context 'is not expired' do
-          it { is_expected.to be_truthy }
-        end
-      end
-    end
-
-    context 'when legacy artifacts are used' do
       let(:build) { create(:ci_build, :legacy_artifacts) }
 
       subject { build.artifacts? }
+
+      context 'is expired' do
+        let(:build) { create(:ci_build, :legacy_artifacts, :expired) }
+
+        it { is_expected.to be_falsy }
+      end
 
       context 'artifacts archive does not exist' do
         let(:build) { create(:ci_build) }
@@ -186,19 +182,13 @@ describe Ci::Build do
         let(:build) { create(:ci_build, :legacy_artifacts) }
 
         it { is_expected.to be_truthy }
-
-        context 'is expired' do
-          let(:build) { create(:ci_build, :legacy_artifacts, :expired) }
-
-          it { is_expected.to be_falsy }
-        end
       end
     end
   end
 
   describe '#browsable_artifacts?' do
     subject { build.browsable_artifacts? }
-  
+
     context 'artifacts metadata does not exist' do
       before do
         build.update_attributes(legacy_artifacts_metadata: nil)
@@ -218,10 +208,6 @@ describe Ci::Build do
     let(:build) { create(:ci_build, :artifacts, artifacts_file_store: store) }
 
     subject { build.downloadable_single_artifacts_file? }
-
-    before do
-      expect_any_instance_of(Ci::Build).to receive(:artifacts_metadata?).and_call_original
-    end
 
     context 'artifacts are stored locally' do
       let(:store) { ObjectStoreUploader::LOCAL_STORE }

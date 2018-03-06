@@ -147,8 +147,11 @@ module Gitlab
       end
 
       def send_artifacts_entry(build, entry)
+        file = build.artifacts_file
+        archive = file.file_storage? ? file.path : file.url
+
         params = {
-          'Archive' => build.artifacts_file.path,
+          'Archive' => archive,
           'Entry' => Base64.encode64(entry.to_s)
         }
 

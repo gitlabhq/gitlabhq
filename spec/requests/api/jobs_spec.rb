@@ -307,6 +307,19 @@ describe API::Jobs do
   end
 
   describe 'GET /projects/:id/jobs/:job_id/artifacts' do
+    shared_examples 'downloads artifact' do
+      let(:download_headers) do
+        { 'Content-Transfer-Encoding' => 'binary',
+          'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
+      end
+
+      it 'returns specific job artifacts' do
+        expect(response).to have_gitlab_http_status(200)
+        expect(response.headers).to include(download_headers)
+        expect(response.body).to match_file(job.artifacts_file.file.file)
+      end
+    end
+
     before do
       stub_artifacts_object_storage
       get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
