@@ -37,6 +37,14 @@ feature 'Dashboard Projects' do
 
       expect(page).to have_xpath("//time[@datetime='#{project.last_repository_updated_at.getutc.iso8601}']")
     end
+
+    it 'shows the last_activity_at attribute as the update date' do
+      project.update_attributes!(last_repository_updated_at: 1.hour.ago, last_activity_at: Time.now)
+
+      visit dashboard_projects_path
+
+      expect(page).to have_xpath("//time[@datetime='#{project.last_activity_at.getutc.iso8601}']")
+    end
   end
 
   context 'when last_repository_updated_at and last_activity_at are missing' do
