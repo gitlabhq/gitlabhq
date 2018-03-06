@@ -810,7 +810,7 @@ module Gitlab
       end
 
       def revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
-        gitaly_migrate(:revert) do |is_enabled|
+        gitaly_migrate(:revert, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           args = {
             user: user,
             commit: commit,
