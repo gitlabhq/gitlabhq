@@ -38,6 +38,10 @@ class GithubService < Service
     %w(pipeline)
   end
 
+  def configurable_events
+    []
+  end
+
   def can_test?
     project.pipelines.any?
   end

@@ -130,6 +130,10 @@ class Service < ActiveRecord::Base
     fields
   end
 
+  def configurable_events
+    self.class.supported_events
+  end
+
   def supported_events
     self.class.supported_events
   end
