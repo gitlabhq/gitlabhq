@@ -735,7 +735,7 @@ module Gitlab
       end
 
       def rm_branch(branch_name, user:)
-        gitaly_migrate(:operation_user_delete_branch) do |is_enabled|
+        gitaly_migrate(:operation_user_delete_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_operations_client.user_delete_branch(branch_name, user)
           else
