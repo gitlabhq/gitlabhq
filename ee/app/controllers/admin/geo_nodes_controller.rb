@@ -37,50 +37,6 @@ class Admin::GeoNodesController < Admin::ApplicationController
     end
   end
 
-  def destroy
-    @node.destroy
-
-    redirect_to admin_geo_nodes_path, status: 302, notice: 'Node was successfully removed.'
-  end
-
-  def repair
-    if !@node.missing_oauth_application?
-      flash[:notice] = "This node doesn't need to be repaired."
-    elsif @node.repair
-      flash[:notice] = 'Node Authentication was successfully repaired.'
-    else
-      flash[:alert] = 'There was a problem repairing Node Authentication.'
-    end
-
-    redirect_to admin_geo_nodes_path
-  end
-
-  def toggle
-    if @node.primary?
-      flash[:alert] = "Primary node can't be disabled."
-    else
-      if @node.toggle!(:enabled)
-        new_status = @node.enabled? ? 'enabled' : 'disabled'
-        flash[:notice] = "Node #{@node.url} was successfully #{new_status}."
-      else
-        action = @node.enabled? ? 'disabling' : 'enabling'
-        flash[:alert] = "There was a problem #{action} node #{@node.url}."
-      end
-    end
-
-    redirect_to admin_geo_nodes_path
-  end
-
-  def status
-    status = Geo::NodeStatusFetchService.new.call(@node)
-
-    respond_to do |format|
-      format.json do
-        render json: GeoNodeStatusSerializer.new.represent(status)
-      end
-    end
-  end
-
   private
 
   def geo_node_params
