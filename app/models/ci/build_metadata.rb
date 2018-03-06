@@ -10,7 +10,7 @@ module Ci
 
     belongs_to :build, class_name: 'Ci::Build'
 
-    chronic_duration_attr_reader :used_timeout_human_readable, :used_timeout
+    chronic_duration_attr_reader :timeout_human_readable, :timeout
 
     enum timeout_source: {
         unknown_timeout_source: 1,
@@ -22,7 +22,7 @@ module Ci
       project_timeout = build.project&.build_timeout
       timeout = [project_timeout, build.runner&.maximum_timeout].compact.min
 
-      self.used_timeout = timeout
+      self.timeout = timeout
       self.timeout_source = timeout < project_timeout ? :runner_timeout_source : :project_timeout_source
 
       save!

@@ -242,7 +242,7 @@ module Ci
     end
 
     def timeout
-      metadata.used_timeout
+      metadata.timeout
     end
 
     def triggered_by?(current_user)

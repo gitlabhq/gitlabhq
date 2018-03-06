@@ -330,7 +330,7 @@ ActiveRecord::Schema.define(version: 20180327101207) do
   add_index "ci_builds", ["user_id"], name: "index_ci_builds_on_user_id", using: :btree
 
   create_table "ci_builds_metadata", primary_key: "build_id", force: :cascade do |t|
-    t.integer "used_timeout"
+    t.integer "timeout"
     t.integer "timeout_source", default: 1, null: false
   end
 
@@ -463,8 +463,8 @@ ActiveRecord::Schema.define(version: 20180327101207) do
     t.boolean "run_untagged", default: true, null: false
     t.boolean "locked", default: false, null: false
     t.integer "access_level", default: 0, null: false
-    t.integer "maximum_timeout"
     t.string "ip_address"
+    t.integer "maximum_timeout"
   end
 
   add_index "ci_runners", ["contacted_at"], name: "index_ci_runners_on_contacted_at", using: :btree

@@ -116,7 +116,7 @@ export default {
     },
   },
   metadata: {
-    used_timeout_human_readable: '1m 40s',
+    timeout_human_readable: '1m 40s',
     timeout_source: 'runner',
   },
   merge_request: {

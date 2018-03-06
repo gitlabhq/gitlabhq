@@ -45,7 +45,7 @@
         return `#${this.job.runner.id}`;
       },
       timeout() {
-        let t = `${this.job.metadata.used_timeout_human_readable}`;
+        let t = `${this.job.metadata.timeout_human_readable}`;
 
         if (this.job.metadata.timeout_source != null) {
           t += ` (from ${this.job.metadata.timeout_source})`;
@@ -130,7 +130,7 @@
         />
         <detail-row
           class="js-job-timeout"
-          v-if="job.metadata.used_timeout_human_readable"
+          v-if="job.metadata.timeout_human_readable"
           title="Timeout"
           :help-url="runnerHelpUrl"
           :value="timeout"

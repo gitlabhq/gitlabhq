@@ -6,7 +6,7 @@ class CreateCiBuildsMetadataTable < ActiveRecord::Migration
   def change
     create_table :ci_builds_metadata, id: false do |t|
       t.integer :build_id, null: false
-      t.integer :used_timeout
+      t.integer :timeout
       t.integer :timeout_source, null: false, default: 1
 
       t.primary_key :build_id

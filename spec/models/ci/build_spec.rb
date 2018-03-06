@@ -2050,8 +2050,8 @@ describe Ci::Build do
     end
 
     shared_examples 'saves data on transition' do
-      it 'saves used_timeout' do
-        expect { job.run! }.to change { job.reload.metadata.used_timeout }.from(nil).to(expected_timeout)
+      it 'saves timeout' do
+        expect { job.run! }.to change { job.reload.metadata.timeout }.from(nil).to(expected_timeout)
       end
 
       it 'saves timeout_source' do

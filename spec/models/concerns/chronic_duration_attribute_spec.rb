@@ -65,8 +65,8 @@ describe 'ChronicDurationAttribute' do
 end
 
 describe 'ChronicDurationAttribute - reader' do
-  let(:source_field) {:used_timeout}
-  let(:virtual_field) {:used_timeout_human_readable}
+  let(:source_field) {:timeout}
+  let(:virtual_field) {:timeout_human_readable}
   subject {Ci::BuildMetadata.new}
 
   it "doesn't contain dynamically created writer method" do
