@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::ImportExport::Reader  do
-  let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: '') }
+  let(:shared) { Gitlab::ImportExport::Shared.new(nil) }
   let(:test_config) { 'spec/support/import_export/import_export.yml' }
   let(:project_tree_hash) do
     {

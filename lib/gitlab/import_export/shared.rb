@@ -1,11 +1,15 @@
 module Gitlab
   module ImportExport
     class Shared
-      attr_reader :errors, :opts
+      attr_reader :errors, :project
 
-      def initialize(opts)
-        @opts = opts
+      def initialize(project)
+        @project = project
         @errors = []
+      end
+
+      def active_export_count
+        Dir[File.join(archive_path, '*')].count { |name| File.directory?(name) }
       end
 
       def export_path
@@ -31,11 +35,11 @@ module Gitlab
       private
 
       def relative_path
-        File.join(opts[:relative_path], SecureRandom.hex)
+        File.join(relative_archive_path, SecureRandom.hex)
       end
 
       def relative_archive_path
-        File.join(opts[:relative_path], '..')
+        @project.disk_path
       end
 
       def error_out(message, caller)
