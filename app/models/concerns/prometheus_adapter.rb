@@ -26,7 +26,7 @@ module PrometheusAdapter
 
       query_class = Gitlab::Prometheus::Queries.const_get("#{query_name.to_s.classify}Query")
 
-      args.map!(&:id) { |arg| arg.id }
+      args.map!(&:id)
 
       with_reactive_cache(query_class.name, *args, &query_class.method(:transform_reactive_result))
     end
