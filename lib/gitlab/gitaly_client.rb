@@ -119,6 +119,8 @@ module Gitlab
     #
     def self.call(storage, service, rpc, request, remote_storage: nil, timeout: nil)
       start = Gitlab::Metrics::System.monotonic_time
+      @last_request = request.is_a?(Google::Protobuf::MessageExts) ? request.to_h : nil
+
       enforce_gitaly_request_limits(:call)
 
       kwargs = request_kwargs(storage, timeout, remote_storage: remote_storage)
@@ -258,6 +260,9 @@ module Gitlab
             gitaly_migrate_call_duration_seconds.observe({ gitaly_enabled: is_enabled, feature: feature }, total_time)
             feature_stack.shift
             Thread.current[:gitaly_feature_stack] = nil if feature_stack.empty?
+            add_call_details(feature: feature,
+                             duration: total_time,
+                             request: is_enabled ? @last_request : {})
           end
         end
       end
@@ -342,6 +347,19 @@ module Gitlab
         RequestStore.store["gitaly_#{call_site}_actual"] = 0
         RequestStore.store["gitaly_#{call_site}_permitted"] = 0
       end
+    end
+
+    def self.add_call_details(details)
+      return unless RequestStore.active? && RequestStore.store[:peek_enabled]
+
+      RequestStore.store['gitaly_call_details'] ||= []
+      RequestStore.store['gitaly_call_details'] << details
+    end
+
+    def self.call_details
+      return [] unless RequestStore.active? && RequestStore.store[:peek_enabled]
+
+      RequestStore.store['gitaly_call_details'] || []
     end
 
     def self.expected_server_version
