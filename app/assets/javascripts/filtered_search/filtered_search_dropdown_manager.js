@@ -125,6 +125,16 @@ export default class FilteredSearchDropdownManager {
       endpoint = `${endpoint}?only_group_labels=true`;
     }
 
+    // EE-only
+    if (this.groupAncestor) {
+      endpoint = `${endpoint}&include_ancestor_groups=true`;
+    }
+
+    // EE-only
+    if (this.isGroupDecendent) {
+      endpoint = `${endpoint}&include_descendant_groups=true`;
+    }
+
     return endpoint;
   }
 

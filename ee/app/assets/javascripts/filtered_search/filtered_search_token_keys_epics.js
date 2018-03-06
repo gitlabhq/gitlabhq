@@ -5,6 +5,13 @@ const tokenKeys = [{
   symbol: '@',
   icon: 'pencil',
   tag: '@author',
+}, {
+  key: 'label',
+  type: 'array',
+  param: 'name[]',
+  symbol: '~',
+  icon: 'tag',
+  tag: '~label',
 }];
 
 const alternativeTokenKeys = [{
