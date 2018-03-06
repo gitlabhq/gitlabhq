@@ -5,7 +5,6 @@ import axios from '~/lib/utils/axios_utils';
 import { metricsGroupsAPIResponse, mockApiEndpoint } from './mock_data';
 
 describe('Dashboard', () => {
-  const fixtureName = 'environments/metrics/metrics.html.raw';
   let DashboardComponent;
 
   const propsData = {
@@ -22,21 +21,19 @@ describe('Dashboard', () => {
     emptyUnableToConnectSvgPath: '/path/to/unable-to-connect.svg',
   };
 
-  preloadFixtures(fixtureName);
-
   beforeEach(() => {
-    loadFixtures(fixtureName);
+    setFixtures('<div class="prometheus-graphs"></div>');
     DashboardComponent = Vue.extend(Dashboard);
   });
 
   describe('no metrics are available yet', () => {
     it('shows a getting started empty state when no metrics are present', () => {
       const component = new DashboardComponent({
-        el: document.querySelector('#prometheus-graphs'),
+        el: document.querySelector('.prometheus-graphs'),
         propsData,
       });
 
-      expect(component.$el.querySelector('#prometheus-graphs')).toBe(null);
+      expect(component.$el.querySelector('.prometheus-graphs')).toBe(null);
       expect(component.state).toEqual('gettingStarted');
     });
   });
@@ -54,7 +51,7 @@ describe('Dashboard', () => {
 
     it('shows up a loading state', (done) => {
       const component = new DashboardComponent({
-        el: document.querySelector('#prometheus-graphs'),
+        el: document.querySelector('.prometheus-graphs'),
         propsData: { ...propsData, hasMetrics: true },
       });
 
@@ -66,7 +63,7 @@ describe('Dashboard', () => {
 
     it('hides the legend when showLegend is false', (done) => {
       const component = new DashboardComponent({
-        el: document.querySelector('#prometheus-graphs'),
+        el: document.querySelector('.prometheus-graphs'),
         propsData: { ...propsData, hasMetrics: true, showLegend: false },
       });
 
@@ -80,7 +77,7 @@ describe('Dashboard', () => {
 
     it('hides the group panels when showPanels is false', (done) => {
       const component = new DashboardComponent({
-        el: document.querySelector('#prometheus-graphs'),
+        el: document.querySelector('.prometheus-graphs'),
         propsData: { ...propsData, hasMetrics: true, showPanels: false },
       });
 
