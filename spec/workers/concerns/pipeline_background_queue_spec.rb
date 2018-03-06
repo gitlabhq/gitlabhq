@@ -14,6 +14,6 @@ describe PipelineBackgroundQueue do
 
   it 'sets a default object storage queue automatically' do
     expect(worker.sidekiq_options['queue'])
-      .to eq 'object_storage:dummy'
+      .to eq 'pipeline_background:dummy'
   end
 end
