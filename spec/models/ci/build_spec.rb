@@ -1283,8 +1283,10 @@ describe Ci::Build do
         build.run!
       end
 
-      it 'returns project timeout configuration' do
-        is_expected.to eq(project2.build_timeout)
+      context 'when runner is not assigned' do
+        it 'returns project timeout configuration' do
+          is_expected.to be_nil
+        end
       end
 
       context 'when runner sets timeout to bigger value' do
@@ -2045,8 +2047,7 @@ describe Ci::Build do
     let(:job) { create(:ci_build, :pending, runner: runner) }
 
     before do
-      job.project.build_timeout = 1800
-      job.project.save!
+      job.project.update_attribute(:build_timeout, 1800)
     end
 
     shared_examples 'saves data on transition' do
@@ -2064,8 +2065,7 @@ describe Ci::Build do
       let(:expected_timeout_source) { 'runner_timeout_source' }
 
       before do
-        runner.maximum_timeout = 900
-        runner.save!
+        runner.update_attribute(:maximum_timeout, 900)
       end
 
       it_behaves_like 'saves data on transition'
@@ -2076,8 +2076,7 @@ describe Ci::Build do
       let(:expected_timeout_source) { 'project_timeout_source' }
 
       before do
-        runner.maximum_timeout = 3600
-        runner.save!
+        runner.update_attribute(:maximum_timeout, 3600)
       end
 
       it_behaves_like 'saves data on transition'

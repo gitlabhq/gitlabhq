@@ -19,13 +19,13 @@ module Ci
     }
 
     def save_timeout_state!
+      return unless build.runner.present?
+
       project_timeout = build.project&.build_timeout
-      timeout = [project_timeout, build.runner&.maximum_timeout].compact.min
+      timeout = [project_timeout, build.runner.maximum_timeout].compact.min
+      timeout_source = timeout < project_timeout ? :runner_timeout_source : :project_timeout_source
 
-      self.timeout = timeout
-      self.timeout_source = timeout < project_timeout ? :runner_timeout_source : :project_timeout_source
-
-      save!
+      update_attributes(timeout: timeout, timeout_source: timeout_source)
     end
   end
 end
