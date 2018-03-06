@@ -1,5 +1,7 @@
 module MergeRequests
   class UpdateService < MergeRequests::BaseService
+    prepend ::EE::MergeRequests::UpdateService
+
     def execute(merge_request)
       # We don't allow change of source/target projects and source branch
       # after merge request was created
