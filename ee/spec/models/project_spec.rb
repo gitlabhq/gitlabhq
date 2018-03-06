@@ -102,6 +102,17 @@ describe Project do
     end
   end
 
+  describe 'hard failing a mirror' do
+    it 'sends a notification' do
+      project = create(:project, :mirror, :import_started)
+      project.mirror_data.update_attributes(retry_count: Gitlab::Mirror::MAX_RETRY)
+
+      expect_any_instance_of(EE::NotificationService).to receive(:mirror_was_hard_failed).with(project)
+
+      project.import_fail
+    end
+  end
+
   describe '#push_rule' do
     let(:project) { create(:project, push_rule: create(:push_rule)) }
 
