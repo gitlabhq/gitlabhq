@@ -1506,6 +1506,12 @@ class Project < ActiveRecord::Base
     update_column(:import_jid, nil)
   end
 
+  def running_or_pending_build_count(force: false)
+    Rails.cache.fetch(['projects', id, 'running_or_pending_build_count'], force: force) do
+      builds.running_or_pending.count(:all)
+    end
+  end
+
   # Lazy loading of the `pipeline_status` attribute
   def pipeline_status
     @pipeline_status ||= Gitlab::Cache::Ci::ProjectPipelineStatus.load_for_project(self)
