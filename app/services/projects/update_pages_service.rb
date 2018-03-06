@@ -81,7 +81,6 @@ module Projects
     end
 
     def extract_tar_archive!(temp_path)
-<<<<<<< HEAD
       build.artifacts_file.use_file do |artifacts_path|
         results = Open3.pipeline(%W(gunzip -c #{artifacts_path}),
                                 %W(dd bs=#{BLOCK_SIZE} count=#{blocks}),
@@ -89,13 +88,6 @@ module Projects
                                 err: '/dev/null')
         raise FailedToExtractError, 'pages failed to extract' unless results.compact.all?(&:success?)
       end
-=======
-      results = Open3.pipeline(%W(gunzip -c #{artifacts}),
-                               %W(dd bs=#{BLOCK_SIZE} count=#{blocks}),
-                               %W(tar -x -C #{temp_path} #{SITE_PATH}),
-                               err: '/dev/null')
-      raise FailedToExtractError, 'pages failed to extract' unless results.compact.all?(&:success?)
->>>>>>> upstream/master
     end
 
     def extract_zip_archive!(temp_path)
@@ -113,15 +105,10 @@ module Projects
       # -n  never overwrite existing files
       # We add * to end of SITE_PATH, because we want to extract SITE_PATH and all subdirectories
       site_path = File.join(SITE_PATH, '*')
-<<<<<<< HEAD
       build.artifacts_file.use_file do |artifacts_path|
         unless system(*%W(unzip -qq -n #{artifacts_path} #{site_path} -d #{temp_path}))
           raise FailedToExtractError, 'pages failed to extract'
         end
-=======
-      unless system(*%W(unzip -qq -n #{artifacts} #{site_path} -d #{temp_path}))
-        raise FailedToExtractError, 'pages failed to extract'
->>>>>>> upstream/master
       end
     end
 
