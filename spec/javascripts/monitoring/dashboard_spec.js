@@ -7,7 +7,7 @@ import { metricsGroupsAPIResponse, mockApiEndpoint } from './mock_data';
 describe('Dashboard', () => {
   const fixtureName = 'environments/metrics/metrics.html.raw';
   let DashboardComponent;
-  let component;
+
   const propsData = {
     hasMetrics: false,
     documentationPath: '/path/to/docs',
@@ -16,7 +16,7 @@ describe('Dashboard', () => {
     tagsPath: '/path/to/tags',
     projectPath: '/path/to/project',
     metricsEndpoint: mockApiEndpoint,
-    deploymentEndpoint: '/endpoint/deployments',
+    deploymentEndpoint: null,
     emptyGettingStartedSvgPath: '/path/to/getting-started.svg',
     emptyLoadingSvgPath: '/path/to/loading.svg',
     emptyUnableToConnectSvgPath: '/path/to/unable-to-connect.svg',
@@ -31,12 +31,11 @@ describe('Dashboard', () => {
 
   describe('no metrics are available yet', () => {
     it('shows a getting started empty state when no metrics are present', () => {
-      component = new DashboardComponent({
+      const component = new DashboardComponent({
         el: document.querySelector('#prometheus-graphs'),
         propsData,
       });
 
-      component.$mount();
       expect(component.$el.querySelector('#prometheus-graphs')).toBe(null);
       expect(component.state).toEqual('gettingStarted');
     });
@@ -46,9 +45,7 @@ describe('Dashboard', () => {
     let mock;
     beforeEach(() => {
       mock = new MockAdapter(axios);
-      mock.onGet(mockApiEndpoint).reply(200, {
-        metricsGroupsAPIResponse,
-      });
+      mock.onGet(mockApiEndpoint).reply(200, metricsGroupsAPIResponse);
     });
 
     afterEach(() => {
@@ -56,13 +53,41 @@ describe('Dashboard', () => {
     });
 
     it('shows up a loading state', (done) => {
-      component = new DashboardComponent({
+      const component = new DashboardComponent({
         el: document.querySelector('#prometheus-graphs'),
         propsData: { ...propsData, hasMetrics: true },
       });
-      component.$mount();
+
       Vue.nextTick(() => {
         expect(component.state).toEqual('loading');
+        done();
+      });
+    });
+
+    it('hides the legend when showLegend is false', (done) => {
+      const component = new DashboardComponent({
+        el: document.querySelector('#prometheus-graphs'),
+        propsData: { ...propsData, hasMetrics: true, showLegend: false },
+      });
+
+      setTimeout(() => {
+        expect(component.showEmptyState).toEqual(false);
+        expect(component.$el.querySelector('.legend-group')).toBeFalsy();
+        expect(component.$el.querySelector('.prometheus-graph-group')).toBeTruthy();
+        done();
+      });
+    });
+
+    it('hides the group panels when showPanels is false', (done) => {
+      const component = new DashboardComponent({
+        el: document.querySelector('#prometheus-graphs'),
+        propsData: { ...propsData, hasMetrics: true, showPanels: false },
+      });
+
+      setTimeout(() => {
+        expect(component.showEmptyState).toEqual(false);
+        expect(component.$el.querySelector('.prometheus-panel')).toBeFalsy();
+        expect(component.$el.querySelector('.prometheus-graph-group')).toBeTruthy();
         done();
       });
     });
