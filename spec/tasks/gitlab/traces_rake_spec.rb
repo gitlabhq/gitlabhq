@@ -7,7 +7,7 @@ describe 'gitlab:traces rake tasks' do
 
   shared_examples 'passes the job id to worker' do
     it do
-      expect(ArchiveLegacyTraceWorker).to receive(:bulk_perform_async).with([[job.id]])
+      expect(ArchiveTraceWorker).to receive(:bulk_perform_async).with([[job.id]])
 
       run_rake_task('gitlab:traces:archive')
     end
@@ -15,7 +15,7 @@ describe 'gitlab:traces rake tasks' do
 
   shared_examples 'does not pass the job id to worker' do
     it do
-      expect(ArchiveLegacyTraceWorker).not_to receive(:bulk_perform_async)
+      expect(ArchiveTraceWorker).not_to receive(:bulk_perform_async)
 
       run_rake_task('gitlab:traces:archive')
     end

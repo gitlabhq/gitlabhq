@@ -1,9 +1,6 @@
 require 'spec_helper'
 
-describe ArchiveLegacyTraceWorker do
-  it { is_expected.to be_a(ObjectStorageQueue) }
-  it { is_expected.not_to be_a(PipelineQueue) }
-
+describe ArchiveTraceWorker do
   describe '#perform' do
     subject { described_class.new.perform(job&.id) }
 
