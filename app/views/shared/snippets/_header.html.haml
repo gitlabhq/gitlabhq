@@ -33,18 +33,18 @@
     .embed-snippet
       .input-group
         .input-group-btn
-          %button.btn.embed-toggle{ 'data-toggle': 'dropdown' }
-            %span#embed-action Embed
+          %button.btn.embed-toggle{ 'data-toggle': 'dropdown', type: 'button' }
+            %span#embed-action= _("Embed")
             = sprite_icon('angle-down', size: 12)
           %ul.dropdown-menu.dropdown-menu-selectable.embed-toggle-list
             %li
-              %button#embed-btn.btn.btn-transparent.is-active{ href: "#" }
-                %strong.embed-toggle-list-item Embed
+              %button#embed-btn.btn.btn-transparent.is-active{ type: 'button' }
+                %strong.embed-toggle-list-item= _("Embed")
             %li
-              %button#share-btn.btn.btn-transparent{ href: "#" }
-                %strong.embed-toggle-list-item Share
+              %button#share-btn.btn.btn-transparent{ type: 'button' }
+                %strong.embed-toggle-list-item= _("Share")
         %input#snippet-url-area.snippet-embed-input.form-control{ type: "text", autocomplete: 'off', value: snippet_embed }
         .input-group-btn
-          %button#clipboard-btn.btn.btn-default{ title: "Copy to clipboard", data: { toggle: "tooltip", placement: "bottom", title: "Copy source to clipboard", container: "body", clipboard_target: '#snippet-url-area' } }
+          %button#clipboard-btn.btn.btn-default{ title: "Copy to clipboard", type: "button", data: { toggle: "tooltip", placement: "bottom", title: "Copy source to clipboard", container: "body", clipboard_target: '#snippet-url-area' } }
             = sprite_icon('duplicate', size: 16)
     .clearfix
