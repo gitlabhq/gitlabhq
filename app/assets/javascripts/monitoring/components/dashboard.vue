@@ -7,7 +7,6 @@
   import EmptyState from './empty_state.vue';
   import MonitoringStore from '../stores/monitoring_store';
   import eventHub from '../event_hub';
-  import { convertPermissionToBoolean } from '../../lib/utils/common_utils';
 
   export default {
     components: {
@@ -18,8 +17,9 @@
 
     props: {
       hasMetrics: {
-        type: String,
-        required: true,
+        type: Boolean,
+        required: false,
+        default: true,
       },
       showLegend: {
         type: Boolean,
@@ -108,7 +108,7 @@
 
     mounted() {
       this.resizeThrottled = _.throttle(this.resize, 600);
-      if (!convertPermissionToBoolean(this.hasMetrics)) {
+      if (!this.hasMetrics) {
         this.state = 'gettingStarted';
       } else {
         this.getGraphsData();
