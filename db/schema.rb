@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180304204842) do
+ActiveRecord::Schema.define(version: 20180305144721) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -603,6 +603,7 @@ ActiveRecord::Schema.define(version: 20180304204842) do
     t.datetime_with_timezone "updated_at", null: false
     t.string "version", null: false
     t.text "status_reason"
+    t.boolean "privileged", default: true, null: false
   end
 
   add_index "clusters_applications_runners", ["cluster_id"], name: "index_clusters_applications_runners_on_cluster_id", unique: true, using: :btree
