@@ -1,7 +1,7 @@
 module Gitlab
   module Prometheus
     module Queries
-      class MatchedMetricsQuery < BaseQuery
+      class MatchedMetricQuery < BaseQuery
         MAX_QUERY_ITEMS = 40.freeze
 
         def query
