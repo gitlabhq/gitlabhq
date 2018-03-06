@@ -856,8 +856,8 @@ Example response:
     "avatar_url": "http://www.gravatar.com/avatar/3e6f06a86cf27fa8b56f3f74f7615987?s=80&d=identicon",
     "web_url": "https://gitlab.example.com/keyon"
   },
-  "closed_at":null,
-  "closed_by":null,
+  "closed_at": null,
+  "closed_by": null,
   "author": {
     "name": "Vivian Hermann",
     "username": "orville",
