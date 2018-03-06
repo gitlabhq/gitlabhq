@@ -876,7 +876,7 @@ module Gitlab
 
       # Delete the specified branch from the repository
       def delete_branch(branch_name)
-        gitaly_migrate(:delete_branch) do |is_enabled|
+        gitaly_migrate(:delete_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.delete_branch(branch_name)
           else
