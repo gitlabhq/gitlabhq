@@ -30,17 +30,7 @@ module Gitlab
     end
 
     def limited_notes_count
-      return @limited_notes_count if defined?(@limited_notes_count)
-
-      types = %w(issue merge_request commit snippet)
-      @limited_notes_count = 0
-
-      types.each do |type|
-        @limited_notes_count += notes_finder(type).limit(count_limit).count
-        break if @limited_notes_count >= count_limit
-      end
-
-      @limited_notes_count
+      @notes_count ||= notes.limit(count_limit).count
     end
 
     def wiki_blobs_count
@@ -117,11 +107,7 @@ module Gitlab
     end
 
     def notes
-      @notes ||= notes_finder(nil)
-    end
-
-    def notes_finder(type)
-      NotesFinder.new(project, @current_user, search: query, target_type: type).execute.user.order('updated_at DESC')
+      @notes ||= NotesFinder.new(project, @current_user, search: query).execute.user.order('updated_at DESC')
     end
 
     def commits

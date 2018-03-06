@@ -306,29 +306,23 @@ describe Gitlab::ProjectSearchResults do
 
   describe '#limited_notes_count' do
     let(:project) { create(:project, :public) }
-    let(:note) { create(:note_on_issue, project: project) }
-    let(:results) { described_class.new(user, project, note.note) }
+    let!(:note) { create(:note_on_issue, project: project, note: 'foo1') }
+    let!(:note2) { create(:note_on_issue, project: project, note: 'foo2') }
+    let(:results) { described_class.new(user, project, 'foo') }
 
     context 'when count_limit is lower than total amount' do
       before do
         allow(results).to receive(:count_limit).and_return(1)
       end
 
-      it 'calls note finder once to get the limited amount of notes' do
-        expect(results).to receive(:notes_finder).once.and_call_original
+      it 'returns the limited amount of notes' do
         expect(results.limited_notes_count).to eq(1)
       end
     end
 
     context 'when count_limit is higher than total amount' do
-      it 'calls note finder multiple times to get the limited amount of notes' do
-        project = create(:project, :public)
-        note = create(:note_on_issue, project: project)
-
-        results = described_class.new(user, project, note.note)
-
-        expect(results).to receive(:notes_finder).exactly(4).times.and_call_original
-        expect(results.limited_notes_count).to eq(1)
+      it 'returns count of all notes' do
+        expect(results.limited_notes_count).to eq(2)
       end
     end
   end
