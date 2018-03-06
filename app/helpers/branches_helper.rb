@@ -1,20 +1,6 @@
 module BranchesHelper
-<<<<<<< HEAD
   prepend EE::BranchesHelper
 
-  def filter_branches_path(options = {})
-    exist_opts = {
-      search: params[:search],
-      sort: params[:sort]
-    }
-
-    options = exist_opts.merge(options)
-
-    project_branches_path(@project, @id, options)
-  end
-
-=======
->>>>>>> upstream/master
   def project_branches
     options_for_select(@project.repository.branch_names, @project.default_branch)
   end
