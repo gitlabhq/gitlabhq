@@ -36,18 +36,6 @@ module ImportHelper
     _('Please wait while we import the repository for you. Refresh at will.')
   end
 
-  def import_in_progress_title
-    if @project.forked?
-      _('Forking in progress')
-    else
-      _('Import in progress')
-    end
-  end
-
-  def import_wait_and_refresh_message
-    _('Please wait while we import the repository for you. Refresh at will.')
-  end
-
   private
 
   def github_project_url(full_path)
