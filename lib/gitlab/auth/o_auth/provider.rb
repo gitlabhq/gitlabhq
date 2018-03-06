@@ -8,11 +8,28 @@ module Gitlab
           "google_oauth2"  => "Google"
         }.freeze
 
+        def self.authentication(user, provider)
+          return unless user
+          return unless enabled?(provider)
+
+          authenticator =
+            case provider
+            when /^ldap/
+              Gitlab::Auth::LDAP::Authentication
+            when 'database'
+              Gitlab::Auth::Database::Authentication
+            end
+
+          authenticator&.new(provider, user)
+        end
+
         def self.providers
           Devise.omniauth_providers
         end
 
         def self.enabled?(name)
+          return true if name == 'database'
+
           providers.include?(name.to_sym)
         end
 

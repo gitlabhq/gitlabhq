@@ -91,6 +91,21 @@ module API
       expose :created_at
     end
 
+    class ProjectExportStatus < ProjectIdentity
+      include ::API::Helpers::RelatedResourcesHelpers
+
+      expose :export_status
+      expose :_links, if: lambda { |project, _options| project.export_status == :finished } do
+        expose :api_url do |project|
+          expose_url(api_v4_projects_export_download_path(id: project.id))
+        end
+
+        expose :web_url do |project|
+          Gitlab::Routing.url_helpers.download_export_project_url(project)
+        end
+      end
+    end
+
     class ProjectImportStatus < ProjectIdentity
       expose :import_status
 
@@ -593,6 +608,32 @@ module API
     class MergeRequestChanges < MergeRequest
       expose :diffs, as: :changes, using: Entities::Diff do |compare, _|
         compare.raw_diffs(limits: false).to_a
+      end
+    end
+
+    class Approver < Grape::Entity
+      expose :user, using: Entities::UserBasic
+    end
+
+    class ApproverGroup < Grape::Entity
+      expose :group, using: Entities::Group
+    end
+
+    class MergeRequestApprovals < ProjectEntity
+      expose :merge_status
+      expose :approvals_required
+      expose :approvals_left
+      expose :approvals, as: :approved_by, using: Entities::Approver
+      expose :approvers_left, as: :suggested_approvers, using: Entities::UserBasic
+      expose :approvers, using: Entities::Approver
+      expose :approver_groups, using: Entities::ApproverGroup
+
+      expose :user_has_approved do |merge_request, options|
+        merge_request.has_approved?(options[:current_user])
+      end
+
+      expose :user_can_approve do |merge_request, options|
+        merge_request.can_approve?(options[:current_user])
       end
     end
 
@@ -1263,6 +1304,14 @@ module API
 
       klass.descendants.each { |descendant| descendant.prepend(with) }
       klass.prepend(with)
+    end
+
+    class ApprovalSettings < Grape::Entity
+      expose :approvers, using: Entities::Approver
+      expose :approver_groups, using: Entities::ApproverGroup
+      expose :approvals_before_merge
+      expose :reset_approvals_on_push
+      expose :disable_overriding_approvers_per_merge_request
     end
   end
 end

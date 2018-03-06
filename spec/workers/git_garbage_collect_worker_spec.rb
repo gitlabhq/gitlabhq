@@ -195,6 +195,12 @@ describe GitGarbageCollectWorker do
 
         expect(File.exist?(bitmap_path(after_packs.first))).to eq(bitmaps_enabled)
       end
+
+      it 'cleans up repository after finishing' do
+        expect_any_instance_of(Project).to receive(:cleanup).and_call_original
+
+        subject.perform(project.id, 'gc', lease_key, lease_uuid)
+      end
     end
 
     context 'with bitmaps enabled' do

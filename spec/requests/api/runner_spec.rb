@@ -700,10 +700,10 @@ describe API::Runner do
         end
       end
 
-      context 'when tace is given' do
+      context 'when trace is given' do
         it 'creates a trace artifact' do
           allow(BuildFinishedWorker).to receive(:perform_async).with(job.id) do
-            CreateTraceArtifactWorker.new.perform(job.id)
+            ArchiveTraceWorker.new.perform(job.id)
           end
 
           update_job(state: 'success', trace: 'BUILD TRACE UPDATED')
@@ -1103,11 +1103,13 @@ describe API::Runner do
 
           context 'posts artifacts file and metadata file' do
             let!(:artifacts) { file_upload }
+            let!(:artifacts_sha256) { Digest::SHA256.file(artifacts.path).hexdigest }
             let!(:metadata) { file_upload2 }
 
             let(:stored_artifacts_file) { job.reload.artifacts_file.file }
             let(:stored_metadata_file) { job.reload.artifacts_metadata.file }
             let(:stored_artifacts_size) { job.reload.artifacts_size }
+            let(:stored_artifacts_sha256) { job.reload.job_artifacts_archive.file_sha256 }
 
             before do
               post(api("/jobs/#{job.id}/artifacts"), post_data, headers_with_token)
@@ -1117,6 +1119,7 @@ describe API::Runner do
               let(:post_data) do
                 { 'file.path' => artifacts.path,
                   'file.name' => artifacts.original_filename,
+                  'file.sha256' => artifacts_sha256,
                   'metadata.path' => metadata.path,
                   'metadata.name' => metadata.original_filename }
               end
@@ -1126,6 +1129,7 @@ describe API::Runner do
                 expect(stored_artifacts_file.original_filename).to eq(artifacts.original_filename)
                 expect(stored_metadata_file.original_filename).to eq(metadata.original_filename)
                 expect(stored_artifacts_size).to eq(72821)
+                expect(stored_artifacts_sha256).to eq(artifacts_sha256)
               end
             end
 

@@ -12,7 +12,7 @@ describe 'layouts/nav/sidebar/_project' do
   end
 
   describe 'issue boards' do
-    it 'has boards tab when multiple issue boards available' do
+    it 'has board tab' do
       render
 
       expect(rendered).to have_css('a[title="Boards"]')
@@ -20,7 +20,7 @@ describe 'layouts/nav/sidebar/_project' do
 
     it 'has board tab when multiple issue boards is not available' do
       allow(License).to receive(:feature_available?).and_call_original
-      allow(License).to receive(:feature_available?).with(:multiple_issue_boards) { false }
+      allow(License).to receive(:feature_available?).with(:multiple_project_issue_boards) { false }
 
       render
 

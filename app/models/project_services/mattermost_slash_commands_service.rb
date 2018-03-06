@@ -37,7 +37,7 @@ class MattermostSlashCommandsService < SlashCommandsService
   private
 
   def command(params)
-    pretty_project_name = project.name_with_namespace
+    pretty_project_name = project.full_name
 
     params.merge(
       auto_complete: true,

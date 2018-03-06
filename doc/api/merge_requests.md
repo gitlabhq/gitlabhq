@@ -41,8 +41,10 @@ Parameters:
 | `milestone`         | string   | no       | Return merge requests for a specific milestone                                                                         |
 | `view`              | string   | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                              |
 | `labels`            | string   | no       | Return merge requests matching a comma separated list of labels                                                        |
-| `created_after`     | datetime | no       | Return merge requests created after the given time (inclusive)                                                         |
-| `created_before`    | datetime | no       | Return merge requests created before the given time (inclusive)                                                        |
+| `created_after`     | datetime | no       | Return merge requests created on or after the given time                                                               |
+| `created_before`    | datetime | no       | Return merge requests created on or before the given time                                                              |
+| `updated_after`     | datetime | no       | Return merge requests updated on or after the given time                                                               |
+| `updated_before`    | datetime | no       | Return merge requests updated on or before the given time                                                              |
 | `scope`             | string   | no       | Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`. Defaults to `created-by-me`     |
 | `author_id`         | integer  | no       | Returns merge requests created by the given user `id`. Combine with `scope=all` or `scope=assigned-to-me`              |
 | `assignee_id`       | integer  | no       | Returns merge requests assigned to the given user `id`                                                                 |
@@ -158,8 +160,10 @@ Parameters:
 | `milestone`         | string         | no       | Return merge requests for a specific milestone                                                                                 |
 | `view`              | string         | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                                      |
 | `labels`            | string         | no       | Return merge requests matching a comma separated list of labels                                                                |
-| `created_after`     | datetime       | no       | Return merge requests created after the given time (inclusive)                                                                 |
-| `created_before`    | datetime       | no       | Return merge requests created before the given time (inclusive)                                                                |
+| `created_after`     | datetime       | no       | Return merge requests created on or after the given time                                                                       |
+| `created_before`    | datetime       | no       | Return merge requests created on or before the given time                                                                      |
+| `updated_after`     | datetime       | no       | Return merge requests updated on or after the given time                                                                       |
+| `updated_before`    | datetime       | no       | Return merge requests updated on or before the given time                                                                      |
 | `scope`             | string         | no       | Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all` _([Introduced][ce-13060] in GitLab 9.5)_ |
 | `author_id`         | integer        | no       | Returns merge requests created by the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                 |
 | `assignee_id`       | integer        | no       | Returns merge requests assigned to the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                |
@@ -500,6 +504,8 @@ Parameters:
 
 ## List MR pipelines
 
+> [Introduced][ce-15454] in GitLab 10.5.0.
+
 Get a list of merge request pipelines.
 
 ```
@@ -814,132 +820,6 @@ Parameters:
   "approvals_before_merge": null
 }
 ```
-
-## Merge Request Approvals
-
->**Note:** This API endpoint is only available on 8.9 EE and above.
-
-You can request information about a merge request's approval status using the
-following endpoint:
-
-```
-GET /projects/:id/merge_requests/:merge_request_iid/approvals
-```
-
-**Parameters:**
-
-| Attribute           | Type    | Required | Description         |
-|---------------------|---------|----------|---------------------|
-| `id`                | integer | yes      | The ID of a project |
-| `merge_request_iid` | integer | yes      | The IID of MR       |
-
-```json
-{
-  "id": 5,
-  "iid": 5,
-  "project_id": 1,
-  "title": "Approvals API",
-  "description": "Test",
-  "state": "opened",
-  "created_at": "2016-06-08T00:19:52.638Z",
-  "updated_at": "2016-06-08T21:20:42.470Z",
-  "merge_status": "can_be_merged",
-  "approvals_required": 2,
-  "approvals_missing": 1,
-  "approved_by": [
-    {
-      "user": {
-        "name": "Administrator",
-        "username": "root",
-        "id": 1,
-        "state": "active",
-        "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
-        "web_url": "http://localhost:3000/u/root"
-      }
-    }
-  ]
-}
-```
-
-## Approve Merge Request
-
->**Note:** This API endpoint is only available on 8.9 EE and above.
-
-If you are allowed to, you can approve a merge request using the following
-endpoint:
-
-```
-POST /projects/:id/merge_requests/:merge_request_iid/approve
-```
-
-**Parameters:**
-
-| Attribute           | Type    | Required | Description         |
-|---------------------|---------|----------|---------------------|
-| `id`                | integer | yes      | The ID of a project |
-| `merge_request_iid` | integer | yes      | The IID of MR       |
-| `sha`               | string  | no       | The HEAD of the MR  |
-
-The `sha` parameter works in the same way as
-when [accepting a merge request](#accept-mr): if it is passed, then it must
-match the current HEAD of the merge request for the approval to be added. If it
-does not match, the response code will be `409`.
-
-```json
-{
-  "id": 5,
-  "iid": 5,
-  "project_id": 1,
-  "title": "Approvals API",
-  "description": "Test",
-  "state": "opened",
-  "created_at": "2016-06-08T00:19:52.638Z",
-  "updated_at": "2016-06-09T21:32:14.105Z",
-  "merge_status": "can_be_merged",
-  "approvals_required": 2,
-  "approvals_left": 0,
-  "approved_by": [
-    {
-      "user": {
-        "name": "Administrator",
-        "username": "root",
-        "id": 1,
-        "state": "active",
-        "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
-        "web_url": "http://localhost:3000/u/root"
-      }
-    },
-    {
-      "user": {
-        "name": "Nico Cartwright",
-        "username": "ryley",
-        "id": 2,
-        "state": "active",
-        "avatar_url": "http://www.gravatar.com/avatar/cf7ad14b34162a76d593e3affca2adca?s=80\u0026d=identicon",
-        "web_url": "http://localhost:3000/u/ryley"
-      }
-    }
-  ]
-}
-```
-
-## Unapprove Merge Request
-
->**Note:** This API endpoint is only available on 9.0 EE and above.
-
-If you did approve a merge request, you can unapprove it using the following
-endpoint:
-
-```
-POST /projects/:id/merge_requests/:merge_request_iid/unapprove
-```
-
-**Parameters:**
-
-| Attribute           | Type    | Required | Description         |
-|---------------------|---------|----------|---------------------|
-| `id`                | integer | yes      | The ID of a project |
-| `merge_request_iid` | integer | yes      | The IID of MR       |
 
 ## Cancel Merge When Pipeline Succeeds
 
@@ -1603,3 +1483,4 @@ Example response:
 
 [ce-13060]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13060
 [ce-14016]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14016
+[ce-15454]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15454

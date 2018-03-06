@@ -7,13 +7,19 @@ class Projects::BranchesController < Projects::ApplicationController
   before_action :authorize_download_code!
   before_action :authorize_push_code!, only: [:new, :create, :destroy, :destroy_all_merged]
 
-  def index
-    @sort = params[:sort].presence || sort_value_recently_updated
-    @branches = BranchesFinder.new(@repository, params.merge(sort: @sort)).execute
-    @branches = Kaminari.paginate_array(@branches).page(params[:page])
+  # Support legacy URLs
+  before_action :redirect_for_legacy_index_sort_or_search, only: [:index]
 
+  def index
     respond_to do |format|
       format.html do
+        @sort = params[:sort].presence || sort_value_recently_updated
+        @mode = params[:state].presence || 'overview'
+        @overview_max_branches = 5
+
+        # Fetch branches for the specified mode
+        fetch_branches_by_mode
+
         @refs_pipelines = @project.pipelines.latest_successful_for_refs(@branches.map(&:name))
         @merged_branch_names =
           repository.merged_branch_names(@branches.map(&:name))
@@ -28,7 +34,9 @@ class Projects::BranchesController < Projects::ApplicationController
         end
       end
       format.json do
-        render json: @branches.map(&:name)
+        branches = BranchesFinder.new(@repository, params).execute
+        branches = Kaminari.paginate_array(branches).page(params[:page])
+        render json: branches.map(&:name)
       end
     end
   end
@@ -122,5 +130,28 @@ class Projects::BranchesController < Projects::ApplicationController
       target_branch: branch_name,
       context: 'autodeploy'
     )
+  end
+
+  def redirect_for_legacy_index_sort_or_search
+    # Normalize a legacy URL with redirect
+    if request.format != :json && !params[:state].presence && [:sort, :search, :page].any? { |key| params[key].presence }
+      redirect_to project_branches_filtered_path(@project, state: 'all'), notice: 'Update your bookmarked URLs as filtered/sorted branches URL has been changed.'
+    end
+  end
+
+  def fetch_branches_by_mode
+    if @mode == 'overview'
+      # overview mode
+      @active_branches, @stale_branches = BranchesFinder.new(@repository, sort: sort_value_recently_updated).execute.partition(&:active?)
+      # Here we get one more branch to indicate if there are more data we're not showing
+      @active_branches = @active_branches.first(@overview_max_branches + 1)
+      @stale_branches = @stale_branches.first(@overview_max_branches + 1)
+      @branches = @active_branches + @stale_branches
+    else
+      # active/stale/all view mode
+      @branches = BranchesFinder.new(@repository, params.merge(sort: @sort)).execute
+      @branches = @branches.select { |b| b.state.to_s == @mode } if %w[active stale].include?(@mode)
+      @branches = Kaminari.paginate_array(@branches).page(params[:page])
+    end
   end
 end

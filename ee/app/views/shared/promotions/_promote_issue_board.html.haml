@@ -9,7 +9,7 @@
     - else
       = _('Improve Issue boards with GitLab Enterprise Edition.')
   %ul
-    - unless @project.feature_available?(:multiple_issue_boards)
+    - unless @project.multiple_issue_boards_available?
       %li
         = link_to _('Multiple issue boards'), help_page_path('user/project/issue_board.html', anchor:'use-cases-for-multiple-issue-boards'), target: '_blank'
     - unless @project.feature_available?(:scoped_issue_board)

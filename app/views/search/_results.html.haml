@@ -7,7 +7,7 @@
       = search_entries_info(@search_objects, @scope, @search_term)
     - unless @show_snippets
       - if @project
-        in project #{link_to @project.name_with_namespace, [@project.namespace.becomes(Namespace), @project]}
+        in project #{link_to @project.full_name, [@project.namespace.becomes(Namespace), @project]}
       - elsif @group
         in group #{link_to @group.name, @group}
   = render 'shared/promotions/promote_advanced_search'

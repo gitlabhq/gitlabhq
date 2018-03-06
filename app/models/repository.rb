@@ -260,7 +260,7 @@ class Repository
   # branches or tags, but we want to keep some of these commits around, for
   # example if they have comments or CI builds.
   def keep_around(sha)
-    return unless sha && commit_by(oid: sha)
+    return unless sha.present? && commit_by(oid: sha)
 
     return if kept_around?(sha)
 

@@ -83,12 +83,12 @@ export default {
       this.editor.attachModel(this.model);
 
       this.model.onChange((model) => {
-        const { file } = this.model;
+        const { file } = model;
 
         if (file.active) {
           this.changeFileContent({
             file,
-            content: model.getValue(),
+            content: model.getModel().getValue(),
           });
         }
       });

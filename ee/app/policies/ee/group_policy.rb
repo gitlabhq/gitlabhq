@@ -20,7 +20,6 @@ module EE
       rule { reporter }.policy do
         enable :admin_list
         enable :admin_board
-        enable :admin_issue
       end
 
       condition(:can_owners_manage_ldap, scope: :global) do

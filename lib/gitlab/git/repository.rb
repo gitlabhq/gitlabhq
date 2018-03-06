@@ -479,9 +479,8 @@ module Gitlab
           raise ArgumentError.new("invalid Repository#log limit: #{limit.inspect}")
         end
 
-        # TODO support options[:all] in Gitaly https://gitlab.com/gitlab-org/gitaly/issues/1049
         gitaly_migrate(:find_commits) do |is_enabled|
-          if is_enabled && !options[:all]
+          if is_enabled
             gitaly_commit_client.find_commits(options)
           else
             raw_log(options).map { |c| Commit.decorate(self, c) }
@@ -508,9 +507,8 @@ module Gitlab
       def count_commits(options)
         count_commits_options = process_count_commits_options(options)
 
-        # TODO add support for options[:all] in Gitaly https://gitlab.com/gitlab-org/gitaly/issues/1050
         gitaly_migrate(:count_commits) do |is_enabled|
-          if is_enabled && !options[:all]
+          if is_enabled
             count_commits_by_gitaly(count_commits_options)
           else
             count_commits_by_shelling_out(count_commits_options)

@@ -79,4 +79,9 @@ export default {
 
     state.changedFiles.splice(indexOfChangedFile, 1);
   },
+  [types.TOGGLE_FILE_CHANGED](state, { file, changed }) {
+    Object.assign(file, {
+      changed,
+    });
+  },
 };

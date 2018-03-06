@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Utils do
-  delegate :to_boolean, :boolean_to_yes_no, :slugify, :random_string, :which, to: :described_class
+  delegate :to_boolean, :boolean_to_yes_no, :slugify, :random_string, :which, :ensure_array_from_string, to: :described_class
 
   describe '.slugify' do
     {
@@ -81,6 +81,20 @@ describe Gitlab::Utils do
       expect(File).to receive(:executable?).with('/bin/sh').and_return(true)
 
       expect(which('sh', 'PATH' => '/bin')).to eq('/bin/sh')
+    end
+  end
+
+  describe '.ensure_array_from_string' do
+    it 'returns the same array if given one' do
+      arr = ['a', 4, true, { test: 1 }]
+
+      expect(ensure_array_from_string(arr)).to eq(arr)
+    end
+
+    it 'turns comma-separated strings into arrays' do
+      str = 'seven, eight, 9, 10'
+
+      expect(ensure_array_from_string(str)).to eq(%w[seven eight 9 10])
     end
   end
 end

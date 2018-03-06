@@ -12,3 +12,7 @@
             &middot;
             opened #{time_ago_with_tooltip(epic.created_at, placement: 'bottom')}
             by #{link_to_member(@group, epic.author, avatar: false)}
+          - if epic.labels.any?
+            &nbsp;
+            - epic.labels.each do |label|
+              = link_to render_colored_label(label, tooltip: true), group_epics_path(@group, label_name:[label.name]), class: 'label-link'

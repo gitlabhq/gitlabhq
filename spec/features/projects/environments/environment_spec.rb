@@ -234,7 +234,7 @@ feature 'Environment' do
     end
 
     scenario 'user deletes the branch with running environment' do
-      visit project_branches_path(project, search: 'feature')
+      visit project_branches_filtered_path(project, state: 'all', search: 'feature')
 
       remove_branch_with_hooks(project, user, 'feature') do
         page.within('.js-branch-feature') { find('a.btn-remove').click }

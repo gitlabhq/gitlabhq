@@ -2,7 +2,9 @@
   import { __, s__ } from '~/locale';
   import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 
-  import { NODE_ACTION_BASE_PATH, NODE_ACTIONS } from '../constants';
+  import eventHub from '../event_hub';
+
+  import { NODE_ACTIONS } from '../constants';
 
   export default {
     components: {
@@ -22,11 +24,6 @@
         required: true,
       },
     },
-    data() {
-      return {
-        isNodeToggleInProgress: false,
-      };
-    },
     computed: {
       isToggleAllowed() {
         return !this.node.primary && this.nodeEditAllowed;
@@ -34,20 +31,27 @@
       nodeToggleLabel() {
         return this.node.enabled ? __('Disable') : __('Enable');
       },
-      nodeDisableMessage() {
-        return this.node.enabled ? s__('GeoNodes|Disabling a node stops the sync process. Are you sure?') : '';
+    },
+    methods: {
+      onToggleNode() {
+        eventHub.$emit('showNodeActionModal', {
+          actionType: NODE_ACTIONS.TOGGLE,
+          node: this.node,
+          modalMessage: s__('GeoNodes|Disabling a node stops the sync process. Are you sure?'),
+          modalActionLabel: this.nodeToggleLabel,
+        });
       },
-      nodePath() {
-        return `${NODE_ACTION_BASE_PATH}${this.node.id}`;
+      onRemoveNode() {
+        eventHub.$emit('showNodeActionModal', {
+          actionType: NODE_ACTIONS.REMOVE,
+          node: this.node,
+          modalKind: 'danger',
+          modalMessage: s__('GeoNodes|Removing a node stops the sync process. Are you sure?'),
+          modalActionLabel: __('Remove'),
+        });
       },
-      nodeRepairAuthPath() {
-        return `${this.nodePath}${NODE_ACTIONS.REPAIR}`;
-      },
-      nodeTogglePath() {
-        return `${this.nodePath}${NODE_ACTIONS.TOGGLE}`;
-      },
-      nodeEditPath() {
-        return `${this.nodePath}${NODE_ACTIONS.EDIT}`;
+      onRepairNode() {
+        eventHub.$emit('repairNode', this.node);
       },
     },
   };
@@ -59,30 +63,29 @@
       v-if="nodeMissingOauth"
       class="node-action-container"
     >
-      <a
+      <button
+        type="button"
         class="btn btn-default btn-sm btn-node-action"
-        data-method="post"
-        :href="nodeRepairAuthPath"
+        @click="onRepairNode"
       >
         {{ s__('Repair authentication') }}
-      </a>
+      </button>
     </div>
     <div
       v-if="isToggleAllowed"
       class="node-action-container"
     >
-      <a
+      <button
+        type="button"
         class="btn btn-sm btn-node-action"
-        data-method="post"
-        :href="nodeTogglePath"
-        :data-confirm="nodeDisableMessage"
         :class="{
           'btn-warning': node.enabled,
           'btn-success': !node.enabled
         }"
+        @click="onToggleNode"
       >
         {{ nodeToggleLabel }}
-      </a>
+      </button>
     </div>
     <div
       v-if="nodeEditAllowed"
@@ -90,19 +93,19 @@
     >
       <a
         class="btn btn-sm btn-node-action"
-        :href="nodeEditPath"
+        :href="node.editPath"
       >
         {{ __('Edit') }}
       </a>
     </div>
     <div class="node-action-container">
-      <a
+      <button
+        type="button"
         class="btn btn-sm btn-node-action btn-danger"
-        data-method="delete"
-        :href="nodePath"
+        @click="onRemoveNode"
       >
         {{ __('Remove') }}
-      </a>
+      </button>
     </div>
   </div>
 </template>

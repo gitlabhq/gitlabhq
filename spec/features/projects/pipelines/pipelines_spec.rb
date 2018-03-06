@@ -86,7 +86,22 @@ describe 'Pipelines', :js do
         it 'updates content when tab is clicked' do
           page.find('.js-pipelines-tab-pending').click
           wait_for_requests
-          expect(page).to have_content('No pipelines to show.')
+          expect(page).to have_content('There are currently no pending pipelines.')
+        end
+      end
+
+      context 'navigation links' do
+        before do
+          visit project_pipelines_path(project)
+          wait_for_requests
+        end
+
+        it 'renders run pipeline link' do
+          expect(page).to have_link('Run Pipeline')
+        end
+
+        it 'renders ci lint link' do
+          expect(page).to have_link('CI Lint')
         end
       end
 
@@ -542,7 +557,7 @@ describe 'Pipelines', :js do
       end
 
       it 'has a clear caches button' do
-        expect(page).to have_link 'Clear runner caches'
+        expect(page).to have_link 'Clear Runner Caches'
       end
 
       describe 'user clicks the button' do
@@ -552,17 +567,29 @@ describe 'Pipelines', :js do
           end
 
           it 'increments jobs_cache_index' do
-            click_link 'Clear runner caches'
+            click_link 'Clear Runner Caches'
             expect(page.find('.flash-notice')).to have_content 'Project cache successfully reset.'
           end
         end
 
         context 'when project does not have jobs_cache_index' do
           it 'sets jobs_cache_index to 1' do
-            click_link 'Clear runner caches'
+            click_link 'Clear Runner Caches'
             expect(page.find('.flash-notice')).to have_content 'Project cache successfully reset.'
           end
         end
+      end
+    end
+
+    describe 'Empty State' do
+      let(:project) { create(:project, :repository) }
+
+      before do
+        visit project_pipelines_path(project)
+      end
+
+      it 'renders empty state' do
+        expect(page).to have_content 'Build with confidence'
       end
     end
   end
@@ -575,7 +602,9 @@ describe 'Pipelines', :js do
     context 'when project is public' do
       let(:project) { create(:project, :public, :repository) }
 
-      it { expect(page).to have_content 'Build with confidence' }
+      context 'without pipelines' do
+        it { expect(page).to have_content 'This project is not currently set up to run pipelines.' }
+      end
     end
 
     context 'when project is private' do
