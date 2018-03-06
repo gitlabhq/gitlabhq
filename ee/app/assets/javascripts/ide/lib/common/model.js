@@ -67,8 +67,8 @@ export default class Model {
   }
 
   updateContent(content) {
-    this.getModel().setValue(content);
     this.getOriginalModel().setValue(content);
+    this.getModel().setValue(content);
   }
 
   dispose() {

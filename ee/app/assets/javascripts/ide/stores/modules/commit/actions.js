@@ -89,6 +89,8 @@ export const updateFilesAfterCommit = (
       lastCommit,
     }, { root: true });
 
+    eventHub.$emit(`editor.update.model.content.${entry.path}`, entry.content);
+
     commit(rootTypes.SET_FILE_RAW_DATA, {
       file: entry,
       raw: entry.content,
@@ -98,8 +100,6 @@ export const updateFilesAfterCommit = (
       file: entry,
       changed: false,
     }, { root: true });
-
-    eventHub.$emit(`editor.update.model.content.${entry.path}`, entry.raw);
   });
 
   commit(rootTypes.REMOVE_ALL_CHANGES_FILES, null, { root: true });
