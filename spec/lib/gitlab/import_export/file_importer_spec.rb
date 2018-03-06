@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::ImportExport::FileImporter do
-  let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: 'test') }
+  let(:shared) { Gitlab::ImportExport::Shared.new(nil) }
   let(:export_path) { "#{Dir.tmpdir}/file_importer_spec" }
   let(:valid_file) { "#{shared.export_path}/valid.json" }
   let(:symlink_file) { "#{shared.export_path}/invalid.json" }
@@ -12,6 +12,7 @@ describe Gitlab::ImportExport::FileImporter do
     stub_const('Gitlab::ImportExport::FileImporter::MAX_RETRIES', 0)
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
     allow_any_instance_of(Gitlab::ImportExport::CommandLineUtil).to receive(:untar_zxf).and_return(true)
+    allow_any_instance_of(Gitlab::ImportExport::Shared).to receive(:relative_archive_path).and_return('test')
     allow(SecureRandom).to receive(:hex).and_return('abcd')
     setup_files
   end
