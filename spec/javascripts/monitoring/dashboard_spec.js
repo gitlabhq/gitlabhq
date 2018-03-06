@@ -69,7 +69,7 @@ describe('Dashboard', () => {
 
       setTimeout(() => {
         expect(component.showEmptyState).toEqual(false);
-        expect(component.$el.querySelector('.legend-group')).toBeFalsy();
+        expect(component.$el.querySelector('.legend-group')).toEqual(null);
         expect(component.$el.querySelector('.prometheus-graph-group')).toBeTruthy();
         done();
       });
@@ -83,7 +83,7 @@ describe('Dashboard', () => {
 
       setTimeout(() => {
         expect(component.showEmptyState).toEqual(false);
-        expect(component.$el.querySelector('.prometheus-panel')).toBeFalsy();
+        expect(component.$el.querySelector('.prometheus-panel')).toEqual(null);
         expect(component.$el.querySelector('.prometheus-graph-group')).toBeTruthy();
         done();
       });
