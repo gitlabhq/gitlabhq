@@ -232,10 +232,6 @@ class Environment < ActiveRecord::Base
     self.environment_type || self.name
   end
 
-  def deployment_platform
-    project.deployment_platform
-  end
-
   private
 
   # Slugifying a name may remove the uniqueness guarantee afforded by it being
