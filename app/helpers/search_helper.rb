@@ -110,7 +110,7 @@ module SearchHelper
         category: "Projects",
         id: p.id,
         value: "#{search_result_sanitize(p.name)}",
-        label: "#{search_result_sanitize(p.name_with_namespace)}",
+        label: "#{search_result_sanitize(p.full_name)}",
         url: project_path(p)
       }
     end

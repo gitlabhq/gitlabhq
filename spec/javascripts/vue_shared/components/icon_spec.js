@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Icon from '~/vue_shared/components/icon.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('Sprite Icon Component', function () {
   describe('Initialization', function () {

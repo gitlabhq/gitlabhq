@@ -467,7 +467,8 @@ module Gitlab
           follow: false,
           skip_merges: false,
           after: nil,
-          before: nil
+          before: nil,
+          all: false
         }
 
         options = default_options.merge(options)
@@ -489,13 +490,16 @@ module Gitlab
 
       # Used in gitaly-ruby
       def raw_log(options)
-        actual_ref = options[:ref] || root_ref
-        begin
-          sha = sha_from_ref(actual_ref)
-        rescue Rugged::OdbError, Rugged::InvalidError, Rugged::ReferenceError
-          # Return an empty array if the ref wasn't found
-          return []
-        end
+        sha =
+          unless options[:all]
+            actual_ref = options[:ref] || root_ref
+            begin
+              sha_from_ref(actual_ref)
+            rescue Rugged::OdbError, Rugged::InvalidError, Rugged::ReferenceError
+              # Return an empty array if the ref wasn't found
+              return []
+            end
+          end
 
         log_by_shell(sha, options)
       end
@@ -1027,6 +1031,21 @@ module Gitlab
 
             languages.sort do |x, y|
               y[:value] <=> x[:value]
+            end
+          end
+        end
+      end
+
+      def license_short_name
+        gitaly_migrate(:license_short_name) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.license_short_name
+          else
+            begin
+              # The licensee gem creates a Rugged object from the path:
+              # https://github.com/benbalter/licensee/blob/v8.7.0/lib/licensee/projects/git_project.rb
+              Licensee.license(path).try(:key)
+            rescue Rugged::Error
             end
           end
         end
@@ -1701,7 +1720,12 @@ module Gitlab
         cmd << '--no-merges' if options[:skip_merges]
         cmd << "--after=#{options[:after].iso8601}" if options[:after]
         cmd << "--before=#{options[:before].iso8601}" if options[:before]
-        cmd << sha
+
+        if options[:all]
+          cmd += %w[--all --reverse]
+        else
+          cmd << sha
+        end
 
         # :path can be a string or an array of strings
         if options[:path].present?
@@ -1918,7 +1942,16 @@ module Gitlab
         cmd << "--before=#{options[:before].iso8601}" if options[:before]
         cmd << "--max-count=#{options[:max_count]}" if options[:max_count]
         cmd << "--left-right" if options[:left_right]
-        cmd += %W[--count #{options[:ref]}]
+        cmd << '--count'
+
+        cmd << if options[:all]
+                 '--all'
+               elsif options[:ref]
+                 options[:ref]
+               else
+                 raise ArgumentError, "Please specify a valid ref or set the 'all' attribute to true"
+               end
+
         cmd += %W[-- #{options[:path]}] if options[:path].present?
         cmd
       end
@@ -2206,7 +2239,7 @@ module Gitlab
         with_worktree(squash_path, branch, sparse_checkout_files: diff_files, env: env) do
           # Apply diff of the `diff_range` to the worktree
           diff = run_git!(%W(diff --binary #{diff_range}))
-          run_git!(%w(apply --index), chdir: squash_path, env: env) do |stdin|
+          run_git!(%w(apply --index --whitespace=nowarn), chdir: squash_path, env: env) do |stdin|
             stdin.binmode
             stdin.write(diff)
           end

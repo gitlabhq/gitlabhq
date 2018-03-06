@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180216121030) do
+ActiveRecord::Schema.define(version: 20180305144721) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -183,6 +183,19 @@ ActiveRecord::Schema.define(version: 20180216121030) do
   add_index "award_emoji", ["awardable_type", "awardable_id"], name: "index_award_emoji_on_awardable_type_and_awardable_id", using: :btree
   add_index "award_emoji", ["user_id", "name"], name: "index_award_emoji_on_user_id_and_name", using: :btree
 
+  create_table "badges", force: :cascade do |t|
+    t.string "link_url", null: false
+    t.string "image_url", null: false
+    t.integer "project_id"
+    t.integer "group_id"
+    t.string "type", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+  end
+
+  add_index "badges", ["group_id"], name: "index_badges_on_group_id", using: :btree
+  add_index "badges", ["project_id"], name: "index_badges_on_project_id", using: :btree
+
   create_table "boards", force: :cascade do |t|
     t.integer "project_id", null: false
     t.datetime "created_at", null: false
@@ -333,6 +346,7 @@ ActiveRecord::Schema.define(version: 20180216121030) do
     t.datetime_with_timezone "updated_at", null: false
     t.datetime_with_timezone "expire_at"
     t.string "file"
+    t.binary "file_sha256"
   end
 
   add_index "ci_job_artifacts", ["expire_at", "job_id"], name: "index_ci_job_artifacts_on_expire_at_and_job_id", using: :btree
@@ -437,6 +451,7 @@ ActiveRecord::Schema.define(version: 20180216121030) do
     t.boolean "run_untagged", default: true, null: false
     t.boolean "locked", default: false, null: false
     t.integer "access_level", default: 0, null: false
+    t.string "ip_address"
   end
 
   add_index "ci_runners", ["contacted_at"], name: "index_ci_runners_on_contacted_at", using: :btree
@@ -569,6 +584,7 @@ ActiveRecord::Schema.define(version: 20180216121030) do
     t.string "version", null: false
     t.string "cluster_ip"
     t.text "status_reason"
+    t.string "external_ip"
   end
 
   create_table "clusters_applications_prometheus", force: :cascade do |t|
@@ -579,6 +595,20 @@ ActiveRecord::Schema.define(version: 20180216121030) do
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
   end
+
+  create_table "clusters_applications_runners", force: :cascade do |t|
+    t.integer "cluster_id", null: false
+    t.integer "runner_id"
+    t.integer "status", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.string "version", null: false
+    t.text "status_reason"
+    t.boolean "privileged", default: true, null: false
+  end
+
+  add_index "clusters_applications_runners", ["cluster_id"], name: "index_clusters_applications_runners_on_cluster_id", unique: true, using: :btree
+  add_index "clusters_applications_runners", ["runner_id"], name: "index_clusters_applications_runners_on_runner_id", using: :btree
 
   create_table "container_repositories", force: :cascade do |t|
     t.integer "project_id", null: false
@@ -1426,7 +1456,7 @@ ActiveRecord::Schema.define(version: 20180216121030) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "creator_id"
-    t.integer "namespace_id"
+    t.integer "namespace_id", null: false
     t.datetime "last_activity_at"
     t.string "import_url"
     t.integer "visibility_level", default: 0, null: false
@@ -1954,6 +1984,8 @@ ActiveRecord::Schema.define(version: 20180216121030) do
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
   add_index "web_hooks", ["type"], name: "index_web_hooks_on_type", using: :btree
 
+  add_foreign_key "badges", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "badges", "projects", on_delete: :cascade
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
   add_foreign_key "ci_build_trace_section_names", "projects", on_delete: :cascade
@@ -1986,6 +2018,8 @@ ActiveRecord::Schema.define(version: 20180216121030) do
   add_foreign_key "cluster_providers_gcp", "clusters", on_delete: :cascade
   add_foreign_key "clusters", "users", on_delete: :nullify
   add_foreign_key "clusters_applications_helm", "clusters", on_delete: :cascade
+  add_foreign_key "clusters_applications_runners", "ci_runners", column: "runner_id", name: "fk_02de2ded36", on_delete: :nullify
+  add_foreign_key "clusters_applications_runners", "clusters", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade

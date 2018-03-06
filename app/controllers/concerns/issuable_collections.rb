@@ -17,7 +17,7 @@ module IssuableCollections
     set_pagination
     return if redirect_out_of_range(@total_pages)
 
-    if params[:label_name].present?
+    if params[:label_name].present? && @project
       labels_params = { project_id: @project.id, title: params[:label_name] }
       @labels = LabelsFinder.new(current_user, labels_params).execute
     end

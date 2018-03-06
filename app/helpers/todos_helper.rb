@@ -114,7 +114,7 @@ module TodosHelper
     projects = current_user.authorized_projects.sorted_by_activity.non_archived.with_route
 
     projects = projects.map do |project|
-      { id: project.id, text: project.name_with_namespace }
+      { id: project.id, text: project.full_name }
     end
 
     projects.unshift({ id: '', text: 'Any Project' }).to_json

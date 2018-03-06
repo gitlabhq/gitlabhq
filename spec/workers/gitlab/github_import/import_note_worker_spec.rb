@@ -5,7 +5,7 @@ describe Gitlab::GithubImport::ImportNoteWorker do
 
   describe '#import' do
     it 'imports a note' do
-      project = double(:project, path_with_namespace: 'foo/bar')
+      project = double(:project, full_path: 'foo/bar')
       client = double(:client)
       importer = double(:importer)
       hash = {

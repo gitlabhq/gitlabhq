@@ -1,7 +1,5 @@
 - @no_container = true
 - page_title "Metrics for environment", @environment.name
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'common_vue'
 
 .prometheus-container{ class: container_class }
   .top-area

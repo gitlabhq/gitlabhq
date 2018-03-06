@@ -1,0 +1,23 @@
+## Configure the maximum number of concurrent jobs
+## - Documentation: https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section
+## - Default value: 10
+## - Currently don't support auto-scaling.
+concurrent: 4
+
+## Defines in seconds how often to check GitLab for a new builds
+## - Documentation: https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section
+## - Default value: 3
+checkInterval: 3
+
+## For RBAC support
+rbac:
+  create: false
+  clusterWideAccess: false
+
+## Configuration for the Pods that that the runner launches for each new job
+runners:
+  image: ubuntu:16.04
+  builds: {}
+  services: {}
+  helpers: {}
+resources: {}

@@ -4,7 +4,6 @@
 
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag("common_vue")
-  = webpack_bundle_tag("environments")
 
 #environments-list-view{ data: { environments_data: environments_list_data,
   "can-create-deployment" => can?(current_user, :create_deployment, @project).to_s,

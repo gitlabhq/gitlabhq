@@ -1,22 +1,32 @@
 import * as utils from './utils';
 import * as types from './mutation_types';
 import * as constants from '../constants';
+import { isInMRPage } from '../../lib/utils/common_utils';
 
 export default {
   [types.ADD_NEW_NOTE](state, note) {
     const { discussion_id, type } = note;
     const [exists] = state.notes.filter(n => n.id === note.discussion_id);
+    const isDiscussion = (type === constants.DISCUSSION_NOTE);
 
     if (!exists) {
       const noteData = {
         expanded: true,
         id: discussion_id,
-        individual_note: !(type === constants.DISCUSSION_NOTE),
+        individual_note: !isDiscussion,
         notes: [note],
         reply_id: discussion_id,
       };
 
+      if (isDiscussion && isInMRPage()) {
+        noteData.resolvable = note.resolvable;
+        noteData.resolved = false;
+        noteData.resolve_path = note.resolve_path;
+        noteData.resolve_with_issue_path = note.resolve_with_issue_path;
+      }
+
       state.notes.push(noteData);
+      document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
     }
   },
 
@@ -25,6 +35,7 @@ export default {
 
     if (noteObj) {
       noteObj.notes.push(note);
+      document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
     }
   },
 
@@ -41,6 +52,8 @@ export default {
         state.notes.splice(state.notes.indexOf(noteObj), 1);
       }
     }
+
+    document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
   },
 
   [types.REMOVE_PLACEHOLDER_NOTES](state) {
@@ -77,15 +90,19 @@ export default {
     const notes = [];
 
     notesData.forEach((note) => {
+      const nn = Object.assign({}, note);
+
       // To support legacy notes, should be very rare case.
       if (note.individual_note && note.notes.length > 1) {
         note.notes.forEach((n) => {
-          const nn = Object.assign({}, note);
           nn.notes = [n]; // override notes array to only have one item to mimick individual_note
           notes.push(nn);
         });
       } else {
-        notes.push(note);
+        const oldNote = utils.findNoteObjectById(state.notes, note.id);
+        nn.expanded = oldNote ? oldNote.expanded : note.expanded;
+
+        notes.push(nn);
       }
     });
 
@@ -134,6 +151,8 @@ export default {
         user: { id, name, username },
       });
     }
+
+    document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
   },
 
   [types.TOGGLE_DISCUSSION](state, { discussionId }) {
@@ -151,6 +170,24 @@ export default {
       const comment = utils.findNoteObjectById(noteObj.notes, note.id);
       noteObj.notes.splice(noteObj.notes.indexOf(comment), 1, note);
     }
+
+    // document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
+  },
+
+  [types.UPDATE_DISCUSSION](state, noteData) {
+    const note = noteData;
+    let index = 0;
+
+    state.notes.forEach((n, i) => {
+      if (n.id === note.id) {
+        index = i;
+      }
+    });
+
+    note.expanded = true; // override expand flag to prevent collapse
+    state.notes.splice(index, 1, note);
+
+    document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
   },
 
   [types.CLOSE_ISSUE](state) {

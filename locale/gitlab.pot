@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-20 10:26+0100\n"
-"PO-Revision-Date: 2018-02-20 10:26+0100\n"
+"POT-Creation-Date: 2018-03-05 13:02-0600\n"
+"PO-Revision-Date: 2018-03-05 13:02-0600\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -48,6 +48,9 @@ msgid_plural "%s additional commits have been omitted to prevent performance iss
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{actionText} & %{openOrClose} %{noteable}"
+msgstr ""
+
 msgid "%{commit_author_link} authored %{commit_timeago}"
 msgstr ""
 
@@ -63,6 +66,9 @@ msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow 
 msgstr ""
 
 msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will not retry automatically. Reset storage information when the problem is resolved."
+msgstr ""
+
+msgid "%{openOrClose} %{noteable}"
 msgstr ""
 
 msgid "%{storage_name}: failed storage access attempt on host:"
@@ -96,6 +102,9 @@ msgstr ""
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr ""
 
+msgid "A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), %{among_other_things_link}."
+msgstr ""
+
 msgid "About auto deploy"
 msgstr ""
 
@@ -123,7 +132,13 @@ msgstr ""
 msgid "Add Contribution guide"
 msgstr ""
 
+msgid "Add Kubernetes cluster"
+msgstr ""
+
 msgid "Add License"
+msgstr ""
+
+msgid "Add Readme"
 msgstr ""
 
 msgid "Add new directory"
@@ -144,7 +159,7 @@ msgstr ""
 msgid "AdminArea|Stopping jobs failed"
 msgstr ""
 
-msgid "AdminArea|You’re about to stop all jobs. This will halt all current jobs that are running."
+msgid "AdminArea|You’re about to stop all jobs.This will halt all current jobs that are running."
 msgstr ""
 
 msgid "AdminHealthPageLink|health page"
@@ -189,6 +204,9 @@ msgstr ""
 msgid "All"
 msgstr ""
 
+msgid "All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings."
+msgstr ""
+
 msgid "Allows you to add and manage Kubernetes clusters."
 msgstr ""
 
@@ -207,6 +225,9 @@ msgstr ""
 msgid "An error occurred while fetching sidebar data"
 msgstr ""
 
+msgid "An error occurred while fetching the pipeline."
+msgstr ""
+
 msgid "An error occurred while getting projects"
 msgstr ""
 
@@ -223,6 +244,9 @@ msgid "An error occurred while loading filenames"
 msgstr ""
 
 msgid "An error occurred while loading the file"
+msgstr ""
+
+msgid "An error occurred while making the request."
 msgstr ""
 
 msgid "An error occurred while rendering KaTeX"
@@ -312,6 +336,9 @@ msgstr ""
 msgid "Authors: %{authors}"
 msgstr ""
 
+msgid "Auto DevOps enabled"
+msgstr ""
+
 msgid "Auto Review Apps and Auto Deploy need a %{kubernetes} to work correctly."
 msgstr ""
 
@@ -336,7 +363,13 @@ msgstr ""
 msgid "AutoDevOps|Learn more in the %{link_to_documentation}"
 msgstr ""
 
-msgid "AutoDevOps|You can activate %{link_to_settings} for this project."
+msgid "AutoDevOps|You can automatically build and test your application if you %{link_to_auto_devops_settings} for this project. You can automatically deploy it as well, if you %{link_to_add_kubernetes_cluster}."
+msgstr ""
+
+msgid "AutoDevOps|add a Kubernetes cluster"
+msgstr ""
+
+msgid "AutoDevOps|enable Auto DevOps (Beta)"
 msgstr ""
 
 msgid "Available"
@@ -351,8 +384,8 @@ msgstr ""
 msgid "Begin with the selected commit"
 msgstr ""
 
-msgid "Branch"
-msgid_plural "Branches"
+msgid "Branch (%{branch_count})"
+msgid_plural "Branches (%{branch_count})"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -620,6 +653,9 @@ msgstr ""
 msgid "CircuitBreakerApiLink|circuitbreaker api"
 msgstr ""
 
+msgid "Click the button below to begin the install process by navigating to the Kubernetes page"
+msgstr ""
+
 msgid "Click to expand text"
 msgstr ""
 
@@ -668,6 +704,9 @@ msgstr ""
 msgid "ClusterIntegration|Copy CA Certificate"
 msgstr ""
 
+msgid "ClusterIntegration|Copy Ingress IP Address to clipboard"
+msgstr ""
+
 msgid "ClusterIntegration|Copy Kubernetes cluster name"
 msgstr ""
 
@@ -714,6 +753,9 @@ msgid "ClusterIntegration|Helm Tiller"
 msgstr ""
 
 msgid "ClusterIntegration|Ingress"
+msgstr ""
+
+msgid "ClusterIntegration|Ingress IP Address"
 msgstr ""
 
 msgid "ClusterIntegration|Install"
@@ -765,9 +807,6 @@ msgid "ClusterIntegration|Kubernetes clusters can be used to deploy applications
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about %{link_to_documentation}"
-msgstr ""
-
-msgid "ClusterIntegration|Learn more about Kubernetes"
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about environments"
@@ -899,11 +938,22 @@ msgstr ""
 msgid "ClusterIntegration|properly configured"
 msgstr ""
 
+msgid "Comment and resolve discussion"
+msgstr ""
+
+msgid "Comment and unresolve discussion"
+msgstr ""
+
 msgid "Comments"
 msgstr ""
 
 msgid "Commit"
 msgid_plural "Commits"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Commit (%{commit_count})"
+msgid_plural "Commits (%{commit_count})"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1049,6 +1099,9 @@ msgid "Copy URL to clipboard"
 msgstr ""
 
 msgid "Copy branch name to clipboard"
+msgstr ""
+
+msgid "Copy command to clipboard"
 msgstr ""
 
 msgid "Copy commit SHA to clipboard"
@@ -1233,6 +1286,9 @@ msgstr ""
 msgid "Emails"
 msgstr ""
 
+msgid "Enable Auto DevOps"
+msgstr ""
+
 msgid "Environments|An error occurred while fetching the environments."
 msgstr ""
 
@@ -1341,6 +1397,9 @@ msgstr ""
 msgid "Explore public groups"
 msgstr ""
 
+msgid "Failed Jobs"
+msgstr ""
+
 msgid "Failed to change the owner"
 msgstr ""
 
@@ -1366,6 +1425,9 @@ msgid "File name"
 msgstr ""
 
 msgid "Files"
+msgstr ""
+
+msgid "Files (%{human_size})"
 msgstr ""
 
 msgid "Filter by commit message"
@@ -1394,6 +1456,9 @@ msgstr ""
 msgid "ForkedFromProjectPath|Forked from %{project_name} (deleted)"
 msgstr ""
 
+msgid "Forking in progress"
+msgstr ""
+
 msgid "Format"
 msgstr ""
 
@@ -1403,10 +1468,16 @@ msgstr ""
 msgid "From merge request merge until deploy to production"
 msgstr ""
 
+msgid "From the Kubernetes cluster details view, install Runner from the applications list"
+msgstr ""
+
 msgid "GPG Keys"
 msgstr ""
 
 msgid "Generate a default set of labels"
+msgstr ""
+
+msgid "Git repository URL"
 msgstr ""
 
 msgid "Git revision"
@@ -1531,7 +1602,19 @@ msgstr ""
 msgid "Housekeeping successfully started"
 msgstr ""
 
+msgid "If you already have files you can push them using the %{link_to_cli} below."
+msgstr ""
+
+msgid "If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>."
+msgstr ""
+
+msgid "Import in progress"
+msgstr ""
+
 msgid "Import repository"
+msgstr ""
+
+msgid "Install Runner on Kubernetes"
 msgstr ""
 
 msgid "Install a Runner compatible with GitLab CI"
@@ -1573,6 +1656,9 @@ msgstr ""
 msgid "January"
 msgstr ""
 
+msgid "Jobs"
+msgstr ""
+
 msgid "Jul"
 msgstr ""
 
@@ -1601,6 +1687,9 @@ msgid "Kubernetes cluster integration was successfully removed."
 msgstr ""
 
 msgid "Kubernetes cluster was successfully updated."
+msgstr ""
+
+msgid "Kubernetes configured"
 msgstr ""
 
 msgid "Kubernetes service integration has been deprecated. %{deprecated_message_content} your Kubernetes clusters using the new <a href=\"%{url}\"/>Kubernetes Clusters</a> page"
@@ -1648,6 +1737,12 @@ msgid "LastPushEvent|at"
 msgstr ""
 
 msgid "Learn more"
+msgstr ""
+
+msgid "Learn more about Kubernetes"
+msgstr ""
+
+msgid "Learn more about protected branches"
 msgstr ""
 
 msgid "Learn more in the"
@@ -1743,7 +1838,16 @@ msgstr ""
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr ""
 
+msgid "Modal|Cancel"
+msgstr ""
+
+msgid "Modal|Close"
+msgstr ""
+
 msgid "Monitoring"
+msgstr ""
+
+msgid "More information"
 msgstr ""
 
 msgid "More information is available|here"
@@ -1832,9 +1936,6 @@ msgstr ""
 msgid "No schedules"
 msgstr ""
 
-msgid "No time spent"
-msgstr ""
-
 msgid "None"
 msgstr ""
 
@@ -1848,6 +1949,9 @@ msgid "Not confidential"
 msgstr ""
 
 msgid "Not enough data"
+msgstr ""
+
+msgid "Note that the master branch is automatically protected. %{link_to_protected_branches}"
 msgstr ""
 
 msgid "Notification events"
@@ -1941,6 +2045,9 @@ msgid "Opens in a new window"
 msgstr ""
 
 msgid "Options"
+msgstr ""
+
+msgid "Otherwise it is recommended you start with one of the options below."
 msgstr ""
 
 msgid "Overview"
@@ -2048,19 +2155,19 @@ msgstr ""
 msgid "Pipeline|Retry pipeline"
 msgstr ""
 
-msgid "Pipeline|Retry pipeline #%{id}?"
+msgid "Pipeline|Retry pipeline #%{pipelineId}?"
 msgstr ""
 
 msgid "Pipeline|Stop pipeline"
 msgstr ""
 
-msgid "Pipeline|Stop pipeline #%{id}?"
+msgid "Pipeline|Stop pipeline #%{pipelineId}?"
 msgstr ""
 
-msgid "Pipeline|You’re about to retry pipeline %{id}."
+msgid "Pipeline|You’re about to retry pipeline %{pipelineId}."
 msgstr ""
 
-msgid "Pipeline|You’re about to stop pipeline %{id}."
+msgid "Pipeline|You’re about to stop pipeline %{pipelineId}."
 msgstr ""
 
 msgid "Pipeline|all"
@@ -2084,6 +2191,9 @@ msgstr ""
 msgid "Please solve the reCAPTCHA"
 msgstr ""
 
+msgid "Please wait while we import the repository for you. Refresh at will."
+msgstr ""
+
 msgid "Preferences"
 msgstr ""
 
@@ -2091,6 +2201,9 @@ msgid "Private - Project access must be granted explicitly to each user."
 msgstr ""
 
 msgid "Private - The group and its projects can only be viewed by members."
+msgstr ""
+
+msgid "Private projects can be created in your personal namespace with:"
 msgstr ""
 
 msgid "Profile"
@@ -2294,6 +2407,12 @@ msgstr ""
 msgid "Push events"
 msgstr ""
 
+msgid "Push project from command line"
+msgstr ""
+
+msgid "Push to create a project"
+msgstr ""
+
 msgid "Quick actions can be used in the issues description and comment boxes."
 msgstr ""
 
@@ -2357,6 +2476,9 @@ msgstr ""
 msgid "Reset runners registration token"
 msgstr ""
 
+msgid "Resolve discussion"
+msgstr ""
+
 msgid "Reveal value"
 msgid_plural "Reveal values"
 msgstr[0] ""
@@ -2416,6 +2538,9 @@ msgstr ""
 msgid "Select a timezone"
 msgstr ""
 
+msgid "Select an existing Kubernetes cluster or create a new one"
+msgstr ""
+
 msgid "Select assignee"
 msgstr ""
 
@@ -2423,6 +2548,9 @@ msgid "Select branch/tag"
 msgstr ""
 
 msgid "Select target branch"
+msgstr ""
+
+msgid "Send email"
 msgstr ""
 
 msgid "Sep"
@@ -2446,13 +2574,16 @@ msgstr ""
 msgid "Set up Koding"
 msgstr ""
 
-msgid "Set up auto deploy"
-msgstr ""
-
 msgid "SetPasswordToCloneLink|set a password"
 msgstr ""
 
 msgid "Settings"
+msgstr ""
+
+msgid "Setup a specific Runner automatically"
+msgstr ""
+
+msgid "Show command"
 msgstr ""
 
 msgid "Show parent pages"
@@ -2478,10 +2609,13 @@ msgstr ""
 msgid "Something went wrong trying to change the confidentiality of this issue"
 msgstr ""
 
+msgid "Something went wrong trying to change the locked state of this ${this.issuableDisplayName}"
+msgstr ""
+
 msgid "Something went wrong when toggling the button"
 msgstr ""
 
-msgid "Something went wrong while closing the issue. Please try again later"
+msgid "Something went wrong while closing the %{issuable}. Please try again later"
 msgstr ""
 
 msgid "Something went wrong while fetching the projects."
@@ -2490,7 +2624,10 @@ msgstr ""
 msgid "Something went wrong while fetching the registry list."
 msgstr ""
 
-msgid "Something went wrong while reopening the issue. Please try again later"
+msgid "Something went wrong while reopening the %{issuable}. Please try again later"
+msgstr ""
+
+msgid "Something went wrong while resolving this discussion. Please try again."
 msgstr ""
 
 msgid "Something went wrong. Please try again."
@@ -2631,8 +2768,8 @@ msgstr ""
 msgid "System Hooks"
 msgstr ""
 
-msgid "Tag"
-msgid_plural "Tags"
+msgid "Tag (%{tag_count})"
+msgid_plural "Tags (%{tag_count})"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -2729,6 +2866,9 @@ msgstr ""
 msgid "The fork relationship has been removed."
 msgstr ""
 
+msgid "The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
+msgstr ""
+
 msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
 msgstr ""
 
@@ -2757,6 +2897,12 @@ msgid "The project can be accessed without any authentication."
 msgstr ""
 
 msgid "The repository for this project does not exist."
+msgstr ""
+
+msgid "The repository for this project is empty"
+msgstr ""
+
+msgid "The repository must be accessible over <code>http://</code>, <code>https://</code> or <code>git://</code>."
 msgstr ""
 
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
@@ -3021,6 +3167,12 @@ msgstr[1] ""
 msgid "Time|s"
 msgstr ""
 
+msgid "Tip:"
+msgstr ""
+
+msgid "To import an SVN repository, check out %{svn_link}."
+msgstr ""
+
 msgid "Todo"
 msgstr ""
 
@@ -3034,9 +3186,6 @@ msgid "ToggleButton|Toggle Status: ON"
 msgstr ""
 
 msgid "Total Time"
-msgstr ""
-
-msgid "Total issue time spent"
 msgstr ""
 
 msgid "Total test time for all commits/merges"
@@ -3061,6 +3210,9 @@ msgid "Unlock this %{issuableDisplayName}? <strong>Everyone</strong> will be abl
 msgstr ""
 
 msgid "Unlocked"
+msgstr ""
+
+msgid "Unresolve discussion"
 msgstr ""
 
 msgid "Unstar"
@@ -3124,6 +3276,9 @@ msgid "We don't have enough data to show this stage."
 msgstr ""
 
 msgid "We want to be sure it is you, please confirm you are not a robot."
+msgstr ""
+
+msgid "Web IDE"
 msgstr ""
 
 msgid "Wiki"
@@ -3252,7 +3407,13 @@ msgstr ""
 msgid "You are on a read-only GitLab instance."
 msgstr ""
 
+msgid "You can also create a project from the command line."
+msgstr ""
+
 msgid "You can also star a label to make it a priority label."
+msgstr ""
+
+msgid "You can easily install a Runner on a Kubernetes cluster. %{link_to_help_page}"
 msgstr ""
 
 msgid "You can move around the graph by using the arrow keys."
@@ -3318,10 +3479,16 @@ msgstr ""
 msgid "Your projects"
 msgstr ""
 
+msgid "among other things"
+msgstr ""
+
 msgid "assign yourself"
 msgstr ""
 
 msgid "branch name"
+msgstr ""
+
+msgid "command line instructions"
 msgstr ""
 
 msgid "confidentiality|You are going to turn off the confidentiality. This means <strong>everyone</strong> will be able to see and leave a comment on this issue."
@@ -3508,6 +3675,9 @@ msgid "source"
 msgstr ""
 
 msgid "spendCommand|%{slash_command} will update the sum of the time spent."
+msgstr ""
+
+msgid "this document"
 msgstr ""
 
 msgid "username"

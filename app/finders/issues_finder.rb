@@ -17,6 +17,10 @@
 #     my_reaction_emoji: string
 #     public_only: boolean
 #     due_date: date or '0', '', 'overdue', 'week', or 'month'
+#     created_after: datetime
+#     created_before: datetime
+#     updated_after: datetime
+#     updated_before: datetime
 #
 class IssuesFinder < IssuableFinder
   CONFIDENTIAL_ACCESS_LEVEL = Gitlab::Access::REPORTER

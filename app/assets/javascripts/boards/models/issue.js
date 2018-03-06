@@ -110,3 +110,5 @@ class ListIssue {
 }
 
 window.ListIssue = ListIssue;
+
+export default ListIssue;

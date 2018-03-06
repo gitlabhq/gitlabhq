@@ -103,4 +103,6 @@ Doorkeeper.configure do
   # Some applications require dynamic query parameters on their request_uri
   # set to true if you want this to be allowed
   # wildcard_redirect_uri false
+
+  base_controller 'ApplicationController'
 end

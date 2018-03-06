@@ -431,7 +431,7 @@ class User < ActiveRecord::Base
   end
 
   def self.non_internal
-    where(Hash[internal_attributes.zip([[false, nil]] * internal_attributes.size)])
+    where(internal_attributes.map { |attr| "#{attr} IS NOT TRUE" }.join(" AND "))
   end
 
   #
@@ -601,6 +601,15 @@ class User < ActiveRecord::Base
     authorized_projects(min_access_level).exists?({ id: project.id })
   end
 
+  # Typically used in conjunction with projects table to get projects
+  # a user has been given access to.
+  #
+  # Example use:
+  # `Project.where('EXISTS(?)', user.authorizations_for_projects)`
+  def authorizations_for_projects
+    project_authorizations.select(1).where('project_authorizations.project_id = projects.id')
+  end
+
   # Returns the projects this user has reporter (or greater) access to, limited
   # to at most the given projects.
   #
@@ -728,7 +737,7 @@ class User < ActiveRecord::Base
 
   def ldap_user?
     if identities.loaded?
-      identities.find { |identity| Gitlab::OAuth::Provider.ldap_provider?(identity.provider) && !identity.extern_uid.nil? }
+      identities.find { |identity| Gitlab::Auth::OAuth::Provider.ldap_provider?(identity.provider) && !identity.extern_uid.nil? }
     else
       identities.exists?(["provider LIKE ? AND extern_uid IS NOT NULL", "ldap%"])
     end

@@ -87,7 +87,7 @@ namespace :gitlab do
 
         print "#{user.name} (#{user.ldap_identity.extern_uid}) ..."
 
-        if Gitlab::LDAP::Access.allowed?(user)
+        if Gitlab::Auth::LDAP::Access.allowed?(user)
           puts " [OK]".color(:green)
         else
           if block_flag

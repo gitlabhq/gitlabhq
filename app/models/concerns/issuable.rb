@@ -19,6 +19,7 @@ module Issuable
   include AfterCommitQueue
   include Sortable
   include CreatedAtFilterable
+  include UpdatedAtFilterable
 
   # This object is used to gather issuable meta data for displaying
   # upvotes, downvotes, notes and closing merge requests count for issues and merge requests
