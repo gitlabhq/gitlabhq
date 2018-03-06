@@ -35,3 +35,25 @@ bundle exec rake import:github[access_token,root,foo/bar,foo/github_repo] RAILS_
 ```
 
 [ce-10308]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10308
+
+
+
+## Troubleshooting
+
+* Syntax is very specific. Remove spaces within argument block and prior to brackets
+
+```
+# Success
+sudo gitlab-rake import:github[access_token,root,foo/bar]
+
+# Fail
+sudo gitlab-rake import:github[access_token, root, foo/bar]
+rake aborted!
+Don't know how to build task 'import:github[access_token, root, foo/bar,' (see --tasks)
+```
+
+* Some shells can interpret the open/close brackets (`[]`) separately (ex: zsh). You may need to escape the brackets or switch shells
+
+```
+zsh: no matches found: import:github[token,root,foo/project,group/repository]
+```
