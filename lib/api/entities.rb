@@ -1255,6 +1255,7 @@ module API
         badge.type == 'ProjectBadge' ? 'project' : 'group'
       end
     end
+<<<<<<< HEAD
 
     def self.prepend_entity(klass, with: nil)
       if with.nil?
@@ -1264,6 +1265,8 @@ module API
       klass.descendants.each { |descendant| descendant.prepend(with) }
       klass.prepend(with)
     end
+=======
+>>>>>>> upstream/master
   end
 end
 

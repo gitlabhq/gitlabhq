@@ -8,8 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2018-03-05 14:09-0600\n"
 "PO-Revision-Date: 2018-03-05 14:09-0600\n"
+=======
+"POT-Creation-Date: 2018-03-05 13:02-0600\n"
+"PO-Revision-Date: 2018-03-05 13:02-0600\n"
+>>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -219,9 +224,12 @@ msgstr ""
 msgid "All"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "All changes are committed"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings."
 msgstr ""
 
@@ -1714,6 +1722,7 @@ msgstr ""
 msgid "Generate a default set of labels"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Geo Nodes"
 msgstr ""
 
@@ -1828,6 +1837,8 @@ msgstr ""
 msgid "Geo|Shards to synchronize"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Git repository URL"
 msgstr ""
 
@@ -2643,9 +2654,12 @@ msgstr ""
 msgid "Please solve the reCAPTCHA"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Please wait while we connect to your repository. Refresh at will."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Please wait while we import the repository for you. Refresh at will."
 msgstr ""
 
@@ -3077,9 +3091,12 @@ msgstr ""
 msgid "Select target branch"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Selective synchronization"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Send email"
 msgstr ""
 
@@ -3754,6 +3771,7 @@ msgstr ""
 msgid "Tip:"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Title"
 msgstr ""
 
@@ -3769,6 +3787,11 @@ msgstr ""
 msgid "To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. Only epics in the past 3 months and the next 3 months are shown."
 msgstr ""
 
+=======
+msgid "To import an SVN repository, check out %{svn_link}."
+msgstr ""
+
+>>>>>>> upstream/master
 msgid "Todo"
 msgstr ""
 
@@ -4432,9 +4455,12 @@ msgstr ""
 msgid "this document"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "to help your contributors communicate effectively!"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "username"
 msgstr ""
 

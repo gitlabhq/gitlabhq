@@ -25,7 +25,7 @@ describe Gitlab::GithubImport::ObjectImporter do
       importer_class = double(:importer_class)
       importer_instance = double(:importer_instance)
       representation = double(:representation)
-      project = double(:project, path_with_namespace: 'foo/bar')
+      project = double(:project, full_path: 'foo/bar')
       client = double(:client)
 
       expect(worker)

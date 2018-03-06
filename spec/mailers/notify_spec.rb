@@ -572,7 +572,7 @@ describe Notify do
 
       it 'has the correct subject and body' do
         is_expected.to have_subject("#{project.name} | Project was moved")
-        is_expected.to have_html_escaped_body_text project.name_with_namespace
+        is_expected.to have_html_escaped_body_text project.full_name
         is_expected.to have_body_text(project.ssh_url_to_repo)
       end
     end
@@ -598,8 +598,8 @@ describe Notify do
         to_emails = subject.header[:to].addrs.map(&:address)
         expect(to_emails).to eq([recipient.notification_email])
 
-        is_expected.to have_subject "Request to join the #{project.name_with_namespace} project"
-        is_expected.to have_html_escaped_body_text project.name_with_namespace
+        is_expected.to have_subject "Request to join the #{project.full_name} project"
+        is_expected.to have_html_escaped_body_text project.full_name
         is_expected.to have_body_text project_project_members_url(project)
         is_expected.to have_body_text project_member.human_access
       end
@@ -618,8 +618,8 @@ describe Notify do
       it_behaves_like "a user cannot unsubscribe through footer link"
 
       it 'contains all the useful information' do
-        is_expected.to have_subject "Access to the #{project.name_with_namespace} project was denied"
-        is_expected.to have_html_escaped_body_text project.name_with_namespace
+        is_expected.to have_subject "Access to the #{project.full_name} project was denied"
+        is_expected.to have_html_escaped_body_text project.full_name
         is_expected.to have_body_text project.web_url
       end
     end
@@ -635,8 +635,8 @@ describe Notify do
       it_behaves_like "a user cannot unsubscribe through footer link"
 
       it 'contains all the useful information' do
-        is_expected.to have_subject "Access to the #{project.name_with_namespace} project was granted"
-        is_expected.to have_html_escaped_body_text project.name_with_namespace
+        is_expected.to have_subject "Access to the #{project.full_name} project was granted"
+        is_expected.to have_html_escaped_body_text project.full_name
         is_expected.to have_body_text project.web_url
         is_expected.to have_body_text project_member.human_access
       end
@@ -665,8 +665,8 @@ describe Notify do
       it_behaves_like "a user cannot unsubscribe through footer link"
 
       it 'contains all the useful information' do
-        is_expected.to have_subject "Invitation to join the #{project.name_with_namespace} project"
-        is_expected.to have_html_escaped_body_text project.name_with_namespace
+        is_expected.to have_subject "Invitation to join the #{project.full_name} project"
+        is_expected.to have_html_escaped_body_text project.full_name
         is_expected.to have_body_text project.web_url
         is_expected.to have_body_text project_member.human_access
         is_expected.to have_body_text project_member.invite_token
@@ -690,7 +690,7 @@ describe Notify do
 
       it 'contains all the useful information' do
         is_expected.to have_subject 'Invitation accepted'
-        is_expected.to have_html_escaped_body_text project.name_with_namespace
+        is_expected.to have_html_escaped_body_text project.full_name
         is_expected.to have_body_text project.web_url
         is_expected.to have_body_text project_member.invite_email
         is_expected.to have_html_escaped_body_text invited_user.name
@@ -713,7 +713,7 @@ describe Notify do
 
       it 'contains all the useful information' do
         is_expected.to have_subject 'Invitation declined'
-        is_expected.to have_html_escaped_body_text project.name_with_namespace
+        is_expected.to have_html_escaped_body_text project.full_name
         is_expected.to have_body_text project.web_url
         is_expected.to have_body_text project_member.invite_email
       end

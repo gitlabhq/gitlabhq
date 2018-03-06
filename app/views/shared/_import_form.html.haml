@@ -11,6 +11,7 @@
     %ul
       %li
         = _('The repository must be accessible over <code>http://</code>, <code>https://</code> or <code>git://</code>.').html_safe
+<<<<<<< HEAD
       %li
         = _('If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>.').html_safe
       %li
@@ -26,4 +27,14 @@
 
 -# EE-specific start
 = render 'shared/ee/import_form', f: f unless ci_cd_only
+=======
+      %li
+        = _('If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>.').html_safe
+      %li
+        = import_will_timeout_message(ci_cd_only)
+      %li
+        = import_svn_message(ci_cd_only)
+
+-# EE-specific start
+>>>>>>> upstream/master
 -# EE-specific end

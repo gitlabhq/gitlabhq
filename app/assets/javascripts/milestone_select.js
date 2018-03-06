@@ -216,6 +216,9 @@ export default class MilestoneSelect {
                   $value.html(milestoneLinkNoneTemplate);
                   return $sidebarCollapsedValue.find('span').text('No');
                 }
+              })
+              .catch(() => {
+                $loading.fadeOut();
               });
           }
         }

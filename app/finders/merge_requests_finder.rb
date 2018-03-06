@@ -19,6 +19,10 @@
 #     my_reaction_emoji: string
 #     source_branch: string
 #     target_branch: string
+#     created_after: datetime
+#     created_before: datetime
+#     updated_after: datetime
+#     updated_before: datetime
 #
 class MergeRequestsFinder < IssuableFinder
   def klass

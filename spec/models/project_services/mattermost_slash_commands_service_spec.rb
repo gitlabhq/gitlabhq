@@ -31,10 +31,10 @@ describe MattermostSlashCommandsService do
               url: 'http://trigger.url',
               icon_url: 'http://icon.url/icon.png',
               auto_complete: true,
-              auto_complete_desc: "Perform common operations on: #{project.name_with_namespace}",
+              auto_complete_desc: "Perform common operations on: #{project.full_name}",
               auto_complete_hint: '[help]',
-              description: "Perform common operations on: #{project.name_with_namespace}",
-              display_name: "GitLab / #{project.name_with_namespace}",
+              description: "Perform common operations on: #{project.full_name}",
+              display_name: "GitLab / #{project.full_name}",
               method: 'P',
               username: 'GitLab'
             }.to_json)

@@ -7,7 +7,7 @@
 module Gitlab
   module Auth
     module LDAP
-      class Authentication
+      class Authentication < Gitlab::Auth::OAuth::Authentication
         def self.login(login, password)
           return unless Gitlab::Auth::LDAP::Config.enabled?
           return unless login.present? && password.present?
@@ -28,11 +28,7 @@ module Gitlab
           Gitlab::Auth::LDAP::Config.providers
         end
 
-        attr_accessor :provider, :ldap_user
-
-        def initialize(provider)
-          @provider = provider
-        end
+        attr_accessor :ldap_user
 
         def login(login, password)
           @ldap_user = adapter.bind_as(
@@ -62,7 +58,7 @@ module Gitlab
         end
 
         def user
-          return nil unless ldap_user
+          return unless ldap_user
 
           Gitlab::Auth::LDAP::User.find_by_uid_and_provider(ldap_user.dn, provider)
         end

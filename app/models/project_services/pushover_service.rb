@@ -88,10 +88,10 @@ class PushoverService < Service
       user: user_key,
       device: device,
       priority: priority,
-      title: "#{project.name_with_namespace}",
+      title: "#{project.full_name}",
       message: message,
       url: data[:project][:web_url],
-      url_title: "See project #{project.name_with_namespace}"
+      url_title: "See project #{project.full_name}"
     }
 
     # Sound parameter MUST NOT be sent to API if not selected
