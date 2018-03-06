@@ -369,17 +369,6 @@ module Ci
       artifacts_metadata?
     end
 
-    def artifacts_metadata_entry(path, **options)
-      artifacts_metadata.use_file do |metadata_path|
-        metadata = Gitlab::Ci::Build::Artifacts::Metadata.new(
-          metadata_path,
-          path,
-          **options)
-
-        metadata.to_entry
-      end
-    end
-
     def erase_artifacts!
       remove_artifacts_file!
       remove_artifacts_metadata!
