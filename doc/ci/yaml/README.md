@@ -1756,4 +1756,5 @@ CI with various languages.
 [ce-7447]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7447
 [ce-3442]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3442
 [schedules]: ../../user/project/pipelines/schedules.md
+[ee]: https://about.gitlab.com/gitlab-ee/
 [gitlab-versions]: https://about.gitlab.com/products/
