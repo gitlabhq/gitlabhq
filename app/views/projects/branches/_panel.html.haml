@@ -1,0 +1,19 @@
+- branches = local_assigns.fetch(:branches)
+- state = local_assigns.fetch(:state)
+- panel_title = local_assigns.fetch(:panel_title)
+- show_more_text = local_assigns.fetch(:show_more_text)
+- project = local_assigns.fetch(:project)
+- overview_max_branches = local_assigns.fetch(:overview_max_branches)
+
+- return unless branches.any?
+
+.panel.panel-default.prepend-top-10
+  .panel-heading
+    %h4.panel-title
+      = panel_title
+  %ul.content-list.all-branches
+    - branches.first(overview_max_branches).each do |branch|
+      = render "projects/branches/branch", branch: branch, merged: project.repository.merged_to_root_ref?(branch)
+  - if branches.size > overview_max_branches
+    .panel-footer.text-center
+      = link_to show_more_text, project_branches_filtered_path(project, state: state), id: "state-#{state}", data: { state: state }

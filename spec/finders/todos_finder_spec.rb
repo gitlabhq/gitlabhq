@@ -2,12 +2,13 @@ require 'spec_helper'
 
 describe TodosFinder do
   describe '#execute' do
-    let(:user)          { create(:user) }
-    let(:project)       { create(:project) }
-    let(:finder)        { described_class }
+    let(:user) { create(:user) }
+    let(:group) { create(:group) }
+    let(:project) { create(:project, namespace: group) }
+    let(:finder) { described_class }
 
     before do
-      project.add_developer(user)
+      group.add_developer(user)
     end
 
     describe '#sort' do
@@ -34,17 +35,20 @@ describe TodosFinder do
       end
 
       it "sorts by priority" do
+        project_2       = create(:project)
+
         label_1         = create(:label, title: 'label_1', project: project, priority: 1)
         label_2         = create(:label, title: 'label_2', project: project, priority: 2)
         label_3         = create(:label, title: 'label_3', project: project, priority: 3)
+        label_1_2       = create(:label, title: 'label_1', project: project_2, priority: 1)
 
         issue_1         = create(:issue, title: 'issue_1', project: project)
         issue_2         = create(:issue, title: 'issue_2', project: project)
         issue_3         = create(:issue, title: 'issue_3', project: project)
         issue_4         = create(:issue, title: 'issue_4', project: project)
-        merge_request_1 = create(:merge_request, source_project: project)
+        merge_request_1 = create(:merge_request, source_project: project_2)
 
-        merge_request_1.labels << label_1
+        merge_request_1.labels << label_1_2
 
         # Covers the case where Todo has more than one label
         issue_3.labels         << label_1
@@ -57,15 +61,14 @@ describe TodosFinder do
         todo_2 = create(:todo, user: user, project: project, target: issue_2)
         todo_3 = create(:todo, user: user, project: project, target: issue_3, created_at: 2.hours.ago)
         todo_4 = create(:todo, user: user, project: project, target: issue_1)
-        todo_5 = create(:todo, user: user, project: project, target: merge_request_1, created_at: 1.hour.ago)
+        todo_5 = create(:todo, user: user, project: project_2, target: merge_request_1, created_at: 1.hour.ago)
+
+        project_2.add_developer(user)
 
         todos = finder.new(user, { sort: 'priority' }).execute
 
-        expect(todos.first).to eq(todo_3)
-        expect(todos.second).to eq(todo_5)
-        expect(todos.third).to eq(todo_4)
-        expect(todos.fourth).to eq(todo_2)
-        expect(todos.fifth).to eq(todo_1)
+        puts todos.to_sql
+        expect(todos).to eq([todo_3, todo_5, todo_4, todo_2, todo_1])
       end
     end
   end
