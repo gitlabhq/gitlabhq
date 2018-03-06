@@ -19,12 +19,9 @@
       %p
         = _('All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings.')
       -# EE-specific start
-<<<<<<< HEAD
       - if ci_cd_projects_available?
         %p
           = _('To only use CI/CD features for an external repository, choose <strong>CI/CD for external repo</strong>.').html_safe
-=======
->>>>>>> upstream/master
       -# EE-specific end
       .md
         = brand_new_project_guidelines
@@ -50,10 +47,7 @@
             %span.hidden-xs Import project
             %span.visible-xs Import
         -# EE-specific start
-<<<<<<< HEAD
         = render 'new_ci_cd_only_project_tab', active_tab: active_tab
-=======
->>>>>>> upstream/master
         -# EE-specific end
 
       .tab-content.gitlab-tab-content
@@ -122,10 +116,7 @@
 
 
         -# EE-specific start
-<<<<<<< HEAD
         = render 'new_ci_cd_only_project_pane', active_tab: active_tab
-=======
->>>>>>> upstream/master
         -# EE-specific end
 
 .save-project-loader.hide

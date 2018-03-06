@@ -10,7 +10,6 @@ You can import your existing repositories by providing the Git URL:
 1. Once complete, you will be redirected to your newly created project
 
 ![Import project by repo URL](img/import_projects_from_repo_url.png)
-<<<<<<< HEAD
 
 ## CI/CD for external repositories
 
@@ -29,5 +28,3 @@ but [can be re-enabled later on](../settings/index.md#sharing-and-permissions).
 
 [ee-4642]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/4642
 [eep]: https://about.gitlab.com/products/
-=======
->>>>>>> upstream/master
