@@ -83,7 +83,10 @@ describe 'admin Geo Nodes', :js do
 
     it 'removes an existing Geo Node' do
       page.within(find('.geo-node-actions', match: :first)) do
-        page.click_link('Remove')
+        page.click_button('Remove')
+      end
+      page.within('.modal') do
+        page.click_button('Remove')
       end
 
       expect(current_path).to eq admin_geo_nodes_path
