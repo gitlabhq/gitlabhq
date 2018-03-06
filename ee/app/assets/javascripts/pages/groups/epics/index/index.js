@@ -5,6 +5,9 @@ import initNewEpic from 'ee/epics/new_epic/new_epic_bundle';
 document.addEventListener('DOMContentLoaded', () => {
   initFilteredSearch({
     page: 'epics',
+    isGroup: true,
+    isGroupAncestor: true,
+    isGroupDecendent: true,
     filteredSearchTokenKeys: FilteredSearchTokenKeysEpics,
     stateFiltersSelector: '.epics-state-filters',
   });
