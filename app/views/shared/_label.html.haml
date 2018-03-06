@@ -2,6 +2,7 @@
 - status = label_subscription_status(label, @project).inquiry if current_user
 - subject = local_assigns[:subject]
 - toggle_subscription_path = toggle_subscription_label_path(label, @project) if current_user
+- show_label_epics_link = @group&.feature_available?(:epics)
 - show_label_merge_requests_link = show_label_issuables_link?(label, :merge_requests, project: @project)
 - show_label_issues_link = show_label_issuables_link?(label, :issues, project: @project)
 
@@ -14,6 +15,10 @@
       = icon('caret-down')
     .dropdown-menu.dropdown-menu-align-right
       %ul
+        - if show_label_epics_link
+          %li
+            = link_to group_epics_path(@group, label_name:[label.name]) do
+              View epics
         - if show_label_merge_requests_link
           %li
             = link_to_label(label, subject: subject, type: :merge_request) do
