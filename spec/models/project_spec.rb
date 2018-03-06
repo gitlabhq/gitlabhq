@@ -80,6 +80,7 @@ describe Project do
     it { is_expected.to have_many(:members_and_requesters) }
     it { is_expected.to have_many(:clusters) }
     it { is_expected.to have_many(:custom_attributes).class_name('ProjectCustomAttribute') }
+    it { is_expected.to have_many(:project_badges).class_name('ProjectBadge') }
     it { is_expected.to have_many(:lfs_file_locks) }
 
     context 'after initialized' do
@@ -516,6 +517,20 @@ describe Project do
 
       it 'returns the project\'s last update date if it has no events' do
         expect(project.last_activity_date).to eq(project.updated_at)
+      end
+
+      it 'returns the most recent timestamp' do
+        project.update_attributes(updated_at: nil,
+                                  last_activity_at: timestamp,
+                                  last_repository_updated_at: timestamp - 1.hour)
+
+        expect(project.last_activity_date).to eq(timestamp)
+
+        project.update_attributes(updated_at: timestamp,
+                                  last_activity_at: timestamp - 1.hour,
+                                  last_repository_updated_at: nil)
+
+        expect(project.last_activity_date).to eq(timestamp)
       end
     end
   end
@@ -3329,6 +3344,38 @@ describe Project do
           project.execute_hooks({ data: 'data' }, :merge_request_hooks)
         end
       end.not_to raise_error # Sidekiq::Worker::EnqueueFromTransactionError
+    end
+  end
+
+  describe '#badges' do
+    let(:project_group) { create(:group) }
+    let(:project) {  create(:project, path: 'avatar', namespace: project_group) }
+
+    before do
+      create_list(:project_badge, 2, project: project)
+      create(:group_badge, group: project_group)
+    end
+
+    it 'returns the project and the project group badges' do
+      create(:group_badge, group: create(:group))
+
+      expect(Badge.count).to eq 4
+      expect(project.badges.count).to eq 3
+    end
+
+    if Group.supports_nested_groups?
+      context 'with nested_groups' do
+        let(:parent_group) { create(:group) }
+
+        before do
+          create_list(:group_badge, 2, group: project_group)
+          project_group.update(parent: parent_group)
+        end
+
+        it 'returns the project and the project nested groups badges' do
+          expect(project.badges.count).to eq 5
+        end
+      end
     end
   end
 end

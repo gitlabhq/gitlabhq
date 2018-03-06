@@ -108,6 +108,7 @@ module API
     mount ::API::AccessRequests
     mount ::API::Applications
     mount ::API::AwardEmoji
+    mount ::API::Badges
     mount ::API::Boards
     mount ::API::Branches
     mount ::API::BroadcastMessages
@@ -139,6 +140,7 @@ module API
     mount ::API::PagesDomains
     mount ::API::Pipelines
     mount ::API::PipelineSchedules
+    mount ::API::ProjectExport
     mount ::API::ProjectImport
     mount ::API::ProjectHooks
     mount ::API::Projects

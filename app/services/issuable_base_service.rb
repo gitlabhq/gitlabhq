@@ -109,6 +109,10 @@ class IssuableBaseService < BaseService
     @available_labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute
   end
 
+  def handle_quick_actions_on_create(issuable)
+    merge_quick_actions_into_params!(issuable)
+  end
+
   def merge_quick_actions_into_params!(issuable)
     original_description = params.fetch(:description, issuable.description)
 
@@ -131,7 +135,7 @@ class IssuableBaseService < BaseService
   end
 
   def create(issuable)
-    merge_quick_actions_into_params!(issuable)
+    handle_quick_actions_on_create(issuable)
     filter_params(issuable)
 
     params.delete(:state_event)

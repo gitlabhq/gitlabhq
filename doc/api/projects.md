@@ -1340,3 +1340,7 @@ Read more in the [Project import/export](project_import_export.md) documentation
 ## Project members
 
 Read more in the [Project members](members.md) documentation.
+
+## Project badges
+
+Read more in the [Project Badges](project_badges.md) documentation.

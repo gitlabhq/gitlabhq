@@ -91,6 +91,21 @@ module API
       expose :created_at
     end
 
+    class ProjectExportStatus < ProjectIdentity
+      include ::API::Helpers::RelatedResourcesHelpers
+
+      expose :export_status
+      expose :_links, if: lambda { |project, _options| project.export_status == :finished } do
+        expose :api_url do |project|
+          expose_url(api_v4_projects_export_download_path(id: project.id))
+        end
+
+        expose :web_url do |project|
+          Gitlab::Routing.url_helpers.download_export_project_url(project)
+        end
+      end
+    end
+
     class ProjectImportStatus < ProjectIdentity
       expose :import_status
 
@@ -1234,6 +1249,24 @@ module API
       expose :ref
       expose :startline
       expose :project_id
+    end
+
+    class BasicBadgeDetails < Grape::Entity
+      expose :link_url
+      expose :image_url
+      expose :rendered_link_url do |badge, options|
+        badge.rendered_link_url(options.fetch(:project, nil))
+      end
+      expose :rendered_image_url do |badge, options|
+        badge.rendered_image_url(options.fetch(:project, nil))
+      end
+    end
+
+    class Badge < BasicBadgeDetails
+      expose :id
+      expose :kind do |badge|
+        badge.type == 'ProjectBadge' ? 'project' : 'group'
+      end
     end
   end
 end

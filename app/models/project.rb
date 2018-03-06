@@ -221,6 +221,8 @@ class Project < ActiveRecord::Base
   has_one :auto_devops, class_name: 'ProjectAutoDevops'
   has_many :custom_attributes, class_name: 'ProjectCustomAttribute'
 
+  has_many :project_badges, class_name: 'ProjectBadge'
+
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true
   accepts_nested_attributes_for :import_data
@@ -274,7 +276,8 @@ class Project < ActiveRecord::Base
   scope :without_storage_feature, ->(feature) { where('storage_version < :version OR storage_version IS NULL', version: HASHED_STORAGE_FEATURES[feature]) }
   scope :with_unmigrated_storage, -> { where('storage_version < :version OR storage_version IS NULL', version: LATEST_STORAGE_VERSION) }
 
-  scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
+  # last_activity_at is throttled every minute, but last_repository_updated_at is updated with every push
+  scope :sorted_by_activity, -> { reorder("GREATEST(COALESCE(last_activity_at, '1970-01-01'), COALESCE(last_repository_updated_at, '1970-01-01')) DESC") }
   scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
 
   scope :in_namespace, ->(namespace_ids) { where(namespace_id: namespace_ids) }
@@ -317,42 +320,13 @@ class Project < ActiveRecord::Base
 
   # Returns a collection of projects that is either public or visible to the
   # logged in user.
-  #
-  # A caller may pass in a block to modify individual parts of
-  # the query, e.g. to apply .with_feature_available_for_user on top of it.
-  # This is useful for performance as we can stick those additional filters
-  # at the bottom of e.g. the UNION.
-  #
-  # Optionally, turning `use_where_in` off leads to returning a
-  # relation using #from instead of #where. This can perform much better
-  # but leads to trouble when used in conjunction with AR's #merge method.
-  def self.public_or_visible_to_user(user = nil, use_where_in: true, &block)
-    # If we don't get a block passed, use identity to avoid if/else repetitions
-    block = ->(part) { part } unless block_given?
-
-    return block.call(public_to_user) unless user
-
-    # If the user is allowed to see all projects,
-    # we can shortcut and just return.
-    return block.call(all) if user.full_private_access?
-
-    authorized = user
-      .project_authorizations
-      .select(1)
-      .where('project_authorizations.project_id = projects.id')
-    authorized_projects = block.call(where('EXISTS (?)', authorized))
-
-    levels = Gitlab::VisibilityLevel.levels_for_user(user)
-    visible_projects = block.call(where(visibility_level: levels))
-
-    # We use a UNION here instead of OR clauses since this results in better
-    # performance.
-    union = Gitlab::SQL::Union.new([authorized_projects.select('projects.id'), visible_projects.select('projects.id')])
-
-    if use_where_in
-      where("projects.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+  def self.public_or_visible_to_user(user = nil)
+    if user
+      where('EXISTS (?) OR projects.visibility_level IN (?)',
+            user.authorizations_for_projects,
+            Gitlab::VisibilityLevel.levels_for_user(user))
     else
-      from("(#{union.to_sql}) AS #{table_name}")
+      public_to_user
     end
   end
 
@@ -371,14 +345,11 @@ class Project < ActiveRecord::Base
     elsif user
       column = ProjectFeature.quoted_access_level_column(feature)
 
-      authorized = user.project_authorizations.select(1)
-        .where('project_authorizations.project_id = projects.id')
-
       with_project_feature
         .where("#{column} IN (?) OR (#{column} = ? AND EXISTS (?))",
               visible,
               ProjectFeature::PRIVATE,
-              authorized)
+              user.authorizations_for_projects)
     else
       with_feature_access_level(feature, visible)
     end
@@ -808,7 +779,7 @@ class Project < ActiveRecord::Base
   end
 
   def last_activity_date
-    last_repository_updated_at || last_activity_at || updated_at
+    [last_activity_at, last_repository_updated_at, updated_at].compact.max
   end
 
   def project_id
@@ -1557,14 +1528,32 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def import_export_shared
+    @import_export_shared ||= Gitlab::ImportExport::Shared.new(self)
+  end
+
   def export_path
     return nil unless namespace.present? || hashed_storage?(:repository)
 
-    File.join(Gitlab::ImportExport.storage_path, disk_path)
+    import_export_shared.archive_path
   end
 
   def export_project_path
     Dir.glob("#{export_path}/*export.tar.gz").max_by { |f| File.ctime(f) }
+  end
+
+  def export_status
+    if export_in_progress?
+      :started
+    elsif export_project_path
+      :finished
+    else
+      :none
+    end
+  end
+
+  def export_in_progress?
+    import_export_shared.active_export_count > 0
   end
 
   def remove_exports
@@ -1797,6 +1786,17 @@ class Project < ActiveRecord::Base
 
     Gitlab::SidekiqStatus
       .set(import_jid, StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION)
+  end
+
+  def badges
+    return project_badges unless group
+
+    group_badges_rel = GroupBadge.where(group: group.self_and_ancestors)
+
+    union = Gitlab::SQL::Union.new([project_badges.select(:id),
+                                    group_badges_rel.select(:id)])
+
+    Badge.where("id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
   end
 
   private

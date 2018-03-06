@@ -277,6 +277,7 @@ project:
 - fork_network
 - custom_attributes
 - lfs_file_locks
+- project_badges
 award_emoji:
 - awardable
 - user
@@ -293,3 +294,5 @@ issue_assignees:
 - assignee
 lfs_file_locks:
 - user
+project_badges:
+- project

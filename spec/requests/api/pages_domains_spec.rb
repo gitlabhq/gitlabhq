@@ -16,7 +16,7 @@ describe API::PagesDomains do
 
   let(:route) { "/projects/#{project.id}/pages/domains" }
   let(:route_domain) { "/projects/#{project.id}/pages/domains/#{pages_domain.domain}" }
-  let(:route_domain_path) { "/projects/#{project.path_with_namespace.gsub('/', '%2F')}/pages/domains/#{pages_domain.domain}" }
+  let(:route_domain_path) { "/projects/#{project.full_path.gsub('/', '%2F')}/pages/domains/#{pages_domain.domain}" }
   let(:route_secure_domain) { "/projects/#{project.id}/pages/domains/#{pages_domain_secure.domain}" }
   let(:route_expired_domain) { "/projects/#{project.id}/pages/domains/#{pages_domain_expired.domain}" }
   let(:route_vacant_domain) { "/projects/#{project.id}/pages/domains/www.vacant-domain.test" }

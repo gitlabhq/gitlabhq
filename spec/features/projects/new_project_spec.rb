@@ -142,7 +142,7 @@ feature 'New project' do
 
     context 'from git repository url, "Repo by URL"' do
       before do
-        first('.import_git').click
+        first('.js-import-git-toggle-button').click
       end
 
       it 'does not autocomplete sensitive git repo URL' do

@@ -41,8 +41,10 @@ Parameters:
 | `milestone`         | string   | no       | Return merge requests for a specific milestone                                                                         |
 | `view`              | string   | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                              |
 | `labels`            | string   | no       | Return merge requests matching a comma separated list of labels                                                        |
-| `created_after`     | datetime | no       | Return merge requests created after the given time (inclusive)                                                         |
-| `created_before`    | datetime | no       | Return merge requests created before the given time (inclusive)                                                        |
+| `created_after`     | datetime | no       | Return merge requests created on or after the given time                                                               |
+| `created_before`    | datetime | no       | Return merge requests created on or before the given time                                                              |
+| `updated_after`     | datetime | no       | Return merge requests updated on or after the given time                                                               |
+| `updated_before`    | datetime | no       | Return merge requests updated on or before the given time                                                              |
 | `scope`             | string   | no       | Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`. Defaults to `created-by-me`     |
 | `author_id`         | integer  | no       | Returns merge requests created by the given user `id`. Combine with `scope=all` or `scope=assigned-to-me`              |
 | `assignee_id`       | integer  | no       | Returns merge requests assigned to the given user `id`                                                                 |
@@ -158,8 +160,10 @@ Parameters:
 | `milestone`         | string         | no       | Return merge requests for a specific milestone                                                                                 |
 | `view`              | string         | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                                      |
 | `labels`            | string         | no       | Return merge requests matching a comma separated list of labels                                                                |
-| `created_after`     | datetime       | no       | Return merge requests created after the given time (inclusive)                                                                 |
-| `created_before`    | datetime       | no       | Return merge requests created before the given time (inclusive)                                                                |
+| `created_after`     | datetime       | no       | Return merge requests created on or after the given time                                                                       |
+| `created_before`    | datetime       | no       | Return merge requests created on or before the given time                                                                      |
+| `updated_after`     | datetime       | no       | Return merge requests updated on or after the given time                                                                       |
+| `updated_before`    | datetime       | no       | Return merge requests updated on or before the given time                                                                      |
 | `scope`             | string         | no       | Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all` _([Introduced][ce-13060] in GitLab 9.5)_ |
 | `author_id`         | integer        | no       | Returns merge requests created by the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                 |
 | `assignee_id`       | integer        | no       | Returns merge requests assigned to the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                |
@@ -493,6 +497,8 @@ Parameters:
 ```
 
 ## List MR pipelines
+
+> [Introduced][ce-15454] in GitLab 10.5.0.
 
 Get a list of merge request pipelines.
 
@@ -1449,3 +1455,4 @@ Example response:
 
 [ce-13060]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13060
 [ce-14016]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14016
+[ce-15454]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15454

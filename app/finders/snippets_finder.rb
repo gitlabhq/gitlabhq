@@ -58,11 +58,37 @@ class SnippetsFinder < UnionFinder
       .public_or_visible_to_user(current_user)
   end
 
+  # Returns a collection of projects that is either public or visible to the
+  # logged in user.
+  #
+  # A caller must pass in a block to modify individual parts of
+  # the query, e.g. to apply .with_feature_available_for_user on top of it.
+  # This is useful for performance as we can stick those additional filters
+  # at the bottom of e.g. the UNION.
+  def projects_for_user
+    return yield(Project.public_to_user) unless current_user
+
+    # If the current_user is allowed to see all projects,
+    # we can shortcut and just return.
+    return yield(Project.all) if current_user.full_private_access?
+
+    authorized_projects = yield(Project.where('EXISTS (?)', current_user.authorizations_for_projects))
+
+    levels = Gitlab::VisibilityLevel.levels_for_user(current_user)
+    visible_projects = yield(Project.where(visibility_level: levels))
+
+    # We use a UNION here instead of OR clauses since this results in better
+    # performance.
+    union = Gitlab::SQL::Union.new([authorized_projects.select('projects.id'), visible_projects.select('projects.id')])
+
+    Project.from("(#{union.to_sql}) AS #{Project.table_name}")
+  end
+
   def feature_available_projects
     # Don't return any project related snippets if the user cannot read cross project
     return table[:id].eq(nil) unless Ability.allowed?(current_user, :read_cross_project)
 
-    projects = Project.public_or_visible_to_user(current_user, use_where_in: false) do |part|
+    projects = projects_for_user do |part|
       part.with_feature_available_for_user(:snippets, current_user)
     end.select(:id)
 
