@@ -1010,7 +1010,7 @@ module Gitlab
       end
 
       def languages(ref = nil)
-        Gitlab::GitalyClient.migrate(:commit_languages) do |is_enabled|
+        gitaly_migrate(:commit_languages, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_commit_client.languages(ref)
           else
