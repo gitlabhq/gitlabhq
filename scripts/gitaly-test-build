@@ -10,10 +10,12 @@ require 'fileutils'
 # gitlab-ce and gitaly.
 
 tmp_tests_gitaly_dir = File.expand_path('../tmp/tests/gitaly', __dir__)
+gitaly_ruby_gemfile_path = File.join(tmp_tests_gitaly_dir, 'ruby', 'Gemfile'),
+gitaly_ruby_bundle_path = File.join(tmp_tests_gitaly_dir, 'ruby', 'vendor'),
 
 env = {
-  'BUNDLE_GEMFILE' => File.join(tmp_tests_gitaly_dir, 'ruby', 'Gemfile'),
-  'BUNDLE_FLAGS' => "--jobs=4 --path=vendor --retry=3"
+  'BUNDLE_GEMFILE' => gitaly_ruby_gemfile_path,
+  'BUNDLE_FLAGS' => "--jobs=4 --path=#{gitaly_ruby_bundle_path} --retry=3"
 }
 
 abort 'gitaly build failed' unless system(env, 'make', chdir: tmp_tests_gitaly_dir)
