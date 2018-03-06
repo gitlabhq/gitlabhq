@@ -137,6 +137,27 @@ describe('Api', () => {
         done();
       });
     });
+
+    it('creates a group label', (done) => {
+      const namespace = 'group/subgroup';
+      const labelData = { some: 'data' };
+      const expectedUrl = `${dummyUrlRoot}/groups/${namespace}/-/labels`;
+      const expectedData = {
+        label: labelData,
+      };
+      mock.onPost(expectedUrl).reply((config) => {
+        expect(config.data).toBe(JSON.stringify(expectedData));
+
+        return [200, {
+          name: 'test',
+        }];
+      });
+
+      Api.newLabel(namespace, undefined, labelData, (response) => {
+        expect(response.name).toBe('test');
+        done();
+      });
+    });
   });
 
   describe('groupProjects', () => {
