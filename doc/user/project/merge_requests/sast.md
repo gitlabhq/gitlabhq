@@ -31,7 +31,7 @@ The following languages and frameworks are supported.
 | Python ([pip](https://pip.pypa.io/en/stable/)) | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [bandit](https://github.com/openstack/bandit) |
 | Ruby ([gem](https://rubygems.org/)) | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [bundler-audit](https://github.com/rubysec/bundler-audit) |
 | Ruby on Rails | [brakeman](https://brakemanscanner.org) |
-| Java ([Maven](http://maven.apache.org/)) | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
+| Java ([Maven](https://maven.apache.org/)) | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [find-sec-bugs](https://find-sec-bugs.github.io/) |
 | PHP ([Composer](https://getcomposer.org/)) | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 
 Some security scanners require to send a list of project dependencies to GitLab central servers to check for vulnerabilities. To learn more about this or to disable it please
