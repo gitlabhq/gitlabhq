@@ -15,10 +15,8 @@ rbac:
   clusterWideAccess: false
 
 ## Configuration for the Pods that that the runner launches for each new job
-##
 runners:
   image: ubuntu:16.04
-  privileged: false
   builds: {}
   services: {}
   helpers: {}

@@ -150,9 +150,7 @@ class TodosFinder
     if project?
       items.where(project: project)
     else
-      projects = Project
-        .public_or_visible_to_user(current_user)
-        .order_id_desc
+      projects = Project.public_or_visible_to_user(current_user)
 
       items.joins(:project).merge(projects)
     end

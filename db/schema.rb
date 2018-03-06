@@ -427,6 +427,7 @@ ActiveRecord::Schema.define(version: 20180306074045) do
     t.datetime_with_timezone "expire_at"
     t.string "file"
     t.integer "file_store"
+    t.binary "file_sha256"
   end
 
   add_index "ci_job_artifacts", ["expire_at", "job_id"], name: "index_ci_job_artifacts_on_expire_at_and_job_id", using: :btree
@@ -698,6 +699,7 @@ ActiveRecord::Schema.define(version: 20180306074045) do
     t.datetime_with_timezone "updated_at", null: false
     t.string "version", null: false
     t.text "status_reason"
+    t.boolean "privileged", default: true, null: false
   end
 
   add_index "clusters_applications_runners", ["cluster_id"], name: "index_clusters_applications_runners_on_cluster_id", unique: true, using: :btree

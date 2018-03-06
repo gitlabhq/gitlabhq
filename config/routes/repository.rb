@@ -49,6 +49,7 @@ scope format: false do
       end
     end
 
+    get '/branches/:state', to: 'branches#index', as: :branches_filtered, constraints: { state: /active|stale|all/ }
     resources :branches, only: [:index, :new, :create, :destroy]
     delete :merged_branches, controller: 'branches', action: :destroy_all_merged
     resources :tags, only: [:index, :show, :new, :create, :destroy] do
