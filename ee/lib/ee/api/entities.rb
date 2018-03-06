@@ -224,9 +224,17 @@ module EE
           'http'
         end
 
+        expose :web_edit_url do |geo_node|
+          ::Gitlab::Routing.url_helpers.edit_admin_geo_node_url(geo_node)
+        end
+
         expose :_links do
           expose :self do |geo_node|
             expose_url api_v4_geo_nodes_path(id: geo_node.id)
+          end
+
+          expose :status do |geo_node|
+            expose_url api_v4_geo_nodes_status_path(id: geo_node.id)
           end
 
           expose :repair do |geo_node|
