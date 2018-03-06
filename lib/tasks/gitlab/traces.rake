@@ -15,7 +15,7 @@ namespace :gitlab do
         .find_in_batches(batch_size: 1000) do |jobs|
         job_ids = jobs.map { |job| [job.id] }
 
-        ArchiveLegacyTraceWorker.bulk_perform_async(job_ids)
+        ArchiveTraceWorker.bulk_perform_async(job_ids)
 
         logger.info("Scheduled #{job_ids.count} jobs. From #{job_ids.min} to #{job_ids.max}")
       end

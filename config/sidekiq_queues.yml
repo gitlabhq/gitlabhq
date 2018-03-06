@@ -69,4 +69,4 @@
   - [storage_migrator, 1]
   - [pages_domain_verification, 1]
   - [plugin, 1]
-  - [object_storage, 1]
+  - [pipeline_background, 1]

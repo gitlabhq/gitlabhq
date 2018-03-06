@@ -1,6 +1,6 @@
-class ArchiveLegacyTraceWorker
+class ArchiveTraceWorker
   include ApplicationWorker
-  include ObjectStorageQueue
+  include PipelineBackgroundQueue
 
   def perform(job_id)
     Ci::Build.find_by(id: job_id).try do |job|
