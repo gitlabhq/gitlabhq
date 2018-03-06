@@ -1,6 +1,8 @@
 module Gitlab
   module Verify
     class JobArtifacts < BatchVerifier
+      prepend ::EE::Gitlab::Verify::JobArtifacts
+
       def name
         'Job artifacts'
       end
