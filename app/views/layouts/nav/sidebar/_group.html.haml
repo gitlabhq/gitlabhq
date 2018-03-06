@@ -1,9 +1,6 @@
 - issues_count = group_issues_count(state: 'opened')
 - merge_requests_count = group_merge_requests_count(state: 'opened')
-- issues_sub_menu_items = ['groups#issues', 'labels#index', 'milestones#index']
-
-- if @group.feature_available?(:group_issue_boards)
-  - issues_sub_menu_items.push('boards#index', 'boards#show')
+- issues_sub_menu_items = ['groups#issues', 'labels#index', 'milestones#index', 'boards#index', 'boards#show']
 
 .nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?) }
   .nav-sidebar-inner-scroll
@@ -62,6 +59,7 @@
                 %strong.fly-out-top-item-name
                   #{ _('Issues') }
                 %span.badge.count.issue_counter.fly-out-badge= number_with_delimiter(issues_count)
+
             %li.divider.fly-out-top-item
             = nav_link(path: 'groups#issues', html_options: { class: 'home' }) do
               = link_to issues_group_path(@group), title: 'List' do
@@ -70,9 +68,9 @@
 
             - if group_sidebar_link?(:boards)
               = nav_link(path: ['boards#index', 'boards#show']) do
-                = link_to group_boards_path(@group), title: 'Boards' do
+                = link_to group_boards_path(@group), title: boards_link_text do
                   %span
-                    Boards
+                    = boards_link_text
 
             - if group_sidebar_link?(:labels)
               = nav_link(path: 'labels#index') do

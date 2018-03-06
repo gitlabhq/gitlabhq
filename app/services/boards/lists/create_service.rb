@@ -1,8 +1,6 @@
 module Boards
   module Lists
     class CreateService < Boards::BaseService
-      prepend EE::Boards::Lists::CreateService
-
       def execute(board)
         List.transaction do
           label    = available_labels_for(board).find(params[:label_id])
@@ -14,7 +12,11 @@ module Boards
       private
 
       def available_labels_for(board)
-        LabelsFinder.new(current_user, project_id: parent.id).execute
+        if board.group_board?
+          parent.labels
+        else
+          LabelsFinder.new(current_user, project_id: parent.id).execute
+        end
       end
 
       def next_position(board)

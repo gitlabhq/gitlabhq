@@ -28,7 +28,7 @@
         - if can?(current_user, :admin_board, parent)
           .dropdown-footer
             %ul.dropdown-footer-list
-              - if parent.feature_available?(:multiple_issue_boards)
+              - if parent.multiple_issue_boards_available?
                 %li
                   %a{ "href" => "#", "v-on:click.prevent" => "showPage('new')" }
                     Create new board

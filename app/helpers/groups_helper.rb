@@ -137,7 +137,7 @@ module GroupsHelper
     links = [:overview, :group_members]
 
     if can?(current_user, :read_cross_project)
-      links += [:activity, :issues, :labels, :milestones, :merge_requests]
+      links += [:activity, :issues, :boards, :labels, :milestones, :merge_requests]
     end
 
     if can?(current_user, :admin_group, @group)

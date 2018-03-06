@@ -36,14 +36,19 @@ describe API::GroupBoards do
   set(:milestone) { create(:milestone, group: board_parent) }
   set(:board_label) { create(:group_label, group: board_parent) }
 
-  set(:board) do
-    create(:board, group: board_parent,
-                   milestone: milestone,
-                   assignee: user,
-                   label_ids: [board_label.id],
-                   lists: [dev_list, test_list])
-  end
+  set(:board) { create(:board, group: board_parent, lists: [dev_list, test_list]) }
 
-  it_behaves_like 'group and project boards', "/groups/:id/boards", true
-  it_behaves_like 'multiple and scoped issue boards', "/groups/:id/boards"
+  it_behaves_like 'group and project boards', "/groups/:id/boards", false
+
+  describe 'POST /groups/:id/boards/lists' do
+    let(:url) { "/groups/#{board_parent.id}/boards/#{board.id}/lists" }
+
+    it 'does not create lists for child project labels' do
+      project_label = create(:label, project: project)
+
+      post api(url, user), label_id: project_label.id
+
+      expect(response).to have_gitlab_http_status(400)
+    end
+  end
 end
