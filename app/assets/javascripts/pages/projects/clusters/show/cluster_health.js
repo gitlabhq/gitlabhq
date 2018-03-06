@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Dashboard from '~/monitoring/components/dashboard.vue';
 
 export default () => {
-  const el = document.querySelector('#prometheus-graphs');
+  const el = document.getElementById('prometheus-graphs');
 
   if (el && el.dataset) {
     // eslint-disable-next-line no-new
