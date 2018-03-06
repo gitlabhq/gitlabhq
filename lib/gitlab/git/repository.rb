@@ -228,7 +228,7 @@ module Gitlab
       end
 
       def has_local_branches?
-        gitaly_migrate(:has_local_branches) do |is_enabled|
+        gitaly_migrate(:has_local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_repository_client.has_local_branches?
           else
