@@ -19,13 +19,15 @@ The one responsible for writing the first piece of documentation is the develope
 wrote the code. It's the job of the Product Manager to ensure all features are
 shipped with its docs, whether is a small or big change. At the pace GitLab evolves,
 this is the only way to keep the docs up-to-date. If you have any questions about it,
-please ask a Technical Writer. Otherwise, when your content is ready, assign one of
+ask a Technical Writer. Otherwise, when your content is ready, assign one of
 them to review it for you.
 
 We use the [monthly release blog post](https://about.gitlab.com/handbook/marketing/blog/release-posts/#monthly-releases) as a changelog checklist to ensure everything
 is documented.
 
 Whenever you submit a merge request for the documentation, use the documentation MR description template.
+
+Please check the [documentation workflow](https://about.gitlab.com/handbook/product/technical-writing/workflow/) before getting started.
 
 ### Documentation directory structure
 
@@ -40,7 +42,7 @@ all docs should be linked. Every new document should be cross-linked to its rela
 
 The directories `/workflow/`, `/gitlab-basics/`, `/university/`, and `/articles/` have
 been deprecated and the majority their docs have been moved to their correct location
-in small iterations. Please don't create new docs in these folders.
+in small iterations. Don't create new docs in these folders.
 
 To move a document from its location to another directory, read the section
 [changing document location](doc_styleguide.md#changing-document-location) of the doc style guide.
@@ -115,6 +117,49 @@ choices:
 
 If your branch name matches any of the above, it will run only the docs
 tests. If it doesn't, the whole test suite will run (including docs).
+
+### Merge requests for GitLab documentation
+
+Before getting started, make sure you read the introductory section
+"[contributing to docs](#contributing-to-docs)" above and the
+[tech writing workflow](https://about.gitlab.com/handbook/product/technical-writing/workflow/)
+for GitLab Team members.
+
+- Use the current [merge request description template](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab/merge_request_templates/Documentation.md)
+- Use the correct [branch name](#branch-naming)
+- Label the MR `Documentation`
+- Assign the correct milestone (see note below)
+
+
+NOTE: **Note:**
+If the release version you want to add the documentation to has already been
+frozen or released, use the label `Pick into X.Y` to get it merged into
+the correct release. Avoid picking into a past release as much as you can, as
+it increases the work of the release managers.
+
+#### Cherry-picking from CE to EE
+
+As we have the `master` branch of CE merged into EE once a day, it's common to
+run into merge conflicts. To avoid them, we [test for merge conflicts against EE](#testing)
+with the `ee-compat-check` job, and use the following method of creating equivalent
+branches for CE and EE.
+
+Follow this [method for cherry-picking from CE to EE](automatic_ce_ee_merge.md#cherry-picking-from-ce-to-ee), with a few adjustments:
+
+- Create the [CE branch](#branch-naming) starting with `docs-`,
+  e.g.: `git checkout -b docs-example`
+- Create the EE-equivalent branch ending with `-ee`, e.g.,
+  `git checkout -b docs-example-ee`
+- Once all the jobs are passing in CE and EE, and you've addressed the
+feedback from your own team, assign the CE MR to a technical writer for review
+- When both MRs are ready, the EE merge request will be merged first, and the
+CE-equivalent will be merged next.
+- Note that the review will occur only in the CE MR, as the EE MR
+contains the same commits as the CE MR.
+- If you have a few more changes that apply to the EE-version only, you can submit
+a couple more commits to the EE branch, but ask the reviewer to review the EE merge request
+additionally to the CE MR. If there are many EE-only changes though, start a new MR
+to EE only.
 
 ### Previewing the changes live
 
