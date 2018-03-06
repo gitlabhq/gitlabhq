@@ -150,6 +150,8 @@ module API
     mount ::API::PagesDomains
     mount ::API::Pipelines
     mount ::API::PipelineSchedules
+    mount ::API::ProjectExport
+    mount ::API::ProjectImport
     mount ::API::ProjectHooks
     mount ::API::Projects
     mount ::API::ProjectMilestones
@@ -185,7 +187,6 @@ module API
     mount ::API::Ldap
     mount ::API::LdapGroupLinks
     mount ::API::License
-    mount ::API::ProjectImport
     mount ::API::ProjectPushRule
     mount ::EE::API::Boards
     ## EE-specific API V4 endpoints END
