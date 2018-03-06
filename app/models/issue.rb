@@ -1,7 +1,7 @@
 require 'carrierwave/orm/activerecord'
 
 class Issue < ActiveRecord::Base
-  include InternalId
+  include NonatomicInternalId
   include Issuable
   include Noteable
   include Referable

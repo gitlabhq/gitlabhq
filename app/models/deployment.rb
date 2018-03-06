@@ -1,5 +1,5 @@
 class Deployment < ActiveRecord::Base
-  include InternalId
+  include NonatomicInternalId
 
   belongs_to :project, required: true
   belongs_to :environment, required: true
