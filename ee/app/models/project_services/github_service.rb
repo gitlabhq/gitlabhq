@@ -2,12 +2,10 @@ class GithubService < Service
   include Gitlab::Routing
   include ActionView::Helpers::UrlHelper
 
-  prop_accessor :token, :api_url, :owner, :repository_name
+  prop_accessor :token, :repository_url
 
   validates :token, presence: true, if: :activated?
-  validates :api_url, url: true, allow_blank: true
-  validates :owner, presence: true, if: :activated?
-  validates :repository_name, presence: true, if: :activated?
+  validates :repository_url, url: true, allow_blank: true
 
   default_value_for :pipeline_events, true
 
@@ -32,9 +30,7 @@ class GithubService < Service
   def fields
     [
       { type: 'text', name: "token", required: true, placeholder: "e.g. 8d3f016698e...", help: 'Create a <a href="https://github.com/settings/tokens">personal access token</a> with  <code>repo:status</code> access granted and paste it here.'.html_safe },
-      { type: 'text', name: "owner", required: true, help: 'The username or organization where the GitHub repository belongs. This can be found in the repository URL: https://github.com/<strong>owner</strong>/repository'.html_safe },
-      { type: 'text', name: "repository_name", required: true, help: 'This can be found in the repository URL: https://github.com/owner/<strong>repository</strong>'.html_safe },
-      { type: 'text', name: "api_url", placeholder: "https://api.github.com", help: 'Leave blank when using GitHub.com or use <code>https://YOUR-HOSTNAME/api/v3/</code> for GitHub Enterprise'.html_safe }
+      { type: 'text', name: "repository_url", title: 'Repository URL', required: true, placeholder: 'e.g. https://github.com/owner/repository' }
     ]
   end
 
@@ -80,7 +76,31 @@ class GithubService < Service
     { success: true, result: result }
   end
 
+  def api_url
+    if github_host == 'github.com'
+      'https://api.github.com'
+    else
+      "#{repository_uri.scheme}://#{github_host}/api/v3"
+    end
+  end
+
+  def owner
+    repository_uri.path.split('/')[1]
+  end
+
+  def repository_name
+    repository_uri.path.split('/')[2]
+  end
+
   private
+
+  def github_host
+    repository_uri.host
+  end
+
+  def repository_uri
+    URI.parse(repository_url)
+  end
 
   def disabled?
     project.disabled_services.include?(to_param)

@@ -4,7 +4,8 @@ module EE
       :jenkins_url,
       :multiproject_enabled,
       :pass_unstable,
-      :project_name
+      :project_name,
+      :repository_url
     ].freeze
 
     def allowed_service_params

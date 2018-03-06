@@ -4,19 +4,18 @@ describe GithubService do
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:pipeline_sample_data) { Gitlab::DataBuilder::Pipeline.build(pipeline) }
-  let(:api_url) { '' }
   let(:owner) { 'my-user' }
   let(:token) { 'aaaaaaaaa' }
   let(:repository_name) { 'my-project' }
+  let(:base_url) { 'https://github.com' }
+  let(:repository_url) { "#{base_url}/#{owner}/#{repository_name}" }
   let(:service_params) do
     {
       active: true,
       project: project,
       properties: {
         token: token,
-        api_url: api_url,
-        owner: owner,
-        repository_name: repository_name
+        repository_url: repository_url
       }
     }
   end
@@ -138,6 +137,10 @@ describe GithubService do
 
     context 'with custom api endpoint' do
       let(:api_url) { 'https://my.code.repo' }
+
+      before do
+        allow(subject).to receive(:api_url).and_return(api_url)
+      end
 
       it 'hands custom api url to StatusNotifier' do
         allow(notifier).to receive(:notify)

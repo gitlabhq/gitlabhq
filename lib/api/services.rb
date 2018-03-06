@@ -681,22 +681,10 @@ module API
           desc: 'GitHub API token with repo:status OAuth scope'
         },
         {
-          required: false,
-          name: :api_url,
-          type: String,
-          desc: 'GitHub instance API URL, defaults to https://api.github.com'
-        },
-        {
           required: true,
-          name: :owner,
+          name: :repository_url,
           type: String,
-          desc: 'Owner or organization of the GitHub repo'
-        },
-        {
-          required: true,
-          name: :repository_name,
-          type: String,
-          desc: "GitHub repository name"
+          desc: "GitHub repository URL"
         }
       ],
       'jenkins' => [

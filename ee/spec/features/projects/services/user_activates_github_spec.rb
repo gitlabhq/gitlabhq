@@ -36,18 +36,10 @@ describe 'User activates GitHub Service' do
     def fill_in_details
       check('Active')
       fill_in "Token", with: "aaaaaaaaaa"
-      fill_in "Owner", with: "h5bp"
-      fill_in "Repository name", with: "html5-boilerplate"
+      fill_in "Repository URL", with: 'https://github.com/h5bp/html5-boilerplate'
     end
 
     it 'activates service' do
-      click_button('Save')
-
-      expect(page).to have_content('GitHub activated.')
-    end
-
-    it 'allows API URL to be set' do
-      fill_in "Api url", with: "https://api.github.com"
       click_button('Save')
 
       expect(page).to have_content('GitHub activated.')
