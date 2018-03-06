@@ -139,7 +139,7 @@ class MergeRequestWidgetEntity < IssuableEntity
 
   expose :new_blob_path do |merge_request|
     if presenter(merge_request).can_push_to_source_branch?
-      project_new_blob_path(merge_request.project, merge_request.source_branch)
+      project_new_blob_path(merge_request.source_project, merge_request.source_branch)
     end
   end
 
