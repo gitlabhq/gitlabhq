@@ -1439,7 +1439,6 @@ Read more in the [Project import/export](project_import_export.md) documentation
 
 Read more in the [Project members](members.md) documentation.
 
-<<<<<<< HEAD
 ## Start the pull mirroring process for a Project
 
 > Introduced in GitLab 10.3. **Note:** Available in [GitLab Starter](https://about.gitlab.com/products).
@@ -1452,8 +1451,6 @@ POST /projects/:id/mirror/pull
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
-=======
->>>>>>> upstream/master
 ## Project badges
 
 Read more in the [Project Badges](project_badges.md) documentation.
