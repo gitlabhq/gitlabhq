@@ -89,12 +89,17 @@ export const updateFilesAfterCommit = (
       lastCommit,
     }, { root: true });
 
+    eventHub.$emit(`editor.update.model.content.${entry.path}`, entry.content);
+
     commit(rootTypes.SET_FILE_RAW_DATA, {
       file: entry,
       raw: entry.content,
     }, { root: true });
 
-    eventHub.$emit(`editor.update.model.content.${entry.path}`, entry.raw);
+    commit(rootTypes.TOGGLE_FILE_CHANGED, {
+      file: entry,
+      changed: false,
+    }, { root: true });
   });
 
   commit(rootTypes.REMOVE_ALL_CHANGES_FILES, null, { root: true });
