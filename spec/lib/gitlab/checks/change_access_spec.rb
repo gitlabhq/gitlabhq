@@ -168,7 +168,7 @@ describe Gitlab::Checks::ChangeAccess do
       let(:blob_object) { project.repository.blob_at_branch('lfs', 'files/lfs/lfs_object.iso') }
 
       before do
-        allow_any_instance_of(Gitlab::Git::LfsChanges).to receive(:new_pointers) do |&lazy_block|
+        allow_any_instance_of(Gitlab::Git::LfsChanges).to receive(:new_pointers) do
           [blob_object]
         end
       end
