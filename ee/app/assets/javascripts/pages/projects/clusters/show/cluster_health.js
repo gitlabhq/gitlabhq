@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import Dashboard from './components/dashboard.vue';
+import Dashboard from '~/monitoring/components/dashboard.vue';
 
 export default () => {
   const el = document.getElementById('prometheus-graphs');
@@ -10,7 +10,12 @@ export default () => {
       el,
       render(createElement) {
         return createElement(Dashboard, {
-          props: el.dataset,
+          props: {
+            ...el.dataset,
+            showLegend: false,
+            showPanels: false,
+            forceSmallGraph: true,
+          },
         });
       },
     });

@@ -10,31 +10,79 @@
   import { convertPermissionToBoolean } from '../../lib/utils/common_utils';
 
   export default {
-
     components: {
       Graph,
       GraphGroup,
       EmptyState,
     },
 
-    data() {
-      const metricsData = document.querySelector('#prometheus-graphs').dataset;
-      const store = new MonitoringStore();
+    props: {
+      hasMetrics: {
+        type: String,
+        required: true,
+      },
+      showLegend: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
+      showPanels: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
+      forceSmallGraph: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+      documentationPath: {
+        type: String,
+        required: true,
+      },
+      settingsPath: {
+        type: String,
+        required: true,
+      },
+      clustersPath: {
+        type: String,
+        required: true,
+      },
+      tagsPath: {
+        type: String,
+        required: true,
+      },
+      projectPath: {
+        type: String,
+        required: true,
+      },
+      metricsEndpoint: {
+        type: String,
+        required: true,
+      },
+      deploymentEndpoint: {
+        type: String,
+        required: false,
+        default: null,
+      },
+      emptyGettingStartedSvgPath: {
+        type: String,
+        required: true,
+      },
+      emptyLoadingSvgPath: {
+        type: String,
+        required: true,
+      },
+      emptyUnableToConnectSvgPath: {
+        type: String,
+        required: true,
+      },
+    },
 
+    data() {
       return {
-        store,
+        store: new MonitoringStore(),
         state: 'gettingStarted',
-        hasMetrics: convertPermissionToBoolean(metricsData.hasMetrics),
-        documentationPath: metricsData.documentationPath,
-        settingsPath: metricsData.settingsPath,
-        clustersPath: metricsData.clustersPath,
-        tagsPath: metricsData.tagsPath,
-        projectPath: metricsData.projectPath,
-        metricsEndpoint: metricsData.additionalMetrics,
-        deploymentEndpoint: metricsData.deploymentEndpoint,
-        emptyGettingStartedSvgPath: metricsData.emptyGettingStartedSvgPath,
-        emptyLoadingSvgPath: metricsData.emptyLoadingSvgPath,
-        emptyUnableToConnectSvgPath: metricsData.emptyUnableToConnectSvgPath,
         showEmptyState: true,
         updateAspectRatio: false,
         updatedAspectRatios: 0,
@@ -60,13 +108,14 @@
 
     mounted() {
       this.resizeThrottled = _.throttle(this.resize, 600);
-      if (!this.hasMetrics) {
+      if (!convertPermissionToBoolean(this.hasMetrics)) {
         this.state = 'gettingStarted';
       } else {
         this.getGraphsData();
         window.addEventListener('resize', this.resizeThrottled, false);
       }
     },
+
     methods: {
       getGraphsData() {
         this.state = 'loading';
@@ -115,6 +164,7 @@
       v-for="(groupData, index) in store.groups"
       :key="index"
       :name="groupData.group"
+      :show-panels="showPanels"
     >
       <graph
         v-for="(graphData, index) in groupData.metrics"
@@ -125,6 +175,8 @@
         :deployment-data="store.deploymentData"
         :project-path="projectPath"
         :tags-path="tagsPath"
+        :show-legend="showLegend"
+        :small-graph="forceSmallGraph"
       />
     </graph-group>
   </div>
