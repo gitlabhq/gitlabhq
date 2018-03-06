@@ -254,7 +254,6 @@ ActiveRecord::Schema.define(version: 20180304204842) do
   add_index "badges", ["group_id"], name: "index_badges_on_group_id", using: :btree
   add_index "badges", ["project_id"], name: "index_badges_on_project_id", using: :btree
 
-<<<<<<< HEAD
   create_table "board_assignees", force: :cascade do |t|
     t.integer "board_id", null: false
     t.integer "assignee_id", null: false
@@ -269,8 +268,6 @@ ActiveRecord::Schema.define(version: 20180304204842) do
 
   add_index "board_labels", ["board_id", "label_id"], name: "index_board_labels_on_board_id_and_label_id", unique: true, using: :btree
 
-=======
->>>>>>> upstream/master
   create_table "boards", force: :cascade do |t|
     t.integer "project_id"
     t.datetime "created_at", null: false
@@ -2515,7 +2512,6 @@ ActiveRecord::Schema.define(version: 20180304204842) do
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
   add_index "web_hooks", ["type"], name: "index_web_hooks_on_type", using: :btree
 
-<<<<<<< HEAD
   add_foreign_key "approvals", "merge_requests", name: "fk_310d714958", on_delete: :cascade
   add_foreign_key "approver_groups", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "badges", "namespaces", column: "group_id", on_delete: :cascade
@@ -2525,10 +2521,6 @@ ActiveRecord::Schema.define(version: 20180304204842) do
   add_foreign_key "board_labels", "boards", on_delete: :cascade
   add_foreign_key "board_labels", "labels", on_delete: :cascade
   add_foreign_key "boards", "namespaces", column: "group_id", name: "fk_1e9a074a35", on_delete: :cascade
-=======
-  add_foreign_key "badges", "namespaces", column: "group_id", on_delete: :cascade
-  add_foreign_key "badges", "projects", on_delete: :cascade
->>>>>>> upstream/master
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
   add_foreign_key "ci_build_trace_section_names", "projects", on_delete: :cascade
