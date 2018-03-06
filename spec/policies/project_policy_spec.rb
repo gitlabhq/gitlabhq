@@ -323,7 +323,7 @@ describe ProjectPolicy do
       )
     end
     let(:maintainer_abilities) do
-      %w(push_single_branch create_build update_build create_pipeline update_pipeline)
+      %w(create_build update_build create_pipeline update_pipeline)
     end
 
     subject { described_class.new(user, project) }

@@ -70,10 +70,8 @@ module Gitlab
         protected_branch_accessible_to?(ref, action: :push)
       elsif user.can?(:push_code, project)
         true
-      elsif user.can?(:push_single_branch, project)
-        project.branches_allowing_maintainer_access_to_user(user).include?(ref)
       else
-        false
+        project.branch_allows_maintainer_push?(user, ref)
       end
     end
 

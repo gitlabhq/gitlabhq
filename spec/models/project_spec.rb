@@ -3381,8 +3381,8 @@ describe Project do
     end
   end
 
-  describe '#branches_allowing_maintainer_access_to_user' do
-    let(:maintainer) { create(:user) }
+  context 'with cross project merge requests' do
+    let(:user) { create(:user) }
     let(:target_project) { create(:project) }
     let(:project) { fork_project(target_project) }
     let!(:merge_request) do
@@ -3396,37 +3396,76 @@ describe Project do
     end
 
     before do
-      target_project.add_developer(maintainer)
+      target_project.add_developer(user)
     end
 
-    it 'includes branch names for merge requests allowing maintainer access to a user' do
-      expect(project.branches_allowing_maintainer_access_to_user(maintainer))
-        .to include('awesome-feature-1')
+    describe '#merge_requests_allowing_push_to_user' do
+      it 'returns open merge requests for which the user has developer access to the target project' do
+        expect(project.merge_requests_allowing_push_to_user(user)).to include(merge_request)
+      end
+
+      it 'does not include closed merge requests' do
+        merge_request.close
+
+        expect(project.merge_requests_allowing_push_to_user(user)).to be_empty
+      end
+
+      it 'does not include merge requests for guest users' do
+        guest = create(:user)
+        target_project.add_guest(guest)
+
+        expect(project.merge_requests_allowing_push_to_user(guest)).to be_empty
+      end
+
+      it 'does not include the merge request for other users' do
+        other_user = create(:user)
+
+        expect(project.merge_requests_allowing_push_to_user(other_user)).to be_empty
+      end
+
+      it 'is empty when no user is passed' do
+        expect(project.merge_requests_allowing_push_to_user(nil)).to be_empty
+      end
     end
 
-    it 'does not include branches for closed MRs' do
-      create(:merge_request, :closed,
-             target_project: target_project,
-             source_project: project,
-             source_branch: 'rejected-feature-1',
-             allow_maintainer_to_push: true)
+    describe '#branch_allows_maintainer_push?' do
+      it 'includes branch names for merge requests allowing maintainer access to a user' do
+        expect(project.branch_allows_maintainer_push?(user, 'awesome-feature-1'))
+          .to be_truthy
+      end
 
-      expect(project.branches_allowing_maintainer_access_to_user(maintainer))
-        .not_to include('rejected-feature-1')
-    end
+      it 'does not allow guest users access' do
+        guest = create(:user)
+        target_project.add_guest(guest)
 
-    it 'only queries once per user' do
-      expect { 3.times { project.branches_allowing_maintainer_access_to_user(maintainer) } }
-        .not_to exceed_query_limit(1)
-    end
+        expect(project.branch_allows_maintainer_push?(guest, 'awesome-feature-1'))
+          .to be_falsy
+      end
 
-    context 'when the requeststore is active', :request_store do
-      it 'only queries once per user accross project instances' do
-        # limiting to 3 queries:
-        # 2 times loading the project
-        # once loading the accessible branches
-        expect { 2.times { described_class.find(project.id).branches_allowing_maintainer_access_to_user(maintainer) } }
-          .not_to exceed_query_limit(3)
+      it 'does not include branches for closed MRs' do
+        create(:merge_request, :closed,
+               target_project: target_project,
+               source_project: project,
+               source_branch: 'rejected-feature-1',
+               allow_maintainer_to_push: true)
+
+        expect(project.branch_allows_maintainer_push?(user, 'rejected-feature-1'))
+          .to be_falsy
+      end
+
+      it 'only queries once per user' do
+        expect { 3.times { project.branch_allows_maintainer_push?(user, 'awesome-feature-1') } }
+          .not_to exceed_query_limit(1)
+      end
+
+      context 'when the requeststore is active', :request_store do
+        it 'only queries once per user accross project instances' do
+          # limiting to 3 queries:
+          # 2 times loading the project
+          # once loading the accessible branches
+          expect { 2.times { described_class.find(project.id).branch_allows_maintainer_push?(user, 'awesome-feature-1') } }
+            .not_to exceed_query_limit(3)
+        end
       end
     end
   end

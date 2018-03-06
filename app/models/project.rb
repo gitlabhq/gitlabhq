@@ -1800,12 +1800,31 @@ class Project < ActiveRecord::Base
     Badge.where("id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
   end
 
-  def branches_allowing_maintainer_access_to_user(user)
-    @branches_allowing_maintainer_access_to_user ||= Hash.new do |result, user|
-      result[user] = fetch_branches_allowing_maintainer_access_to_user(user)
+  def merge_requests_allowing_push_to_user(user)
+    return MergeRequest.none unless user
+
+    developer_access_exists = user.project_authorizations
+                                .where('access_level >= ? ', Gitlab::Access::DEVELOPER)
+                                .where('project_authorizations.project_id = merge_requests.target_project_id')
+                                .limit(1)
+                                .select(1)
+    source_of_merge_requests.opened
+      .where(allow_maintainer_to_push: true)
+      .where('EXISTS (?)', developer_access_exists)
+  end
+
+  def branch_allows_maintainer_push?(user, branch_name)
+    return false unless user
+
+    cache_key = "user:#{user.id}:#{branch_name}:branch_allows_push"
+
+    memoized_results = strong_memoize(:branch_allows_maintainer_push) do
+      Hash.new do |result, cache_key|
+        result[cache_key] = fetch_branch_allows_maintainer_push?(user, branch_name)
+      end
     end
 
-    @branches_allowing_maintainer_access_to_user[user]
+    memoized_results[cache_key]
   end
 
   private
@@ -1931,23 +1950,13 @@ class Project < ActiveRecord::Base
     raise ex
   end
 
-  def fetch_branches_allowing_maintainer_access_to_user(user)
-    return [] unless user
-
-    projects_with_developer_access = user.project_authorizations
-                                       .where('access_level >= ? ', Gitlab::Access::DEVELOPER)
-                                       .select(:project_id)
-    merge_requests_allowing_push = source_of_merge_requests.opened
-                                     .where(allow_maintainer_to_push: true)
-                                     .where(target_project_id: projects_with_developer_access)
-                                     .select(:source_branch).uniq
-
+  def fetch_branch_allows_maintainer_push?(user, branch_name)
     if RequestStore.active?
-      RequestStore.fetch("project-#{id}:user-#{user.id}:branches_allowing_maintainer_access") do
-        merge_requests_allowing_push.pluck(:source_branch)
+      RequestStore.fetch("project-#{id}:branch-#{branch_name}:user-#{user.id}:branch_allows_maintainer_push") do
+        merge_requests_allowing_push_to_user(user).where(source_branch: branch_name).any?
       end
     else
-      merge_requests_allowing_push.pluck(:source_branch)
+      merge_requests_allowing_push_to_user(user).where(source_branch: branch_name).any?
     end
   end
 end

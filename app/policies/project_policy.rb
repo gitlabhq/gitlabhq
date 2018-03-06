@@ -61,9 +61,9 @@ class ProjectPolicy < BasePolicy
   desc "Project has request access enabled"
   condition(:request_access_enabled, scope: :subject) { project.request_access_enabled }
 
-  desc "The project has merge requests open that allow external users to push"
-  condition(:merge_request_allows_push, scope: :subject) do
-    project.branches_allowing_maintainer_access_to_user(@user).any?
+  desc "Has merge requests allowing pushes to user"
+  condition(:has_merge_requests_allowing_pushes, scope: :subject) do
+    project.merge_requests_allowing_push_to_user(user).any?
   end
 
   features = %w[
@@ -245,7 +245,6 @@ class ProjectPolicy < BasePolicy
 
   rule { repository_disabled }.policy do
     prevent :push_code
-    prevent :push_single_branch
     prevent :download_code
     prevent :fork_project
     prevent :read_commit_status
@@ -298,20 +297,13 @@ class ProjectPolicy < BasePolicy
   end
 
   # These rules are included to allow maintainers of projects to push to certain
-  # branches of forks.
-  rule { can?(:public_access) & merge_request_allows_push }.policy do
-    enable :push_single_branch
+  # to run pipelines for the branches they have access to.
+  rule { can?(:public_access) & has_merge_requests_allowing_pushes }.policy do
     enable :create_build
     enable :update_build
     enable :create_pipeline
     enable :update_pipeline
   end
-
-  # A wrapper around `push_code` and `push_single_branch` to avoid several
-  # `push_code`: User can push everything to the repo
-  # `push_single_brach`: User can push to a single branch in the repo
-  # `push_to_repo`: User can push something to this repo.
-  rule { can?(:push_code) | can?(:push_single_branch) }.enable :push_to_repo
 
   private
 

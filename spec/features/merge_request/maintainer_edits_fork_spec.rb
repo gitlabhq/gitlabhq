@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'a maintainer edits files on a source-branch of an MR from a fork', :js do
   include ProjectForksHelper
-  let(:user) { create(:user) }
+  let(:user) { create(:user, username: 'the-maintainer') }
   let(:target_project) { create(:project, :public, :repository) }
   let(:author) { create(:user, username: 'mr-authoring-machine') }
   let(:source_project) { fork_project(target_project, author, repository: true) }
