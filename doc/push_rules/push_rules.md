@@ -152,6 +152,6 @@ bash_history
 [protected-branches]: ../user/project/protected_branches.md
 [signing-commits]: ../user/project/repository/gpg_signed_commits/index.md
 [ee-385]: https://gitlab.com/gitlab-org/gitlab-ee/issues/385
-[list]: https://gitlab.com/gitlab-org/gitlab-ee/blob/master/lib/gitlab/checks/files_blacklist.yml
+[list]: https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/gitlab/checks/files_blacklist.yml
 [hooks]: https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks
 [ee]: https://about.gitlab.com/products/
