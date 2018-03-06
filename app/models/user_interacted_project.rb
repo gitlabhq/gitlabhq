@@ -30,9 +30,9 @@ class UserInteractedProject < ActiveRecord::Base
           rescue ActiveRecord::RecordNotUnique
             # Note, above queries are not atomic and prone
             # to race conditions (similar like #find_or_create!).
-            # We retry and make sure the outer transaction (if any)
-            # is not aborted because of this.
-            retry
+            # In the case where we hit this, the record we want
+            # already exists - shortcut and return.
+            true
           end
         end
       end
