@@ -4,6 +4,7 @@ require 'rubygems'
 require 'bundler'
 
 gitaly_dir = 'tmp/tests/gitaly'
+gitaly_ruby_gemfile_path = File.expand_path(File.join('..', gitaly_dir, 'ruby', 'Gemfile'), __dir__)
 gitaly_ruby_bundle_path = File.expand_path(File.join('..', gitaly_dir, 'ruby', 'vendor', 'ruby', '2.3.0'), __dir__)
 
 puts "Gem.path: #{Gem.path.inspect}"
@@ -39,6 +40,7 @@ env = {
   'HOME' => File.expand_path('tmp/tests'),
   # 'GEM_PATH' => gitaly_ruby_gem_path,
   'GEM_PATH' => Gem.path.join(':'),
+  'BUNDLE_GEMFILE' => gitaly_ruby_gemfile_path,
   'BUNDLE_PATH' => gitaly_ruby_bundle_path
 }
 
