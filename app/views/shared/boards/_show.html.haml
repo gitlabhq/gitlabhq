@@ -7,7 +7,6 @@
 - page_title "Boards"
 
 - content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'common_vue'
 
   -# haml-lint:disable InlineJavaScript
   %script#js-board-template{ type: "text/x-template" }= render "shared/boards/components/board"

@@ -915,20 +915,20 @@ class Repository
     raw_repository.ancestor?(ancestor_id, descendant_id)
   end
 
-  def fetch_as_mirror(url, forced: false, refmap: :all_refs, remote_name: nil)
+  def fetch_as_mirror(url, forced: false, refmap: :all_refs, remote_name: nil, prune: true)
     unless remote_name
       remote_name = "tmp-#{SecureRandom.hex}"
       tmp_remote_name = true
     end
 
     add_remote(remote_name, url, mirror_refmap: refmap)
-    fetch_remote(remote_name, forced: forced)
+    fetch_remote(remote_name, forced: forced, prune: prune)
   ensure
     async_remove_remote(remote_name) if tmp_remote_name
   end
 
-  def fetch_remote(remote, forced: false, ssh_auth: nil, no_tags: false)
-    gitlab_shell.fetch_remote(raw_repository, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
+  def fetch_remote(remote, forced: false, ssh_auth: nil, no_tags: false, prune: true)
+    gitlab_shell.fetch_remote(raw_repository, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, prune: prune)
   end
 
   def async_remove_remote(remote_name)

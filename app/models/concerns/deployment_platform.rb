@@ -1,4 +1,5 @@
 module DeploymentPlatform
+  # EE would override this and utilize the extra argument
   def deployment_platform(environment: nil)
     @deployment_platform ||=
       find_cluster_platform_kubernetes ||

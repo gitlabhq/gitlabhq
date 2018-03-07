@@ -137,10 +137,6 @@ class Environment < ActiveRecord::Base
     end
   end
 
-  def deployment_platform
-    project.deployment_platform(environment: self)
-  end
-
   def has_terminals?
     deployment_platform.present? && available? && last_deployment.present?
   end
@@ -230,6 +226,10 @@ class Environment < ActiveRecord::Base
 
   def folder_name
     self.environment_type || self.name
+  end
+
+  def deployment_platform
+    project.deployment_platform(environment: self)
   end
 
   private
