@@ -3,6 +3,7 @@ module Ci
     attr_reader :pipeline
 
     SEQUENCE = [Gitlab::Ci::Pipeline::Chain::Build,
+                EE::Gitlab::Ci::Pipeline::Chain::RemoveUnwantedChatJobs,
                 Gitlab::Ci::Pipeline::Chain::Validate::Abilities,
                 Gitlab::Ci::Pipeline::Chain::Validate::Repository,
                 Gitlab::Ci::Pipeline::Chain::Validate::Config,
@@ -29,7 +30,8 @@ module Ci
         current_user: current_user,
 
         # EE specific
-        allow_mirror_update: mirror_update
+        allow_mirror_update: mirror_update,
+        chat_data: params[:chat_data]
       )
 
       sequence = Gitlab::Ci::Pipeline::Chain::Sequence
