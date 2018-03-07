@@ -22,17 +22,17 @@ class AddPathIndexToRedirectRoutes < ActiveRecord::Migration
 
     disable_statement_timeout
 
-    if_not_exists = Gitlab::Database.version.to_f >= 9.5 ? "IF NOT EXISTS" : ""
-
-    # Unique index on lower(path) across both types of redirect_routes:
-    execute("CREATE UNIQUE INDEX CONCURRENTLY #{if_not_exists} #{INDEX_NAME} ON redirect_routes (lower(path) varchar_pattern_ops);")
+    unless index_exists_by_name?(:redirect_routes, INDEX_NAME)
+      execute("CREATE UNIQUE INDEX CONCURRENTLY #{INDEX_NAME} ON redirect_routes (lower(path) varchar_pattern_ops);")
+    end
   end
 
   def down
-    return unless Gitlab::Database.postgresql?
-
-    disable_statement_timeout
-
-    execute("DROP INDEX IF EXISTS #{INDEX_NAME};")
+    # Do nothing in the DOWN. Since the index above is originally created in the
+    # `ReworkRedirectRoutesIndexes`. This migration wouldn't have actually
+    # created any new index.
+    #
+    # This migration is only here to be called form `setup_postgresql.rake` so
+    # any newly created database would have this index.
   end
 end
