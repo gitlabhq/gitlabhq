@@ -8,6 +8,11 @@ module Gitlab
         rescue Gitlab::PrometheusClient::QueryError => ex
           { valid: false, error: ex.message }
         end
+
+        def self.transform_reactive_result(result)
+          result[:query] = result.delete :data
+          result
+        end
       end
     end
   end

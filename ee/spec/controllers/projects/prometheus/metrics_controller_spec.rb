@@ -4,11 +4,11 @@ describe Projects::Prometheus::MetricsController do
   let(:user) { create(:user) }
   let(:project) { create(:prometheus_project) }
 
-  let(:prometheus_service) { project.prometheus_service }
+  let(:prometheus_adapter) { double('prometheus_adapter', can_query?: true) }
 
   before do
     allow(controller).to receive(:project).and_return(project)
-    allow(controller).to receive(:prometheus_service).and_return(prometheus_service)
+    allow(controller).to receive(:prometheus_adapter).and_return(prometheus_adapter)
 
     project.add_master(user)
     sign_in(user)
@@ -16,7 +16,7 @@ describe Projects::Prometheus::MetricsController do
 
   describe 'POST #validate_query' do
     before do
-      allow(prometheus_service).to receive(:query).with(:validate, query) { validation_result }
+      allow(prometheus_adapter).to receive(:query).with(:validate, query) { validation_result }
     end
 
     let(:query) { 'avg(metric)' }
