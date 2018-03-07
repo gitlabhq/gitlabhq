@@ -401,21 +401,21 @@ describe ObjectStorage do
       end
 
       it "does not return remote store" do
-        is_expected.not_to have_key('RemoteStore')
+        is_expected.not_to have_key('RemoteObject')
       end
     end
 
     shared_examples 'uses remote storage' do
       it "returns remote store" do
-        is_expected.to have_key(:RemoteStore)
+        is_expected.to have_key(:RemoteObject)
 
-        expect(subject[:RemoteStore]).to have_key(:ID)
-        expect(subject[:RemoteStore]).to have_key(:GetURL)
-        expect(subject[:RemoteStore]).to have_key(:DeleteURL)
-        expect(subject[:RemoteStore]).to have_key(:StoreURL)
-        expect(subject[:RemoteStore][:GetURL]).to include(described_class::TMP_UPLOAD_PATH)
-        expect(subject[:RemoteStore][:DeleteURL]).to include(described_class::TMP_UPLOAD_PATH)
-        expect(subject[:RemoteStore][:StoreURL]).to include(described_class::TMP_UPLOAD_PATH)
+        expect(subject[:RemoteObject]).to have_key(:ID)
+        expect(subject[:RemoteObject]).to have_key(:GetURL)
+        expect(subject[:RemoteObject]).to have_key(:DeleteURL)
+        expect(subject[:RemoteObject]).to have_key(:StoreURL)
+        expect(subject[:RemoteObject][:GetURL]).to include(described_class::TMP_UPLOAD_PATH)
+        expect(subject[:RemoteObject][:DeleteURL]).to include(described_class::TMP_UPLOAD_PATH)
+        expect(subject[:RemoteObject][:StoreURL]).to include(described_class::TMP_UPLOAD_PATH)
       end
 
       it "does not return local store" do
@@ -455,9 +455,9 @@ describe ObjectStorage do
             let(:storage_url) { "https://uploads.s3-eu-central-1.amazonaws.com/" }
 
             it 'returns links for S3' do
-              expect(subject[:RemoteStore][:GetURL]).to start_with(storage_url)
-              expect(subject[:RemoteStore][:DeleteURL]).to start_with(storage_url)
-              expect(subject[:RemoteStore][:StoreURL]).to start_with(storage_url)
+              expect(subject[:RemoteObject][:GetURL]).to start_with(storage_url)
+              expect(subject[:RemoteObject][:DeleteURL]).to start_with(storage_url)
+              expect(subject[:RemoteObject][:StoreURL]).to start_with(storage_url)
             end
           end
         end
@@ -475,9 +475,9 @@ describe ObjectStorage do
             let(:storage_url) { "https://storage.googleapis.com/uploads/" }
 
             it 'returns links for Google Cloud' do
-              expect(subject[:RemoteStore][:GetURL]).to start_with(storage_url)
-              expect(subject[:RemoteStore][:DeleteURL]).to start_with(storage_url)
-              expect(subject[:RemoteStore][:StoreURL]).to start_with(storage_url)
+              expect(subject[:RemoteObject][:GetURL]).to start_with(storage_url)
+              expect(subject[:RemoteObject][:DeleteURL]).to start_with(storage_url)
+              expect(subject[:RemoteObject][:StoreURL]).to start_with(storage_url)
             end
           end
         end

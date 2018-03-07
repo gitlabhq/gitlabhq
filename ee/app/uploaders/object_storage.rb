@@ -153,7 +153,7 @@ module ObjectStorage
 
       def workhorse_authorize
         if options = workhorse_remote_upload_options
-          { RemoteStore: options }
+          { RemoteObject: options }
         else
           { TempPath: workhorse_local_upload_path }
         end

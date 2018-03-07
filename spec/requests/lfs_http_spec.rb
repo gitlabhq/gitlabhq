@@ -1008,7 +1008,7 @@ describe 'Git LFS API and storage' do
               it_behaves_like 'a valid response' do
                 it 'responds with status 200, location of lfs store and object details' do
                   expect(json_response['TempPath']).to eq(LfsObjectUploader.workhorse_local_upload_path)
-                  expect(json_response['RemoteStore']).to be_nil
+                  expect(json_response['RemoteObject']).to be_nil
                   expect(json_response['LfsOid']).to eq(sample_oid)
                   expect(json_response['LfsSize']).to eq(sample_size)
                 end
@@ -1028,10 +1028,10 @@ describe 'Git LFS API and storage' do
                 it_behaves_like 'a valid response' do
                   it 'responds with status 200, location of lfs remote store and object details' do
                     expect(json_response['TempPath']).to be_nil
-                    expect(json_response['RemoteStore']).to have_key('ID')
-                    expect(json_response['RemoteStore']).to have_key('GetURL')
-                    expect(json_response['RemoteStore']).to have_key('StoreURL')
-                    expect(json_response['RemoteStore']).to have_key('DeleteURL')
+                    expect(json_response['RemoteObject']).to have_key('ID')
+                    expect(json_response['RemoteObject']).to have_key('GetURL')
+                    expect(json_response['RemoteObject']).to have_key('StoreURL')
+                    expect(json_response['RemoteObject']).to have_key('DeleteURL')
                     expect(json_response['LfsOid']).to eq(sample_oid)
                     expect(json_response['LfsSize']).to eq(sample_size)
                   end
