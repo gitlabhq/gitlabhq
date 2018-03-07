@@ -182,6 +182,15 @@ module ObjectStorage
       end
     end
 
+    # allow to configure and overwrite the filename
+    def filename
+      @filename || super || file&.filename # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    end
+
+    def filename=(filename)
+      @filename = filename # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    end
+
     def file_storage?
       storage.is_a?(CarrierWave::Storage::File)
     end
@@ -339,15 +348,6 @@ module ObjectStorage
 
       self.object_store = Store::LOCAL
       self.store!(UploadedFile.new(file_path, filename))
-    end
-
-    # allow to configure and overwrite the filename
-    def filename
-      @filename || super || file&.filename # rubocop:disable Gitlab/ModuleWithInstanceVariables
-    end
-
-    def filename=(filename)
-      @filename = filename # rubocop:disable Gitlab/ModuleWithInstanceVariables
     end
 
     # this is a hack around CarrierWave. The #migrate method needs to be
