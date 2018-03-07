@@ -1,4 +1,4 @@
-class AddGroupIdToBoards < ActiveRecord::Migration
+class AddGroupIdToBoardsCe < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   disable_ddl_transaction!
