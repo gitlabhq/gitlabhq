@@ -9,19 +9,19 @@ Each page on GitLab is made up of multiple Vue apps and each app has it's own se
 <script src="https://unpkg.com/mermaid@7.1.2/dist/mermaid.min.js"></script>
 <script>mermaid.initialize({startOnLoad:true});</script>
 **Without Mediator**
-```mermaid
+<div class="mermaid">
 graph TD
     A(Vue App 1's service) -- fetches --> C(API endpoint)
     B(Vue App 2's service) -- fetches --> D(API endpoint)
-```
+</div>
 
 **With Mediator**
-```mermaid
+<div class="mermaid">
 graph TD
     A(Vue App 1's service) -- fetches --> C(Vue App 1 and 2's mediator)
     B(Vue App 2's service) -- fetches --> C(Vue App 1 and 2's mediator)
     C(Vue App 1 and 2's mediator) -- fetches -->D(API endpoint)
-```
+</div>
 
 ## Creating features that update realtime
 
