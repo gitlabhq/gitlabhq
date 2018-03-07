@@ -1,5 +1,0 @@
----
-title: LFS files can be stored in remote object storage such as S3
-merge_request: 2760
-author:
-type: added
