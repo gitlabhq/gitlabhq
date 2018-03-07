@@ -2,22 +2,39 @@ import Vue from 'vue';
 import maintainerEditComponent from '~/vue_merge_request_widget/components/mr_widget_maintainer_edit.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
-describe('MRWidgetAuthor', () => {
+describe('RWidgetMaintainerEdit', () => {
+  let Component;
   let vm;
 
   beforeEach(() => {
-    const Component = Vue.extend(maintainerEditComponent);
-
-    vm = mountComponent(Component, {
-      maintainerEditAllowed: true,
-    });
+    Component = Vue.extend(maintainerEditComponent);
   });
 
   afterEach(() => {
     vm.$destroy();
   });
 
-  it('renders the message when maintainers are allowed to edit', () => {
-    expect(vm.$el.textContent.trim()).toEqual('Allows edits from maintainers');
+  describe('when a maintainer is allowed to edit', () => {
+    beforeEach(() => {
+      vm = mountComponent(Component, {
+        maintainerEditAllowed: true,
+      });
+    });
+
+    it('it renders the message', () => {
+      expect(vm.$el.textContent.trim()).toEqual('Allows edits from maintainers');
+    });
+  });
+
+  describe('when a maintainer is not allowed to edit', () => {
+    beforeEach(() => {
+      vm = mountComponent(Component, {
+        maintainerEditAllowed: false,
+      });
+    });
+
+    it('hides the message', () => {
+      expect(vm.$el.textContent.trim()).toEqual('');
+    });
   });
 });
