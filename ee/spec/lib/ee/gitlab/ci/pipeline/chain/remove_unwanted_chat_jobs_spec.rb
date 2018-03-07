@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe EE::Gitlab::Ci::Pipeline::Chain::RemoveUnwantedChatJobs do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   let(:pipeline) do
     build(:ci_pipeline_with_one_job, project: project, ref: 'master')
