@@ -13,5 +13,13 @@ describe CiCd::GithubSetupService do
 
       subject.execute
     end
+
+    it 'sets up GithubService project integration' do
+      allow(subject).to receive(:create_webhook)
+
+      subject.execute
+
+      expect(project.github_service).to be_active
+    end
   end
 end
