@@ -112,7 +112,7 @@ describe Project do
       project.ensure_external_webhook_token
       expect(project.external_webhook_token).to be_present
     end
- end
+  end
 
   describe 'hard failing a mirror' do
     it 'sends a notification' do

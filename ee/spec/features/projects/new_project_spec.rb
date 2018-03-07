@@ -63,6 +63,24 @@ feature 'New project' do
         expect(page).to have_css('#ci-cd-project-pane')
       end
 
+      it '"Import project" tab creates projects with features enabled' do
+        visit new_project_path
+        find('#import-project-tab').click
+
+        page.within '#import-project-pane' do
+          first('.js-import-git-toggle-button').click
+
+          fill_in 'project_import_url', with: 'http://foo.git'
+          fill_in 'project_path', with: 'import-project-with-features1'
+          choose 'project_visibility_level_20'
+          click_button 'Create project'
+
+          created_project = Project.last
+          expect(current_path).to eq(project_path(created_project))
+          expect(created_project.project_feature).to be_issues_enabled
+        end
+      end
+
       it 'creates CI/CD project from repo URL' do
         visit new_project_path
         find('#ci-cd-project-tab').click
