@@ -163,8 +163,7 @@ in your `.gitlab-ci.yml`.
 
 Behind the scenes, this works by increasing a counter in the database, and the
 value of that counter is used to create the key for the cache. After a push, a
-new key is generated and the old cache is not valid anymore. Eventually, the
-Runner's garbage collector will remove it form the filesystem.
+new key is generated and the old cache is not valid anymore.
 
 ## How shared Runners pick jobs
 
