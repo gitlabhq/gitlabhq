@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.5.3 (2018-03-01)
+
+### Security (1 change)
+
+- Ensure that OTP backup codes are always invalidated.
+
+
 ## 10.5.2 (2018-02-25)
 
 ### Fixed (7 changes)
@@ -217,6 +224,13 @@ entry.
 - Upgrade GitLab Workhorse to v3.6.0.
 - Improve readability of underlined links for dyslexic users.
 - Adds empty state illustration for pending job.
+
+
+## 10.4.5 (2018-03-01)
+
+### Security (1 change)
+
+- Ensure that OTP backup codes are always invalidated.
 
 
 ## 10.4.4 (2018-02-16)
@@ -441,6 +455,13 @@ entry.
 - Update Browse file to Choose file in all occurences.
 - Bump mysql2 gem version from 0.4.5 to 0.4.10. (asaparov)
 - Use a background migration for issues.closed_at.
+
+
+## 10.3.8 (2018-03-01)
+
+### Security (1 change)
+
+- Ensure that OTP backup codes are always invalidated.
 
 
 ## 10.3.7 (2018-02-05)
