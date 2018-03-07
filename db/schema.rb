@@ -2031,6 +2031,7 @@ ActiveRecord::Schema.define(version: 20180301084653) do
     t.string "branch_name_regex"
     t.boolean "reject_unsigned_commits"
     t.boolean "commit_committer_check"
+    t.boolean "regexp_uses_re2", default: true
   end
 
   add_index "push_rules", ["is_sample"], name: "index_push_rules_on_is_sample", where: "is_sample", using: :btree
