@@ -20,10 +20,10 @@ graph TD
 graph TD
     A(Vue App 1's service) -- fetches --> C(Vue App 1 and 2's mediator)
     B(Vue App 2's service) -- fetches --> C(Vue App 1 and 2's mediator)
-    C(Vue App 1 and 2's mediator) -- fetches -->D(API endpoint)
+    C(Common mediator) -- fetches -->D(API endpoint)
 </div>
 
-## Creating features that update realtime
+## Realtime features
 
 We use polling to simulate realtime features at GitLab. Here is the general architecture setup.
 
@@ -35,16 +35,51 @@ Polling should be disabled when the following responses are received from the ba
 - `Poll-Interval: -1`
 - HTTP status of `4XX` or `5XX`
 
-## Running code
+## Configuring new scripts to run on specific pages
 
-> TODO: Add Info
+> TODO: Add Content
 
-## Implementing Vue
+## Vue features
 
-> TODO: Add Info
+> TODO: Add Content
 
-> TODO: Grab data from backend using data attributes
+### Folder Structure
+
+All Vue features should follow a similar folder structure as the one listed below.
+
+```
+new_feature
+├── components
+│   └── new_feature.vue
+│   └── ...
+├── store
+│  └── new_feature_store.js
+├── service
+│  └── new_feature_service.js
+├── new_feature_bundle.js
+```
+
+#### Bundle file
+
+This bundle file should include the root Vue instance of the new feature. The Store and Service should be imported, initialized and provided as a prop to the main component.
+
+#### Store
+
+We follow the [Flux architecture][flux-architecture] for all Vue features. Flux follows the unidirectional data flow pattern and is easier to maintain and debug.
+We have two methods for implementing Flux.
+
+1. Vue store pattern
+2. Vuex
+
+##### Vue store pattern
+
+> TODO: Add Content
+
+##### Vuex
+
+> TODO: Add Content
 
 [mediator-pattern]: https://en.wikipedia.org/wiki/Mediator_pattern
 [poll-js]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/lib/utils/poll.js
 [visibility-js]: https://github.com/ai/visibilityjs
+[flux-architecture]: https://facebook.github.io/flux
