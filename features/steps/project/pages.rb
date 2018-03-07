@@ -46,7 +46,7 @@ class Spinach::Features::ProjectPages < Spinach::FeatureSteps
                   ref: 'HEAD',
                   legacy_artifacts_file: fixture_file_upload(Rails.root + 'spec/fixtures/pages.zip'),
                   legacy_artifacts_metadata: fixture_file_upload(Rails.root + 'spec/fixtures/pages.zip.meta')
-                 )
+                  )
 
     result = ::Projects::UpdatePagesService.new(@project, build).execute
     expect(result[:status]).to eq(:success)
