@@ -173,11 +173,11 @@ feature 'New project' do
 
     context 'from GitHub' do
       before do
-        first('.import_github').click
+        first('.js-import-github').click
       end
 
       it 'shows import instructions' do
-        expect(page).to have_content('Import Projects from GitHub')
+        expect(page).to have_content('Import repositories from GitHub')
         expect(current_path).to eq new_import_github_path
       end
     end
