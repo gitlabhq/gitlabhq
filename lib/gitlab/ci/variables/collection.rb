@@ -27,15 +27,13 @@ module Gitlab
           end
         end
 
-        def to_h
+        def to_runner_variables
           self.map do |variable|
             variable.to_h.reject do |key, value|
               key == :file && value == false
             end
           end
         end
-
-        alias_method :to_hash, :to_h
 
         private
 

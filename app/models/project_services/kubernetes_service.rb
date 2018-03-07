@@ -115,7 +115,7 @@ class KubernetesService < DeploymentService
       collection.append(key: 'KUBE_CA_PEM_FILE', value: ca_pem, public: true, file: true)
     end
 
-    variables.to_hash
+    variables.to_runner_variables
   end
 
   # Constructs a list of terminals from the reactive cache

@@ -52,11 +52,11 @@ describe Gitlab::Ci::Variables::Collection do
     end
   end
 
-  describe '#to_hash' do
-    it 'creates a hash / value mapping' do
+  describe '#to_runner_variables' do
+    it 'creates an array of hashes in a runner-compatible format' do
       collection = described_class.new([{ key: 'TEST', value: 1 }])
 
-      expect(collection.to_hash)
+      expect(collection.to_runner_variables)
         .to eq [{ key: 'TEST', value: 1, public: false }]
     end
   end
