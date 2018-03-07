@@ -493,66 +493,6 @@ describe Environment do
       end
 
       it 'returns the metrics from the deployment service' do
-        expect(project.monitoring_service)
-          .to receive(:environment_metrics).with(environment)
-          .and_return(:fake_metrics)
-
-        is_expected.to eq(:fake_metrics)
-      end
-    end
-
-    context 'when the environment does not have metrics' do
-      before do
-        allow(environment).to receive(:has_metrics?).and_return(false)
-      end
-
-      it { is_expected.to be_nil }
-    end
-  end
-
-  describe '#has_metrics?' do
-    subject { environment.has_metrics? }
-
-    context 'when the enviroment is available' do
-      context 'with a deployment service' do
-        let(:project) { create(:prometheus_project) }
-
-        context 'and a deployment' do
-          let!(:deployment) { create(:deployment, environment: environment) }
-          it { is_expected.to be_truthy }
-        end
-
-        context 'but no deployments' do
-          it { is_expected.to be_falsy }
-        end
-      end
-
-      context 'without a monitoring service' do
-        it { is_expected.to be_falsy }
-      end
-    end
-
-    context 'when the environment is unavailable' do
-      let(:project) { create(:prometheus_project) }
-
-      before do
-        environment.stop
-      end
-
-      it { is_expected.to be_falsy }
-    end
-  end
-
-  describe '#metrics' do
-    let(:project) { create(:prometheus_project) }
-    subject { environment.metrics }
-
-    context 'when the environment has metrics' do
-      before do
-        allow(environment).to receive(:has_metrics?).and_return(true)
-      end
-
-      it 'returns the metrics from the deployment service' do
         expect(environment.prometheus_adapter)
           .to receive(:query).with(:environment, environment)
           .and_return(:fake_metrics)
