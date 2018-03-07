@@ -7,18 +7,47 @@ feature 'Project > Members > Share with Group', :js do
   let(:master) { create(:user) }
 
   describe 'Share with group lock' do
-    shared_examples 'the project can be shared with groups' do
-      scenario 'the "Share with group" tab exists' do
+    shared_examples 'the project cannot be shared with groups' do
+      scenario 'user is only able to share with members' do
         visit project_settings_members_path(project)
-        expect(page).to have_selector('#share-with-group-tab')
+
+        expect(page).not_to have_selector('#add-member-tab')
+        expect(page).not_to have_selector('#share-with-group-tab')
+        expect(page).not_to have_selector('.share-with-group')
+        expect(page).to have_selector('.add-member')
       end
     end
 
-    shared_examples 'the project cannot be shared with groups' do
-      scenario 'the "Share with group" tab does not exist' do
+    shared_examples 'the project cannot be shared with members' do
+      scenario 'user is only able to share with groups' do
         visit project_settings_members_path(project)
-        expect(page).to have_selector('#add-member-tab')
+
+        expect(page).not_to have_selector('#add-member-tab')
         expect(page).not_to have_selector('#share-with-group-tab')
+        expect(page).not_to have_selector('.add-member')
+        expect(page).to have_selector('.share-with-group')
+      end
+    end
+
+    shared_examples 'the project cannot be shared with groups and members' do
+      scenario 'no tabs or share content exists' do
+        visit project_settings_members_path(project)
+
+        expect(page).not_to have_selector('#add-member-tab')
+        expect(page).not_to have_selector('#share-with-group-tab')
+        expect(page).not_to have_selector('.add-member')
+        expect(page).not_to have_selector('.share-with-group')
+      end
+    end
+
+    shared_examples 'the project can be shared with groups and members' do
+      scenario 'both member and group tabs exist' do
+        visit project_settings_members_path(project)
+
+        expect(page).not_to have_selector('.add-member')
+        expect(page).not_to have_selector('.share-with-group')
+        expect(page).to have_selector('#add-member-tab')
+        expect(page).to have_selector('#share-with-group-tab')
       end
     end
 
@@ -31,8 +60,8 @@ feature 'Project > Members > Share with Group', :js do
         sign_in(master)
       end
 
-      context 'when the group has "Share with group lock" disabled' do
-        it_behaves_like 'the project can be shared with groups'
+      context 'when the group has "Share with group lock" and "Member lock" disabled' do
+        it_behaves_like 'the project can be shared with groups and members'
 
         scenario 'the project can be shared with another group' do
           visit project_settings_members_path(project)
@@ -56,10 +85,25 @@ feature 'Project > Members > Share with Group', :js do
 
         it_behaves_like 'the project cannot be shared with groups'
       end
+
+      context 'when the group has membership lock enabled' do
+        before do
+          project.namespace.update_column(:membership_lock, true)
+        end
+
+        it_behaves_like 'the project cannot be shared with members'
+      end
+
+      context 'when the group has membership lock and "Share with group lock" enabled' do
+        before do
+          project.namespace.update_attributes(share_with_group_lock: true, membership_lock: true)
+        end
+
+        it_behaves_like 'the project cannot be shared with groups and members'
+      end
     end
 
     context 'for a project in a subgroup', :nested_groups do
-      let!(:group_to_share_with) { create(:group) }
       let(:root_group) { create(:group) }
       let(:subgroup) { create(:group, parent: root_group) }
       let(:project) { create(:project, namespace: subgroup) }
@@ -69,9 +113,9 @@ feature 'Project > Members > Share with Group', :js do
         sign_in(master)
       end
 
-      context 'when the root_group has "Share with group lock" disabled' do
-        context 'when the subgroup has "Share with group lock" disabled' do
-          it_behaves_like 'the project can be shared with groups'
+      context 'when the root_group has "Share with group lock" and membership lock disabled' do
+        context 'when the subgroup has "Share with group lock" and membership lock disabled' do
+          it_behaves_like 'the project can be shared with groups and members'
         end
 
         context 'when the subgroup has "Share with group lock" enabled' do
@@ -80,24 +124,67 @@ feature 'Project > Members > Share with Group', :js do
           end
 
           it_behaves_like 'the project cannot be shared with groups'
+        end
+
+        context 'when the subgroup has membership lock enabled' do
+          before do
+            subgroup.update_column(:membership_lock, true)
+          end
+
+          it_behaves_like 'the project cannot be shared with members'
+        end
+
+        context 'when the group has membership lock and "Share with group lock" enabled' do
+          before do
+            subgroup.update_attributes(share_with_group_lock: true, membership_lock: true)
+          end
+
+          it_behaves_like 'the project cannot be shared with groups and members'
         end
       end
 
-      context 'when the root_group has "Share with group lock" enabled' do
+      context 'when the root_group has "Share with group lock" and membership lock enabled' do
         before do
-          root_group.update_column(:share_with_group_lock, true)
+          root_group.update_attributes(share_with_group_lock: true, membership_lock: true)
+          subgroup.reload
         end
 
-        context 'when the subgroup has "Share with group lock" disabled (parent overridden)' do
-          it_behaves_like 'the project can be shared with groups'
+        # This behaviour should be changed to disable sharing with members as well
+        # See: https://gitlab.com/gitlab-org/gitlab-ce/issues/42093
+        it_behaves_like 'the project cannot be shared with groups'
+
+        context 'when the subgroup has "Share with group lock" and membership lock disabled (parent overridden)' do
+          before do
+            subgroup.update_attributes(share_with_group_lock: false, membership_lock: false)
+          end
+
+          it_behaves_like 'the project can be shared with groups and members'
         end
 
-        context 'when the subgroup has "Share with group lock" enabled' do
+        # This behaviour should be changed to disable sharing with members as well
+        # See: https://gitlab.com/gitlab-org/gitlab-ce/issues/42093
+        context 'when the subgroup has membership lock enabled (parent overridden)' do
+          before do
+            subgroup.update_column(:membership_lock, true)
+          end
+
+          it_behaves_like 'the project cannot be shared with groups and members'
+        end
+
+        context 'when the subgroup has "Share with group lock" enabled (parent overridden)' do
           before do
             subgroup.update_column(:share_with_group_lock, true)
           end
 
           it_behaves_like 'the project cannot be shared with groups'
+        end
+
+        context 'when the subgroup has "Share with group lock" and membership lock enabled' do
+          before do
+            subgroup.update_attributes(membership_lock: true, share_with_group_lock: true)
+          end
+
+          it_behaves_like 'the project cannot be shared with groups and members'
         end
       end
     end

@@ -1,6 +1,10 @@
 module API
   class Ldap < Grape::API
-    before { authenticated_as_admin! }
+    # Admin users by default should be able to access these API endpoints.
+    # However, non-admin users can access these endpoints if the "Allow group
+    # owners to manage LDAP-related group settings" is enabled, and they own a
+    # group.
+    before { authenticated_with_ldap_admin_access! }
 
     resource :ldap do
       helpers do
