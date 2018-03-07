@@ -1,5 +1,8 @@
 module EE
   module DeploymentPlatform
+    extend ::Gitlab::Utils::Override
+
+    override :deployment_platform
     def deployment_platform(environment: nil)
       return super unless environment && feature_available?(:multiple_clusters)
 
