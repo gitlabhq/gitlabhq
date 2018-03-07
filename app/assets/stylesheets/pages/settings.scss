@@ -266,20 +266,11 @@
     .custom-metric {
       display: flex;
       align-items: center;
-
-      a {
-        font-weight: bold;
-        text-decoration: none;
-      }
     }
-  }
 
-  .empty-metrics,
-  .loading-metrics {
-    p,
-    .btn {
-      margin: 10px 0;
-      margin-left: 10px;
+    .custom-metric-link-bold {
+      font-weight: $gl-font-weight-bold;
+      text-decoration: none;
     }
   }
 

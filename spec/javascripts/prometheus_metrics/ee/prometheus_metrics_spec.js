@@ -4,9 +4,9 @@ import PrometheusMetrics from 'ee/prometheus_metrics/prometheus_metrics';
 import PANEL_STATE from '~/prometheus_metrics/constants';
 import metrics from './mock_data';
 
-describe('PrometheusMetrics EE', () => {
+fdescribe('PrometheusMetrics EE', () => {
   const FIXTURE = 'services/prometheus/prometheus_service.html.raw';
-  const customMetricsEndpoint = 'http://test.host/frontend-fixtures/services-project/prometheus/metrics.json';
+  const customMetricsEndpoint = 'http://test.host/frontend-fixtures/services-project/prometheus/metrics';
   let mock;
   preloadFixtures(FIXTURE);
 
@@ -41,14 +41,13 @@ describe('PrometheusMetrics EE', () => {
     });
 
     it('should contain api endpoints', () => {
-      expect(prometheusMetrics.activeCustomMetricsEndpoint).not.toBeNull();
       expect(prometheusMetrics.activeCustomMetricsEndpoint).toEqual(customMetricsEndpoint);
     });
 
     it('should show loading state when called with `loading`', () => {
       prometheusMetrics.showMonitoringCustomMetricsPanelState(PANEL_STATE.LOADING);
 
-      expect(prometheusMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toBeFalsy();
+      expect(prometheusMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toEqual(false);
       expect(prometheusMetrics.$monitoredCustomMetricsEmpty.hasClass('hidden')).toBeTruthy();
       expect(prometheusMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toBeTruthy();
     });
@@ -58,14 +57,14 @@ describe('PrometheusMetrics EE', () => {
 
       expect(prometheusMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toBeTruthy();
       expect(prometheusMetrics.$monitoredCustomMetricsEmpty.hasClass('hidden')).toBeTruthy();
-      expect(prometheusMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toBeFalsy();
+      expect(prometheusMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toEqual(false);
     });
 
     it('should show empty state when called with `empty`', () => {
       prometheusMetrics.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
 
       expect(prometheusMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toBeTruthy();
-      expect(prometheusMetrics.$monitoredCustomMetricsEmpty.hasClass('hidden')).toBeFalsy();
+      expect(prometheusMetrics.$monitoredCustomMetricsEmpty.hasClass('hidden')).toEqual(false);
       expect(prometheusMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toBeTruthy();
     });
 
@@ -76,7 +75,7 @@ describe('PrometheusMetrics EE', () => {
       const $metricsListLi = prometheusMetrics.$monitoredCustomMetricsList.find('li');
 
       expect(prometheusMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toBeTruthy();
-      expect(prometheusMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toBeFalsy();
+      expect(prometheusMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toEqual(false);
 
       expect($metricsListLi.length).toEqual(metrics.length);
     });

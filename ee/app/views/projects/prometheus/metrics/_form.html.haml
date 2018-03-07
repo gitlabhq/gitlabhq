@@ -53,7 +53,7 @@
         = s_('Metrics|Used if the query returns a single series. If it returns multiple series, their legend labels will be picked up from the response.')
 
     .form-actions
-      = f.submit save_button_text, class: 'btn btn-save'
-      = link_to _('Cancel'), edit_project_service_path(project, PrometheusService), class: 'btn btn-cancel pull-right'
+      = f.submit save_button_text, class: 'btn btn-success'
+      = link_to _('Cancel'), edit_project_service_path(project, PrometheusService), class: 'btn btn-default pull-right'
       - if metric.persisted?
-        = link_to _('Delete'), project_prometheus_metric_path(project, metric), data: { confirm: s_("This will delete the custom metric, Are you sure?") }, method: :delete, class: "btn btn-remove pull-right append-right-default"
+        = link_to _('Delete'), project_prometheus_metric_path(project, metric), data: { confirm: s_("This will delete the custom metric, Are you sure?") }, method: :delete, class: "btn btn-danger pull-right append-right-default"

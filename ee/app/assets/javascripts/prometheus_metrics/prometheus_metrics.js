@@ -5,16 +5,6 @@ import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
-function customMetricTemplate(metric) {
-  return `
-      <li class="custom-metric">
-        <a href="${metric.edit_path}">
-          ${_.escape(metric.group)} / ${_.escape(metric.title)} (${_.escape(metric.unit)})
-        </a>
-      </li>
-    `;
-}
-
 export default class EEPrometheusMetrics extends PrometheusMetrics {
   constructor(wrapperSelector) {
     super(wrapperSelector);
@@ -32,7 +22,6 @@ export default class EEPrometheusMetrics extends PrometheusMetrics {
 
     this.activeCustomMetricsEndpoint = this.$monitoredCustomMetricsPanel.data('active-custom-metrics');
     this.environmentsDataEndpoint = this.$monitoredCustomMetricsPanel.data('environments-data-endpoint');
-    this.customMetricsEndpoint = this.activeCustomMetricsEndpoint.replace('.json', '/');
   }
 
   showMonitoringCustomMetricsPanelState(stateName) {
@@ -66,7 +55,7 @@ export default class EEPrometheusMetrics extends PrometheusMetrics {
       .value();
 
     sortedMetrics.forEach((metric) => {
-      this.$monitoredCustomMetricsList.append(customMetricTemplate(metric));
+      this.$monitoredCustomMetricsList.append(EEPrometheusMetrics.customMetricTemplate(metric));
     });
 
     this.$monitoredCustomMetricsCount.text(this.customMetrics.length);
@@ -84,25 +73,31 @@ export default class EEPrometheusMetrics extends PrometheusMetrics {
   loadActiveCustomMetrics() {
     super.loadActiveMetrics();
     Promise.all([
-      axios.get(this.activeCustomMetricsEndpoint)
-        .then(resp => resp.data)
-        .catch(err => err),
-      axios.get(this.environmentsDataEndpoint)
-        .then(resp => resp.data)
-        .catch(err => err),
+      axios.get(this.activeCustomMetricsEndpoint),
+      axios.get(this.environmentsDataEndpoint),
     ])
       .then(([customMetrics, environmentsData]) => {
-        this.environmentsData = environmentsData.environments;
-        if (!customMetrics || !customMetrics.metrics) {
+        this.environmentsData = environmentsData.data.environments;
+        if (!customMetrics.data || !customMetrics.data.metrics) {
           this.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
         } else {
-          this.customMetrics = customMetrics.metrics;
-          this.populateCustomMetrics(customMetrics.metrics);
+          this.customMetrics = customMetrics.data.metrics;
+          this.populateCustomMetrics(customMetrics.data.metrics);
         }
       })
       .catch((customMetricError) => {
         this.showFlashMessage(customMetricError);
         this.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
       });
+  }
+
+  static customMetricTemplate(metric) {
+    return `
+    <li class="custom-metric">
+      <a href="${_.escape(metric.edit_path)}" class="custom-metric-link-bold">
+        ${_.escape(metric.group)} / ${_.escape(metric.title)} (${_.escape(metric.unit)})
+      </a>
+    </li>
+  `;
   }
 }
