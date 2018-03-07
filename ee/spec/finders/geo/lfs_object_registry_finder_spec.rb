@@ -38,7 +38,7 @@ describe Geo::LfsObjectRegistryFinder, :geo do
       create(:geo_file_registry, :lfs, file_id: lfs_object_1.id)
       create(:geo_file_registry, :lfs, file_id: lfs_object_2.id)
       create(:geo_file_registry, :lfs, file_id: lfs_object_3.id)
-      lfs_object_1.update!(file_store: ObjectStorage::Store::REMOTE)
+      lfs_object_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
 
       expect(subject.count_synced_lfs_objects).to eq 2
     end
@@ -72,7 +72,7 @@ describe Geo::LfsObjectRegistryFinder, :geo do
         create(:geo_file_registry, :lfs, file_id: lfs_object_1.id)
         create(:geo_file_registry, :lfs, file_id: lfs_object_2.id)
         create(:geo_file_registry, :lfs, file_id: lfs_object_3.id)
-        lfs_object_1.update!(file_store: ObjectStorage::Store::REMOTE)
+        lfs_object_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
 
         expect(subject.count_synced_lfs_objects).to eq 1
       end
@@ -98,7 +98,7 @@ describe Geo::LfsObjectRegistryFinder, :geo do
       create(:geo_file_registry, :lfs, file_id: lfs_object_1.id, success: false)
       create(:geo_file_registry, :lfs, file_id: lfs_object_2.id, success: false)
       create(:geo_file_registry, :lfs, file_id: lfs_object_3.id, success: false)
-      lfs_object_1.update!(file_store: ObjectStorage::Store::REMOTE)
+      lfs_object_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
 
       expect(subject.count_failed_lfs_objects).to eq 2
     end
@@ -132,7 +132,7 @@ describe Geo::LfsObjectRegistryFinder, :geo do
         create(:geo_file_registry, :lfs, file_id: lfs_object_1.id, success: false)
         create(:geo_file_registry, :lfs, file_id: lfs_object_2.id, success: false)
         create(:geo_file_registry, :lfs, file_id: lfs_object_3.id, success: false)
-        lfs_object_1.update!(file_store: ObjectStorage::Store::REMOTE)
+        lfs_object_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
 
         expect(subject.count_failed_lfs_objects).to eq 1
       end
