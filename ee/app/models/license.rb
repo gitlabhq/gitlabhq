@@ -42,6 +42,7 @@ class License < ActiveRecord::Base
     extended_audit_events
     file_locks
     geo
+    github_project_service_integration
     jira_dev_panel_integration
     ldap_group_sync_filter
     multiple_clusters
