@@ -127,6 +127,14 @@ RSpec.configure do |config|
     reset_delivered_emails!
   end
 
+  config.around(:example, :js) do |example|
+    Gitlab::Application.config.allow_forgery_protection = true
+
+    example.run
+
+    Gitlab::Application.config.allow_forgery_protection = false
+  end
+
   config.around(:each, :use_clean_rails_memory_store_caching) do |example|
     caching_store = Rails.cache
     Rails.cache = ActiveSupport::Cache::MemoryStore.new
