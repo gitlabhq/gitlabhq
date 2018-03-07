@@ -1,11 +1,8 @@
 module API
   module Helpers
     module NotesHelpers
-<<<<<<< HEAD
       prepend EE::API::Helpers::NotesHelpers
 
-=======
->>>>>>> upstream/master
       def update_note(noteable, note_id)
         note = noteable.notes.find(params[:note_id])
 

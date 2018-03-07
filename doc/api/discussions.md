@@ -1,10 +1,6 @@
 # Discussions API
 
-<<<<<<< HEAD
 Discussions are set of related notes on snippets, issues or epics.
-=======
-Discussions are set of related notes on snippets or issues.
->>>>>>> upstream/master
 
 ## Issues
 
@@ -413,7 +409,6 @@ Parameters:
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/636
 ```
-<<<<<<< HEAD
 
 ## Epics
 
@@ -618,5 +613,3 @@ Parameters:
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/636
 ```
-=======
->>>>>>> upstream/master

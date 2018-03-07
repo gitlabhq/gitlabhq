@@ -5,11 +5,7 @@ module API
 
     before { authenticate! }
 
-<<<<<<< HEAD
     NOTEABLE_TYPES = [Issue, Snippet, Epic].freeze
-=======
-    NOTEABLE_TYPES = [Issue, Snippet].freeze
->>>>>>> upstream/master
 
     NOTEABLE_TYPES.each do |noteable_type|
       parent_type = noteable_type.parent_class.to_s.underscore
