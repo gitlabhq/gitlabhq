@@ -583,7 +583,7 @@ describe ObjectStorage do
       context 'when valid file is used' do
         context 'when no filename is specified' do
           let(:params) do
-            { "file.object_id" => "test/123123" }
+            { "file.remote_id" => "test/123123" }
           end
 
           it 'raises an error' do
@@ -593,7 +593,7 @@ describe ObjectStorage do
 
         context 'when invalid file is specified' do
           let(:params) do
-            { "file.object_id" => "../test/123123",
+            { "file.remote_id" => "../test/123123",
               "file.name" => "my_file.txt" }
           end
 
@@ -604,7 +604,7 @@ describe ObjectStorage do
 
         context 'when non existing file is specified' do
           let(:params) do
-            { "file.object_id" => "test/12312300",
+            { "file.remote_id" => "test/12312300",
               "file.name" => "my_file.txt" }
           end
 
@@ -615,7 +615,7 @@ describe ObjectStorage do
 
         context 'when filename is specified' do
           let(:params) do
-            { "file.object_id" => "test/123123",
+            { "file.remote_id" => "test/123123",
               "file.name" => "my_file.txt" }
           end
 

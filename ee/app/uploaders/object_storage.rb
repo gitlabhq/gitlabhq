@@ -300,7 +300,7 @@ module ObjectStorage
     def store_workhorse_file!(params, identifier)
       filename = params["#{identifier}.name"]
 
-      if remote_object_id = params["#{identifier}.object_id"]
+      if remote_object_id = params["#{identifier}.remote_id"]
         store_remote_file!(remote_object_id, filename)
       elsif local_path = params["#{identifier}.path"]
         store_local_file!(local_path, filename)

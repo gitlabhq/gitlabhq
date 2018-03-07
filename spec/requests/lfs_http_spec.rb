@@ -1081,10 +1081,10 @@ describe 'Git LFS API and storage' do
                   stub_lfs_object_storage(direct_upload: true)
                 end
 
-                ['123123', '../../123123'].each do |object_id|
-                  context "with invalid object_id: #{object_id}" do
+                ['123123', '../../123123'].each do |remote_id|
+                  context "with invalid remote_id: #{remote_id}" do
                     subject do
-                      put_finalize_with_args('file.object_id' => object_id)
+                      put_finalize_with_args('file.remote_id' => remote_id)
                     end
 
                     it 'responds with status 403' do
@@ -1095,7 +1095,7 @@ describe 'Git LFS API and storage' do
                   end
                 end
 
-                context 'with valid object_id' do
+                context 'with valid remote_id' do
                   before do
                     fog_connection.directories.get('lfs-objects').files.create(
                       key: 'tmp/upload/12312300',
@@ -1105,7 +1105,7 @@ describe 'Git LFS API and storage' do
 
                   subject do
                     put_finalize_with_args(
-                      'file.object_id' => '12312300',
+                      'file.remote_id' => '12312300',
                       'file.name' => 'name')
                   end
 
