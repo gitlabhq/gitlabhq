@@ -9,10 +9,26 @@ class EnsureForeignKeysOnClustersApplications < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
+    existing = Clusters::Cluster
+      .joins(:application_ingress)
+      .where('clusters.id = clusters_applications_ingress.cluster_id')
+
+    Clusters::Applications::Ingress.where('NOT EXISTS (?)', existing).in_batches do |batch|
+      batch.delete_all
+    end
+
     unless foreign_keys_for(:clusters_applications_ingress, :cluster_id).any?
       add_concurrent_foreign_key :clusters_applications_ingress, :clusters,
         column: :cluster_id,
         on_delete: :cascade
+    end
+
+    existing = Clusters::Cluster
+      .joins(:application_prometheus)
+      .where('clusters.id = clusters_applications_prometheus.cluster_id')
+
+    Clusters::Applications::Ingress.where('NOT EXISTS (?)', existing).in_batches do |batch|
+      batch.delete_all
     end
 
     unless foreign_keys_for(:clusters_applications_prometheus, :cluster_id).any?
