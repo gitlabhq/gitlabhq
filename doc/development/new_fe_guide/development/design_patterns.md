@@ -6,6 +6,8 @@ The [mediator pattern][mediator-pattern] is a common design pattern used in GitL
 
 Each page on GitLab is made up of multiple Vue apps and each app has it's own separate concerns. However, sometimes these Vue app's leverage the same network request to fetch data (E.g. Issuable sidebar items). In these cases, it would be ideal to take advantage of the mediator pattern, so that only one network request is needed to fetch the data, rather than one network request for each Vue app on the page.
 
+<script src="https://unpkg.com/mermaid@7.1.2/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true});</script>
 **Without Mediator**
 ```mermaid
 graph TD
