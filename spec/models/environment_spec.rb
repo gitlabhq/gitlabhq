@@ -142,15 +142,15 @@ describe Environment do
     let(:commit)        { project.commit.parent }
 
     it 'returns deployment id for the environment' do
-      expect(environment.first_deployment_for(commit)).to eq deployment1
+      expect(environment.first_deployment_for(commit.id)).to eq deployment1
     end
 
     it 'return nil when no deployment is found' do
-      expect(environment.first_deployment_for(head_commit)).to eq nil
+      expect(environment.first_deployment_for(head_commit.id)).to eq nil
     end
 
     it 'returns a UTF-8 ref' do
-      expect(environment.first_deployment_for(commit).ref).to be_utf8
+      expect(environment.first_deployment_for(commit.id).ref).to be_utf8
     end
   end
 

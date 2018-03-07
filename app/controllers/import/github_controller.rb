@@ -1,4 +1,6 @@
 class Import::GithubController < Import::BaseController
+  prepend ::EE::Import::GithubController
+
   before_action :verify_import_enabled
   before_action :provider_auth, only: [:status, :jobs, :create]
 
@@ -42,7 +44,9 @@ class Import::GithubController < Import::BaseController
     target_namespace = find_or_create_namespace(namespace_path, current_user.namespace_path)
 
     if can?(current_user, :create_projects, target_namespace)
-      project = Gitlab::LegacyGithubImport::ProjectCreator.new(repo, project_name, target_namespace, current_user, access_params, type: provider).execute
+      project = Gitlab::LegacyGithubImport::ProjectCreator
+                  .new(repo, project_name, target_namespace, current_user, access_params, type: provider)
+                  .execute(extra_project_attrs)
 
       if project.persisted?
         render json: ProjectSerializer.new.represent(project)
@@ -73,15 +77,15 @@ class Import::GithubController < Import::BaseController
   end
 
   def new_import_url
-    public_send("new_import_#{provider}_url") # rubocop:disable GitlabSecurity/PublicSend
+    public_send("new_import_#{provider}_url", extra_import_params) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def status_import_url
-    public_send("status_import_#{provider}_url") # rubocop:disable GitlabSecurity/PublicSend
+    public_send("status_import_#{provider}_url", extra_import_params) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def callback_import_url
-    public_send("callback_import_#{provider}_url") # rubocop:disable GitlabSecurity/PublicSend
+    public_send("callback_import_#{provider}_url", extra_import_params) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def provider_unauthorized
@@ -114,6 +118,14 @@ class Import::GithubController < Import::BaseController
   end
 
   def client_options
+    {}
+  end
+
+  def extra_project_attrs
+    {}
+  end
+
+  def extra_import_params
     {}
   end
 end

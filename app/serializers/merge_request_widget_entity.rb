@@ -57,7 +57,7 @@ class MergeRequestWidgetEntity < IssuableEntity
 
   # Diff sha's
   expose :diff_head_sha do |merge_request|
-    merge_request.diff_head_sha if merge_request.diff_head_commit
+    merge_request.diff_head_sha.presence
   end
 
   expose :merge_commit_message

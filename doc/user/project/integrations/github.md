@@ -2,6 +2,8 @@
 
 GitLab provides integration for updating pipeline statuses on GitHub. This is especially useful if using GitLab for CI/CD only.
 
+This project integration is separate from the [instance wide GitHub integration][gh-integration] and is automatically configured on [GitHub import][gh-import].
+
 ![Pipeline status update on GitHub](img/github_status_check_pipeline_update.png)
 
 ## Configuration
@@ -28,3 +30,5 @@ This integration requires a [GitHub API token](https://github.com/settings/token
 
 ![Configure GitHub Project Integration](img/github_configuration.png)
 
+[gh-import]: ../import/github.md#mirroring
+[gh-integration]: ../../../integration/github.md

@@ -1,0 +1,23 @@
+- plugins = Gitlab::Plugin.files
+
+.row.prepend-top-default
+  .col-lg-4
+    %h4.prepend-top-0
+      Plugins
+    %p
+      #{link_to 'Plugins', help_page_path('administration/plugins')} are similar to
+      system hooks but are executed as files instead of sending data to a URL.
+
+  .col-lg-8.append-bottom-default
+    - if plugins.any?
+      .panel.panel-default
+        .panel-heading
+          Plugins (#{plugins.count})
+        %ul.content-list
+          - plugins.each do |file|
+            %li
+              .monospace
+                = File.basename(file)
+    - else
+      %p.light-well.text-center
+        No plugins found.

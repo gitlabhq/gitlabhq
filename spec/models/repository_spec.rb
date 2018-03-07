@@ -1036,7 +1036,7 @@ describe Repository do
       end
     end
 
-    context 'with Gitaly disabled', :skip_gitaly_mock do
+    context 'with Gitaly disabled', :disable_gitaly do
       context 'when pre hooks were successful' do
         it 'runs without errors' do
           hook = double(trigger: [true, nil])
@@ -1970,7 +1970,7 @@ describe Repository do
       it_behaves_like 'adding tag'
     end
 
-    context 'when Gitaly operation_user_add_tag feature is disabled', :skip_gitaly_mock do
+    context 'when Gitaly operation_user_add_tag feature is disabled', :disable_gitaly do
       it_behaves_like 'adding tag'
 
       it 'passes commit SHA to pre-receive and update hooks and tag SHA to post-receive hook' do
@@ -2029,7 +2029,7 @@ describe Repository do
       end
     end
 
-    context 'with gitaly disabled', :skip_gitaly_mock do
+    context 'with gitaly disabled', :disable_gitaly do
       it_behaves_like "user deleting a branch"
 
       let(:old_rev) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' } # git rev-parse feature
