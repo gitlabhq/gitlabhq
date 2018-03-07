@@ -31,7 +31,7 @@ module Gitlab
 
           # TODO: do we still need it?
           project_id: project.id,
-          project_name: project.name_with_namespace,
+          project_name: project.full_name,
 
           user: {
             id: user.try(:id),
