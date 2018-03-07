@@ -163,8 +163,6 @@ module ObjectStorage
         File.join(self.root, TMP_UPLOAD_PATH)
       end
 
-      private
-
       def workhorse_remote_upload_options
         return unless self.object_store_enabled?
         return unless self.direct_upload_enabled?
@@ -228,10 +226,6 @@ module ObjectStorage
       ensure
         cache_storage.delete_dir!(cache_path(nil))
       end
-    end
-
-    def filename
-      super || file&.filename
     end
 
     #
@@ -302,7 +296,7 @@ module ObjectStorage
       elsif local_path = params["#{identifier}.path"]
         store_local_file!(local_path, filename)
       else
-        raise ArgumentError, 'Bad file'
+        raise RemoteStoreError, 'Bad file'
       end
     end
 
@@ -316,30 +310,44 @@ module ObjectStorage
     end
 
     def store_remote_file!(remote_object_id, filename)
+      raise RemoteStoreError, 'Missing filename' unless filename
+
       file_path = File.join(TMP_UPLOAD_PATH, remote_object_id)
-      raise ArgumentError, 'Bad file path' unless file_path.start_with?(TMP_UPLOAD_PATH + '/')
+      file_path = Pathname.new(file_path).cleanpath.to_s
+      raise RemoteStoreError, 'Bad file path' unless file_path.start_with?(TMP_UPLOAD_PATH + '/')
 
       self.object_store = Store::REMOTE
-      self.original_filename = filename
 
+      # TODO:
+      # This should be changed to make use of `tmp/cache` mechanism
+      # instead of using custom upload directory,
+      # using tmp/cache makes this implementation way easier than it is today
       CarrierWave::Storage::Fog::File.new(self, storage, file_path).tap do |file|
-        raise ArgumentError, 'Missing file' unless file.exists?
+        raise RemoteStoreError, 'Missing file' unless file.exists?
 
-        storage.store!(file)
+        self.filename = filename
+        self.file = storage.store!(file)
       end
     end
 
     def store_local_file!(local_path, filename)
+      raise RemoteStoreError, 'Missing filename' unless filename
+
       root_path = File.realpath(self.class.workhorse_local_upload_path)
       file_path = File.realpath(local_path)
-      raise ArgumentError, 'Bad file path' unless file_path.start_with?(root_path)
+      raise RemoteStoreError, 'Bad file path' unless file_path.start_with?(root_path)
 
       self.object_store = Store::LOCAL
-      self.original_filename = filename
+      self.store!(UploadedFile.new(file_path, filename))
+    end
 
-      File.open(local_path) do |file|
-        self.store!(file)
-      end
+    # allow to configure and overwrite the filename
+    def filename
+      @filename || super || file&.filename # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    end
+
+    def filename=(filename)
+      @filename = filename # rubocop:disable Gitlab/ModuleWithInstanceVariables
     end
 
     # this is a hack around CarrierWave. The #migrate method needs to be

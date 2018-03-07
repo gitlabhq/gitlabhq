@@ -1104,7 +1104,9 @@ describe 'Git LFS API and storage' do
                   end
 
                   subject do
-                    put_finalize_with_args('file.object_id' => '12312300')
+                    put_finalize_with_args(
+                      'file.object_id' => '12312300',
+                      'file.name' => 'name')
                   end
 
                   it 'responds with status 200' do
@@ -1364,7 +1366,8 @@ describe 'Git LFS API and storage' do
       end
 
       args = {
-        'file.path' => file_path
+        'file.path' => file_path,
+        'file.name' => File.basename(file_path)
       }.compact
 
       put_finalize_with_args(args)

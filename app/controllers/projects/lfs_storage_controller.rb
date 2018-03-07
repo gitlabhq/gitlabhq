@@ -32,7 +32,7 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
     end
   rescue ActiveRecord::RecordInvalid
     render_400
-  rescue ArgumentError
+  rescue ObjectStorage::RemoteStoreError
     render_lfs_forbidden
   end
 
