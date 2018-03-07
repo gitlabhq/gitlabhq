@@ -82,7 +82,7 @@ describe('Multi-file editor library', () => {
     });
   });
 
-  fdescribe('attachModel', () => {
+  describe('attachModel', () => {
     let model;
 
     beforeEach(() => {

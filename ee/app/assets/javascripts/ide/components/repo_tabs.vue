@@ -1,5 +1,5 @@
 <script>
-  import { mapActions, mapState } from 'vuex';
+  import { mapActions, mapGetters, mapState } from 'vuex';
   import RepoTab from './repo_tab.vue';
   import EditorMode from './editor_mode_dropdown.vue';
 
@@ -14,6 +14,9 @@
       };
     },
     computed: {
+      ...mapGetters([
+        'hasChanges',
+      ]),
       ...mapState([
         'openFiles',
         'viewer',
@@ -47,6 +50,7 @@
     <editor-mode
       :viewer="viewer"
       :show-shadow="showShadow"
+      :has-changes="hasChanges"
       @click="updateViewer"
     />
   </div>

@@ -6,6 +6,10 @@
       Icon,
     },
     props: {
+      hasChanges: {
+        type: Boolean,
+        required: true,
+      },
       viewer: {
         type: String,
         required: true,
@@ -33,6 +37,9 @@
     <button
       type="button"
       class="btn btn-primary btn-sm"
+      :class="{
+        'btn-inverted': hasChanges,
+      }"
       data-toggle="dropdown"
     >
       <template v-if="viewer === 'editor'">
