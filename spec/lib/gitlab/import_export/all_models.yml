@@ -300,6 +300,7 @@ project:
 - container_repositories
 - uploads
 - mirror_data
+- repository_state
 - source_pipelines
 - sourced_pipelines
 - members_and_requesters
