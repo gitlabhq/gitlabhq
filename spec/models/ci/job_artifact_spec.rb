@@ -38,7 +38,7 @@ describe Ci::JobArtifact do
           end
 
           it 'schedules the model for migration' do
-            expect(ObjectStorageUploadWorker).to receive(:perform_async).with('JobArtifactUploader', described_class.name, :file, kind_of(Numeric))
+            expect(ObjectStorage::BackgroundMoveWorker).to receive(:perform_async).with('JobArtifactUploader', described_class.name, :file, kind_of(Numeric))
 
             subject
           end
@@ -50,7 +50,7 @@ describe Ci::JobArtifact do
           end
 
           it 'schedules the model for migration' do
-            expect(ObjectStorageUploadWorker).not_to receive(:perform_async)
+            expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
 
             subject
           end

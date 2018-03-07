@@ -210,13 +210,13 @@ describe Ci::Build do
     subject { build.downloadable_single_artifacts_file? }
 
     context 'artifacts are stored locally' do
-      let(:store) { ObjectStoreUploader::LOCAL_STORE }
+      let(:store) { ObjectStorage::Store::LOCAL }
 
       it { is_expected.to be_truthy }
     end
 
     context 'artifacts are stored remotely' do
-      let(:store) { ObjectStoreUploader::REMOTE_STORE }
+      let(:store) { ObjectStorage::Store::REMOTE }
 
       before do
         stub_artifacts_object_storage
