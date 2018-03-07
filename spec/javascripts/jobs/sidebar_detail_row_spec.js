@@ -38,20 +38,24 @@ describe('Sidebar detail row', () => {
     ).toEqual('this is the title: this is the value');
   });
 
-  it('should not render help when helpUrl not provided', () => {
-    expect(vm.$el.querySelector('.help-button')).toBeUndefined();
+  describe('when helpUrl not provided', () => {
+    it('should not render help', () => {
+      expect(vm.$el.querySelector('.help-button')).toBeNull();
+    });
   });
 
-  beforeEach(() => {
-    vm = new SidebarDetailRow({
-      propsData: {
-        helpUrl: 'help url',
-        value: 'foo',
-      },
-    }).$mount();
-  });
+  describe('when helpUrl provided', () => {
+    beforeEach(() => {
+      vm = new SidebarDetailRow({
+        propsData: {
+          helpUrl: 'help url',
+          value: 'foo',
+        },
+      }).$mount();
+    });
 
-  it('should render help when helpUrl is provided', () => {
-    expect(vm.$el.querySelector('.help-button a').getAttribute('href')).toEqual('help url');
+    it('should render help', () => {
+      expect(vm.$el.querySelector('.help-button a').getAttribute('href')).toEqual('help url');
+    });
   });
 });
