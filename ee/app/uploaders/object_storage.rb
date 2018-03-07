@@ -153,7 +153,7 @@ module ObjectStorage
 
       def workhorse_authorize
         if options = workhorse_remote_upload_options
-          { ObjectStore: options }
+          { RemoteStore: options }
         else
           { TempPath: workhorse_local_upload_path }
         end
@@ -174,7 +174,7 @@ module ObjectStorage
         options = { 'Content-Type' => 'application/octet-stream' }
 
         {
-          ObjectID: id,
+          ID: id,
           GetURL: connection.get_object_https_url(remote_store_path, upload_path, expire_at),
           DeleteURL: connection.delete_object_url(remote_store_path, upload_path, expire_at),
           StoreURL: connection.put_object_url(remote_store_path, upload_path, expire_at, options)
