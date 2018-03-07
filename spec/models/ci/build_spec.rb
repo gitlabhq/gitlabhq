@@ -1873,14 +1873,13 @@ describe Ci::Build do
         pipeline.variables.build(key: 'MYVAR', value: 'pipeline value')
       end
 
-      it 'removes duplicates and leaves the latest occurence' do
-        expect(subject.count { |variable| variable.fetch(:key) == 'MYVAR' })
-          .to be 1
-      end
-
       it 'overrides YAML variable using a pipeline variable' do
-        is_expected.not_to include(key: 'MYVAR', value: 'myvar', public: true)
-        is_expected.to include(key: 'MYVAR', value: 'pipeline value', public: false)
+        variables = subject.reverse.uniq { |variable| variable[:key] }.reverse
+
+        expect(variables)
+          .not_to include(key: 'MYVAR', value: 'myvar', public: true)
+        expect(variables)
+          .to include(key: 'MYVAR', value: 'pipeline value', public: false)
       end
     end
 
@@ -1921,8 +1920,8 @@ describe Ci::Build do
       context 'when build has environment and user-provided variables' do
         let(:expected_variables) do
           predefined_variables.map { |variable| variable.fetch(:key) } +
-           %w[YAML_VARIABLE CI_ENVIRONMENT_NAME CI_ENVIRONMENT_SLUG
-              CI_ENVIRONMENT_URL]
+            %w[YAML_VARIABLE CI_ENVIRONMENT_NAME CI_ENVIRONMENT_SLUG
+               CI_ENVIRONMENT_URL]
         end
 
         before do
