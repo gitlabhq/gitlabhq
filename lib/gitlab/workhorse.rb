@@ -10,7 +10,7 @@ module Gitlab
     INTERNAL_API_CONTENT_TYPE = 'application/vnd.gitlab-workhorse+json'.freeze
     INTERNAL_API_REQUEST_HEADER = 'Gitlab-Workhorse-Api-Request'.freeze
     NOTIFICATION_CHANNEL = 'workhorse:notifications'.freeze
-    ALLOWED_ACTIONS = %w[git_receive_pack git_upload_pack info_refs].freeze
+    ALLOWED_GIT_HTTP_ACTIONS = %w[git_receive_pack git_upload_pack info_refs].freeze
 
     # Supposedly the effective key size for HMAC-SHA256 is 256 bits, i.e. 32
     # bytes https://tools.ietf.org/html/rfc4868#section-2.6
@@ -18,7 +18,7 @@ module Gitlab
 
     class << self
       def git_http_ok(repository, is_wiki, user, action, show_all_refs: false)
-        raise "Unsupported action: #{action}" unless ALLOWED_ACTIONS.include?(action.to_s)
+        raise "Unsupported action: #{action}" unless ALLOWED_GIT_HTTP_ACTIONS.include?(action.to_s)
 
         project = repository.project
         repo_path = repository.path_to_repo
