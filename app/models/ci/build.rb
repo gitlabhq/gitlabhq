@@ -268,7 +268,7 @@ module Ci
       variables += pipeline.pipeline_schedule.job_variables if pipeline.pipeline_schedule
       variables += persisted_environment_variables if environment
 
-      variables
+      variables.reverse.uniq { |variable| variable.fetch(:key) }.reverse
     end
 
     def features
