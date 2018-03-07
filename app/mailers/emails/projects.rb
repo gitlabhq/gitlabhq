@@ -1,5 +1,7 @@
 module Emails
   module Projects
+    prepend Emails::EE::Projects
+
     def project_was_moved_email(project_id, user_id, old_path_with_namespace)
       @current_user = @user = User.find user_id
       @project = Project.find project_id
@@ -37,14 +39,6 @@ module Emails
       mail(from:      sender(@message.author_id, @message.send_from_committer_email?),
            reply_to:  @message.reply_to,
            subject:   @message.subject)
-    end
-
-    def mirror_was_hard_failed_email(project_id, user_id)
-      @project = Project.find(project_id)
-      user = User.find(user_id)
-
-      mail(to: user.notification_email,
-           subject: subject('Repository mirroring paused'))
     end
   end
 end

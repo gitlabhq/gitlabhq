@@ -185,4 +185,16 @@ describe EE::NotificationService, :mailer do
       end
     end
   end
+
+  context 'mirror user changed' do
+    it 'sends email' do
+      mirror_user = create(:user)
+      project = create(:project, :mirror, mirror_user_id: mirror_user.id)
+      new_mirror_user = project.team.owners.first
+
+      expect(Notify).to receive(:project_mirror_user_changed_email).with(new_mirror_user.id, mirror_user.name, project.id).and_call_original
+
+      subject.project_mirror_user_changed(new_mirror_user, mirror_user.name, project)
+    end
+  end
 end

@@ -1434,6 +1434,23 @@ describe Notify do
     end
   end
 
+  describe 'mirror user changed' do
+    let(:mirror_user) { create(:user) }
+    let(:project) { create(:project, :mirror, mirror_user_id: mirror_user.id) }
+    let(:new_mirror_user) { project.team.owners.first }
+
+    subject { described_class.project_mirror_user_changed_email(new_mirror_user.id, mirror_user.name, project.id) }
+
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'it should not have Gmail Actions links'
+    it_behaves_like "a user cannot unsubscribe through footer link"
+
+    it 'has the correct subject and body' do
+      is_expected.to have_subject("#{project.name} | Mirror user changed")
+      is_expected.to have_html_escaped_body_text(project.full_path)
+    end
+  end
+
   describe 'admin notification' do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }

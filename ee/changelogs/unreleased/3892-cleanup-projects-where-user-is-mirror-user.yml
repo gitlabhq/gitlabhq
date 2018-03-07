@@ -1,0 +1,5 @@
+---
+title: Mirror owners now get assigned as mirror users when the assigned mirror users disable their accounts
+merge_request: 4827
+author:
+type: fixed
