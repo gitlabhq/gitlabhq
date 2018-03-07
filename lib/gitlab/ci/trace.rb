@@ -137,12 +137,8 @@ module Gitlab
           job.create_job_artifacts_trace!(
             project: job.project,
             file_type: :trace,
-<<<<<<< HEAD
-            file: stream)
-=======
             file: stream,
             file_sha256: Digest::SHA256.file(path).hexdigest)
->>>>>>> upstream/master
         end
       end
 
