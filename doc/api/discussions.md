@@ -1,6 +1,6 @@
 # Discussions API
 
-Discussions are set of related notes on snippets, issues or epics.
+Discussions are set of related notes on snippets or issues.
 
 ## Issues
 
