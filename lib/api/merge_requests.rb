@@ -32,11 +32,8 @@ module API
       ]
     end
 
-<<<<<<< HEAD
     prepend EE::API::MergeRequests
 
-=======
->>>>>>> upstream/master
     helpers do
       def find_merge_requests(args = {})
         args = declared_params.merge(args)
