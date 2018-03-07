@@ -30,6 +30,10 @@
     = text_field_tag :personal_access_token, '', class: 'form-control', placeholder: "Personal Access Token", size: 40
     = submit_tag 'List your GitHub repositories', class: 'btn btn-success'
 
+  -# EE-specific start
+  = hidden_field_tag :ci_cd_only, params[:ci_cd_only]
+  -# EE-specific end
+
 - unless github_import_configured?
   %hr
   %p

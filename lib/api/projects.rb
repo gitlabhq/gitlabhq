@@ -495,17 +495,6 @@ module API
           conflict!(error.message)
         end
       end
-
-      desc 'Triggers a pull mirror operation'
-      post ":id/mirror/pull" do
-        authorize_admin_project
-
-        return render_api_error!('The project is not mirrored', 400) unless user_project.mirror?
-
-        user_project.force_import_job!
-
-        status 200
-      end
     end
   end
 end

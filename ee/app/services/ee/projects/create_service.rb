@@ -61,7 +61,7 @@ module EE
       def setup_ci_cd_project
         return unless ::License.feature_available?(:ci_cd_projects)
 
-        ::Projects::SetupCiCd.new(project, current_user).execute
+        ::CiCd::SetupProject.new(project, current_user).execute
       end
 
       def log_audit_event(project)

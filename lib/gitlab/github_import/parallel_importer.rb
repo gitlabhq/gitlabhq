@@ -5,6 +5,8 @@ module Gitlab
     # The ParallelImporter schedules the importing of a GitHub project using
     # Sidekiq.
     class ParallelImporter
+      prepend ::EE::Gitlab::GithubImport::ParallelImporter
+
       attr_reader :project
 
       def self.async?

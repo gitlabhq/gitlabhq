@@ -23,7 +23,7 @@ describe Projects::CreateService, '#execute' do
       end
 
       it 'calls the service to setup CI/CD on the project' do
-        expect(Projects::SetupCiCd).to receive_message_chain(:new, :execute)
+        expect(CiCd::SetupProject).to receive_message_chain(:new, :execute)
 
         create_project(user, opts)
       end
@@ -35,7 +35,7 @@ describe Projects::CreateService, '#execute' do
       end
 
       it "doesn't call the service to setup CI/CD on the project" do
-        expect(Projects::SetupCiCd).not_to receive(:new)
+        expect(CiCd::SetupProject).not_to receive(:new)
 
         create_project(user, opts)
       end

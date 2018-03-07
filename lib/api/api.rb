@@ -193,6 +193,7 @@ module API
     mount ::API::Ldap
     mount ::API::LdapGroupLinks
     mount ::API::License
+    mount ::API::ProjectMirror
     mount ::API::ProjectPushRule
     ## EE-specific API V4 endpoints END
 

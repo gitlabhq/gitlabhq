@@ -85,6 +85,12 @@ module EE
       end
     end
 
+    def ensure_external_webhook_token
+      return if external_webhook_token.present?
+
+      self.external_webhook_token = Devise.friendly_token
+    end
+
     def shared_runners_limit_namespace
       if Feature.enabled?(:shared_runner_minutes_on_root_namespace)
         root_namespace
