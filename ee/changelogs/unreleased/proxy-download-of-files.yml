@@ -1,0 +1,5 @@
+---
+title: Add proxy_download to enable passing all data through Workhorse
+merge_request:
+author:
+type: added
