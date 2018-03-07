@@ -210,4 +210,15 @@ describe('Multi-file store actions', () => {
         .catch(done.fail);
     });
   });
+
+  describe('updateViewer', () => {
+    it('updates viewer state', (done) => {
+      store.dispatch('updateViewer', 'diff')
+        .then(() => {
+          expect(store.state.viewer).toBe('diff');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
 });

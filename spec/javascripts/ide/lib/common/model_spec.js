@@ -1,4 +1,5 @@
 /* global monaco */
+import eventHub from 'ee/ide/eventhub';
 import monacoLoader from 'ee/ide/monaco_loader';
 import Model from 'ee/ide/lib/common/model';
 import { file } from '../../helpers';
@@ -7,6 +8,8 @@ describe('Multi-file editor library model', () => {
   let model;
 
   beforeEach((done) => {
+    spyOn(eventHub, '$on').and.callThrough();
+
     monacoLoader(['vs/editor/editor.main'], () => {
       model = new Model(monaco, file('path'));
 
@@ -21,6 +24,10 @@ describe('Multi-file editor library model', () => {
   it('creates original model & new model', () => {
     expect(model.originalModel).not.toBeNull();
     expect(model.model).not.toBeNull();
+  });
+
+  it('adds eventHub listener', () => {
+    expect(eventHub.$on).toHaveBeenCalledWith(`editor.update.model.dispose.${model.file.path}`, jasmine.anything());
   });
 
   describe('path', () => {
@@ -87,6 +94,14 @@ describe('Multi-file editor library model', () => {
       model.dispose();
 
       expect(model.events.size).toBe(0);
+    });
+
+    it('removes eventHub listener', () => {
+      spyOn(eventHub, '$off').and.callThrough();
+
+      model.dispose();
+
+      expect(eventHub.$off).toHaveBeenCalledWith(`editor.update.model.dispose.${model.file.path}`, jasmine.anything());
     });
   });
 });

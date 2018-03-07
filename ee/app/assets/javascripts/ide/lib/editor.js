@@ -7,7 +7,9 @@ import editorOptions from './editor_options';
 
 import gitlabTheme from 'ee/ide/lib/themes/gl_theme'; // eslint-disable-line import/first
 
-const clearDomElement = (el) => {
+export const clearDomElement = (el) => {
+  if (!el || !el.firstChild) return;
+
   while (el.firstChild) {
     el.removeChild(el.firstChild);
   }

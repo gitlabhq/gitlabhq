@@ -106,4 +106,12 @@ describe('Multi-file store mutations', () => {
       expect(localState.rightPanelCollapsed).toBeFalsy();
     });
   });
+
+  describe('UPDATE_VIEWER', () => {
+    it('sets viewer state', () => {
+      mutations.UPDATE_VIEWER(localState, 'diff');
+
+      expect(localState.viewer).toBe('diff');
+    });
+  });
 });

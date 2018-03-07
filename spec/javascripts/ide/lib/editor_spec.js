@@ -54,6 +54,24 @@ describe('Multi-file editor library', () => {
     });
   });
 
+  describe('createDiffInstance', () => {
+    let el;
+
+    beforeEach(() => {
+      el = document.createElement('div');
+    });
+
+    it('creates editor instance', () => {
+      spyOn(instance.monaco.editor, 'createDiffEditor').and.callThrough();
+
+      instance.createDiffInstance(el);
+
+      expect(instance.monaco.editor.createDiffEditor).toHaveBeenCalledWith(el, {
+        readOnly: true,
+      });
+    });
+  });
+
   describe('createModel', () => {
     it('calls model manager addModel', () => {
       spyOn(instance.modelManager, 'addModel');
@@ -64,7 +82,7 @@ describe('Multi-file editor library', () => {
     });
   });
 
-  describe('attachModel', () => {
+  fdescribe('attachModel', () => {
     let model;
 
     beforeEach(() => {
@@ -85,6 +103,18 @@ describe('Multi-file editor library', () => {
       instance.attachModel(model);
 
       expect(instance.instance.setModel).toHaveBeenCalledWith(model.getModel());
+    });
+
+    it('sets original & modified when diff editor', () => {
+      spyOn(instance.instance, 'getEditorType').and.returnValue('vs.editor.IDiffEditor');
+      spyOn(instance.instance, 'setModel');
+
+      instance.attachModel(model);
+
+      expect(instance.instance.setModel).toHaveBeenCalledWith({
+        original: model.getOriginalModel(),
+        modified: model.getModel(),
+      });
     });
 
     it('attaches the model to the dirty diff controller', () => {
