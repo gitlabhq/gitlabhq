@@ -40,7 +40,7 @@ class Spinach::Features::ProjectPages < Spinach::FeatureSteps
                                          source: :push,
                                          protected: false)
 
-    build = build(:ci_build,
+    build = create(:ci_build,
                   project: @project,
                   pipeline: pipeline,
                   ref: 'HEAD',
