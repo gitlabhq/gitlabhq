@@ -4,7 +4,7 @@ import PrometheusMetrics from 'ee/prometheus_metrics/prometheus_metrics';
 import PANEL_STATE from '~/prometheus_metrics/constants';
 import metrics from './mock_data';
 
-fdescribe('PrometheusMetrics EE', () => {
+describe('PrometheusMetrics EE', () => {
   const FIXTURE = 'services/prometheus/prometheus_service.html.raw';
   const customMetricsEndpoint = 'http://test.host/frontend-fixtures/services-project/prometheus/metrics';
   let mock;
