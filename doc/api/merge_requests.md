@@ -535,7 +535,6 @@ Creates a new merge request.
 POST /projects/:id/merge_requests
 ```
 
-<<<<<<< HEAD
 | Attribute              | Type    | Required | Description                                                                     |
 | ---------              | ----    | -------- | -----------                                                                     |
 | `id`                   | integer/string  | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
@@ -635,7 +634,6 @@ Updates an existing merge request. You can change the target branch, title, or e
 PUT /projects/:id/merge_requests/:merge_request_iid
 ```
 
-<<<<<<< HEAD
 | Attribute              | Type    | Required | Description                                                                     |
 | ---------              | ----    | -------- | -----------                                                                     |
 | `id`                   | integer/string | yes  | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
