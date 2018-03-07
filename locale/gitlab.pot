@@ -59,6 +59,9 @@ msgid_plural "%{count} participants"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{loadingIcon} Started"
+msgstr ""
+
 msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
 msgstr ""
 
@@ -214,6 +217,9 @@ msgid "Allow edits from maintainers"
 msgstr ""
 
 msgid "Allows you to add and manage Kubernetes clusters."
+msgstr ""
+
+msgid "Alternatively, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
 msgstr ""
 
 msgid "An error occurred previewing the blob"
@@ -600,6 +606,9 @@ msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to s
 msgstr ""
 
 msgid "Choose file..."
+msgstr ""
+
+msgid "Choose which repositories you want to import."
 msgstr ""
 
 msgid "CiStatusLabel|canceled"
@@ -1068,6 +1077,12 @@ msgstr ""
 msgid "Confidentiality"
 msgstr ""
 
+msgid "Connect"
+msgstr ""
+
+msgid "Connect repositories from GitHub"
+msgstr ""
+
 msgid "Container Registry"
 msgstr ""
 
@@ -1271,6 +1286,9 @@ msgstr ""
 msgid "Don't show again"
 msgstr ""
 
+msgid "Done"
+msgstr ""
+
 msgid "Download"
 msgstr ""
 
@@ -1421,6 +1439,9 @@ msgstr ""
 msgid "Explore public groups"
 msgstr ""
 
+msgid "Failed"
+msgstr ""
+
 msgid "Failed Jobs"
 msgstr ""
 
@@ -1486,6 +1507,9 @@ msgstr ""
 msgid "Format"
 msgstr ""
 
+msgid "From %{provider_title}"
+msgstr ""
+
 msgid "From issue creation until deploy to production"
 msgstr ""
 
@@ -1511,6 +1535,9 @@ msgid "Git storage health information has been reset"
 msgstr ""
 
 msgid "Git version"
+msgstr ""
+
+msgid "GitHub import"
 msgstr ""
 
 msgid "GitLab Runner section"
@@ -1635,7 +1662,16 @@ msgstr ""
 msgid "If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>."
 msgstr ""
 
+msgid "Import"
+msgstr ""
+
+msgid "Import all repositories"
+msgstr ""
+
 msgid "Import in progress"
+msgstr ""
+
+msgid "Import repositories from GitHub"
 msgstr ""
 
 msgid "Import repository"
@@ -1794,6 +1830,9 @@ msgid "Leave group"
 msgstr ""
 
 msgid "Leave project"
+msgstr ""
+
+msgid "List your GitHub repositories"
 msgstr ""
 
 msgid "Lock"
@@ -1993,6 +2032,12 @@ msgstr ""
 msgid "Note that the master branch is automatically protected. %{link_to_protected_branches}"
 msgstr ""
 
+msgid "Note: As an administrator you may like to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token."
+msgstr ""
+
+msgid "Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token."
+msgstr ""
+
 msgid "Notification events"
 msgstr ""
 
@@ -2111,6 +2156,9 @@ msgid "Password"
 msgstr ""
 
 msgid "Pending"
+msgstr ""
+
+msgid "Personal Access Token"
 msgstr ""
 
 msgid "Pipeline"
@@ -2574,6 +2622,9 @@ msgstr ""
 msgid "Schedule a new pipeline"
 msgstr ""
 
+msgid "Scheduled"
+msgstr ""
+
 msgid "Schedules"
 msgstr ""
 
@@ -2823,6 +2874,12 @@ msgid "Start a %{new_merge_request} with these changes"
 msgstr ""
 
 msgid "Start the Runner!"
+msgstr ""
+
+msgid "Started"
+msgstr ""
+
+msgid "Status"
 msgstr ""
 
 msgid "Stopped"
@@ -3242,6 +3299,15 @@ msgstr ""
 msgid "Tip:"
 msgstr ""
 
+msgid "To GitLab"
+msgstr ""
+
+msgid "To import GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
+msgstr ""
+
+msgid "To import GitHub repositories, you first need to authorize GitLab to access the list of your GitHub repositories:"
+msgstr ""
+
 msgid "To import an SVN repository, check out %{svn_link}."
 msgstr ""
 
@@ -3569,12 +3635,18 @@ msgstr ""
 msgid "confidentiality|You are going to turn on the confidentiality. This means that only team members with <strong>at least Reporter access</strong> are able to see and leave comments on the issue."
 msgstr ""
 
+msgid "connecting"
+msgstr ""
+
 msgid "day"
 msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
 
 msgid "estimateCommand|%{slash_command} will update the estimated time with the latest command."
+msgstr ""
+
+msgid "importing"
 msgstr ""
 
 msgid "merge request"
