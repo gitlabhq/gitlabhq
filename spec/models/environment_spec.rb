@@ -547,7 +547,7 @@ describe Environment do
     let(:project) { create(:prometheus_project) }
     subject { environment.additional_metrics }
 
-    context 'when the environment has additional metrics' do
+    context 'when the environment has metrics' do
       before do
         allow(environment).to receive(:has_metrics?).and_return(true)
       end

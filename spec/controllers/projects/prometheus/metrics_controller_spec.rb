@@ -7,6 +7,8 @@ describe Projects::Prometheus::MetricsController do
   let(:prometheus_adapter) { double('prometheus_adapter', can_query?: true) }
 
   before do
+    allow(controller).to receive(:project).and_return(project)
+
     project.add_master(user)
     sign_in(user)
   end
