@@ -108,6 +108,12 @@ RSpec.describe Geo::WikiSyncService do
     end
 
     context 'tracking database' do
+      context 'temporary repositories' do
+        include_examples 'cleans temporary repositories' do
+          let(:repository) { project.wiki.repository }
+        end
+      end
+
       it 'creates a new registry if does not exists' do
         expect { subject.execute }.to change(Geo::ProjectRegistry, :count).by(1)
       end
