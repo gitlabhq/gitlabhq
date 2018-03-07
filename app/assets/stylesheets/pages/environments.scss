@@ -574,3 +574,17 @@
     }
   }
 }
+
+// EE-only
+.cluster-health-graphs {
+  .prometheus-state {
+    .state-svg img {
+      max-height: 120px;
+    }
+
+    .state-description,
+    .state-button {
+      display: none;
+    }
+  }
+}

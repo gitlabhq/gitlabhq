@@ -87,6 +87,15 @@ class ProjectTeam
     @masters ||= fetch_members(Gitlab::Access::MASTER)
   end
 
+  def owners
+    @owners ||=
+      if group
+        group.owners
+      else
+        [project.owner]
+      end
+  end
+
   def import(source_project, current_user = nil)
     target_project = project
 
