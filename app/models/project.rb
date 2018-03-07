@@ -1951,12 +1951,20 @@ class Project < ActiveRecord::Base
   end
 
   def fetch_branch_allows_maintainer_push?(user, branch_name)
+    check_access = -> do
+      merge_request = source_of_merge_requests.opened
+                        .where(allow_maintainer_to_push: true)
+                        .find_by(source_branch: branch_name)
+
+      merge_request&.can_be_merged_by?(user)
+    end
+
     if RequestStore.active?
       RequestStore.fetch("project-#{id}:branch-#{branch_name}:user-#{user.id}:branch_allows_maintainer_push") do
-        merge_requests_allowing_push_to_user(user).where(source_branch: branch_name).any?
+        check_access.call
       end
     else
-      merge_requests_allowing_push_to_user(user).where(source_branch: branch_name).any?
+      check_access.call
     end
   end
 end

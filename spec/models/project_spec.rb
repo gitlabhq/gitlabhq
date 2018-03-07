@@ -3383,12 +3383,13 @@ describe Project do
 
   context 'with cross project merge requests' do
     let(:user) { create(:user) }
-    let(:target_project) { create(:project) }
-    let(:project) { fork_project(target_project) }
+    let(:target_project) { create(:project, :repository) }
+    let(:project) { fork_project(target_project, nil, repository: true) }
     let!(:merge_request) do
       create(
         :merge_request,
         target_project: target_project,
+        target_branch: 'target-branch',
         source_project: project,
         source_branch: 'awesome-feature-1',
         allow_maintainer_to_push: true
@@ -3429,7 +3430,7 @@ describe Project do
     end
 
     describe '#branch_allows_maintainer_push?' do
-      it 'includes branch names for merge requests allowing maintainer access to a user' do
+      it 'allows access if the user can merge the merge request' do
         expect(project.branch_allows_maintainer_push?(user, 'awesome-feature-1'))
           .to be_truthy
       end
@@ -3442,9 +3443,10 @@ describe Project do
           .to be_falsy
       end
 
-      it 'does not include branches for closed MRs' do
+      it 'does not allow access to branches for which the merge request was closed' do
         create(:merge_request, :closed,
                target_project: target_project,
+               target_branch: 'target-branch',
                source_project: project,
                source_branch: 'rejected-feature-1',
                allow_maintainer_to_push: true)
@@ -3453,18 +3455,26 @@ describe Project do
           .to be_falsy
       end
 
-      it 'only queries once per user' do
+      it 'does not allow access if the user cannot merge the merge request' do
+        create(:protected_branch, :masters_can_push, project: target_project, name: 'target-branch')
+
+        expect(project.branch_allows_maintainer_push?(user, 'awesome-feature-1'))
+          .to be_falsy
+      end
+
+      it 'caches the result' do
+        control = ActiveRecord::QueryRecorder.new { project.branch_allows_maintainer_push?(user, 'awesome-feature-1') }
+
         expect { 3.times { project.branch_allows_maintainer_push?(user, 'awesome-feature-1') } }
-          .not_to exceed_query_limit(1)
+          .not_to exceed_query_limit(control)
       end
 
       context 'when the requeststore is active', :request_store do
-        it 'only queries once per user accross project instances' do
-          # limiting to 3 queries:
-          # 2 times loading the project
-          # once loading the accessible branches
+        it 'only queries per project across instances' do
+          control = ActiveRecord::QueryRecorder.new { project.branch_allows_maintainer_push?(user, 'awesome-feature-1') }
+
           expect { 2.times { described_class.find(project.id).branch_allows_maintainer_push?(user, 'awesome-feature-1') } }
-            .not_to exceed_query_limit(3)
+            .not_to exceed_query_limit(control).with_threshold(2)
         end
       end
     end
