@@ -102,6 +102,17 @@ describe Project do
     end
   end
 
+  describe 'hard failing a mirror' do
+    it 'sends a notification' do
+      project = create(:project, :mirror, :import_started)
+      project.mirror_data.update_attributes(retry_count: Gitlab::Mirror::MAX_RETRY)
+
+      expect_any_instance_of(EE::NotificationService).to receive(:mirror_was_hard_failed).with(project)
+
+      project.import_fail
+    end
+  end
+
   describe '#push_rule' do
     let(:project) { create(:project, push_rule: create(:push_rule)) }
 
@@ -1084,7 +1095,7 @@ describe Project do
   describe '#disabled_services' do
     let(:namespace) { create(:group, :private) }
     let(:project) { create(:project, :private, namespace: namespace) }
-    let(:disabled_services) { %w(jenkins jenkins_deprecated) }
+    let(:disabled_services) { %w(jenkins jenkins_deprecated github) }
 
     context 'without a license key' do
       before do
@@ -1095,6 +1106,10 @@ describe Project do
     end
 
     context 'with a license key' do
+      before do
+        allow_any_instance_of(License).to receive(:plan).and_return(License::PREMIUM_PLAN)
+      end
+
       context 'when checking of namespace plan is enabled' do
         before do
           stub_application_setting_on_object(project, should_check_namespace_plan: true)
@@ -1105,7 +1120,7 @@ describe Project do
         end
 
         context 'and namespace has a plan' do
-          let(:namespace) { create(:group, :private, plan: :bronze_plan) }
+          let(:namespace) { create(:group, :private, plan: :silver_plan) }
 
           it_behaves_like 'project without disabled services'
         end

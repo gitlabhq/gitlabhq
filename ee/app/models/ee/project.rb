@@ -29,6 +29,7 @@ module EE
       has_one :index_status
       has_one :jenkins_service
       has_one :jenkins_deprecated_service
+      has_one :github_service
 
       has_many :approvers, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
       has_many :approver_groups, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -223,6 +224,11 @@ module EE
       end
     end
 
+    override :multiple_issue_boards_available?
+    def multiple_issue_boards_available?
+      feature_available?(:multiple_project_issue_boards)
+    end
+
     def service_desk_enabled
       ::EE::Gitlab::ServiceDesk.enabled?(project: self) && super
     end
@@ -312,13 +318,13 @@ module EE
     alias_method :reset_approvals_on_push?, :reset_approvals_on_push
 
     def approver_ids=(value)
-      value.split(",").map(&:strip).each do |user_id|
+      ::Gitlab::Utils.ensure_array_from_string(value).each do |user_id|
         approvers.find_or_create_by(user_id: user_id, target_id: id)
       end
     end
 
     def approver_group_ids=(value)
-      value.split(",").map(&:strip).each do |group_id|
+      ::Gitlab::Utils.ensure_array_from_string(value).each do |group_id|
         approver_groups.find_or_initialize_by(group_id: group_id, target_id: id)
       end
     end
@@ -449,6 +455,10 @@ module EE
 
         unless feature_available?(:jenkins_integration)
           disabled_services.push('jenkins', 'jenkins_deprecated')
+        end
+
+        unless feature_available?(:github_project_service_integration)
+          disabled_services.push('github')
         end
 
         disabled_services

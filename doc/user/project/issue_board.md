@@ -272,13 +272,14 @@ to another list the label changes and a system not is recorded.
 > Introduced in [GitLab Enterprise Edition 8.13](https://about.gitlab.com/2016/10/22/gitlab-8-13-released/#multiple-issue-boards-ee).
 
 Multiple Issue Boards, as the name suggests, allow for more than one Issue Board
-for a given project. This is great for large projects with more than one team
+for a given project or group. This is great for large projects with more than one team
 or in situations where a repository is used to host the code of multiple
 products.
 
 Clicking on the current board name in the upper left corner will reveal a
 menu from where you can create another Issue Board and rename or delete the
 existing one.
+Multiple issue boards feature is available for **projects in GitLab Starter Edition** and for **groups in GitLab Premium Edition**.
 
 ![Multiple Issue Boards](img/issue_boards_multiple.png)
 
@@ -327,6 +328,16 @@ Click the button at the top right to toggle focus mode on and off. In focus mode
 
 [Developers and up](../permissions.md) can use all the functionality of the
 Issue Board, that is create/delete lists and drag issues around.
+
+##  Group Issue Board
+
+>Introduced in GitLab 10.6
+
+Group issue board is analogous to project-level issue board and it is accessible at the group
+navigation level. A group-level issue board allows you to view all issues from all projects in that group
+(currently, it does not see issues from projects in subgroups). Similarly, you can only filter by group labels for these
+boards. When updating milestones and labels for an issue through the sidebar update mechanism, again only
+group-level objects are available.
 
 ## Tips
 

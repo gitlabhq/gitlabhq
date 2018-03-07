@@ -16,6 +16,8 @@ FactoryBot.define do
     factory :note_on_personal_snippet,   traits: [:on_personal_snippet]
     factory :system_note,                traits: [:system]
 
+    factory :discussion_note, class: DiscussionNote
+
     factory :discussion_note_on_merge_request, traits: [:on_merge_request], class: DiscussionNote do
       association :project, :repository
 
@@ -30,6 +32,8 @@ FactoryBot.define do
     factory :discussion_note_on_commit, traits: [:on_commit], class: DiscussionNote
 
     factory :discussion_note_on_personal_snippet, traits: [:on_personal_snippet], class: DiscussionNote
+
+    factory :discussion_note_on_snippet, traits: [:on_snippet], class: DiscussionNote
 
     factory :legacy_diff_note_on_commit, traits: [:on_commit, :legacy_diff_note], class: LegacyDiffNote
 
@@ -94,6 +98,10 @@ FactoryBot.define do
 
     trait :on_issue do
       noteable { create(:issue, project: project) }
+    end
+
+    trait :on_snippet do
+      noteable { create(:snippet, project: project) }
     end
 
     trait :on_merge_request do

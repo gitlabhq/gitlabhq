@@ -69,9 +69,11 @@
   - [storage_migrator, 1]
   - [pages_domain_verification, 1]
   - [plugin, 1]
+  - [pipeline_background, 1]
 
   # EE-specific queues
   - [ldap_group_sync, 2]
+  - [chat_notification, 2]
   - [geo, 1]
   - [repository_remove_remote, 1]
   - [repository_update_mirror, 1]

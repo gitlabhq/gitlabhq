@@ -117,7 +117,10 @@
 </script>
 
 <template>
-  <section class="settings no-animate expanded">
+  <section
+    id="cluster-applications"
+    class="settings no-animate expanded"
+  >
     <div class="settings-header">
       <h4>
         {{ s__('ClusterIntegration|Applications') }}

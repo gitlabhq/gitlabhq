@@ -11,7 +11,11 @@ module Gitlab
   class UntrustedRegexp
     delegate :===, to: :regexp
 
-    def initialize(pattern)
+    def initialize(pattern, multiline: false)
+      if multiline
+        pattern = "(?m)#{pattern}"
+      end
+
       @regexp = RE2::Regexp.new(pattern, log_errors: false)
 
       raise RegexpError.new(regexp.error) unless regexp.ok?
@@ -29,6 +33,19 @@ module Gitlab
 
     def replace(text, rewrite)
       RE2.Replace(text, regexp, rewrite)
+    end
+
+    # Handles regular expressions with the preferred RE2 library where possible
+    # via UntustedRegex. Falls back to Ruby's built-in regular expression library
+    # when the syntax would be invalid in RE2.
+    #
+    # One difference between these is `(?m)` multi-line mode. Ruby regex enables
+    # this by default, but also handles `^` and `$` differently.
+    # See: https://www.regular-expressions.info/modifiers.html
+    def self.with_fallback(pattern, multiline: false)
+      UntrustedRegexp.new(pattern, multiline: multiline)
+    rescue RegexpError
+      Regexp.new(pattern)
     end
 
     private

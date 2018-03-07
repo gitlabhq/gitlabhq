@@ -77,6 +77,16 @@ describe('GeoNodeDetailsComponent', () => {
     });
 
     describe('nodeVersion', () => {
+      it('returns `Unknown` when `version` and `revision` are null', () => {
+        const nodeDetailsVersionNull = Object.assign({}, mockNodeDetails, {
+          version: null,
+          revision: null,
+        });
+        const vmVersionNull = createComponent(nodeDetailsVersionNull);
+        expect(vmVersionNull.nodeVersion).toBe('Unknown');
+        vmVersionNull.$destroy();
+      });
+
       it('returns version string', () => {
         expect(vm.nodeVersion).toBe('10.4.0-pre (b93c51849b)');
       });
@@ -91,6 +101,15 @@ describe('GeoNodeDetailsComponent', () => {
     describe('dbReplicationLag', () => {
       it('returns DB replication lag time duration', () => {
         expect(vm.dbReplicationLag).toBe('0m');
+      });
+
+      it('returns `Unknown` when `dbReplicationLag` is null', () => {
+        const nodeDetailsLagNull = Object.assign({}, mockNodeDetails, {
+          dbReplicationLag: null,
+        });
+        const vmLagNull = createComponent(nodeDetailsLagNull);
+        expect(vmLagNull.dbReplicationLag).toBe('Unknown');
+        vmLagNull.$destroy();
       });
     });
 
@@ -158,10 +177,17 @@ describe('GeoNodeDetailsComponent', () => {
 
     describe('syncSettings', () => {
       it('returns sync settings object', () => {
-        const syncSettings = vm.syncSettings();
+        const nodeDetailsUnknownSync = Object.assign({}, mockNodeDetails, {
+          syncStatusUnavailable: true,
+        });
+        const vmUnknownSync = createComponent(nodeDetailsUnknownSync);
+
+        const syncSettings = vmUnknownSync.syncSettings();
+        expect(syncSettings.syncStatusUnavailable).toBe(true);
         expect(syncSettings.namespaces).toBe(mockNodeDetails.namespaces);
         expect(syncSettings.lastEvent).toBe(mockNodeDetails.lastEvent);
         expect(syncSettings.cursorLastEvent).toBe(mockNodeDetails.cursorLastEvent);
+        vmUnknownSync.$destroy();
       });
     });
 

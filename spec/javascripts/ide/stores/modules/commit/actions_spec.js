@@ -178,6 +178,7 @@ describe('IDE commit module actions', () => {
       f = file('changedFile');
       Object.assign(f, {
         active: true,
+        changed: true,
         content: 'file content',
       });
 
@@ -191,8 +192,11 @@ describe('IDE commit module actions', () => {
           },
         },
       };
-      store.state.changedFiles.push(f);
-      store.state.openFiles.push(f);
+      store.state.changedFiles.push(f, {
+        ...file('changedFile2'),
+        changed: true,
+      });
+      store.state.openFiles = store.state.changedFiles;
     });
 
     it('updates stores working reference', (done) => {
@@ -204,6 +208,20 @@ describe('IDE commit module actions', () => {
           expect(
             store.state.projects.abcproject.branches.master.workingReference,
           ).toBe(data.id);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('resets all files changed status', (done) => {
+      store.dispatch('commit/updateFilesAfterCommit', {
+        data,
+        branch,
+      })
+        .then(() => {
+          store.state.openFiles.forEach((entry) => {
+            expect(entry.changed).toBeFalsy();
+          });
         })
         .then(done)
         .catch(done.fail);

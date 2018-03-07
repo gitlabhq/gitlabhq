@@ -1,10 +1,16 @@
 module EE
   module Ci
     module Pipeline
+      extend ActiveSupport::Concern
+
       EE_FAILURE_REASONS = {
         activity_limit_exceeded: 20,
         size_limit_exceeded: 21
       }.freeze
+
+      included do
+        has_one :chat_data, class_name: 'Ci::PipelineChatData'
+      end
 
       def predefined_variables
         result = super

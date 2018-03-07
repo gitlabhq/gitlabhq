@@ -88,7 +88,7 @@ export default {
 </script>
 
 <template>
-  <div class="block labels">
+  <div class="block labels js-labels-block">
     <dropdown-value-collapsed
       v-if="showCreate"
       :labels="context.labels"
@@ -104,7 +104,7 @@ export default {
     </dropdown-value>
     <div
       v-if="canEdit"
-      class="selectbox"
+      class="selectbox js-selectbox"
       style="display: none;"
     >
       <dropdown-hidden-input

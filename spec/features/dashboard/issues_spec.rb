@@ -74,8 +74,8 @@ RSpec.describe 'Dashboard Issues' do
       find('.new-project-item-select-button').click
 
       page.within('.select2-results') do
-        expect(page).to have_content(project.name_with_namespace)
-        expect(page).not_to have_content(project_with_issues_disabled.name_with_namespace)
+        expect(page).to have_content(project.full_name)
+        expect(page).not_to have_content(project_with_issues_disabled.full_name)
       end
     end
 
@@ -84,8 +84,8 @@ RSpec.describe 'Dashboard Issues' do
 
       wait_for_requests
 
-      project_path = "/#{project.path_with_namespace}"
-      project_json = { name: project.name_with_namespace, url: project_path }.to_json
+      project_path = "/#{project.full_path}"
+      project_json = { name: project.full_name, url: project_path }.to_json
 
       # simulate selection, and prevent overlap by dropdown menu
       first('.project-item-select', visible: false)

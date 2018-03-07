@@ -1,0 +1,5 @@
+Repository mirroring on <%= @project.full_path %> has been paused due to too many failures. The last failure was:
+
+<%= @project.import_error %>
+
+To resume mirroring update your repository settings at <%= project_settings_repository_url(@project) %>.

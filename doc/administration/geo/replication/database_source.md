@@ -340,7 +340,6 @@ data before running `pg_basebackup`.
 
     echo Cleaning up old cluster directory
     sudo -u postgres rm -rf /var/opt/gitlab/postgresql/data
-    rm -f /tmp/postgresql.trigger
 
     echo Starting base backup as the replicator user
     echo Enter the password for $USER@$HOST
@@ -350,7 +349,6 @@ data before running `pg_basebackup`.
     sudo -u postgres bash -c "cat > /var/opt/gitlab/postgresql/data/recovery.conf <<- _EOF1_
       standby_mode = 'on'
       primary_conninfo = 'host=$HOST port=$PORT user=$USER password=$PASSWORD sslmode=$SSLMODE'
-      trigger_file = '/tmp/postgresql.trigger'
     _EOF1_
     "
 

@@ -1,5 +1,17 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.5.3 (2018-03-01)
+
+### Security (2 changes)
+
+- Project can no longer be shared between groups when both member and group locks are active.
+- Prevent new push rules from using non-RE2 regexes.
+
+### Fixed (1 change)
+
+- Fix LDAP group sync no longer configurable for regular users.
+
+
 ## 10.5.2 (2018-02-25)
 
 - No changes.
@@ -80,6 +92,18 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Geo - add documentation about using shared a S3 bucket with GitLab Container Registry.
 - Geo: Improve replication status. Using pg_stat_wal_receiver.
 - Remove unaproved typo check in sast:container report.
+
+
+## 10.4.5 (2018-03-01)
+
+### Security (2 changes)
+
+- Project can no longer be shared between groups when both member and group locks are active.
+- Prevent new push rules from using non-RE2 regexes.
+
+### Fixed (1 change)
+
+- Fix LDAP group sync no longer configurable for regular users.
 
 
 ## 10.4.4 (2018-02-16)
@@ -181,6 +205,18 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Remove unnecessary NTP checks now included in gitlab:geo:check. !3940
 - Move geo status check after db replication to avoid anticipated failures. !3941
 - Make scoped issue board specs more reliable.
+
+
+## 10.3.8 (2018-03-01)
+
+### Security (2 changes)
+
+- Project can no longer be shared between groups when both member and group locks are active.
+- Prevent new push rules from using non-RE2 regexes.
+
+### Fixed (1 change)
+
+- Fix LDAP group sync no longer configurable for regular users.
 
 
 ## 10.3.7 (2018-02-05)

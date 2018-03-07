@@ -13,7 +13,7 @@
   }
 
   .health-message {
-    padding: 4px 8px 1px;
+    padding: 2px 8px;
     background-color: $red-100;
     color: $red-500;
     border-radius: $border-radius-default;
@@ -29,9 +29,9 @@
       background: $white-light;
     }
 
-    &.node-disabled,
-    &.node-disabled:hover {
-      background-color: $gray-lightest;
+    &.node-action-active {
+      pointer-events: none;
+      opacity: 0.5;
     }
   }
 }

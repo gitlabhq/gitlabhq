@@ -130,7 +130,7 @@ const bindEvents = () => {
 
   $projectImportUrl.keyup(() => deriveProjectPathFromUrl($projectImportUrl));
 
-  $('.import_git').on('click', () => {
+  $('.js-import-git-toggle-button').on('click', () => {
     const $projectMirror = $('#project_mirror');
 
     $projectMirror.attr('disabled', !$projectMirror.attr('disabled'));

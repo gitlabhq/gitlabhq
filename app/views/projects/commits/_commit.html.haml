@@ -47,7 +47,7 @@
           #{ commit_text.html_safe }
         - if show_project_name
           %span.project_namespace
-            = project.name_with_namespace
+            = project.full_name
 
       .commit-actions.flex-row.hidden-xs
         - if request.xhr?

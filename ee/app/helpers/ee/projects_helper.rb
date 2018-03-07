@@ -15,5 +15,9 @@ module EE
         "default label `%{default_label}` will be used."
       ) % { default_label: default_label }
     end
+
+    def ci_cd_projects_available?
+      ::License.feature_available?(:ci_cd_projects) && import_sources_enabled?
+    end
   end
 end

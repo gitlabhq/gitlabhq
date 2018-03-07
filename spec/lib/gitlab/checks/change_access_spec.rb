@@ -168,14 +168,14 @@ describe Gitlab::Checks::ChangeAccess do
       let(:blob_object) { project.repository.blob_at_branch('lfs', 'files/lfs/lfs_object.iso') }
 
       before do
-        allow_any_instance_of(Gitlab::Git::RevList).to receive(:new_objects) do |&lazy_block|
-          lazy_block.call([blob_object.id])
+        allow_any_instance_of(Gitlab::Git::LfsChanges).to receive(:new_pointers) do
+          [blob_object]
         end
       end
 
       context 'with LFS not enabled' do
         it 'skips integrity check' do
-          expect_any_instance_of(Gitlab::Git::RevList).not_to receive(:new_objects)
+          expect_any_instance_of(Gitlab::Git::LfsChanges).not_to receive(:new_pointers)
 
           subject.exec
         end

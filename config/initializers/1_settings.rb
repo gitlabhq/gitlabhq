@@ -351,6 +351,7 @@ Settings.artifacts['object_store'] ||= Settingslogic.new({})
 Settings.artifacts['object_store']['enabled'] = false if Settings.artifacts['object_store']['enabled'].nil?
 Settings.artifacts['object_store']['remote_directory'] ||= nil
 Settings.artifacts['object_store']['background_upload'] = true if Settings.artifacts['object_store']['background_upload'].nil?
+Settings.artifacts['object_store']['proxy_download'] = false if Settings.artifacts['object_store']['proxy_download'].nil?
 # Convert upload connection settings to use string keys, to make Fog happy
 Settings.artifacts['object_store']['connection']&.deep_stringify_keys!
 
@@ -397,6 +398,7 @@ Settings.lfs['object_store'] ||= Settingslogic.new({})
 Settings.lfs['object_store']['enabled'] = false if Settings.lfs['object_store']['enabled'].nil?
 Settings.lfs['object_store']['remote_directory'] ||= nil
 Settings.lfs['object_store']['background_upload'] = true if Settings.lfs['object_store']['background_upload'].nil?
+Settings.lfs['object_store']['proxy_download'] = false if Settings.lfs['object_store']['proxy_download'].nil?
 # Convert upload connection settings to use string keys, to make Fog happy
 Settings.lfs['object_store']['connection']&.deep_stringify_keys!
 
@@ -410,6 +412,7 @@ Settings.uploads['object_store'] ||= Settingslogic.new({})
 Settings.uploads['object_store']['enabled'] = false if Settings.uploads['object_store']['enabled'].nil?
 Settings.uploads['object_store']['remote_directory'] ||= 'uploads'
 Settings.uploads['object_store']['background_upload'] = true if Settings.uploads['object_store']['background_upload'].nil?
+Settings.uploads['object_store']['proxy_download'] = false if Settings.uploads['object_store']['proxy_download'].nil?
 # Convert upload connection settings to use string keys, to make Fog happy
 Settings.uploads['object_store']['connection']&.deep_stringify_keys!
 

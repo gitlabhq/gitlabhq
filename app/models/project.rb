@@ -283,7 +283,8 @@ class Project < ActiveRecord::Base
   scope :without_storage_feature, ->(feature) { where('storage_version < :version OR storage_version IS NULL', version: HASHED_STORAGE_FEATURES[feature]) }
   scope :with_unmigrated_storage, -> { where('storage_version < :version OR storage_version IS NULL', version: LATEST_STORAGE_VERSION) }
 
-  scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
+  # last_activity_at is throttled every minute, but last_repository_updated_at is updated with every push
+  scope :sorted_by_activity, -> { reorder("GREATEST(COALESCE(last_activity_at, '1970-01-01'), COALESCE(last_repository_updated_at, '1970-01-01')) DESC") }
   scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
 
   scope :in_namespace, ->(namespace_ids) { where(namespace_id: namespace_ids) }
@@ -791,7 +792,7 @@ class Project < ActiveRecord::Base
   end
 
   def last_activity_date
-    last_repository_updated_at || last_activity_at || updated_at
+    [last_activity_at, last_repository_updated_at, updated_at].compact.max
   end
 
   def project_id
@@ -1541,14 +1542,32 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def import_export_shared
+    @import_export_shared ||= Gitlab::ImportExport::Shared.new(self)
+  end
+
   def export_path
     return nil unless namespace.present? || hashed_storage?(:repository)
 
-    File.join(Gitlab::ImportExport.storage_path, disk_path)
+    import_export_shared.archive_path
   end
 
   def export_project_path
     Dir.glob("#{export_path}/*export.tar.gz").max_by { |f| File.ctime(f) }
+  end
+
+  def export_status
+    if export_in_progress?
+      :started
+    elsif export_project_path
+      :finished
+    else
+      :none
+    end
+  end
+
+  def export_in_progress?
+    import_export_shared.active_export_count > 0
   end
 
   def remove_exports
@@ -1677,8 +1696,9 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def multiple_issue_boards_available?(user)
-    feature_available?(:multiple_issue_boards, user)
+  # Overridden on EE module
+  def multiple_issue_boards_available?
+    false
   end
 
   def full_path_was

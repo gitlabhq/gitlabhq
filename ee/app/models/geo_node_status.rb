@@ -105,7 +105,7 @@ class GeoNodeStatus < ActiveRecord::Base
     self.wikis_count = projects_finder.count_wikis
     self.lfs_objects_count = lfs_objects_finder.count_lfs_objects
     self.job_artifacts_count = job_artifacts_finder.count_job_artifacts
-    self.attachments_count = attachments_finder.count_attachments
+    self.attachments_count = attachments_finder.count_local_attachments
     self.last_successful_status_check_at = Time.now
     self.storage_shards = StorageShard.all
 

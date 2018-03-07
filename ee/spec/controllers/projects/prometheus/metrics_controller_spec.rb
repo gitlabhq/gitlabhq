@@ -16,7 +16,7 @@ describe Projects::Prometheus::MetricsController do
 
   describe 'POST #validate_query' do
     before do
-      allow(prometheus_service).to receive(:validate_query).with(query) { validation_result }
+      allow(prometheus_service).to receive(:query).with(:validate, query) { validation_result }
     end
 
     let(:query) { 'avg(metric)' }

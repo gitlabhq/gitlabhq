@@ -49,15 +49,12 @@ function generateEntries() {
 
   const manualEntries = {
     common:               './commons/index.js',
-    common_vue:           './vue_shared/vue_resource_interceptor.js',
-    locale:               './locale/index.js',
     main:                 './main.js',
     raven:                './raven/index.js',
     webpack_runtime:      './webpack.js',
 
     // EE-only
     ide:                  'ee/ide/index.js',
-    geo_nodes:            'ee/geo_nodes',
   };
 
   return Object.assign(manualEntries, autoEntries);

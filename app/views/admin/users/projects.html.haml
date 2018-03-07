@@ -29,12 +29,12 @@
     .panel.panel-default
       .panel-heading Joined projects (#{@joined_projects.count})
       %ul.well-list
-        - @joined_projects.sort_by(&:name_with_namespace).each do |project|
+        - @joined_projects.sort_by(&:full_name).each do |project|
           - member = project.team.find_member(@user.id)
           %li.project_member
             .list-item-name
               = link_to admin_project_path(project), class: dom_class(project) do
-                = project.name_with_namespace
+                = project.full_name
 
             - if member
               .pull-right

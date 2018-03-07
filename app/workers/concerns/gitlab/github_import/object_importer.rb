@@ -22,7 +22,7 @@ module Gitlab
 
         importer_class.new(object, project, client).execute
 
-        counter.increment(project: project.path_with_namespace)
+        counter.increment(project: project.full_path)
       end
 
       def counter

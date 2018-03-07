@@ -1,6 +1,7 @@
 # To add new service you should build a class inherited from Service
 # and implement a set of methods
 class Service < ActiveRecord::Base
+  prepend EE::Service
   include Sortable
   include Importable
 
@@ -129,6 +130,17 @@ class Service < ActiveRecord::Base
     fields
   end
 
+  def configurable_events
+    events = self.class.supported_events
+
+    # No need to disable individual triggers when there is only one
+    if events.count == 1
+      []
+    else
+      events
+    end
+  end
+
   def supported_events
     self.class.supported_events
   end
@@ -242,8 +254,6 @@ class Service < ActiveRecord::Base
       gemnasium
       hipchat
       irker
-      jenkins
-      jenkins_deprecated
       jira
       kubernetes
       mattermost_slash_commands

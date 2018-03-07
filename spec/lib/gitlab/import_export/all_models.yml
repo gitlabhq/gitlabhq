@@ -126,6 +126,7 @@ pipelines:
 - sourced_pipelines
 - triggered_by_pipeline
 - triggered_pipelines
+- chat_data # EE only
 pipeline_variables:
 - pipeline
 stages:
@@ -209,6 +210,7 @@ project:
 - mattermost_slash_commands_service
 - slack_slash_commands_service
 - gitlab_slack_application_service
+- github_service
 - irker_service
 - packagist_service
 - pivotaltracker_service

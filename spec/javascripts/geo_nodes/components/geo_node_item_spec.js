@@ -184,7 +184,7 @@ describe('GeoNodeItemComponent', () => {
         spyOn(eventHub, '$emit');
 
         vm.handleMounted();
-        expect(eventHub.$emit).toHaveBeenCalledWith('pollNodeDetails', mockNodes[0].id);
+        expect(eventHub.$emit).toHaveBeenCalledWith('pollNodeDetails', vm.node);
       });
     });
   });

@@ -8,6 +8,8 @@ describe Ci::Pipeline do
     create(:ci_empty_pipeline, status: :created, project: project)
   end
 
+  it { is_expected.to have_one(:chat_data) }
+
   describe '.failure_reasons' do
     it 'contains failure reasons about exceeded limits' do
       expect(described_class.failure_reasons)

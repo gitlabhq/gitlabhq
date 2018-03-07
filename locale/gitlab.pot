@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-02 13:39+0100\n"
-"PO-Revision-Date: 2018-03-02 13:39+0100\n"
+"POT-Creation-Date: 2018-03-05 14:09-0600\n"
+"PO-Revision-Date: 2018-03-05 14:09-0600\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -106,6 +106,9 @@ msgid "2FA enabled"
 msgstr ""
 
 msgid "A collection of graphs regarding Continuous Integration"
+msgstr ""
+
+msgid "A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), %{among_other_things_link}."
 msgstr ""
 
 msgid "About auto deploy"
@@ -219,6 +222,9 @@ msgstr ""
 msgid "All changes are committed"
 msgstr ""
 
+msgid "All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings."
+msgstr ""
+
 msgid "Allows you to add and manage Kubernetes clusters."
 msgstr ""
 
@@ -298,6 +304,9 @@ msgid "An error occurred while validating username"
 msgstr ""
 
 msgid "An error occurred. Please try again."
+msgstr ""
+
+msgid "Any Label"
 msgstr ""
 
 msgid "Appearance"
@@ -596,7 +605,13 @@ msgstr ""
 msgid "CI / CD"
 msgstr ""
 
+msgid "CI/CD"
+msgstr ""
+
 msgid "CI/CD configuration"
+msgstr ""
+
+msgid "CI/CD for external repo"
 msgstr ""
 
 msgid "CICD|Jobs"
@@ -1158,6 +1173,12 @@ msgstr ""
 msgid "Confidentiality"
 msgstr ""
 
+msgid "Connect your external repositories, and CI/CD pipelines will run for new commits. A GitLab project will be created with only CI/CD features enabled."
+msgstr ""
+
+msgid "Connecting..."
+msgstr ""
+
 msgid "Container Registry"
 msgstr ""
 
@@ -1672,6 +1693,9 @@ msgstr ""
 msgid "ForkedFromProjectPath|Forked from %{project_name} (deleted)"
 msgstr ""
 
+msgid "Forking in progress"
+msgstr ""
+
 msgid "Format"
 msgstr ""
 
@@ -1804,6 +1828,9 @@ msgstr ""
 msgid "Geo|Shards to synchronize"
 msgstr ""
 
+msgid "Git repository URL"
+msgstr ""
+
 msgid "Git revision"
 msgstr ""
 
@@ -1817,6 +1844,9 @@ msgid "GitLab Runner section"
 msgstr ""
 
 msgid "Gitaly Servers"
+msgstr ""
+
+msgid "Go back"
 msgstr ""
 
 msgid "Go to your fork"
@@ -1950,7 +1980,16 @@ msgstr ""
 msgid "If you already have files you can push them using the %{link_to_cli} below."
 msgstr ""
 
+msgid "If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>."
+msgstr ""
+
+msgid "Import in progress"
+msgstr ""
+
 msgid "Import repository"
+msgstr ""
+
+msgid "ImportButtons|Connect repositories from"
 msgstr ""
 
 msgid "Improve Issue boards with GitLab Enterprise Edition."
@@ -2058,6 +2097,15 @@ msgid "LFSStatus|Disabled"
 msgstr ""
 
 msgid "LFSStatus|Enabled"
+msgstr ""
+
+msgid "Label"
+msgstr ""
+
+msgid "LabelSelect|%{firstLabelName} +%{remainingLabelCount} more"
+msgstr ""
+
+msgid "LabelSelect|%{labelsString}, and %{remainingLabelCount} more"
 msgstr ""
 
 msgid "Labels"
@@ -2427,6 +2475,9 @@ msgstr ""
 msgid "OfSearchInADropdown|Filter"
 msgstr ""
 
+msgid "Once imported, repositories can be mirrored over SSH. Read more %{ssh_link}"
+msgstr ""
+
 msgid "Only project members can comment."
 msgstr ""
 
@@ -2590,6 +2641,12 @@ msgid "Please <a href=%{link_to_billing} target=\"_blank\" rel=\"noopener norefe
 msgstr ""
 
 msgid "Please solve the reCAPTCHA"
+msgstr ""
+
+msgid "Please wait while we connect to your repository. Refresh at will."
+msgstr ""
+
+msgid "Please wait while we import the repository for you. Refresh at will."
 msgstr ""
 
 msgid "Preferences"
@@ -2910,6 +2967,9 @@ msgstr ""
 msgid "Repair authentication"
 msgstr ""
 
+msgid "Repo by URL"
+msgstr ""
+
 msgid "Repository"
 msgstr ""
 
@@ -2945,6 +3005,9 @@ msgstr ""
 msgid "Roadmap"
 msgstr ""
 
+msgid "Run CI/CD pipelines for external repositories"
+msgstr ""
+
 msgid "SSH Keys"
 msgstr ""
 
@@ -2967,6 +3030,9 @@ msgid "Scheduling Pipelines"
 msgstr ""
 
 msgid "Scoped issue boards"
+msgstr ""
+
+msgid "Search"
 msgstr ""
 
 msgid "Search branches and tags"
@@ -3369,7 +3435,13 @@ msgstr ""
 msgid "The collection of events added to the data gathered for that stage."
 msgstr ""
 
+msgid "The connection will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
+msgstr ""
+
 msgid "The fork relationship has been removed."
+msgstr ""
+
+msgid "The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
 msgstr ""
 
 msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
@@ -3403,6 +3475,9 @@ msgid "The repository for this project does not exist."
 msgstr ""
 
 msgid "The repository for this project is empty"
+msgstr ""
+
+msgid "The repository must be accessible over <code>http://</code>, <code>https://</code> or <code>git://</code>."
 msgstr ""
 
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
@@ -3680,6 +3755,15 @@ msgid "Tip:"
 msgstr ""
 
 msgid "Title"
+msgstr ""
+
+msgid "To connect an SVN repository, check out %{svn_link}."
+msgstr ""
+
+msgid "To import an SVN repository, check out %{svn_link}."
+msgstr ""
+
+msgid "To only use CI/CD features for an external repository, choose <strong>CI/CD for external repo</strong>."
 msgstr ""
 
 msgid "To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. Only epics in the past 3 months and the next 3 months are shown."
@@ -4051,6 +4135,9 @@ msgstr ""
 msgid "Your projects"
 msgstr ""
 
+msgid "among other things"
+msgstr ""
+
 msgid "assign yourself"
 msgstr ""
 
@@ -4135,6 +4222,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "estimateCommand|%{slash_command} will update the estimated time with the latest command."
+msgstr ""
+
+msgid "here"
 msgstr ""
 
 msgid "is invalid because there is downstream lock"
@@ -4337,6 +4427,9 @@ msgid "source"
 msgstr ""
 
 msgid "spendCommand|%{slash_command} will update the sum of the time spent."
+msgstr ""
+
+msgid "this document"
 msgstr ""
 
 msgid "to help your contributors communicate effectively!"

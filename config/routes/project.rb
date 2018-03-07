@@ -69,7 +69,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :services, constraints: { id: %r{[^/]+} }, only: [:index, :edit, :update] do
+      resources :services, constraints: { id: %r{[^/]+} }, only: [:edit, :update] do
         member do
           put :test
         end
@@ -423,6 +423,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       get 'noteable/:target_type/:target_id/notes' => 'notes#index', as: 'noteable_notes'
 
+      # On CE only index and show are needed
       resources :boards, only: [:index, :show, :create, :update, :destroy]
 
       resources :todos, only: [:create]

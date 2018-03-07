@@ -109,6 +109,7 @@ export default class FilteredSearchManager {
         page: this.page,
         isGroup: this.isGroup,
         isGroupAncestor: this.isGroupAncestor,
+        isGroupDecendent: this.isGroupDecendent,
         filteredSearchTokenKeys: this.filteredSearchTokenKeys,
       });
 

@@ -364,6 +364,7 @@ skip the download step.
 ### include
 
 > Introduced in [GitLab Edition Premium][ee] 10.5.
+> Available for Starter, Premium and Ultimate [versions][gitlab-versions] since 10.6.
 
 Using the `include` keyword, you can allow the inclusion of external YAML files.
 
@@ -1756,3 +1757,4 @@ CI with various languages.
 [ce-3442]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3442
 [schedules]: ../../user/project/pipelines/schedules.md
 [ee]: https://about.gitlab.com/gitlab-ee/
+[gitlab-versions]: https://about.gitlab.com/products/

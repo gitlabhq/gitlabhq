@@ -177,7 +177,7 @@ describe Auth::ContainerRegistryAuthenticationService do
         end
 
         let(:current_params) do
-          { scope: "repository:#{project.path_with_namespace}:*" }
+          { scope: "repository:#{project.full_path}:*" }
         end
 
         it_behaves_like 'an inaccessible'
@@ -205,7 +205,7 @@ describe Auth::ContainerRegistryAuthenticationService do
         end
 
         let(:current_params) do
-          { scope: "repository:#{project.path_with_namespace}:*" }
+          { scope: "repository:#{project.full_path}:*" }
         end
 
         it_behaves_like 'an inaccessible'
@@ -244,7 +244,7 @@ describe Auth::ContainerRegistryAuthenticationService do
         end
 
         let(:current_params) do
-          { scope: "repository:#{project.path_with_namespace}:*" }
+          { scope: "repository:#{project.full_path}:*" }
         end
 
         it_behaves_like 'an inaccessible'
@@ -275,7 +275,7 @@ describe Auth::ContainerRegistryAuthenticationService do
 
       context 'disallow anyone to delete images' do
         let(:current_params) do
-          { scope: "repository:#{project.path_with_namespace}:*" }
+          { scope: "repository:#{project.full_path}:*" }
         end
 
         it_behaves_like 'an inaccessible'
@@ -316,7 +316,7 @@ describe Auth::ContainerRegistryAuthenticationService do
 
         context 'disallow anyone to delete images' do
           let(:current_params) do
-            { scope: "repository:#{project.path_with_namespace}:*" }
+            { scope: "repository:#{project.full_path}:*" }
           end
 
           it_behaves_like 'an inaccessible'
@@ -328,7 +328,7 @@ describe Auth::ContainerRegistryAuthenticationService do
         context 'disallow anyone to pull or push images' do
           let(:current_user) { create(:user, external: true) }
           let(:current_params) do
-            { scope: "repository:#{project.path_with_namespace}:pull,push" }
+            { scope: "repository:#{project.full_path}:pull,push" }
           end
 
           it_behaves_like 'an inaccessible'
@@ -338,7 +338,7 @@ describe Auth::ContainerRegistryAuthenticationService do
         context 'disallow anyone to delete images' do
           let(:current_user) { create(:user, external: true) }
           let(:current_params) do
-            { scope: "repository:#{project.path_with_namespace}:*" }
+            { scope: "repository:#{project.full_path}:*" }
           end
 
           it_behaves_like 'an inaccessible'
@@ -364,7 +364,7 @@ describe Auth::ContainerRegistryAuthenticationService do
 
     context 'allow to delete images' do
       let(:current_params) do
-        { scope: "repository:#{current_project.path_with_namespace}:*" }
+        { scope: "repository:#{current_project.full_path}:*" }
       end
 
       it_behaves_like 'a deletable' do
@@ -411,7 +411,7 @@ describe Auth::ContainerRegistryAuthenticationService do
 
     context 'disallow to delete images' do
       let(:current_params) do
-        { scope: "repository:#{current_project.path_with_namespace}:*" }
+        { scope: "repository:#{current_project.full_path}:*" }
       end
 
       it_behaves_like 'an inaccessible' do

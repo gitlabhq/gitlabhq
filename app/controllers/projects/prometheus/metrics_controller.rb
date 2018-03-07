@@ -2,11 +2,12 @@ module Projects
   module Prometheus
     class MetricsController < Projects::ApplicationController
       before_action :authorize_admin_project!
+      before_action :require_prometheus_metrics!
 
       def active_common
         respond_to do |format|
           format.json do
-            matched_metrics = prometheus_service.matched_metrics || {}
+            matched_metrics = prometheus_adapter.query(:matched_metrics) || {}
 
             if matched_metrics.any?
               render json: matched_metrics
@@ -20,7 +21,7 @@ module Projects
       def validate_query
         respond_to do |format|
           format.json do
-            result = prometheus_service.validate_query(params[:query])
+            result = prometheus_adapter.query(:validate, params[:query])
 
             if result.any?
               render json: result
@@ -96,8 +97,12 @@ module Projects
         params.require(:prometheus_metric).permit(:title, :query, :y_label, :unit, :legend, :group)
       end
 
-      def prometheus_service
-        @prometheus_service ||= project.find_or_initialize_service('prometheus')
+      def prometheus_adapter
+        @prometheus_adapter ||= ::Prometheus::AdapterService.new(project).prometheus_adapter
+      end
+
+      def require_prometheus_metrics!
+        render_404 unless prometheus_adapter.can_query?
       end
     end
   end

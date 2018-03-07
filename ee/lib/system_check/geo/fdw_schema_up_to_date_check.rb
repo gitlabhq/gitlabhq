@@ -1,7 +1,7 @@
 module SystemCheck
   module Geo
-    class FdwSchemaUptoDateCheck < SystemCheck::BaseCheck
-      set_name 'GitLab Geo tracking database is configured to use Foreign Data Wrapper?'
+    class FdwSchemaUpToDateCheck < SystemCheck::BaseCheck
+      set_name 'GitLab Geo tracking database Foreign Data Wrapper schema is up-to-date?'
       set_skip_reason 'Geo is not enabled'
 
       def skip?

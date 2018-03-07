@@ -238,9 +238,9 @@ module Gitlab
           self.__send__("#{key}=", options[key.to_sym]) # rubocop:disable GitlabSecurity/PublicSend
         end
 
-        @loaded_all_data = false
         # Retain the actual size before it is encoded
         @loaded_size = @data.bytesize if @data
+        @loaded_all_data = @loaded_size == size
       end
 
       def binary?
@@ -255,10 +255,15 @@ module Gitlab
       # memory as a Ruby string.
       def load_all_data!(repository)
         return if @data == '' # don't mess with submodule blobs
-        return @data if @loaded_all_data
 
-        Gitlab::GitalyClient.migrate(:git_blob_load_all_data) do |is_enabled|
-          @data = begin
+        # Even if we return early, recalculate wether this blob is binary in
+        # case a blob was initialized as text but the full data isn't
+        @binary = nil
+
+        return if @loaded_all_data
+
+        @data = Gitlab::GitalyClient.migrate(:git_blob_load_all_data) do |is_enabled|
+          begin
             if is_enabled
               repository.gitaly_blob_client.get_blob(oid: id, limit: -1).data
             else
@@ -269,7 +274,6 @@ module Gitlab
 
         @loaded_all_data = true
         @loaded_size = @data.bytesize
-        @binary = nil
       end
 
       def name

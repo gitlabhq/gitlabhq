@@ -2,6 +2,15 @@ module API
   class JobArtifacts < Grape::API
     before { authenticate_non_get! }
 
+    # EE::API::JobArtifacts would override the following helpers
+    helpers do
+      def authorize_download_artifacts!
+        authorize_read_builds!
+      end
+    end
+
+    prepend EE::API::JobArtifacts
+
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
@@ -16,13 +25,12 @@ module API
       route_setting :authentication, job_token_allowed: true
       get ':id/jobs/artifacts/:ref_name/download',
         requirements: { ref_name: /.+/ } do
-        authorize_read_builds!
-        check_cross_project_pipelines_feature!
+        authorize_download_artifacts!
 
         builds = user_project.latest_successful_builds_for(params[:ref_name])
         latest_build = builds.find_by!(name: params[:job])
 
-        present_artifacts!(latest_build.artifacts_file)
+        present_carrierwave_file!(latest_build.artifacts_file)
       end
 
       desc 'Download the artifacts archive from a job' do
@@ -33,12 +41,11 @@ module API
       end
       route_setting :authentication, job_token_allowed: true
       get ':id/jobs/:job_id/artifacts' do
-        authorize_read_builds!
-        check_cross_project_pipelines_feature!
+        authorize_download_artifacts!
 
         build = find_build!(params[:job_id])
 
-        present_artifacts!(build.artifacts_file)
+        present_carrierwave_file!(build.artifacts_file)
       end
 
       desc 'Download a specific file from artifacts archive' do
@@ -78,14 +85,6 @@ module API
 
         status 200
         present build, with: Entities::Job
-      end
-    end
-
-    helpers do
-      def check_cross_project_pipelines_feature!
-        if job_token_authentication? && !@project.feature_available?(:cross_project_pipelines)
-          not_found!('Project')
-        end
       end
     end
   end

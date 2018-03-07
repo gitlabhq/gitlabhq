@@ -44,6 +44,7 @@ describe Project do
     it { is_expected.to have_one(:bamboo_service) }
     it { is_expected.to have_one(:teamcity_service) }
     it { is_expected.to have_one(:jira_service) }
+    it { is_expected.to have_one(:github_service) }
     it { is_expected.to have_one(:redmine_service) }
     it { is_expected.to have_one(:custom_issue_tracker_service) }
     it { is_expected.to have_one(:bugzilla_service) }
@@ -563,6 +564,20 @@ describe Project do
 
       it 'returns the project\'s last update date if it has no events' do
         expect(project.last_activity_date).to eq(project.updated_at)
+      end
+
+      it 'returns the most recent timestamp' do
+        project.update_attributes(updated_at: nil,
+                                  last_activity_at: timestamp,
+                                  last_repository_updated_at: timestamp - 1.hour)
+
+        expect(project.last_activity_date).to eq(timestamp)
+
+        project.update_attributes(updated_at: timestamp,
+                                  last_activity_at: timestamp - 1.hour,
+                                  last_repository_updated_at: nil)
+
+        expect(project.last_activity_date).to eq(timestamp)
       end
     end
   end
