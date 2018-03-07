@@ -1,0 +1,7 @@
+- local_assigns.fetch(:view)
+
+%span.bold
+  %span{ data: { defer_to: "#{view.defer_key}-duration" } }...
+  \/
+  %span{ data: { defer_to: "#{view.defer_key}-calls" } }...
+sidekiq

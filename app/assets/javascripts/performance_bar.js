@@ -14,20 +14,14 @@ export default class PerformanceBar {
 
   init(opts) {
     const $container = $(opts.container);
-    this.$sqlProfileLink = $container.find('.js-toggle-modal-peek-sql');
-    this.$sqlProfileModal = $container.find('#modal-peek-pg-queries');
     this.$lineProfileLink = $container.find('.js-toggle-modal-peek-line-profile');
     this.$lineProfileModal = $('#modal-peek-line-profile');
-    this.$gitalyProfileLink = $container.find('.js-toggle-modal-peek-gitaly');
-    this.$gitalyProfileModal = $container.find('#modal-peek-gitaly-details');
     this.initEventListeners();
     this.showModalOnLoad();
   }
 
   initEventListeners() {
-    this.$sqlProfileLink.on('click', () => this.handleSQLProfileLink());
     this.$lineProfileLink.on('click', e => this.handleLineProfileLink(e));
-    this.$gitalyProfileLink.on('click', () => this.handleGitalyProfileLink());
     $(document).on('click', '.js-lineprof-file', PerformanceBar.toggleLineProfileFile);
   }
 
@@ -37,10 +31,6 @@ export default class PerformanceBar {
     if (/lineprofiler/.test(window.location.search)) {
       PerformanceBar.toggleModal(this.$lineProfileModal);
     }
-  }
-
-  handleSQLProfileLink() {
-    PerformanceBar.toggleModal(this.$sqlProfileModal);
   }
 
   handleLineProfileLink(e) {
@@ -53,10 +43,6 @@ export default class PerformanceBar {
       e.preventDefault();
       PerformanceBar.toggleModal(this.$lineProfileModal);
     }
-  }
-
-  handleGitalyProfileLink() {
-    PerformanceBar.toggleModal(this.$gitalyProfileModal);
   }
 
   static toggleModal($modal) {

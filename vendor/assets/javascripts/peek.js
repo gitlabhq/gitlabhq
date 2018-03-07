@@ -1,5 +1,5 @@
 /*
- * This is a modified version of https://github.com/peek/peek/blob/master/app/assets/javascripts/peek.js
+ * this is a modified version of https://github.com/peek/peek/blob/master/app/assets/javascripts/peek.js
  *
  * - Removed the dependency on jquery.tipsy
  * - Removed the initializeTipsy and toggleBar functions
@@ -18,11 +18,9 @@
   updatePerformanceBar = function(results) {
     Object.keys(results.data).forEach(function(key) {
       Object.keys(results.data[key]).forEach(function(label) {
-        var data, table, target;
-
-        data = results.data[key][label];
-        table = createTable(key, label, data);
-        target = $("[data-defer-to=" + key + "-" + label + "]");
+        var data = results.data[key][label];
+        var table = createTable(key, label, data);
+        var target = $('[data-defer-to="' + key + '-' + label + '"]');
 
         if (table) {
           target.html(table);
@@ -34,11 +32,11 @@
     return $(document).trigger('peek:render', [getRequestId(), results]);
   };
   createTable = function(key, label, data) {
-    var table;
+    if (label !== 'queries' && label !== 'details') {
+      return;
+    }
 
-    if (label != 'queries' && label != 'details') { return; }
-
-    table = document.createElement('table');
+    var table = document.createElement('table');
 
     for (var i = 0; i < data.length; i += 1) {
       table.appendChild(createTableRow(data[i]));
@@ -49,24 +47,20 @@
     return table;
   };
   createTableRow = function(row) {
-    var tr, duration_td, strong;
-
-    tr = document.createElement('tr');
-    duration_td = document.createElement('td');
-    strong = document.createElement('strong');
+    var tr = document.createElement('tr');
+    var durationTd = document.createElement('td');
+    var strong = document.createElement('strong');
 
     strong.append(row['duration'] + 'ms');
-    duration_td.appendChild(strong);
-    tr.appendChild(duration_td);
+    durationTd.appendChild(strong);
+    tr.appendChild(durationTd);
 
     ['sql', 'feature', 'enabled', 'request'].forEach(function(key) {
-      var td;
-
       if (!row[key]) { return; }
 
-      td = document.createElement('td');
-      td.appendChild(document.createTextNode(row[key]));
+      var td = document.createElement('td');
 
+      td.appendChild(document.createTextNode(row[key]));
       tr.appendChild(td);
     });
 
