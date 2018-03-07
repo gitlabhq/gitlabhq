@@ -69,6 +69,10 @@ module EE
           super
         end
       end
+
+      def parent_class
+        ::Group
+      end
     end
 
     def assignees
