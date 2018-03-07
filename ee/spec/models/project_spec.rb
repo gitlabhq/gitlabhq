@@ -102,6 +102,18 @@ describe Project do
     end
   end
 
+  describe '#ensure_external_webhook_token' do
+    let(:project) { create(:project, :repository) }
+
+    it "sets external_webhook_token when it's missing" do
+      project.update_attribute(:external_webhook_token, nil)
+      expect(project.external_webhook_token).to be_blank
+
+      project.ensure_external_webhook_token
+      expect(project.external_webhook_token).to be_present
+    end
+  end
+
   describe 'hard failing a mirror' do
     it 'sends a notification' do
       project = create(:project, :mirror, :import_started)

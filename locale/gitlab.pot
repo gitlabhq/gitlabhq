@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-05 14:09-0600\n"
-"PO-Revision-Date: 2018-03-05 14:09-0600\n"
+"POT-Creation-Date: 2018-03-05 14:35-0600\n"
+"PO-Revision-Date: 2018-03-05 14:35-0600\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -226,6 +226,12 @@ msgid "All features are enabled for blank projects, from templates, or when impo
 msgstr ""
 
 msgid "Allows you to add and manage Kubernetes clusters."
+msgstr ""
+
+msgid "Alternatively, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to connect."
+msgstr ""
+
+msgid "Alternatively, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
 msgstr ""
 
 msgid "An error occurred previewing the blob"
@@ -681,6 +687,12 @@ msgid "Choose file..."
 msgstr ""
 
 msgid "Choose which groups you wish to synchronize to this secondary node."
+msgstr ""
+
+msgid "Choose which repositories you want to connect and run CI/CD pipelines."
+msgstr ""
+
+msgid "Choose which repositories you want to import."
 msgstr ""
 
 msgid "Choose which shards you wish to synchronize to this secondary node."
@@ -1173,6 +1185,15 @@ msgstr ""
 msgid "Confidentiality"
 msgstr ""
 
+msgid "Connect"
+msgstr ""
+
+msgid "Connect all repositories"
+msgstr ""
+
+msgid "Connect repositories from GitHub"
+msgstr ""
+
 msgid "Connect your external repositories, and CI/CD pipelines will run for new commits. A GitLab project will be created with only CI/CD features enabled."
 msgstr ""
 
@@ -1439,6 +1460,9 @@ msgstr ""
 msgid "Don't show again"
 msgstr ""
 
+msgid "Done"
+msgstr ""
+
 msgid "Download"
 msgstr ""
 
@@ -1634,6 +1658,9 @@ msgstr ""
 msgid "ExternalAuthorizationService|When no classification label is set the default label `%{default_label}` will be used."
 msgstr ""
 
+msgid "Failed"
+msgstr ""
+
 msgid "Failed Jobs"
 msgstr ""
 
@@ -1697,6 +1724,9 @@ msgid "Forking in progress"
 msgstr ""
 
 msgid "Format"
+msgstr ""
+
+msgid "From %{provider_title}"
 msgstr ""
 
 msgid "From issue creation until deploy to production"
@@ -1838,6 +1868,9 @@ msgid "Git storage health information has been reset"
 msgstr ""
 
 msgid "Git version"
+msgstr ""
+
+msgid "GitHub import"
 msgstr ""
 
 msgid "GitLab Runner section"
@@ -1983,7 +2016,16 @@ msgstr ""
 msgid "If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>."
 msgstr ""
 
+msgid "Import"
+msgstr ""
+
+msgid "Import all repositories"
+msgstr ""
+
 msgid "Import in progress"
+msgstr ""
+
+msgid "Import repositories from GitHub"
 msgstr ""
 
 msgid "Import repository"
@@ -2171,6 +2213,9 @@ msgid "License"
 msgstr ""
 
 msgid "List"
+msgstr ""
+
+msgid "List your GitHub repositories"
 msgstr ""
 
 msgid "Loading the GitLab IDE..."
@@ -2391,6 +2436,18 @@ msgstr ""
 msgid "Note that the master branch is automatically protected. %{link_to_protected_branches}"
 msgstr ""
 
+msgid "Note: As an administrator you may like to configure %{github_integration_link}, which will allow login via GitHub and allow connecting repositories without generating a Personal Access Token."
+msgstr ""
+
+msgid "Note: As an administrator you may like to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token."
+msgstr ""
+
+msgid "Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow connecting repositories without generating a Personal Access Token."
+msgstr ""
+
+msgid "Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token."
+msgstr ""
+
 msgid "Notification events"
 msgstr ""
 
@@ -2518,6 +2575,9 @@ msgid "Pagination|« First"
 msgstr ""
 
 msgid "Password"
+msgstr ""
+
+msgid "Personal Access Token"
 msgstr ""
 
 msgid "Pipeline"
@@ -3023,6 +3083,9 @@ msgstr ""
 msgid "Schedule a new pipeline"
 msgstr ""
 
+msgid "Scheduled"
+msgstr ""
+
 msgid "Schedules"
 msgstr ""
 
@@ -3317,6 +3380,12 @@ msgid "Start a %{new_merge_request} with these changes"
 msgstr ""
 
 msgid "Start the Runner!"
+msgstr ""
+
+msgid "Started"
+msgstr ""
+
+msgid "Status"
 msgstr ""
 
 msgid "Stopped"
@@ -3757,7 +3826,22 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
+msgid "To GitLab"
+msgstr ""
+
+msgid "To connect GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to connect."
+msgstr ""
+
+msgid "To connect GitHub repositories, you first need to authorize GitLab to access the list of your GitHub repositories:"
+msgstr ""
+
 msgid "To connect an SVN repository, check out %{svn_link}."
+msgstr ""
+
+msgid "To import GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
+msgstr ""
+
+msgid "To import GitHub repositories, you first need to authorize GitLab to access the list of your GitHub repositories:"
 msgstr ""
 
 msgid "To import an SVN repository, check out %{svn_link}."
@@ -4216,6 +4300,9 @@ msgstr ""
 msgid "confidentiality|You are going to turn on the confidentiality. This means that only team members with <strong>at least Reporter access</strong> are able to see and leave comments on the issue."
 msgstr ""
 
+msgid "connecting"
+msgstr ""
+
 msgid "day"
 msgid_plural "days"
 msgstr[0] ""
@@ -4225,6 +4312,9 @@ msgid "estimateCommand|%{slash_command} will update the estimated time with the 
 msgstr ""
 
 msgid "here"
+msgstr ""
+
+msgid "importing"
 msgstr ""
 
 msgid "is invalid because there is downstream lock"
