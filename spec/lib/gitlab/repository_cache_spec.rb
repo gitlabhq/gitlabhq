@@ -5,11 +5,25 @@ describe Gitlab::RepositoryCache do
   let(:project) { create(:project) }
   let(:repository) { project.repository }
   let(:namespace) { "#{repository.full_path}:#{project.id}" }
-  let(:cache) { described_class.new(repository, backend) }
+  let(:cache) { described_class.new(repository, backend: backend) }
 
   describe '#cache_key' do
+    subject { cache.cache_key(:foo) }
+
     it 'includes the namespace' do
-      expect(cache.cache_key(:foo)).to eq "foo:#{namespace}"
+      expect(subject).to eq "foo:#{namespace}"
+    end
+
+    context 'with a given namespace' do
+      let(:extra_namespace) { 'my:data' }
+      let(:cache) do
+        described_class.new(repository, extra_namespace: extra_namespace,
+                                        backend: backend)
+      end
+
+      it 'includes the full namespace' do
+        expect(subject).to eq "foo:#{namespace}:#{extra_namespace}"
+      end
     end
   end
 

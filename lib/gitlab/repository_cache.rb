@@ -3,9 +3,10 @@ module Gitlab
   class RepositoryCache
     attr_reader :repository, :namespace, :backend
 
-    def initialize(repository, backend = Rails.cache)
+    def initialize(repository, extra_namespace: nil, backend: Rails.cache)
       @repository = repository
       @namespace = "#{repository.full_path}:#{repository.project.id}"
+      @namespace += ":#{extra_namespace}" if extra_namespace
       @backend = backend
     end
 
