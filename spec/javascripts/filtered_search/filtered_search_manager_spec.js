@@ -9,7 +9,7 @@ import FilteredSearchDropdownManager from '~/filtered_search/filtered_search_dro
 import FilteredSearchManager from '~/filtered_search/filtered_search_manager';
 import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
 
-describe('Filtered Search Manager', () => {
+describe('Filtered Search Manager', function () {
   let input;
   let manager;
   let tokensContainer;
