@@ -56,7 +56,7 @@ new_feature
 │  └── new_feature_store.js
 ├── service
 │  └── new_feature_service.js
-├── new_feature_bundle.js
+└── new_feature_bundle.js
 ```
 
 #### Bundle file
