@@ -557,7 +557,7 @@ describe 'Pipelines', :js do
       end
 
       it 'has a clear caches button' do
-        expect(page).to have_link 'Clear Runner Caches'
+        expect(page).to have_button 'Clear Runner Caches'
       end
 
       describe 'user clicks the button' do
@@ -567,14 +567,16 @@ describe 'Pipelines', :js do
           end
 
           it 'increments jobs_cache_index' do
-            click_link 'Clear Runner Caches'
+            click_button 'Clear Runner Caches'
+            wait_for_requests
             expect(page.find('.flash-notice')).to have_content 'Project cache successfully reset.'
           end
         end
 
         context 'when project does not have jobs_cache_index' do
           it 'sets jobs_cache_index to 1' do
-            click_link 'Clear Runner Caches'
+            click_button 'Clear Runner Caches'
+            wait_for_requests
             expect(page.find('.flash-notice')).to have_content 'Project cache successfully reset.'
           end
         end
