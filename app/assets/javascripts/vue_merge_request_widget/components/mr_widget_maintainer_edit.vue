@@ -10,8 +10,9 @@
     },
   };
 </script>
+
 <template>
-  <section class="mr-info-list mr-maintainer-edit">
+  <section class="mr-info-list mr-links">
     <p v-if="maintainerEditAllowed">
       {{ s__("mrWidget|Allows edits from maintainers") }}
     </p>
