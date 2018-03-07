@@ -2,13 +2,16 @@
   background-color: $modal-body-bg;
   padding: #{3 * $grid-size} #{2 * $grid-size};
 
-  .page-title {
-    margin-top: 0;
-
+  .page-title,
+  .modal-title {
     .color-label {
       font-size: $gl-font-size;
       padding: $gl-vert-padding $label-padding-modal;
     }
+  }
+
+  .page-title {
+    margin-top: 0;
   }
 }
 
