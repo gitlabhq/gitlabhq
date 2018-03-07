@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-05 17:10-0600\n"
-"PO-Revision-Date: 2018-03-05 17:10-0600\n"
+"POT-Creation-Date: 2018-03-06 17:36+0100\n"
+"PO-Revision-Date: 2018-03-06 17:36+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -103,6 +103,9 @@ msgid "2FA enabled"
 msgstr ""
 
 msgid "A collection of graphs regarding Continuous Integration"
+msgstr ""
+
+msgid "A new branch will be created in your fork and a new merge request will be started."
 msgstr ""
 
 msgid "A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), %{among_other_things_link}."
@@ -208,6 +211,9 @@ msgid "All"
 msgstr ""
 
 msgid "All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings."
+msgstr ""
+
+msgid "Allow edits from maintainers"
 msgstr ""
 
 msgid "Allows you to add and manage Kubernetes clusters."
@@ -410,6 +416,15 @@ msgstr ""
 msgid "Branches"
 msgstr ""
 
+msgid "Branches|Active"
+msgstr ""
+
+msgid "Branches|Active branches"
+msgstr ""
+
+msgid "Branches|All"
+msgstr ""
+
 msgid "Branches|Cant find HEAD commit for this branch"
 msgstr ""
 
@@ -455,10 +470,37 @@ msgstr ""
 msgid "Branches|Only a project master or owner can delete a protected branch"
 msgstr ""
 
-msgid "Branches|Protected branches can be managed in %{project_settings_link}"
+msgid "Branches|Overview"
+msgstr ""
+
+msgid "Branches|Protected branches can be managed in %{project_settings_link}."
+msgstr ""
+
+msgid "Branches|Show active branches"
+msgstr ""
+
+msgid "Branches|Show all branches"
+msgstr ""
+
+msgid "Branches|Show more active branches"
+msgstr ""
+
+msgid "Branches|Show more stale branches"
+msgstr ""
+
+msgid "Branches|Show overview of the branches"
+msgstr ""
+
+msgid "Branches|Show stale branches"
 msgstr ""
 
 msgid "Branches|Sort by"
+msgstr ""
+
+msgid "Branches|Stale"
+msgstr ""
+
+msgid "Branches|Stale branches"
 msgstr ""
 
 msgid "Branches|The default branch cannot be deleted"
@@ -1086,6 +1128,9 @@ msgstr ""
 msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images."
 msgstr ""
 
+msgid "Contribution"
+msgstr ""
+
 msgid "Contribution guide"
 msgstr ""
 
@@ -1434,6 +1479,9 @@ msgid "Find by path"
 msgstr ""
 
 msgid "Find file"
+msgstr ""
+
+msgid "Finished"
 msgstr ""
 
 msgid "FirstPushedBy|First"
@@ -1969,6 +2017,12 @@ msgstr ""
 msgid "Not available"
 msgstr ""
 
+msgid "Not available for private projects"
+msgstr ""
+
+msgid "Not available for protected branches"
+msgstr ""
+
 msgid "Not confidential"
 msgstr ""
 
@@ -2101,6 +2155,9 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
+msgid "Pending"
+msgstr ""
+
 msgid "Personal Access Token"
 msgstr ""
 
@@ -2182,7 +2239,28 @@ msgstr ""
 msgid "Pipelines|Build with confidence"
 msgstr ""
 
+msgid "Pipelines|CI Lint"
+msgstr ""
+
+msgid "Pipelines|Clear Runner Caches"
+msgstr ""
+
 msgid "Pipelines|Get started with Pipelines"
+msgstr ""
+
+msgid "Pipelines|Loading Pipelines"
+msgstr ""
+
+msgid "Pipelines|Run Pipeline"
+msgstr ""
+
+msgid "Pipelines|There are currently no %{scope} pipelines."
+msgstr ""
+
+msgid "Pipelines|There are currently no pipelines."
+msgstr ""
+
+msgid "Pipelines|This project is not currently set up to run pipelines."
 msgstr ""
 
 msgid "Pipeline|Retry pipeline"
@@ -2437,6 +2515,9 @@ msgstr ""
 msgid "Public - The project can be accessed without any authentication."
 msgstr ""
 
+msgid "Push access to this project is necessary in order to enable this option"
+msgstr ""
+
 msgid "Push events"
 msgstr ""
 
@@ -2521,6 +2602,9 @@ msgid "Revert this commit"
 msgstr ""
 
 msgid "Revert this merge request"
+msgstr ""
+
+msgid "Running"
 msgstr ""
 
 msgid "SSH Keys"
@@ -3518,6 +3602,9 @@ msgstr ""
 msgid "Your Kubernetes cluster information on this page is still editable, but you are advised to disable and reconfigure"
 msgstr ""
 
+msgid "Your changes can be committed to %{branch_name} because a merge request is open."
+msgstr ""
+
 msgid "Your comment will not be visible to the public."
 msgstr ""
 
@@ -3568,6 +3655,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "mrWidget| Please restore it or use a different %{missingBranchName} branch"
+msgstr ""
+
+msgid "mrWidget|Allows edits from maintainers"
 msgstr ""
 
 msgid "mrWidget|Cancel automatic merge"

@@ -168,6 +168,7 @@ MergeRequest:
 - last_edited_by_id
 - head_pipeline_id
 - discussion_locked
+- allow_maintainer_to_push
 MergeRequestDiff:
 - id
 - state
