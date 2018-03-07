@@ -77,6 +77,13 @@ describe Gitlab::ContributionsCalendar do
       expect(calendar(contributor).activity_dates[today]).to eq(1)
     end
 
+    it "counts the discussions on merge requests and issues" do
+      create_event(public_project, today, 0, Event::COMMENTED, :discussion_note_on_merge_request)
+      create_event(public_project, today, 2, Event::COMMENTED, :discussion_note_on_issue)
+
+      expect(calendar(contributor).activity_dates[today]).to eq(2)
+    end
+
     context "when events fall under different dates depending on the time zone" do
       before do
         create_event(public_project, today, 1)
