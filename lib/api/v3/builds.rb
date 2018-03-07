@@ -85,7 +85,7 @@ module API
 
           build = get_build!(params[:build_id])
 
-          present_artifacts!(build.artifacts_file)
+          present_carrierwave_file!(build.artifacts_file)
         end
 
         desc 'Download the artifacts file from build' do
@@ -102,10 +102,10 @@ module API
           builds = user_project.latest_successful_builds_for(params[:ref_name])
           latest_build = builds.find_by!(name: params[:job])
 
-          present_artifacts!(latest_build.artifacts_file)
+          present_carrierwave_file!(latest_build.artifacts_file)
         end
 
-        # TODO: We should use `present_file!` and leave this implementation for backward compatibility (when build trace
+        # TODO: We should use `present_disk_file!` and leave this implementation for backward compatibility (when build trace
         #       is saved in the DB instead of file). But before that, we need to consider how to replace the value of
         #       `runners_token` with some mask (like `xxxxxx`) when sending trace file directly by workhorse.
         desc 'Get a trace of a specific build of a project'

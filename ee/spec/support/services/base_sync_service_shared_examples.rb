@@ -29,3 +29,21 @@ shared_examples 'geo base sync execution' do
     end
   end
 end
+
+shared_examples 'cleans temporary repositories' do
+  context 'there is a leftover repository' do
+    let(:temp_repo_path) { "@geo-temporary/#{repository.disk_path}" }
+
+    it 'removes leftover repository' do
+      gitlab_shell = instance_double('Gitlab::Shell')
+
+      allow(subject).to receive(:gitlab_shell).and_return(gitlab_shell)
+      allow(subject).to receive(:fetch_geo_mirror)
+
+      expect(gitlab_shell).to receive(:exists?).and_return(true)
+      expect(gitlab_shell).to receive(:remove_repository).with(project.repository_storage_path, temp_repo_path)
+
+      subject.execute
+    end
+  end
+end

@@ -454,7 +454,7 @@ namespace :gitlab do
         SystemCheck::Geo::GeoDatabaseConfiguredCheck,
         SystemCheck::Geo::DatabaseReplicationCheck,
         SystemCheck::Geo::FdwEnabledCheck,
-        SystemCheck::Geo::FdwSchemaUptoDateCheck,
+        SystemCheck::Geo::FdwSchemaUpToDateCheck,
         SystemCheck::Geo::HttpConnectionCheck,
         SystemCheck::Geo::HTTPCloneEnabledCheck,
         SystemCheck::Geo::ClocksSynchronizationCheck,

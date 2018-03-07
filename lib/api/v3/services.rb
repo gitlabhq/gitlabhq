@@ -561,6 +561,20 @@ module API
           }
         ],
         # EE-specific services
+        'github' => [
+          {
+            required: true,
+            name: :token,
+            type: String,
+            desc: 'GitHub API token with repo:status OAuth scope'
+          },
+          {
+            required: true,
+            name: :repository_name,
+            type: String,
+            desc: "GitHub repository URL"
+          }
+        ],
         'jenkins' => [
           {
             required: true,

@@ -139,6 +139,14 @@ CREATE EXTENSION pg_trgm;
 On some systems you may need to install an additional package (e.g.
 `postgresql-contrib`) for this extension to become available.
 
+#### Additional requirements for GitLab Geo
+
+If you are using [GitLab Geo](https://docs.gitlab.com/ee/development/geo.html), the [tracking database](https://docs.gitlab.com/ee/development/geo.html#geo-tracking-database) also requires the `postgres_fdw` extension.
+
+```
+CREATE EXTENSION postgres_fdw;
+```
+
 ## Unicorn Workers
 
 It's possible to increase the amount of unicorn workers and this will usually help to reduce the response time of the applications and increase the ability to handle parallel requests.

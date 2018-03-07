@@ -12,6 +12,7 @@ module EE
       after_destroy :log_geo_event
 
       scope :with_files_stored_locally, -> { where(file_store: [nil, LfsObjectUploader::Store::LOCAL]) }
+      scope :with_files_stored_remotely, -> { where(file_store: ObjectStorage::Store::REMOTE) }
     end
 
     def local_store?

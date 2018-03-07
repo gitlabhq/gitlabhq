@@ -29,6 +29,7 @@ module EE
       has_one :index_status
       has_one :jenkins_service
       has_one :jenkins_deprecated_service
+      has_one :github_service
 
       has_many :approvers, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
       has_many :approver_groups, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -460,6 +461,10 @@ module EE
 
         unless feature_available?(:jenkins_integration)
           disabled_services.push('jenkins', 'jenkins_deprecated')
+        end
+
+        unless feature_available?(:github_project_service_integration)
+          disabled_services.push('github')
         end
 
         disabled_services

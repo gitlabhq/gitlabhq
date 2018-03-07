@@ -5,7 +5,8 @@ module Gitlab
         Gitlab::SlashCommands::IssueShow,
         Gitlab::SlashCommands::IssueNew,
         Gitlab::SlashCommands::IssueSearch,
-        Gitlab::SlashCommands::Deploy
+        Gitlab::SlashCommands::Deploy,
+        Gitlab::SlashCommands::Run
       ].freeze
 
       def execute

@@ -1,4 +1,5 @@
 class BuildFinishedWorker
+  prepend EE::BuildFinishedWorker
   include ApplicationWorker
   include PipelineQueue
 

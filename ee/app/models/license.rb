@@ -42,6 +42,7 @@ class License < ActiveRecord::Base
     extended_audit_events
     file_locks
     geo
+    github_project_service_integration
     jira_dev_panel_integration
     ldap_group_sync_filter
     multiple_clusters
@@ -60,9 +61,11 @@ class License < ActiveRecord::Base
   EEU_FEATURES = EEP_FEATURES + %i[
     sast
     sast_container
+    cluster_health
     dast
     epics
     ide
+    chatops
   ].freeze
 
   # List all features available for early adopters,
@@ -318,6 +321,7 @@ class License < ActiveRecord::Base
 
   def reset_current
     self.class.reset_current
+    Gitlab::Chat.flush_available_cache
   end
 
   def reset_license
