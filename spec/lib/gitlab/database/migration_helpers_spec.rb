@@ -1211,4 +1211,33 @@ describe Gitlab::Database::MigrationHelpers do
       expect(model.perform_background_migration_inline?).to eq(false)
     end
   end
+
+  describe '#index_exists_by_name?' do
+    it 'returns true if an index exists' do
+      expect(model.index_exists_by_name?(:projects, 'index_projects_on_path'))
+        .to be_truthy
+    end
+
+    it 'returns false if the index does not exist' do
+      expect(model.index_exists_by_name?(:projects, 'this_does_not_exist'))
+        .to be_falsy
+    end
+
+    context 'when an index with a function exists', :postgresql do
+      before do
+        ActiveRecord::Base.connection.execute(
+          'CREATE INDEX test_index ON projects (LOWER(path));'
+        )
+      end
+
+      after do
+        'DROP INDEX IF EXISTS test_index;'
+      end
+
+      it 'returns true if an index exists' do
+        expect(model.index_exists_by_name?(:projects, 'test_index'))
+          .to be_truthy
+      end
+    end
+  end
 end
