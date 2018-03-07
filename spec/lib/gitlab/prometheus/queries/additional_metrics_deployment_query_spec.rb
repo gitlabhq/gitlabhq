@@ -7,7 +7,7 @@ describe Gitlab::Prometheus::Queries::AdditionalMetricsDeploymentQuery do
 
   include_examples 'additional metrics query' do
     let(:deployment) { create(:deployment, environment: environment) }
-    let(:query_params) { [environment.id, deployment.id] }
+    let(:query_params) { [deployment.id] }
 
     it 'queries using specific time' do
       expect(client).to receive(:query_range).with(anything,

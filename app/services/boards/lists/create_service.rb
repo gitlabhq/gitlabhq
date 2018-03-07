@@ -12,7 +12,11 @@ module Boards
       private
 
       def available_labels_for(board)
-        LabelsFinder.new(current_user, project_id: parent.id).execute
+        if board.group_board?
+          parent.labels
+        else
+          LabelsFinder.new(current_user, project_id: parent.id).execute
+        end
       end
 
       def next_position(board)

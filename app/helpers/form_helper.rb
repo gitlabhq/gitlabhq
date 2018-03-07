@@ -27,7 +27,7 @@ module FormHelper
         first_user: current_user&.username,
         null_user: true,
         current_user: true,
-        project_id: @project.id,
+        project_id: @project&.id,
         field_name: 'issue[assignee_ids][]',
         default_label: 'Unassigned',
         'max-select': 1,

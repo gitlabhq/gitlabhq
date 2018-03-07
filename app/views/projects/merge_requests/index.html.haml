@@ -6,9 +6,6 @@
 - page_title "Merge Requests"
 - new_merge_request_email = @project.new_issuable_address(current_user, 'merge_request')
 
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'common_vue'
-
 %div{ class: container_class }
   = render 'projects/last_push'
 

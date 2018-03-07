@@ -121,6 +121,7 @@ module API
     mount ::API::Events
     mount ::API::Features
     mount ::API::Files
+    mount ::API::GroupBoards
     mount ::API::Groups
     mount ::API::GroupMilestones
     mount ::API::Internal
@@ -139,6 +140,7 @@ module API
     mount ::API::PagesDomains
     mount ::API::Pipelines
     mount ::API::PipelineSchedules
+    mount ::API::ProjectExport
     mount ::API::ProjectImport
     mount ::API::ProjectHooks
     mount ::API::Projects

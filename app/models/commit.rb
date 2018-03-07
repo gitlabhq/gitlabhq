@@ -9,6 +9,7 @@ class Commit
   include Mentionable
   include Referable
   include StaticModel
+  include ::Gitlab::Utils::StrongMemoize
 
   attr_mentionable :safe_message, pipeline: :single_line
 
@@ -225,11 +226,13 @@ class Commit
   end
 
   def parents
-    @parents ||= parent_ids.map { |id| project.commit(id) }
+    @parents ||= parent_ids.map { |oid| Commit.lazy(project, oid) }
   end
 
   def parent
-    @parent ||= project.commit(self.parent_id) if self.parent_id
+    strong_memoize(:parent) do
+      project.commit_by(oid: self.parent_id) if self.parent_id
+    end
   end
 
   def notes

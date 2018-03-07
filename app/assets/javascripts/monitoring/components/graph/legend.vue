@@ -39,6 +39,11 @@
         type: Number,
         required: true,
       },
+      showLegendGroup: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
     data() {
       return {
@@ -57,8 +62,9 @@
       },
 
       rectTransform() {
-        const yCoordinate = ((this.graphHeight - this.margin.top) / 2)
-                            + (this.yLabelWidth / 2) + 10 || 0;
+        const yCoordinate = (((this.graphHeight - this.margin.top)
+                            + this.measurements.axisLabelLineOffset) / 2)
+                            + (this.yLabelWidth / 2) || 0;
 
         return `translate(0, ${yCoordinate}) rotate(-90)`;
       },
@@ -166,39 +172,41 @@
     >
       Time
     </text>
-    <g
-      class="legend-group"
-      v-for="(series, index) in timeSeries"
-      :key="index"
-      :transform="translateLegendGroup(index)"
-    >
-      <line
-        :stroke="series.lineColor"
-        :stroke-width="measurements.legends.height"
-        :stroke-dasharray="strokeDashArray(series.lineStyle)"
-        :x1="measurements.legends.offsetX"
-        :x2="measurements.legends.offsetX + measurements.legends.width"
-        :y1="graphHeight - measurements.legends.offsetY"
-        :y2="graphHeight - measurements.legends.offsetY"
-      />
-      <text
-        v-if="timeSeries.length > 1"
-        class="legend-metric-title"
-        ref="legendTitleSvg"
-        x="38"
-        :y="graphHeight - 30"
+    <template v-if="showLegendGroup">
+      <g
+        class="legend-group"
+        v-for="(series, index) in timeSeries"
+        :key="index"
+        :transform="translateLegendGroup(index)"
       >
-        {{ createSeriesString(index, series) }}
-      </text>
-      <text
-        v-else
-        class="legend-metric-title"
-        ref="legendTitleSvg"
-        x="38"
-        :y="graphHeight - 30"
-      >
-        {{ legendTitle }} {{ formatMetricUsage(series) }}
-      </text>
-    </g>
+        <line
+          :stroke="series.lineColor"
+          :stroke-width="measurements.legends.height"
+          :stroke-dasharray="strokeDashArray(series.lineStyle)"
+          :x1="measurements.legends.offsetX"
+          :x2="measurements.legends.offsetX + measurements.legends.width"
+          :y1="graphHeight - measurements.legends.offsetY"
+          :y2="graphHeight - measurements.legends.offsetY"
+        />
+        <text
+          v-if="timeSeries.length > 1"
+          class="legend-metric-title"
+          ref="legendTitleSvg"
+          x="38"
+          :y="graphHeight - 30"
+        >
+          {{ createSeriesString(index, series) }}
+        </text>
+        <text
+          v-else
+          class="legend-metric-title"
+          ref="legendTitleSvg"
+          x="38"
+          :y="graphHeight - 30"
+        >
+          {{ legendTitle }} {{ formatMetricUsage(series) }}
+        </text>
+      </g>
+    </template>
   </g>
 </template>
