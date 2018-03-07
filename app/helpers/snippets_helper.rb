@@ -126,7 +126,7 @@ module SnippetsHelper
                      raw_project_snippet_url(@snippet.project, @snippet, inline: false)
                    end
 
-    link_to external_snippet_icon('download'), download_url, class: 'btn', target: '_blank', title: 'Download', data: { container: 'body' }, rel: 'noopener noreferrer'
+    link_to external_snippet_icon('download'), download_url, class: 'btn', target: '_blank', title: 'Download', rel: 'noopener noreferrer'
   end
 
   def public_snippet?
