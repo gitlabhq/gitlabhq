@@ -99,8 +99,8 @@ class Environment < ActiveRecord::Base
     folder_name == "production"
   end
 
-  def first_deployment_for(commit)
-    ref = project.repository.ref_name_for_sha(ref_path, commit.sha)
+  def first_deployment_for(commit_sha)
+    ref = project.repository.ref_name_for_sha(ref_path, commit_sha)
 
     return nil unless ref
 
