@@ -17,6 +17,10 @@
 
     .pull-right
       - if @project_runners.include?(runner)
+        - if runner.active?
+          = link_to 'Pause', pause_project_runner_path(@project, runner), method: :post, class: 'btn btn-sm btn-danger', data: { confirm: "Are you sure?" }
+        - else
+          = link_to 'Resume', resume_project_runner_path(@project, runner), method: :post, class: 'btn btn-success btn-sm'
         - if runner.belongs_to_one_project?
           = link_to 'Remove Runner', runner_path(runner), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'
         - else

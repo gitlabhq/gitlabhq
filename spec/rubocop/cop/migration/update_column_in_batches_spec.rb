@@ -1,6 +1,8 @@
 require 'spec_helper'
+
 require 'rubocop'
 require 'rubocop/rspec/support'
+
 require_relative '../../../../rubocop/cop/migration/update_column_in_batches'
 
 describe RuboCop::Cop::Migration::UpdateColumnInBatches do
@@ -25,7 +27,7 @@ describe RuboCop::Cop::Migration::UpdateColumnInBatches do
 
   context 'outside of a migration' do
     it 'does not register any offenses' do
-      inspect_source(cop, migration_code)
+      inspect_source(migration_code)
 
       expect(cop.offenses).to be_empty
     end
@@ -49,7 +51,7 @@ describe RuboCop::Cop::Migration::UpdateColumnInBatches do
     let(:relative_spec_filepath) { Pathname.new(spec_filepath).relative_path_from(tmp_rails_root) }
 
     it 'registers an offense when using update_column_in_batches' do
-      inspect_source(cop, migration_code, @migration_file)
+      inspect_source(migration_code, @migration_file)
 
       aggregate_failures do
         expect(cop.offenses.size).to eq(1)
@@ -72,7 +74,7 @@ describe RuboCop::Cop::Migration::UpdateColumnInBatches do
     end
 
     it 'does not register any offenses' do
-      inspect_source(cop, migration_code, @migration_file)
+      inspect_source(migration_code, @migration_file)
 
       expect(cop.offenses).to be_empty
     end

@@ -6,6 +6,6 @@ shared_examples 'a 404 response when source is private' do
   it 'returns 404' do
     route
 
-    expect(response).to have_http_status(404)
+    expect(response).to have_gitlab_http_status(404)
   end
 end

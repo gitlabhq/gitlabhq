@@ -1,5 +1,0 @@
----
-title: Move `lib/ci` to `lib/gitlab/ci`
-merge_request: 14078
-author: Maxim Rydkin
-type: other

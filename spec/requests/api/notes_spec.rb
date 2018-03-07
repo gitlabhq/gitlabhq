@@ -14,7 +14,7 @@ describe API::Notes do
   let(:private_user)    { create(:user) }
   let(:private_project) do
     create(:project, namespace: private_user.namespace)
-    .tap { |p| p.team << [private_user, :master] }
+    .tap { |p| p.add_master(private_user) }
   end
   let(:private_issue)    { create(:issue, project: private_project) }
 
@@ -29,15 +29,57 @@ describe API::Notes do
   end
 
   before do
-    project.team << [user, :reporter]
+    project.add_reporter(user)
   end
 
   describe "GET /projects/:id/noteable/:noteable_id/notes" do
     context "when noteable is an Issue" do
+      context 'sorting' do
+        before do
+          create_list(:note, 3, noteable: issue, project: project, author: user)
+        end
+
+        it 'sorts by created_at in descending order by default' do
+          get api("/projects/#{project.id}/issues/#{issue.iid}/notes", user)
+
+          response_dates = json_response.map { |noteable| noteable['created_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort.reverse)
+        end
+
+        it 'sorts by ascending order when requested' do
+          get api("/projects/#{project.id}/issues/#{issue.iid}/notes?sort=asc", user)
+
+          response_dates = json_response.map { |noteable| noteable['created_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort)
+        end
+
+        it 'sorts by updated_at in descending order when requested' do
+          get api("/projects/#{project.id}/issues/#{issue.iid}/notes?order_by=updated_at", user)
+
+          response_dates = json_response.map { |noteable| noteable['updated_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort.reverse)
+        end
+
+        it 'sorts by updated_at in ascending order when requested' do
+          get api("/projects/#{project.id}/issues/#{issue.iid}/notes??order_by=updated_at&sort=asc", user)
+
+          response_dates = json_response.map { |noteable| noteable['updated_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort)
+        end
+      end
+
       it "returns an array of issue notes" do
         get api("/projects/#{project.id}/issues/#{issue.iid}/notes", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['body']).to eq(issue_note.note)
@@ -46,14 +88,14 @@ describe API::Notes do
       it "returns a 404 error when issue id not found" do
         get api("/projects/#{project.id}/issues/12345/notes", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       context "and current user cannot view the notes" do
         it "returns an empty array" do
           get api("/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes", user)
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response).to be_empty
@@ -67,7 +109,7 @@ describe API::Notes do
           it "returns 404" do
             get api("/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes", user)
 
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
 
@@ -75,7 +117,7 @@ describe API::Notes do
           it "returns an empty array" do
             get api("/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes", private_user)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
             expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(json_response.first['body']).to eq(cross_reference_note.note)
@@ -85,10 +127,51 @@ describe API::Notes do
     end
 
     context "when noteable is a Snippet" do
+      context 'sorting' do
+        before do
+          create_list(:note, 3, noteable: snippet, project: project, author: user)
+        end
+
+        it 'sorts by created_at in descending order by default' do
+          get api("/projects/#{project.id}/snippets/#{snippet.id}/notes", user)
+
+          response_dates = json_response.map { |noteable| noteable['created_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort.reverse)
+        end
+
+        it 'sorts by ascending order when requested' do
+          get api("/projects/#{project.id}/snippets/#{snippet.id}/notes?sort=asc", user)
+
+          response_dates = json_response.map { |noteable| noteable['created_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort)
+        end
+
+        it 'sorts by updated_at in descending order when requested' do
+          get api("/projects/#{project.id}/snippets/#{snippet.id}/notes?order_by=updated_at", user)
+
+          response_dates = json_response.map { |noteable| noteable['updated_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort.reverse)
+        end
+
+        it 'sorts by updated_at in ascending order when requested' do
+          get api("/projects/#{project.id}/snippets/#{snippet.id}/notes??order_by=updated_at&sort=asc", user)
+
+          response_dates = json_response.map { |noteable| noteable['updated_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort)
+        end
+      end
       it "returns an array of snippet notes" do
         get api("/projects/#{project.id}/snippets/#{snippet.id}/notes", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['body']).to eq(snippet_note.note)
@@ -97,21 +180,62 @@ describe API::Notes do
       it "returns a 404 error when snippet id not found" do
         get api("/projects/#{project.id}/snippets/42/notes", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it "returns 404 when not authorized" do
         get api("/projects/#{project.id}/snippets/#{snippet.id}/notes", private_user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
     context "when noteable is a Merge Request" do
+      context 'sorting' do
+        before do
+          create_list(:note, 3, noteable: merge_request, project: project, author: user)
+        end
+
+        it 'sorts by created_at in descending order by default' do
+          get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes", user)
+
+          response_dates = json_response.map { |noteable| noteable['created_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort.reverse)
+        end
+
+        it 'sorts by ascending order when requested' do
+          get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes?sort=asc", user)
+
+          response_dates = json_response.map { |noteable| noteable['created_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort)
+        end
+
+        it 'sorts by updated_at in descending order when requested' do
+          get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes?order_by=updated_at", user)
+
+          response_dates = json_response.map { |noteable| noteable['updated_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort.reverse)
+        end
+
+        it 'sorts by updated_at in ascending order when requested' do
+          get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes??order_by=updated_at&sort=asc", user)
+
+          response_dates = json_response.map { |noteable| noteable['updated_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort)
+        end
+      end
       it "returns an array of merge_requests notes" do
         get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['body']).to eq(merge_request_note.note)
@@ -120,13 +244,13 @@ describe API::Notes do
       it "returns a 404 error if merge request id not found" do
         get api("/projects/#{project.id}/merge_requests/4444/notes", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it "returns 404 when not authorized" do
         get api("/projects/#{project.id}/merge_requests/4444/notes", private_user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -136,21 +260,21 @@ describe API::Notes do
       it "returns an issue note by id" do
         get api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{issue_note.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['body']).to eq(issue_note.note)
       end
 
       it "returns a 404 error if issue note not found" do
         get api("/projects/#{project.id}/issues/#{issue.iid}/notes/12345", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       context "and current user cannot view the note" do
         it "returns a 404 error" do
           get api("/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes/#{cross_reference_note.id}", user)
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
 
         context "when issue is confidential" do
@@ -161,7 +285,7 @@ describe API::Notes do
           it "returns 404" do
             get api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{issue_note.id}", private_user)
 
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
 
@@ -169,7 +293,7 @@ describe API::Notes do
           it "returns an issue note by id" do
             get api("/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes/#{cross_reference_note.id}", private_user)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
             expect(json_response['body']).to eq(cross_reference_note.note)
           end
         end
@@ -180,14 +304,14 @@ describe API::Notes do
       it "returns a snippet note by id" do
         get api("/projects/#{project.id}/snippets/#{snippet.id}/notes/#{snippet_note.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['body']).to eq(snippet_note.note)
       end
 
       it "returns a 404 error if snippet note not found" do
         get api("/projects/#{project.id}/snippets/#{snippet.id}/notes/12345", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -197,7 +321,7 @@ describe API::Notes do
       it "creates a new issue note" do
         post api("/projects/#{project.id}/issues/#{issue.iid}/notes", user), body: 'hi!'
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['body']).to eq('hi!')
         expect(json_response['author']['username']).to eq(user.username)
       end
@@ -205,13 +329,13 @@ describe API::Notes do
       it "returns a 400 bad request error if body not given" do
         post api("/projects/#{project.id}/issues/#{issue.iid}/notes", user)
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
 
       it "returns a 401 unauthorized error if user not authenticated" do
         post api("/projects/#{project.id}/issues/#{issue.iid}/notes"), body: 'hi!'
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
 
       context 'when an admin or owner makes the request' do
@@ -220,7 +344,7 @@ describe API::Notes do
           post api("/projects/#{project.id}/issues/#{issue.iid}/notes", user),
             body: 'hi!', created_at: creation_time
 
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(json_response['body']).to eq('hi!')
           expect(json_response['author']['username']).to eq(user.username)
           expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
@@ -233,7 +357,7 @@ describe API::Notes do
         it 'creates a new issue note' do
           post api("/projects/#{project.id}/issues/#{issue2.iid}/notes", user), body: ':+1:'
 
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(json_response['body']).to eq(':+1:')
         end
       end
@@ -242,7 +366,7 @@ describe API::Notes do
         it 'creates a new issue note' do
           post api("/projects/#{project.id}/issues/#{issue.iid}/notes", user), body: ':+1:'
 
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(json_response['body']).to eq(':+1:')
         end
       end
@@ -252,7 +376,7 @@ describe API::Notes do
       it "creates a new snippet note" do
         post api("/projects/#{project.id}/snippets/#{snippet.id}/notes", user), body: 'hi!'
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['body']).to eq('hi!')
         expect(json_response['author']['username']).to eq(user.username)
       end
@@ -260,13 +384,13 @@ describe API::Notes do
       it "returns a 400 bad request error if body not given" do
         post api("/projects/#{project.id}/snippets/#{snippet.id}/notes", user)
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
 
       it "returns a 401 unauthorized error if user not authenticated" do
         post api("/projects/#{project.id}/snippets/#{snippet.id}/notes"), body: 'hi!'
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
@@ -278,7 +402,7 @@ describe API::Notes do
         post api("/projects/#{project.id}/issues/#{issue.iid}/notes", user),
           body: 'Foo'
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -302,11 +426,45 @@ describe API::Notes do
         expect(private_issue.notes.reload).to be_empty
       end
     end
+
+    context 'when the merge request discussion is locked' do
+      before do
+        merge_request.update_attribute(:discussion_locked, true)
+      end
+
+      context 'when a user is a team member' do
+        subject { post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes", user), body: 'Hi!' }
+
+        it 'returns 200 status' do
+          subject
+
+          expect(response).to have_gitlab_http_status(201)
+        end
+
+        it 'creates a new note' do
+          expect { subject }.to change { Note.count }.by(1)
+        end
+      end
+
+      context 'when a user is not a team member' do
+        subject { post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes", private_user), body: 'Hi!' }
+
+        it 'returns 403 status' do
+          subject
+
+          expect(response).to have_gitlab_http_status(403)
+        end
+
+        it 'does not create a new note' do
+          expect { subject }.not_to change { Note.count }
+        end
+      end
+    end
   end
 
   describe "POST /projects/:id/noteable/:noteable_id/notes to test observer on create" do
     it "creates an activity event when an issue note is created" do
-      expect(Event).to receive(:create)
+      expect(Event).to receive(:create!)
 
       post api("/projects/#{project.id}/issues/#{issue.iid}/notes", user), body: 'hi!'
     end
@@ -318,7 +476,7 @@ describe API::Notes do
         put api("/projects/#{project.id}/issues/#{issue.iid}/"\
                   "notes/#{issue_note.id}", user), body: 'Hello!'
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['body']).to eq('Hello!')
       end
 
@@ -326,14 +484,14 @@ describe API::Notes do
         put api("/projects/#{project.id}/issues/#{issue.iid}/notes/12345", user),
                 body: 'Hello!'
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it 'returns a 400 bad request error if body not given' do
         put api("/projects/#{project.id}/issues/#{issue.iid}/"\
                   "notes/#{issue_note.id}", user)
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
     end
 
@@ -342,7 +500,7 @@ describe API::Notes do
         put api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                   "notes/#{snippet_note.id}", user), body: 'Hello!'
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['body']).to eq('Hello!')
       end
 
@@ -350,7 +508,7 @@ describe API::Notes do
         put api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                   "notes/12345", user), body: "Hello!"
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -359,7 +517,7 @@ describe API::Notes do
         put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/"\
                   "notes/#{merge_request_note.id}", user), body: 'Hello!'
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['body']).to eq('Hello!')
       end
 
@@ -367,7 +525,7 @@ describe API::Notes do
         put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/"\
                   "notes/12345", user), body: "Hello!"
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -378,17 +536,17 @@ describe API::Notes do
         delete api("/projects/#{project.id}/issues/#{issue.iid}/"\
                    "notes/#{issue_note.id}", user)
 
-        expect(response).to have_http_status(204)
+        expect(response).to have_gitlab_http_status(204)
         # Check if note is really deleted
         delete api("/projects/#{project.id}/issues/#{issue.iid}/"\
                    "notes/#{issue_note.id}", user)
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it 'returns a 404 error when note id not found' do
         delete api("/projects/#{project.id}/issues/#{issue.iid}/notes/12345", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it_behaves_like '412 response' do
@@ -401,18 +559,18 @@ describe API::Notes do
         delete api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                    "notes/#{snippet_note.id}", user)
 
-        expect(response).to have_http_status(204)
+        expect(response).to have_gitlab_http_status(204)
         # Check if note is really deleted
         delete api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                    "notes/#{snippet_note.id}", user)
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it 'returns a 404 error when note id not found' do
         delete api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                    "notes/12345", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it_behaves_like '412 response' do
@@ -425,18 +583,18 @@ describe API::Notes do
         delete api("/projects/#{project.id}/merge_requests/"\
                    "#{merge_request.iid}/notes/#{merge_request_note.id}", user)
 
-        expect(response).to have_http_status(204)
+        expect(response).to have_gitlab_http_status(204)
         # Check if note is really deleted
         delete api("/projects/#{project.id}/merge_requests/"\
                    "#{merge_request.iid}/notes/#{merge_request_note.id}", user)
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it 'returns a 404 error when note id not found' do
         delete api("/projects/#{project.id}/merge_requests/"\
                    "#{merge_request.iid}/notes/12345", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it_behaves_like '412 response' do

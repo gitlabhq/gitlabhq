@@ -13,10 +13,20 @@
       display: inline-block;
     }
 
+    .issuable-meta {
+      .author_link {
+        display: inline-block;
+      }
+
+      .issuable-comments {
+        height: 18px;
+      }
+    }
+
     .icon-merge-request-unmerged {
       height: 13px;
       margin-bottom: 3px;
-     }
+    }
   }
 }
 
@@ -134,29 +144,20 @@ ul.related-merge-requests > li {
 }
 
 @media (max-width: $screen-xs-max) {
-  .issue-btn-group {
-    width: 100%;
-
-    .btn {
-      width: 100%;
+  .detail-page-header {
+    .issuable-meta {
+      line-height: 18px;
     }
   }
 }
 
 .issue-form {
-  @include new-style-dropdown;
-
   .select2-container {
     width: 250px !important;
   }
 }
 
-.issues-footer {
-  padding-top: $gl-padding;
-  padding-bottom: 37px;
-}
-
-.issue-email-modal-btn {
+.issuable-email-modal-btn {
   padding: 0;
   color: $gl-link-color;
   background-color: transparent;
@@ -190,7 +191,19 @@ ul.related-merge-requests > li {
 }
 
 .create-mr-dropdown-wrap {
-  @include new-style-dropdown;
+  .ref::selection {
+    color: $placeholder-text-color;
+  }
+
+  .dropdown {
+    .dropdown-menu-toggle {
+      min-width: 285px;
+    }
+
+    .dropdown-select {
+      width: 285px;
+    }
+  }
 
   .btn-group:not(.hide) {
     display: flex;
@@ -201,48 +214,31 @@ ul.related-merge-requests > li {
     flex-shrink: 0;
   }
 
-  .dropdown-menu {
+  .create-merge-request-dropdown-menu {
     width: 300px;
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
     display: none;
+    margin-top: 4px;
+
+    // override dropdown item styles
+    .btn.btn-success {
+      @include btn-default;
+      @include btn-green;
+
+      border-style: solid;
+      border-width: 1px;
+      line-height: $line-height-base;
+      width: auto;
+    }
   }
 
-  .dropdown-toggle {
+  .create-merge-request-dropdown-toggle {
     .fa-caret-down {
       pointer-events: none;
       color: inherit;
       margin-left: 0;
-    }
-  }
-
-  li:not(.divider) {
-    &.droplab-item-selected {
-      .icon-container {
-        i {
-          visibility: visible;
-        }
-      }
-    }
-
-    .icon-container {
-      float: left;
-      padding-left: 6px;
-
-      i {
-        visibility: hidden;
-      }
-    }
-
-    .description {
-      padding-left: 30px;
-      font-size: 13px;
-
-      strong {
-        display: block;
-        font-weight: $gl-font-weight-bold;
-      }
     }
   }
 }

@@ -5,61 +5,129 @@ describe 'Branches' do
   let(:project) { create(:project, :public, :repository) }
   let(:repository) { project.repository }
 
-  def set_protected_branch_name(branch_name)
-    find(".js-protected-branch-select").click
-    find(".dropdown-input-field").set(branch_name)
-    click_on("Create wildcard #{branch_name}")
-  end
-
   context 'logged in as developer' do
     before do
       sign_in(user)
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
-    describe 'Initial branches page' do
-      it 'shows all the branches' do
-        visit project_branches_path(project)
+    context 'on the projects with 6 active branches and 4 stale branches' do
+      let(:project) { create(:project, :public, :empty_repo) }
+      let(:repository) { project.repository }
+      let(:threshold) { Gitlab::Git::Branch::STALE_BRANCH_THRESHOLD }
 
-        repository.branches_sorted_by(:name).first(20).each do |branch|
-          expect(page).to have_content("#{branch.name}")
+      before do
+        # Add 4 stale branches
+        (1..4).reverse_each do |i|
+          Timecop.freeze((threshold + i).ago) { create_file(message: "a commit in stale-#{i}", branch_name: "stale-#{i}") }
+        end
+        # Add 6 active branches
+        (1..6).each do |i|
+          Timecop.freeze((threshold - i).ago) { create_file(message: "a commit in active-#{i}", branch_name: "active-#{i}") }
         end
       end
 
-      it 'sorts the branches by name' do
+      describe 'Overview page of the branches' do
+        it 'shows the first 5 active branches and the first 4 stale branches sorted by last updated' do
+          visit project_branches_path(project)
+
+          expect(page).to have_content(sorted_branches(repository, count: 5, sort_by: :updated_desc, state: 'active'))
+          expect(page).to have_content(sorted_branches(repository, count: 4, sort_by: :updated_desc, state: 'stale'))
+
+          expect(page).to have_link('Show more active branches', href: project_branches_filtered_path(project, state: 'active'))
+          expect(page).not_to have_content('Show more stale branches')
+        end
+      end
+
+      describe 'Active branches page' do
+        it 'shows 6 active branches sorted by last updated' do
+          visit project_branches_filtered_path(project, state: 'active')
+
+          expect(page).to have_content(sorted_branches(repository, count: 6, sort_by: :updated_desc, state: 'active'))
+        end
+      end
+
+      describe 'Stale branches page' do
+        it 'shows 4 active branches sorted by last updated' do
+          visit project_branches_filtered_path(project, state: 'stale')
+
+          expect(page).to have_content(sorted_branches(repository, count: 4, sort_by: :updated_desc, state: 'stale'))
+        end
+      end
+
+      describe 'All branches page' do
+        it 'shows 10 branches sorted by last updated' do
+          visit project_branches_filtered_path(project, state: 'all')
+
+          expect(page).to have_content(sorted_branches(repository, count: 10, sort_by: :updated_desc))
+        end
+      end
+
+      context 'with branches over more than one page' do
+        before do
+          allow(Kaminari.config).to receive(:default_per_page).and_return(5)
+        end
+
+        it 'shows only default_per_page active branches sorted by last updated' do
+          visit project_branches_filtered_path(project, state: 'active')
+
+          expect(page).to have_content(sorted_branches(repository, count: Kaminari.config.default_per_page, sort_by: :updated_desc, state: 'active'))
+        end
+
+        it 'shows only default_per_page branches sorted by last updated on All branches' do
+          visit project_branches_filtered_path(project, state: 'all')
+
+          expect(page).to have_content(sorted_branches(repository, count: Kaminari.config.default_per_page, sort_by: :updated_desc))
+        end
+      end
+    end
+
+    describe 'Find branches' do
+      it 'shows filtered branches', :js do
         visit project_branches_path(project)
+
+        fill_in 'branch-search', with: 'fix'
+        find('#branch-search').native.send_keys(:enter)
+
+        expect(page).to have_content('fix')
+        expect(find('.all-branches')).to have_selector('li', count: 1)
+      end
+    end
+
+    describe 'Delete unprotected branch on Overview' do
+      it 'removes branch after confirmation', :js do
+        visit project_branches_filtered_path(project, state: 'all')
+
+        expect(all('.all-branches').last).to have_selector('li', count: 20)
+        accept_confirm { find('.js-branch-add-pdf-text-binary .btn-remove').click }
+
+        expect(all('.all-branches').last).to have_selector('li', count: 19)
+      end
+    end
+
+    describe 'All branches page' do
+      it 'shows all the branches sorted by last updated by default' do
+        visit project_branches_filtered_path(project, state: 'all')
+
+        expect(page).to have_content(sorted_branches(repository, count: 20, sort_by: :updated_desc))
+      end
+
+      it 'sorts the branches by name' do
+        visit project_branches_filtered_path(project, state: 'all')
 
         click_button "Last updated" # Open sorting dropdown
         click_link "Name"
 
-        sorted = repository.branches_sorted_by(:name).first(20).map do |branch|
-          Regexp.escape(branch.name)
-        end
-        expect(page).to have_content(/#{sorted.join(".*")}/)
-      end
-
-      it 'sorts the branches by last updated' do
-        visit project_branches_path(project)
-
-        click_button "Last updated" # Open sorting dropdown
-        click_link "Last updated"
-
-        sorted = repository.branches_sorted_by(:updated_desc).first(20).map do |branch|
-          Regexp.escape(branch.name)
-        end
-        expect(page).to have_content(/#{sorted.join(".*")}/)
+        expect(page).to have_content(sorted_branches(repository, count: 20, sort_by: :name))
       end
 
       it 'sorts the branches by oldest updated' do
-        visit project_branches_path(project)
+        visit project_branches_filtered_path(project, state: 'all')
 
         click_button "Last updated" # Open sorting dropdown
         click_link "Oldest updated"
 
-        sorted = repository.branches_sorted_by(:updated_asc).first(20).map do |branch|
-          Regexp.escape(branch.name)
-        end
-        expect(page).to have_content(/#{sorted.join(".*")}/)
+        expect(page).to have_content(sorted_branches(repository, count: 20, sort_by: :updated_asc))
       end
 
       it 'avoids a N+1 query in branches index' do
@@ -67,13 +135,13 @@ describe 'Branches' do
 
         %w(one two three four five).each { |ref| repository.add_branch(user, ref, 'master') }
 
-        expect { visit project_branches_path(project) }.not_to exceed_query_limit(control_count)
+        expect { visit project_branches_filtered_path(project, state: 'all') }.not_to exceed_query_limit(control_count)
       end
     end
 
-    describe 'Find branches' do
-      it 'shows filtered branches', js: true do
-        visit project_branches_path(project)
+    describe 'Find branches on All branches' do
+      it 'shows filtered branches', :js do
+        visit project_branches_filtered_path(project, state: 'all')
 
         fill_in 'branch-search', with: 'fix'
         find('#branch-search').native.send_keys(:enter)
@@ -83,9 +151,9 @@ describe 'Branches' do
       end
     end
 
-    describe 'Delete unprotected branch' do
-      it 'removes branch after confirmation', js: true do
-        visit project_branches_path(project)
+    describe 'Delete unprotected branch on All branches' do
+      it 'removes branch after confirmation', :js do
+        visit project_branches_filtered_path(project, state: 'all')
 
         fill_in 'branch-search', with: 'fix'
 
@@ -93,32 +161,23 @@ describe 'Branches' do
 
         expect(page).to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 1)
-        find('.js-branch-fix .btn-remove').trigger(:click)
+        accept_confirm { find('.js-branch-fix .btn-remove').click }
 
         expect(page).not_to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 0)
       end
     end
 
-    describe 'Delete protected branch' do
-      before do
-        project.add_user(user, :master)
-        visit project_protected_branches_path(project)
-        set_protected_branch_name('fix')
-        click_on "Protect"
+    context 'on project with 0 branch' do
+      let(:project) { create(:project, :public, :empty_repo) }
+      let(:repository) { project.repository }
 
-        within(".protected-branches-list") { expect(page).to have_content('fix') }
-        expect(ProtectedBranch.count).to eq(1)
-        project.add_user(user, :developer)
-      end
+      describe '0 branches on Overview' do
+        it 'shows warning' do
+          visit project_branches_path(project)
 
-      it 'does not allow devleoper to removes protected branch', js: true do
-        visit project_branches_path(project)
-
-        fill_in 'branch-search', with: 'fix'
-        find('#branch-search').native.send_keys(:enter)
-
-        expect(page).to have_css('.btn-remove.disabled')
+          expect(page).not_to have_selector('.all-branches')
+        end
       end
     end
   end
@@ -126,45 +185,14 @@ describe 'Branches' do
   context 'logged in as master' do
     before do
       sign_in(user)
-      project.team << [user, :master]
+      project.add_master(user)
     end
 
     describe 'Initial branches page' do
       it 'shows description for admin' do
-        visit project_branches_path(project)
+        visit project_branches_filtered_path(project, state: 'all')
 
         expect(page).to have_content("Protected branches can be managed in project settings")
-      end
-    end
-
-    describe 'Delete protected branch' do
-      before do
-        visit project_protected_branches_path(project)
-        set_protected_branch_name('fix')
-        click_on "Protect"
-
-        within(".protected-branches-list") { expect(page).to have_content('fix') }
-        expect(ProtectedBranch.count).to eq(1)
-      end
-
-      it 'removes branch after modal confirmation', js: true do
-        visit project_branches_path(project)
-
-        fill_in 'branch-search', with: 'fix'
-        find('#branch-search').native.send_keys(:enter)
-
-        expect(page).to have_content('fix')
-        expect(find('.all-branches')).to have_selector('li', count: 1)
-        page.find('[data-target="#modal-delete-branch"]').trigger(:click)
-
-        expect(page).to have_css('.js-delete-branch[disabled]')
-        fill_in 'delete_branch_input', with: 'fix'
-        click_link 'Delete protected branch'
-
-        fill_in 'branch-search', with: 'fix'
-        find('#branch-search').native.send_keys(:enter)
-
-        expect(page).to have_content('No branches to show')
       end
     end
   end
@@ -179,5 +207,20 @@ describe 'Branches' do
         expect(page).not_to have_content 'Merge Request'
       end
     end
+  end
+
+  def sorted_branches(repository, count:, sort_by:, state: nil)
+    branches = repository.branches_sorted_by(sort_by)
+    branches = branches.select { |b| state == 'active' ? b.active? : b.stale? } if state
+    sorted_branches =
+      branches.first(count).map do |branch|
+        Regexp.escape(branch.name)
+      end
+
+    Regexp.new(sorted_branches.join('.*'))
+  end
+
+  def create_file(message: 'message', branch_name:)
+    repository.create_file(user, generate(:branch), 'content', message: message, branch_name: branch_name)
   end
 end

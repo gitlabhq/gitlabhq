@@ -7,7 +7,7 @@
   .nav-block
     = render 'projects/tree/tree_header', tree: @tree
 
-  - if !show_new_repo? && commit
+  - if commit
     = render 'shared/commit_well', commit: commit, ref: ref, project: project
 
   = render 'projects/tree/tree_content', tree: @tree, content_url: content_url

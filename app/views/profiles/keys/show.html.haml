@@ -1,4 +1,5 @@
+- add_to_breadcrumbs "SSH Keys", profile_keys_path
+- breadcrumb_title @key.title
 - page_title @key.title, "SSH Keys"
 - @content_class = "limit-container-width" unless fluid_layout
-= render 'profiles/head'
 = render "key_details"

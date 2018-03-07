@@ -1,0 +1,6 @@
+- member = local_assigns.fetch(:member)
+
+:plain
+  var $listItem = $('#{escape_javascript(render('shared/members/member', member: member))}');
+  $("##{dom_id(member)} .list-item-name").replaceWith($listItem.find('.list-item-name'));
+  gl.utils.localTimeAgo($('.js-timeago'), $("##{dom_id(member)}"));

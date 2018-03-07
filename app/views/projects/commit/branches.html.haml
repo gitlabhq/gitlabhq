@@ -1,15 +1,15 @@
-- if @branches.any? || @tags.any?
+- if @branches_limit_exceeded
+  = render 'limit_exceeded_message', objects: :branch, label_for_message: "branches"
+- elsif @branches.any?
   - branch = commit_default_branch(@project, @branches)
-  = link_to(project_ref_path(@project, branch), class: "label label-gray ref-name") do
-    = icon('code-fork')
-    = branch
+  = commit_branch_link(project_ref_path(@project, branch), branch)
 
-  -# `commit_default_branch` deletes the default branch from `@branches`,
-  -# so only render this if we have more branches left
-  - if @branches.any? || @tags.any?
-    %span
-      = link_to "…", "#", class: "js-details-expand label label-gray"
-
-      %span.js-details-content.hide
-        = commit_branches_links(@project, @branches) if @branches.any?
-        = commit_tags_links(@project, @tags) if @tags.any?
+- if @branches.any? || @tags.any? || @tags_limit_exceeded
+  %span
+    = link_to "…", "#", class: "js-details-expand label label-gray"
+    %span.js-details-content.hide
+      = commit_branches_links(@project, @branches)
+      - if @tags_limit_exceeded
+        = render 'limit_exceeded_message', objects: :tag, label_for_message: "tags"
+      - else
+        = commit_tags_links(@project, @tags)

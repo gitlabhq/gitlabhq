@@ -6,7 +6,7 @@ feature 'Dashboard Projects' do
   let(:project2) { create(:project, :public, name: 'Community project') }
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
     sign_in(user)
   end
 
@@ -37,6 +37,14 @@ feature 'Dashboard Projects' do
 
       expect(page).to have_xpath("//time[@datetime='#{project.last_repository_updated_at.getutc.iso8601}']")
     end
+
+    it 'shows the last_activity_at attribute as the update date' do
+      project.update_attributes!(last_repository_updated_at: 1.hour.ago, last_activity_at: Time.now)
+
+      visit dashboard_projects_path
+
+      expect(page).to have_xpath("//time[@datetime='#{project.last_activity_at.getutc.iso8601}']")
+    end
   end
 
   context 'when last_repository_updated_at and last_activity_at are missing' do
@@ -47,6 +55,25 @@ feature 'Dashboard Projects' do
       visit dashboard_projects_path
 
       expect(page).to have_xpath("//time[@datetime='#{project.updated_at.getutc.iso8601}']")
+    end
+  end
+
+  context 'when on Your projects tab' do
+    it 'shows all projects by default' do
+      visit dashboard_projects_path
+
+      expect(page).to have_content(project.name)
+    end
+
+    it 'shows personal projects on personal projects tab', :js do
+      project3 = create(:project, namespace: user.namespace)
+
+      visit dashboard_projects_path
+
+      click_link 'Personal'
+
+      expect(page).not_to have_content(project.name)
+      expect(page).to have_content(project3.name)
     end
   end
 
@@ -61,7 +88,7 @@ feature 'Dashboard Projects' do
     end
   end
 
-  describe 'with a pipeline', clean_gitlab_redis_shared_state: true do
+  describe 'with a pipeline', :clean_gitlab_redis_shared_state do
     let(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.sha) }
 
     before do

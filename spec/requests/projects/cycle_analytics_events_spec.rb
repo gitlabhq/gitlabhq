@@ -7,7 +7,7 @@ describe 'cycle analytics events' do
 
   describe 'GET /:namespace/:project/cycle_analytics/events/issues' do
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
 
       3.times do |count|
         Timecop.freeze(Time.now + count.days) do
@@ -15,7 +15,7 @@ describe 'cycle analytics events' do
         end
       end
 
-      deploy_master
+      deploy_master(user, project)
 
       login_as(user)
     end
@@ -99,19 +99,19 @@ describe 'cycle analytics events' do
       it 'does not list the test events' do
         get project_cycle_analytics_test_path(project, format: :json)
 
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'does not list the staging events' do
         get project_cycle_analytics_staging_path(project, format: :json)
 
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'lists the issue events' do
         get project_cycle_analytics_issue_path(project, format: :json)
 
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end
@@ -119,7 +119,7 @@ describe 'cycle analytics events' do
   def create_cycle
     milestone = create(:milestone, project: project)
     issue.update(milestone: milestone)
-    mr = create_merge_request_closing_issue(issue, commit_message: "References #{issue.to_reference}")
+    mr = create_merge_request_closing_issue(user, project, issue, commit_message: "References #{issue.to_reference}")
 
     pipeline = create(:ci_empty_pipeline, status: 'created', project: project, ref: mr.source_branch, sha: mr.source_branch_sha, head_pipeline_of: mr)
     pipeline.run
@@ -127,7 +127,7 @@ describe 'cycle analytics events' do
     create(:ci_build, pipeline: pipeline, status: :success, author: user)
     create(:ci_build, pipeline: pipeline, status: :success, author: user)
 
-    merge_merge_requests_closing_issue(issue)
+    merge_merge_requests_closing_issue(user, project, issue)
 
     ProcessCommitWorker.new.perform(project.id, user.id, mr.commits.last.to_hash)
   end

@@ -2,6 +2,7 @@ class Projects::LfsApiController < Projects::GitHttpClientController
   include LfsRequest
 
   skip_before_action :lfs_check_access!, only: [:deprecated]
+  before_action :lfs_check_batch_operation!, only: [:batch]
 
   def batch
     unless objects.present?
@@ -89,5 +90,22 @@ class Projects::LfsApiController < Projects::GitHttpClientController
         }.compact
       }
     }
+  end
+
+  def lfs_check_batch_operation!
+    if upload_request? && Gitlab::Database.read_only?
+      render(
+        json: {
+          message: lfs_read_only_message
+        },
+        content_type: LfsRequest::CONTENT_TYPE,
+        status: 403
+      )
+    end
+  end
+
+  # Overridden in EE
+  def lfs_read_only_message
+    _('You cannot write to this read-only GitLab instance.')
   end
 end

@@ -1,0 +1,49 @@
+- form_field = local_assigns.fetch(:form_field, nil)
+- variable = local_assigns.fetch(:variable, nil)
+- only_key_value = local_assigns.fetch(:only_key_value, false)
+
+- id = variable&.id
+- key = variable&.key
+- value = variable&.value
+- is_protected = variable && !only_key_value ? variable.protected : false
+
+- id_input_name = "#{form_field}[variables_attributes][][id]"
+- destroy_input_name = "#{form_field}[variables_attributes][][_destroy]"
+- key_input_name = "#{form_field}[variables_attributes][][key]"
+- value_input_name = "#{form_field}[variables_attributes][][value]"
+- protected_input_name = "#{form_field}[variables_attributes][][protected]"
+
+%li.js-row.ci-variable-row{ data: { is_persisted: "#{!id.nil?}" } }
+  .ci-variable-row-body
+    %input.js-ci-variable-input-id{ type: "hidden", name: id_input_name, value: id }
+    %input.js-ci-variable-input-destroy{ type: "hidden", name: destroy_input_name }
+    %input.js-ci-variable-input-key.ci-variable-body-item.form-control{ type: "text",
+      name: key_input_name,
+      value: key,
+      placeholder: s_('CiVariables|Input variable key') }
+    .ci-variable-body-item
+      .form-control.js-secret-value-placeholder{ class: ('hide' unless id) }
+        = '*' * 20
+      %textarea.js-ci-variable-input-value.js-secret-value.form-control{ class: ('hide' if id),
+        rows: 1,
+        name: value_input_name,
+        placeholder: s_('CiVariables|Input variable value') }
+        = value
+    - unless only_key_value
+      .ci-variable-body-item.ci-variable-protected-item
+        .append-right-default
+          = s_("CiVariable|Protected")
+        %button{ type: 'button',
+          class: "js-project-feature-toggle project-feature-toggle #{'is-checked' if is_protected}",
+          "aria-label": s_("CiVariable|Toggle protected") }
+          %input{ type: "hidden",
+            class: 'js-ci-variable-input-protected js-project-feature-toggle-input',
+            name: protected_input_name,
+            value: is_protected }
+          %span.toggle-icon
+            = sprite_icon('status_success_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-checked')
+            = sprite_icon('status_failed_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-unchecked')
+      -# EE-specific start
+      -# EE-specific end
+  %button.js-row-remove-button.ci-variable-row-remove-button{ type: 'button', 'aria-label': s_('CiVariables|Remove variable row') }
+    = icon('minus-circle')

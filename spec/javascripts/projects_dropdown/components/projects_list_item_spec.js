@@ -2,7 +2,7 @@ import Vue from 'vue';
 
 import projectsListItemComponent from '~/projects_dropdown/components/projects_list_item.vue';
 
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { mockProject } from '../mock_data';
 
 const createComponent = () => {
@@ -48,6 +48,18 @@ describe('ProjectsListItemComponent', () => {
       it('should return project name as it is if `matcher` is not available', () => {
         vm.matcher = null;
         expect(vm.highlightedProjectName).toBe(mockProject.name);
+      });
+    });
+
+    describe('truncatedNamespace', () => {
+      it('should truncate project name from namespace string', () => {
+        vm.namespace = 'platform / nokia-3310';
+        expect(vm.truncatedNamespace).toBe('platform');
+      });
+
+      it('should truncate namespace string from the middle if it includes more than two groups in path', () => {
+        vm.namespace = 'platform / hardware / broadcom / Wifi Group / Mobile Chipset / nokia-3310';
+        expect(vm.truncatedNamespace).toBe('platform / ... / Mobile Chipset');
       });
     });
   });

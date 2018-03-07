@@ -98,6 +98,9 @@ password as they will be needed when configuring GitLab in the next section.
 - GitLab 8.14 introduced a new way to integrate with JIRA which greatly simplified
   the configuration options you have to enter. If you are using an older version,
   [follow this documentation][jira-repo-old-docs].
+- In order to support Oracle's Access Manager, GitLab will send additional cookies
+  to enable Basic Auth. The cookie being added to each request is `OBBasicAuth` with
+  a value of `fromDialog`.
 
 To enable JIRA integration in a project, navigate to the
 [Integrations page](project_services.md#accessing-the-project-services), click
@@ -113,7 +116,7 @@ in the table below.
 | `Transition ID` | This is the ID of a transition that moves issues to a closed state. You can find this number under JIRA workflow administration ([see screenshot](img/jira_workflow_screenshot.png)). **Closing JIRA issues via commits or Merge Requests won't work if you don't set the ID correctly.** |
 
 After saving the configuration, your GitLab project will be able to interact
-with all JIRA projects in your JIRA instance.
+with all JIRA projects in your JIRA instance and you'll see the JIRA link on the GitLab project pages that takes you to the appropriate JIRA project.
 
 ![JIRA service page](img/jira_service_page.png)
 
@@ -170,6 +173,7 @@ where `PROJECT-1` is the issue ID of the JIRA project.
 - Only commits and merges into the project's default branch (usually **master**) will
   close an issue in Jira. You can change your projects default branch under
   [project settings](img/jira_project_settings.png).
+- The JIRA issue will not be transitioned if it has a resolution.
 
 ### JIRA issue closing example
 
@@ -218,6 +222,10 @@ JIRA issue references and update comments will not work if the GitLab issue trac
 
 Make sure the `Transition ID` you set within the JIRA settings matches the one
 your project needs to close a ticket.
+
+Make sure that the JIRA issue is not already marked as resolved, in other words that
+the JIRA issue resolution field is not set. (It should not be struck through in
+JIRA lists.)
 
 [services-templates]: services_templates.md
 [jira-repo-old-docs]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-13-stable/doc/project_services/jira.md

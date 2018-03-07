@@ -90,7 +90,24 @@ module Gitlab
           # so we just silently ignore error for now
         end
 
+        def extract_sections
+          return [] unless valid?
+
+          lines = to_enum(:each_line_with_pos)
+          parser = SectionParser.new(lines)
+
+          parser.parse!
+          parser.sections
+        end
+
         private
+
+        def each_line_with_pos
+          stream.seek(0, IO::SEEK_SET)
+          stream.each_line do |line|
+            yield [line, stream.pos - line.bytesize]
+          end
+        end
 
         def read_last_lines(limit)
           to_enum(:reverse_line).first(limit).reverse.join

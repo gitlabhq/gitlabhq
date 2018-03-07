@@ -212,7 +212,7 @@ Sign in and re-enable two-factor authentication as soon as possible.
     For example, if a user is trying to access a GitLab instance from `first.host.xyz` and `second.host.xyz`:
 
     - The user logs in via `first.host.xyz` and registers their U2F key.
-    - The user logs out and attempts to log in via `first.host.xyz` - U2F authentication suceeds.
+    - The user logs out and attempts to log in via `first.host.xyz` - U2F authentication succeeds.
     - The user logs out and attempts to log in via `second.host.xyz` - U2F authentication fails, because
     the U2F key has only been registered on `first.host.xyz`.
 

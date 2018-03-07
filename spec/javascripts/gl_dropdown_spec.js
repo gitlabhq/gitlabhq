@@ -2,7 +2,7 @@
 
 import '~/gl_dropdown';
 import '~/lib/utils/common_utils';
-import '~/lib/utils/url_utility';
+import * as urlUtils from '~/lib/utils/url_utility';
 
 describe('glDropdown', function describeDropdown() {
   preloadFixtures('static/gl_dropdown.html.raw');
@@ -64,8 +64,8 @@ describe('glDropdown', function describeDropdown() {
   });
 
   afterEach(() => {
-    $('body').unbind('keydown');
-    this.dropdownContainerElement.unbind('keyup');
+    $('body').off('keydown');
+    this.dropdownContainerElement.off('keyup');
   });
 
   it('should open on click', () => {
@@ -137,13 +137,13 @@ describe('glDropdown', function describeDropdown() {
       expect(this.dropdownContainerElement).toHaveClass('open');
       const randomIndex = Math.floor(Math.random() * (this.projectsData.length - 1)) + 0;
       navigateWithKeys('down', randomIndex, () => {
-        spyOn(gl.utils, 'visitUrl').and.stub();
+        spyOn(urlUtils, 'visitUrl').and.stub();
         navigateWithKeys('enter', null, () => {
           expect(this.dropdownContainerElement).not.toHaveClass('open');
           const link = $(`${ITEM_SELECTOR}:eq(${randomIndex}) a`, this.$dropdownMenuElement);
           expect(link).toHaveClass('is-active');
           const linkedLocation = link.attr('href');
-          if (linkedLocation && linkedLocation !== '#') expect(gl.utils.visitUrl).toHaveBeenCalledWith(linkedLocation);
+          if (linkedLocation && linkedLocation !== '#') expect(urlUtils.visitUrl).toHaveBeenCalledWith(linkedLocation);
         });
       });
     });

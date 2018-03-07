@@ -38,6 +38,7 @@ module API
         builds = user_project.builds.order('id DESC')
         builds = filter_builds(builds, params[:scope])
 
+        builds = builds.preload(:user, :job_artifacts_archive, :runner, pipeline: :project)
         present paginate(builds), with: Entities::Job
       end
 
@@ -136,7 +137,7 @@ module API
         authorize_update_builds!
 
         build = find_build!(params[:job_id])
-        authorize!(:update_build, build)
+        authorize!(:erase_build, build)
         return forbidden!('Job is not erasable!') unless build.erasable?
 
         build.erase(erased_by: current_user)

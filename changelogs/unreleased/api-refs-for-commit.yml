@@ -1,0 +1,5 @@
+---
+title: 'API: Get references a commit is pushed to'
+merge_request: 15026
+author: Robert Schilling
+type: added

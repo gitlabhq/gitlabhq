@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import DeployKeysStore from '~/deploy_keys/store';
 import key from '~/deploy_keys/components/key.vue';
+import { getTimeago } from '~/lib/utils/datetime_utility';
 
 describe('Deploy keys key', () => {
   let vm;
@@ -37,7 +38,7 @@ describe('Deploy keys key', () => {
     it('renders human friendly formatted created date', () => {
       expect(
         vm.$el.querySelector('.key-created-at').textContent.trim(),
-      ).toBe(`created ${gl.utils.getTimeago().format(deployKey.created_at)}`);
+      ).toBe(`created ${getTimeago().format(deployKey.created_at)}`);
     });
 
     it('shows edit button', () => {
@@ -52,18 +53,24 @@ describe('Deploy keys key', () => {
       ).toBe('Remove');
     });
 
-    it('shows write access text when key has write access', (done) => {
-      vm.deployKey.can_push = true;
+    it('shows write access title when key has write access', (done) => {
+      vm.deployKey.deploy_keys_projects[0].can_push = true;
 
       Vue.nextTick(() => {
         expect(
-          vm.$el.querySelector('.write-access-allowed'),
-        ).not.toBeNull();
-
-        expect(
-          vm.$el.querySelector('.write-access-allowed').textContent.trim(),
+          vm.$el.querySelector('.deploy-project-label').getAttribute('data-original-title'),
         ).toBe('Write access allowed');
+        done();
+      });
+    });
 
+    it('does not show write access title when key has write access', (done) => {
+      vm.deployKey.deploy_keys_projects[0].can_push = false;
+
+      Vue.nextTick(() => {
+        expect(
+          vm.$el.querySelector('.deploy-project-label').getAttribute('data-original-title'),
+        ).toBe('Read access only');
         done();
       });
     });

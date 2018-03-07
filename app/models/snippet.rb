@@ -9,8 +9,7 @@ class Snippet < ActiveRecord::Base
   include Mentionable
   include Spammable
   include Editable
-
-  extend Gitlab::CurrentSettings
+  include Gitlab::SQL::Pattern
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description
@@ -27,7 +26,7 @@ class Snippet < ActiveRecord::Base
     default_content_html_invalidator || file_name_changed?
   end
 
-  default_value_for(:visibility_level) { current_application_settings.default_snippet_visibility }
+  default_value_for(:visibility_level) { Gitlab::CurrentSettings.default_snippet_visibility }
 
   belongs_to :author, class_name: 'User'
   belongs_to :project
@@ -75,11 +74,32 @@ class Snippet < ActiveRecord::Base
     @link_reference_pattern ||= super("snippets", /(?<snippet>\d+)/)
   end
 
-  def to_reference(from_project = nil, full: false)
+  # Returns a collection of snippets that are either public or visible to the
+  # logged in user.
+  #
+  # This method does not verify the user actually has the access to the project
+  # the snippet is in, so it should be only used on a relation that's already scoped
+  # for project access
+  def self.public_or_visible_to_user(user = nil)
+    if user
+      authorized = user
+        .project_authorizations
+        .select(1)
+        .where('project_authorizations.project_id = snippets.project_id')
+
+      levels = Gitlab::VisibilityLevel.levels_for_user(user)
+
+      where('EXISTS (?) OR snippets.visibility_level IN (?) or snippets.author_id = (?)', authorized, levels, user.id)
+    else
+      public_to_user
+    end
+  end
+
+  def to_reference(from = nil, full: false)
     reference = "#{self.class.reference_prefix}#{id}"
 
     if project.present?
-      "#{project.to_reference(from_project, full: full)}#{reference}"
+      "#{project.to_reference(from, full: full)}#{reference}"
     else
       reference
     end
@@ -135,10 +155,7 @@ class Snippet < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      t = arel_table
-      pattern = "%#{query}%"
-
-      where(t[:title].matches(pattern).or(t[:file_name].matches(pattern)))
+      fuzzy_search(query, [:title, :file_name])
     end
 
     # Searches for snippets with matching content.
@@ -149,10 +166,7 @@ class Snippet < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation.
     def search_code(query)
-      table   = Snippet.arel_table
-      pattern = "%#{query}%"
-
-      where(table[:content].matches(pattern))
+      fuzzy_search(query, [:content])
     end
   end
 end

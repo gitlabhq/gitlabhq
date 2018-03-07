@@ -1,42 +1,119 @@
 <script>
-  /* global Flash */
   import _ from 'underscore';
+  import Flash from '../../flash';
   import MonitoringService from '../services/monitoring_service';
   import GraphGroup from './graph_group.vue';
   import Graph from './graph.vue';
   import EmptyState from './empty_state.vue';
   import MonitoringStore from '../stores/monitoring_store';
   import eventHub from '../event_hub';
-  import { convertPermissionToBoolean } from '../../lib/utils/common_utils';
 
   export default {
-
-    data() {
-      const metricsData = document.querySelector('#prometheus-graphs').dataset;
-      const store = new MonitoringStore();
-
-      return {
-        store,
-        state: 'gettingStarted',
-        hasMetrics: convertPermissionToBoolean(metricsData.hasMetrics),
-        documentationPath: metricsData.documentationPath,
-        settingsPath: metricsData.settingsPath,
-        metricsEndpoint: metricsData.additionalMetrics,
-        deploymentEndpoint: metricsData.deploymentEndpoint,
-        emptyGettingStartedSvgPath: metricsData.emptyGettingStartedSvgPath,
-        emptyLoadingSvgPath: metricsData.emptyLoadingSvgPath,
-        emptyUnableToConnectSvgPath: metricsData.emptyUnableToConnectSvgPath,
-        showEmptyState: true,
-        updateAspectRatio: false,
-        updatedAspectRatios: 0,
-        resizeThrottled: {},
-      };
-    },
-
     components: {
       Graph,
       GraphGroup,
       EmptyState,
+    },
+
+    props: {
+      hasMetrics: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
+      showLegend: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
+      showPanels: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
+      forceSmallGraph: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+      documentationPath: {
+        type: String,
+        required: true,
+      },
+      settingsPath: {
+        type: String,
+        required: true,
+      },
+      clustersPath: {
+        type: String,
+        required: true,
+      },
+      tagsPath: {
+        type: String,
+        required: true,
+      },
+      projectPath: {
+        type: String,
+        required: true,
+      },
+      metricsEndpoint: {
+        type: String,
+        required: true,
+      },
+      deploymentEndpoint: {
+        type: String,
+        required: false,
+        default: null,
+      },
+      emptyGettingStartedSvgPath: {
+        type: String,
+        required: true,
+      },
+      emptyLoadingSvgPath: {
+        type: String,
+        required: true,
+      },
+      emptyUnableToConnectSvgPath: {
+        type: String,
+        required: true,
+      },
+    },
+
+    data() {
+      return {
+        store: new MonitoringStore(),
+        state: 'gettingStarted',
+        showEmptyState: true,
+        updateAspectRatio: false,
+        updatedAspectRatios: 0,
+        hoverData: {},
+        resizeThrottled: {},
+      };
+    },
+
+    created() {
+      this.service = new MonitoringService({
+        metricsEndpoint: this.metricsEndpoint,
+        deploymentEndpoint: this.deploymentEndpoint,
+      });
+      eventHub.$on('toggleAspectRatio', this.toggleAspectRatio);
+      eventHub.$on('hoverChanged', this.hoverChanged);
+    },
+
+    beforeDestroy() {
+      eventHub.$off('toggleAspectRatio', this.toggleAspectRatio);
+      eventHub.$off('hoverChanged', this.hoverChanged);
+      window.removeEventListener('resize', this.resizeThrottled, false);
+    },
+
+    mounted() {
+      this.resizeThrottled = _.throttle(this.resize, 600);
+      if (!this.hasMetrics) {
+        this.state = 'gettingStarted';
+      } else {
+        this.getGraphsData();
+        window.addEventListener('resize', this.resizeThrottled, false);
+      }
     },
 
     methods: {
@@ -49,7 +126,13 @@
             .then(data => this.store.storeDeploymentData(data))
             .catch(() => new Flash('Error getting deployment information.')),
         ])
-          .then(() => { this.showEmptyState = false; })
+          .then(() => {
+            if (this.store.groups.length < 1) {
+              this.state = 'noData';
+              return;
+            }
+            this.showEmptyState = false;
+          })
           .catch(() => { this.state = 'unableToConnect'; });
       },
 
@@ -64,46 +147,36 @@
           this.updatedAspectRatios = 0;
         }
       },
-    },
 
-    created() {
-      this.service = new MonitoringService({
-        metricsEndpoint: this.metricsEndpoint,
-        deploymentEndpoint: this.deploymentEndpoint,
-      });
-      eventHub.$on('toggleAspectRatio', this.toggleAspectRatio);
-    },
-
-    beforeDestroy() {
-      eventHub.$off('toggleAspectRatio', this.toggleAspectRatio);
-      window.removeEventListener('resize', this.resizeThrottled, false);
-    },
-
-    mounted() {
-      this.resizeThrottled = _.throttle(this.resize, 600);
-      if (!this.hasMetrics) {
-        this.state = 'gettingStarted';
-      } else {
-        this.getGraphsData();
-        window.addEventListener('resize', this.resizeThrottled, false);
-      }
+      hoverChanged(data) {
+        this.hoverData = data;
+      },
     },
   };
 </script>
 
 <template>
-  <div v-if="!showEmptyState" class="prometheus-graphs">
+  <div
+    v-if="!showEmptyState"
+    class="prometheus-graphs"
+  >
     <graph-group
       v-for="(groupData, index) in store.groups"
       :key="index"
       :name="groupData.group"
+      :show-panels="showPanels"
     >
       <graph
         v-for="(graphData, index) in groupData.metrics"
         :key="index"
         :graph-data="graphData"
+        :hover-data="hoverData"
         :update-aspect-ratio="updateAspectRatio"
         :deployment-data="store.deploymentData"
+        :project-path="projectPath"
+        :tags-path="tagsPath"
+        :show-legend="showLegend"
+        :small-graph="forceSmallGraph"
       />
     </graph-group>
   </div>
@@ -112,6 +185,7 @@
     :selected-state="state"
     :documentation-path="documentationPath"
     :settings-path="settingsPath"
+    :clusters-path="clustersPath"
     :empty-getting-started-svg-path="emptyGettingStartedSvgPath"
     :empty-loading-svg-path="emptyLoadingSvgPath"
     :empty-unable-to-connect-svg-path="emptyUnableToConnectSvgPath"

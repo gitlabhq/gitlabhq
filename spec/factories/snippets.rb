@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :snippet do
     author
     title { generate(:title) }
@@ -21,6 +21,7 @@ FactoryGirl.define do
 
   factory :project_snippet, parent: :snippet, class: :ProjectSnippet do
     project
+    author { project.creator }
   end
 
   factory :personal_snippet, parent: :snippet, class: :PersonalSnippet do

@@ -4,6 +4,7 @@
   - branch_label = s_('ChangeTypeActionLabel|Revert in branch')
   - revert_merge_request = _('Revert this merge request')
   - revert_commit = _('Revert this commit')
+  - description = s_('ChangeTypeAction|This will create a new commit in order to revert the existing changes.')
   - title = commit.merged_merge_request(current_user) ? revert_merge_request : revert_commit
 - when 'cherry-pick'
   - label = s_('ChangeTypeAction|Cherry-pick')
@@ -17,6 +18,8 @@
         %a.close{ href: "#", "data-dismiss" => "modal" } ×
         %h3.page-title= title
       .modal-body
+        - if description
+          %p.append-bottom-20= description
         = form_tag [type.underscore, @project.namespace.becomes(Namespace), @project, commit], method: :post, remote: false, class: "form-horizontal js-#{type}-form js-requires-input" do
           .form-group.branch
             = label_tag 'start_branch', branch_label, class: 'control-label'

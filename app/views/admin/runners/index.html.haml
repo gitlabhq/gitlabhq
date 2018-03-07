@@ -1,6 +1,5 @@
 - breadcrumb_title "Runners"
 - @no_container = true
-= render "admin/dashboard/head"
 
 %div{ class: container_class }
   .bs-callout
@@ -36,9 +35,8 @@
           method: :put, class: 'btn btn-default',
           data: { confirm: _("Are you sure you want to reset registration token?") }
 
-  = render partial: 'ci/runner/how_to_setup_runner',
-           locals: { registration_token: current_application_settings.runners_registration_token,
-                     type: 'shared' }
+  = render partial: 'ci/runner/how_to_setup_shared_runner',
+           locals: { registration_token: Gitlab::CurrentSettings.runners_registration_token }
 
   .append-bottom-20.clearfix
     .pull-left
@@ -53,22 +51,24 @@
   %br
 
   - if @runners.any?
-    .table-holder
-      %table.table
-        %thead
-          %tr
-            %th Type
-            %th Runner token
-            %th Description
-            %th Version
-            %th Projects
-            %th Jobs
-            %th Tags
-            %th Last contact
-            %th
+    .runners-content
+      .table-holder
+        %table.table
+          %thead
+            %tr
+              %th Type
+              %th Runner token
+              %th Description
+              %th Version
+              %th IP Address
+              %th Projects
+              %th Jobs
+              %th Tags
+              %th= link_to 'Last contact', admin_runners_path(params.slice(:search).merge(sort: 'contacted_asc'))
+              %th
 
-        - @runners.each do |runner|
-          = render "admin/runners/runner", runner: runner
-    = paginate @runners, theme: "gitlab"
+          - @runners.each do |runner|
+            = render "admin/runners/runner", runner: runner
+      = paginate @runners, theme: "gitlab"
   - else
     .nothing-here-block No runners found

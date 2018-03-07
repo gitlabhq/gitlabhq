@@ -38,12 +38,22 @@ feature 'Admin updates settings' do
     uncheck 'Project export enabled'
     click_button 'Save'
 
-    expect(current_application_settings.gravatar_enabled).to be_falsey
-    expect(current_application_settings.home_page_url).to eq "https://about.gitlab.com/"
-    expect(current_application_settings.help_page_text).to eq "Example text"
-    expect(current_application_settings.help_page_hide_commercial_content).to be_truthy
-    expect(current_application_settings.help_page_support_url).to eq "http://example.com/help"
-    expect(current_application_settings.project_export_enabled).to be_falsey
+    expect(Gitlab::CurrentSettings.gravatar_enabled).to be_falsey
+    expect(Gitlab::CurrentSettings.home_page_url).to eq "https://about.gitlab.com/"
+    expect(Gitlab::CurrentSettings.help_page_text).to eq "Example text"
+    expect(Gitlab::CurrentSettings.help_page_hide_commercial_content).to be_truthy
+    expect(Gitlab::CurrentSettings.help_page_support_url).to eq "http://example.com/help"
+    expect(Gitlab::CurrentSettings.project_export_enabled).to be_falsey
+    expect(page).to have_content "Application settings saved successfully"
+  end
+
+  scenario 'Change AutoDevOps settings' do
+    check 'Enabled Auto DevOps (Beta) for projects by default'
+    fill_in 'Auto devops domain', with: 'domain.com'
+    click_button 'Save'
+
+    expect(Gitlab::CurrentSettings.auto_devops_enabled?).to be true
+    expect(Gitlab::CurrentSettings.auto_devops_domain).to eq('domain.com')
     expect(page).to have_content "Application settings saved successfully"
   end
 
@@ -73,7 +83,7 @@ feature 'Admin updates settings' do
 
   context 'sign-in restrictions', :js do
     it 'de-activates oauth sign-in source' do
-      find('.btn', text: 'GitLab.com').click
+      find('input#application_setting_enabled_oauth_sign_in_sources_[value=gitlab]').send_keys(:return)
 
       expect(find('.btn', text: 'GitLab.com')).not_to have_css('.active')
     end
@@ -93,6 +103,29 @@ feature 'Admin updates settings' do
     expect(find_field('DSA SSH keys').value).to eq('0')
     expect(find_field('ECDSA SSH keys').value).to eq('384')
     expect(find_field('ED25519 SSH keys').value).to eq(forbidden)
+  end
+
+  scenario 'Change Performance Bar settings' do
+    group = create(:group)
+
+    check 'Enable the Performance Bar'
+    fill_in 'Allowed group', with: group.path
+
+    click_on 'Save'
+
+    expect(page).to have_content 'Application settings saved successfully'
+
+    expect(find_field('Enable the Performance Bar')).to be_checked
+    expect(find_field('Allowed group').value).to eq group.path
+
+    uncheck 'Enable the Performance Bar'
+
+    click_on 'Save'
+
+    expect(page).to have_content 'Application settings saved successfully'
+
+    expect(find_field('Enable the Performance Bar')).not_to be_checked
+    expect(find_field('Allowed group').value).to be_nil
   end
 
   def check_all_events

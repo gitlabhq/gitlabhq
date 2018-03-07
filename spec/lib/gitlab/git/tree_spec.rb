@@ -80,22 +80,18 @@ describe Gitlab::Git::Tree, seed_helper: true do
   end
 
   describe '#where' do
-    context 'with gitaly disabled' do
-      before do
-        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(false)
-      end
-
-      it 'calls #tree_entries_from_rugged' do
-        expect(described_class).to receive(:tree_entries_from_rugged)
-
-        described_class.where(repository, SeedRepo::Commit::ID, '/')
+    shared_examples '#where' do
+      it 'returns an empty array when called with an invalid ref' do
+        expect(described_class.where(repository, 'foobar-does-not-exist')).to eq([])
       end
     end
 
-    it 'gets the tree entries from GitalyClient' do
-      expect_any_instance_of(Gitlab::GitalyClient::CommitService).to receive(:tree_entries)
+    context 'with gitaly' do
+      it_behaves_like '#where'
+    end
 
-      described_class.where(repository, SeedRepo::Commit::ID, '/')
+    context 'without gitaly', :skip_gitaly_mock do
+      it_behaves_like '#where'
     end
   end
 end

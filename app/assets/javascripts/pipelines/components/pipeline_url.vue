@@ -4,6 +4,13 @@
   import popover from '../../vue_shared/directives/popover';
 
   export default {
+    components: {
+      userAvatarLink,
+    },
+    directives: {
+      tooltip,
+      popover,
+    },
     props: {
       pipeline: {
         type: Object,
@@ -14,13 +21,6 @@
         required: true,
       },
     },
-    components: {
-      userAvatarLink,
-    },
-    directives: {
-      tooltip,
-      popover,
-    },
     computed: {
       user() {
         return this.pipeline.user;
@@ -28,11 +28,18 @@
       popoverOptions() {
         return {
           html: true,
-          delay: { hide: 600 },
-          trigger: 'hover',
+          trigger: 'focus',
           placement: 'top',
-          title: '<div class="autodevops-title">This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b></div>',
-          content: `<a class="autodevops-link" href="${this.autoDevopsHelpPath}" target="_blank" rel="noopener noreferrer nofollow">Learn more about Auto DevOps</a>`,
+          title: `<div class="autodevops-title">
+            This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b>
+          </div>`,
+          content: `<a
+            class="autodevops-link"
+            href="${this.autoDevopsHelpPath}"
+            target="_blank"
+            rel="noopener noreferrer nofollow">
+            Learn more about Auto DevOps
+          </a>`,
         };
       },
     },
@@ -43,7 +50,7 @@
     <a
       :href="pipeline.path"
       class="js-pipeline-url-link">
-      <span class="pipeline-id">#{{pipeline.id}}</span>
+      <span class="pipeline-id">#{{ pipeline.id }}</span>
     </a>
     <span>by</span>
     <user-avatar-link
@@ -73,8 +80,16 @@
         :title="pipeline.yaml_errors">
         yaml invalid
       </span>
+      <span
+        v-if="pipeline.flags.failure_reason"
+        v-tooltip
+        class="js-pipeline-url-failure label label-danger"
+        :title="pipeline.failure_reason">
+        error
+      </span>
       <a
         v-if="pipeline.flags.auto_devops"
+        tabindex="0"
         class="js-pipeline-url-autodevops label label-info autodevops-badge"
         v-popover="popoverOptions"
         role="button">

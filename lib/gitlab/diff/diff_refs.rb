@@ -13,9 +13,9 @@ module Gitlab
 
       def ==(other)
         other.is_a?(self.class) &&
-          base_sha == other.base_sha &&
-          start_sha == other.start_sha &&
-          head_sha == other.head_sha
+          Git.shas_eql?(base_sha, other.base_sha) &&
+          Git.shas_eql?(start_sha, other.start_sha) &&
+          Git.shas_eql?(head_sha, other.head_sha)
       end
 
       alias_method :eql?, :==

@@ -18,33 +18,13 @@ describe Settings do
     end
   end
 
-  describe '#repositories' do
-    it 'assigns the default failure attributes' do
-      repository_settings = Gitlab.config.repositories.storages['broken']
-
-      expect(repository_settings['failure_count_threshold']).to eq(10)
-      expect(repository_settings['failure_wait_time']).to eq(30)
-      expect(repository_settings['failure_reset_time']).to eq(1800)
-      expect(repository_settings['storage_timeout']).to eq(5)
-    end
-
-    it 'can be accessed with dot syntax all the way down' do
-      expect(Gitlab.config.repositories.storages.broken.failure_count_threshold).to eq(10)
-    end
-
-    it 'can be accessed in a very specific way that breaks without reassigning each element with Settingslogic' do
-      storage_settings = Gitlab.config.repositories.storages['broken']
-      expect(storage_settings.failure_count_threshold).to eq(10)
-    end
-  end
-
   describe '#host_without_www' do
     context 'URL with protocol' do
       it 'returns the host' do
         expect(described_class.host_without_www('http://foo.com')).to eq 'foo.com'
         expect(described_class.host_without_www('http://www.foo.com')).to eq 'foo.com'
         expect(described_class.host_without_www('http://secure.foo.com')).to eq 'secure.foo.com'
-        expect(described_class.host_without_www('http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon')).to eq 'gravatar.com'
+        expect(described_class.host_without_www('https://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon')).to eq 'gravatar.com'
 
         expect(described_class.host_without_www('https://foo.com')).to eq 'foo.com'
         expect(described_class.host_without_www('https://www.foo.com')).to eq 'foo.com'

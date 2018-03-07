@@ -5,7 +5,7 @@ class HelpController < ApplicationController
 
   # Taken from Jekyll
   # https://github.com/jekyll/jekyll/blob/3.5-stable/lib/jekyll/document.rb#L13
-  YAML_FRONT_MATTER_REGEXP = %r!\A(---\s*\n.*?\n?)^((---|\.\.\.)\s*$\n?)!m
+  YAML_FRONT_MATTER_REGEXP = /\A(---\s*\n.*?\n?)^((---|\.\.\.)\s*$\n?)/m
 
   def index
     # Remove YAML frontmatter so that it doesn't look weird
@@ -55,6 +55,10 @@ class HelpController < ApplicationController
   end
 
   def shortcuts
+  end
+
+  def instance_configuration
+    @instance_configuration = InstanceConfiguration.new
   end
 
   def ui

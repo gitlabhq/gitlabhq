@@ -31,14 +31,14 @@ test2:
     - oc project "$CI_PROJECT_NAME-$CI_PROJECT_ID" 2> /dev/null || oc new-project "$CI_PROJECT_NAME-$CI_PROJECT_ID"
   script:
     - "oc get services $APP 2> /dev/null || oc new-app . --name=$APP --strategy=docker"
-    - "oc start-build $APP --from-dir=. --follow || sleep 3s || oc start-build $APP --from-dir=. --follow"
+    - "oc start-build $APP --from-dir=. --follow || sleep 3s && oc start-build $APP --from-dir=. --follow"
     - "oc get routes $APP 2> /dev/null || oc expose service $APP --hostname=$APP_HOST"
 
 review:
   <<: *deploy
   stage: review
   variables:
-    APP: $CI_COMMIT_REF_NAME
+    APP: review-$CI_COMMIT_REF_NAME
     APP_HOST: $CI_PROJECT_NAME-$CI_ENVIRONMENT_SLUG.$OPENSHIFT_DOMAIN
   environment:
     name: review/$CI_COMMIT_REF_NAME
@@ -56,7 +56,7 @@ stop-review:
     - oc delete all -l "app=$APP"
   when: manual
   variables:
-    APP: $CI_COMMIT_REF_NAME
+    APP: review-$CI_COMMIT_REF_NAME
     GIT_STRATEGY: none
   environment:
     name: review/$CI_COMMIT_REF_NAME

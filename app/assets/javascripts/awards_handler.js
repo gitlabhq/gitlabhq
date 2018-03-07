@@ -1,8 +1,10 @@
 /* eslint-disable class-methods-use-this */
-/* global Flash */
 import _ from 'underscore';
 import Cookies from 'js-cookie';
-import { isInIssuePage, updateTooltipTitle } from './lib/utils/common_utils';
+import { __ } from './locale';
+import { isInIssuePage, isInMRPage, hasVueMRDiscussionsCookie, updateTooltipTitle } from './lib/utils/common_utils';
+import flash from './flash';
+import axios from './lib/utils/axios_utils';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
 const transitionEndEventString = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
@@ -23,6 +25,9 @@ const categoryLabelMap = {
   symbols: 'Symbols',
   flags: 'Flags',
 };
+
+const IS_VISIBLE = 'is-visible';
+const IS_RENDERED = 'is-rendered';
 
 class AwardsHandler {
   constructor(emoji) {
@@ -45,13 +50,11 @@ class AwardsHandler {
 
     this.registerEventListener('on', $('html'), 'click', (e) => {
       const $target = $(e.target);
-      if (!$target.closest('.emoji-menu-content').length) {
-        $('.js-awards-block.current').removeClass('current');
-      }
       if (!$target.closest('.emoji-menu').length) {
+        $('.js-awards-block.current').removeClass('current');
         if ($('.emoji-menu').is(':visible')) {
           $('.js-add-award.is-active').removeClass('is-active');
-          $('.emoji-menu').removeClass('is-visible');
+          this.hideMenuElement($('.emoji-menu'));
         }
       }
     });
@@ -88,12 +91,12 @@ class AwardsHandler {
     if ($menu.length) {
       if ($menu.is('.is-visible')) {
         $addBtn.removeClass('is-active');
-        $menu.removeClass('is-visible');
+        this.hideMenuElement($menu);
         $('.js-emoji-menu-search').blur();
       } else {
         $addBtn.addClass('is-active');
         this.positionMenu($menu, $addBtn);
-        $menu.addClass('is-visible');
+        this.showMenuElement($menu);
         $('.js-emoji-menu-search').focus();
       }
     } else {
@@ -103,7 +106,7 @@ class AwardsHandler {
         $addBtn.removeClass('is-loading');
         this.positionMenu($createdMenu, $addBtn);
         return setTimeout(() => {
-          $createdMenu.addClass('is-visible');
+          this.showMenuElement($createdMenu);
           $('.js-emoji-menu-search').focus();
         }, 200);
       });
@@ -236,12 +239,13 @@ class AwardsHandler {
   }
 
   addAward(votesBlock, awardUrl, emoji, checkMutuality, callback) {
-    const isMainAwardsBlock = votesBlock.closest('.js-issue-note-awards').length;
+    const isMainAwardsBlock = votesBlock.closest('.js-noteable-awards').length;
 
-    if (isInIssuePage() && !isMainAwardsBlock) {
+    if (this.isInVueNoteablePage() && !isMainAwardsBlock) {
       const id = votesBlock.attr('id').replace('note_', '');
 
-      $('.emoji-menu').removeClass('is-visible');
+      this.hideMenuElement($('.emoji-menu'));
+
       $('.js-add-award.is-active').removeClass('is-active');
       const toggleAwardEvent = new CustomEvent('toggleAward', {
         detail: {
@@ -261,7 +265,8 @@ class AwardsHandler {
       return typeof callback === 'function' ? callback() : undefined;
     });
 
-    $('.emoji-menu').removeClass('is-visible');
+    this.hideMenuElement($('.emoji-menu'));
+
     return $('.js-add-award.is-active').removeClass('is-active');
   }
 
@@ -288,8 +293,16 @@ class AwardsHandler {
     }
   }
 
+  isVueMRDiscussions() {
+    return isInMRPage() && hasVueMRDiscussionsCookie() && !$('#diffs').is(':visible');
+  }
+
+  isInVueNoteablePage() {
+    return isInIssuePage() || this.isVueMRDiscussions();
+  }
+
   getVotesBlock() {
-    if (isInIssuePage()) {
+    if (this.isInVueNoteablePage()) {
       const $el = $('.js-add-award.is-active').closest('.note.timeline-entry');
 
       if ($el.length) {
@@ -307,7 +320,7 @@ class AwardsHandler {
   }
 
   getAwardUrl() {
-    return this.getVotesBlock().data('award-url');
+    return this.getVotesBlock().data('awardUrl');
   }
 
   checkMutuality(votesBlock, emoji) {
@@ -436,13 +449,15 @@ class AwardsHandler {
     if (this.isUserAuthored($emojiButton)) {
       this.userAuthored($emojiButton);
     } else {
-      $.post(awardUrl, {
+      axios.post(awardUrl, {
         name: emoji,
-      }, (data) => {
+      })
+      .then(({ data }) => {
         if (data.ok) {
           callback();
         }
-      }).fail(() => new Flash('Something went wrong on our end.'));
+      })
+      .catch(() => flash(__('Something went wrong on our end.')));
     }
   }
 
@@ -527,6 +542,33 @@ class AwardsHandler {
     const $matchingElements = $emojiElements
       .filter((i, elm) => emojiMatches.indexOf(elm.dataset.name) >= 0);
     return $matchingElements.closest('li').clone();
+  }
+
+  /* showMenuElement and hideMenuElement are performance optimizations. We use
+   * opacity to show/hide the emoji menu, because we can animate it. But opacity
+   * leaves hidden elements in the render tree, which is unacceptable given the number
+   * of emoji elements in the emoji menu (5k+). To get the best of both worlds, we separately
+   * apply IS_RENDERED to add/remove the menu from the render tree and IS_VISIBLE to animate
+   * the menu being opened and closed. */
+
+  showMenuElement($emojiMenu) {
+    $emojiMenu.addClass(IS_RENDERED);
+
+    // enqueues animation as a microtask, so it begins ASAP once IS_RENDERED added
+    return Promise.resolve()
+      .then(() => $emojiMenu.addClass(IS_VISIBLE));
+  }
+
+  hideMenuElement($emojiMenu) {
+    $emojiMenu.on(transitionEndEventString, (e) => {
+      if (e.currentTarget === e.target) {
+        $emojiMenu
+          .removeClass(IS_RENDERED)
+          .off(transitionEndEventString);
+      }
+    });
+
+    $emojiMenu.removeClass(IS_VISIBLE);
   }
 
   destroy() {

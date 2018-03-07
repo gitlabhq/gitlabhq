@@ -1,0 +1,8 @@
+.has-tooltip{ class: "limit-box limit-box-#{objects} prepend-left-5", data: { title: "Project has too many #{label_for_message} to search"} }
+  .limit-icon
+    - if objects == :branch
+      = sprite_icon('fork', size: 12)
+    - else
+      = icon('tag')
+  .limit-message
+    %span #{label_for_message.capitalize} unavailable

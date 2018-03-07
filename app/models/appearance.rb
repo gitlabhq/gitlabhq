@@ -2,9 +2,8 @@ class Appearance < ActiveRecord::Base
   include CacheMarkdownField
 
   cache_markdown_field :description
+  cache_markdown_field :new_project_guidelines
 
-  validates :title,       presence: true
-  validates :description, presence: true
   validates :logo,        file_size: { maximum: 1.megabyte }
   validates :header_logo, file_size: { maximum: 1.megabyte }
 
@@ -12,6 +11,7 @@ class Appearance < ActiveRecord::Base
 
   mount_uploader :logo,         AttachmentUploader
   mount_uploader :header_logo,  AttachmentUploader
+
   has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   CACHE_KEY = 'current_appearance'.freeze

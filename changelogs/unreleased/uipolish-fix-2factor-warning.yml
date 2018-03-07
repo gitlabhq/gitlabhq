@@ -1,5 +1,0 @@
----
-title: Two factor auth messages in settings no longer overlap the button
-merge_request:
-author: Jedidiah Broadbent
-type: fixed

@@ -13,8 +13,10 @@ describe('Pipelines Async Button', () => {
       propsData: {
         endpoint: '/foo',
         title: 'Foo',
-        icon: 'fa fa-foo',
+        icon: 'repeat',
         cssClass: 'bar',
+        pipelineId: 123,
+        type: 'explode',
       },
     }).$mount();
   });
@@ -23,8 +25,8 @@ describe('Pipelines Async Button', () => {
     expect(component.$el.tagName).toEqual('BUTTON');
   });
 
-  it('should render the provided icon', () => {
-    expect(component.$el.querySelector('i').getAttribute('class')).toContain('fa fa-foo');
+  it('should render svg icon', () => {
+    expect(component.$el.querySelector('svg')).not.toBeNull();
   });
 
   it('should render the provided title', () => {
@@ -38,9 +40,9 @@ describe('Pipelines Async Button', () => {
 
   describe('With confirm dialog', () => {
     it('should call the service when confimation is positive', () => {
-      spyOn(window, 'confirm').and.returnValue(true);
-      eventHub.$on('postAction', (endpoint) => {
-        expect(endpoint).toEqual('/foo');
+      eventHub.$on('openConfirmationModal', (data) => {
+        expect(data.pipelineId).toEqual(123);
+        expect(data.type).toEqual('explode');
       });
 
       component = new AsyncButtonComponent({
@@ -49,7 +51,8 @@ describe('Pipelines Async Button', () => {
           title: 'Foo',
           icon: 'fa fa-foo',
           cssClass: 'bar',
-          confirmActionMessage: 'bar',
+          pipelineId: 123,
+          type: 'explode',
         },
       }).$mount();
 

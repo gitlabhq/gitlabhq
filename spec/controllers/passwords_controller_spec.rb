@@ -1,18 +1,20 @@
 require 'spec_helper'
 
 describe PasswordsController do
-  describe '#prevent_ldap_reset' do
+  describe '#check_password_authentication_available' do
     before do
       @request.env["devise.mapping"] = Devise.mappings[:user]
     end
 
-    context 'when password authentication is disabled' do
-      it 'allows password reset' do
-        stub_application_setting(password_authentication_enabled: false)
+    context 'when password authentication is disabled for the web interface and Git' do
+      it 'prevents a password reset' do
+        stub_application_setting(password_authentication_enabled_for_web: false)
+        stub_application_setting(password_authentication_enabled_for_git: false)
 
         post :create
 
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(302)
+        expect(flash[:alert]).to eq 'Password authentication is unavailable.'
       end
     end
 
@@ -22,7 +24,7 @@ describe PasswordsController do
       it 'prevents a password reset' do
         post :create, user: { email: user.email }
 
-        expect(flash[:alert]).to eq('Cannot reset password for LDAP user.')
+        expect(flash[:alert]).to eq 'Password authentication is unavailable.'
       end
     end
   end

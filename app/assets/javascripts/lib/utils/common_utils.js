@@ -1,5 +1,10 @@
+import jQuery from 'jquery';
+import Cookies from 'js-cookie';
+import axios from './axios_utils';
+import { getLocationHash } from './url_utility';
+import { convertToCamelCase } from './text_utility';
 
-export const getPagePath = (index = 0) => $('body').data('page').split(':')[index];
+export const getPagePath = (index = 0) => $('body').attr('data-page').split(':')[index];
 
 export const isInGroupsPage = () => getPagePath() === 'groups';
 
@@ -19,23 +24,23 @@ export const getGroupSlug = () => {
   return null;
 };
 
-export const isInIssuePage = () => {
-  const page = getPagePath(1);
-  const action = getPagePath(2);
+export const checkPageAndAction = (page, action) => {
+  const pagePath = getPagePath(1);
+  const actionPath = getPagePath(2);
 
-  return page === 'issues' && action === 'show';
+  return pagePath === page && actionPath === action;
 };
 
-export const ajaxGet = url => $.ajax({
-  type: 'GET',
-  url,
-  dataType: 'script',
-});
+export const isInIssuePage = () => checkPageAndAction('issues', 'show');
+export const isInMRPage = () => checkPageAndAction('merge_requests', 'show');
+export const isInNoteablePage = () => isInIssuePage() || isInMRPage();
+export const hasVueMRDiscussionsCookie = () => Cookies.get('vue_mr_discussions');
 
-export const ajaxPost = (url, data) => $.ajax({
-  type: 'POST',
-  url,
-  data,
+export const ajaxGet = url => axios.get(url, {
+  params: { format: 'js' },
+  responseType: 'text',
+}).then(({ data }) => {
+  $.globalEval(data);
 });
 
 export const rstrip = (val) => {
@@ -65,12 +70,13 @@ export const disableButtonIfEmptyField = (fieldSelector, buttonSelector, eventNa
 // automatically adjust scroll position for hash urls taking the height of the navbar into account
 // https://github.com/twitter/bootstrap/issues/1768
 export const handleLocationHash = () => {
-  let hash = window.gl.utils.getLocationHash();
+  let hash = getLocationHash();
   if (!hash) return;
 
   // This is required to handle non-unicode characters in hash
   hash = decodeURIComponent(hash);
 
+  const target = document.getElementById(hash) || document.getElementById(`user-content-${hash}`);
   const fixedTabs = document.querySelector('.js-tabs-affix');
   const fixedDiffStats = document.querySelector('.js-diff-files-changed.is-stuck');
   const fixedNav = document.querySelector('.navbar-gitlab');
@@ -78,25 +84,19 @@ export const handleLocationHash = () => {
   let adjustment = 0;
   if (fixedNav) adjustment -= fixedNav.offsetHeight;
 
-  // scroll to user-generated markdown anchor if we cannot find a match
-  if (document.getElementById(hash) === null) {
-    const target = document.getElementById(`user-content-${hash}`);
-    if (target && target.scrollIntoView) {
-      target.scrollIntoView(true);
-      window.scrollBy(0, adjustment);
-    }
-  } else {
-    // only adjust for fixedTabs when not targeting user-generated content
-    if (fixedTabs) {
-      adjustment -= fixedTabs.offsetHeight;
-    }
-
-    if (fixedDiffStats) {
-      adjustment -= fixedDiffStats.offsetHeight;
-    }
-
-    window.scrollBy(0, adjustment);
+  if (target && target.scrollIntoView) {
+    target.scrollIntoView(true);
   }
+
+  if (fixedTabs) {
+    adjustment -= fixedTabs.offsetHeight;
+  }
+
+  if (fixedDiffStats) {
+    adjustment -= fixedDiffStats.offsetHeight;
+  }
+
+  window.scrollBy(0, adjustment);
 };
 
 // Check if element scrolled into viewport from above or below
@@ -140,7 +140,11 @@ export const isMetaKey = e => e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
 // 3) Middle-click or Mouse Wheel Click (e.which is 2)
 export const isMetaClick = e => e.metaKey || e.ctrlKey || e.which === 2;
 
-export const scrollToElement = ($el) => {
+export const scrollToElement = (element) => {
+  let $el = element;
+  if (!(element instanceof jQuery)) {
+    $el = $(element);
+  }
   const top = $el.offset().top;
   const mrTabsHeight = $('.merge-request-tabs').height() || 0;
   const headerHeight = $('.navbar-gitlab').height() || 0;
@@ -177,7 +181,6 @@ export const getSelectedFragment = () => {
   return documentFragment;
 };
 
-// TODO: Update this name, there is a gl.text.insertText function.
 export const insertText = (target, text) => {
   // Firefox doesn't support `document.execCommand('insertText', false, text)` on textareas
   const selectionStart = target.selectionStart;
@@ -196,7 +199,7 @@ export const insertText = (target, text) => {
   target.selectionStart = target.selectionEnd = selectionStart + insertedText.length;
 
   // Trigger autosave
-  $(target).trigger('input');
+  target.dispatchEvent(new Event('input'));
 
   // Trigger autosize
   const event = document.createEvent('Event');
@@ -237,7 +240,7 @@ export const nodeMatchesSelector = (node, selector) => {
 export const normalizeHeaders = (headers) => {
   const upperCaseHeaders = {};
 
-  Object.keys(headers).forEach((e) => {
+  Object.keys(headers || {}).forEach((e) => {
     upperCaseHeaders[e.toUpperCase()] = headers[e];
   });
 
@@ -276,43 +279,47 @@ export const parseIntPagination = paginationInformation => ({
 });
 
 /**
- * Updates the search parameter of a URL given the parameter and value provided.
+ * Given a string of query parameters creates an object.
  *
- * If no search params are present we'll add it.
- * If param for page is already present, we'll update it
- * If there are params but not for the given one, we'll add it at the end.
- * Returns the new search parameters.
+ * @example
+ * `scope=all&page=2` -> { scope: 'all', page: '2'}
+ * `scope=all` -> { scope: 'all' }
+ * ``-> {}
+ * @param {String} query
+ * @returns {Object}
+ */
+export const parseQueryStringIntoObject = (query = '') => {
+  if (query === '') return {};
+
+  return query
+    .split('&')
+    .reduce((acc, element) => {
+      const val = element.split('=');
+      Object.assign(acc, {
+        [val[0]]: decodeURIComponent(val[1]),
+      });
+      return acc;
+    }, {});
+};
+
+/**
+ * Converts object with key-value pairs
+ * into query-param string
+ *
+ * @param {Object} params
+ */
+export const objectToQueryString = (params = {}) => Object.keys(params).map(param => `${param}=${params[param]}`).join('&');
+
+export const buildUrlWithCurrentLocation = param => (param ? `${window.location.pathname}${param}` : window.location.pathname);
+
+/**
+ * Based on the current location and the string parameters provided
+ * creates a new entry in the history without reloading the page.
  *
  * @param {String} param
- * @param {Number|String|Undefined|Null} value
- * @return {String}
  */
-export const setParamInURL = (param, value) => {
-  let search;
-  const locationSearch = window.location.search;
-
-  if (locationSearch.length) {
-    const parameters = locationSearch.substring(1, locationSearch.length)
-      .split('&')
-      .reduce((acc, element) => {
-        const val = element.split('=');
-        // eslint-disable-next-line no-param-reassign
-        acc[val[0]] = decodeURIComponent(val[1]);
-        return acc;
-      }, {});
-
-    parameters[param] = value;
-
-    const toString = Object.keys(parameters)
-      .map(val => `${val}=${encodeURIComponent(parameters[val])}`)
-      .join('&');
-
-    search = `?${toString}`;
-  } else {
-    search = `?${param}=${value}`;
-  }
-
-  return search;
+export const historyPushState = (newUrl) => {
+  window.history.pushState({}, document.title, newUrl);
 };
 
 /**
@@ -391,26 +398,54 @@ export const resetFavicon = () => {
   }
 };
 
-export const setCiStatusFavicon = (pageUrl) => {
-  $.ajax({
-    url: pageUrl,
-    dataType: 'json',
-    success: (data) => {
+export const setCiStatusFavicon = pageUrl =>
+  axios.get(pageUrl)
+    .then(({ data }) => {
       if (data && data.favicon) {
         setFavicon(data.favicon);
       } else {
         resetFavicon();
       }
-    },
-    error: () => {
-      resetFavicon();
-    },
-  });
+    })
+    .catch(resetFavicon);
+
+export const spriteIcon = (icon, className = '') => {
+  const classAttribute = className.length > 0 ? `class="${className}"` : '';
+
+  return `<svg ${classAttribute}><use xlink:href="${gon.sprite_icons}#${icon}" /></svg>`;
 };
 
-export const spriteIcon = icon => `<svg><use xlink:href="${gon.sprite_icons}#${icon}" /></svg>`;
+/**
+ * This method takes in object with snake_case property names
+ * and returns new object with camelCase property names
+ *
+ * Reasoning for this method is to ensure consistent property
+ * naming conventions across JS code.
+ */
+export const convertObjectPropsToCamelCase = (obj = {}) => {
+  if (obj === null) {
+    return {};
+  }
+
+  return Object.keys(obj).reduce((acc, prop) => {
+    const result = acc;
+
+    result[convertToCamelCase(prop)] = obj[prop];
+    return acc;
+  }, {});
+};
 
 export const imagePath = imgUrl => `${gon.asset_host || ''}${gon.relative_url_root || ''}/assets/${imgUrl}`;
+
+export const addSelectOnFocusBehaviour = (selector = '.js-select-on-focus') => {
+  // Click a .js-select-on-focus field, select the contents
+  // Prevent a mouseup event from deselecting the input
+  $(selector).on('focusin', function selectOnFocusCallback() {
+    $(this).select().one('mouseup', (e) => {
+      e.preventDefault();
+    });
+  });
+};
 
 window.gl = window.gl || {};
 window.gl.utils = {
@@ -422,7 +457,6 @@ window.gl.utils = {
   getGroupSlug,
   isInIssuePage,
   ajaxGet,
-  ajaxPost,
   rstrip,
   updateTooltipTitle,
   disableButtonIfEmptyField,

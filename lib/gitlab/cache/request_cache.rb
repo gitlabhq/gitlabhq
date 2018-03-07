@@ -45,11 +45,13 @@ module Gitlab
         klass.prepend(extension)
       end
 
+      attr_accessor :request_cache_key_block
+
       def request_cache_key(&block)
         if block_given?
-          @request_cache_key = block
+          self.request_cache_key_block = block
         else
-          @request_cache_key
+          request_cache_key_block
         end
       end
 

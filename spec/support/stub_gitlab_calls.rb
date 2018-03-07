@@ -21,6 +21,12 @@ module StubGitlabCalls
     allow_any_instance_of(Ci::Pipeline).to receive(:ci_yaml_file) { ci_yaml }
   end
 
+  def stub_repository_ci_yaml_file(sha:, path: '.gitlab-ci.yml')
+    allow_any_instance_of(Repository)
+      .to receive(:gitlab_ci_yml_for).with(sha, path)
+      .and_return(gitlab_ci_yaml)
+  end
+
   def stub_ci_builds_disabled
     allow_any_instance_of(Project).to receive(:builds_enabled?).and_return(false)
   end
@@ -39,11 +45,11 @@ module StubGitlabCalls
       .and_return({ 'tags' => tags })
 
     allow_any_instance_of(ContainerRegistry::Client)
-      .to receive(:repository_manifest).with(repository)
+      .to receive(:repository_manifest).with(repository, anything)
       .and_return(stub_container_registry_tag_manifest)
 
     allow_any_instance_of(ContainerRegistry::Client)
-      .to receive(:blob).with(repository)
+      .to receive(:blob).with(repository, anything, 'application/octet-stream')
       .and_return(stub_container_registry_blob)
   end
 

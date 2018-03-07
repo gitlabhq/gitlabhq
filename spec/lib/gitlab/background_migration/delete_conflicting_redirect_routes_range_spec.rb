@@ -24,17 +24,12 @@ describe Gitlab::BackgroundMigration::DeleteConflictingRedirectRoutesRange, :mig
     redirect_routes.create!(source_id: 1, source_type: 'Namespace', path: 'foo5')
   end
 
-  it 'deletes the conflicting redirect_routes in the range' do
+  # No-op. See https://gitlab.com/gitlab-com/infrastructure/issues/3460#note_53223252
+  it 'NO-OP: does not delete any redirect_routes' do
     expect(redirect_routes.count).to eq(8)
 
-    expect do
-      described_class.new.perform(1, 3)
-    end.to change { redirect_routes.where("path like 'foo%'").count }.from(5).to(2)
+    described_class.new.perform(1, 5)
 
-    expect do
-      described_class.new.perform(4, 5)
-    end.to change { redirect_routes.where("path like 'foo%'").count }.from(2).to(0)
-
-    expect(redirect_routes.count).to eq(3)
+    expect(redirect_routes.count).to eq(8)
   end
 end

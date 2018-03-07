@@ -9,6 +9,8 @@ describe GroupPolicy do
   let(:admin) { create(:admin) }
   let(:group) { create(:group) }
 
+  let(:guest_permissions) { [:read_group, :upload_file, :read_namespace] }
+
   let(:reporter_permissions) { [:admin_label] }
 
   let(:developer_permissions) { [:admin_milestones] }
@@ -52,10 +54,12 @@ describe GroupPolicy do
 
     it do
       expect_allowed(:read_group)
+      expect_disallowed(:upload_file)
       expect_disallowed(*reporter_permissions)
       expect_disallowed(*developer_permissions)
       expect_disallowed(*master_permissions)
       expect_disallowed(*owner_permissions)
+      expect_disallowed(:read_namespace)
     end
   end
 
@@ -63,7 +67,7 @@ describe GroupPolicy do
     let(:current_user) { guest }
 
     it do
-      expect_allowed(:read_group)
+      expect_allowed(*guest_permissions)
       expect_disallowed(*reporter_permissions)
       expect_disallowed(*developer_permissions)
       expect_disallowed(*master_permissions)
@@ -75,7 +79,7 @@ describe GroupPolicy do
     let(:current_user) { reporter }
 
     it do
-      expect_allowed(:read_group)
+      expect_allowed(*guest_permissions)
       expect_allowed(*reporter_permissions)
       expect_disallowed(*developer_permissions)
       expect_disallowed(*master_permissions)
@@ -87,7 +91,7 @@ describe GroupPolicy do
     let(:current_user) { developer }
 
     it do
-      expect_allowed(:read_group)
+      expect_allowed(*guest_permissions)
       expect_allowed(*reporter_permissions)
       expect_allowed(*developer_permissions)
       expect_disallowed(*master_permissions)
@@ -99,7 +103,7 @@ describe GroupPolicy do
     let(:current_user) { master }
 
     it do
-      expect_allowed(:read_group)
+      expect_allowed(*guest_permissions)
       expect_allowed(*reporter_permissions)
       expect_allowed(*developer_permissions)
       expect_allowed(*master_permissions)
@@ -113,7 +117,7 @@ describe GroupPolicy do
     it do
       allow(Group).to receive(:supports_nested_groups?).and_return(true)
 
-      expect_allowed(:read_group)
+      expect_allowed(*guest_permissions)
       expect_allowed(*reporter_permissions)
       expect_allowed(*developer_permissions)
       expect_allowed(*master_permissions)
@@ -127,7 +131,7 @@ describe GroupPolicy do
     it do
       allow(Group).to receive(:supports_nested_groups?).and_return(true)
 
-      expect_allowed(:read_group)
+      expect_allowed(*guest_permissions)
       expect_allowed(*reporter_permissions)
       expect_allowed(*developer_permissions)
       expect_allowed(*master_permissions)
@@ -186,7 +190,7 @@ describe GroupPolicy do
       let(:current_user) { nil }
 
       it do
-        expect_disallowed(:read_group)
+        expect_disallowed(*guest_permissions)
         expect_disallowed(*reporter_permissions)
         expect_disallowed(*developer_permissions)
         expect_disallowed(*master_permissions)
@@ -198,7 +202,7 @@ describe GroupPolicy do
       let(:current_user) { guest }
 
       it do
-        expect_allowed(:read_group)
+        expect_allowed(*guest_permissions)
         expect_disallowed(*reporter_permissions)
         expect_disallowed(*developer_permissions)
         expect_disallowed(*master_permissions)
@@ -210,7 +214,7 @@ describe GroupPolicy do
       let(:current_user) { reporter }
 
       it do
-        expect_allowed(:read_group)
+        expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
         expect_disallowed(*developer_permissions)
         expect_disallowed(*master_permissions)
@@ -222,7 +226,7 @@ describe GroupPolicy do
       let(:current_user) { developer }
 
       it do
-        expect_allowed(:read_group)
+        expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
         expect_disallowed(*master_permissions)
@@ -234,7 +238,7 @@ describe GroupPolicy do
       let(:current_user) { master }
 
       it do
-        expect_allowed(:read_group)
+        expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
         expect_allowed(*master_permissions)
@@ -248,7 +252,7 @@ describe GroupPolicy do
       it do
         allow(Group).to receive(:supports_nested_groups?).and_return(true)
 
-        expect_allowed(:read_group)
+        expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
         expect_allowed(*master_permissions)

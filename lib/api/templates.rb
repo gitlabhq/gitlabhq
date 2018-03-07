@@ -17,15 +17,15 @@ module API
       }
     }.freeze
     PROJECT_TEMPLATE_REGEX =
-      /[\<\{\[]
+      %r{[\<\{\[]
         (project|description|
         one\sline\s.+\swhat\sit\sdoes\.) # matching the start and end is enough here
-      [\>\}\]]/xi.freeze
+      [\>\}\]]}xi.freeze
     YEAR_TEMPLATE_REGEX = /[<{\[](year|yyyy)[>}\]]/i.freeze
     FULLNAME_TEMPLATE_REGEX =
-      /[\<\{\[]
+      %r{[\<\{\[]
         (fullname|name\sof\s(author|copyright\sowner))
-      [\>\}\]]/xi.freeze
+      [\>\}\]]}xi.freeze
 
     helpers do
       def parsed_license_template
@@ -49,7 +49,7 @@ module API
 
     desc 'Get the list of the available license template' do
       detail 'This feature was introduced in GitLab 8.7.'
-      success ::API::Entities::RepoLicense
+      success ::API::Entities::License
     end
     params do
       optional :popular, type: Boolean, desc: 'If passed, returns only popular licenses'
@@ -60,12 +60,12 @@ module API
         featured: declared(params)[:popular].present? ? true : nil
       }
       licences = ::Kaminari.paginate_array(Licensee::License.all(options))
-      present paginate(licences), with: Entities::RepoLicense
+      present paginate(licences), with: Entities::License
     end
 
     desc 'Get the text for a specific license' do
       detail 'This feature was introduced in GitLab 8.7.'
-      success ::API::Entities::RepoLicense
+      success ::API::Entities::License
     end
     params do
       requires :name, type: String, desc: 'The name of the template'
@@ -75,7 +75,7 @@ module API
 
       template = parsed_license_template
 
-      present template, with: ::API::Entities::RepoLicense
+      present template, with: ::API::Entities::License
     end
 
     GLOBAL_TEMPLATE_TYPES.each do |template_type, properties|

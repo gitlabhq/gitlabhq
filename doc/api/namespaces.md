@@ -39,7 +39,7 @@ Example response:
     "path": "group1",
     "kind": "group",
     "full_path": "group1",
-    "parent_id": "null",
+    "parent_id": null,
     "members_count_with_descendants": 2
   },
   {
@@ -48,7 +48,7 @@ Example response:
     "path": "bar",
     "kind": "group",
     "full_path": "foo/bar",
-    "parent_id": "9",
+    "parent_id": 9,
     "members_count_with_descendants": 5
   }
 ]
@@ -84,8 +84,60 @@ Example response:
     "path": "twitter",
     "kind": "group",
     "full_path": "twitter",
-    "parent_id": "null",
+    "parent_id": null,
     "members_count_with_descendants": 2
   }
 ]
+```
+
+## Get namespace by ID
+
+Get a namespace by ID.
+
+```
+GET /namespaces/:id
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | ID or path of the namespace |
+
+Example request:
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/namespaces/2
+```
+
+Example response:
+
+```json
+{
+  "id": 2,
+  "name": "group1",
+  "path": "group1",
+  "kind": "group",
+  "full_path": "group1",
+  "parent_id": null,
+  "members_count_with_descendants": 2
+}
+```
+
+Example request:
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/namespaces/group1
+```
+
+Example response:
+
+```json
+{
+  "id": 2,
+  "name": "group1",
+  "path": "group1",
+  "kind": "group",
+  "full_path": "group1",
+  "parent_id": null,
+  "members_count_with_descendants": 2
+}
 ```

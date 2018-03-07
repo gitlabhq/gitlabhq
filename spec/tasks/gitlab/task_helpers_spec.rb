@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'tasks/gitlab/task_helpers'
 
 class TestHelpersTest
   include Gitlab::TaskHelpers
@@ -73,6 +72,26 @@ describe Gitlab::TaskHelpers do
         .to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} -C #{clone_path} checkout -f --quiet FETCH_HEAD --])
 
       subject.checkout_version(tag, clone_path)
+    end
+  end
+
+  describe '#run_command' do
+    it 'runs command and return the output' do
+      expect(subject.run_command(%w(echo it works!))).to eq("it works!\n")
+    end
+
+    it 'returns empty string when command doesnt exist' do
+      expect(subject.run_command(%w(nonexistentcommand with arguments))).to eq('')
+    end
+  end
+
+  describe '#run_command!' do
+    it 'runs command and return the output' do
+      expect(subject.run_command!(%w(echo it works!))).to eq("it works!\n")
+    end
+
+    it 'returns and exception when command exit with non zero code' do
+      expect { subject.run_command!(['bash', '-c', 'exit 1']) }.to raise_error Gitlab::TaskFailedError
     end
   end
 end

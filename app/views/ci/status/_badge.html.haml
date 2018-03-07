@@ -5,9 +5,9 @@
 
 - if link && status.has_details?
   = link_to status.details_path, class: css_classes, title: title do
-    = custom_icon(status.icon)
+    = sprite_icon(status.icon)
     = status.text
 - else
   %span{ class: css_classes, title: title }
-    = custom_icon(status.icon)
+    = sprite_icon(status.icon)
     = status.text

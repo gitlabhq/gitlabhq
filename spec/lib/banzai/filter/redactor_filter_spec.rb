@@ -6,7 +6,7 @@ describe Banzai::Filter::RedactorFilter do
 
   it 'ignores non-GFM links' do
     html = %(See <a href="https://google.com/">Google</a>)
-    doc = filter(html, current_user: double)
+    doc = filter(html, current_user: build(:user))
 
     expect(doc.css('a').length).to eq 1
   end
@@ -46,7 +46,7 @@ describe Banzai::Filter::RedactorFilter do
       it 'allows permitted Project references' do
         user = create(:user)
         project = create(:project)
-        project.team << [user, :master]
+        project.add_master(user)
 
         link = reference_link(project: project.id, reference_type: 'test')
         doc = filter(link, current_user: user)
@@ -94,7 +94,7 @@ describe Banzai::Filter::RedactorFilter do
       it 'removes references for project members with guest role' do
         member = create(:user)
         project = create(:project, :public)
-        project.team << [member, :guest]
+        project.add_guest(member)
         issue = create(:issue, :confidential, project: project)
 
         link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
@@ -128,7 +128,7 @@ describe Banzai::Filter::RedactorFilter do
       it 'allows references for project members' do
         member = create(:user)
         project = create(:project, :public)
-        project.team << [member, :developer]
+        project.add_developer(member)
         issue = create(:issue, :confidential, project: project)
 
         link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')

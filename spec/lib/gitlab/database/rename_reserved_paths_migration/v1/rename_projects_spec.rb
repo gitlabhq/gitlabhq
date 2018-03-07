@@ -1,10 +1,11 @@
 require 'spec_helper'
 
-describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects, :truncate do
+describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects, :delete do
   let(:migration) { FakeRenameReservedPathMigrationV1.new }
   let(:subject) { described_class.new(['the-path'], migration) }
   let(:project) do
     create(:project,
+           :legacy_storage,
            path: 'the-path',
            namespace: create(:namespace, path: 'known-parent' ))
   end
@@ -17,7 +18,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects, :tr
   describe '#projects_for_paths' do
     it 'searches using nested paths' do
       namespace = create(:namespace, path: 'hello')
-      project = create(:project, path: 'THE-path', namespace: namespace)
+      project = create(:project, :legacy_storage, path: 'THE-path', namespace: namespace)
 
       result_ids = described_class.new(['Hello/the-path'], migration)
                      .projects_for_paths.map(&:id)
@@ -26,8 +27,8 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects, :tr
     end
 
     it 'includes the correct projects' do
-      project = create(:project, path: 'THE-path')
-      _other_project = create(:project)
+      project = create(:project, :legacy_storage, path: 'THE-path')
+      _other_project = create(:project, :legacy_storage)
 
       result_ids = subject.projects_for_paths.map(&:id)
 
@@ -36,7 +37,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects, :tr
   end
 
   describe '#rename_projects' do
-    let!(:projects) { create_list(:project, 2, path: 'the-path') }
+    let!(:projects) { create_list(:project, 2, :legacy_storage, path: 'the-path') }
 
     it 'renames each project' do
       expect(subject).to receive(:rename_project).twice
@@ -87,9 +88,25 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects, :tr
       subject.move_project_folders(project, 'known-parent/the-path', 'known-parent/the-path0')
     end
 
+    it 'does not move the repositories when hashed storage is enabled' do
+      project.update!(storage_version: Project::HASHED_STORAGE_FEATURES[:repository])
+
+      expect(subject).not_to receive(:move_repository)
+
+      subject.move_project_folders(project, 'known-parent/the-path', 'known-parent/the-path0')
+    end
+
     it 'moves uploads' do
       expect(subject).to receive(:move_uploads)
                            .with('known-parent/the-path', 'known-parent/the-path0')
+
+      subject.move_project_folders(project, 'known-parent/the-path', 'known-parent/the-path0')
+    end
+
+    it 'does not move uploads when hashed storage is enabled for attachments' do
+      project.update!(storage_version: Project::HASHED_STORAGE_FEATURES[:attachments])
+
+      expect(subject).not_to receive(:move_uploads)
 
       subject.move_project_folders(project, 'known-parent/the-path', 'known-parent/the-path0')
     end
@@ -104,7 +121,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects, :tr
 
   describe '#move_repository' do
     let(:known_parent) { create(:namespace, path: 'known-parent') }
-    let(:project) { create(:project, :repository, path: 'the-path', namespace: known_parent) }
+    let(:project) { create(:project, :repository, :legacy_storage, path: 'the-path', namespace: known_parent) }
 
     it 'moves the repository for a project' do
       expected_path = File.join(TestEnv.repos_path, 'known-parent', 'new-repo.git')
@@ -115,7 +132,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects, :tr
     end
   end
 
-  describe '#revert_renames', redis: true do
+  describe '#revert_renames', :redis do
     it 'renames the routes back to the previous values' do
       subject.rename_project(project)
 

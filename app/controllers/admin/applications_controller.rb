@@ -19,10 +19,11 @@ class Admin::ApplicationsController < Admin::ApplicationController
   end
 
   def create
-    @application = Doorkeeper::Application.new(application_params)
+    @application = Applications::CreateService.new(current_user, application_params).execute(request)
 
-    if @application.save
+    if @application.persisted?
       flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
+
       redirect_to admin_application_url(@application)
     else
       render :new

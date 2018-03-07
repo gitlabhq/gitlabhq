@@ -28,16 +28,18 @@ describe Oauth::AuthorizationsController do
       it 'returns 200 code and renders error view' do
         get :new
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to render_template('doorkeeper/authorizations/error')
       end
     end
 
     context 'with valid params' do
+      render_views
+
       it 'returns 200 code and renders view' do
         get :new, params
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to render_template('doorkeeper/authorizations/new')
       end
 
@@ -48,7 +50,7 @@ describe Oauth::AuthorizationsController do
         get :new, params
 
         expect(request.session['user_return_to']).to be_nil
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(302)
       end
     end
   end

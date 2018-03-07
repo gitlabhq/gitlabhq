@@ -7,10 +7,11 @@ module Routable
     has_one :route, as: :source, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
     has_many :redirect_routes, as: :source, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
-    validates_associated :route
     validates :route, presence: true
 
     scope :with_route, -> { includes(:route) }
+
+    after_validation :set_path_errors
 
     before_validation do
       if full_path_changed? || full_name_changed?
@@ -88,7 +89,7 @@ module Routable
 
   def full_name
     if route && route.name.present?
-      @full_name ||= route.name
+      @full_name ||= route.name # rubocop:disable Gitlab/ModuleWithInstanceVariables
     else
       update_route if persisted?
 
@@ -106,9 +107,13 @@ module Routable
     RequestStore[full_path_key] ||= uncached_full_path
   end
 
+  def full_path_components
+    full_path.split('/')
+  end
+
   def expires_full_path_cache
     RequestStore.delete(full_path_key) if RequestStore.active?
-    @full_path = nil
+    @full_path = nil # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
   def build_full_path
@@ -121,9 +126,14 @@ module Routable
 
   private
 
+  def set_path_errors
+    route_path_errors = self.errors.delete(:"route.path")
+    self.errors[:path].concat(route_path_errors) if route_path_errors
+  end
+
   def uncached_full_path
     if route && route.path.present?
-      @full_path ||= route.path
+      @full_path ||= route.path # rubocop:disable Gitlab/ModuleWithInstanceVariables
     else
       update_route if persisted?
 
@@ -152,6 +162,8 @@ module Routable
   end
 
   def update_route
+    return if Gitlab::Database.read_only?
+
     prepare_route
     route.save
   end
@@ -160,7 +172,7 @@ module Routable
     route || build_route(source: self)
     route.path = build_full_path
     route.name = build_full_name
-    @full_path = nil
-    @full_name = nil
+    @full_path = nil # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    @full_name = nil # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 end

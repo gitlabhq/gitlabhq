@@ -35,7 +35,7 @@ describe GitTagPushService do
 
     before do
       stub_ci_pipeline_to_return_yaml_file
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     it "creates a new pipeline" do

@@ -5,7 +5,7 @@ feature 'User wants to create a file' do
   let(:user) { create(:user) }
 
   background do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in user
     visit project_new_blob_path(project, project.default_branch)
   end

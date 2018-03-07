@@ -1,7 +1,7 @@
 require 'digest/md5'
 
 class Key < ActiveRecord::Base
-  include Gitlab::CurrentSettings
+  include AfterCommitQueue
   include Sortable
 
   belongs_to :user
@@ -27,13 +27,15 @@ class Key < ActiveRecord::Base
 
   after_commit :add_to_shell, on: :create
   after_create :post_create_hook
+  after_create :refresh_user_cache
   after_commit :remove_from_shell, on: :destroy
   after_destroy :post_destroy_hook
+  after_destroy :refresh_user_cache
 
   def key=(value)
-    value&.delete!("\n\r")
-    value.strip! unless value.blank?
-    write_attribute(:key, value)
+    write_attribute(:key, value.present? ? Gitlab::SSHPublicKey.sanitize(value) : nil)
+
+    @public_key = nil
   end
 
   def publishable_key
@@ -75,6 +77,12 @@ class Key < ActiveRecord::Base
     )
   end
 
+  def refresh_user_cache
+    return unless user
+
+    Users::KeysCountService.new(user).refresh_cache
+  end
+
   def post_destroy_hook
     SystemHooksService.new.execute_hooks_for(self, :destroy)
   end
@@ -88,13 +96,13 @@ class Key < ActiveRecord::Base
   def generate_fingerprint
     self.fingerprint = nil
 
-    return unless self.key.present?
+    return unless public_key.valid?
 
     self.fingerprint = public_key.fingerprint
   end
 
   def key_meets_restrictions
-    restriction = current_application_settings.key_restriction_for(public_key.type)
+    restriction = Gitlab::CurrentSettings.key_restriction_for(public_key.type)
 
     if restriction == ApplicationSetting::FORBIDDEN_KEY_VALUE
       errors.add(:key, forbidden_key_type_message)
@@ -105,7 +113,7 @@ class Key < ActiveRecord::Base
 
   def forbidden_key_type_message
     allowed_types =
-      current_application_settings
+      Gitlab::CurrentSettings
         .allowed_key_types
         .map(&:upcase)
         .to_sentence(last_word_connector: ', or ', two_words_connector: ' or ')

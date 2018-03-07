@@ -1,0 +1,13 @@
+- form = local_assigns.fetch(:form)
+- project = local_assigns.fetch(:project)
+
+.radio
+  = label_tag :project_merge_method_ff do
+    = form.radio_button :merge_method, :ff, class: "js-merge-method-radio qa-radio-button-merge-ff"
+    %strong Fast-forward merge
+    %br
+    %span.descr
+      No merge commits are created and all merges are fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded.
+    %br
+    %span.descr
+      When fast-forward merge is not possible, the user is given the option to rebase.

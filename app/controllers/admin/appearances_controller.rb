@@ -4,8 +4,8 @@ class Admin::AppearancesController < Admin::ApplicationController
   def show
   end
 
-  def preview
-    render 'preview', layout: 'devise'
+  def preview_sign_in
+    render 'preview_sign_in', layout: 'devise'
   end
 
   def create
@@ -52,7 +52,7 @@ class Admin::AppearancesController < Admin::ApplicationController
   def appearance_params
     params.require(:appearance).permit(
       :title, :description, :logo, :logo_cache, :header_logo, :header_logo_cache,
-      :updated_by
+      :new_project_guidelines, :updated_by
     )
   end
 end

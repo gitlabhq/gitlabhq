@@ -1,19 +1,7 @@
-- group_member = local_assigns[:group_member]
-- full_name = true unless local_assigns[:full_name] == false
-- group_name = full_name ? group.full_name : group.name
-- css_class = '' unless local_assigns[:css_class]
-- css_class += " no-description" if group.description.blank?
+- user = local_assigns.fetch(:user, current_user)
+- access = user&.max_member_access_for_group(group.id)
 
-%li.group-row{ class: css_class }
-  - if group_member
-    .controls.hidden-xs
-      - if can?(current_user, :admin_group, group)
-        = link_to edit_group_path(group), class: "btn" do
-          = icon('cogs')
-
-      = link_to leave_group_group_members_path(group), data: { confirm: leave_confirmation_message(group) }, method: :delete, class: "btn", title: 'Leave this group' do
-        = icon('sign-out')
-
+%li.group-row{ class: ('no-description' if group.description.blank?) }
   .stats
     %span
       = icon('bookmark')
@@ -28,13 +16,12 @@
 
   .avatar-container.s40
     = link_to group do
-      = image_tag group_icon(group), class: "avatar s40 hidden-xs"
+      = group_icon(group, class: "avatar s40 hidden-xs")
   .title
-    = link_to group_name, group, class: 'group-name'
+    = link_to group.full_name, group, class: 'group-name'
 
-    - if group_member
-      as
-      %span= group_member.human_access
+    - if access&.nonzero?
+      %span.user-access-role= Gitlab::Access.human_access(access)
 
   - if group.description.present?
     .description

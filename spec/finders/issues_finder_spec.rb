@@ -3,13 +3,17 @@ require 'spec_helper'
 describe IssuesFinder do
   set(:user) { create(:user) }
   set(:user2) { create(:user) }
-  set(:project1) { create(:project) }
+  set(:group) { create(:group) }
+  set(:subgroup) { create(:group, parent: group) }
+  set(:project1) { create(:project, group: group) }
   set(:project2) { create(:project) }
+  set(:project3) { create(:project, group: subgroup) }
   set(:milestone) { create(:milestone, project: project1) }
   set(:label) { create(:label, project: project2) }
-  set(:issue1) { create(:issue, author: user, assignees: [user], project: project1, milestone: milestone, title: 'gitlab', created_at: 1.week.ago) }
-  set(:issue2) { create(:issue, author: user, assignees: [user], project: project2, description: 'gitlab') }
-  set(:issue3) { create(:issue, author: user2, assignees: [user2], project: project2, title: 'tanuki', description: 'tanuki', created_at: 1.week.from_now) }
+  set(:issue1) { create(:issue, author: user, assignees: [user], project: project1, milestone: milestone, title: 'gitlab', created_at: 1.week.ago, updated_at: 1.week.ago) }
+  set(:issue2) { create(:issue, author: user, assignees: [user], project: project2, description: 'gitlab', created_at: 1.week.from_now, updated_at: 1.week.from_now) }
+  set(:issue3) { create(:issue, author: user2, assignees: [user2], project: project2, title: 'tanuki', description: 'tanuki', created_at: 2.weeks.from_now, updated_at: 2.weeks.from_now) }
+  set(:issue4) { create(:issue, project: project3) }
   set(:award_emoji1) { create(:award_emoji, name: 'thumbsup', user: user, awardable: issue1) }
   set(:award_emoji2) { create(:award_emoji, name: 'thumbsup', user: user2, awardable: issue2) }
   set(:award_emoji3) { create(:award_emoji, name: 'thumbsdown', user: user, awardable: issue3) }
@@ -22,13 +26,15 @@ describe IssuesFinder do
     let(:issues) { described_class.new(search_user, params.reverse_merge(scope: scope, state: 'opened')).execute }
 
     before(:context) do
-      project1.team << [user, :master]
-      project2.team << [user, :developer]
-      project2.team << [user2, :developer]
+      project1.add_master(user)
+      project2.add_developer(user)
+      project2.add_developer(user2)
+      project3.add_developer(user)
 
       issue1
       issue2
       issue3
+      issue4
 
       award_emoji1
       award_emoji2
@@ -39,7 +45,7 @@ describe IssuesFinder do
       let(:scope) { 'all' }
 
       it 'returns all issues' do
-        expect(issues).to contain_exactly(issue1, issue2, issue3)
+        expect(issues).to contain_exactly(issue1, issue2, issue3, issue4)
       end
 
       context 'filtering by assignee ID' do
@@ -47,6 +53,26 @@ describe IssuesFinder do
 
         it 'returns issues assigned to that user' do
           expect(issues).to contain_exactly(issue1, issue2)
+        end
+      end
+
+      context 'filtering by group_id' do
+        let(:params) { { group_id: group.id } }
+
+        context 'when include_subgroup param not set' do
+          it 'returns all group issues' do
+            expect(issues).to contain_exactly(issue1)
+          end
+        end
+
+        context 'when include_subgroup param is true', :nested_groups do
+          before do
+            params[:include_subgroups] = true
+          end
+
+          it 'returns all group and subgroup issues' do
+            expect(issues).to contain_exactly(issue1, issue4)
+          end
         end
       end
 
@@ -87,7 +113,7 @@ describe IssuesFinder do
         let(:params) { { milestone_title: Milestone::None.title } }
 
         it 'returns issues with no milestone' do
-          expect(issues).to contain_exactly(issue2, issue3)
+          expect(issues).to contain_exactly(issue2, issue3, issue4)
         end
       end
 
@@ -185,7 +211,7 @@ describe IssuesFinder do
         let(:params) { { label_name: Label::None.title } }
 
         it 'returns issues with no labels' do
-          expect(issues).to contain_exactly(issue1, issue3)
+          expect(issues).to contain_exactly(issue1, issue3, issue4)
         end
       end
 
@@ -210,7 +236,7 @@ describe IssuesFinder do
           let(:params) { { state: 'opened' } }
 
           it 'returns only opened issues' do
-            expect(issues).to contain_exactly(issue1, issue2, issue3)
+            expect(issues).to contain_exactly(issue1, issue2, issue3, issue4)
           end
         end
 
@@ -226,7 +252,7 @@ describe IssuesFinder do
           let(:params) { { state: 'all' } }
 
           it 'returns all issues' do
-            expect(issues).to contain_exactly(issue1, issue2, issue3, closed_issue)
+            expect(issues).to contain_exactly(issue1, issue2, issue3, closed_issue, issue4)
           end
         end
 
@@ -234,7 +260,7 @@ describe IssuesFinder do
           let(:params) { { state: 'invalid_state' } }
 
           it 'returns all issues' do
-            expect(issues).to contain_exactly(issue1, issue2, issue3, closed_issue)
+            expect(issues).to contain_exactly(issue1, issue2, issue3, closed_issue, issue4)
           end
         end
       end
@@ -249,10 +275,44 @@ describe IssuesFinder do
         end
 
         context 'through created_before' do
-          let(:params) { { created_before: issue1.created_at + 1.second } }
+          let(:params) { { created_before: issue1.created_at } }
 
           it 'returns issues created on or before the given date' do
             expect(issues).to contain_exactly(issue1)
+          end
+        end
+
+        context 'through created_after and created_before' do
+          let(:params) { { created_after: issue2.created_at, created_before: issue3.created_at } }
+
+          it 'returns issues created between the given dates' do
+            expect(issues).to contain_exactly(issue2, issue3)
+          end
+        end
+      end
+
+      context 'filtering by updated_at' do
+        context 'through updated_after' do
+          let(:params) { { updated_after: issue3.updated_at } }
+
+          it 'returns issues updated on or after the given date' do
+            expect(issues).to contain_exactly(issue3)
+          end
+        end
+
+        context 'through updated_before' do
+          let(:params) { { updated_before: issue1.updated_at } }
+
+          it 'returns issues updated on or before the given date' do
+            expect(issues).to contain_exactly(issue1)
+          end
+        end
+
+        context 'through updated_after and updated_before' do
+          let(:params) { { updated_after: issue2.updated_at, updated_before: issue3.updated_at } }
+
+          it 'returns issues updated between the given dates' do
+            expect(issues).to contain_exactly(issue2, issue3)
           end
         end
       end
@@ -338,7 +398,7 @@ describe IssuesFinder do
       end
 
       it "doesn't return issues if feature disabled" do
-        [project1, project2].each do |project|
+        [project1, project2, project3].each do |project|
           project.project_feature.update!(issues_access_level: ProjectFeature::DISABLED)
         end
 
@@ -351,7 +411,7 @@ describe IssuesFinder do
     it 'returns the number of rows for the default state' do
       finder = described_class.new(user)
 
-      expect(finder.row_count).to eq(3)
+      expect(finder.row_count).to eq(4)
     end
 
     it 'returns the number of rows for a given state' do

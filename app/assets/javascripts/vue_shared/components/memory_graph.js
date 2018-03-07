@@ -1,3 +1,5 @@
+import { getTimeago } from '../../lib/utils/datetime_utility';
+
 export default {
   name: 'MemoryGraph',
   props: {
@@ -16,7 +18,7 @@ export default {
   },
   computed: {
     getFormattedMedian() {
-      const deployedSince = gl.utils.getTimeago().format(this.deploymentTime * 1000);
+      const deployedSince = getTimeago().format(this.deploymentTime * 1000);
       return `Deployed ${deployedSince}`;
     },
   },

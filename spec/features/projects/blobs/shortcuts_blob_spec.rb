@@ -6,7 +6,7 @@ feature 'Blob shortcuts' do
   let(:path) { project.repository.ls_files(project.repository.root_ref)[0] }
   let(:sha) { project.repository.commit.sha }
 
-  describe 'On a file(blob)', js: true do
+  describe 'On a file(blob)', :js do
     def get_absolute_url(path = "")
       "http://#{page.server.host}:#{page.server.port}#{path}"
     end

@@ -1,15 +1,18 @@
 /* eslint-disable comma-dangle, space-before-function-paren, no-new */
-/* global IssuableContext */
-/* global MilestoneSelect */
-/* global LabelsSelect */
-/* global Sidebar */
-/* global Flash */
 
 import Vue from 'vue';
+import Flash from '../../flash';
+import { __ } from '../../locale';
+import Sidebar from '../../right_sidebar';
 import eventHub from '../../sidebar/event_hub';
-import AssigneeTitle from '../../sidebar/components/assignees/assignee_title';
-import Assignees from '../../sidebar/components/assignees/assignees';
+import assigneeTitle from '../../sidebar/components/assignees/assignee_title';
+import assignees from '../../sidebar/components/assignees/assignees.vue';
+import DueDateSelectors from '../../due_date_select';
 import './sidebar/remove_issue';
+import IssuableContext from '../../issuable_context';
+import LabelsSelect from '../../labels_select';
+import subscriptions from '../../sidebar/components/subscriptions/subscriptions.vue';
+import MilestoneSelect from '../../milestone_select';
 
 const Store = gl.issueBoards.BoardsStore;
 
@@ -93,7 +96,7 @@ gl.issueBoards.BoardSidebar = Vue.extend({
         })
         .catch(() => {
           this.loadingAssignees = false;
-          return new Flash('An error occurred while saving assignees');
+          Flash(__('An error occurred while saving assignees'));
         });
     },
   },
@@ -113,14 +116,14 @@ gl.issueBoards.BoardSidebar = Vue.extend({
   mounted () {
     new IssuableContext(this.currentUser);
     new MilestoneSelect();
-    new gl.DueDateSelectors();
+    new DueDateSelectors();
     new LabelsSelect();
     new Sidebar();
-    gl.Subscription.bindAll('.subscription');
   },
   components: {
+    assigneeTitle,
+    assignees,
     removeBtn: gl.issueBoards.RemoveIssueBtn,
-    'assignee-title': AssigneeTitle,
-    assignees: Assignees,
+    subscriptions,
   },
 });

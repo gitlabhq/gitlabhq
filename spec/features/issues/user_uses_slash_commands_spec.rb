@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Issues > User uses quick actions', js: true do
+feature 'Issues > User uses quick actions', :js do
   include QuickActionsHelpers
 
   it_behaves_like 'issuable record that supports quick actions in its description and notes', :issue do
@@ -12,7 +12,7 @@ feature 'Issues > User uses quick actions', js: true do
     let(:project) { create(:project, :public) }
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in(user)
       visit project_issue_path(project, issue)
     end
@@ -50,7 +50,7 @@ feature 'Issues > User uses quick actions', js: true do
       context 'when the current user cannot update the due date' do
         let(:guest) { create(:user) }
         before do
-          project.team << [guest, :guest]
+          project.add_guest(guest)
           gitlab_sign_out
           sign_in(guest)
           visit project_issue_path(project, issue)
@@ -59,7 +59,6 @@ feature 'Issues > User uses quick actions', js: true do
         it 'does not create a note, and sets the due date accordingly' do
           write_note("/due 2016-08-28")
 
-          expect(page).to have_content '/due 2016-08-28'
           expect(page).not_to have_content 'Commands applied'
 
           issue.reload
@@ -90,7 +89,7 @@ feature 'Issues > User uses quick actions', js: true do
       context 'when the current user cannot update the due date' do
         let(:guest) { create(:user) }
         before do
-          project.team << [guest, :guest]
+          project.add_guest(guest)
           gitlab_sign_out
           sign_in(guest)
           visit project_issue_path(project, issue)
@@ -99,7 +98,6 @@ feature 'Issues > User uses quick actions', js: true do
         it 'does not create a note, and sets the due date accordingly' do
           write_note("/remove_due_date")
 
-          expect(page).to have_content '/remove_due_date'
           expect(page).not_to have_content 'Commands applied'
 
           issue.reload
@@ -138,7 +136,7 @@ feature 'Issues > User uses quick actions', js: true do
       context 'when the current user cannot update the issue' do
         let(:guest) { create(:user) }
         before do
-          project.team << [guest, :guest]
+          project.add_guest(guest)
           gitlab_sign_out
           sign_in(guest)
           visit project_issue_path(project, issue)
@@ -147,7 +145,6 @@ feature 'Issues > User uses quick actions', js: true do
         it 'does not create a note, and does not mark the issue as a duplicate' do
           write_note("/duplicate ##{original_issue.to_reference}")
 
-          expect(page).to have_content "/duplicate ##{original_issue.to_reference}"
           expect(page).not_to have_content 'Commands applied'
           expect(page).not_to have_content "marked this issue as a duplicate of #{original_issue.to_reference}"
 
@@ -163,7 +160,7 @@ feature 'Issues > User uses quick actions', js: true do
         let(:target_project) { create(:project, :public) }
 
         before do
-          target_project.team << [user, :master]
+          target_project.add_master(user)
           sign_in(user)
           visit project_issue_path(project, issue)
         end
@@ -220,13 +217,13 @@ feature 'Issues > User uses quick actions', js: true do
         let(:wontfix_target)  { create(:label, project: target_project, title: 'wontfix') }
 
         before do
-          target_project.team << [user, :master]
+          target_project.add_master(user)
           sign_in(user)
           visit project_issue_path(project, issue)
         end
 
         it 'applies the commands to both issues and moves the issue' do
-          write_note("/label ~#{bug.title} ~#{wontfix.title}\n/milestone %\"#{milestone.title}\"\n/move #{target_project.full_path}")
+          write_note("/label ~#{bug.title} ~#{wontfix.title}\n\n/milestone %\"#{milestone.title}\"\n\n/move #{target_project.full_path}")
 
           expect(page).to have_content 'Commands applied'
           expect(issue.reload).to be_closed
@@ -245,7 +242,7 @@ feature 'Issues > User uses quick actions', js: true do
         end
 
         it 'moves the issue and applies the commands to both issues' do
-          write_note("/move #{target_project.full_path}\n/label ~#{bug.title} ~#{wontfix.title}\n/milestone %\"#{milestone.title}\"")
+          write_note("/move #{target_project.full_path}\n\n/label ~#{bug.title} ~#{wontfix.title}\n\n/milestone %\"#{milestone.title}\"")
 
           expect(page).to have_content 'Commands applied'
           expect(issue.reload).to be_closed

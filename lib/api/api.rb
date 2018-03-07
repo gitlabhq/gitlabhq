@@ -4,12 +4,17 @@ module API
 
     LOG_FILENAME = Rails.root.join("log", "api_json.log")
 
+    NO_SLASH_URL_PART_REGEX = %r{[^/]+}
+    PROJECT_ENDPOINT_REQUIREMENTS = { id: NO_SLASH_URL_PART_REGEX }.freeze
+    COMMIT_ENDPOINT_REQUIREMENTS = PROJECT_ENDPOINT_REQUIREMENTS.merge(sha: NO_SLASH_URL_PART_REGEX).freeze
+
     use GrapeLogging::Middleware::RequestLogger,
         logger: Logger.new(LOG_FILENAME),
         formatter: Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp.new,
         include: [
           GrapeLogging::Loggers::FilterParameters.new,
-          GrapeLogging::Loggers::ClientEnv.new
+          GrapeLogging::Loggers::ClientEnv.new,
+          Gitlab::GrapeLogging::Loggers::UserLogger.new
         ]
 
     allow_access_with_scope :api
@@ -57,7 +62,10 @@ module API
       mount ::API::V3::Variables
     end
 
-    before { header['X-Frame-Options'] = 'SAMEORIGIN' }
+    before do
+      header['X-Frame-Options'] = 'SAMEORIGIN'
+      header['X-Content-Type-Options'] = 'nosniff'
+    end
 
     # The locale is set to the current user's locale when `current_user` is loaded
     after { Gitlab::I18n.use_default_locale }
@@ -96,12 +104,11 @@ module API
     helpers ::API::Helpers
     helpers ::API::Helpers::CommonHelpers
 
-    NO_SLASH_URL_PART_REGEX = %r{[^/]+}
-    PROJECT_ENDPOINT_REQUIREMENTS = { id: NO_SLASH_URL_PART_REGEX }.freeze
-
     # Keep in alphabetical order
     mount ::API::AccessRequests
+    mount ::API::Applications
     mount ::API::AwardEmoji
+    mount ::API::Badges
     mount ::API::Boards
     mount ::API::Branches
     mount ::API::BroadcastMessages
@@ -114,7 +121,9 @@ module API
     mount ::API::Events
     mount ::API::Features
     mount ::API::Files
+    mount ::API::GroupBoards
     mount ::API::Groups
+    mount ::API::GroupMilestones
     mount ::API::Internal
     mount ::API::Issues
     mount ::API::Jobs
@@ -125,22 +134,24 @@ module API
     mount ::API::Members
     mount ::API::MergeRequestDiffs
     mount ::API::MergeRequests
-    mount ::API::ProjectMilestones
-    mount ::API::GroupMilestones
     mount ::API::Namespaces
     mount ::API::Notes
     mount ::API::NotificationSettings
+    mount ::API::PagesDomains
     mount ::API::Pipelines
     mount ::API::PipelineSchedules
+    mount ::API::ProjectExport
+    mount ::API::ProjectImport
     mount ::API::ProjectHooks
     mount ::API::Projects
+    mount ::API::ProjectMilestones
     mount ::API::ProjectSnippets
     mount ::API::ProtectedBranches
     mount ::API::Repositories
     mount ::API::Runner
     mount ::API::Runners
+    mount ::API::Search
     mount ::API::Services
-    mount ::API::Session
     mount ::API::Settings
     mount ::API::SidekiqMetrics
     mount ::API::Snippets

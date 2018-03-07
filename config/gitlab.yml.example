@@ -89,7 +89,7 @@ production: &base
     # This happens when the commit is pushed or merged into the default branch of a project.
     # When not specified the default issue_closing_pattern as specified below will be used.
     # Tip: you can test your closing pattern at http://rubular.com.
-    # issue_closing_pattern: '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing))(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)'
+    # issue_closing_pattern: '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)|[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)'
 
     ## Default project features settings
     default_projects_features:
@@ -152,6 +152,12 @@ production: &base
     # The location where LFS objects are stored (default: shared/lfs-objects).
     # storage_path: shared/lfs-objects
 
+  ## Uploads (attachments, avatars, etc...)
+  uploads:
+    # The location where uploads objects are stored (default: public/).
+    # storage_path: public/
+    # base_dir: uploads/-/system
+
   ## GitLab Pages
   pages:
     enabled: false
@@ -164,6 +170,7 @@ production: &base
     host: example.com
     port: 80 # Set to 443 if you serve the pages with HTTPS
     https: false # Set to true if you serve the pages with HTTPS
+    artifacts_server: true
     # external_http: ["1.1.1.1:80", "[2001::1]:80"] # If defined, enables custom domain support in GitLab Pages
     # external_https: ["1.1.1.1:443", "[2001::1]:443"] # If defined, enables custom domain and certificate support in GitLab Pages
 
@@ -174,14 +181,16 @@ production: &base
     host: 'https://mattermost.example.com'
 
   ## Gravatar
-  ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
+  ## If using gravatar.com, there's nothing to change here. For Libravatar
+  ## you'll need to provide the custom URLs. For more information,
+  ## see: https://docs.gitlab.com/ee/customization/libravatar.html
   gravatar:
-    # gravatar urls: possible placeholders: %{hash} %{size} %{email} %{username}
-    # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
+    # Gravatar/Libravatar URLs: possible placeholders: %{hash} %{size} %{email} %{username}
+    # plain_url: "http://..."     # default: https://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
     # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
 
   ## Auxiliary jobs
-  # Periodically executed jobs, to self-heal Gitlab, do external synchronizations, etc.
+  # Periodically executed jobs, to self-heal GitLab, do external synchronizations, etc.
   # Please read here for more information: https://github.com/ondrejbartas/sidekiq-cron#adding-cron-job
   cron_jobs:
     # Flag stuck CI jobs as failed
@@ -204,6 +213,10 @@ production: &base
     # Remove outdated repository archives
     repository_archive_cache_worker:
       cron: "0 * * * *"
+
+    # Verify custom GitLab Pages domains
+    pages_domain_verification_cron_worker:
+      cron: "*/15 * * * *"
 
   registry:
     # enabled: true
@@ -361,6 +374,9 @@ production: &base
           first_name: 'givenName'
           last_name:  'sn'
 
+        # If lowercase_usernames is enabled, GitLab will lower case the username.
+        lowercase_usernames: false
+
       # GitLab EE only: add more LDAP servers
       # Choose an ID made of a-z and 0-9 . This ID will be stored in the database
       # so that GitLab can remember which LDAP server a user belongs to.
@@ -382,6 +398,7 @@ production: &base
     # Sync user's profile from the specified Omniauth providers every time the user logs in (default: empty).
     # Define the allowed providers using an array, e.g. ["cas3", "saml", "twitter"],
     # or as true/false to allow all providers or none.
+    # When authenticating using LDAP, the user's email is always synced.
     # sync_profile_from_provider: []
 
     # Select which info to sync from the providers above. (default: email).
@@ -499,6 +516,8 @@ production: &base
 
   # Gitaly settings
   gitaly:
+    # Path to the directory containing Gitaly client executables.
+    client_path: /home/git/gitaly/bin
     # Default Gitaly authentication token. Can be overriden per storage. Can
     # be left blank when Gitaly is running locally on a Unix socket, which
     # is the normal way to deploy Gitaly.
@@ -519,11 +538,6 @@ production: &base
         path: /home/git/repositories/
         gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket # TCP connections are supported too (e.g. tcp://host:port)
         # gitaly_token: 'special token' # Optional: override global gitaly.token for this storage.
-        failure_count_threshold: 10 # number of failures before stopping attempts
-        failure_wait_time: 30 # Seconds after an access failure before allowing access again
-        failure_reset_time: 1800 # Time in seconds to expire failures
-        storage_timeout: 30 # Time in seconds to wait before aborting a storage access attempt
-
 
   ## Backup settings
   backup:
@@ -561,8 +575,8 @@ production: &base
     upload_pack: true
     receive_pack: true
 
-    # Git import/fetch timeout
-    # git_timeout: 800
+    # Git import/fetch timeout, in seconds. Defaults to 3 hours.
+    # git_timeout: 10800
 
     # If you use non-standard ssh port you need to specify it
     # ssh_port: 22
@@ -641,6 +655,10 @@ test:
     enabled: true
   lfs:
     enabled: false
+  artifacts:
+    path: tmp/tests/artifacts
+  uploads:
+    storage_path: tmp/tests/public
   gitlab:
     host: localhost
     port: 80
@@ -656,15 +674,12 @@ test:
       default:
         path: tmp/tests/repositories/
         gitaly_address: unix:tmp/tests/gitaly/gitaly.socket
-        failure_count_threshold: 999999
-        failure_wait_time: 0
-        storage_timeout: 30
       broken:
         path: tmp/tests/non-existent-repositories
         gitaly_address: unix:tmp/tests/gitaly/gitaly.socket
 
   gitaly:
-    enabled: true
+    client_path: tmp/tests/gitaly
     token: secret
   backup:
     path: tmp/tests/backups

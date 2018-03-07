@@ -1,85 +1,109 @@
 # Writing documentation
 
-  - **General Documentation**: written by the developers responsible by creating features. Should be submitted in the same merge request containing code. Feature proposals (by GitLab contributors) should also be accompanied by its respective documentation. They can be later improved by PMs and Technical Writers.
-  - **Technical Articles**: written by any [GitLab Team](https://about.gitlab.com/team/) member, GitLab contributors, or [Community Writers](https://about.gitlab.com/handbook/product/technical-writing/community-writers/).
+  - **General Documentation**: written by the [developers responsible by creating features](#contributing-to-docs). Should be submitted in the same merge request containing code. Feature proposals (by GitLab contributors) should also be accompanied by its respective documentation. They can be later improved by PMs and Technical Writers.
+  - **[Technical Articles](#technical-articles)**: written by any [GitLab Team](https://about.gitlab.com/team/) member, GitLab contributors, or [Community Writers](https://about.gitlab.com/handbook/product/technical-writing/community-writers/).
   - **Indexes per topic**: initially prepared by the Technical Writing Team, and kept up-to-date by developers and PMs in the same merge request containing code. They gather all resources for that topic in a single page (user and admin documentation, articles, and third-party docs).
-
-## Distinction between General Documentation and Technical Articles
-
-### General documentation
-
-General documentation is categorized by _User_, _Admin_, and _Contributor_, and describe what that feature is, what it does, and its available settings.
-
-### Technical Articles
-
-Technical articles replace technical content that once lived in the [GitLab Blog](https://about.gitlab.com/blog/), where they got out-of-date and weren't easily found.
-
-They are topic-related documentation, written with an user-friendly approach and language, aiming to provide the community with guidance on specific processes to achieve certain objectives.
-
-A technical article guides users and/or admins to achieve certain objectives (within guides and tutorials), or provide an overview of that particular topic or feature (within technical overviews). It can also describe the use, implementation, or integration of third-party tools with GitLab.
-
-They live under `doc/articles/article-title/index.md`, and their images should be placed under `doc/articles/article-title/img/`. Find a list of existing [technical articles](../articles/index.md) here.
-
-#### Types of Technical Articles
-
-- **User guides**: technical content to guide regular users from point A to point B
-- **Admin guides**: technical content to guide administrators of GitLab instances from point A to point B
-- **Technical Overviews**: technical content describing features, solutions, and third-party integrations
-- **Tutorials**: technical content provided step-by-step on how to do things, or how to reach very specific objectives
-
-#### Understanding guides, tutorials, and technical overviews
-
-Suppose there's a process to go from point A to point B in 5 steps: `(A) 1 > 2 > 3 > 4 > 5 (B)`.
-
-A **guide** can be understood as a description of certain processes to achieve a particular objective. A guide brings you from A to B describing the characteristics of that process, but not necessarily going over each step. It can mention, for example, steps 2 and 3, but does not necessarily explain how to accomplish them.
-
-- Live example: "GitLab Pages from A to Z - [Part 1](../user/project/pages/getting_started_part_one.md) to [Part 4](../user/project/pages/getting_started_part_four.md)"
-
-A **tutorial** requires a clear **step-by-step** guidance to achieve a singular objective. It brings you from A to B, describing precisely all the necessary steps involved in that process, showing each of the 5 steps to go from A to B.
-It does not only describes steps 2 and 3, but also shows you how to accomplish them.
-
-- Live example (on the blog): [Hosting on GitLab.com with GitLab Pages](https://about.gitlab.com/2016/04/07/gitlab-pages-setup/)
-
-A **technical overview** is a description of what a certain feature is, and what it does, but does not walk
-through the process of how to use it systematically.
-
-- Live example (on the blog): [GitLab Workflow, an overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/)
-
-#### Special format
-
-Every **Technical Article** contains, in the very beginning, a blockquote with the following information:
-
-- A reference to the **type of article** (user guide, admin guide, tech overview, tutorial)
-- A reference to the **knowledge level** expected from the reader to be able to follow through (beginner, intermediate, advanced)
-- A reference to the **author's name** and **GitLab.com handle**
-- A reference of the **publication date**
-
-```md
-> **Article [Type](../../development/writing_documentation.html#types-of-technical-articles):** tutorial ||
-> **Level:** intermediary ||
-> **Author:** [Name Surname](https://gitlab.com/username) ||
-> **Publication date:** AAAA/MM/DD
-```
-
-#### Technical Articles - Writing Method
-
-Use the [writing method](https://about.gitlab.com/handbook/product/technical-writing/#writing-method) defined by the Technical Writing team.
 
 ## Documentation style guidelines
 
 All the docs follow the same [styleguide](doc_styleguide.md).
 
+## Contributing to docs
+
+Whenever a feature is changed, updated, introduced, or deprecated, the merge
+request introducing these changes must be accompanied by the documentation
+(either updating existing ones or creating new ones). This is also valid when
+changes are introduced to the UI.
+
+The one responsible for writing the first piece of documentation is the developer who
+wrote the code. It's the job of the Product Manager to ensure all features are
+shipped with its docs, whether is a small or big change. At the pace GitLab evolves,
+this is the only way to keep the docs up-to-date. If you have any questions about it,
+ask a Technical Writer. Otherwise, when your content is ready, assign one of
+them to review it for you.
+
+We use the [monthly release blog post](https://about.gitlab.com/handbook/marketing/blog/release-posts/#monthly-releases) as a changelog checklist to ensure everything
+is documented.
+
+Whenever you submit a merge request for the documentation, use the documentation MR description template.
+
+Please check the [documentation workflow](https://about.gitlab.com/handbook/product/technical-writing/workflow/) before getting started.
+
+### Documentation directory structure
+
+The documentation is structured based on the GitLab UI structure itself,
+separated by [`user`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/user),
+[`administrator`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/administration), and [`contributor`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/development).
+
+To learn where to place a new document, check the [documentation style guide](doc_styleguide.md#location-and-naming-of-documents).
+
+In order to have a [solid site structure](https://searchengineland.com/seo-benefits-developing-solid-site-structure-277456) for our documentation,
+all docs should be linked. Every new document should be cross-linked to its related documentation, and linked from its topic-related index, when existent.
+
+The directories `/workflow/`, `/gitlab-basics/`, `/university/`, and `/articles/` have
+been deprecated and the majority their docs have been moved to their correct location
+in small iterations. Don't create new docs in these folders.
+
+To move a document from its location to another directory, read the section
+[changing document location](doc_styleguide.md#changing-document-location) of the doc style guide.
+
+### Feature overview and use cases
+
+Every major feature (regardless if present in GitLab Community or Enterprise editions)
+should present, at the beginning of the document, two main sections: **overview** and
+**use cases**. Every GitLab EE-only feature should also contain these sections.
+
+**Overview**: as the name suggests, the goal here is to provide an overview of the feature.
+Describe what is it, what it does, why it is important/cool/nice-to-have,
+what problem it solves, and what you can do with this feature that you couldn't
+do before.
+
+**Use cases**: provide at least two, ideally three, use cases for every major feature.
+You should answer this question: what can you do with this feature/change? Use cases
+are examples of how this feauture or change can be used in real life.
+
+Examples:
+- CE and EE: [Issues](../user/project/issues/index.md#use-cases)
+- CE and EE: [Merge Requests](../user/project/merge_requests/index.md#overview)
+- EE-only: [Geo](https://docs.gitlab.com/ee/gitlab-geo/README.html#overview)
+- EE-only: [Jenkins integration](https://docs.gitlab.com/ee/integration/jenkins.md#overview)
+
+Note that if you don't have anything to add between the doc title (`<h1>`) and
+the header `## Overview`, you can omit the header, but keep the content of the
+overview there.
+
+> **Overview** and **use cases** are required to **every** Enterprise Edition feature,
+and for every **major** feature present in Community Edition.
+
 ### Markdown
 
 Currently GitLab docs use Redcarpet as [markdown](../user/markdown.md) engine, but there's an [open discussion](https://gitlab.com/gitlab-com/gitlab-docs/issues/50) for implementing Kramdown in the near future.
 
-## Testing
+### Previewing locally
 
-We try to treat documentation as code, thus have implemented some testing.
+To preview your changes to documentation locally, please follow
+this [development guide](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/README.md#development).
+
+### Testing
+
+We treat documentation as code, thus have implemented some testing.
 Currently, the following tests are in place:
 
 1. `docs lint`: Check that all internal (relative) links work correctly and
-   that all cURL examples in API docs use the full switches.
+   that all cURL examples in API docs use the full switches. It's recommended
+   to [check locally](#previewing-locally) before pushing to GitLab by executing the command
+   `bundle exec nanoc check internal_links` on your local
+   [`gitlab-docs`](https://gitlab.com/gitlab-com/gitlab-docs) directory.
+1. [`ee_compat_check`](https://docs.gitlab.com/ee/development/automatic_ce_ee_merge.html#avoiding-ce-gt-ee-merge-conflicts-beforehand) (runs on CE only):
+    When you submit a merge request to GitLab Community Edition (CE),
+    there is this additional job that runs against Enterprise Edition (EE)
+    and checks if your changes can apply cleanly to the EE codebase.
+    If that job fails, read the instructions in the job log for what to do next.
+    As CE is merged into EE once a day, it's important to avoid merge conflicts.
+    Submitting an EE-equivalent merge request cherry-picking all commits from CE to EE is
+    essential to avoid them.
+
+### Branch naming
 
 If your contribution contains **only** documentation changes, you can speed up
 the CI process by following some branch naming conventions. You have three
@@ -94,24 +118,68 @@ choices:
 If your branch name matches any of the above, it will run only the docs
 tests. If it doesn't, the whole test suite will run (including docs).
 
----
+### Merge requests for GitLab documentation
 
-When you submit a merge request to GitLab Community Edition (CE), there is an
-additional job called `rake ee_compat_check` that runs against Enterprise
-Edition (EE) and checks if your changes can apply cleanly to the EE codebase.
-If that job fails, read the instructions in the job log for what to do next.
-Contributors do not need to submit their changes to EE, GitLab Inc. employees
-on the other hand need to make sure that their changes apply cleanly to both
-CE and EE.
+Before getting started, make sure you read the introductory section
+"[contributing to docs](#contributing-to-docs)" above and the
+[tech writing workflow](https://about.gitlab.com/handbook/product/technical-writing/workflow/)
+for GitLab Team members.
 
-## Previewing the changes live
+- Use the current [merge request description template](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab/merge_request_templates/Documentation.md)
+- Use the correct [branch name](#branch-naming)
+- Label the MR `Documentation`
+- Assign the correct milestone (see note below)
+
+
+NOTE: **Note:**
+If the release version you want to add the documentation to has already been
+frozen or released, use the label `Pick into X.Y` to get it merged into
+the correct release. Avoid picking into a past release as much as you can, as
+it increases the work of the release managers.
+
+#### Cherry-picking from CE to EE
+
+As we have the `master` branch of CE merged into EE once a day, it's common to
+run into merge conflicts. To avoid them, we [test for merge conflicts against EE](#testing)
+with the `ee-compat-check` job, and use the following method of creating equivalent
+branches for CE and EE.
+
+Follow this [method for cherry-picking from CE to EE](automatic_ce_ee_merge.md#cherry-picking-from-ce-to-ee), with a few adjustments:
+
+- Create the [CE branch](#branch-naming) starting with `docs-`,
+  e.g.: `git checkout -b docs-example`
+- Create the EE-equivalent branch ending with `-ee`, e.g.,
+  `git checkout -b docs-example-ee`
+- Once all the jobs are passing in CE and EE, and you've addressed the
+feedback from your own team, assign the CE MR to a technical writer for review
+- When both MRs are ready, the EE merge request will be merged first, and the
+CE-equivalent will be merged next.
+- Note that the review will occur only in the CE MR, as the EE MR
+contains the same commits as the CE MR.
+- If you have a few more changes that apply to the EE-version only, you can submit
+a couple more commits to the EE branch, but ask the reviewer to review the EE merge request
+additionally to the CE MR. If there are many EE-only changes though, start a new MR
+to EE only.
+
+### Previewing the changes live
 
 If you want to preview the doc changes of your merge request live, you can use
-the manual `review-docs-deploy` job in your merge request.
+the manual `review-docs-deploy` job in your merge request. You will need at
+least Master permissions to be able to run it and is currently enabled for the
+following projects:
+
+- https://gitlab.com/gitlab-org/gitlab-ce
+- https://gitlab.com/gitlab-org/gitlab-ee
+
+NOTE: **Note:**
+You will need to push a branch to those repositories, it doesn't work for forks.
 
 TIP: **Tip:**
 If your branch contains only documentation changes, you can use
-[special branch names](#testing) to avoid long running pipelines.
+[special branch names](#branch-naming) to avoid long running pipelines.
+
+In the mini pipeline graph, you should see an `>>` icon. Clicking on it will
+reveal the `review-docs-deploy` job. Hit the play button for the job to start.
 
 ![Manual trigger a docs build](img/manual_build_docs.png)
 
@@ -153,12 +221,12 @@ working on. If you don't, the remote docs branch won't be removed either,
 and the server where the Review Apps are hosted will eventually be out of
 disk space.
 
-### Behind the scenes
+#### Technical aspects
 
 If you want to know the hot details, here's what's really happening:
 
 1. You manually run the `review-docs-deploy` job in a CE/EE merge request.
-1. The job runs the [`scirpts/trigger-build-docs`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/scripts/trigger-build-docs)
+1. The job runs the [`scripts/trigger-build-docs`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/scripts/trigger-build-docs)
    script with the `deploy` flag, which in turn:
    1. Takes your branch name and applies the following:
       - The slug of the branch name is used to avoid special characters since
@@ -187,3 +255,72 @@ The following GitLab features are used among others:
 - [Review Apps](../ci/review_apps/index.md)
 - [Artifacts](../ci/yaml/README.md#artifacts)
 - [Specific Runner](../ci/runners/README.md#locking-a-specific-runner-from-being-enabled-for-other-projects)
+
+## General Documentation vs Technical Articles
+
+### General documentation
+
+General documentation is categorized by _User_, _Admin_, and _Contributor_, and describe what that feature is, what it does, and its available settings.
+
+### Technical Articles
+
+Technical articles replace technical content that once lived in the [GitLab Blog](https://about.gitlab.com/blog/), where they got out-of-date and weren't easily found.
+
+They are topic-related documentation, written with an user-friendly approach and language, aiming to provide the community with guidance on specific processes to achieve certain objectives.
+
+A technical article guides users and/or admins to achieve certain objectives (within guides and tutorials), or provide an overview of that particular topic or feature (within technical overviews). It can also describe the use, implementation, or integration of third-party tools with GitLab.
+
+They should be placed in a new directory named `/article-title/index.md` under a topic-related folder, and their images should be placed in `/article-title/img/`. For example, a new article on GitLab Pages should be placed in `doc/user/project/pages/article-title/` and a new article on GitLab CI/CD should be placed in `doc/ci/article-title/`.
+
+#### Types of Technical Articles
+
+- **User guides**: technical content to guide regular users from point A to point B
+- **Admin guides**: technical content to guide administrators of GitLab instances from point A to point B
+- **Technical Overviews**: technical content describing features, solutions, and third-party integrations
+- **Tutorials**: technical content provided step-by-step on how to do things, or how to reach very specific objectives
+
+#### Understanding guides, tutorials, and technical overviews
+
+Suppose there's a process to go from point A to point B in 5 steps: `(A) 1 > 2 > 3 > 4 > 5 (B)`.
+
+A **guide** can be understood as a description of certain processes to achieve a particular objective. A guide brings you from A to B describing the characteristics of that process, but not necessarily going over each step. It can mention, for example, steps 2 and 3, but does not necessarily explain how to accomplish them.
+
+- Live example: "[Static sites and GitLab Pages domains (Part 1)](../user/project/pages/getting_started_part_one.md) to [Creating and Tweaking GitLab CI/CD for GitLab Pages (Part 4)](../user/project/pages/getting_started_part_four.md)"
+
+A **tutorial** requires a clear **step-by-step** guidance to achieve a singular objective. It brings you from A to B, describing precisely all the necessary steps involved in that process, showing each of the 5 steps to go from A to B.
+It does not only describes steps 2 and 3, but also shows you how to accomplish them.
+
+- Live example (on the blog): [Hosting on GitLab.com with GitLab Pages](https://about.gitlab.com/2016/04/07/gitlab-pages-setup/)
+
+A **technical overview** is a description of what a certain feature is, and what it does, but does not walk
+through the process of how to use it systematically.
+
+- Live example (on the blog): [GitLab Workflow, an overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/)
+
+#### Special format
+
+Every **Technical Article** contains a frontmatter at the beginning of the doc
+with the following information:
+
+- **Type of article** (user guide, admin guide, technical overview, tutorial)
+- **Knowledge level** expected from the reader to be able to follow through (beginner, intermediate, advanced)
+- **Author's name** and **GitLab.com handle**
+- **Publication date** (ISO format YYYY-MM-DD)
+
+For example:
+
+
+```yaml
+---
+author: John Doe
+author_gitlab: johnDoe
+level: beginner
+article_type: user guide
+date: 2017-02-01
+---
+```
+
+#### Technical Articles - Writing Method
+
+Use the [writing method](https://about.gitlab.com/handbook/product/technical-writing/#writing-method) defined by the Technical Writing team.
+

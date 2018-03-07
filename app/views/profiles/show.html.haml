@@ -1,6 +1,5 @@
 - breadcrumb_title "Edit Profile"
 - @content_class = "limit-container-width" unless fluid_layout
-= render 'profiles/head'
 
 = bootstrap_form_for @user, url: profile_path, method: :put, html: { multipart: true, class: 'edit-user prepend-top-default js-quick-submit' }, authenticity_token: true do |f|
   = form_errors(@user)
@@ -13,27 +12,24 @@
         - if @user.avatar?
           You can change your avatar here
           - if gravatar_enabled?
-            or remove the current avatar to revert to #{link_to Gitlab.config.gravatar.host, 'http://' + Gitlab.config.gravatar.host}
+            or remove the current avatar to revert to #{link_to Gitlab.config.gravatar.host, 'https://' + Gitlab.config.gravatar.host}
         - else
           You can upload an avatar here
           - if gravatar_enabled?
-            or change it at #{link_to Gitlab.config.gravatar.host, 'http://' + Gitlab.config.gravatar.host}
+            or change it at #{link_to Gitlab.config.gravatar.host, 'https://' + Gitlab.config.gravatar.host}
     .col-lg-8
       .clearfix.avatar-image.append-bottom-default
-        = link_to avatar_icon(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
-          = image_tag avatar_icon(@user, 160), alt: '', class: 'avatar s160'
-      %h5.prepend-top-0
-        Upload new avatar
+        = link_to avatar_icon_for_user(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
+          = image_tag avatar_icon_for_user(@user, 160), alt: '', class: 'avatar s160'
+      %h5.prepend-top-0= _("Upload new avatar")
       .prepend-top-5.append-bottom-10
-        %a.btn.js-choose-user-avatar-button
-          Browse file...
-        %span.avatar-file-name.prepend-left-default.js-avatar-filename No file chosen
+        %button.btn.js-choose-user-avatar-button{ type: 'button' }= _("Choose file...")
+        %span.avatar-file-name.prepend-left-default.js-avatar-filename= _("No file chosen")
         = f.file_field_without_bootstrap :avatar, class: 'js-user-avatar-input hidden', accept: 'image/*'
-      .help-block
-        The maximum file size allowed is 200KB.
+      .help-block= _("The maximum file size allowed is 200KB.")
       - if @user.avatar?
         %hr
-        = link_to 'Remove avatar', profile_avatar_path, data: { confirm: 'Avatar will be removed. Are you sure?' }, method: :delete, class: 'btn btn-gray'
+        = link_to _('Remove avatar'), profile_avatar_path, data: { confirm: _('Avatar will be removed. Are you sure?') }, method: :delete, class: 'btn btn-danger btn-inverted'
   %hr
   .row
     .col-lg-4.profile-settings-sidebar

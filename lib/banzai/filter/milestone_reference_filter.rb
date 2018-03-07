@@ -38,7 +38,7 @@ module Banzai
 
       def find_milestone(project_ref, namespace_ref, milestone_id, milestone_name)
         project_path = full_project_path(namespace_ref, project_ref)
-        project = project_from_ref(project_path)
+        project = parent_from_ref(project_path)
 
         return unless project
 
@@ -56,7 +56,7 @@ module Banzai
       end
 
       def find_milestone_with_finder(project, params)
-        finder_params = { project_ids: [project.id], order: nil }
+        finder_params = { project_ids: [project.id], order: nil, state: 'all' }
 
         # We don't support IID lookups for group milestones, because IIDs can
         # clash between group and project milestones.
@@ -64,7 +64,7 @@ module Banzai
           finder_params[:group_ids] = [project.group.id]
         end
 
-        MilestonesFinder.new(finder_params).execute.find_by(params)
+        MilestonesFinder.new(finder_params).find_by(params)
       end
 
       def url_for_object(milestone, project)

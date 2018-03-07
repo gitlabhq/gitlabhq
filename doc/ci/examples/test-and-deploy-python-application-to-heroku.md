@@ -1,10 +1,13 @@
-## Test and Deploy a python application
+# Test and Deploy a python application with GitLab CI/CD
+
 This example will guide you how to run tests in your Python application and deploy it automatically as Heroku application.
 
-You can checkout the example [source](https://gitlab.com/ayufan/python-getting-started) and check [CI status](https://gitlab.com/ayufan/python-getting-started/builds?scope=all).
+You can checkout the [example source](https://gitlab.com/ayufan/python-getting-started).
 
-### Configure project
+## Configure project
+
 This is what the `.gitlab-ci.yml` file looks like for this project:
+
 ```yaml
 test:
   script:
@@ -39,25 +42,29 @@ production:
 This project has three jobs:
 1. `test` - used to test Django application,
 2. `staging` - used to automatically deploy staging environment every push to `master` branch
-3. `production` - used to automatically deploy production environmnet for every created tag
+3. `production` - used to automatically deploy production environment for every created tag
 
-### Store API keys
+## Store API keys
+
 You'll need to create two variables in `Project > Variables`:
 1. `HEROKU_STAGING_API_KEY` - Heroku API key used to deploy staging app,
 2. `HEROKU_PRODUCTION_API_KEY` - Heroku API key used to deploy production app.
 
 Find your Heroku API key in [Manage Account](https://dashboard.heroku.com/account).
 
-### Create Heroku application
+## Create Heroku application
+
 For each of your environments, you'll need to create a new Heroku application.
 You can do this through the [Dashboard](https://dashboard.heroku.com/).
 
-### Create runner
+## Create Runner
+
 First install [Docker Engine](https://docs.docker.com/installation/).
-To build this project you also need to have [GitLab Runner](https://about.gitlab.com/gitlab-ci/#gitlab-runner). 
+To build this project you also need to have [GitLab Runner](https://docs.gitlab.com/runner).
 You can use public runners available on `gitlab.com`, but you can register your own:
+
 ```
-gitlab-ci-multi-runner register \
+gitlab-runner register \
   --non-interactive \
   --url "https://gitlab.com/" \
   --registration-token "PROJECT_REGISTRATION_TOKEN" \

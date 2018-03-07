@@ -1,10 +1,10 @@
-/* global Flash */
 import Visibility from 'visibilityjs';
+import Flash from '../../flash';
 import Poll from '../../lib/utils/poll';
 import * as types from './mutation_types';
 import * as utils from './utils';
 import * as constants from '../constants';
-import service from '../services/issue_notes_service';
+import service from '../services/notes_service';
 import loadAwardsHandler from '../../awards_handler';
 import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
 import { isInViewport, scrollToElement } from '../../lib/utils/common_utils';
@@ -12,7 +12,7 @@ import { isInViewport, scrollToElement } from '../../lib/utils/common_utils';
 let eTagPoll;
 
 export const setNotesData = ({ commit }, data) => commit(types.SET_NOTES_DATA, data);
-export const setIssueData = ({ commit }, data) => commit(types.SET_ISSUE_DATA, data);
+export const setNoteableData = ({ commit }, data) => commit(types.SET_NOTEABLE_DATA, data);
 export const setUserData = ({ commit }, data) => commit(types.SET_USER_DATA, data);
 export const setLastFetchedAt = ({ commit }, data) => commit(types.SET_LAST_FETCHED_AT, data);
 export const setInitialNotes = ({ commit }, data) => commit(types.SET_INITIAL_NOTES, data);
@@ -61,6 +61,48 @@ export const createNewNote = ({ commit }, { endpoint, data }) => service
 export const removePlaceholderNotes = ({ commit }) =>
   commit(types.REMOVE_PLACEHOLDER_NOTES);
 
+export const toggleResolveNote = ({ commit }, { endpoint, isResolved, discussion }) => service
+  .toggleResolveNote(endpoint, isResolved)
+  .then(res => res.json())
+  .then((res) => {
+    const mutationType = discussion ? types.UPDATE_DISCUSSION : types.UPDATE_NOTE;
+
+    commit(mutationType, res);
+  });
+
+export const closeIssue = ({ commit, dispatch, state }) => service
+  .toggleIssueState(state.notesData.closePath)
+  .then(res => res.json())
+  .then((data) => {
+    commit(types.CLOSE_ISSUE);
+    dispatch('emitStateChangedEvent', data);
+  });
+
+export const reopenIssue = ({ commit, dispatch, state }) => service
+  .toggleIssueState(state.notesData.reopenPath)
+  .then(res => res.json())
+  .then((data) => {
+    commit(types.REOPEN_ISSUE);
+    dispatch('emitStateChangedEvent', data);
+  });
+
+export const emitStateChangedEvent = ({ commit, getters }, data) => {
+  const event = new CustomEvent('issuable_vue_app:change', { detail: {
+    data,
+    isClosed: getters.openState === constants.CLOSED,
+  } });
+
+  document.dispatchEvent(event);
+};
+
+export const toggleIssueLocalState = ({ commit }, newState) => {
+  if (newState === constants.CLOSED) {
+    commit(types.CLOSE_ISSUE);
+  } else if (newState === constants.REOPENED) {
+    commit(types.REOPEN_ISSUE);
+  }
+};
+
 export const saveNote = ({ commit, dispatch }, noteData) => {
   const { note } = noteData.data.note;
   let placeholderText = note;
@@ -99,7 +141,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
         eTagPoll.makeRequest();
 
         $('.js-gfm-input').trigger('clear-commands-cache.atwho');
-        Flash('Commands applied', 'notice', $(noteData.flashContainer));
+        Flash('Commands applied', 'notice', noteData.flashContainer);
       }
 
       if (commandsChanges) {
@@ -114,8 +156,8 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
             .catch(() => {
               Flash(
                 'Something went wrong while adding your award. Please try again.',
-                null,
-                $(noteData.flashContainer),
+                'alert',
+                noteData.flashContainer,
               );
             });
         }
@@ -126,7 +168,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
       }
 
       if (errors && errors.commands_only) {
-        Flash(errors.commands_only, 'notice', $(noteData.flashContainer));
+        Flash(errors.commands_only, 'notice', noteData.flashContainer);
       }
       commit(types.REMOVE_PLACEHOLDER_NOTES);
 
@@ -141,7 +183,7 @@ const pollSuccessCallBack = (resp, commit, state, getters) => {
     resp.notes.forEach((note) => {
       if (notesById[note.id]) {
         commit(types.UPDATE_NOTE, note);
-      } else if (note.type === constants.DISCUSSION_NOTE) {
+      } else if (note.type === constants.DISCUSSION_NOTE || note.type === constants.DIFF_NOTE) {
         const discussion = utils.findNoteObjectById(state.notes, note.discussion_id);
 
         if (discussion) {

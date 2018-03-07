@@ -2,14 +2,17 @@ module QA
   module Scenario
     module Test
       ##
-      # Run test suite against any GitLab instance,
+      # Base class for running the suite against any GitLab instance,
       # including staging and on-premises installation.
       #
-      class Instance < Scenario::Template
+      class Instance < Template
+        include Bootable
+        extend Taggable
+
+        tags :core
+
         def perform(address, *files)
-          Specs::Config.perform do |specs|
-            specs.address = address
-          end
+          Runtime::Scenario.define(:gitlab_address, address)
 
           ##
           # Perform before hooks, which are different for CE and EE
@@ -17,7 +20,14 @@ module QA
           Runtime::Release.perform_before_hooks
 
           Specs::Runner.perform do |specs|
-            specs.rspec('--tty', files.any? ? files : 'qa/specs/features')
+            specs.tty = true
+            specs.tags = self.class.focus
+            specs.files =
+              if files.any?
+                files
+              else
+                File.expand_path('../../specs/features', __dir__)
+              end
           end
         end
       end

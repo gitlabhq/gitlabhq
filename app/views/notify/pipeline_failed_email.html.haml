@@ -31,7 +31,7 @@
               %tbody
                 %tr
                   %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;padding-right:5px;" }
-                    %img{ height: "13", src: image_url('mailers/ci_pipeline_notif_v1/icon-branch-gray.gif'), style: "display:block;", width: "13", alt: "Branch icon" }/
+                    %img{ height: "13", src: image_url('mailers/ci_pipeline_notif_v1/icon-branch-gray.gif'), style: "display:block;", width: "13", alt: "" }/
                   %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;" }
                     %a.muted{ href: commits_url(@pipeline), style: "color:#333333;text-decoration:none;" }
                       = @pipeline.ref
@@ -42,7 +42,7 @@
               %tbody
                 %tr
                   %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;padding-right:5px;" }
-                    %img{ height: "13", src: image_url('mailers/ci_pipeline_notif_v1/icon-commit-gray.gif'), style: "display:block;", width: "13", alt: "Commit icon" }/
+                    %img{ height: "13", src: image_url('mailers/ci_pipeline_notif_v1/icon-commit-gray.gif'), style: "display:block;", width: "13", alt: "" }/
                   %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;" }
                     %a{ href: commit_url(@pipeline), style: "color:#3777b0;text-decoration:none;" }
                       = @pipeline.short_sha
@@ -60,7 +60,7 @@
               %tbody
                 %tr
                   %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;padding-right:5px;" }
-                    %img.avatar{ height: "24", src: avatar_icon(commit.author || commit.author_email, 24, only_path: false), style: "display:block;border-radius:12px;margin:-2px 0;", width: "24", alt: "Avatar" }/
+                    %img.avatar{ height: "24", src: avatar_icon_for(commit.author, commit.author_email, 24, only_path: false), style: "display:block;border-radius:12px;margin:-2px 0;", width: "24", alt: "" }/
                   %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;" }
                     - if commit.author
                       %a.muted{ href: user_url(commit.author), style: "color:#333333;text-decoration:none;" }
@@ -76,7 +76,7 @@
                 %tbody
                   %tr
                     %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;padding-right:5px;" }
-                      %img.avatar{ height: "24", src: avatar_icon(commit.committer || commit.committer_email, 24, only_path: false), style: "display:block;border-radius:12px;margin:-2px 0;", width: "24", alt: "Avatar" }/
+                      %img.avatar{ height: "24", src: avatar_icon_for(commit.committer, commit.committer_email, 24, only_path: false), style: "display:block;border-radius:12px;margin:-2px 0;", width: "24", alt: "" }/
                     %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;" }
                       - if commit.committer
                         %a.muted{ href: user_url(commit.committer), style: "color:#333333;text-decoration:none;" }
@@ -100,7 +100,7 @@
             triggered by
           - if @pipeline.user
             %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;padding-right:5px;padding-left:5px", width: "24" }
-              %img.avatar{ height: "24", src: avatar_icon(@pipeline.user, 24, only_path: false), style: "display:block;border-radius:12px;margin:-2px 0;", width: "24", alt: "Avatar" }/
+              %img.avatar{ height: "24", src: avatar_icon_for_user(@pipeline.user, 24, only_path: false), style: "display:block;border-radius:12px;margin:-2px 0;", width: "24", alt: "" }/
             %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;font-weight:500;line-height:1.4;vertical-align:baseline;" }
               %a.muted{ href: user_url(@pipeline.user), style: "color:#333333;text-decoration:none;" }
                 = @pipeline.user.name

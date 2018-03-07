@@ -43,6 +43,7 @@ module DeclarativePolicy
     # used by Rule::Ability. See #steps_by_score
     def score
       return 0 if cached?
+
       steps.map(&:score).inject(0, :+)
     end
 
@@ -107,7 +108,7 @@ module DeclarativePolicy
     end
 
     # This is the core spot where all those `#score` methods matter.
-    # It is critcal for performance to run steps in the correct order,
+    # It is critical for performance to run steps in the correct order,
     # so that we don't compute expensive conditions (potentially n times
     # if we're called on, say, a large list of users).
     #
@@ -139,30 +140,39 @@ module DeclarativePolicy
         return
       end
 
-      steps = Set.new(@steps)
-      remaining_enablers = steps.count { |s| s.enable? }
+      remaining_steps = Set.new(@steps)
+      remaining_enablers, remaining_preventers = remaining_steps.partition(&:enable?).map { |s| Set.new(s) }
 
       loop do
-        return if steps.empty?
+        if @state.enabled?
+          # Once we set this, we never need to unset it, because a single
+          # prevent will stop this from being enabled
+          remaining_steps = remaining_preventers
+        else
+          # if the permission hasn't yet been enabled and we only have
+          # prevent steps left, we short-circuit the state here
+          @state.prevent! if remaining_enablers.empty?
+        end
 
-        # if the permission hasn't yet been enabled and we only have
-        # prevent steps left, we short-circuit the state here
-        @state.prevent! if !@state.enabled? && remaining_enablers == 0
+        return if remaining_steps.empty?
 
         lowest_score = Float::INFINITY
         next_step = nil
 
-        steps.each do |step|
+        remaining_steps.each do |step|
           score = step.score
+
           if score < lowest_score
             next_step = step
             lowest_score = score
           end
+
+          break if lowest_score.zero?
         end
 
-        steps.delete(next_step)
-
-        remaining_enablers -= 1 if next_step.enable?
+        [remaining_steps, remaining_enablers, remaining_preventers].each do |set|
+          set.delete(next_step)
+        end
 
         yield next_step, lowest_score
       end

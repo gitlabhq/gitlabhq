@@ -14,7 +14,7 @@ describe Gitlab::Ci::Status::Created do
   end
 
   describe '#icon' do
-    it { expect(subject.icon).to eq 'icon_status_created' }
+    it { expect(subject.icon).to eq 'status_created' }
   end
 
   describe '#favicon' do

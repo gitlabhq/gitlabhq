@@ -7,7 +7,7 @@ describe Projects::GroupLinksController do
   let(:user) { create(:user) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 

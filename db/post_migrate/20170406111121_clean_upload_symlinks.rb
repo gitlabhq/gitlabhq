@@ -14,6 +14,7 @@ class CleanUploadSymlinks < ActiveRecord::Migration
     DIRECTORIES_TO_MOVE.each do |dir|
       symlink_location = File.join(old_upload_dir, dir)
       next unless File.symlink?(symlink_location)
+
       say "removing symlink: #{symlink_location}"
       FileUtils.rm(symlink_location)
     end

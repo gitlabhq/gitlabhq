@@ -51,6 +51,7 @@ module API
       helpers do
         def authenticate_delete_runner!(runner)
           return if current_user.admin?
+
           forbidden!("Runner is shared") if runner.is_shared?
           forbidden!("Runner associated with more than one project") if runner.projects.count > 1
           forbidden!("No access granted") unless user_can_access_runner?(runner)

@@ -2,10 +2,13 @@ require 'carrierwave/orm/activerecord'
 
 class Group < Namespace
   include Gitlab::ConfigHelper
+  include AfterCommitQueue
   include AccessRequestable
   include Avatarable
   include Referable
   include SelectForProjectAuthorization
+  include LoadedInGroupList
+  include GroupDescendant
 
   has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   alias_method :members, :group_members
@@ -24,40 +27,30 @@ class Group < Namespace
   has_many :notification_settings, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   has_many :labels, class_name: 'GroupLabel'
   has_many :variables, class_name: 'Ci::GroupVariable'
+  has_many :custom_attributes, class_name: 'GroupCustomAttribute'
 
-  validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
+  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+
+  has_many :boards
+  has_many :badges, class_name: 'GroupBadge'
+
+  accepts_nested_attributes_for :variables, allow_destroy: true
+
   validate :visibility_level_allowed_by_projects
   validate :visibility_level_allowed_by_sub_groups
   validate :visibility_level_allowed_by_parent
-
-  validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
+  validates :variables, variable_duplicates: true
 
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
-
-  mount_uploader :avatar, AvatarUploader
-  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
   after_save :update_two_factor_requirement
+  after_update :path_changed_hook, if: :path_changed?
 
   class << self
     def supports_nested_groups?
       Gitlab::Database.postgresql?
-    end
-
-    # Searches for groups matching the given query.
-    #
-    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
-    #
-    # query - The search query as a String
-    #
-    # Returns an ActiveRecord::Relation.
-    def search(query)
-      table   = Namespace.arel_table
-      pattern = "%#{query}%"
-
-      where(table[:name].matches(pattern).or(table[:path].matches(pattern)))
     end
 
     def sort(method)
@@ -93,7 +86,7 @@ class Group < Namespace
     end
   end
 
-  def to_reference(_from_project = nil, full: nil)
+  def to_reference(_from = nil, full: nil)
     "#{self.class.reference_prefix}#{full_path}"
   end
 
@@ -123,12 +116,6 @@ class Group < Namespace
     visibility_level_allowed_by_parent?(level) &&
       visibility_level_allowed_by_projects?(level) &&
       visibility_level_allowed_by_sub_groups?(level)
-  end
-
-  def avatar_url(**args)
-    # We use avatar_path instead of overriding avatar_url because of carrierwave.
-    # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
-    avatar_path(args)
   end
 
   def lfs_enabled?
@@ -176,6 +163,12 @@ class Group < Namespace
 
   def add_owner(user, current_user = nil)
     add_user(user, :owner, current_user: current_user)
+  end
+
+  def member?(user, min_access_level = Gitlab::Access::GUEST)
+    return false unless user
+
+    max_member_access_for_user(user) >= min_access_level
   end
 
   def has_owner?(user)
@@ -287,12 +280,28 @@ class Group < Namespace
     list_of_ids.reverse.map { |group| variables[group.id] }.compact.flatten
   end
 
+  def group_member(user)
+    if group_members.loaded?
+      group_members.find { |gm| gm.user_id == user.id }
+    else
+      group_members.find_by(user_id: user)
+    end
+  end
+
+  def hashed_storage?(_feature)
+    false
+  end
+
   private
 
   def update_two_factor_requirement
     return unless require_two_factor_authentication_changed? || two_factor_grace_period_changed?
 
     users.find_each(&:update_two_factor_requirement)
+  end
+
+  def path_changed_hook
+    system_hook_service.execute_hooks_for(self, :rename)
   end
 
   def visibility_level_allowed_by_parent

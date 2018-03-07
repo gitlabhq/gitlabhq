@@ -40,7 +40,11 @@ module Boards
       end
 
       def set_parent
-        params[:project_id] = parent.id
+        if parent.is_a?(Group)
+          params[:group_id] = parent.id
+        else
+          params[:project_id] = parent.id
+        end
       end
 
       def set_state
@@ -54,10 +58,11 @@ module Boards
       def without_board_labels(issues)
         return issues unless board_label_ids.any?
 
-        issues.where.not(
-          LabelLink.where("label_links.target_type = 'Issue' AND label_links.target_id = issues.id")
-                   .where(label_id: board_label_ids).limit(1).arel.exists
-        )
+        issues.where.not(issues_label_links.limit(1).arel.exists)
+      end
+
+      def issues_label_links
+        LabelLink.where("label_links.target_type = 'Issue' AND label_links.target_id = issues.id").where(label_id: board_label_ids)
       end
 
       def with_list_label(issues)

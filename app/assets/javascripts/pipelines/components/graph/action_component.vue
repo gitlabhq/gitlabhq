@@ -1,12 +1,20 @@
 <script>
-  import getActionIcon from '../../../vue_shared/ci_action_icons';
   import tooltip from '../../../vue_shared/directives/tooltip';
-
+  import icon from '../../../vue_shared/components/icon.vue';
+  import { dasherize } from '../../../lib/utils/text_utility';
   /**
    * Renders either a cancel, retry or play icon pointing to the given path.
    * TODO: Remove UJS from here and use an async request instead.
    */
   export default {
+    components: {
+      icon,
+    },
+
+    directives: {
+      tooltip,
+    },
+
     props: {
       tooltipText: {
         type: String,
@@ -29,17 +37,10 @@
       },
     },
 
-    directives: {
-      tooltip,
-    },
-
     computed: {
-      actionIconSvg() {
-        return getActionIcon(this.actionIcon);
-      },
-
       cssClass() {
-        return `js-${gl.text.dasherize(this.actionIcon)}`;
+        const actionIconDash = dasherize(this.actionIcon);
+        return `${actionIconDash} js-icon-${actionIconDash}`;
       },
     },
   };
@@ -50,14 +51,10 @@
     :data-method="actionMethod"
     :title="tooltipText"
     :href="link"
-    class="ci-action-icon-container"
-    data-container="body">
-
-    <i
-      class="ci-action-icon-wrapper"
-      :class="cssClass"
-      v-html="actionIconSvg"
-      aria-hidden="true"
-      />
+    class="ci-action-icon-container ci-action-icon-wrapper"
+    :class="cssClass"
+    data-container="body"
+  >
+    <icon :name="actionIcon" />
   </a>
 </template>

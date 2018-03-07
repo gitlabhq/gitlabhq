@@ -1,10 +1,17 @@
 import Vue from 'vue';
 import environmentTableComp from '~/environments/components/environments_table.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
-describe('Environment item', () => {
-  preloadFixtures('static/environments/element.html.raw');
+describe('Environment table', () => {
+  let Component;
+  let vm;
+
   beforeEach(() => {
-    loadFixtures('static/environments/element.html.raw');
+    Component = Vue.extend(environmentTableComp);
+  });
+
+  afterEach(() => {
+    vm.$destroy();
   });
 
   it('Should render a table', () => {
@@ -17,18 +24,12 @@ describe('Environment item', () => {
       },
     };
 
-    const EnvironmentTable = Vue.extend(environmentTableComp);
+    vm = mountComponent(Component, {
+      environments: [mockItem],
+      canCreateDeployment: false,
+      canReadEnvironment: true,
+    });
 
-    const component = new EnvironmentTable({
-      el: document.querySelector('.test-dom-element'),
-      propsData: {
-        environments: [{ mockItem }],
-        canCreateDeployment: false,
-        canReadEnvironment: true,
-        service: {},
-      },
-    }).$mount();
-
-    expect(component.$el.getAttribute('class')).toContain('ci-table');
+    expect(vm.$el.getAttribute('class')).toContain('ci-table');
   });
 });

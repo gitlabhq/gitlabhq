@@ -16,8 +16,8 @@ codequality:
     - docker:dind
   script:
     - docker pull codeclimate/codeclimate
-    - docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate init
-    - docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate analyze -f json > codeclimate.json
+    - docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate:0.69.0 init
+    - docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate:0.69.0 analyze -f json > codeclimate.json || true
   artifacts:
     paths: [codeclimate.json]
 ```
@@ -25,10 +25,10 @@ codequality:
 This will create a `codequality` job in your CI pipeline and will allow you to
 download and analyze the report artifact in JSON format.
 
-For GitLab [Enterprise Edition Starter][ee] users, this information can be automatically
+For [GitLab Starter][ee] users, this information can be automatically
 extracted and shown right in the merge request widget. [Learn more on code quality
 diffs in merge requests](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html).
 
 [cli]: https://github.com/codeclimate/codeclimate
 [dind]: ../docker/using_docker_build.md#use-docker-in-docker-executor
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/

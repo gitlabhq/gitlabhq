@@ -11,6 +11,7 @@ class Discussion
             :author,
 
             :noteable,
+            :commit_id,
             :for_commit?,
             :for_merge_request?,
 
@@ -64,6 +65,10 @@ class Discussion
   def initialize(notes, context_noteable = nil)
     @notes = notes
     @context_noteable = context_noteable
+  end
+
+  def on_image?
+    false
   end
 
   def ==(other)

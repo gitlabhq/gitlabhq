@@ -54,12 +54,13 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
     name = request.headers['X-Gitlab-Lfs-Tmp']
     return if name.include?('/')
     return unless oid.present? && name.start_with?(oid)
+
     name
   end
 
   def store_file(oid, size, tmp_file)
     # Define tmp_file_path early because we use it in "ensure"
-    tmp_file_path = File.join("#{Gitlab.config.lfs.storage_path}/tmp/upload", tmp_file)
+    tmp_file_path = File.join(LfsObjectUploader.workhorse_upload_path, tmp_file)
 
     object = LfsObject.find_or_create_by(oid: oid, size: size)
     file_exists = object.file.exists? || move_tmp_file_to_storage(object, tmp_file_path)

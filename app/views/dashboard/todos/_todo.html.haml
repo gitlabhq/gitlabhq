@@ -36,7 +36,7 @@
     .todo-body
       .todo-note
         .md
-          = event_note(todo.body, project: todo.project)
+          = first_line_in_markdown(todo, :body, 150, project: todo.project)
 
   - if todo.pending?
     .todo-actions

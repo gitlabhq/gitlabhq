@@ -7,7 +7,7 @@
     %i.fa.fa-comment
     = link_to_member(project, note.author, avatar: false)
     commented on
-    = link_to project.name_with_namespace, project
+    = link_to project.full_name, project
     &middot;
 
     - if note.for_commit?

@@ -27,7 +27,7 @@ View the [interactive example](http://codepen.io/awhildy/full/GNyEvM/) here.
 
 ### Dropdowns
 
-The dropdown menu should feel like it is appearing from the triggering element. Combining a position shift `400ms cubic-bezier(0.23, 1, 0.32, 1)` with a opacity animation `200ms linear` on the second half of the motion achieves this affect.
+The dropdown menu should feel like it is appearing from the triggering element. Combining a position shift `400ms cubic-bezier(0.23, 1, 0.32, 1)` with an opacity animation `200ms linear` on the second half of the motion achieves this affect.
 
 View the [interactive example](http://codepen.io/awhildy/full/jVLJpb/) here.
 
@@ -38,6 +38,12 @@ View the [interactive example](http://codepen.io/awhildy/full/jVLJpb/) here.
 When information is updating in place, a quick, subtle animation is needed. The previous content should cut out, and the new content should have a quick, `200ms linear` fade in.
 
 ![Quick update animation](img/animation-quickupdate.gif)
+
+### Skeleton loading
+
+Skeleton loading is explained in the [component section](components.html#skeleton-loading) of the UX guide. It includes a horizontally pulsating animation that shows motion as if it's growing. It's timing is a slower `linear 1s`.
+
+![Skeleton loading animation](img/skeleton-loading.gif)
 
 ### Moving transitions
 
@@ -51,7 +57,9 @@ View the [interactive example](http://codepen.io/awhildy/full/ALyKPE/) here.
 ![Reorder animation](img/animation-reorder.gif)
 
 #### Autoscroll the page
+
 Another example of a moving transition is when you have to autoscroll the page to keep an active element visible.
 
 View the [interactive example](http://codepen.io/awhildy/full/PbxgVo/) here.
+
 ![Autoscroll animation](img/animation-autoscroll.gif)

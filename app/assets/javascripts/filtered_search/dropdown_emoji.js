@@ -1,10 +1,10 @@
-/* global Flash */
+import Flash from '../flash';
+import Ajax from '../droplab/plugins/ajax';
+import Filter from '../droplab/plugins/filter';
+import FilteredSearchDropdown from './filtered_search_dropdown';
+import DropdownUtils from './dropdown_utils';
 
-import Ajax from '~/droplab/plugins/ajax';
-import Filter from '~/droplab/plugins/filter';
-import './filtered_search_dropdown';
-
-class DropdownEmoji extends gl.FilteredSearchDropdown {
+export default class DropdownEmoji extends FilteredSearchDropdown {
   constructor(options = {}) {
     super(options);
     this.config = {
@@ -14,7 +14,7 @@ class DropdownEmoji extends gl.FilteredSearchDropdown {
         loadingTemplate: this.loadingTemplate,
         onError() {
           /* eslint-disable no-new */
-          new Flash('An error occured fetching the dropdown data.');
+          new Flash('An error occurred fetching the dropdown data.');
           /* eslint-enable no-new */
         },
       },
@@ -50,7 +50,7 @@ class DropdownEmoji extends gl.FilteredSearchDropdown {
   itemClicked(e) {
     super.itemClicked(e, (selected) => {
       const name = selected.querySelector('.js-data-value').innerText.trim();
-      return gl.DropdownUtils.getEscapedText(name);
+      return DropdownUtils.getEscapedText(name);
     });
   }
 
@@ -77,6 +77,3 @@ class DropdownEmoji extends gl.FilteredSearchDropdown {
       .addHook(this.input, this.dropdown, [Ajax, Filter], this.config).init();
   }
 }
-
-window.gl = window.gl || {};
-gl.DropdownEmoji = DropdownEmoji;

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Editing file blob', js: true do
+feature 'Editing file blob', :js do
   include TreeHelper
 
   let(:project) { create(:project, :public, :repository) }
@@ -13,15 +13,19 @@ feature 'Editing file blob', js: true do
     let(:role) { :developer }
 
     before do
-      project.team << [user, role]
+      project.add_role(user, role)
       sign_in(user)
     end
 
-    def edit_and_commit
+    def edit_and_commit(commit_changes: true)
       wait_for_requests
       find('.js-edit-blob').click
+      find('#editor')
       execute_script('ace.edit("editor").setValue("class NextFeature\nend\n")')
-      click_button 'Commit changes'
+
+      if commit_changes
+        click_button 'Commit changes'
+      end
     end
 
     context 'from MR diff' do
@@ -38,12 +42,25 @@ feature 'Editing file blob', js: true do
     context 'from blob file path' do
       before do
         visit project_blob_path(project, tree_join(branch, file_path))
-        edit_and_commit
       end
 
       it 'updates content' do
+        edit_and_commit
+
         expect(page).to have_content 'successfully committed'
         expect(page).to have_content 'NextFeature'
+      end
+
+      it 'previews content' do
+        edit_and_commit(commit_changes: false)
+        click_link 'Preview changes'
+        wait_for_requests
+
+        old_line_count = page.all('.line_holder.old').size
+        new_line_count = page.all('.line_holder.new').size
+
+        expect(old_line_count).to be > 0
+        expect(new_line_count).to be > 0
       end
     end
   end
@@ -54,7 +71,7 @@ feature 'Editing file blob', js: true do
         let(:user) { create(:user) }
 
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
           visit project_edit_blob_path(project, tree_join(branch, file_path))
         end
 
@@ -89,7 +106,7 @@ feature 'Editing file blob', js: true do
       let(:protected_branch) { 'protected-branch' }
 
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
         project.repository.add_branch(user, protected_branch, 'master')
         create(:protected_branch, project: project, name: protected_branch)
         sign_in(user)
@@ -121,7 +138,7 @@ feature 'Editing file blob', js: true do
       let(:user) { create(:user) }
 
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         sign_in(user)
         visit project_edit_blob_path(project, tree_join(branch, file_path))
       end

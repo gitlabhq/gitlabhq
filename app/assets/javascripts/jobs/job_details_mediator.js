@@ -1,11 +1,12 @@
-/* global Flash */
 /* global Build */
 
 import Visibility from 'visibilityjs';
+import Flash from '../flash';
 import Poll from '../lib/utils/poll';
 import JobStore from './stores/job_store';
 import JobService from './services/job_service';
-import '../build';
+import Job from '../job';
+import handleRevealVariables from '../build_variables';
 
 export default class JobMediator {
   constructor(options = {}) {
@@ -20,15 +21,16 @@ export default class JobMediator {
   }
 
   initBuildClass() {
-    this.build = new Build();
+    this.build = new Job();
+    handleRevealVariables();
   }
 
   fetchJob() {
     this.poll = new Poll({
       resource: this.service,
       method: 'getJob',
-      successCallback: this.successCallback.bind(this),
-      errorCallback: this.errorCallback.bind(this),
+      successCallback: response => this.successCallback(response),
+      errorCallback: () => this.errorCallback(),
     });
 
     if (!Visibility.hidden()) {
@@ -55,7 +57,7 @@ export default class JobMediator {
 
   successCallback(response) {
     this.state.isLoading = false;
-    return response.json().then(data => this.store.storeJob(data));
+    return this.store.storeJob(response.data);
   }
 
   errorCallback() {

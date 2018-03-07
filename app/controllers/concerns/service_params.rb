@@ -32,6 +32,7 @@ module ServiceParams
     :issues_events,
     :issues_url,
     :jira_issue_transition_id,
+    :manual_configuration,
     :merge_requests_events,
     :mock_service_url,
     :namespace,
@@ -66,7 +67,7 @@ module ServiceParams
   FILTER_BLANK_PARAMS = [:password].freeze
 
   def service_params
-    dynamic_params = @service.event_channel_names + @service.event_names
+    dynamic_params = @service.event_channel_names + @service.event_names # rubocop:disable Gitlab/ModuleWithInstanceVariables
     service_params = params.permit(:id, service: ALLOWED_PARAMS_CE + dynamic_params)
 
     if service_params[:service].is_a?(Hash)

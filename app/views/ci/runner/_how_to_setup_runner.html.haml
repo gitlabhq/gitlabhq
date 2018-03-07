@@ -1,16 +1,16 @@
 - link = link_to _("GitLab Runner section"), 'https://about.gitlab.com/gitlab-ci/#gitlab-runner', target: '_blank'
-.bs-callout.help-callout
-  %h4= _("How to setup a #{type} Runner for a new project")
+.append-bottom-10
+  %h4= _("Setup a #{type} Runner manually")
 
-  %ol
-    %li
-      = _("Install a Runner compatible with GitLab CI")
-      = (_("(checkout the %{link} for information on how to install it).") % { link: link }).html_safe
-    %li
-      = _("Specify the following URL during the Runner setup:")
-      %code= root_url(only_path: false)
-    %li
-      = _("Use the following registration token during setup:")
-      %code#registration_token= registration_token
-    %li
-      = _("Start the Runner!")
+%ol
+  %li
+    = _("Install a Runner compatible with GitLab CI")
+    = (_("(checkout the %{link} for information on how to install it).") % { link: link }).html_safe
+  %li
+    = _("Specify the following URL during the Runner setup:")
+    %code#coordinator_address= root_url(only_path: false)
+  %li
+    = _("Use the following registration token during setup:")
+    %code#registration_token= registration_token
+  %li
+    = _("Start the Runner!")

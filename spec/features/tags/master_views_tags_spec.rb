@@ -4,18 +4,17 @@ feature 'Master views tags' do
   let(:user) { create(:user) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 
   context 'when project has no tags' do
     let(:project) { create(:project_empty_repo) }
+
     before do
       visit project_path(project)
-      click_on 'README'
+      click_on 'Add Readme'
       fill_in :commit_message, with: 'Add a README file', visible: true
-      # Remove pre-receive hook so we can push without auth
-      FileUtils.rm_f(File.join(project.repository.path, 'hooks', 'pre-receive'))
       click_button 'Commit changes'
       visit project_tags_path(project)
     end

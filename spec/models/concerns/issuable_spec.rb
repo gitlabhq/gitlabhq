@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Issuable do
   let(:issuable_class) { Issue }
-  let(:issue) { create(:issue) }
+  let(:issue) { create(:issue, title: 'An issue', description: 'A description') }
   let(:user) { create(:user) }
 
   describe "Associations" do
@@ -67,6 +67,7 @@ describe Issuable do
 
   describe ".search" do
     let!(:searchable_issue) { create(:issue, title: "Searchable awesome issue") }
+    let!(:searchable_issue2) { create(:issue, title: 'Aw') }
 
     it 'returns issues with a matching title' do
       expect(issuable_class.search(searchable_issue.title))
@@ -86,8 +87,8 @@ describe Issuable do
       expect(issuable_class.search('searchable issue')).to eq([searchable_issue])
     end
 
-    it 'returns all issues with a query shorter than 3 chars' do
-      expect(issuable_class.search('zz')).to eq(issuable_class.all)
+    it 'returns issues with a matching title for a query shorter than 3 chars' do
+      expect(issuable_class.search(searchable_issue2.title.downcase)).to eq([searchable_issue2])
     end
   end
 
@@ -95,6 +96,7 @@ describe Issuable do
     let!(:searchable_issue) do
       create(:issue, title: "Searchable awesome issue", description: 'Many cute kittens')
     end
+    let!(:searchable_issue2) { create(:issue, title: "Aw", description: "Cu") }
 
     it 'returns issues with a matching title' do
       expect(issuable_class.full_search(searchable_issue.title))
@@ -133,8 +135,8 @@ describe Issuable do
       expect(issuable_class.full_search('many kittens')).to eq([searchable_issue])
     end
 
-    it 'returns all issues with a query shorter than 3 chars' do
-      expect(issuable_class.search('zz')).to eq(issuable_class.all)
+    it 'returns issues with a matching description for a query shorter than 3 chars' do
+      expect(issuable_class.full_search(searchable_issue2.description.downcase)).to eq([searchable_issue2])
     end
   end
 
@@ -169,7 +171,7 @@ describe Issuable do
 
     it "returns false when record has been updated" do
       allow(issue).to receive(:today?).and_return(true)
-      issue.touch
+      issue.update_attribute(:updated_at, 1.hour.ago)
       expect(issue.new?).to be_falsey
     end
   end
@@ -264,55 +266,90 @@ describe Issuable do
     end
   end
 
-  describe "#to_hook_data" do
-    let(:data) { issue.to_hook_data(user) }
-    let(:project) { issue.project }
+  describe '#to_hook_data' do
+    let(:builder) { double }
 
-    it "returns correct hook data" do
-      expect(data[:object_kind]).to eq("issue")
-      expect(data[:user]).to eq(user.hook_attrs)
-      expect(data[:object_attributes]).to eq(issue.hook_attrs)
-      expect(data).not_to have_key(:assignee)
-    end
+    context 'labels are updated' do
+      let(:labels) { create_list(:label, 2) }
 
-    context "issue is assigned" do
       before do
-        issue.assignees << user
+        issue.update(labels: [labels[1]])
+        expect(Gitlab::HookData::IssuableBuilder)
+          .to receive(:new).with(issue).and_return(builder)
       end
 
-      it "returns correct hook data" do
-        expect(data[:assignees].first).to eq(user.hook_attrs)
+      it 'delegates to Gitlab::HookData::IssuableBuilder#build' do
+        expect(builder).to receive(:build).with(
+          user: user,
+          changes: hash_including(
+            'labels' => [[labels[0].hook_attrs], [labels[1].hook_attrs]]
+          ))
+
+        issue.to_hook_data(user, old_associations: { labels: [labels[0]] })
       end
     end
 
-    context "merge_request is assigned" do
+    context 'total_time_spent is updated' do
+      before do
+        issue.spend_time(duration: 2, user_id: user.id, spent_at: Time.now)
+        issue.save
+        expect(Gitlab::HookData::IssuableBuilder)
+          .to receive(:new).with(issue).and_return(builder)
+      end
+
+      it 'delegates to Gitlab::HookData::IssuableBuilder#build' do
+        expect(builder).to receive(:build).with(
+          user: user,
+          changes: hash_including(
+            'total_time_spent' => [1, 2]
+          ))
+
+        issue.to_hook_data(user, old_associations: { total_time_spent: 1 })
+      end
+    end
+
+    context 'issue is assigned' do
+      let(:user2) { create(:user) }
+
+      before do
+        issue.assignees << user << user2
+        expect(Gitlab::HookData::IssuableBuilder)
+          .to receive(:new).with(issue).and_return(builder)
+      end
+
+      it 'delegates to Gitlab::HookData::IssuableBuilder#build' do
+        expect(builder).to receive(:build).with(
+          user: user,
+          changes: hash_including(
+            'assignees' => [[user.hook_attrs], [user.hook_attrs, user2.hook_attrs]]
+          ))
+
+        issue.to_hook_data(user, old_associations: { assignees: [user] })
+      end
+    end
+
+    context 'merge_request is assigned' do
       let(:merge_request) { create(:merge_request) }
-      let(:data) { merge_request.to_hook_data(user) }
+      let(:user2) { create(:user) }
 
       before do
-        merge_request.update_attribute(:assignee, user)
+        merge_request.update(assignee: user)
+        merge_request.update(assignee: user2)
+        expect(Gitlab::HookData::IssuableBuilder)
+          .to receive(:new).with(merge_request).and_return(builder)
       end
 
-      it "returns correct hook data" do
-        expect(data[:object_attributes]['assignee_id']).to eq(user.id)
-        expect(data[:assignee]).to eq(user.hook_attrs)
-      end
-    end
+      it 'delegates to Gitlab::HookData::IssuableBuilder#build' do
+        expect(builder).to receive(:build).with(
+          user: user,
+          changes: hash_including(
+            'assignee_id' => [user.id, user2.id],
+            'assignee' => [user.hook_attrs, user2.hook_attrs]
+          ))
 
-    context 'issue has labels' do
-      let(:labels) { [create(:label), create(:label)] }
-
-      before do
-        issue.update_attribute(:labels, labels)
-      end
-
-      it 'includes labels in the hook data' do
-        expect(data[:labels]).to eq(labels.map(&:hook_attrs))
+        merge_request.to_hook_data(user, old_associations: { assignees: [user] })
       end
     end
-
-    include_examples 'project hook data'
-    include_examples 'deprecated repository hook data'
   end
 
   describe '#labels_array' do
@@ -448,7 +485,7 @@ describe Issuable do
     let(:issue) { create(:issue) }
 
     def spend_time(seconds)
-      issue.spend_time(duration: seconds, user: user)
+      issue.spend_time(duration: seconds, user_id: user.id)
       issue.save!
     end
 

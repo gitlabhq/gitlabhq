@@ -16,7 +16,7 @@ describe RuboCop::Cop::Migration::ReversibleAddColumnWithDefault do
     end
 
     it 'registers an offense when add_column_with_default is used inside a change method' do
-      inspect_source(cop, 'def change; add_column_with_default :table, :column, default: false; end')
+      inspect_source('def change; add_column_with_default :table, :column, default: false; end')
 
       aggregate_failures do
         expect(cop.offenses.size).to eq(1)
@@ -25,7 +25,7 @@ describe RuboCop::Cop::Migration::ReversibleAddColumnWithDefault do
     end
 
     it 'registers no offense when add_column_with_default is used inside an up method' do
-      inspect_source(cop, 'def up; add_column_with_default :table, :column, default: false; end')
+      inspect_source('def up; add_column_with_default :table, :column, default: false; end')
 
       expect(cop.offenses.size).to eq(0)
     end
@@ -33,7 +33,7 @@ describe RuboCop::Cop::Migration::ReversibleAddColumnWithDefault do
 
   context 'outside of migration' do
     it 'registers no offense' do
-      inspect_source(cop, 'def change; add_column_with_default :table, :column, default: false; end')
+      inspect_source('def change; add_column_with_default :table, :column, default: false; end')
 
       expect(cop.offenses.size).to eq(0)
     end

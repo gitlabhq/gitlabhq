@@ -1,42 +1,74 @@
 module Members
-  class DestroyService < BaseService
-    include MembersHelper
+  class DestroyService < Members::BaseService
+    def execute(member, skip_authorization: false)
+      raise Gitlab::Access::AccessDeniedError unless skip_authorization || can_destroy_member?(member)
 
-    attr_accessor :source
+      return member if member.is_a?(GroupMember) && member.source.last_owner?(member.user)
 
-    ALLOWED_SCOPES = %i[members requesters all].freeze
+      Member.transaction do
+        unassign_issues_and_merge_requests(member) unless member.invite?
+        member.notification_setting&.destroy
 
-    def initialize(source, current_user, params = {})
-      @source = source
-      @current_user = current_user
-      @params = params
-    end
+        member.destroy
+      end
 
-    def execute(scope = :members)
-      raise "scope :#{scope} is not allowed!" unless ALLOWED_SCOPES.include?(scope)
+      if member.request? && member.user != current_user
+        notification_service.decline_access_request(member)
+      end
 
-      member = find_member!(scope)
+      after_execute(member: member)
 
-      raise Gitlab::Access::AccessDeniedError unless can_destroy_member?(member)
-
-      AuthorizedDestroyService.new(member, current_user).execute
+      member
     end
 
     private
 
-    def find_member!(scope)
-      condition = params[:user_id] ? { user_id: params[:user_id] } : { id: params[:id] }
-      case scope
-      when :all
-        source.members.find_by(condition) ||
-          source.requesters.find_by!(condition)
+    def can_destroy_member?(member)
+      can?(current_user, destroy_member_permission(member), member)
+    end
+
+    def destroy_member_permission(member)
+      case member
+      when GroupMember
+        :destroy_group_member
+      when ProjectMember
+        :destroy_project_member
       else
-        source.public_send(scope).find_by!(condition) # rubocop:disable GitlabSecurity/PublicSend
+        raise "Unknown member type: #{member}!"
       end
     end
 
-    def can_destroy_member?(member)
-      member && can?(current_user, action_member_permission(:destroy, member), member)
+    def unassign_issues_and_merge_requests(member)
+      if member.is_a?(GroupMember)
+        issues = Issue.unscoped.select(1)
+                 .joins(:project)
+                 .where('issues.id = issue_assignees.issue_id AND projects.namespace_id = ?', member.source_id)
+
+        # DELETE FROM issue_assignees WHERE user_id = X AND EXISTS (...)
+        IssueAssignee.unscoped
+          .where('user_id = :user_id AND EXISTS (:sub)', user_id: member.user_id, sub: issues)
+          .delete_all
+
+        MergeRequestsFinder.new(current_user, group_id: member.source_id, assignee_id: member.user_id)
+          .execute
+          .update_all(assignee_id: nil)
+      else
+        project = member.source
+
+        # SELECT 1 FROM issues WHERE issues.id = issue_assignees.issue_id AND issues.project_id = X
+        issues = Issue.unscoped.select(1)
+                 .where('issues.id = issue_assignees.issue_id')
+                 .where(project_id: project.id)
+
+        # DELETE FROM issue_assignees WHERE user_id = X AND EXISTS (...)
+        IssueAssignee.unscoped
+          .where('user_id = :user_id AND EXISTS (:sub)', user_id: member.user_id, sub: issues)
+          .delete_all
+
+        project.merge_requests.opened.assigned_to(member.user).update_all(assignee_id: nil)
+      end
+
+      member.user.invalidate_cache_counts
     end
   end
 end

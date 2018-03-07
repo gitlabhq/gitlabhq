@@ -1,4 +1,4 @@
-- title = local_assigns.fetch(:title, 'Assign labels')
+- title = local_assigns.fetch(:title, _('Assign labels'))
 - show_create = local_assigns.fetch(:show_create, true)
 - show_footer = local_assigns.fetch(:show_footer, true)
 - filter_placeholder = local_assigns.fetch(:filter_placeholder, 'Search')
@@ -8,7 +8,7 @@
   - if show_boards_content
     .issue-board-dropdown-content
       %p
-        Create lists from labels. Issues with that label appear in that list.
+        = _('Create lists from labels. Issues with that label appear in that list.')
   = dropdown_filter(filter_placeholder)
   = dropdown_content
   - if current_board_parent && show_footer
@@ -17,11 +17,11 @@
         - if can?(current_user, :admin_label, current_board_parent)
           %li
             %a.dropdown-toggle-page{ href: "#" }
-              Create new label
+              = _('Create new label')
         %li
           = link_to labels_path, :"data-is-link" => true do
             - if show_create && can?(current_user, :admin_label, current_board_parent)
-              Manage labels
+              = _('Manage labels')
             - else
-              View labels
+              = _('View labels')
   = dropdown_loading

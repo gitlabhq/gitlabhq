@@ -15,6 +15,7 @@
 #
 class UsersFinder
   include CreatedAtFilter
+  include CustomAttributesFilter
 
   attr_accessor :current_user, :params
 
@@ -24,7 +25,7 @@ class UsersFinder
   end
 
   def execute
-    users = User.all
+    users = User.all.order_id_desc
     users = by_username(users)
     users = by_search(users)
     users = by_blocked(users)
@@ -32,6 +33,7 @@ class UsersFinder
     users = by_external_identity(users)
     users = by_external(users)
     users = by_created_at(users)
+    users = by_custom_attributes(users)
 
     users
   end

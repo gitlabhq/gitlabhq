@@ -1,6 +1,5 @@
 - @no_container = true
 - page_title "System Info"
-= render 'admin/monitoring/head'
 
 %div{ class: container_class }
   .prepend-top-default
@@ -16,7 +15,7 @@
             Unable to collect CPU info
     .col-sm-4
       .light-well
-        %h4 Memory
+        %h4 Memory Usage
         .data
           - if @memory
             %h1 #{number_to_human_size(@memory.active_bytes)} / #{number_to_human_size(@memory.total_bytes)}
@@ -25,7 +24,7 @@
             Unable to collect memory info
     .col-sm-4
       .light-well
-        %h4 Disks
+        %h4 Disk Usage
         .data
           - @disks.each do |disk|
             %h1 #{number_to_human_size(disk[:bytes_used])} / #{number_to_human_size(disk[:bytes_total])}
@@ -35,4 +34,4 @@
       .light-well
         %h4 Uptime
         .data
-          %h1= time_ago_with_tooltip(Rails.application.config.booted_at)
+          %h1= distance_of_time_in_words_to_now(Rails.application.config.booted_at)

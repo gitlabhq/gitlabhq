@@ -43,18 +43,11 @@ describe 'gitlab:gitaly namespace rake task' do
     describe 'gmake/make' do
       let(:command_preamble) { %w[/usr/bin/env -u RUBYOPT -u BUNDLE_GEMFILE] }
 
-      before(:all) do
-        @old_env_ci = ENV.delete('CI')
-      end
-
-      after(:all) do
-        ENV['CI'] = @old_env_ci if @old_env_ci
-      end
-
       before do
+        stub_env('CI', false)
         FileUtils.mkdir_p(clone_path)
         expect(Dir).to receive(:chdir).with(clone_path).and_call_original
-        allow(Bundler).to receive(:bundle_path).and_return('/fake/bundle_path')
+        allow(Rails.env).to receive(:test?).and_return(false)
       end
 
       context 'gmake is available' do
@@ -64,7 +57,7 @@ describe 'gitlab:gitaly namespace rake task' do
 
         it 'calls gmake in the gitaly directory' do
           expect(Gitlab::Popen).to receive(:popen).with(%w[which gmake]).and_return(['/usr/bin/gmake', 0])
-          expect(main_object).to receive(:run_command!).with(command_preamble + %w[gmake BUNDLE_PATH=/fake/bundle_path]).and_return(true)
+          expect(main_object).to receive(:run_command!).with(command_preamble + %w[gmake]).and_return(true)
 
           run_rake_task('gitlab:gitaly:install', clone_path)
         end
@@ -77,18 +70,24 @@ describe 'gitlab:gitaly namespace rake task' do
         end
 
         it 'calls make in the gitaly directory' do
-          expect(main_object).to receive(:run_command!).with(command_preamble + %w[make BUNDLE_PATH=/fake/bundle_path]).and_return(true)
+          expect(main_object).to receive(:run_command!).with(command_preamble + %w[make]).and_return(true)
 
           run_rake_task('gitlab:gitaly:install', clone_path)
         end
 
-        context 'when Rails.env is not "test"' do
-          before do
-            allow(Rails.env).to receive(:test?).and_return(false)
+        context 'when Rails.env is test' do
+          let(:command) do
+            %W[make
+               BUNDLE_FLAGS=--no-deployment
+               BUNDLE_PATH=#{Bundler.bundle_path}]
           end
 
-          it 'calls make in the gitaly directory without BUNDLE_PATH' do
-            expect(main_object).to receive(:run_command!).with(command_preamble + ['make']).and_return(true)
+          before do
+            allow(Rails.env).to receive(:test?).and_return(true)
+          end
+
+          it 'calls make in the gitaly directory with --no-deployment flag for bundle' do
+            expect(main_object).to receive(:run_command!).with(command_preamble + command).and_return(true)
 
             run_rake_task('gitlab:gitaly:install', clone_path)
           end
@@ -117,6 +116,7 @@ describe 'gitlab:gitaly namespace rake task' do
         expected_output = <<~TOML
           # Gitaly storage configuration generated from #{Gitlab.config.source} on #{Time.current.to_s(:long)}
           # This is in TOML format suitable for use in Gitaly's config.toml file.
+          bin_dir = "tmp/tests/gitaly"
           socket_path = "/path/to/my.socket"
           [gitlab-shell]
           dir = "#{Gitlab.config.gitlab_shell.path}"
@@ -132,7 +132,7 @@ describe 'gitlab:gitaly namespace rake task' do
       expect { run_rake_task('gitlab:gitaly:storage_config')}
         .to output(expected_output).to_stdout
 
-      parsed_output = TOML.parse(expected_output)
+      parsed_output = TomlRB.parse(expected_output)
       config.each do |name, params|
         expect(parsed_output['storage']).to include({ 'name' => name, 'path' => params['path'] })
       end

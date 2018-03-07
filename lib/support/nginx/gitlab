@@ -17,6 +17,8 @@
 ## See installation.md#using-https for additional HTTPS configuration details.
 
 upstream gitlab-workhorse {
+  # Gitlab socket file,
+  # for Omnibus this would be: unix:/var/opt/gitlab/gitlab-workhorse/socket
   server unix:/home/git/gitlab/tmp/sockets/gitlab-workhorse.socket fail_timeout=0;
 }
 
@@ -110,6 +112,8 @@ server {
   error_page 502 /502.html;
   error_page 503 /503.html;
   location ~ ^/(404|422|500|502|503)\.html$ {
+    # Location to the Gitlab's public directory,
+    # for Omnibus this would be: /opt/gitlab/embedded/service/gitlab-rails/public.
     root /home/git/gitlab/public;
     internal;
   }

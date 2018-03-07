@@ -15,39 +15,39 @@ describe MoveToProjectFinder do
   describe '#execute' do
     context 'filter' do
       it 'does not return projects under Gitlab::Access::REPORTER' do
-        guest_project.team << [user, :guest]
+        guest_project.add_guest(user)
 
         expect(subject.execute(project)).to be_empty
       end
 
       it 'returns projects equal or above Gitlab::Access::REPORTER ordered by id in descending order' do
-        reporter_project.team << [user, :reporter]
-        developer_project.team << [user, :developer]
-        master_project.team << [user, :master]
+        reporter_project.add_reporter(user)
+        developer_project.add_developer(user)
+        master_project.add_master(user)
 
         expect(subject.execute(project).to_a).to eq([master_project, developer_project, reporter_project])
       end
 
       it 'does not include the source project' do
-        project.team << [user, :reporter]
+        project.add_reporter(user)
 
         expect(subject.execute(project).to_a).to be_empty
       end
 
       it 'does not return archived projects' do
-        reporter_project.team << [user, :reporter]
+        reporter_project.add_reporter(user)
         reporter_project.archive!
         other_reporter_project = create(:project)
-        other_reporter_project.team << [user, :reporter]
+        other_reporter_project.add_reporter(user)
 
         expect(subject.execute(project).to_a).to eq([other_reporter_project])
       end
 
       it 'does not return projects for which issues are disabled' do
-        reporter_project.team << [user, :reporter]
+        reporter_project.add_reporter(user)
         reporter_project.update_attributes(issues_enabled: false)
         other_reporter_project = create(:project)
-        other_reporter_project.team << [user, :reporter]
+        other_reporter_project.add_reporter(user)
 
         expect(subject.execute(project).to_a).to eq([other_reporter_project])
       end
@@ -55,9 +55,9 @@ describe MoveToProjectFinder do
       it 'returns a page of projects ordered by id in descending order' do
         stub_const 'MoveToProjectFinder::PAGE_SIZE', 2
 
-        reporter_project.team << [user, :reporter]
-        developer_project.team << [user, :developer]
-        master_project.team << [user, :master]
+        reporter_project.add_reporter(user)
+        developer_project.add_developer(user)
+        master_project.add_master(user)
 
         expect(subject.execute(project).to_a).to eq([master_project, developer_project])
       end
@@ -65,9 +65,9 @@ describe MoveToProjectFinder do
       it 'returns projects after the given offset id' do
         stub_const 'MoveToProjectFinder::PAGE_SIZE', 2
 
-        reporter_project.team << [user, :reporter]
-        developer_project.team << [user, :developer]
-        master_project.team << [user, :master]
+        reporter_project.add_reporter(user)
+        developer_project.add_developer(user)
+        master_project.add_master(user)
 
         expect(subject.execute(project, search: nil, offset_id: master_project.id).to_a).to eq([developer_project, reporter_project])
         expect(subject.execute(project, search: nil, offset_id: developer_project.id).to_a).to eq([reporter_project])
@@ -84,10 +84,10 @@ describe MoveToProjectFinder do
 
       it 'returns projects matching a search query' do
         foo_project = create(:project)
-        foo_project.team << [user, :master]
+        foo_project.add_master(user)
 
         wadus_project = create(:project, name: 'wadus')
-        wadus_project.team << [user, :master]
+        wadus_project.add_master(user)
 
         expect(subject.execute(project).to_a).to eq([wadus_project, foo_project])
         expect(subject.execute(project, search: 'wadus').to_a).to eq([wadus_project])

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Dropdown emoji', js: true do
+describe 'Dropdown emoji', :js do
   include FilteredSearchHelpers
 
   let!(:project) { create(:project, :public) }
@@ -28,7 +28,7 @@ describe 'Dropdown emoji', js: true do
   end
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     create_list(:award_emoji, 2, user: user, name: 'thumbsup')
     create_list(:award_emoji, 1, user: user, name: 'thumbsdown')
     create_list(:award_emoji, 3, user: user, name: 'star')
@@ -70,9 +70,11 @@ describe 'Dropdown emoji', js: true do
       end
 
       it 'should show loading indicator when opened' do
-        filtered_search.set('my-reaction:')
+        slow_requests do
+          filtered_search.set('my-reaction:')
 
-        expect(page).to have_css('#js-dropdown-my-reaction .filter-dropdown-loading', visible: true)
+          expect(page).to have_css('#js-dropdown-my-reaction .filter-dropdown-loading', visible: true)
+        end
       end
 
       it 'should hide loading indicator when loaded' do

@@ -1,14 +1,13 @@
-/* global Flash */
-
+import Flash from '../flash';
 import BalsamiqViewer from './balsamiq/balsamiq_viewer';
 
 function onError() {
-  const flash = new window.Flash('Balsamiq file could not be loaded.');
+  const flash = new Flash('Balsamiq file could not be loaded.');
 
   return flash;
 }
 
-function loadBalsamiqFile() {
+export default function loadBalsamiqFile() {
   const viewer = document.getElementById('js-balsamiq-viewer');
 
   if (!(viewer instanceof Element)) return;
@@ -18,5 +17,3 @@ function loadBalsamiqFile() {
   const balsamiqViewer = new BalsamiqViewer(viewer);
   balsamiqViewer.loadFile(endpoint).catch(onError);
 }
-
-$(loadBalsamiqFile);

@@ -1,5 +1,3 @@
-require 'tasks/gitlab/task_helpers'
-
 module SystemCheck
   module Helpers
     include ::Gitlab::TaskHelpers

@@ -1,3 +1,5 @@
+> We are in the process of transferring UX documentation to the [design.gitlab.com](https://gitlab.com/gitlab-org/design.gitlab.com) project. Any updates to these docs should be made in that project. If documentation does not yet exist within [design.gitlab.com](https://gitlab.com/gitlab-org/design.gitlab.com), [create an issue](https://gitlab.com/gitlab-org/design.gitlab.com/issues) and merge request to add your new changes.
+
 # GitLab UX Guide
 
 The goal of this guide is to provide standards, principles and in-depth information to design beautiful and effective GitLab features. This will be a living document, and we welcome contributions, feedback and suggestions.
@@ -18,6 +20,11 @@ The basic ingredients of our experience establish our personality and feel. This
 
 ### [Animation](animation.md)
 Guidance on the timing, curving and motion for GitLab.
+
+---
+
+### [Illustrations](illustrations.md)
+Guidelines for principals and styles related to illustrations for GitLab.
 
 ---
 

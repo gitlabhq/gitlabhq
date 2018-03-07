@@ -85,7 +85,7 @@ GET /projects/:id/repository/blobs/:sha
 Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
-- `sha` (required) - The commit or branch name
+- `sha` (required) - The blob SHA
 
 ## Raw blob content
 
@@ -113,7 +113,8 @@ GET /projects/:id/repository/archive
 Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
-- `sha` (optional) - The commit SHA to download defaults to the tip of the default branch
+- `sha` (optional) - The commit SHA to download. A tag, branch reference or sha can be used. This defaults to the tip of the default branch if not specified
+- `format` (optional) - The archive format. Default is `tar.gz`. Options are `tar.gz`, `tar.bz2`, `tbz`, `tbz2`, `tb2`, `bz2`, `tar`, `zip`
 
 ## Compare branches, tags or commits
 
@@ -182,6 +183,8 @@ GET /projects/:id/repository/contributors
 Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+- `order_by` (optional) - Return contributors ordered by `name`, `email`, or `commits` fields. If not given contributors are ordered by commit date.
+- `sort` (optional) - Return contributors sorted in `asc` or `desc` order. Default is `asc`
 
 Response:
 

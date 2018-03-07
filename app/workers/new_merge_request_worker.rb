@@ -1,6 +1,5 @@
 class NewMergeRequestWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
   include NewIssuable
 
   def perform(merge_request_id, user_id)

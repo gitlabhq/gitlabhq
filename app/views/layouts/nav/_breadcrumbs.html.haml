@@ -16,5 +16,5 @@
             = breadcrumb_list_item link_to(extra[:text], extra[:link])
         = render "layouts/nav/breadcrumbs/collapsed_dropdown", location: :after
         %li
-          %h2.breadcrumbs-sub-title= @breadcrumb_title
+          %h2.breadcrumbs-sub-title= link_to @breadcrumb_title, breadcrumb_title_link
     = yield :header_content

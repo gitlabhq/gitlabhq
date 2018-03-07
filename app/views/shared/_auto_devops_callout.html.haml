@@ -1,15 +1,16 @@
-.user-callout{ data: { uid: 'auto_devops_settings_dismissed', project_path: project_path(@project) } }
-  .bordered-box.landing.content-block
-    %button.btn.btn-default.close.js-close-callout{ type: 'button',
-      'aria-label' => 'Dismiss Auto DevOps box' }
-      = icon('times', class: 'dismiss-icon', 'aria-hidden' => 'true')
-    .svg-container
-      = custom_icon('icon_autodevops')
-    .user-callout-copy
-      %h4= _('Auto DevOps (Beta)')
-      %p= _('Auto DevOps can be activated for this project. It will automatically build, test, and deploy your application based on a predefined CI/CD configuration.')
-      %p
-        #{s_('AutoDevOps|Learn more in the')}
-        = link_to _('Auto DevOps documentation'), help_page_path('topics/autodevops/index.md'), target: '_blank', rel: 'noopener noreferrer'
+.js-autodevops-banner.banner-callout.banner-non-empty-state.append-bottom-20{ data: { uid: 'auto_devops_settings_dismissed', project_path: project_path(@project) } }
+  .banner-graphic
+    = custom_icon('icon_autodevops')
 
-      = link_to _('Enable in settings'), project_settings_ci_cd_path(@project, anchor: 'js-general-pipeline-settings'), class: 'btn btn-primary js-close-callout'
+  .prepend-top-10.prepend-left-10.append-bottom-10
+    %h5= s_('AutoDevOps|Auto DevOps (Beta)')
+    %p= s_('AutoDevOps|It will automatically build, test, and deploy your application based on a predefined CI/CD configuration.')
+    %p
+      - link = link_to(s_('AutoDevOps|Auto DevOps documentation'), help_page_path('topics/autodevops/index.md'), target: '_blank', rel: 'noopener noreferrer')
+      = s_('AutoDevOps|Learn more in the %{link_to_documentation}').html_safe % { link_to_documentation: link }
+    .prepend-top-10
+      = link_to s_('AutoDevOps|Enable in settings'), project_settings_ci_cd_path(@project, anchor: 'js-general-pipeline-settings'), class: 'btn js-close-callout'
+
+  %button.btn-transparent.banner-close.close.js-close-callout{ type: 'button',
+  'aria-label' => 'Dismiss Auto DevOps box' }
+    = icon('times', class: 'dismiss-icon', 'aria-hidden' => 'true')

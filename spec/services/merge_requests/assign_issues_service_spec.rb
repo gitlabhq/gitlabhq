@@ -8,7 +8,7 @@ describe MergeRequests::AssignIssuesService do
   let(:service) { described_class.new(project, user, merge_request: merge_request) }
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
   end
 
   it 'finds unassigned issues fixed in merge request' do

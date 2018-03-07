@@ -1,34 +1,30 @@
-= form_for [@project.namespace.becomes(Namespace), @project, @domain], html: { class: 'form-horizontal fieldset-form' } do |f|
-  - if @domain.errors.any?
-    #error_explanation
-      .alert.alert-danger
-        - @domain.errors.full_messages.each do |msg|
-          %p= msg
+- if @domain.errors.any?
+  #error_explanation
+    .alert.alert-danger
+      - @domain.errors.full_messages.each do |msg|
+        %p= msg
+
+.form-group
+  = f.label :domain, class: 'control-label' do
+    Domain
+  .col-sm-10
+    = f.text_field :domain, required: true, autocomplete: 'off', class: 'form-control', disabled: @domain.persisted?
+
+- if Gitlab.config.pages.external_https
+  .form-group
+    = f.label :certificate, class: 'control-label' do
+      Certificate (PEM)
+    .col-sm-10
+      = f.text_area :certificate, rows: 5, class: 'form-control'
+      %span.help-inline Upload a certificate for your domain with all intermediates
 
   .form-group
-    = f.label :domain, class: 'control-label' do
-      Domain
+    = f.label :key, class: 'control-label' do
+      Key (PEM)
     .col-sm-10
-      = f.text_field :domain, required: true, autocomplete: 'off', class: 'form-control'
-
-  - if Gitlab.config.pages.external_https
-    .form-group
-      = f.label :certificate, class: 'control-label' do
-        Certificate (PEM)
-      .col-sm-10
-        = f.text_area :certificate, rows: 5, class: 'form-control'
-        %span.help-inline Upload a certificate for your domain with all intermediates
-
-    .form-group
-      = f.label :key, class: 'control-label' do
-        Key (PEM)
-      .col-sm-10
-        = f.text_area :key, rows: 5, class: 'form-control'
-        %span.help-inline Upload a private key for your certificate
-  - else
-    .nothing-here-block
-      Support for custom certificates is disabled.
-      Ask your system's administrator to enable it.
-
-  .form-actions
-    = f.submit 'Create New Domain', class: "btn btn-save"
+      = f.text_area :key, rows: 5, class: 'form-control'
+      %span.help-inline Upload a private key for your certificate
+- else
+  .nothing-here-block
+    Support for custom certificates is disabled.
+    Ask your system's administrator to enable it.

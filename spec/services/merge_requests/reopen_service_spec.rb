@@ -4,13 +4,13 @@ describe MergeRequests::ReopenService do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:guest) { create(:user) }
-  let(:merge_request) { create(:merge_request, :closed, assignee: user2) }
+  let(:merge_request) { create(:merge_request, :closed, assignee: user2, author: create(:user)) }
   let(:project) { merge_request.project }
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :developer]
-    project.team << [guest, :guest]
+    project.add_master(user)
+    project.add_developer(user2)
+    project.add_guest(guest)
   end
 
   describe '#execute' do
@@ -45,6 +45,19 @@ describe MergeRequests::ReopenService do
         note = merge_request.notes.last
         expect(note.note).to include 'reopened'
       end
+    end
+
+    it 'updates metrics' do
+      metrics = merge_request.metrics
+      service = double(MergeRequestMetricsService)
+      allow(MergeRequestMetricsService)
+        .to receive(:new)
+        .with(metrics)
+        .and_return(service)
+
+      expect(service).to receive(:reopen)
+
+      described_class.new(project, user, {}).execute(merge_request)
     end
 
     it 'refreshes the number of open merge requests for a valid MR' do

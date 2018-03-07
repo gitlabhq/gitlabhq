@@ -37,7 +37,7 @@ describe ProjectFeature do
       end
 
       it "returns true when user is a team member" do
-        project.team << [user, :developer]
+        project.add_developer(user)
 
         features.each do |feature|
           project.project_feature.update_attribute("#{feature}_access_level".to_sym, ProjectFeature::PRIVATE)

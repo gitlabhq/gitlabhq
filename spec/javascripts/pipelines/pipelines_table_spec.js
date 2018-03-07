@@ -11,9 +11,10 @@ describe('Pipelines Table', () => {
   preloadFixtures(jsonFixtureName);
 
   beforeEach(() => {
-    PipelinesTableComponent = Vue.extend(pipelinesTableComp);
     const pipelines = getJSONFixture(jsonFixtureName).pipelines;
-    pipeline = pipelines.find(p => p.id === 1);
+
+    PipelinesTableComponent = Vue.extend(pipelinesTableComp);
+    pipeline = pipelines.find(p => p.user !== null && p.commit !== null);
   });
 
   describe('table', () => {
@@ -23,6 +24,7 @@ describe('Pipelines Table', () => {
         propsData: {
           pipelines: [],
           autoDevopsHelpPath: 'foo',
+          viewType: 'root',
         },
       }).$mount();
     });
@@ -49,6 +51,7 @@ describe('Pipelines Table', () => {
         propsData: {
           pipelines: [],
           autoDevopsHelpPath: 'foo',
+          viewType: 'root',
         },
       }).$mount();
       expect(component.$el.querySelectorAll('.commit.gl-responsive-table-row').length).toEqual(0);
@@ -61,6 +64,7 @@ describe('Pipelines Table', () => {
         propsData: {
           pipelines: [pipeline],
           autoDevopsHelpPath: 'foo',
+          viewType: 'root',
         },
       }).$mount();
 

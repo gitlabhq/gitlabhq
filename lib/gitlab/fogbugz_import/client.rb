@@ -45,6 +45,7 @@ module Gitlab
         project_name = repo(project_id).name
         res = @api.command(:search, q: "project:'#{project_name}'", cols: 'ixPersonAssignedTo,ixPersonOpenedBy,ixPersonClosedBy,sStatus,sPriority,sCategory,fOpen,sTitle,sLatestTextSummary,dtOpened,dtClosed,dtResolved,dtLastUpdated,events')
         return [] unless res['cases']['count'].to_i > 0
+
         res['cases']['case']
       end
 

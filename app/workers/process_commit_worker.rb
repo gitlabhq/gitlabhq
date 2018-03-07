@@ -5,8 +5,7 @@
 # Consider using an extra worker if you need to add any extra (and potentially
 # slow) processing of commits.
 class ProcessCommitWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   # project_id - The ID of the project this commit belongs to.
   # user_id - The ID of the user that pushed the commit.
@@ -24,27 +23,24 @@ class ProcessCommitWorker
     return unless user
 
     commit = build_commit(project, commit_hash)
-
     author = commit.author || user
 
     process_commit_message(project, commit, user, author, default)
-
     update_issue_metrics(commit, author)
   end
 
   def process_commit_message(project, commit, user, author, default = false)
-    closed_issues = default ? commit.closes_issues(user) : []
+    # Ignore closing references from GitLab-generated commit messages.
+    find_closing_issues = default && !commit.merged_merge_request?(user)
+    closed_issues = find_closing_issues ? commit.closes_issues(user) : []
 
-    unless closed_issues.empty?
-      close_issues(project, user, author, commit, closed_issues)
-    end
-
+    close_issues(project, user, author, commit, closed_issues) if closed_issues.any?
     commit.create_cross_references!(author, closed_issues)
   end
 
   def close_issues(project, user, author, commit, issues)
     # We don't want to run permission related queries for every single issue,
-    # therefor we use IssueCollection here and skip the authorization check in
+    # therefore we use IssueCollection here and skip the authorization check in
     # Issues::CloseService#execute.
     IssueCollection.new(issues).updatable_by_user(user).each do |issue|
       Issues::CloseService.new(project, author)

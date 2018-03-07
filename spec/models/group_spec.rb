@@ -17,6 +17,8 @@ describe Group do
     it { is_expected.to have_many(:variables).class_name('Ci::GroupVariable') }
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
     it { is_expected.to have_one(:chat_team) }
+    it { is_expected.to have_many(:custom_attributes).class_name('GroupCustomAttribute') }
+    it { is_expected.to have_many(:badges).class_name('GroupBadge') }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
@@ -40,7 +42,6 @@ describe Group do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of :name }
-    it { is_expected.to validate_uniqueness_of(:name).scoped_to(:parent_id) }
     it { is_expected.to validate_presence_of :path }
     it { is_expected.not_to validate_presence_of :owner }
     it { is_expected.to validate_presence_of :two_factor_grace_period }
@@ -61,12 +62,6 @@ describe Group do
 
       it 'rejects any wildcard paths when not a top level group' do
         group = build(:group, path: 'tree', parent: create(:group))
-
-        expect(group).not_to be_valid
-      end
-
-      it 'rejects reserved group paths' do
-        group = build(:group, path: 'activity', parent: create(:group))
 
         expect(group).not_to be_valid
       end
@@ -252,8 +247,6 @@ describe Group do
   describe '#avatar_url' do
     let!(:group) { create(:group, :access_requestable, :with_avatar) }
     let(:user) { create(:user) }
-    let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
-    let(:avatar_path) { "/uploads/-/system/group/avatar/#{group.id}/dk.png" }
 
     context 'when avatar file is uploaded' do
       before do
@@ -261,12 +254,8 @@ describe Group do
       end
 
       it 'shows correct avatar url' do
-        expect(group.avatar_url).to eq(avatar_path)
-        expect(group.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
-
-        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
-
-        expect(group.avatar_url).to eq([gitlab_host, avatar_path].join)
+        expect(group.avatar_url).to eq(group.avatar.url)
+        expect(group.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, group.avatar.url].join)
       end
     end
   end
@@ -488,6 +477,47 @@ describe Group do
     end
   end
 
+  describe '#path_changed_hook' do
+    let(:system_hook_service) { SystemHooksService.new }
+
+    context 'for a new group' do
+      let(:group) { build(:group) }
+
+      before do
+        expect(group).to receive(:system_hook_service).and_return(system_hook_service)
+      end
+
+      it 'does not trigger system hook' do
+        expect(system_hook_service).to receive(:execute_hooks_for).with(group, :create)
+
+        group.save!
+      end
+    end
+
+    context 'for an existing group' do
+      let(:group) { create(:group, path: 'old-path') }
+
+      context 'when the path is changed' do
+        let(:new_path) { 'very-new-path' }
+
+        it 'triggers the rename system hook' do
+          expect(group).to receive(:system_hook_service).and_return(system_hook_service)
+          expect(system_hook_service).to receive(:execute_hooks_for).with(group, :rename)
+
+          group.update_attributes!(path: new_path)
+        end
+      end
+
+      context 'when the path is not changed' do
+        it 'does not trigger system hook' do
+          expect(group).not_to receive(:system_hook_service)
+
+          group.update_attributes!(name: 'new name')
+        end
+      end
+    end
+  end
+
   describe '#secret_variables_for' do
     let(:project) { create(:project, group: group) }
 
@@ -520,7 +550,7 @@ describe Group do
 
     context 'when the ref is a protected branch' do
       before do
-        create(:protected_branch, name: 'ref', project: project)
+        allow(project).to receive(:protected_for?).with('ref').and_return(true)
       end
 
       it_behaves_like 'ref is protected'
@@ -528,7 +558,7 @@ describe Group do
 
     context 'when the ref is a protected tag' do
       before do
-        create(:protected_tag, name: 'ref', project: project)
+        allow(project).to receive(:protected_for?).with('ref').and_return(true)
       end
 
       it_behaves_like 'ref is protected'
@@ -542,6 +572,10 @@ describe Group do
       let(:variable_child_2) { create(:ci_group_variable, group: group_child_2) }
       let(:variable_child_3) { create(:ci_group_variable, group: group_child_3) }
 
+      before do
+        allow(project).to receive(:protected_for?).with('ref').and_return(true)
+      end
+
       it 'returns all variables belong to the group and parent groups' do
         expected_array1 = [protected_variable, secret_variable]
         expected_array2 = [variable_child, variable_child_2, variable_child_3]
@@ -549,6 +583,22 @@ describe Group do
 
         expect(got_array.shift(2)).to contain_exactly(*expected_array1)
         expect(got_array).to eq(expected_array2)
+      end
+    end
+  end
+
+  describe '#has_parent?' do
+    context 'when the group has a parent' do
+      it 'should be truthy' do
+        group = create(:group, :nested)
+        expect(group.has_parent?).to be_truthy
+      end
+    end
+
+    context 'when the group has no parent' do
+      it 'should be falsy' do
+        group = create(:group, parent: nil)
+        expect(group.has_parent?).to be_falsy
       end
     end
   end

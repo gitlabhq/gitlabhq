@@ -11,13 +11,13 @@
     - unless diff_file.submodule?
       - blob = diff_file.blob
       .file-actions.hidden-xs
-        - if blob.readable_text?
+        - if blob&.readable_text?
           = link_to '#', class: 'js-toggle-diff-comments btn active has-tooltip', title: "Toggle comments for this file", disabled: @diff_notes_disabled do
             = icon('comment')
           \
           - if editable_diff?(diff_file)
             - link_opts = @merge_request.persisted? ? { from_merge_request_iid: @merge_request.iid } : {}
-            = edit_blob_link(@merge_request.source_project, @merge_request.source_branch, diff_file.new_path,
+            = edit_blob_button(@merge_request.source_project, @merge_request.source_branch, diff_file.new_path,
                              blob: blob, link_opts: link_opts)
 
         - if image_diff && image_replaced

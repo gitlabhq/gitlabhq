@@ -1,5 +1,0 @@
----
-title: Default LDAP config "verify_certificates" to true for security
-merge_request: 13915
-author:
-type: changed

@@ -85,6 +85,13 @@
               Closed:
               = milestone.issues_visible_to_user(current_user).closed.count
 
+    .block
+      #issuable-time-tracker{ data: { time_estimate: @milestone.total_issue_time_estimate, time_spent: @milestone.total_issue_time_spent, human_time_estimate: @milestone.human_total_issue_time_estimate, human_time_spent: @milestone.human_total_issue_time_spent } }
+        // Fallback while content is loading
+        .title.hide-collapsed
+          = _('Time tracking')
+          = icon('spinner spin')
+
     .block.merge-requests
       .sidebar-collapsed-icon
         %strong

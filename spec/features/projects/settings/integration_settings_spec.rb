@@ -8,7 +8,7 @@ feature 'Integration settings' do
 
   background do
     sign_in(user)
-    project.team << [user, role]
+    project.add_role(user, role)
   end
 
   context 'for developer' do
@@ -76,7 +76,7 @@ feature 'Integration settings' do
         expect(page).to have_content(url)
       end
 
-      scenario 'test existing webhook', js: true do
+      scenario 'test existing webhook', :js do
         WebMock.stub_request(:post, hook.url)
         visit integrations_path
 

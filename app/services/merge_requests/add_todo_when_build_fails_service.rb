@@ -3,7 +3,7 @@ module MergeRequests
     # Adds a todo to the parent merge_request when a CI build fails
     #
     def execute(commit_status)
-      return if commit_status.allow_failure?
+      return if commit_status.allow_failure? || commit_status.retried?
 
       commit_status_merge_requests(commit_status) do |merge_request|
         todo_service.merge_request_build_failed(merge_request)

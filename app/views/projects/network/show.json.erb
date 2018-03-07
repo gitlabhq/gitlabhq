@@ -9,11 +9,11 @@
         author: {
           name: c.author_name,
           email: c.author_email,
-          icon: image_path(avatar_icon(c.author_email, 20))
+          icon: image_path(avatar_icon_for_email(c.author_email, 20))
         },
         time: c.time,
         space: c.spaces.first,
-        refs: get_refs(@graph.repo, c),
+        refs: refs(@graph.repo, c),
         id: c.sha,
         date: c.date,
         message: c.message,

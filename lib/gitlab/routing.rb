@@ -40,5 +40,24 @@ module Gitlab
     def self.url_helpers
       @url_helpers ||= Gitlab::Application.routes.url_helpers
     end
+
+    def self.redirect_legacy_paths(router, *paths)
+      build_redirect_path = lambda do |request, _params, path|
+        # Only replace the last occurence of `path`.
+        #
+        # `request.fullpath` includes the querystring
+        new_path = request.path.sub(%r{/#{path}(/*)(?!.*#{path})}, "/-/#{path}\\1")
+        new_path << "?#{request.query_string}" if request.query_string.present?
+
+        new_path
+      end
+
+      paths.each do |path|
+        router.match "/#{path}(/*rest)",
+                     via: [:get, :post, :patch, :delete],
+                     to: router.redirect { |params, request| build_redirect_path.call(request, params, path) },
+                     as: "legacy_#{path}_redirect"
+      end
+    end
   end
 end

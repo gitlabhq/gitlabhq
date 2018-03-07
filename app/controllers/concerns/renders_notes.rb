@@ -1,12 +1,14 @@
 module RendersNotes
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def prepare_notes_for_rendering(notes, noteable = nil)
     preload_noteable_for_regular_notes(notes)
     preload_max_access_for_authors(notes, @project)
     preload_first_time_contribution_for_authors(noteable, notes)
-    Banzai::NoteRenderer.render(notes, @project, current_user)
+    Notes::RenderService.new(current_user).execute(notes, @project)
 
     notes
   end
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   private
 

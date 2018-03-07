@@ -19,12 +19,15 @@ project_tree:
     - milestone:
       - events:
         - :push_event_payload
+    - :issue_assignees
   - snippets:
     - :award_emoji
     - notes:
         :author
   - :releases
   - project_members:
+    - :user
+  - lfs_file_locks:
     - :user
   - merge_requests:
     - notes:
@@ -48,8 +51,8 @@ project_tree:
       - :author
       - events:
         - :push_event_payload
-    - :stages
-    - :statuses
+    - stages:
+      - :statuses
   - :auto_devops
   - :triggers
   - :pipeline_schedules
@@ -61,6 +64,8 @@ project_tree:
   - protected_tags:
     - :create_access_levels
   - :project_feature
+  - :custom_attributes
+  - :project_badges
 
 # Only include the following attributes for the models specified.
 included_attributes:
@@ -112,6 +117,7 @@ excluded_attributes:
     - :milestone_id
     - :ref_fetched
     - :merge_jid
+    - :latest_merge_request_diff_id
   award_emoji:
     - :awardable_id
   statuses:
@@ -120,6 +126,8 @@ excluded_attributes:
     - :when
   push_event_payload:
     - :event_id
+  project_badges:
+    - :group_id
 
 methods:
   labels:
@@ -130,8 +138,6 @@ methods:
     - :type
   services:
     - :type
-  merge_request_diff:
-    - :utf8_st_diffs
   merge_request_diff_files:
     - :utf8_diff
   merge_requests:
@@ -144,3 +150,5 @@ methods:
     - :action
   push_event_payload:
     - :action
+  project_badges:
+    - :type

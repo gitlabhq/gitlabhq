@@ -26,12 +26,7 @@ describe Keys::LastUsedService do
       # make sure we _only_ update last_used_at and not always updated_at.
       key = create(:key, last_used_at: 1.year.ago)
 
-      recorder = ActiveRecord::QueryRecorder.new do
-        described_class.new(key).execute
-      end
-
-      expect(recorder.count).to eq(1)
-      expect(recorder.log[0]).not_to include('updated_at')
+      expect { described_class.new(key).execute }.not_to change { key.updated_at }
     end
   end
 

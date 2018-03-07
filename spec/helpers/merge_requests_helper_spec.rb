@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe MergeRequestsHelper do
+  include ActionView::Helpers::UrlHelper
+  include ProjectForksHelper
+
   describe 'ci_build_details_path' do
     let(:project) { create(:project) }
     let(:merge_request) { MergeRequest.new }
@@ -31,13 +34,28 @@ describe MergeRequestsHelper do
 
     describe 'within different projects' do
       let(:project) { create(:project) }
-      let(:fork_project) { create(:project, forked_from_project: project) }
-      let(:merge_request) { create(:merge_request, source_project: fork_project, target_project: project) }
+      let(:forked_project) { fork_project(project) }
+      let(:merge_request) { create(:merge_request, source_project: forked_project, target_project: project) }
       subject { format_mr_branch_names(merge_request) }
-      let(:source_title) { "#{fork_project.full_path}:#{merge_request.source_branch}" }
+      let(:source_title) { "#{forked_project.full_path}:#{merge_request.source_branch}" }
       let(:target_title) { "#{project.full_path}:#{merge_request.target_branch}" }
 
       it { is_expected.to eq([source_title, target_title]) }
+    end
+  end
+
+  describe '#tab_link_for' do
+    let(:merge_request) { create(:merge_request, :simple) }
+    let(:options) { Hash.new }
+
+    subject { tab_link_for(merge_request, :show, options) { 'Discussion' } }
+
+    describe 'supports the :force_link option' do
+      let(:options) { { force_link: true } }
+
+      it 'removes the data-toggle attributes' do
+        is_expected.not_to match(/data-toggle="tab"/)
+      end
     end
   end
 end

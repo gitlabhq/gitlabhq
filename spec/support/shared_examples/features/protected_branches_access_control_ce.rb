@@ -1,5 +1,5 @@
 shared_examples "protected branches > access control > CE" do
-  ProtectedBranch::PushAccessLevel.human_access_levels.each do |(access_type_id, access_type_name)|
+  ProtectedRefAccess::HUMAN_ACCESS_LEVELS.each do |(access_type_id, access_type_name)|
     it "allows creating protected branches that #{access_type_name} can push to" do
       visit project_protected_branches_path(project)
 
@@ -9,7 +9,7 @@ shared_examples "protected branches > access control > CE" do
         allowed_to_push_button = find(".js-allowed-to-push")
 
         unless allowed_to_push_button.text == access_type_name
-          allowed_to_push_button.trigger('click')
+          allowed_to_push_button.click
           within(".dropdown.open .dropdown-menu") { click_on access_type_name }
         end
       end
@@ -34,7 +34,7 @@ shared_examples "protected branches > access control > CE" do
 
         within('.js-allowed-to-push-container') do
           expect(first("li")).to have_content("Roles")
-          click_on access_type_name
+          find(:link, access_type_name).click
         end
       end
 
@@ -44,7 +44,7 @@ shared_examples "protected branches > access control > CE" do
     end
   end
 
-  ProtectedBranch::MergeAccessLevel.human_access_levels.each do |(access_type_id, access_type_name)|
+  ProtectedRefAccess::HUMAN_ACCESS_LEVELS.each do |(access_type_id, access_type_name)|
     it "allows creating protected branches that #{access_type_name} can merge to" do
       visit project_protected_branches_path(project)
 
@@ -79,7 +79,7 @@ shared_examples "protected branches > access control > CE" do
 
         within('.js-allowed-to-merge-container') do
           expect(first("li")).to have_content("Roles")
-          click_on access_type_name
+          find(:link, access_type_name).click
         end
       end
 

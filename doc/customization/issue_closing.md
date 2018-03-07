@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 This document was split into:
 
 - [administration/issue_closing_pattern.md](../administration/issue_closing_pattern.md).

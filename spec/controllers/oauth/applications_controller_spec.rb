@@ -12,16 +12,15 @@ describe Oauth::ApplicationsController do
       it 'shows list of applications' do
         get :index
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
 
       it 'redirects back to profile page if OAuth applications are disabled' do
-        settings = double(user_oauth_applications?: false)
-        allow_any_instance_of(Gitlab::CurrentSettings).to receive(:current_application_settings).and_return(settings)
+        allow(Gitlab::CurrentSettings.current_application_settings).to receive(:user_oauth_applications?).and_return(false)
 
         get :index
 
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(302)
         expect(response).to redirect_to(profile_path)
       end
     end

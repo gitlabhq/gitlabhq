@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::MergeRequests::DiffsController do
+  include ProjectForksHelper
+
   let(:project) { create(:project, :repository) }
   let(:user)    { project.owner }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
@@ -37,12 +39,12 @@ describe Projects::MergeRequests::DiffsController do
         render_views
 
         let(:project) { create(:project, :repository) }
-        let(:fork_project) { create(:forked_project_with_submodules) }
-        let(:merge_request) { create(:merge_request_with_diffs, source_project: fork_project, source_branch: 'add-submodule-version-bump', target_branch: 'master', target_project: project) }
+        let(:forked_project) { fork_project_with_submodules(project) }
+        let(:merge_request) { create(:merge_request_with_diffs, source_project: forked_project, source_branch: 'add-submodule-version-bump', target_branch: 'master', target_project: project) }
 
         before do
-          fork_project.build_forked_project_link(forked_to_project_id: fork_project.id, forked_from_project_id: project.id)
-          fork_project.save
+          project.add_developer(user)
+
           merge_request.reload
           go
         end
@@ -98,7 +100,8 @@ describe Projects::MergeRequests::DiffsController do
 
             expect(assigns(:diff_notes_disabled)).to be_falsey
             expect(assigns(:new_diff_note_attrs)).to eq(noteable_type: 'MergeRequest',
-                                                        noteable_id: merge_request.id)
+                                                        noteable_id: merge_request.id,
+                                                        commit_id: nil)
           end
 
           it 'only renders the diffs for the path given' do
@@ -117,7 +120,7 @@ describe Projects::MergeRequests::DiffsController do
           end
 
           it 'returns a 404' do
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
       end
@@ -129,7 +132,7 @@ describe Projects::MergeRequests::DiffsController do
         end
 
         it 'returns a 404' do
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
     end
@@ -140,7 +143,7 @@ describe Projects::MergeRequests::DiffsController do
       end
 
       it 'returns a 404' do
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -148,12 +151,12 @@ describe Projects::MergeRequests::DiffsController do
       let(:other_project) { create(:project) }
 
       before do
-        other_project.team << [user, :master]
+        other_project.add_master(user)
         diff_for_path(old_path: existing_path, new_path: existing_path, project_id: other_project)
       end
 
       it 'returns a 404' do
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end

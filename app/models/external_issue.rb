@@ -38,13 +38,17 @@ class ExternalIssue
     @project.id
   end
 
-  def to_reference(_from_project = nil, full: nil)
-    id
+  def to_reference(_from = nil, full: nil)
+    reference_link_text
   end
 
-  def reference_link_text(from_project = nil)
+  def reference_link_text(from = nil)
     return "##{id}" if id =~ /^\d+$/
 
     id
+  end
+
+  def notes
+    Note.none
   end
 end

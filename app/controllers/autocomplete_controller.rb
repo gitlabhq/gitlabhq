@@ -8,12 +8,12 @@ class AutocompleteController < ApplicationController
   def users
     @users = AutocompleteUsersFinder.new(params: params, current_user: current_user, project: @project, group: @group).execute
 
-    render json: @users, only: [:name, :username, :id], methods: [:avatar_url]
+    render json: UserSerializer.new.represent(@users)
   end
 
   def user
     @user = User.find(params[:id])
-    render json: @user, only: [:name, :username, :id], methods: [:avatar_url]
+    render json: UserSerializer.new.represent(@user)
   end
 
   def projects
@@ -44,6 +44,7 @@ class AutocompleteController < ApplicationController
       if @project.blank? && params[:group_id].present?
         group = Group.find(params[:group_id])
         return render_404 unless can?(current_user, :read_group, group)
+
         group
       end
     end
@@ -54,6 +55,7 @@ class AutocompleteController < ApplicationController
       if params[:project_id].present?
         project = Project.find(params[:project_id])
         return render_404 unless can?(current_user, :read_project, project)
+
         project
       end
     end

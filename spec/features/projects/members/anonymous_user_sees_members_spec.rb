@@ -6,7 +6,7 @@ feature 'Projects > Members > Anonymous user sees members' do
   let(:project) { create(:project, :public) }
 
   background do
-    project.team << [user, :master]
+    project.add_master(user)
     create(:project_group_link, project: project, group: group)
   end
 

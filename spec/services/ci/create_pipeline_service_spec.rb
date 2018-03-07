@@ -1,12 +1,14 @@
 require 'spec_helper'
 
 describe Ci::CreatePipelineService do
+  include ProjectForksHelper
+
   set(:project) { create(:project, :repository) }
   let(:user) { create(:admin) }
   let(:ref_name) { 'refs/heads/master' }
 
   before do
-    stub_ci_pipeline_to_return_yaml_file
+    stub_repository_ci_yaml_file(sha: anything)
   end
 
   describe '#execute' do
@@ -42,6 +44,7 @@ describe Ci::CreatePipelineService do
         expect(pipeline).to eq(project.pipelines.last)
         expect(pipeline).to have_attributes(user: user)
         expect(pipeline).to have_attributes(status: 'pending')
+        expect(pipeline.repository_source?).to be true
         expect(pipeline.builds.first).to be_kind_of(Ci::Build)
       end
 
@@ -54,19 +57,51 @@ describe Ci::CreatePipelineService do
       end
 
       context 'when merge requests already exist for this source branch' do
-        it 'updates head pipeline of each merge request' do
-          merge_request_1 = create(:merge_request, source_branch: 'master',
-                                                   target_branch: "branch_1",
-                                                   source_project: project)
+        let(:merge_request_1) do
+          create(:merge_request, source_branch: 'master', target_branch: "branch_1", source_project: project)
+        end
+        let(:merge_request_2) do
+          create(:merge_request, source_branch: 'master', target_branch: "branch_2", source_project: project)
+        end
 
-          merge_request_2 = create(:merge_request, source_branch: 'master',
-                                                   target_branch: "branch_2",
-                                                   source_project: project)
+        context 'when related merge request is already merged' do
+          let!(:merged_merge_request) do
+            create(:merge_request, source_branch: 'master', target_branch: "branch_2", source_project: project, state: 'merged')
+          end
 
-          head_pipeline = execute_service
+          it 'does not schedule update head pipeline job' do
+            expect(UpdateHeadPipelineForMergeRequestWorker).not_to receive(:perform_async).with(merged_merge_request.id)
 
-          expect(merge_request_1.reload.head_pipeline).to eq(head_pipeline)
-          expect(merge_request_2.reload.head_pipeline).to eq(head_pipeline)
+            execute_service
+          end
+        end
+
+        context 'when the head pipeline sha equals merge request sha' do
+          it 'updates head pipeline of each merge request' do
+            merge_request_1
+            merge_request_2
+
+            head_pipeline = execute_service
+
+            expect(merge_request_1.reload.head_pipeline).to eq(head_pipeline)
+            expect(merge_request_2.reload.head_pipeline).to eq(head_pipeline)
+          end
+        end
+
+        context 'when the head pipeline sha does not equal merge request sha' do
+          it 'does not update the head piepeline of MRs' do
+            merge_request_1
+            merge_request_2
+
+            allow_any_instance_of(Ci::Pipeline).to receive(:latest?).and_return(true)
+
+            expect { execute_service(after: 'ae73cb07c9eeaf35924a10f713b364d32b2dd34f') }.not_to raise_error
+
+            last_pipeline = Ci::Pipeline.last
+
+            expect(merge_request_1.reload.head_pipeline).not_to eq(last_pipeline)
+            expect(merge_request_2.reload.head_pipeline).not_to eq(last_pipeline)
+          end
         end
 
         context 'when there is no pipeline for source branch' do
@@ -82,12 +117,8 @@ describe Ci::CreatePipelineService do
         end
 
         context 'when merge request target project is different from source project' do
+          let!(:project) { fork_project(target_project, nil, repository: true) }
           let!(:target_project) { create(:project, :repository) }
-
-          let!(:forked_project_link) do
-            create(:forked_project_link, forked_to_project: project,
-                                         forked_from_project: target_project)
-          end
 
           it 'updates head pipeline for merge request' do
             merge_request = create(:merge_request, source_branch: 'master',
@@ -107,8 +138,7 @@ describe Ci::CreatePipelineService do
                                                    target_branch: "branch_1",
                                                    source_project: project)
 
-            allow_any_instance_of(Ci::Pipeline)
-              .to receive(:latest?).and_return(false)
+            allow_any_instance_of(Ci::Pipeline).to receive(:latest?).and_return(false)
 
             execute_service
 
@@ -130,6 +160,26 @@ describe Ci::CreatePipelineService do
 
             expect(head_pipeline).to be_persisted
             expect(head_pipeline.yaml_errors).to be_present
+            expect(merge_request.reload.head_pipeline).to eq head_pipeline
+          end
+        end
+
+        context 'when pipeline has been skipped' do
+          before do
+            allow_any_instance_of(Ci::Pipeline)
+              .to receive(:git_commit_message)
+              .and_return('some commit [ci skip]')
+          end
+
+          it 'updates merge request head pipeline' do
+            merge_request = create(:merge_request, source_branch: 'master',
+                                                   target_branch: 'feature',
+                                                   source_project: project)
+
+            head_pipeline = execute_service
+
+            expect(head_pipeline).to be_skipped
+            expect(head_pipeline).to be_persisted
             expect(merge_request.reload.head_pipeline).to eq head_pipeline
           end
         end
@@ -480,105 +530,20 @@ describe Ci::CreatePipelineService do
         end
       end
     end
-  end
 
-  describe '#allowed_to_create?' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :repository) }
-    let(:ref) { 'master' }
-
-    subject do
-      described_class.new(project, user, ref: ref)
-        .send(:allowed_to_create?)
-    end
-
-    context 'when user is a developer' do
+    context 'when pipeline is running for a tag' do
       before do
-        project.add_developer(user)
+        config = YAML.dump(test: { script: 'test', only: ['branches'] },
+                           deploy: { script: 'deploy', only: ['tags'] })
+
+        stub_ci_pipeline_yaml_file(config)
       end
 
-      it { is_expected.to be_truthy }
+      it 'creates a tagged pipeline' do
+        pipeline = execute_service(ref: 'v1.0.0')
 
-      context 'when the branch is protected' do
-        let!(:protected_branch) do
-          create(:protected_branch, project: project, name: ref)
-        end
-
-        it { is_expected.to be_falsey }
-
-        context 'when developers are allowed to merge' do
-          let!(:protected_branch) do
-            create(:protected_branch,
-                   :developers_can_merge,
-                   project: project,
-                   name: ref)
-          end
-
-          it { is_expected.to be_truthy }
-        end
+        expect(pipeline.tag?).to be true
       end
-
-      context 'when the tag is protected' do
-        let(:ref) { 'v1.0.0' }
-
-        let!(:protected_tag) do
-          create(:protected_tag, project: project, name: ref)
-        end
-
-        it { is_expected.to be_falsey }
-
-        context 'when developers are allowed to create the tag' do
-          let!(:protected_tag) do
-            create(:protected_tag,
-                   :developers_can_create,
-                   project: project,
-                   name: ref)
-          end
-
-          it { is_expected.to be_truthy }
-        end
-      end
-    end
-
-    context 'when user is a master' do
-      before do
-        project.add_master(user)
-      end
-
-      it { is_expected.to be_truthy }
-
-      context 'when the branch is protected' do
-        let!(:protected_branch) do
-          create(:protected_branch, project: project, name: ref)
-        end
-
-        it { is_expected.to be_truthy }
-      end
-
-      context 'when the tag is protected' do
-        let(:ref) { 'v1.0.0' }
-
-        let!(:protected_tag) do
-          create(:protected_tag, project: project, name: ref)
-        end
-
-        it { is_expected.to be_truthy }
-
-        context 'when no one can create the tag' do
-          let!(:protected_tag) do
-            create(:protected_tag,
-                   :no_one_can_create,
-                   project: project,
-                   name: ref)
-          end
-
-          it { is_expected.to be_falsey }
-        end
-      end
-    end
-
-    context 'when owner cannot create pipeline' do
-      it { is_expected.to be_falsey }
     end
   end
 end

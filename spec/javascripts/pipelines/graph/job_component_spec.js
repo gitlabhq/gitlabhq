@@ -1,8 +1,10 @@
 import Vue from 'vue';
 import jobComponent from '~/pipelines/components/graph/job_component.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('pipeline graph job component', () => {
   let JobComponent;
+  let component;
 
   const mockJob = {
     id: 4256,
@@ -13,8 +15,9 @@ describe('pipeline graph job component', () => {
       label: 'passed',
       group: 'success',
       details_path: '/root/ci-mock/builds/4256',
+      has_details: true,
       action: {
-        icon: 'icon_action_retry',
+        icon: 'retry',
         title: 'Retry',
         path: '/root/ci-mock/builds/4256/retry',
         method: 'post',
@@ -26,13 +29,13 @@ describe('pipeline graph job component', () => {
     JobComponent = Vue.extend(jobComponent);
   });
 
+  afterEach(() => {
+    component.$destroy();
+  });
+
   describe('name with link', () => {
     it('should render the job name and status with a link', (done) => {
-      const component = new JobComponent({
-        propsData: {
-          job: mockJob,
-        },
-      }).$mount();
+      component = mountComponent(JobComponent, { job: mockJob });
 
       Vue.nextTick(() => {
         const link = component.$el.querySelector('a');
@@ -56,23 +59,23 @@ describe('pipeline graph job component', () => {
 
   describe('name without link', () => {
     it('it should render status and name', () => {
-      const component = new JobComponent({
-        propsData: {
-          job: {
-            id: 4256,
-            name: 'test',
-            status: {
-              icon: 'icon_status_success',
-              text: 'passed',
-              label: 'passed',
-              group: 'success',
-              details_path: '/root/ci-mock/builds/4256',
-            },
+      component = mountComponent(JobComponent, {
+        job: {
+          id: 4257,
+          name: 'test',
+          status: {
+            icon: 'icon_status_success',
+            text: 'passed',
+            label: 'passed',
+            group: 'success',
+            details_path: '/root/ci-mock/builds/4257',
+            has_details: false,
           },
         },
-      }).$mount();
+      });
 
       expect(component.$el.querySelector('.js-status-icon-success')).toBeDefined();
+      expect(component.$el.querySelector('a')).toBeNull();
 
       expect(
         component.$el.querySelector('.ci-status-text').textContent.trim(),
@@ -82,11 +85,7 @@ describe('pipeline graph job component', () => {
 
   describe('action icon', () => {
     it('it should render the action icon', () => {
-      const component = new JobComponent({
-        propsData: {
-          job: mockJob,
-        },
-      }).$mount();
+      component = mountComponent(JobComponent, { job: mockJob });
 
       expect(component.$el.querySelector('a.ci-action-icon-container')).toBeDefined();
       expect(component.$el.querySelector('i.ci-action-icon-wrapper')).toBeDefined();
@@ -95,27 +94,54 @@ describe('pipeline graph job component', () => {
 
   describe('dropdown', () => {
     it('should render the dropdown action icon', () => {
-      const component = new JobComponent({
-        propsData: {
-          job: mockJob,
-          isDropdown: true,
-        },
-      }).$mount();
+      component = mountComponent(JobComponent, {
+        job: mockJob,
+        isDropdown: true,
+      });
 
       expect(component.$el.querySelector('a.ci-action-icon-wrapper')).toBeDefined();
     });
   });
 
   it('should render provided class name', () => {
-    const component = new JobComponent({
-      propsData: {
-        job: mockJob,
-        cssClassJobName: 'css-class-job-name',
-      },
-    }).$mount();
+    component = mountComponent(JobComponent, {
+      job: mockJob,
+      cssClassJobName: 'css-class-job-name',
+    });
 
     expect(
       component.$el.querySelector('a').classList.contains('css-class-job-name'),
     ).toBe(true);
+  });
+
+  describe('status label', () => {
+    it('should not render status label when it is not provided', () => {
+      component = mountComponent(JobComponent, {
+        job: {
+          id: 4258,
+          name: 'test',
+          status: {
+            icon: 'icon_status_success',
+          },
+        },
+      });
+
+      expect(component.$el.querySelector('.js-job-component-tooltip').getAttribute('data-original-title')).toEqual('test');
+    });
+
+    it('should not render status label when it is  provided', () => {
+      component = mountComponent(JobComponent, {
+        job: {
+          id: 4259,
+          name: 'test',
+          status: {
+            icon: 'icon_status_success',
+            label: 'success',
+          },
+        },
+      });
+
+      expect(component.$el.querySelector('.js-job-component-tooltip').getAttribute('data-original-title')).toEqual('test - success');
+    });
   });
 });

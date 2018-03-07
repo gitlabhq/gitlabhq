@@ -1,32 +1,47 @@
 import Vue from 'vue';
-import autoMergeFailedComponent from '~/vue_merge_request_widget/components/states/mr_widget_auto_merge_failed';
-
-const mergeError = 'This is the merge error';
+import autoMergeFailedComponent from '~/vue_merge_request_widget/components/states/mr_widget_auto_merge_failed.vue';
+import eventHub from '~/vue_merge_request_widget/event_hub';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('MRWidgetAutoMergeFailed', () => {
-  describe('props', () => {
-    it('should have props', () => {
-      const mrProp = autoMergeFailedComponent.props.mr;
+  let vm;
+  const mergeError = 'This is the merge error';
 
-      expect(mrProp.type instanceof Object).toBeTruthy();
-      expect(mrProp.required).toBeTruthy();
+  beforeEach(() => {
+    const Component = Vue.extend(autoMergeFailedComponent);
+    vm = mountComponent(Component, {
+      mr: { mergeError },
     });
   });
 
-  describe('template', () => {
-    const Component = Vue.extend(autoMergeFailedComponent);
-    const vm = new Component({
-      el: document.createElement('div'),
-      propsData: {
-        mr: { mergeError },
-      },
-    });
+  afterEach(() => {
+    vm.$destroy();
+  });
 
-    it('should have correct elements', () => {
-      expect(vm.$el.classList.contains('mr-widget-body')).toBeTruthy();
-      expect(vm.$el.querySelector('button').getAttribute('disabled')).toBeFalsy();
-      expect(vm.$el.innerText).toContain('This merge request failed to be merged automatically');
-      expect(vm.$el.innerText).toContain(mergeError);
+  it('renders failed message', () => {
+    expect(vm.$el.textContent).toContain('This merge request failed to be merged automatically');
+  });
+
+  it('renders merge error provided', () => {
+    expect(vm.$el.innerText).toContain(mergeError);
+  });
+
+  it('render refresh button', () => {
+    expect(vm.$el.querySelector('button').textContent.trim()).toEqual('Refresh');
+  });
+
+  it('emits event and shows loading icon when button is clicked', (done) => {
+    spyOn(eventHub, '$emit');
+    vm.$el.querySelector('button').click();
+
+    expect(eventHub.$emit.calls.argsFor(0)[0]).toEqual('MRWidgetUpdateRequested');
+
+    Vue.nextTick(() => {
+      expect(vm.$el.querySelector('button').getAttribute('disabled')).toEqual('disabled');
+      expect(
+        vm.$el.querySelector('button i').classList,
+      ).toContain('fa-spinner');
+      done();
     });
   });
 });

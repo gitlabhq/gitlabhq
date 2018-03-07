@@ -30,7 +30,16 @@ immediately block all access.
 >**Note**: GitLab EE supports a configurable sync time, with a default
 of one hour.
 
+## Git password authentication
+
+LDAP-enabled users can always authenticate with Git using their GitLab username
+or email and LDAP password, even if password authentication for Git is disabled
+in the application settings.
+
 ## Configuration
+
+For a complete guide on configuring LDAP with GitLab Community Edition, please check
+the admin guide [How to configure LDAP with GitLab CE](how_to_configure_ldap_gitlab_ce/index.md).
 
 To enable LDAP integration you need to add your LDAP server settings in
 `/etc/gitlab/gitlab.rb` or `/home/git/gitlab/config/gitlab.yml`.
@@ -172,6 +181,10 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
     first_name: 'givenName'
     last_name:  'sn'
 
+  # If lowercase_usernames is enabled, GitLab will lower case the username.
+  lowercase_usernames: false
+
+
   ## EE only
 
   # Base where we can search for groups
@@ -281,17 +294,52 @@ In other words, if an existing GitLab user wants to enable LDAP sign-in for
 themselves, they should check that their GitLab email address matches their
 LDAP email address, and then sign into GitLab via their LDAP credentials.
 
+## Enabling LDAP username lowercase
+
+Some LDAP servers, depending on their configurations, can return uppercase usernames. This can lead to several confusing issues like, for example, creating links or namespaces with uppercase names.
+
+GitLab can automatically lowercase usernames provided by the LDAP server by enabling
+the configuration option `lowercase_usernames`. By default, this configuration option is `false`.
+
+**Omnibus configuration**
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+  ```ruby
+  gitlab_rails['ldap_servers'] = YAML.load <<-EOS
+  main:
+    # snip...
+    lowercase_usernames: true
+  EOS
+  ```
+
+2. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+
+**Source configuration**
+
+1. Edit `config/gitlab.yaml`:
+
+  ```yaml
+  production:
+    ldap:
+      servers:
+        main:
+          # snip...
+          lowercase_usernames: true
+  ```
+2. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+
 ## Encryption
 
 ### TLS Server Authentication
 
 There are two encryption methods, `simple_tls` and `start_tls`.
 
-For either encryption method, if setting `validate_certificates: false`, TLS
+For either encryption method, if setting `verify_certificates: false`, TLS
 encryption is established with the LDAP server before any LDAP-protocol data is
 exchanged but no validation of the LDAP server's SSL certificate is performed.
 
->**Note**: Before GitLab 9.5, `validate_certificates: false` is the default if
+>**Note**: Before GitLab 9.5, `verify_certificates: false` is the default if
 unspecified.
 
 ## Limitations

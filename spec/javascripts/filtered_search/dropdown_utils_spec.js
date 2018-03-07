@@ -1,6 +1,6 @@
-import '~/filtered_search/dropdown_utils';
-import '~/filtered_search/filtered_search_tokenizer';
-import '~/filtered_search/filtered_search_dropdown_manager';
+import DropdownUtils from '~/filtered_search/dropdown_utils';
+import FilteredSearchDropdownManager from '~/filtered_search/filtered_search_dropdown_manager';
+import FilteredSearchTokenKeys from '~/filtered_search/filtered_search_token_keys';
 import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
 
 describe('Dropdown Utils', () => {
@@ -9,25 +9,25 @@ describe('Dropdown Utils', () => {
 
   describe('getEscapedText', () => {
     it('should return same word when it has no space', () => {
-      const escaped = gl.DropdownUtils.getEscapedText('textWithoutSpace');
+      const escaped = DropdownUtils.getEscapedText('textWithoutSpace');
       expect(escaped).toBe('textWithoutSpace');
     });
 
     it('should escape with double quotes', () => {
-      let escaped = gl.DropdownUtils.getEscapedText('text with space');
+      let escaped = DropdownUtils.getEscapedText('text with space');
       expect(escaped).toBe('"text with space"');
 
-      escaped = gl.DropdownUtils.getEscapedText('won\'t fix');
+      escaped = DropdownUtils.getEscapedText('won\'t fix');
       expect(escaped).toBe('"won\'t fix"');
     });
 
     it('should escape with single quotes', () => {
-      const escaped = gl.DropdownUtils.getEscapedText('won"t fix');
+      const escaped = DropdownUtils.getEscapedText('won"t fix');
       expect(escaped).toBe('\'won"t fix\'');
     });
 
     it('should escape with single quotes by default', () => {
-      const escaped = gl.DropdownUtils.getEscapedText('won"t\' fix');
+      const escaped = DropdownUtils.getEscapedText('won"t\' fix');
       expect(escaped).toBe('\'won"t\' fix\'');
     });
   });
@@ -49,14 +49,14 @@ describe('Dropdown Utils', () => {
     it('should filter without symbol', () => {
       input.value = 'roo';
 
-      const updatedItem = gl.DropdownUtils.filterWithSymbol('@', input, item);
+      const updatedItem = DropdownUtils.filterWithSymbol('@', input, item);
       expect(updatedItem.droplab_hidden).toBe(false);
     });
 
     it('should filter with symbol', () => {
       input.value = '@roo';
 
-      const updatedItem = gl.DropdownUtils.filterWithSymbol('@', input, item);
+      const updatedItem = DropdownUtils.filterWithSymbol('@', input, item);
       expect(updatedItem.droplab_hidden).toBe(false);
     });
 
@@ -68,56 +68,56 @@ describe('Dropdown Utils', () => {
       it('should filter with double quote', () => {
         input.value = '"';
 
-        const updatedItem = gl.DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
+        const updatedItem = DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
         expect(updatedItem.droplab_hidden).toBe(false);
       });
 
       it('should filter with double quote and symbol', () => {
         input.value = '~"';
 
-        const updatedItem = gl.DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
+        const updatedItem = DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
         expect(updatedItem.droplab_hidden).toBe(false);
       });
 
       it('should filter with double quote and multiple words', () => {
         input.value = '"community con';
 
-        const updatedItem = gl.DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
+        const updatedItem = DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
         expect(updatedItem.droplab_hidden).toBe(false);
       });
 
       it('should filter with double quote, symbol and multiple words', () => {
         input.value = '~"community con';
 
-        const updatedItem = gl.DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
+        const updatedItem = DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
         expect(updatedItem.droplab_hidden).toBe(false);
       });
 
       it('should filter with single quote', () => {
         input.value = '\'';
 
-        const updatedItem = gl.DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
+        const updatedItem = DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
         expect(updatedItem.droplab_hidden).toBe(false);
       });
 
       it('should filter with single quote and symbol', () => {
         input.value = '~\'';
 
-        const updatedItem = gl.DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
+        const updatedItem = DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
         expect(updatedItem.droplab_hidden).toBe(false);
       });
 
       it('should filter with single quote and multiple words', () => {
         input.value = '\'community con';
 
-        const updatedItem = gl.DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
+        const updatedItem = DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
         expect(updatedItem.droplab_hidden).toBe(false);
       });
 
       it('should filter with single quote, symbol and multiple words', () => {
         input.value = '~\'community con';
 
-        const updatedItem = gl.DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
+        const updatedItem = DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
         expect(updatedItem.droplab_hidden).toBe(false);
       });
     });
@@ -137,7 +137,7 @@ describe('Dropdown Utils', () => {
       `);
 
       input = document.getElementById('test');
-      allowedKeys = gl.FilteredSearchTokenKeys.getKeys();
+      allowedKeys = FilteredSearchTokenKeys.getKeys();
     });
 
     function config() {
@@ -149,26 +149,26 @@ describe('Dropdown Utils', () => {
 
     it('should filter', () => {
       input.value = 'l';
-      let updatedItem = gl.DropdownUtils.filterHint(config(), {
+      let updatedItem = DropdownUtils.filterHint(config(), {
         hint: 'label',
       });
       expect(updatedItem.droplab_hidden).toBe(false);
 
       input.value = 'o';
-      updatedItem = gl.DropdownUtils.filterHint(config(), {
+      updatedItem = DropdownUtils.filterHint(config(), {
         hint: 'label',
       });
       expect(updatedItem.droplab_hidden).toBe(true);
     });
 
     it('should return droplab_hidden false when item has no hint', () => {
-      const updatedItem = gl.DropdownUtils.filterHint(config(), {}, '');
+      const updatedItem = DropdownUtils.filterHint(config(), {}, '');
       expect(updatedItem.droplab_hidden).toBe(false);
     });
 
     it('should allow multiple if item.type is array', () => {
       input.value = 'label:~first la';
-      const updatedItem = gl.DropdownUtils.filterHint(config(), {
+      const updatedItem = DropdownUtils.filterHint(config(), {
         hint: 'label',
         type: 'array',
       });
@@ -177,12 +177,12 @@ describe('Dropdown Utils', () => {
 
     it('should prevent multiple if item.type is not array', () => {
       input.value = 'milestone:~first mile';
-      let updatedItem = gl.DropdownUtils.filterHint(config(), {
+      let updatedItem = DropdownUtils.filterHint(config(), {
         hint: 'milestone',
       });
       expect(updatedItem.droplab_hidden).toBe(true);
 
-      updatedItem = gl.DropdownUtils.filterHint(config(), {
+      updatedItem = DropdownUtils.filterHint(config(), {
         hint: 'milestone',
         type: 'string',
       });
@@ -204,7 +204,7 @@ describe('Dropdown Utils', () => {
         color: '#000000',
       };
 
-      const updated = gl.DropdownUtils.mergeDuplicateLabels(dataMap, newLabel);
+      const updated = DropdownUtils.mergeDuplicateLabels(dataMap, newLabel);
       expect(updated[newLabel.title]).toEqual(newLabel);
     });
 
@@ -214,36 +214,36 @@ describe('Dropdown Utils', () => {
         color: '#000000',
       };
 
-      const updated = gl.DropdownUtils.mergeDuplicateLabels(dataMap, duplicate);
+      const updated = DropdownUtils.mergeDuplicateLabels(dataMap, duplicate);
       expect(updated.label.multipleColors).toEqual([dataMap.label.color, duplicate.color]);
     });
   });
 
   describe('duplicateLabelColor', () => {
     it('should linear-gradient 2 colors', () => {
-      const gradient = gl.DropdownUtils.duplicateLabelColor(['#FFFFFF', '#000000']);
+      const gradient = DropdownUtils.duplicateLabelColor(['#FFFFFF', '#000000']);
       expect(gradient).toEqual('linear-gradient(#FFFFFF 0%, #FFFFFF 50%, #000000 50%, #000000 100%)');
     });
 
     it('should linear-gradient 3 colors', () => {
-      const gradient = gl.DropdownUtils.duplicateLabelColor(['#FFFFFF', '#000000', '#333333']);
+      const gradient = DropdownUtils.duplicateLabelColor(['#FFFFFF', '#000000', '#333333']);
       expect(gradient).toEqual('linear-gradient(#FFFFFF 0%, #FFFFFF 33%, #000000 33%, #000000 66%, #333333 66%, #333333 100%)');
     });
 
     it('should linear-gradient 4 colors', () => {
-      const gradient = gl.DropdownUtils.duplicateLabelColor(['#FFFFFF', '#000000', '#333333', '#DDDDDD']);
+      const gradient = DropdownUtils.duplicateLabelColor(['#FFFFFF', '#000000', '#333333', '#DDDDDD']);
       expect(gradient).toEqual('linear-gradient(#FFFFFF 0%, #FFFFFF 25%, #000000 25%, #000000 50%, #333333 50%, #333333 75%, #DDDDDD 75%, #DDDDDD 100%)');
     });
 
     it('should not linear-gradient more than 4 colors', () => {
-      const gradient = gl.DropdownUtils.duplicateLabelColor(['#FFFFFF', '#000000', '#333333', '#DDDDDD', '#EEEEEE']);
+      const gradient = DropdownUtils.duplicateLabelColor(['#FFFFFF', '#000000', '#333333', '#DDDDDD', '#EEEEEE']);
       expect(gradient.indexOf('#EEEEEE') === -1).toEqual(true);
     });
   });
 
   describe('duplicateLabelPreprocessing', () => {
     it('should set preprocessed to true', () => {
-      const results = gl.DropdownUtils.duplicateLabelPreprocessing([]);
+      const results = DropdownUtils.duplicateLabelPreprocessing([]);
       expect(results.preprocessed).toEqual(true);
     });
 
@@ -255,7 +255,7 @@ describe('Dropdown Utils', () => {
         title: 'label2',
         color: '#000000',
       }];
-      const results = gl.DropdownUtils.duplicateLabelPreprocessing(data);
+      const results = DropdownUtils.duplicateLabelPreprocessing(data);
 
       expect(results.length).toEqual(2);
       expect(results[0]).toEqual(data[0]);
@@ -270,14 +270,14 @@ describe('Dropdown Utils', () => {
         title: 'label',
         color: '#000000',
       }];
-      const results = gl.DropdownUtils.duplicateLabelPreprocessing(data);
+      const results = DropdownUtils.duplicateLabelPreprocessing(data);
 
       it('should merge duplicate labels', () => {
         expect(results.length).toEqual(1);
       });
 
       it('should convert multiple colored labels into linear-gradient', () => {
-        expect(results[0].color).toEqual(gl.DropdownUtils.duplicateLabelColor(['#FFFFFF', '#000000']));
+        expect(results[0].color).toEqual(DropdownUtils.duplicateLabelColor(['#FFFFFF', '#000000']));
       });
 
       it('should set multiple colored label text color to black', () => {
@@ -288,7 +288,7 @@ describe('Dropdown Utils', () => {
 
   describe('setDataValueIfSelected', () => {
     beforeEach(() => {
-      spyOn(gl.FilteredSearchDropdownManager, 'addWordToInput')
+      spyOn(FilteredSearchDropdownManager, 'addWordToInput')
         .and.callFake(() => {});
     });
 
@@ -297,8 +297,8 @@ describe('Dropdown Utils', () => {
         getAttribute: () => 'value',
       };
 
-      gl.DropdownUtils.setDataValueIfSelected(null, selected);
-      expect(gl.FilteredSearchDropdownManager.addWordToInput.calls.count()).toEqual(1);
+      DropdownUtils.setDataValueIfSelected(null, selected);
+      expect(FilteredSearchDropdownManager.addWordToInput.calls.count()).toEqual(1);
     });
 
     it('returns true when dataValue exists', () => {
@@ -306,7 +306,7 @@ describe('Dropdown Utils', () => {
         getAttribute: () => 'value',
       };
 
-      const result = gl.DropdownUtils.setDataValueIfSelected(null, selected);
+      const result = DropdownUtils.setDataValueIfSelected(null, selected);
       expect(result).toBe(true);
     });
 
@@ -315,7 +315,7 @@ describe('Dropdown Utils', () => {
         getAttribute: () => null,
       };
 
-      const result = gl.DropdownUtils.setDataValueIfSelected(null, selected);
+      const result = DropdownUtils.setDataValueIfSelected(null, selected);
       expect(result).toBe(false);
     });
   });
@@ -325,7 +325,7 @@ describe('Dropdown Utils', () => {
       const value = 'label:none ';
 
       it('should return selectionStart when cursor is at the trailing space', () => {
-        const { left, right } = gl.DropdownUtils.getInputSelectionPosition({
+        const { left, right } = DropdownUtils.getInputSelectionPosition({
           selectionStart: 11,
           value,
         });
@@ -335,7 +335,7 @@ describe('Dropdown Utils', () => {
       });
 
       it('should return input when cursor is at the start of input', () => {
-        const { left, right } = gl.DropdownUtils.getInputSelectionPosition({
+        const { left, right } = DropdownUtils.getInputSelectionPosition({
           selectionStart: 0,
           value,
         });
@@ -345,7 +345,7 @@ describe('Dropdown Utils', () => {
       });
 
       it('should return input when cursor is at the middle of input', () => {
-        const { left, right } = gl.DropdownUtils.getInputSelectionPosition({
+        const { left, right } = DropdownUtils.getInputSelectionPosition({
           selectionStart: 7,
           value,
         });
@@ -355,7 +355,7 @@ describe('Dropdown Utils', () => {
       });
 
       it('should return input when cursor is at the end of input', () => {
-        const { left, right } = gl.DropdownUtils.getInputSelectionPosition({
+        const { left, right } = DropdownUtils.getInputSelectionPosition({
           selectionStart: 10,
           value,
         });
@@ -369,7 +369,7 @@ describe('Dropdown Utils', () => {
       const value = 'label:~"Community Contribution"';
 
       it('should return input when cursor is after the first word', () => {
-        const { left, right } = gl.DropdownUtils.getInputSelectionPosition({
+        const { left, right } = DropdownUtils.getInputSelectionPosition({
           selectionStart: 17,
           value,
         });
@@ -379,7 +379,7 @@ describe('Dropdown Utils', () => {
       });
 
       it('should return input when cursor is before the second word', () => {
-        const { left, right } = gl.DropdownUtils.getInputSelectionPosition({
+        const { left, right } = DropdownUtils.getInputSelectionPosition({
           selectionStart: 18,
           value,
         });
@@ -393,7 +393,7 @@ describe('Dropdown Utils', () => {
       const value = 'label:~"Community Contribution';
 
       it('should return entire input when cursor is at the start of input', () => {
-        const { left, right } = gl.DropdownUtils.getInputSelectionPosition({
+        const { left, right } = DropdownUtils.getInputSelectionPosition({
           selectionStart: 0,
           value,
         });
@@ -403,7 +403,7 @@ describe('Dropdown Utils', () => {
       });
 
       it('should return entire input when cursor is at the end of input', () => {
-        const { left, right } = gl.DropdownUtils.getInputSelectionPosition({
+        const { left, right } = DropdownUtils.getInputSelectionPosition({
           selectionStart: 30,
           value,
         });
@@ -433,7 +433,7 @@ describe('Dropdown Utils', () => {
       const valueContainer = authorToken.querySelector('.value-container');
       valueContainer.dataset.originalValue = originalValue;
 
-      const searchQuery = gl.DropdownUtils.getSearchQuery();
+      const searchQuery = DropdownUtils.getSearchQuery();
 
       expect(searchQuery).toBe(' search term author:original dance');
     });

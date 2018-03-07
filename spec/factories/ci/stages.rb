@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :ci_stage, class: Ci::LegacyStage do
     skip_create
 

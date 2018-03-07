@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :oauth_access_token do
     resource_owner
     application

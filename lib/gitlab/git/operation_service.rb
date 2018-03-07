@@ -3,9 +3,17 @@ module Gitlab
     class OperationService
       include Gitlab::Git::Popen
 
-      WithBranchResult = Struct.new(:newrev, :repo_created, :branch_created) do
+      BranchUpdate = Struct.new(:newrev, :repo_created, :branch_created) do
         alias_method :repo_created?, :repo_created
         alias_method :branch_created?, :branch_created
+
+        def self.from_gitaly(branch_update)
+          new(
+            branch_update.commit_id,
+            branch_update.repo_created,
+            branch_update.branch_created
+          )
+        end
       end
 
       attr_reader :user, :repository
@@ -64,7 +72,7 @@ module Gitlab
 
       # Whenever `start_branch_name` is passed, if `branch_name` doesn't exist,
       # it would be created from `start_branch_name`.
-      # If `start_project` is passed, and the branch doesn't exist,
+      # If `start_repository` is passed, and the branch doesn't exist,
       # it would try to find the commits from it instead of current repository.
       def with_branch(
         branch_name,
@@ -72,15 +80,13 @@ module Gitlab
         start_repository: repository,
         &block)
 
-        # Refactoring aid
-        unless start_repository.is_a?(Gitlab::Git::Repository)
-          raise "expected a Gitlab::Git::Repository, got #{start_repository}"
-        end
+        Gitlab::Git.check_namespace!(start_repository)
+        start_repository = RemoteRepository.new(start_repository) unless start_repository.is_a?(RemoteRepository)
 
-        start_branch_name = nil if start_repository.empty_repo?
+        start_branch_name = nil if start_repository.empty?
 
         if start_branch_name && !start_repository.branch_exists?(start_branch_name)
-          raise ArgumentError, "Cannot find branch #{start_branch_name} in #{start_repository.full_path}"
+          raise ArgumentError, "Cannot find branch #{start_branch_name} in #{start_repository.relative_path}"
         end
 
         update_branch_with_hooks(branch_name) do
@@ -89,6 +95,11 @@ module Gitlab
             start_branch_name || branch_name,
             &block)
         end
+      end
+
+      def update_branch(branch_name, newrev, oldrev)
+        ref = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
+        update_ref_in_hooks(ref, newrev, oldrev)
       end
 
       private
@@ -112,7 +123,7 @@ module Gitlab
         ref = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
         update_ref_in_hooks(ref, newrev, oldrev)
 
-        WithBranchResult.new(newrev, was_empty, was_empty || Gitlab::Git.blank_ref?(oldrev))
+        BranchUpdate.new(newrev, was_empty, was_empty || Gitlab::Git.blank_ref?(oldrev))
       end
 
       def find_oldrev_from_branch(newrev, branch)
@@ -120,7 +131,10 @@ module Gitlab
 
         oldrev = branch.target
 
-        if oldrev == repository.rugged.merge_base(newrev, branch.target)
+        merge_base = repository.merge_base(newrev, branch.target)
+        raise Gitlab::Git::Repository::InvalidRef unless merge_base
+
+        if oldrev == merge_base
           oldrev
         else
           raise Gitlab::Git::CommitError.new('Branch diverged')
@@ -152,13 +166,15 @@ module Gitlab
         # (and have!) accidentally reset the ref to an earlier state, clobbering
         # commits. See also https://github.com/libgit2/libgit2/issues/1534.
         command = %W[#{Gitlab.config.git.bin_path} update-ref --stdin -z]
-        _, status = popen(
+
+        output, status = popen(
           command,
           repository.path) do |stdin|
           stdin.write("update #{ref}\x00#{newrev}\x00#{oldrev}\x00")
         end
 
         unless status.zero?
+          Gitlab::GitLogger.error("'git update-ref' in #{repository.path}: #{output}")
           raise Gitlab::Git::CommitError.new(
             "Could not update branch #{Gitlab::Git.branch_name(ref)}." \
             " Please refresh and try again.")

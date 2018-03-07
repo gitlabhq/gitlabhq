@@ -1,16 +1,15 @@
 class PrometheusService < MonitoringService
-  include ReactiveService
-
-  self.reactive_cache_lease_timeout = 30.seconds
-  self.reactive_cache_refresh_interval = 30.seconds
-  self.reactive_cache_lifetime = 1.minute
+  include PrometheusAdapter
 
   #  Access to prometheus is directly through the API
   prop_accessor :api_url
+  boolean_accessor :manual_configuration
 
-  with_options presence: true, if: :activated? do
+  with_options presence: true, if: :manual_configuration? do
     validates :api_url, url: true
   end
+
+  before_save :synchronize_service_state
 
   after_save :clear_reactive_cache!
 
@@ -20,12 +19,20 @@ class PrometheusService < MonitoringService
     end
   end
 
+  def show_active_box?
+    false
+  end
+
+  def editable?
+    manual_configuration? || !prometheus_installed?
+  end
+
   def title
     'Prometheus'
   end
 
   def description
-    'Prometheus monitoring'
+    s_('PrometheusService|Time-series monitoring service')
   end
 
   def self.to_param
@@ -33,13 +40,21 @@ class PrometheusService < MonitoringService
   end
 
   def fields
+    return [] unless editable?
+
     [
+      {
+        type: 'checkbox',
+        name: 'manual_configuration',
+        title: s_('PrometheusService|Active'),
+        required: true
+      },
       {
         type: 'text',
         name: 'api_url',
         title: 'API URL',
-        placeholder: 'Prometheus API Base URL, like http://prometheus.example.com/',
-        help: 'By default, Prometheus listens on ‘http://localhost:9090’. It’s not recommended to change the default address and port as this might affect or conflict with other services running on the GitLab server.',
+        placeholder: s_('PrometheusService|Prometheus API Base URL, like http://prometheus.example.com/'),
+        help: s_('PrometheusService|By default, Prometheus listens on ‘http://localhost:9090’. It’s not recommended to change the default address and port as this might affect or conflict with other services running on the GitLab server.'),
         required: true
       }
     ]
@@ -47,56 +62,29 @@ class PrometheusService < MonitoringService
 
   # Check we can connect to the Prometheus API
   def test(*args)
-    client.ping
+    Gitlab::PrometheusClient.new(prometheus_client).ping
 
     { success: true, result: 'Checked API endpoint' }
-  rescue Gitlab::PrometheusError => err
+  rescue Gitlab::PrometheusClient::Error => err
     { success: false, result: err }
   end
 
-  def environment_metrics(environment)
-    with_reactive_cache(Gitlab::Prometheus::Queries::EnvironmentQuery.name, environment.id, &method(:rename_data_to_metrics))
+  def prometheus_client
+    RestClient::Resource.new(api_url) if api_url && manual_configuration? && active?
   end
 
-  def deployment_metrics(deployment)
-    metrics = with_reactive_cache(Gitlab::Prometheus::Queries::DeploymentQuery.name, deployment.id, &method(:rename_data_to_metrics))
-    metrics&.merge(deployment_time: deployment.created_at.to_i) || {}
-  end
+  def prometheus_installed?
+    return false if template?
+    return false unless project
 
-  def additional_environment_metrics(environment)
-    with_reactive_cache(Gitlab::Prometheus::Queries::AdditionalMetricsEnvironmentQuery.name, environment.id, &:itself)
-  end
-
-  def additional_deployment_metrics(deployment)
-    with_reactive_cache(Gitlab::Prometheus::Queries::AdditionalMetricsDeploymentQuery.name, deployment.id, &:itself)
-  end
-
-  def matched_metrics
-    with_reactive_cache(Gitlab::Prometheus::Queries::MatchedMetricsQuery.name, &:itself)
-  end
-
-  # Cache metrics for specific environment
-  def calculate_reactive_cache(query_class_name, *args)
-    return unless active? && project && !project.pending_delete?
-
-    data = Kernel.const_get(query_class_name).new(client).query(*args)
-    {
-      success: true,
-      data: data,
-      last_update: Time.now.utc
-    }
-  rescue Gitlab::PrometheusError => err
-    { success: false, result: err.message }
-  end
-
-  def client
-    @prometheus ||= Gitlab::PrometheusClient.new(api_url: api_url)
+    project.clusters.enabled.any? { |cluster| cluster.application_prometheus&.installed? }
   end
 
   private
 
-  def rename_data_to_metrics(metrics)
-    metrics[:metrics] = metrics.delete :data
-    metrics
+  def synchronize_service_state
+    self.active = prometheus_installed? || manual_configuration?
+
+    true
   end
 end

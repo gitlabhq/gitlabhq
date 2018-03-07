@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Protected Tags', js: true do
+feature 'Protected Tags', :js do
   let(:user) { create(:user, :admin) }
   let(:project) { create(:project, :repository) }
 

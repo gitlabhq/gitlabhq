@@ -1,16 +1,27 @@
 module Ci
   class Build < CommitStatus
+    prepend ArtifactMigratable
     include TokenAuthenticatable
     include AfterCommitQueue
     include Presentable
     include Importable
 
+    MissingDependenciesError = Class.new(StandardError)
+
+    belongs_to :project, inverse_of: :builds
     belongs_to :runner
     belongs_to :trigger_request
     belongs_to :erased_by, class_name: 'User'
 
     has_many :deployments, as: :deployable
+
     has_one :last_deployment, -> { order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
+    has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
+
+    has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :job_id, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+    has_one :job_artifacts_archive, -> { where(file_type: Ci::JobArtifact.file_types[:archive]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
+    has_one :job_artifacts_metadata, -> { where(file_type: Ci::JobArtifact.file_types[:metadata]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
+    has_one :job_artifacts_trace, -> { where(file_type: Ci::JobArtifact.file_types[:trace]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
 
     # The "environment" field for builds is a String, and is the unexpanded name
     def persisted_environment
@@ -30,15 +41,37 @@ module Ci
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
-    scope :with_artifacts, ->() { where.not(artifacts_file: [nil, '']) }
+    scope :with_artifacts, ->() do
+      where('(artifacts_file IS NOT NULL AND artifacts_file <> ?) OR EXISTS (?)',
+        '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id'))
+    end
     scope :with_artifacts_not_expired, ->() { with_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
     scope :ref_protected, -> { where(protected: true) }
 
-    mount_uploader :artifacts_file, ArtifactUploader
-    mount_uploader :artifacts_metadata, ArtifactUploader
+    scope :matches_tag_ids, -> (tag_ids) do
+      matcher = ::ActsAsTaggableOn::Tagging
+        .where(taggable_type: CommitStatus)
+        .where(context: 'tags')
+        .where('taggable_id = ci_builds.id')
+        .where.not(tag_id: tag_ids).select('1')
+
+      where("NOT EXISTS (?)", matcher)
+    end
+
+    scope :with_any_tags, -> do
+      matcher = ::ActsAsTaggableOn::Tagging
+        .where(taggable_type: CommitStatus)
+        .where(context: 'tags')
+        .where('taggable_id = ci_builds.id').select('1')
+
+      where("EXISTS (?)", matcher)
+    end
+
+    mount_uploader :legacy_artifacts_file, LegacyArtifactUploader, mount_on: :artifacts_file
+    mount_uploader :legacy_artifacts_metadata, LegacyArtifactUploader, mount_on: :artifacts_metadata
 
     acts_as_taggable
 
@@ -48,7 +81,7 @@ module Ci
     before_save :ensure_token
     before_destroy { unscoped_project }
 
-    after_create do |build|
+    after_create unless: :importing? do |build|
       run_after_commit { BuildHooksWorker.perform_async(build.id) }
     end
 
@@ -103,11 +136,16 @@ module Ci
       end
 
       before_transition any => [:failed] do |build|
+        next unless build.project
         next if build.retries_max.zero?
 
         if build.retries_count < build.retries_max
           Ci::Build.retry(build, build.user)
         end
+      end
+
+      before_transition any => [:running] do |build|
+        build.validates_dependencies! unless Feature.enabled?('ci_disable_validates_dependencies')
       end
     end
 
@@ -191,6 +229,10 @@ module Ci
       project.build_timeout
     end
 
+    def triggered_by?(current_user)
+      user == current_user
+    end
+
     # A slugified version of the build ref, suitable for inclusion in URLs and
     # domain names. Rules:
     #
@@ -229,12 +271,16 @@ module Ci
       variables
     end
 
+    def features
+      { trace_sections: true }
+    end
+
     def merge_request
       return @merge_request if defined?(@merge_request)
 
       @merge_request ||=
         begin
-          merge_requests = MergeRequest.includes(:merge_request_diff)
+          merge_requests = MergeRequest.includes(:latest_merge_request_diff)
             .where(source_branch: ref,
                    source_project: pipeline.project)
             .reorder(iid: :desc)
@@ -247,7 +293,7 @@ module Ci
 
     def repo_url
       auth = "gitlab-ci-token:#{ensure_token!}@"
-      project.http_url_to_repo.sub(/^https?:\/\//) do |prefix|
+      project.http_url_to_repo.sub(%r{^https?://}) do |prefix|
         prefix + auth
       end
     end
@@ -259,6 +305,10 @@ module Ci
     def update_coverage
       coverage = trace.extract_coverage(coverage_regex)
       update_attributes(coverage: coverage) if coverage.present?
+    end
+
+    def parse_trace_sections!
+      ExtractSectionsFromBuildTraceService.new(project, user).execute(self)
     end
 
     def trace
@@ -304,19 +354,12 @@ module Ci
 
     def execute_hooks
       return unless project
+
       build_data = Gitlab::DataBuilder::Build.build(self)
       project.execute_hooks(build_data.dup, :job_hooks)
       project.execute_services(build_data.dup, :job_hooks)
       PagesService.new(build_data).execute
       project.running_or_pending_build_count(force: true)
-    end
-
-    def artifacts?
-      !artifacts_expired? && artifacts_file.exists?
-    end
-
-    def artifacts_metadata?
-      artifacts? && artifacts_metadata.exists?
     end
 
     def artifacts_metadata_entry(path, **options)
@@ -371,6 +414,7 @@ module Ci
 
     def keep_artifacts!
       self.update(artifacts_expire_at: nil)
+      self.job_artifacts.update_all(expire_at: nil)
     end
 
     def coverage_regex
@@ -419,7 +463,14 @@ module Ci
     end
 
     def cache
-      [options[:cache]]
+      cache = options[:cache]
+
+      if cache && project.jobs_cache_index
+        cache = cache.merge(
+          key: "#{cache[:key]}-#{project.jobs_cache_index}")
+      end
+
+      [cache]
     end
 
     def credentials
@@ -442,6 +493,19 @@ module Ci
       options[:dependencies]&.empty?
     end
 
+    def validates_dependencies!
+      dependencies.each do |dependency|
+        raise MissingDependenciesError unless dependency.valid_dependency?
+      end
+    end
+
+    def valid_dependency?
+      return false if artifacts_expired?
+      return false if erased?
+
+      true
+    end
+
     def hide_secrets(trace)
       return unless trace
 
@@ -458,11 +522,7 @@ module Ci
     private
 
     def update_artifacts_size
-      self.artifacts_size = if artifacts_file.exists?
-                              artifacts_file.size
-                            else
-                              nil
-                            end
+      self.artifacts_size = legacy_artifacts_file&.size
     end
 
     def erase_trace!
@@ -483,6 +543,7 @@ module Ci
       variables = [
         { key: 'CI', value: 'true', public: true },
         { key: 'GITLAB_CI', value: 'true', public: true },
+        { key: 'GITLAB_FEATURES', value: project.namespace.features.join(','), public: true },
         { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
         { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
         { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true },

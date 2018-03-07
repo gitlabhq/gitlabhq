@@ -1,19 +1,29 @@
 module Gitlab
   module Gpg
     class Commit
+      include Gitlab::Utils::StrongMemoize
+
       def initialize(commit)
         @commit = commit
 
-        @signature_text, @signed_text =
-          begin
-            Rugged::Commit.extract_signature(@commit.project.repository.rugged, @commit.sha)
-          rescue Rugged::OdbError
-            nil
-          end
+        repo = commit.project.repository.raw_repository
+        @signature_data = Gitlab::Git::Commit.extract_signature_lazily(repo, commit.sha || commit.id)
+      end
+
+      def signature_text
+        strong_memoize(:signature_text) do
+          @signature_data&.itself && @signature_data[0]
+        end
+      end
+
+      def signed_text
+        strong_memoize(:signed_text) do
+          @signature_data&.itself && @signature_data[1]
+        end
       end
 
       def has_signature?
-        !!(@signature_text && @signed_text)
+        !!(signature_text && signed_text)
       end
 
       def signature
@@ -43,7 +53,9 @@ module Gitlab
           # key belonging to the keyid.
           # This way we can add the key to the temporary keychain and extract
           # the proper signature.
-          gpg_key = GpgKey.find_by(primary_keyid: verified_signature.fingerprint)
+          # NOTE: the invoked method is #fingerprint but it's only returning
+          # 16 characters (the format used by keyid) instead of 40.
+          gpg_key = find_gpg_key(verified_signature.fingerprint)
 
           if gpg_key
             Gitlab::Gpg::CurrentKeyChain.add(gpg_key.key)
@@ -55,14 +67,16 @@ module Gitlab
       end
 
       def verified_signature
-        @verified_signature ||= GPGME::Crypto.new.verify(@signature_text, signed_text: @signed_text) do |verified_signature|
+        @verified_signature ||= GPGME::Crypto.new.verify(signature_text, signed_text: signed_text) do |verified_signature|
           break verified_signature
         end
       end
 
       def create_cached_signature!
         using_keychain do |gpg_key|
-          GpgSignature.create!(attributes(gpg_key))
+          signature = GpgSignature.new(attributes(gpg_key))
+          signature.save! unless Gitlab::Database.read_only?
+          signature
         end
       end
 
@@ -74,7 +88,7 @@ module Gitlab
           commit_sha: @commit.sha,
           project: @commit.project,
           gpg_key: gpg_key,
-          gpg_key_primary_keyid: gpg_key&.primary_keyid || verified_signature.fingerprint,
+          gpg_key_primary_keyid: gpg_key&.keyid || verified_signature.fingerprint,
           gpg_key_user_name: user_infos[:name],
           gpg_key_user_email: user_infos[:email],
           verification_status: verification_status
@@ -97,6 +111,10 @@ module Gitlab
 
       def user_infos(gpg_key)
         gpg_key&.verified_user_infos&.first || gpg_key&.user_infos&.first || {}
+      end
+
+      def find_gpg_key(keyid)
+        GpgKey.find_by(primary_keyid: keyid) || GpgKeySubkey.find_by(keyid: keyid)
       end
     end
   end

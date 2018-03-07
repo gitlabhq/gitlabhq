@@ -19,18 +19,57 @@ describe Banzai::ReferenceParser::IssueParser do
 
       it 'returns the nodes when the user can read the issue' do
         expect(Ability).to receive(:issues_readable_by_user)
-          .with([issue], user)
-          .and_return([issue])
+                             .with([issue], user)
+                             .and_return([issue])
 
         expect(subject.nodes_visible_to_user(user, [link])).to eq([link])
       end
 
       it 'returns an empty Array when the user can not read the issue' do
         expect(Ability).to receive(:issues_readable_by_user)
-          .with([issue], user)
-          .and_return([])
+                             .with([issue], user)
+                             .and_return([])
 
         expect(subject.nodes_visible_to_user(user, [link])).to eq([])
+      end
+
+      context 'when the user cannot read cross project' do
+        let(:issue) { create(:issue) }
+
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
+          allow(Ability).to receive(:allowed?).with(user, :read_cross_project, :global) { false }
+        end
+
+        it 'returns the nodes when the user can read the issue' do
+          expect(Ability).to receive(:allowed?)
+                               .with(user, :read_issue_iid, issue)
+                               .and_return(true)
+
+          expect(subject.nodes_visible_to_user(user, [link])).to eq([link])
+        end
+
+        it 'returns an empty Array when the user can not read the issue' do
+          expect(Ability).to receive(:allowed?)
+                               .with(user, :read_issue_iid, issue)
+                               .and_return(false)
+
+          expect(subject.nodes_visible_to_user(user, [link])).to eq([])
+        end
+
+        context 'when the issue is not cross project' do
+          let(:issue) { create(:issue, project: project) }
+
+          it 'does not check `can_read_reference` if the issue is not cross project' do
+            expect(Ability).to receive(:issues_readable_by_user)
+                                 .with([issue], user)
+                                 .and_return([])
+
+            expect(subject).not_to receive(:can_read_reference?).with(user, issue)
+
+            expect(subject.nodes_visible_to_user(user, [link])).to eq([])
+          end
+        end
       end
     end
 
@@ -70,12 +109,12 @@ describe Banzai::ReferenceParser::IssueParser do
     end
   end
 
-  describe '#issues_for_nodes' do
+  describe '#records_for_nodes' do
     it 'returns a Hash containing the issues for a list of nodes' do
       link['data-issue'] = issue.id.to_s
       nodes = [link]
 
-      expect(subject.issues_for_nodes(nodes)).to eq({ link => issue })
+      expect(subject.records_for_nodes(nodes)).to eq({ link => issue })
     end
   end
 end

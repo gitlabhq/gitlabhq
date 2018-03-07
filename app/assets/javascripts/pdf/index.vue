@@ -1,13 +1,3 @@
-<template>
-  <div class="pdf-viewer" v-if="hasPDF">
-    <page v-for="(page, index) in pages"
-      :key="index"
-      :v-if="!loading"
-      :page="page"
-      :number="index + 1" />
-  </div>
-</template>
-
 <script>
   import pdfjsLib from 'vendor/pdf';
   import workerSrc from 'vendor/pdf.worker.min';
@@ -15,6 +5,7 @@
   import page from './page/index.vue';
 
   export default {
+    components: { page },
     props: {
       pdf: {
         type: [String, Uint8Array],
@@ -27,8 +18,6 @@
         pages: [],
       };
     },
-    components: { page },
-    watch: { pdf: 'load' },
     computed: {
       document() {
         return typeof this.pdf === 'string' ? this.pdf : { data: this.pdf };
@@ -36,6 +25,11 @@
       hasPDF() {
         return this.pdf && this.pdf.length > 0;
       },
+    },
+    watch: { pdf: 'load' },
+    mounted() {
+      pdfjsLib.PDFJS.workerSrc = workerSrc;
+      if (this.hasPDF) this.load();
     },
     methods: {
       load() {
@@ -57,12 +51,22 @@
         return Promise.all(pagePromises);
       },
     },
-    mounted() {
-      pdfjsLib.PDFJS.workerSrc = workerSrc;
-      if (this.hasPDF) this.load();
-    },
   };
 </script>
+
+<template>
+  <div
+    class="pdf-viewer"
+    v-if="hasPDF">
+    <page
+      v-for="(page, index) in pages"
+      :key="index"
+      :v-if="!loading"
+      :page="page"
+      :number="index + 1"
+    />
+  </div>
+</template>
 
 <style>
   .pdf-viewer {

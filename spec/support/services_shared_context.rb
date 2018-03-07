@@ -3,13 +3,9 @@ Service.available_services_names.each do |service|
     let(:dashed_service) { service.dasherize }
     let(:service_method) { "#{service}_service".to_sym }
     let(:service_klass) { "#{service}_service".classify.constantize }
-    let(:service_fields) { service_klass.new.fields }
+    let(:service_instance) { service_klass.new }
+    let(:service_fields) { service_instance.fields }
     let(:service_attrs_list) { service_fields.inject([]) {|arr, hash| arr << hash[:name].to_sym } }
-    let(:service_attrs_list_without_passwords) do
-      service_fields
-        .select { |field| field[:type] != 'password' }
-        .map { |field| field[:name].to_sym}
-    end
     let(:service_attrs) do
       service_attrs_list.inject({}) do |hash, k|
         if k =~ /^(token*|.*_token|.*_key)/
@@ -28,6 +24,14 @@ Service.available_services_names.each do |service|
           hash.merge!(k => "someword")
         end
       end
+    end
+
+    def initialize_service(service)
+      service_item = project.find_or_initialize_service(service)
+      service_item.properties = service_attrs
+      service_item.active = true if service == "kubernetes"
+      service_item.save
+      service_item
     end
   end
 end

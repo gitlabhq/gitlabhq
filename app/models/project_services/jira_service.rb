@@ -1,12 +1,18 @@
 class JiraService < IssueTrackerService
   include Gitlab::Routing
+  include ApplicationHelper
+  include ActionView::Helpers::AssetUrlHelper
 
   validates :url, url: true, presence: true, if: :activated?
   validates :api_url, url: true, allow_blank: true
+  validates :username, presence: true, if: :activated?
+  validates :password, presence: true, if: :activated?
 
   prop_accessor :username, :password, :url, :api_url, :jira_issue_transition_id, :title, :description
 
   before_update :reset_password
+
+  alias_method :project_url, :url
 
   # This is confusing, but JiraService does not really support these events.
   # The values here are required to display correct options in the service
@@ -17,7 +23,7 @@ class JiraService < IssueTrackerService
 
   # {PROJECT-KEY}-{NUMBER} Examples: JIRA-1, PROJECT-1
   def self.reference_pattern(only_long: true)
-    @reference_pattern ||= %r{(?<issue>\b([A-Z][A-Z0-9_]+-)\d+)}
+    @reference_pattern ||= /(?<issue>\b([A-Z][A-Z0-9_]+-)\d+)/
   end
 
   def initialize_properties
@@ -41,9 +47,11 @@ class JiraService < IssueTrackerService
       username: self.username,
       password: self.password,
       site: URI.join(url, '/').to_s,
-      context_path: url.path,
+      context_path: url.path.chomp('/'),
       auth_type: :basic,
       read_timeout: 120,
+      use_cookies: true,
+      additional_cookies: ['OBBasicAuth=fromDialog'],
       use_ssl: url.scheme == 'https'
     }
   end
@@ -174,6 +182,7 @@ class JiraService < IssueTrackerService
 
   def test_settings
     return unless client_url.present?
+
     # Test settings by getting the project
     jira_request { client.ServerInfo.all.attrs }
   end
@@ -261,7 +270,9 @@ class JiraService < IssueTrackerService
         url: url,
         title: title,
         status: status,
-        icon: { title: 'GitLab', url16x16: 'https://gitlab.com/favicon.ico' }
+        icon: {
+          title: 'GitLab', url16x16: asset_url('favicon.ico', host: gitlab_config.url)
+        }
       }
     }
   end

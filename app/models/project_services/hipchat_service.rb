@@ -51,8 +51,10 @@ class HipchatService < Service
 
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
+
     message = create_message(data)
     return unless message.present?
+
     gate[room].send('GitLab', message, message_options(data)) # rubocop:disable GitlabSecurity/PublicSend
   end
 
@@ -108,6 +110,7 @@ class HipchatService < Service
 
     message = ""
     message << "#{push[:user_name]} "
+
     if Gitlab::Git.blank_ref?(before)
       message << "pushed new #{ref_type} <a href=\""\
                  "#{project_url}/commits/#{CGI.escape(ref)}\">#{ref}</a>"\
@@ -117,7 +120,7 @@ class HipchatService < Service
     else
       message << "pushed to #{ref_type} <a href=\""\
                   "#{project.web_url}/commits/#{CGI.escape(ref)}\">#{ref}</a> "
-      message << "of <a href=\"#{project.web_url}\">#{project.name_with_namespace.gsub!(/\s/, '')}</a> "
+      message << "of <a href=\"#{project.web_url}\">#{project.full_name.gsub!(/\s/, '')}</a> "
       message << "(<a href=\"#{project.web_url}/compare/#{before}...#{after}\">Compare changes</a>)"
 
       push[:commits].take(MAX_COMMITS).each do |commit|
@@ -271,7 +274,7 @@ class HipchatService < Service
   end
 
   def project_name
-    project.name_with_namespace.gsub(/\s/, '')
+    project.full_name.gsub(/\s/, '')
   end
 
   def project_url

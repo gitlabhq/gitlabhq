@@ -17,8 +17,11 @@
 
   .diff-file {
     border: 1px solid $border-color;
-    border-bottom: none;
     margin: 0;
+  }
+
+  &.text-file .diff-file {
+    border-bottom: 0;
   }
 }
 
@@ -26,6 +29,7 @@
   border-color: $white-normal;
   color: $gl-text-color;
   border-bottom: 1px solid $border-white-light;
+  background: $white-light;
 
   .timeline-entry-inner {
     position: relative;
@@ -62,5 +66,5 @@
 
 .discussion .timeline-entry {
   margin: 0;
-  border-right: none;
+  border-right: 0;
 }

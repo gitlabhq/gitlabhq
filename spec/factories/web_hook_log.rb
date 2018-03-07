@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :web_hook_log do
     web_hook factory: :project_hook
     trigger 'push_hooks'

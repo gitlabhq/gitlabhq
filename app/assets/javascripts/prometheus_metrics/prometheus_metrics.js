@@ -1,3 +1,4 @@
+import axios from '../lib/utils/axios_utils';
 import PANEL_STATE from './constants';
 import { backOff } from '../lib/utils/common_utils';
 
@@ -18,7 +19,7 @@ export default class PrometheusMetrics {
     this.$missingEnvVarMetricCount = this.$missingEnvVarPanel.find('.js-env-var-count');
     this.$missingEnvVarMetricsList = this.$missingEnvVarPanel.find('.js-missing-var-metrics-list');
 
-    this.activeMetricsEndpoint = this.$monitoredMetricsPanel.data('active-metrics');
+    this.activeMetricsEndpoint = this.$monitoredMetricsPanel.data('activeMetrics');
 
     this.$panelToggle.on('click', e => this.handlePanelToggle(e));
   }
@@ -81,20 +82,20 @@ export default class PrometheusMetrics {
   loadActiveMetrics() {
     this.showMonitoringMetricsPanelState(PANEL_STATE.LOADING);
     backOff((next, stop) => {
-      $.getJSON(this.activeMetricsEndpoint)
-        .done((res) => {
-          if (res && res.success) {
-            stop(res);
+      axios.get(this.activeMetricsEndpoint)
+        .then(({ data }) => {
+          if (data && data.success) {
+            stop(data);
           } else {
             this.backOffRequestCounter = this.backOffRequestCounter += 1;
             if (this.backOffRequestCounter < 3) {
               next();
             } else {
-              stop(res);
+              stop(data);
             }
           }
         })
-        .fail(stop);
+        .catch(stop);
     })
     .then((res) => {
       if (res && res.data && res.data.length) {

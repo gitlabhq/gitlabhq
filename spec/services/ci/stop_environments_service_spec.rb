@@ -15,7 +15,7 @@ describe Ci::StopEnvironmentsService do
 
       context 'when user has permission to stop environment' do
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         context 'when environment is associated with removed branch' do
@@ -57,7 +57,7 @@ describe Ci::StopEnvironmentsService do
       context 'when user does not have permission to stop environment' do
         context 'when user has no access to manage deployments' do
           before do
-            project.team << [user, :guest]
+            project.add_guest(user)
           end
 
           it 'does not stop environment' do
@@ -86,7 +86,7 @@ describe Ci::StopEnvironmentsService do
 
       context 'when user has permission to stop environments' do
         before do
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it 'does not stop environment' do

@@ -16,6 +16,10 @@ module HasVariable
        key: Gitlab::Application.secrets.db_key_base,
        algorithm: 'aes-256-cbc'
 
+    def key=(new_key)
+      super(new_key.to_s.strip)
+    end
+
     def to_runner_variable
       { key: key, value: value, public: false }
     end

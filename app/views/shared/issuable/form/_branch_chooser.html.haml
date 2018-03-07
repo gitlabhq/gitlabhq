@@ -15,11 +15,10 @@
   = form.label :target_branch, class: 'control-label'
   .col-sm-10.target-branch-select-dropdown-container
     .issuable-form-select-holder
-      = form.select(:target_branch, issuable.target_branches,
-        { include_blank: true },
+      = form.hidden_field(:target_branch,
         { class: 'target_branch js-target-branch-select ref-name',
           disabled: issuable.new_record?,
-          data: { placeholder: "Select branch" }})
+          data: { placeholder: "Select branch", endpoint: refs_project_path(@project, sort: 'updated_desc', find: 'branches') }})
     - if issuable.new_record?
       &nbsp;
       = link_to 'Change branches', mr_change_branches_path(issuable)

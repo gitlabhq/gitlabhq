@@ -1,5 +1,0 @@
----
-title: Added support the multiple time series for prometheus monitoring
-merge_request: !36893
-author:
-type: changed

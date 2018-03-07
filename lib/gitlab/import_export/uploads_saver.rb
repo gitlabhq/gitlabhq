@@ -17,15 +17,12 @@ module Gitlab
         false
       end
 
-      private
+      def uploads_path
+        FileUploader.absolute_base_dir(@project)
+      end
 
       def uploads_export_path
         File.join(@shared.export_path, 'uploads')
-      end
-
-      def uploads_path
-        # TODO: decide what to do with uploads. We will use UUIDs here too?
-        File.join(Rails.root.join('public/uploads'), @project.path_with_namespace)
       end
     end
   end

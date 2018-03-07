@@ -92,6 +92,27 @@ describe API::Helpers::Pagination do
           subject.paginate(resource)
         end
       end
+
+      context 'if order' do
+        it 'is not present it adds default order(:id) if no order is present' do
+          resource.order_values = []
+
+          paginated_relation = subject.paginate(resource)
+
+          expect(resource.order_values).to be_empty
+          expect(paginated_relation.order_values).to be_present
+          expect(paginated_relation.order_values.first).to be_ascending
+          expect(paginated_relation.order_values.first.expr.name).to eq :id
+        end
+
+        it 'is present it does not add anything' do
+          paginated_relation = subject.paginate(resource.order(created_at: :desc))
+
+          expect(paginated_relation.order_values).to be_present
+          expect(paginated_relation.order_values.first).to be_descending
+          expect(paginated_relation.order_values.first.expr.name).to eq :created_at
+        end
+      end
     end
 
     context 'when resource empty' do

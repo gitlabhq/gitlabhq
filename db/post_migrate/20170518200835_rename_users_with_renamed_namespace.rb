@@ -31,6 +31,7 @@ class RenameUsersWithRenamedNamespace < ActiveRecord::Migration
       predicate = namespaces[:owner_id].eq(users[:id])
                     .and(namespaces[:type].eq(nil))
                     .and(users[:username].matches(path))
+
       update_sql = if Gitlab::Database.postgresql?
                      "UPDATE users SET username = namespaces.path "\
                      "FROM namespaces WHERE #{predicate.to_sql}"

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :user, aliases: [:author, :assignee, :recipient, :owner, :resource_owner] do
     email { generate(:email) }
     name { generate(:name) }
@@ -38,7 +38,7 @@ FactoryGirl.define do
     end
 
     trait :with_avatar do
-      avatar { File.open(Rails.root.join('spec/fixtures/dk.png')) }
+      avatar { fixture_file_upload('spec/fixtures/dk.png') }
     end
 
     trait :two_factor_via_otp do
@@ -56,6 +56,10 @@ FactoryGirl.define do
       after(:create) do |user, evaluator|
         create_list(:u2f_registration, evaluator.registrations_count, user: user)
       end
+    end
+
+    trait :readme do
+      project_view :readme
     end
 
     factory :omniauth_user do

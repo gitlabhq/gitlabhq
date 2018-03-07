@@ -35,3 +35,6 @@
   - if diff_file.mode_changed?
     %small
       #{diff_file.a_mode} → #{diff_file.b_mode}
+
+  - if diff_file.stored_externally? && diff_file.external_storage == :lfs
+    %span.label.label-lfs.append-right-5 LFS

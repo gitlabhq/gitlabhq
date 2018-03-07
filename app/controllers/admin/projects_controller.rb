@@ -1,4 +1,6 @@
 class Admin::ProjectsController < Admin::ApplicationController
+  include MembersPresentation
+
   before_action :project, only: [:show, :transfer, :repository_check]
   before_action :group, only: [:show, :transfer]
 
@@ -19,11 +21,14 @@ class Admin::ProjectsController < Admin::ApplicationController
 
   def show
     if @group
-      @group_members = @group.members.order("access_level DESC").page(params[:group_members_page])
+      @group_members = present_members(
+        @group.members.order("access_level DESC").page(params[:group_members_page]))
     end
 
-    @project_members = @project.members.page(params[:project_members_page])
-    @requesters = AccessRequestsFinder.new(@project).execute(current_user)
+    @project_members = present_members(
+      @project.members.page(params[:project_members_page]))
+    @requesters = present_members(
+      AccessRequestsFinder.new(@project).execute(current_user))
   end
 
   def transfer

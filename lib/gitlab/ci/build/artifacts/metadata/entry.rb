@@ -43,6 +43,7 @@ module Gitlab
 
             def parent
               return nil unless has_parent?
+
               self.class.new(@path.to_s.chomp(basename), @entries)
             end
 
@@ -64,6 +65,7 @@ module Gitlab
 
             def directories(opts = {})
               return [] unless directory?
+
               dirs = children.select(&:directory?)
               return dirs unless has_parent? && opts[:parent]
 
@@ -74,6 +76,7 @@ module Gitlab
 
             def files
               return [] unless directory?
+
               children.select(&:file?)
             end
 
@@ -94,7 +97,7 @@ module Gitlab
             end
 
             def total_size
-              descendant_pattern = %r{^#{Regexp.escape(@path.to_s)}}
+              descendant_pattern = /^#{Regexp.escape(@path.to_s)}/
               entries.sum do |path, entry|
                 (entry[:size] if path =~ descendant_pattern).to_i
               end

@@ -12,9 +12,9 @@ following format:
 
 ```yaml
 ---
-title: "Going through change[log]s"
+title: "Change[log]s"
 merge_request: 1972
-author: Ozzy Osbourne
+author: Black Sabbath
 type: added
 ```
 
@@ -80,7 +80,7 @@ changes.
 
 The first example focuses on _how_ we fixed something, not on _what_ it fixes.
 The rewritten version clearly describes the _end benefit_ to the user (fewer 500
-errors), and _when_ (searching commits with ElasticSearch).
+errors), and _when_ (searching commits with Elasticsearch).
 
 Use your best judgement and try to put yourself in the mindset of someone
 reading the compiled changelog. Does this entry add value? Does it offer context
@@ -125,9 +125,9 @@ author:
 type:
 ```
 If you're working on the GitLab EE repository, the entry will be added to
-`changelogs/unreleased-ee/` instead.
+`ee/changelogs/unreleased/` instead.
 
-#### Arguments
+### Arguments
 
 | Argument            | Shorthand | Purpose                                                                                                    |
 | -----------------   | --------- | ---------------------------------------------------------------------------------------------------------- |
@@ -279,8 +279,8 @@ After much discussion we settled on the current solution of one file per entry,
 and then compiling the entries into the overall `CHANGELOG.md` file during the
 [release process].
 
-[boring solution]: https://about.gitlab.com/handbook/#boring-solutions
-[release managers]: https://gitlab.com/gitlab-org/release-tools/blob/master/doc/release-manager.md
+[boring solution]: https://about.gitlab.com/handbook/values/#boring-solutions
+[release managers]: https://gitlab.com/gitlab-org/release/docs/blob/master/quickstart/release-manager.md
 [started brainstorming]: https://gitlab.com/gitlab-org/gitlab-ce/issues/17826
 [release process]: https://gitlab.com/gitlab-org/release-tools
 

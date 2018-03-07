@@ -1,0 +1,6 @@
+- page_context_word = local_assigns.fetch(:page_context_word)
+- counter = local_assigns.fetch(:counter)
+
+%li{ class: active_when(params[:state] == 'all') }>
+  = link_to page_filter_path(state: 'all', label: true), id: 'state-all', title: "Show all #{page_context_word}.", data: { state: 'all' } do
+    #{counter}

@@ -18,7 +18,7 @@ documentation.
 
 > **Important:**
 For security reasons, when using the command line, we strongly recommend
-you to [connect with GitLab via SSH](../../../ssh/README.md).
+that you [connect with GitLab via SSH](../../../ssh/README.md).
 
 ## Files
 
@@ -66,9 +66,8 @@ your implementation with your team.
 You can live preview changes submitted to a new branch with
 [Review Apps](../../../ci/review_apps/index.md).
 
-With [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/)
-subscriptions, you can also request
-[approval](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html#merge-request-approvals) from your managers.
+With [GitLab Starter](https://about.gitlab.com/products/), you can also request
+[approval](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your managers.
 
 To create, delete, and [branches](branches/index.md) via GitLab's UI:
 
@@ -147,12 +146,14 @@ Select branches to compare and view the changes inline:
 
 Find it under your project's **Repository > Compare**.
 
-## Locked files (EEP)
+## Locked files
+
+> Available in [GitLab Premium](https://about.gitlab.com/products/).
 
 Lock your files to prevent any conflicting changes.
 
 [File Locking](https://docs.gitlab.com/ee/user/project/file_lock.html) is available only in
-[GitLab Enterprise Edition Premium](https://about.gitlab.com/gitlab-ee/).
+[GitLab Premium](https://about.gitlab.com/products/).
 
 ## Repository's API
 

@@ -1,6 +1,5 @@
-/* eslint-disable no-new */
-/* global Flash */
-
+import flash from '../flash';
+import axios from '../lib/utils/axios_utils';
 import ProtectedTagAccessDropdown from './protected_tag_access_dropdown';
 
 export default class ProtectedTagEdit {
@@ -29,24 +28,19 @@ export default class ProtectedTagEdit {
 
     this.$allowedToCreateDropdownButton.disable();
 
-    $.ajax({
-      type: 'POST',
-      url: this.$wrap.data('url'),
-      dataType: 'json',
-      data: {
-        _method: 'PATCH',
-        protected_tag: {
-          create_access_levels_attributes: [{
-            id: this.$allowedToCreateDropdownButton.data('access-level-id'),
-            access_level: $allowedToCreateInput.val(),
-          }],
-        },
+    axios.patch(this.$wrap.data('url'), {
+      protected_tag: {
+        create_access_levels_attributes: [{
+          id: this.$allowedToCreateDropdownButton.data('accessLevelId'),
+          access_level: $allowedToCreateInput.val(),
+        }],
       },
-      error() {
-        new Flash('Failed to update tag!', null, $('.js-protected-tags-list'));
-      },
-    }).always(() => {
+    }).then(() => {
       this.$allowedToCreateDropdownButton.enable();
+    }).catch(() => {
+      this.$allowedToCreateDropdownButton.enable();
+
+      flash('Failed to update tag!', 'alert', document.querySelector('.js-protected-tags-list'));
     });
   }
 }

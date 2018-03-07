@@ -1,5 +1,0 @@
----
-title: Replace 'project/wiki.feature' spinach test with an rspec analog
-merge_request: 13856
-author: Vitaliy @blackst0ne Klachkov
-type: other

@@ -6,7 +6,7 @@ feature 'Environments page', :js do
   given(:role) { :developer }
 
   background do
-    project.team << [user, role]
+    project.add_role(user, role)
     sign_in(user)
   end
 
@@ -14,8 +14,10 @@ feature 'Environments page', :js do
     it 'shows "Available" and "Stopped" tab with links' do
       visit_environments(project)
 
-      expect(page).to have_link('Available')
-      expect(page).to have_link('Stopped')
+      expect(page).to have_selector('.js-environments-tab-available')
+      expect(page).to have_content('Available')
+      expect(page).to have_selector('.js-environments-tab-stopped')
+      expect(page).to have_content('Stopped')
     end
 
     describe 'with one available environment' do
@@ -75,8 +77,8 @@ feature 'Environments page', :js do
     it 'does not show environments and counters are set to zero' do
       expect(page).to have_content('You don\'t have any environments right now.')
 
-      expect(page.find('.js-available-environments-count').text).to eq('0')
-      expect(page.find('.js-stopped-environments-count').text).to eq('0')
+      expect(page.find('.js-environments-tab-available .badge').text).to eq('0')
+      expect(page.find('.js-environments-tab-stopped .badge').text).to eq('0')
     end
   end
 
@@ -93,8 +95,8 @@ feature 'Environments page', :js do
       it 'shows environments names and counters' do
         expect(page).to have_link(environment.name)
 
-        expect(page.find('.js-available-environments-count').text).to eq('1')
-        expect(page.find('.js-stopped-environments-count').text).to eq('0')
+        expect(page.find('.js-environments-tab-available .badge').text).to eq('1')
+        expect(page.find('.js-environments-tab-stopped .badge').text).to eq('0')
       end
 
       it 'does not show deployments' do
@@ -145,13 +147,13 @@ feature 'Environments page', :js do
           expect(page).to have_content(action.name.humanize)
         end
 
-        it 'allows to play a manual action', js: true do
+        it 'allows to play a manual action', :js do
           expect(action).to be_manual
 
           find('.js-dropdown-play-icon-container').click
           expect(page).to have_content(action.name.humanize)
 
-          expect { find('.js-manual-action-link').trigger('click') }
+          expect { find('.js-manual-action-link').click }
             .not_to change { Ci::Pipeline.count }
         end
 
@@ -206,22 +208,35 @@ feature 'Environments page', :js do
         end
 
         context 'when kubernetes terminal is available' do
-          let(:project) { create(:kubernetes_project, :test_repo) }
+          shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+            context 'for project master' do
+              let(:role) { :master }
 
-          context 'for project master' do
-            let(:role) { :master }
+              it 'shows the terminal button' do
+                expect(page).to have_terminal_button
+              end
+            end
 
-            it 'shows the terminal button' do
-              expect(page).to have_terminal_button
+            context 'when user is a developer' do
+              let(:role) { :developer }
+
+              it 'does not show terminal button' do
+                expect(page).not_to have_terminal_button
+              end
             end
           end
 
-          context 'when user is a developer' do
-            let(:role) { :developer }
+          context 'when user configured kubernetes from Integration > Kubernetes' do
+            let(:project) { create(:kubernetes_project, :test_repo) }
 
-            it 'does not show terminal button' do
-              expect(page).not_to have_terminal_button
-            end
+            it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+          end
+
+          context 'when user configured kubernetes from CI/CD > Clusters' do
+            let(:cluster) { create(:cluster, :provided_by_gcp, projects: [create(:project, :repository)]) }
+            let(:project) { cluster.project }
+
+            it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
           end
         end
       end
@@ -294,11 +309,32 @@ feature 'Environments page', :js do
     end
   end
 
+  describe 'environments folders view' do
+    before do
+      create(:environment, project: project,
+                           name: 'staging.review/review-1',
+                           state: :available)
+      create(:environment, project: project,
+                           name: 'staging.review/review-2',
+                           state: :available)
+    end
+
+    scenario 'user opens folder view' do
+      visit folder_project_environments_path(project, 'staging.review')
+      wait_for_requests
+
+      expect(page).to have_content('Environments / staging.review')
+      expect(page).to have_content('review-1')
+      expect(page).to have_content('review-2')
+    end
+  end
+
   def have_terminal_button
     have_link(nil, href: terminal_project_environment_path(project, environment))
   end
 
   def visit_environments(project, **opts)
     visit project_environments_path(project, **opts)
+    wait_for_requests
   end
 end

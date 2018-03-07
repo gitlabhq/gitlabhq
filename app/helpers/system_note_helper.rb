@@ -19,7 +19,9 @@ module SystemNoteHelper
     'discussion' => 'comment',
     'moved' => 'arrow-right',
     'outdated' => 'pencil',
-    'duplicate' => 'issue-duplicate'
+    'duplicate' => 'issue-duplicate',
+    'locked' => 'lock',
+    'unlocked' => 'lock-open'
   }.freeze
 
   def system_note_icon_name(note)

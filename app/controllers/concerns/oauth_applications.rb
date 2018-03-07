@@ -14,6 +14,6 @@ module OauthApplications
   end
 
   def load_scopes
-    @scopes = Doorkeeper.configuration.scopes
+    @scopes ||= Doorkeeper.configuration.scopes
   end
 end

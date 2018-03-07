@@ -11,12 +11,14 @@ module Projects
 
     def execute
       FileUtils.mkdir_p(File.dirname(import_upload_path))
+
+      file = params.delete(:file)
       FileUtils.copy_entry(file.path, import_upload_path)
 
-      Gitlab::ImportExport::ProjectCreator.new(params[:namespace_id],
-                                               current_user,
-                                               import_upload_path,
-                                               params[:path]).execute
+      params[:import_type] = 'gitlab_project'
+      params[:import_source] = import_upload_path
+
+      ::Projects::CreateService.new(current_user, params).execute
     end
 
     private
@@ -26,11 +28,7 @@ module Projects
     end
 
     def tmp_filename
-      "#{SecureRandom.hex}_#{params[:path]}"
-    end
-
-    def file
-      params[:file]
+      SecureRandom.hex
     end
   end
 end

@@ -2,18 +2,29 @@ module API
   class Users < Grape::API
     include PaginationParams
     include APIGuard
+    include Helpers::CustomAttributes
 
     allow_access_with_scope :read_user, if: -> (request) { request.get? }
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
+      include CustomAttributesEndpoints
+
       before do
         authenticate_non_get!
       end
 
       helpers do
-        def find_user(params)
+        def find_user_by_id(params)
           id = params[:user_id] || params[:id]
           User.find_by(id: id) || not_found!('User')
+        end
+
+        def reorder_users(users)
+          if params[:order_by] && params[:sort]
+            users.reorder(params[:order_by] => params[:sort])
+          else
+            users
+          end
         end
 
         params :optional_attributes do
@@ -29,10 +40,16 @@ module API
           optional :location, type: String, desc: 'The location of the user'
           optional :admin, type: Boolean, desc: 'Flag indicating the user is an administrator'
           optional :can_create_group, type: Boolean, desc: 'Flag indicating the user can create groups'
-          optional :skip_confirmation, type: Boolean, default: false, desc: 'Flag indicating the account is confirmed'
           optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
           optional :avatar, type: File, desc: 'Avatar image for user'
           all_or_none_of :extern_uid, :provider
+        end
+
+        params :sort_params do
+          optional :order_by, type: String, values: %w[id name username created_at updated_at],
+                              default: 'id', desc: 'Return users ordered by a field'
+          optional :sort, type: String, values: %w[asc desc], default: 'desc',
+                          desc: 'Return users sorted in ascending and descending order'
         end
       end
 
@@ -52,16 +69,19 @@ module API
         optional :created_before, type: DateTime, desc: 'Return users created before the specified time'
         all_or_none_of :extern_uid, :provider
 
+        use :sort_params
         use :pagination
+        use :with_custom_attributes
       end
       get do
         authenticated_as_admin! if params[:external].present? || (params[:extern_uid].present? && params[:provider].present?)
 
         unless current_user&.admin?
-          params.except!(:created_after, :created_before)
+          params.except!(:created_after, :created_before, :order_by, :sort)
         end
 
         users = UsersFinder.new(current_user, params).execute
+        users = reorder_users(users)
 
         authorized = can?(current_user, :read_users_list)
 
@@ -75,7 +95,10 @@ module API
         forbidden!("Not authorized to access /api/v4/users") unless authorized
 
         entity = current_user&.admin? ? Entities::UserWithAdmin : Entities::UserBasic
-        present paginate(users), with: entity
+        users = users.preload(:identities, :u2f_registrations) if entity == Entities::UserWithAdmin
+        users, options = with_custom_attributes(users, with: entity)
+
+        present paginate(users), options
       end
 
       desc 'Get a single user' do
@@ -83,12 +106,16 @@ module API
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
+
+        use :with_custom_attributes
       end
       get ":id" do
         user = User.find_by(id: params[:id])
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
         opts = current_user&.admin? ? { with: Entities::UserWithAdmin } : { with: Entities::User }
+        user, opts = with_custom_attributes(user, opts)
+
         present user, opts
       end
 
@@ -99,6 +126,7 @@ module API
         requires :email, type: String, desc: 'The email of the user'
         optional :password, type: String, desc: 'The password of the new user'
         optional :reset_password, type: Boolean, desc: 'Flag indicating the user will be sent a password reset token'
+        optional :skip_confirmation, type: Boolean, desc: 'Flag indicating the account is confirmed'
         at_least_one_of :password, :reset_password
         requires :name, type: String, desc: 'The name of the user'
         requires :username, type: String, desc: 'The username of the user'
@@ -132,6 +160,7 @@ module API
         requires :id, type: Integer, desc: 'The ID of the user'
         optional :email, type: String, desc: 'The email of the user'
         optional :password, type: String, desc: 'The password of the new user'
+        optional :skip_reconfirmation, type: Boolean, desc: 'Flag indicating the account skips the confirmation by email'
         optional :name, type: String, desc: 'The name of the user'
         optional :username, type: String, desc: 'The username of the user'
         use :optional_attributes
@@ -166,7 +195,7 @@ module API
 
         user_params[:password_expires_at] = Time.now if user_params[:password].present?
 
-        result = ::Users::UpdateService.new(user, user_params.except(:extern_uid, :provider)).execute
+        result = ::Users::UpdateService.new(current_user, user_params.except(:extern_uid, :provider).merge(user: user)).execute
 
         if result[:status] == :success
           present user, with: Entities::UserPublic
@@ -326,10 +355,9 @@ module API
         user = User.find_by(id: params.delete(:id))
         not_found!('User') unless user
 
-        email = Emails::CreateService.new(user, declared_params(include_missing: false)).execute
+        email = Emails::CreateService.new(current_user, declared_params(include_missing: false).merge(user: user)).execute
 
         if email.errors.blank?
-          NotificationService.new.new_email(email)
           present email, with: Entities::Email
         else
           render_validation_error!(email)
@@ -367,10 +395,8 @@ module API
         not_found!('Email') unless email
 
         destroy_conditionally!(email) do |email|
-          Emails::DestroyService.new(current_user, email: email.email).execute
+          Emails::DestroyService.new(current_user, user: user).execute(email)
         end
-
-        user.update_secondary_emails!
       end
 
       desc 'Delete a user. Available only for admins.' do
@@ -381,6 +407,8 @@ module API
         optional :hard_delete, type: Boolean, desc: "Whether to remove a user's contributions"
       end
       delete ":id" do
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42279')
+
         authenticated_as_admin!
 
         user = User.find_by(id: params[:id])
@@ -430,7 +458,7 @@ module API
         resource :impersonation_tokens do
           helpers do
             def finder(options = {})
-              user = find_user(params)
+              user = find_user_by_id(params)
               PersonalAccessTokensFinder.new({ user: user, impersonation: true }.merge(options))
             end
 
@@ -508,9 +536,7 @@ module API
       end
       get do
         entity =
-          if sudo?
-            Entities::UserWithPrivateDetails
-          elsif current_user.admin?
+          if current_user.admin?
             Entities::UserWithAdmin
           else
             Entities::UserPublic
@@ -672,10 +698,9 @@ module API
         requires :email, type: String, desc: 'The new email'
       end
       post "emails" do
-        email = Emails::CreateService.new(current_user, declared_params).execute
+        email = Emails::CreateService.new(current_user, declared_params.merge(user: current_user)).execute
 
         if email.errors.blank?
-          NotificationService.new.new_email(email)
           present email, with: Entities::Email
         else
           render_validation_error!(email)
@@ -691,10 +716,8 @@ module API
         not_found!('Email') unless email
 
         destroy_conditionally!(email) do |email|
-          Emails::DestroyService.new(current_user, email: email.email).execute
+          Emails::DestroyService.new(current_user, user: current_user).execute(email)
         end
-
-        current_user.update_secondary_emails!
       end
 
       desc 'Get a list of user activities'

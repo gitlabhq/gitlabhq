@@ -9,7 +9,7 @@ describe 'Issues Feed'  do
     let!(:issue)    { create(:issue, author: user, assignees: [assignee], project: project) }
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
       group.add_developer(user)
     end
 
@@ -28,10 +28,12 @@ describe 'Issues Feed'  do
       end
     end
 
-    context 'when authenticated via private token' do
+    context 'when authenticated via personal access token' do
       it 'renders atom feed' do
+        personal_access_token = create(:personal_access_token, user: user)
+
         visit project_issues_path(project, :atom,
-                                            private_token: user.private_token)
+                                            private_token: personal_access_token.token)
 
         expect(response_headers['Content-Type'])
           .to have_content('application/atom+xml')

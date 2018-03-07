@@ -7,7 +7,7 @@ class SubmoduleEntity < Grape::Entity
     'archive'
   end
 
-  expose :project_url do |blob|
+  expose :url do |blob|
     submodule_links(blob, request).first
   end
 

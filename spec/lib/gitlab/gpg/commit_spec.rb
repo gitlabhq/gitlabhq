@@ -38,8 +38,8 @@ describe Gitlab::Gpg::Commit do
           end
 
           before do
-            allow(Rugged::Commit).to receive(:extract_signature)
-            .with(Rugged::Repository, commit_sha)
+            allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
+            .with(Gitlab::Git::Repository, commit_sha)
             .and_return(
               [
                 GpgHelpers::User1.signed_commit_signature,
@@ -49,13 +49,76 @@ describe Gitlab::Gpg::Commit do
           end
 
           it 'returns a valid signature' do
-            expect(described_class.new(commit).signature).to have_attributes(
+            signature = described_class.new(commit).signature
+
+            expect(signature).to have_attributes(
               commit_sha: commit_sha,
               project: project,
               gpg_key: gpg_key,
               gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
               gpg_key_user_name: GpgHelpers::User1.names.first,
               gpg_key_user_email: GpgHelpers::User1.emails.first,
+              verification_status: 'verified'
+            )
+            expect(signature.persisted?).to be_truthy
+          end
+
+          it_behaves_like 'returns the cached signature on second call'
+
+          context 'read-only mode' do
+            before do
+              allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+            end
+
+            it 'does not create a cached signature' do
+              signature = described_class.new(commit).signature
+
+              expect(signature).to have_attributes(
+                commit_sha: commit_sha,
+                project: project,
+                gpg_key: gpg_key,
+                gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
+                gpg_key_user_name: GpgHelpers::User1.names.first,
+                gpg_key_user_email: GpgHelpers::User1.emails.first,
+                verification_status: 'verified'
+              )
+              expect(signature.persisted?).to be_falsey
+            end
+          end
+        end
+
+        context 'commit signed with a subkey' do
+          let!(:commit) { create :commit, project: project, sha: commit_sha, committer_email: GpgHelpers::User3.emails.first }
+
+          let!(:user) { create(:user, email: GpgHelpers::User3.emails.first) }
+
+          let!(:gpg_key) do
+            create :gpg_key, key: GpgHelpers::User3.public_key, user: user
+          end
+
+          let(:gpg_key_subkey) do
+            gpg_key.subkeys.find_by(fingerprint: '0522DD29B98F167CD8421752E38FFCAF75ABD92A')
+          end
+
+          before do
+            allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
+            .with(Gitlab::Git::Repository, commit_sha)
+            .and_return(
+              [
+                GpgHelpers::User3.signed_commit_signature,
+                GpgHelpers::User3.signed_commit_base_data
+              ]
+            )
+          end
+
+          it 'returns a valid signature' do
+            expect(described_class.new(commit).signature).to have_attributes(
+              commit_sha: commit_sha,
+              project: project,
+              gpg_key: gpg_key_subkey,
+              gpg_key_primary_keyid: gpg_key_subkey.keyid,
+              gpg_key_user_name: GpgHelpers::User3.names.first,
+              gpg_key_user_email: GpgHelpers::User3.emails.first,
               verification_status: 'verified'
             )
           end
@@ -77,8 +140,8 @@ describe Gitlab::Gpg::Commit do
           end
 
           before do
-            allow(Rugged::Commit).to receive(:extract_signature)
-            .with(Rugged::Repository, commit_sha)
+            allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
+            .with(Gitlab::Git::Repository, commit_sha)
             .and_return(
               [
                 GpgHelpers::User1.signed_commit_signature,
@@ -112,8 +175,8 @@ describe Gitlab::Gpg::Commit do
           end
 
           before do
-            allow(Rugged::Commit).to receive(:extract_signature)
-            .with(Rugged::Repository, commit_sha)
+            allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
+            .with(Gitlab::Git::Repository, commit_sha)
             .and_return(
               [
                 GpgHelpers::User1.signed_commit_signature,
@@ -148,8 +211,8 @@ describe Gitlab::Gpg::Commit do
         end
 
         before do
-          allow(Rugged::Commit).to receive(:extract_signature)
-          .with(Rugged::Repository, commit_sha)
+          allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
+          .with(Gitlab::Git::Repository, commit_sha)
           .and_return(
             [
               GpgHelpers::User1.signed_commit_signature,
@@ -178,8 +241,8 @@ describe Gitlab::Gpg::Commit do
       let!(:commit) { create :commit, project: project, sha: commit_sha }
 
       before do
-        allow(Rugged::Commit).to receive(:extract_signature)
-          .with(Rugged::Repository, commit_sha)
+        allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
+          .with(Gitlab::Git::Repository, commit_sha)
           .and_return(
             [
               GpgHelpers::User1.signed_commit_signature,

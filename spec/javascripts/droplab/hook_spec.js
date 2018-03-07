@@ -24,7 +24,7 @@ describe('Hook', function () {
     });
 
     it('should call DropDown constructor', function () {
-      expect(dropdownSrc.default).toHaveBeenCalledWith(this.list);
+      expect(dropdownSrc.default).toHaveBeenCalledWith(this.list, this.config);
     });
 
     it('should set .type', function () {

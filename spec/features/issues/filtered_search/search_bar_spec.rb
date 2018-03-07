@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Search bar', js: true do
+describe 'Search bar', :js do
   include FilteredSearchHelpers
 
   let!(:project) { create(:project) }
@@ -8,7 +8,7 @@ describe 'Search bar', js: true do
   let(:filtered_search) { find('.filtered-search') }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
     create(:issue, project: project)
 

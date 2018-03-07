@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 feature 'Issue Detail', :js do
-  let(:user)      { create(:user) }
-  let(:project)   { create(:project, :public) }
-  let(:issue)     { create(:issue, project: project, author: user) }
+  let(:user)     { create(:user) }
+  let(:project)  { create(:project, :public) }
+  let(:issue)    { create(:issue, project: project, author: user) }
 
   context 'when user displays the issue' do
     before do
@@ -24,12 +24,12 @@ feature 'Issue Detail', :js do
       visit project_issue_path(project, issue)
       wait_for_requests
 
-      click_link 'Edit'
-      fill_in 'issue-title', with: 'issue title'
+      page.find('.js-issuable-edit').click
+      fill_in 'issuable-title', with: 'issue title'
       click_button 'Save'
+      wait_for_requests
 
-      visit profile_account_path
-      click_link 'Delete account'
+      Users::DestroyService.new(user).execute(user)
 
       visit project_issue_path(project, issue)
     end

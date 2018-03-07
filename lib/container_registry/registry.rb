@@ -11,7 +11,7 @@ module ContainerRegistry
     private
 
     def default_path
-      @uri.sub(/^https?:\/\//, '')
+      @uri.sub(%r{^https?://}, '')
     end
   end
 end

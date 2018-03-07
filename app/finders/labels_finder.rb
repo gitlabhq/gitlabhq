@@ -1,4 +1,10 @@
 class LabelsFinder < UnionFinder
+  prepend FinderWithCrossProjectAccess
+  include FinderMethods
+  include Gitlab::Utils::StrongMemoize
+
+  requires_cross_project_access unless: -> { project? }
+
   def initialize(current_user, params = {})
     @current_user = current_user
     @params = params
@@ -32,6 +38,8 @@ class LabelsFinder < UnionFinder
           label_ids << project.labels
         end
       end
+    elsif only_group_labels?
+      label_ids << Label.where(group_id: group_ids)
     else
       label_ids << Label.where(group_id: projects.group_ids)
       label_ids << Label.where(project_id: projects.select(:id))
@@ -51,6 +59,22 @@ class LabelsFinder < UnionFinder
     items.where(title: title)
   end
 
+  def group_ids
+    strong_memoize(:group_ids) do
+      groups_user_can_read_labels(groups_to_include).map(&:id)
+    end
+  end
+
+  def groups_to_include
+    group = Group.find(params[:group_id])
+    groups = [group]
+
+    groups += group.ancestors if params[:include_ancestor_groups].present?
+    groups += group.descendants if params[:include_descendant_groups].present?
+
+    groups
+  end
+
   def group?
     params[:group_id].present?
   end
@@ -60,7 +84,11 @@ class LabelsFinder < UnionFinder
   end
 
   def projects?
-    params[:project_ids].present?
+    params[:project_ids]
+  end
+
+  def only_group_labels?
+    params[:only_group_labels]
   end
 
   def title
@@ -96,9 +124,15 @@ class LabelsFinder < UnionFinder
     @projects
   end
 
-  def authorized_to_read_labels?(project)
+  def authorized_to_read_labels?(label_parent)
     return true if skip_authorization
 
-    Ability.allowed?(current_user, :read_label, project)
+    Ability.allowed?(current_user, :read_label, label_parent)
+  end
+
+  def groups_user_can_read_labels(groups)
+    DeclarativePolicy.user_scope do
+      groups.select { |group| authorized_to_read_labels?(group) }
+    end
   end
 end

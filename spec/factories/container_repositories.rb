@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :container_repository do
     name 'test_container_image'
     project

@@ -20,9 +20,9 @@ describe 'Dropdown assignee', :js do
   end
 
   before do
-    project.team << [user, :master]
-    project.team << [user_john, :master]
-    project.team << [user_jacob, :master]
+    project.add_master(user)
+    project.add_master(user_john)
+    project.add_master(user_jacob)
     sign_in(user)
     create(:issue, project: project)
 
@@ -43,15 +43,16 @@ describe 'Dropdown assignee', :js do
     end
 
     it 'should show loading indicator when opened' do
-      filtered_search.set('assignee:')
+      slow_requests do
+        filtered_search.set('assignee:')
 
-      expect(page).to have_css('#js-dropdown-assignee .filter-dropdown-loading', visible: true)
+        expect(page).to have_css('#js-dropdown-assignee .filter-dropdown-loading', visible: true)
+      end
     end
 
     it 'should hide loading indicator when loaded' do
       filtered_search.set('assignee:')
 
-      expect(find(js_dropdown_assignee)).to have_css('.filter-dropdown-loading')
       expect(find(js_dropdown_assignee)).not_to have_css('.filter-dropdown-loading')
     end
 
@@ -221,7 +222,7 @@ describe 'Dropdown assignee', :js do
       expect(initial_size).to be > 0
 
       new_user = create(:user)
-      project.team << [new_user, :master]
+      project.add_master(new_user)
       find('.filtered-search-box .clear-search').click
       filtered_search.set('assignee')
       filtered_search.send_keys(':')

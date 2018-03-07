@@ -20,7 +20,7 @@
     .col-sm-10.create-from
       .dropdown
         = hidden_field_tag :ref, default_ref
-        = button_tag type: 'button', title: default_ref, class: 'dropdown-menu-toggle wide form-control js-branch-select git-revision-dropdown-toggle', required: true, data: { toggle: 'dropdown', selected: default_ref, field_name: 'ref' } do
+        = button_tag type: 'button', title: default_ref, class: 'dropdown-menu-toggle wide js-branch-select git-revision-dropdown-toggle', required: true, data: { toggle: 'dropdown', selected: default_ref, field_name: 'ref' } do
           .text-left.dropdown-toggle-text= default_ref
           = icon('chevron-down')
         = render 'shared/ref_dropdown', dropdown_class: 'wide'
@@ -28,4 +28,5 @@
   .form-actions
     = button_tag 'Create branch', class: 'btn btn-create', tabindex: 3
     = link_to 'Cancel', project_branches_path(@project), class: 'btn btn-cancel'
+-# haml-lint:disable InlineJavaScript
 %script#availableRefs{ type: "application/json" }= @project.repository.ref_names.to_json.html_safe

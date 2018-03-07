@@ -111,6 +111,7 @@ class Projects::LabelsController < Projects::ApplicationController
 
     begin
       return render_404 unless promote_service.execute(@label)
+
       respond_to do |format|
         format.html do
           redirect_to(project_labels_path(@project),

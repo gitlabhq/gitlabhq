@@ -3,6 +3,31 @@ require 'spec_helper'
 # We stub Gitaly in `spec/support/gitaly.rb` for other tests. We don't want
 # those stubs while testing the GitalyClient itself.
 describe Gitlab::GitalyClient, skip_gitaly_mock: true do
+  describe '.stub_class' do
+    it 'returns the gRPC health check stub' do
+      expect(described_class.stub_class(:health_check)).to eq(::Grpc::Health::V1::Health::Stub)
+    end
+
+    it 'returns a Gitaly stub' do
+      expect(described_class.stub_class(:ref_service)).to eq(::Gitaly::RefService::Stub)
+    end
+  end
+
+  describe '.stub_address' do
+    it 'returns the same result after being called multiple times' do
+      address = 'localhost:9876'
+      prefixed_address = "tcp://#{address}"
+
+      allow(Gitlab.config.repositories).to receive(:storages).and_return({
+        'default' => { 'gitaly_address' => prefixed_address }
+      })
+
+      2.times do
+        expect(described_class.stub_address('default')).to eq('localhost:9876')
+      end
+    end
+  end
+
   describe '.stub' do
     # Notice that this is referring to gRPC "stubs", not rspec stubs
     before do
@@ -261,6 +286,22 @@ describe Gitlab::GitalyClient, skip_gitaly_mock: true do
         it 'returns false' do
           expect(described_class.feature_enabled?(feature_name, status: feature_status)).to be(false)
         end
+      end
+    end
+  end
+
+  describe 'timeouts' do
+    context 'with default values' do
+      before do
+        stub_application_setting(gitaly_timeout_default: 55)
+        stub_application_setting(gitaly_timeout_medium: 30)
+        stub_application_setting(gitaly_timeout_fast: 10)
+      end
+
+      it 'returns expected values' do
+        expect(described_class.default_timeout).to be(55)
+        expect(described_class.medium_timeout).to be(30)
+        expect(described_class.fast_timeout).to be(10)
       end
     end
   end

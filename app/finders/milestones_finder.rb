@@ -8,6 +8,8 @@
 #   state - filters by state.
 
 class MilestonesFinder
+  include FinderMethods
+
   attr_reader :params, :project_ids, :group_ids
 
   def initialize(params = {})
@@ -46,11 +48,7 @@ class MilestonesFinder
   end
 
   def order(items)
-    if params.has_key?(:order)
-      items.reorder(params[:order])
-    else
-      order_statement = Gitlab::Database.nulls_last_order('due_date', 'ASC')
-      items.reorder(order_statement)
-    end
+    order_statement = Gitlab::Database.nulls_last_order('due_date', 'ASC')
+    items.reorder(order_statement).order('title ASC')
   end
 end

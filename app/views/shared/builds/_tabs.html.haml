@@ -1,24 +1,24 @@
-%ul.nav-links
+%ul.nav-links.mobile-separator
   %li{ class: active_when(scope.nil?) }>
     = link_to build_path_proc.call(nil) do
       All
       %span.badge.js-totalbuilds-count
-        = number_with_delimiter(all_builds.count(:id))
+        = limited_counter_with_delimiter(all_builds)
 
   %li{ class: active_when(scope == 'pending') }>
     = link_to build_path_proc.call('pending') do
       Pending
       %span.badge
-        = number_with_delimiter(all_builds.pending.count(:id))
+        = limited_counter_with_delimiter(all_builds.pending)
 
   %li{ class: active_when(scope == 'running') }>
     = link_to build_path_proc.call('running') do
       Running
       %span.badge
-        = number_with_delimiter(all_builds.running.count(:id))
+        = limited_counter_with_delimiter(all_builds.running)
 
   %li{ class: active_when(scope == 'finished') }>
     = link_to build_path_proc.call('finished') do
       Finished
       %span.badge
-        = number_with_delimiter(all_builds.finished.count(:id))
+        = limited_counter_with_delimiter(all_builds.finished)

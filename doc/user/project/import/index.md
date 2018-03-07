@@ -4,12 +4,13 @@
 1. [From ClearCase](clearcase.md)
 1. [From CVS](cvs.md)
 1. [From FogBugz](fogbugz.md)
-1. [From GitHub.com of GitHub Enterprise](github.md)
+1. [From GitHub.com or GitHub Enterprise](github.md)
 1. [From GitLab.com](gitlab_com.md)
 1. [From Gitea](gitea.md)
 1. [From Perforce](perforce.md)
 1. [From SVN](svn.md)
 1. [From TFS](tfs.md)
+1. [From repo by URL](repo_by_url.md)
 
 In addition to the specific migration documentation above, you can import any
 Git repository via HTTP from the New Project page. Be aware that if the

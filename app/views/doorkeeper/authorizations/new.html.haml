@@ -1,5 +1,5 @@
 %main{ :role => "main" }
-  .modal-no-backdrop
+  .modal-no-backdrop.modal-doorkeepr-auth
     .modal-content
       .modal-header
         %h3.page-title
@@ -16,14 +16,26 @@
               %strong= @pre_auth.client.name
               will allow them to interact with GitLab as an admin as well. Proceed with caution.
         %p
-          You are about to authorize
+          An application called
           = link_to @pre_auth.client.name, @pre_auth.redirect_uri, target: '_blank', rel: 'noopener noreferrer'
-          to use your account.
-          - if @pre_auth.scopes
+          is requesting access to your GitLab account.
+
+          - auth_app_owner = @pre_auth.client.application.owner
+          - if auth_app_owner
+            This application was created by
+            = succeed "." do
+              = link_to auth_app_owner.name, user_path(auth_app_owner)
+
+          Please note that this application is not provided by GitLab and you should verify its authenticity before
+          allowing access.
+        - if @pre_auth.scopes
+          %p
             This application will be able to:
             %ul
               - @pre_auth.scopes.each do |scope|
-                %li= t scope, scope: [:doorkeeper, :scopes]
+                %li
+                  %strong= t scope, scope: [:doorkeeper, :scopes]
+                  .scope-description= t scope, scope: [:doorkeeper, :scope_desc]
         .form-actions.text-right
           = form_tag oauth_authorization_path, method: :delete, class: 'inline'  do
             = hidden_field_tag :client_id, @pre_auth.client.uid

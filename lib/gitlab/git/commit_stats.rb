@@ -34,13 +34,8 @@ module Gitlab
 
       def rugged_stats(commit)
         diff = commit.rugged_diff_from_parent
-
-        diff.each_patch do |p|
-          # TODO: Use the new Rugged convenience methods when they're released
-          @additions += p.stat[0]
-          @deletions += p.stat[1]
-          @total += p.changes
-        end
+        _files_changed, @additions, @deletions = diff.stat
+        @total = @additions + @deletions
       end
     end
   end

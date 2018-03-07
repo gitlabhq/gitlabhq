@@ -1,6 +1,0 @@
----
-title: Do not show the Auto DevOps banner when the project has a .gitlab-ci.yml on
-  master
-merge_request:
-author:
-type: fixed

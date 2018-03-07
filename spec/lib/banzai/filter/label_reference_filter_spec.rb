@@ -381,11 +381,11 @@ describe Banzai::Filter::LabelReferenceFilter do
     end
 
     it 'has valid link text' do
-      expect(result.css('a').first.text).to eq "#{label.name} in #{project2.name_with_namespace}"
+      expect(result.css('a').first.text).to eq "#{label.name} in #{project2.full_name}"
     end
 
     it 'has valid text' do
-      expect(result.text).to eq "See #{label.name} in #{project2.name_with_namespace}"
+      expect(result.text).to eq "See #{label.name} in #{project2.full_name}"
     end
 
     it 'ignores invalid IDs on the referenced label' do
@@ -481,12 +481,12 @@ describe Banzai::Filter::LabelReferenceFilter do
 
     it 'has valid link text' do
       expect(result.css('a').first.text)
-        .to eq "#{group_label.name} in #{another_project.name_with_namespace}"
+        .to eq "#{group_label.name} in #{another_project.full_name}"
     end
 
     it 'has valid text' do
       expect(result.text)
-        .to eq "See #{group_label.name} in #{another_project.name_with_namespace}"
+        .to eq "See #{group_label.name} in #{another_project.full_name}"
     end
 
     it 'ignores invalid IDs on the referenced label' do
@@ -592,6 +592,18 @@ describe Banzai::Filter::LabelReferenceFilter do
       exp = act = "See #{invalidate_reference(reference)}"
 
       expect(reference_filter(act).to_html).to eq exp
+    end
+  end
+
+  describe 'group context' do
+    it 'points to referenced project issues page' do
+      project = create(:project)
+      label = create(:label, project: project)
+      reference = "#{project.full_path}~#{label.name}"
+
+      result = reference_filter("See #{reference}", { project: nil, group: create(:group) } )
+
+      expect(result.css('a').first.attr('href')).to eq(urls.project_issues_url(project, label_name: label.name))
     end
   end
 end

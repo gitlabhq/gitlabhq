@@ -14,7 +14,14 @@ class Groups::LabelsController < Groups::ApplicationController
       end
 
       format.json do
-        available_labels = LabelsFinder.new(current_user, group_id: @group.id).execute
+        available_labels = LabelsFinder.new(
+          current_user,
+          group_id: @group.id,
+          only_group_labels: params[:only_group_labels],
+          include_ancestor_groups: params[:include_ancestor_groups],
+          include_descendant_groups: params[:include_descendant_groups]
+        ).execute
+
         render json: LabelSerializer.new.represent_appearance(available_labels)
       end
     end
@@ -28,10 +35,18 @@ class Groups::LabelsController < Groups::ApplicationController
   def create
     @label = Labels::CreateService.new(label_params).execute(group: group)
 
-    if @label.valid?
-      redirect_to group_labels_path(@group)
-    else
-      render :new
+    respond_to do |format|
+      format.html do
+        if @label.valid?
+          redirect_to group_labels_path(@group)
+        else
+          render :new
+        end
+      end
+
+      format.json do
+        render json: LabelSerializer.new.represent_appearance(@label)
+      end
     end
   end
 
@@ -54,7 +69,7 @@ class Groups::LabelsController < Groups::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to group_labels_path(@group), status: 302, notice: 'Label was removed'
+        redirect_to group_labels_path(@group), status: 302, notice: "#{@label.name} deleted permanently"
       end
       format.js
     end

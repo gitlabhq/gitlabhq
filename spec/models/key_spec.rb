@@ -1,13 +1,6 @@
 require 'spec_helper'
 
 describe Key, :mailer do
-  include Gitlab::CurrentSettings
-
-  describe 'modules' do
-    subject { described_class }
-    it { is_expected.to include_module(Gitlab::CurrentSettings) }
-  end
-
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
   end
@@ -19,6 +12,9 @@ describe Key, :mailer do
     it { is_expected.to validate_presence_of(:key) }
     it { is_expected.to validate_length_of(:key).is_at_most(5000) }
     it { is_expected.to allow_value(attributes_for(:rsa_key_2048)[:key]).for(:key) }
+    it { is_expected.to allow_value(attributes_for(:rsa_key_4096)[:key]).for(:key) }
+    it { is_expected.to allow_value(attributes_for(:rsa_key_5120)[:key]).for(:key) }
+    it { is_expected.to allow_value(attributes_for(:rsa_key_8192)[:key]).for(:key) }
     it { is_expected.to allow_value(attributes_for(:dsa_key_2048)[:key]).for(:key) }
     it { is_expected.to allow_value(attributes_for(:ecdsa_key_256)[:key]).for(:key) }
     it { is_expected.to allow_value(attributes_for(:ed25519_key_256)[:key]).for(:key) }
@@ -79,15 +75,34 @@ describe Key, :mailer do
       expect(build(:key)).to be_valid
     end
 
-    it 'accepts a key with newline charecters after stripping them' do
-      key = build(:key)
-      key.key = key.key.insert(100, "\n")
-      key.key = key.key.insert(40, "\r\n")
-      expect(key).to be_valid
-    end
-
     it 'rejects the unfingerprintable key (not a key)' do
       expect(build(:key, key: 'ssh-rsa an-invalid-key==')).not_to be_valid
+    end
+
+    where(:factory, :chars, :expected_sections) do
+      [
+        [:key,                 ["\n", "\r\n"], 3],
+        [:key,                 [' ', ' '],     3],
+        [:key_without_comment, [' ', ' '],     2]
+      ]
+    end
+
+    with_them do
+      let!(:key) { create(factory) }
+      let!(:original_fingerprint) { key.fingerprint }
+
+      it 'accepts a key with blank space characters after stripping them' do
+        modified_key = key.key.insert(100, chars.first).insert(40, chars.last)
+        _, content = modified_key.split
+
+        key.update!(key: modified_key)
+
+        expect(key).to be_valid
+        expect(key.key.split.size).to eq(expected_sections)
+
+        expect(content).not_to match(/\s/)
+        expect(original_fingerprint).to eq(key.fingerprint)
+      end
     end
   end
 
@@ -154,6 +169,39 @@ describe Key, :mailer do
 
     it 'strips white spaces' do
       expect(described_class.new(key: " #{valid_key} ").key).to eq(valid_key)
+    end
+
+    it 'invalidates the public_key attribute' do
+      key = build(:key)
+
+      original = key.public_key
+      key.key = valid_key
+
+      expect(original.key_text).not_to be_nil
+      expect(key.public_key.key_text).to eq(valid_key)
+    end
+  end
+
+  describe '#refresh_user_cache', :use_clean_rails_memory_store_caching do
+    context 'when the key belongs to a user' do
+      it 'refreshes the keys count cache for the user' do
+        expect_any_instance_of(Users::KeysCountService)
+          .to receive(:refresh_cache)
+          .and_call_original
+
+        key = create(:personal_key)
+
+        expect(Users::KeysCountService.new(key.user).count).to eq(1)
+      end
+    end
+
+    context 'when the key does not belong to a user' do
+      it 'does nothing' do
+        expect_any_instance_of(Users::KeysCountService)
+          .not_to receive(:refresh_cache)
+
+        create(:key)
+      end
     end
   end
 end

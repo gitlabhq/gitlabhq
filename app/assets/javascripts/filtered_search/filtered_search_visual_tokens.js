@@ -1,9 +1,12 @@
-import AjaxCache from '../lib/utils/ajax_cache';
-import '../flash'; /* global Flash */
+import _ from 'underscore';
+import AjaxCache from '~/lib/utils/ajax_cache';
+import { objectToQueryString } from '~/lib/utils/common_utils';
+import Flash from '../flash';
 import FilteredSearchContainer from './container';
 import UsersCache from '../lib/utils/users_cache';
+import DropdownUtils from './dropdown_utils';
 
-class FilteredSearchVisualTokens {
+export default class FilteredSearchVisualTokens {
   static getLastVisualTokenBeforeInput() {
     const inputLi = FilteredSearchContainer.container.querySelector('.input-token');
     const lastVisualToken = inputLi && inputLi.previousElementSibling;
@@ -12,6 +15,21 @@ class FilteredSearchVisualTokens {
       lastVisualToken,
       isLastVisualTokenValid: lastVisualToken === null || lastVisualToken.className.indexOf('filtered-search-term') !== -1 || (lastVisualToken && lastVisualToken.querySelector('.value') !== null),
     };
+  }
+
+  /**
+   * Returns a computed API endpoint
+   * and query string composed of values from endpointQueryParams
+   * @param {String} endpoint
+   * @param {String} endpointQueryParams
+   */
+  static getEndpointWithQueryParams(endpoint, endpointQueryParams) {
+    if (!endpointQueryParams) {
+      return endpoint;
+    }
+
+    const queryString = objectToQueryString(JSON.parse(endpointQueryParams));
+    return `${endpoint}?${queryString}`;
   }
 
   static unselectTokens() {
@@ -38,21 +56,14 @@ class FilteredSearchVisualTokens {
   }
 
   static createVisualTokenElementHTML(canEdit = true) {
-    let removeTokenMarkup = '';
-    if (canEdit) {
-      removeTokenMarkup = `
-        <div class="remove-token" role="button">
-          <i class="fa fa-close"></i>
-        </div>
-      `;
-    }
-
     return `
-      <div class="selectable" role="button">
+      <div class="${canEdit ? 'selectable' : 'hidden'}" role="button">
         <div class="name"></div>
         <div class="value-container">
           <div class="value"></div>
-          ${removeTokenMarkup}
+          <div class="remove-token" role="button">
+            <i class="fa fa-close"></i>
+          </div>
         </div>
       </div>
     `;
@@ -80,7 +91,7 @@ class FilteredSearchVisualTokens {
     let processed = labels;
 
     if (!labels.preprocessed) {
-      processed = gl.DropdownUtils.duplicateLabelPreprocessing(labels);
+      processed = DropdownUtils.duplicateLabelPreprocessing(labels);
       AjaxCache.override(labelsEndpoint, processed);
       processed.preprocessed = true;
     }
@@ -91,12 +102,15 @@ class FilteredSearchVisualTokens {
   static updateLabelTokenColor(tokenValueContainer, tokenValue) {
     const filteredSearchInput = FilteredSearchContainer.container.querySelector('.filtered-search');
     const baseEndpoint = filteredSearchInput.dataset.baseEndpoint;
-    const labelsEndpoint = `${baseEndpoint}/labels.json`;
+    const labelsEndpoint = FilteredSearchVisualTokens.getEndpointWithQueryParams(
+      `${baseEndpoint}/labels.json`,
+      filteredSearchInput.dataset.endpointQueryParams,
+    );
 
     return AjaxCache.retrieve(labelsEndpoint)
       .then(FilteredSearchVisualTokens.preprocessLabel.bind(null, labelsEndpoint))
       .then((labels) => {
-        const matchingLabel = (labels || []).find(label => `~${gl.DropdownUtils.getEscapedText(label.title)}` === tokenValue);
+        const matchingLabel = (labels || []).find(label => `~${DropdownUtils.getEscapedText(label.title)}` === tokenValue);
 
         if (!matchingLabel) {
           return;
@@ -123,8 +137,8 @@ class FilteredSearchVisualTokens {
         /* eslint-disable no-param-reassign */
         tokenValueContainer.dataset.originalValue = tokenValue;
         tokenValueElement.innerHTML = `
-          <img class="avatar s20" src="${user.avatar_url}" alt="${user.name}'s avatar">
-          ${user.name}
+          <img class="avatar s20" src="${user.avatar_url}" alt="">
+          ${_.escape(user.name)}
         `;
         /* eslint-enable no-param-reassign */
       })
@@ -265,11 +279,11 @@ class FilteredSearchVisualTokens {
   static tokenizeInput() {
     const input = FilteredSearchContainer.container.querySelector('.filtered-search');
     const { isLastVisualTokenValid } =
-      gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+      FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
     if (input.value) {
       if (isLastVisualTokenValid) {
-        gl.FilteredSearchVisualTokens.addSearchVisualToken(input.value);
+        FilteredSearchVisualTokens.addSearchVisualToken(input.value);
       } else {
         FilteredSearchVisualTokens.addValueToPreviousVisualTokenElement(input.value);
       }
@@ -330,12 +344,12 @@ class FilteredSearchVisualTokens {
 
     if (!tokenContainer.lastElementChild.isEqualNode(inputLi)) {
       const { isLastVisualTokenValid } =
-        gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+        FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
       if (!isLastVisualTokenValid) {
-        const lastPartial = gl.FilteredSearchVisualTokens.getLastTokenPartial();
-        gl.FilteredSearchVisualTokens.removeLastTokenPartial();
-        gl.FilteredSearchVisualTokens.addSearchVisualToken(lastPartial);
+        const lastPartial = FilteredSearchVisualTokens.getLastTokenPartial();
+        FilteredSearchVisualTokens.removeLastTokenPartial();
+        FilteredSearchVisualTokens.addSearchVisualToken(lastPartial);
       }
 
       tokenContainer.removeChild(inputLi);
@@ -343,6 +357,3 @@ class FilteredSearchVisualTokens {
     }
   }
 }
-
-window.gl = window.gl || {};
-gl.FilteredSearchVisualTokens = FilteredSearchVisualTokens;

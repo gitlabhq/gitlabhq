@@ -23,6 +23,8 @@ describe Gitlab::CycleAnalytics::BaseEventFetcher do
     allow_any_instance_of(described_class).to receive(:serialize) do |event|
       event
     end
+    allow_any_instance_of(described_class)
+      .to receive(:allowed_ids).and_return(nil)
 
     stub_const('Gitlab::CycleAnalytics::BaseEventFetcher::MAX_EVENTS', max_events)
 
@@ -39,7 +41,7 @@ describe Gitlab::CycleAnalytics::BaseEventFetcher do
       milestone = create(:milestone, project: project)
 
       issue.update(milestone: milestone)
-      create_merge_request_closing_issue(issue)
+      create_merge_request_closing_issue(user, project, issue)
     end
   end
 end

@@ -7,6 +7,18 @@ module QuickActions
     SHRUG = '¯\\＿(ツ)＿/¯'.freeze
     TABLEFLIP = '(╯°□°)╯︵ ┻━┻'.freeze
 
+    # Takes an issuable and returns an array of all the available commands
+    # represented with .to_h
+    def available_commands(issuable)
+      @issuable = issuable
+
+      self.class.command_definitions.map do |definition|
+        next unless definition.available?(self)
+
+        definition.to_h(self)
+      end.compact
+    end
+
     # Takes a text and interprets the commands that are extracted from it.
     # Returns the content without commands, and hash of changes to be applied to a record.
     def execute(content, issuable)
@@ -15,8 +27,8 @@ module QuickActions
       @issuable = issuable
       @updates = {}
 
-      content, commands = extractor.extract_commands(content, context)
-      extract_updates(commands, context)
+      content, commands = extractor.extract_commands(content)
+      extract_updates(commands)
 
       [content, @updates]
     end
@@ -28,8 +40,8 @@ module QuickActions
 
       @issuable = issuable
 
-      content, commands = extractor.extract_commands(content, context)
-      commands = explain_commands(commands, context)
+      content, commands = extractor.extract_commands(content)
+      commands = explain_commands(commands)
       [content, commands]
     end
 
@@ -157,11 +169,11 @@ module QuickActions
     params '%"milestone"'
     condition do
       current_user.can?(:"admin_#{issuable.to_ability_name}", project) &&
-        project.milestones.active.any?
+        find_milestones(project, state: 'active').any?
     end
     parse_params do |milestone_param|
       extract_references(milestone_param, :milestone).first ||
-        project.milestones.find_by(title: milestone_param.strip)
+        find_milestones(project, title: milestone_param.strip).first
     end
     command :milestone do |milestone|
       @updates[:milestone_id] = milestone.id if milestone
@@ -335,9 +347,9 @@ module QuickActions
       "#{verb} this #{noun} as Work In Progress."
     end
     condition do
-      issuable.persisted? &&
-        issuable.respond_to?(:work_in_progress?) &&
-        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+      issuable.respond_to?(:work_in_progress?) &&
+        # Allow it to mark as WIP on MR creation page _or_ through MR notes.
+        (issuable.new_record? || current_user.can?(:"update_#{issuable.to_ability_name}", issuable))
     end
     command :wip do
       @updates[:wip_event] = issuable.work_in_progress? ? 'unwip' : 'wip'
@@ -381,7 +393,7 @@ module QuickActions
     end
 
     desc 'Add or substract spent time'
-    explanation do |time_spent|
+    explanation do |time_spent, time_spent_date|
       if time_spent
         if time_spent > 0
           verb = 'Adds'
@@ -394,16 +406,20 @@ module QuickActions
         "#{verb} #{Gitlab::TimeTrackingFormatter.output(value)} spent time."
       end
     end
-    params '<1h 30m | -1h 30m>'
+    params '<time(1h30m | -1h30m)> <date(YYYY-MM-DD)>'
     condition do
       current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
     end
-    parse_params do |raw_duration|
-      Gitlab::TimeTrackingFormatter.parse(raw_duration)
+    parse_params do |raw_time_date|
+      Gitlab::QuickActions::SpendTimeAndDateSeparator.new(raw_time_date).execute
     end
-    command :spend do |time_spent|
+    command :spend do |time_spent, time_spent_date|
       if time_spent
-        @updates[:spend_time] = { duration: time_spent, user: current_user }
+        @updates[:spend_time] = {
+          duration: time_spent,
+          user_id: current_user.id,
+          spent_at: time_spent_date
+        }
       end
     end
 
@@ -424,7 +440,7 @@ module QuickActions
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
     command :remove_time_spent do
-      @updates[:spend_time] = { duration: :reset, user: current_user }
+      @updates[:spend_time] = { duration: :reset, user_id: current_user.id }
     end
 
     desc "Append the comment with #{SHRUG}"
@@ -458,7 +474,7 @@ module QuickActions
       target_branch_param.strip
     end
     command :target_branch do |branch_name|
-      @updates[:target_branch] = branch_name if project.repository.branch_names.include?(branch_name)
+      @updates[:target_branch] = branch_name if project.repository.branch_exists?(branch_name)
     end
 
     desc 'Move issue from one column of the board to another'
@@ -540,6 +556,10 @@ module QuickActions
       users
     end
 
+    def find_milestones(project, params = {})
+      MilestonesFinder.new(params.merge(project_ids: [project.id], group_ids: [project.group&.id])).execute
+    end
+
     def find_labels(labels_param)
       extract_references(labels_param, :label) |
         LabelsFinder.new(current_user, project_id: project.id, name: labels_param.split).execute
@@ -553,21 +573,21 @@ module QuickActions
       find_labels(labels_param).map(&:id)
     end
 
-    def explain_commands(commands, opts)
+    def explain_commands(commands)
       commands.map do |name, arg|
         definition = self.class.definition_by_name(name)
         next unless definition
 
-        definition.explain(self, opts, arg)
+        definition.explain(self, arg)
       end.compact
     end
 
-    def extract_updates(commands, opts)
+    def extract_updates(commands)
       commands.each do |name, arg|
         definition = self.class.definition_by_name(name)
         next unless definition
 
-        definition.execute(self, opts, arg)
+        definition.execute(self, arg)
       end
     end
 
@@ -576,15 +596,6 @@ module QuickActions
       ext.analyze(arg, author: current_user)
 
       ext.references(type)
-    end
-
-    def context
-      {
-        issuable: issuable,
-        current_user: current_user,
-        project: project,
-        params: params
-      }
     end
   end
 end

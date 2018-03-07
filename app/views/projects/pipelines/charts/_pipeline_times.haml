@@ -1,10 +1,8 @@
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag('pipelines_times')
-
 %div
   %p.light
     = _("Commit duration in minutes for last 30 commits")
 
   %canvas#build_timesChart{ height: 200 }
 
+-# haml-lint:disable InlineJavaScript
 %script#pipelinesTimesChartsData{ type: "application/json" }= { :labels => @charts[:pipeline_times].labels, :values => @charts[:pipeline_times].pipeline_times }.to_json.html_safe

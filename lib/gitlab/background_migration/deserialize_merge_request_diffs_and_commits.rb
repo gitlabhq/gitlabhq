@@ -1,13 +1,26 @@
+# frozen_string_literal: true
+# rubocop:disable Metrics/MethodLength
+# rubocop:disable Metrics/LineLength
+# rubocop:disable Metrics/AbcSize
+# rubocop:disable Style/Documentation
+
 module Gitlab
   module BackgroundMigration
     class DeserializeMergeRequestDiffsAndCommits
       attr_reader :diff_ids, :commit_rows, :file_rows
+
+      class Error < StandardError
+        def backtrace
+          cause.backtrace
+        end
+      end
 
       class MergeRequestDiff < ActiveRecord::Base
         self.table_name = 'merge_request_diffs'
       end
 
       BUFFER_ROWS = 1000
+      DIFF_FILE_BUFFER_ROWS = 100
 
       def perform(start_id, stop_id)
         merge_request_diffs = MergeRequestDiff
@@ -26,13 +39,17 @@ module Gitlab
 
           if diff_ids.length > BUFFER_ROWS ||
               commit_rows.length > BUFFER_ROWS ||
-              file_rows.length > BUFFER_ROWS
+              file_rows.length > DIFF_FILE_BUFFER_ROWS
 
             flush_buffers!
           end
         end
 
         flush_buffers!
+      rescue => e
+        Rails.logger.info("#{self.class.name}: failed for IDs #{merge_request_diffs.map(&:id)} with #{e.class.name}")
+
+        raise Error.new(e.inspect)
       end
 
       private
@@ -45,20 +62,32 @@ module Gitlab
 
       def flush_buffers!
         if diff_ids.any?
-          MergeRequestDiff.transaction do
-            Gitlab::Database.bulk_insert('merge_request_diff_commits', commit_rows)
-            Gitlab::Database.bulk_insert('merge_request_diff_files', file_rows)
-
-            MergeRequestDiff.where(id: diff_ids).update_all(st_commits: nil, st_diffs: nil)
+          commit_rows.each_slice(BUFFER_ROWS).each do |commit_rows_slice|
+            bulk_insert('merge_request_diff_commits', commit_rows_slice)
           end
+
+          file_rows.each_slice(DIFF_FILE_BUFFER_ROWS).each do |file_rows_slice|
+            bulk_insert('merge_request_diff_files', file_rows_slice)
+          end
+
+          MergeRequestDiff.where(id: diff_ids).update_all(st_commits: nil, st_diffs: nil)
         end
 
         reset_buffers!
       end
 
+      def bulk_insert(table, rows)
+        Gitlab::Database.bulk_insert(table, rows)
+      rescue ActiveRecord::RecordNotUnique
+        ids = rows.map { |row| row[:merge_request_diff_id] }.uniq.sort
+
+        Rails.logger.info("#{self.class.name}: rows inserted twice for IDs #{ids}")
+      end
+
       def single_diff_rows(merge_request_diff)
         sha_attribute = Gitlab::Database::ShaAttribute.new
         commits = YAML.load(merge_request_diff.st_commits) rescue []
+        commits ||= []
 
         commit_rows = commits.map.with_index do |commit, index|
           commit_hash = commit.to_hash.with_indifferent_access.except(:parent_ids)

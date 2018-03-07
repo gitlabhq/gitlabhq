@@ -1,31 +1,29 @@
 import Vue from 'vue';
-import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 import mrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import notify from '~/lib/utils/notify';
+import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import mockData from './mock_data';
-
-const createComponent = () => {
-  delete mrWidgetOptions.el; // Prevent component mounting
-  gl.mrWidgetData = mockData;
-  const Component = Vue.extend(mrWidgetOptions);
-  return new Component();
-};
 
 const returnPromise = data => new Promise((resolve) => {
   resolve({
-    json() {
-      return data;
-    },
-    body: data,
+    data,
   });
 });
 
 describe('mrWidgetOptions', () => {
   let vm;
+  let MrWidgetOptions;
 
   beforeEach(() => {
-    vm = createComponent();
+    // Prevent component mounting
+    delete mrWidgetOptions.el;
+
+    MrWidgetOptions = Vue.extend(mrWidgetOptions);
+    vm = mountComponent(MrWidgetOptions, {
+      mrData: { ...mockData },
+    });
   });
 
   describe('data', () => {
@@ -78,7 +76,7 @@ describe('mrWidgetOptions', () => {
       });
 
       it('should return true if there is relatedLinks in MR', () => {
-        vm.mr.relatedLinks = {};
+        Vue.set(vm.mr, 'relatedLinks', {});
         expect(vm.shouldRenderRelatedLinks).toBeTruthy();
       });
     });
@@ -121,24 +119,28 @@ describe('mrWidgetOptions', () => {
 
     describe('initPolling', () => {
       it('should call SmartInterval', () => {
-        spyOn(gl, 'SmartInterval').and.returnValue({
-          resume() {},
-          stopTimer() {},
-        });
+        spyOn(vm, 'checkStatus').and.returnValue(Promise.resolve());
+        jasmine.clock().install();
         vm.initPolling();
 
+        expect(vm.checkStatus).not.toHaveBeenCalled();
+
+        jasmine.clock().tick(10000);
+
         expect(vm.pollingInterval).toBeDefined();
-        expect(gl.SmartInterval).toHaveBeenCalled();
+        expect(vm.checkStatus).toHaveBeenCalled();
+
+        jasmine.clock().uninstall();
       });
     });
 
     describe('initDeploymentsPolling', () => {
       it('should call SmartInterval', () => {
-        spyOn(gl, 'SmartInterval');
+        spyOn(vm, 'fetchDeployments').and.returnValue(Promise.resolve());
         vm.initDeploymentsPolling();
 
         expect(vm.deploymentsInterval).toBeDefined();
-        expect(gl.SmartInterval).toHaveBeenCalled();
+        expect(vm.fetchDeployments).toHaveBeenCalled();
       });
     });
 
@@ -293,6 +295,15 @@ describe('mrWidgetOptions', () => {
 
         expect(notify.notifyMe).not.toHaveBeenCalled();
       });
+
+      it('should not notify if no pipeline provided', () => {
+        vm.handleNotification({
+          ...data,
+          pipeline: undefined,
+        });
+
+        expect(notify.notifyMe).not.toHaveBeenCalled();
+      });
     });
 
     describe('resumePolling', () => {
@@ -310,28 +321,6 @@ describe('mrWidgetOptions', () => {
 
         vm.stopPolling();
         expect(vm.pollingInterval.stopTimer).toHaveBeenCalled();
-      });
-    });
-
-    describe('createService', () => {
-      it('should instantiate a Service', () => {
-        const endpoints = {
-          mergePath: '/nice/path',
-          mergeCheckPath: '/nice/path',
-          cancelAutoMergePath: '/nice/path',
-          removeWIPPath: '/nice/path',
-          sourceBranchPath: '/nice/path',
-          ciEnvironmentsStatusPath: '/nice/path',
-          statusPath: '/nice/path',
-          mergeActionsContentPath: '/nice/path',
-        };
-
-        const serviceInstance = vm.createService(endpoints);
-        const isInstanceOfMRService = serviceInstance instanceof MRWidgetService;
-        expect(isInstanceOfMRService).toBe(true);
-        Object.keys(serviceInstance).forEach((key) => {
-          expect(serviceInstance[key]).toBeDefined();
-        });
       });
     });
   });
@@ -360,6 +349,33 @@ describe('mrWidgetOptions', () => {
       expect(comps['mr-widget-pipeline-blocked']).toBeDefined();
       expect(comps['mr-widget-pipeline-failed']).toBeDefined();
       expect(comps['mr-widget-merge-when-pipeline-succeeds']).toBeDefined();
+    });
+  });
+
+  describe('rendering relatedLinks', () => {
+    beforeEach((done) => {
+      vm.mr.relatedLinks = {
+        assignToMe: null,
+        closing: `
+          <a class="close-related-link" href="#'>
+            Close
+          </a>
+        `,
+        mentioned: '',
+      };
+      Vue.nextTick(done);
+    });
+
+    it('renders if there are relatedLinks', () => {
+      expect(vm.$el.querySelector('.close-related-link')).toBeDefined();
+    });
+
+    it('does not render if state is nothingToMerge', (done) => {
+      vm.mr.state = stateKey.nothingToMerge;
+      Vue.nextTick(() => {
+        expect(vm.$el.querySelector('.close-related-link')).toBeNull();
+        done();
+      });
     });
   });
 });

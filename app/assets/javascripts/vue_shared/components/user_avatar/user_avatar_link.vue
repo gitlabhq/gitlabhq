@@ -12,17 +12,22 @@
     :img-alt="tooltipText"
     :img-size="20"
     :tooltip-text="tooltipText"
-    tooltip-placement="top"
+    :tooltip-placement="top"
+    :username="username"
   />
 
 */
 
 import userAvatarImage from './user_avatar_image.vue';
+import tooltip from '../../directives/tooltip';
 
 export default {
   name: 'UserAvatarLink',
   components: {
     userAvatarImage,
+  },
+  directives: {
+    tooltip,
   },
   props: {
     linkHref: {
@@ -60,6 +65,19 @@ export default {
       required: false,
       default: 'top',
     },
+    username: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+  computed: {
+    shouldShowUsername() {
+      return this.username.length > 0;
+    },
+    avatarTooltipText() {
+      return this.shouldShowUsername ? '' : this.tooltipText;
+    },
   },
 };
 </script>
@@ -73,8 +91,13 @@ export default {
       :img-alt="imgAlt"
       :css-classes="imgCssClasses"
       :size="imgSize"
-      :tooltip-text="tooltipText"
+      :tooltip-text="avatarTooltipText"
       :tooltip-placement="tooltipPlacement"
-    />
+    /><span
+      v-if="shouldShowUsername"
+      v-tooltip
+      :title="tooltipText"
+      :tooltip-placement="tooltipPlacement"
+    >{{ username }}</span>
   </a>
 </template>

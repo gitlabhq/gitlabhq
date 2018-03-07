@@ -1,7 +1,7 @@
 class GitlabUsagePingWorker
   LEASE_TIMEOUT = 86400
 
-  include Sidekiq::Worker
+  include ApplicationWorker
   include CronjobQueue
 
   def perform

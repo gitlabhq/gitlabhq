@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Badge::Coverage::Template do
-  let(:badge) { double(entity: 'coverage', status: 90) }
+  let(:badge) { double(entity: 'coverage', status: 90.00) }
   let(:template) { described_class.new(badge) }
 
   describe '#key_text' do
@@ -13,7 +13,17 @@ describe Gitlab::Badge::Coverage::Template do
   describe '#value_text' do
     context 'when coverage is known' do
       it 'returns coverage percentage' do
-        expect(template.value_text).to eq '90%'
+        expect(template.value_text).to eq '90.00%'
+      end
+    end
+
+    context 'when coverage is known to many digits' do
+      before do
+        allow(badge).to receive(:status).and_return(92.349)
+      end
+
+      it 'returns rounded coverage percentage' do
+        expect(template.value_text).to eq '92.35%'
       end
     end
 
@@ -37,7 +47,7 @@ describe Gitlab::Badge::Coverage::Template do
   describe '#value_width' do
     context 'when coverage is known' do
       it 'is narrower when coverage is known' do
-        expect(template.value_width).to eq 36
+        expect(template.value_width).to eq 54
       end
     end
 
@@ -113,7 +123,7 @@ describe Gitlab::Badge::Coverage::Template do
   describe '#width' do
     context 'when coverage is known' do
       it 'returns the key width plus value width' do
-        expect(template.width).to eq 98
+        expect(template.width).to eq 116
       end
     end
 

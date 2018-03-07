@@ -7,6 +7,20 @@ feature 'Runners' do
     sign_in(user)
   end
 
+  context 'when user opens runners page' do
+    given(:project) { create(:project) }
+
+    background do
+      project.add_master(user)
+    end
+
+    scenario 'user can see a button to install runners on kubernetes clusters' do
+      visit runners_path(project)
+
+      expect(page).to have_link('Install Runner on Kubernetes', href: project_clusters_path(project))
+    end
+  end
+
   context 'when a project has enabled shared_runners' do
     given(:project) { create(:project) }
 
@@ -31,6 +45,26 @@ feature 'Runners' do
         click_on specific_runner.short_sha
 
         expect(page).to have_content(specific_runner.platform)
+      end
+
+      scenario 'user can pause and resume the specific runner' do
+        visit runners_path(project)
+
+        within '.activated-specific-runners' do
+          expect(page).to have_content('Pause')
+        end
+
+        click_on 'Pause'
+
+        within '.activated-specific-runners' do
+          expect(page).to have_content('Resume')
+        end
+
+        click_on 'Resume'
+
+        within '.activated-specific-runners' do
+          expect(page).to have_content('Pause')
+        end
       end
 
       scenario 'user removes an activated specific runner if this is last project for that runners' do

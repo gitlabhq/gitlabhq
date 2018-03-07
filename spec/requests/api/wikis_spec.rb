@@ -12,6 +12,8 @@ require 'spec_helper'
 
 describe API::Wikis do
   let(:user) { create(:user) }
+  let(:group) { create(:group).tap { |g| g.add_owner(user) } }
+  let(:project_wiki) { create(:project_wiki, project: project, user: user) }
   let(:payload) { { content: 'content', format: 'rdoc', title: 'title' } }
   let(:expected_keys_with_content) { %w(content format slug title) }
   let(:expected_keys_without_content) { %w(format slug title) }
@@ -19,14 +21,14 @@ describe API::Wikis do
   shared_examples_for 'returns list of wiki pages' do
     context 'when wiki has pages' do
       let!(:pages) do
-        [create(:wiki_page, wiki: project.wiki, attrs: { title: 'page1', content: 'content of page1' }),
-         create(:wiki_page, wiki: project.wiki, attrs: { title: 'page2', content: 'content of page2' })]
+        [create(:wiki_page, wiki: project_wiki, attrs: { title: 'page1', content: 'content of page1' }),
+         create(:wiki_page, wiki: project_wiki, attrs: { title: 'page2', content: 'content of page2' })]
       end
 
       it 'returns the list of wiki pages without content' do
         get api(url, user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response.size).to eq(2)
 
         json_response.each_with_index do |page, index|
@@ -39,7 +41,7 @@ describe API::Wikis do
       it 'returns the list of wiki pages with content' do
         get api(url, user), with_content: 1
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response.size).to eq(2)
 
         json_response.each_with_index do |page, index|
@@ -54,14 +56,14 @@ describe API::Wikis do
     it 'return the empty list of wiki pages' do
       get api(url, user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response.size).to eq(0)
     end
   end
 
   shared_examples_for 'returns wiki page' do
     it 'returns the wiki page' do
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response.size).to eq(4)
       expect(json_response.keys).to match_array(expected_keys_with_content)
       expect(json_response['content']).to eq(page.content)
@@ -74,7 +76,7 @@ describe API::Wikis do
     it 'creates the wiki page' do
       post(api(url, user), payload)
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response.size).to eq(4)
       expect(json_response.keys).to match_array(expected_keys_with_content)
       expect(json_response['content']).to eq(payload[:content])
@@ -89,7 +91,7 @@ describe API::Wikis do
 
         post(api(url, user), payload)
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
         expect(json_response.size).to eq(1)
         expect(json_response['error']).to eq("#{part} is missing")
       end
@@ -98,7 +100,7 @@ describe API::Wikis do
 
   shared_examples_for 'updates wiki page' do
     it 'updates the wiki page' do
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response.size).to eq(4)
       expect(json_response.keys).to match_array(expected_keys_with_content)
       expect(json_response['content']).to eq(payload[:content])
@@ -109,7 +111,7 @@ describe API::Wikis do
 
   shared_examples_for '403 Forbidden' do
     it 'returns 403 Forbidden' do
-      expect(response).to have_http_status(403)
+      expect(response).to have_gitlab_http_status(403)
       expect(json_response.size).to eq(1)
       expect(json_response['message']).to eq('403 Forbidden')
     end
@@ -117,7 +119,7 @@ describe API::Wikis do
 
   shared_examples_for '404 Wiki Page Not Found' do
     it 'returns 404 Wiki Page Not Found' do
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
       expect(json_response.size).to eq(1)
       expect(json_response['message']).to eq('404 Wiki Page Not Found')
     end
@@ -125,7 +127,7 @@ describe API::Wikis do
 
   shared_examples_for '404 Project Not Found' do
     it 'returns 404 Project Not Found' do
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
       expect(json_response.size).to eq(1)
       expect(json_response['message']).to eq('404 Project Not Found')
     end
@@ -133,7 +135,7 @@ describe API::Wikis do
 
   shared_examples_for '204 No Content' do
     it 'returns 204 No Content' do
-      expect(response).to have_http_status(204)
+      expect(response).to have_gitlab_http_status(204)
     end
   end
 
@@ -445,7 +447,7 @@ describe API::Wikis do
   end
 
   describe 'PUT /projects/:id/wikis/:slug' do
-    let(:page) { create(:wiki_page, wiki: project.wiki) }
+    let(:page) { create(:wiki_page, wiki: project_wiki) }
     let(:payload) { { title: 'new title', content: 'new content' } }
     let(:url) { "/projects/#{project.id}/wikis/#{page.slug}" }
 
@@ -568,10 +570,20 @@ describe API::Wikis do
         end
       end
     end
+
+    context 'when wiki belongs to a group project' do
+      let(:project) { create(:project, namespace: group) }
+
+      before do
+        put(api(url, user), payload)
+      end
+
+      include_examples 'updates wiki page'
+    end
   end
 
   describe 'DELETE /projects/:id/wikis/:slug' do
-    let(:page) { create(:wiki_page, wiki: project.wiki) }
+    let(:page) { create(:wiki_page, wiki: project_wiki) }
     let(:url) { "/projects/#{project.id}/wikis/#{page.slug}" }
 
     context 'when wiki is disabled' do
@@ -674,6 +686,16 @@ describe API::Wikis do
           include_examples '404 Wiki Page Not Found'
         end
       end
+    end
+
+    context 'when wiki belongs to a group project' do
+      let(:project) { create(:project, namespace: group) }
+
+      before do
+        delete(api(url, user))
+      end
+
+      include_examples '204 No Content'
     end
   end
 end

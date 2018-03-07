@@ -3,10 +3,12 @@ require 'spec_helper'
 describe Projects::PipelineSchedulesController do
   include AccessMatchersForController
 
-  set(:project) { create(:project, :public) }
-  let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
+  set(:project) { create(:project, :public, :repository) }
+  set(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
 
   describe 'GET #index' do
+    render_views
+
     let(:scope) { nil }
     let!(:inactive_pipeline_schedule) do
       create(:ci_pipeline_schedule, :inactive, project: project)
@@ -15,7 +17,7 @@ describe Projects::PipelineSchedulesController do
     it 'renders the index view' do
       visit_pipelines_schedules
 
-      expect(response).to have_http_status(:ok)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template(:index)
     end
 
@@ -35,7 +37,7 @@ describe Projects::PipelineSchedulesController do
       end
 
       it 'only shows active pipeline schedules' do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(assigns(:schedules)).to include(pipeline_schedule)
         expect(assigns(:schedules)).not_to include(inactive_pipeline_schedule)
       end
@@ -57,7 +59,7 @@ describe Projects::PipelineSchedulesController do
     it 'initializes a pipeline schedule model' do
       get :new, namespace_id: project.namespace.to_param, project_id: project
 
-      expect(response).to have_http_status(:ok)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(assigns(:schedule)).to be_a_new(Ci::PipelineSchedule)
     end
   end
@@ -87,7 +89,7 @@ describe Projects::PipelineSchedulesController do
             .to change { Ci::PipelineSchedule.count }.by(1)
             .and change { Ci::PipelineScheduleVariable.count }.by(1)
 
-          expect(response).to have_http_status(:found)
+          expect(response).to have_gitlab_http_status(:found)
 
           Ci::PipelineScheduleVariable.last.tap do |v|
             expect(v.key).to eq("AAA")
@@ -96,7 +98,7 @@ describe Projects::PipelineSchedulesController do
         end
       end
 
-      context 'when variables_attributes has two variables and duplicted' do
+      context 'when variables_attributes has two variables and duplicated' do
         let(:schedule) do
           basic_param.merge({
             variables_attributes: [{ key: 'AAA', value: 'AAA123' }, { key: 'AAA', value: 'BBB123' }]
@@ -158,7 +160,7 @@ describe Projects::PipelineSchedulesController do
             expect { go }.to change { Ci::PipelineScheduleVariable.count }.by(1)
 
             pipeline_schedule.reload
-            expect(response).to have_http_status(:found)
+            expect(response).to have_gitlab_http_status(:found)
             expect(pipeline_schedule.variables.last.key).to eq('AAA')
             expect(pipeline_schedule.variables.last.value).to eq('AAA123')
           end
@@ -324,7 +326,7 @@ describe Projects::PipelineSchedulesController do
       it 'loads the pipeline schedule' do
         get :edit, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
 
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(assigns(:schedule)).to eq(pipeline_schedule)
       end
     end
@@ -364,6 +366,65 @@ describe Projects::PipelineSchedulesController do
     end
   end
 
+  describe 'POST #play', :clean_gitlab_redis_cache do
+    set(:user) { create(:user) }
+    let(:ref) { 'master' }
+
+    before do
+      project.add_developer(user)
+
+      sign_in(user)
+    end
+
+    context 'when an anonymous user makes the request' do
+      before do
+        sign_out(user)
+      end
+
+      it 'does not allow pipeline to be executed' do
+        expect(RunPipelineScheduleWorker).not_to receive(:perform_async)
+
+        post :play, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when a developer makes the request' do
+      it 'executes a new pipeline' do
+        expect(RunPipelineScheduleWorker).to receive(:perform_async).with(pipeline_schedule.id, user.id).and_return('job-123')
+
+        post :play, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+
+        expect(flash[:notice]).to start_with 'Successfully scheduled a pipeline to run'
+        expect(response).to have_gitlab_http_status(302)
+      end
+
+      it 'prevents users from scheduling the same pipeline repeatedly' do
+        2.times do
+          post :play, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+        end
+
+        expect(flash.to_a.size).to eq(2)
+        expect(flash[:alert]).to eq 'You cannot play this scheduled pipeline at the moment. Please wait a minute.'
+        expect(response).to have_gitlab_http_status(302)
+      end
+    end
+
+    context 'when a developer attempts to schedule a protected ref' do
+      it 'does not allow pipeline to be executed' do
+        create(:protected_branch, project: project, name: ref)
+        protected_schedule = create(:ci_pipeline_schedule, project: project, ref: ref)
+
+        expect(RunPipelineScheduleWorker).not_to receive(:perform_async)
+
+        post :play, namespace_id: project.namespace.to_param, project_id: project, id: protected_schedule.id
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+  end
+
   describe 'DELETE #destroy' do
     set(:user) { create(:user) }
 
@@ -376,7 +437,7 @@ describe Projects::PipelineSchedulesController do
       end
 
       it 'does not delete the pipeline schedule' do
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -391,7 +452,7 @@ describe Projects::PipelineSchedulesController do
           delete :destroy, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
         end.to change { project.pipeline_schedules.count }.by(-1)
 
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(302)
       end
     end
   end

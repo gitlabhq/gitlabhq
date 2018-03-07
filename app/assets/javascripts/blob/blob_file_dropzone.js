@@ -1,9 +1,10 @@
 /* eslint-disable func-names, object-shorthand, prefer-arrow-callback */
-/* global Dropzone */
-
-import '../lib/utils/url_utility';
+import Dropzone from 'dropzone';
+import { visitUrl } from '../lib/utils/url_utility';
 import { HIDDEN_CLASS } from '../lib/utils/constants';
 import csrf from '../lib/utils/csrf';
+
+Dropzone.autoDiscover = false;
 
 function toggleLoading($el, $icon, loading) {
   if (loading) {
@@ -50,7 +51,7 @@ export default class BlobFileDropzone {
         });
         this.on('success', function (header, response) {
           $('#modal-upload-blob').modal('hide');
-          window.gl.utils.visitUrl(response.filePath);
+          visitUrl(response.filePath);
         });
         this.on('maxfilesexceeded', function (file) {
           dropzoneMessage.addClass(HIDDEN_CLASS);

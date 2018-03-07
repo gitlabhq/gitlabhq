@@ -14,7 +14,7 @@ module Gitlab
     end
 
     def mark(marker_ranges)
-      return rich_line unless marker_ranges
+      return rich_line unless marker_ranges&.any?
 
       if html_escaped
         rich_marker_ranges = []
@@ -90,6 +90,7 @@ module Gitlab
     # Takes an array of integers, and returns an array of ranges covering the same integers
     def collapse_ranges(positions)
       return [] if positions.empty?
+
       ranges = []
 
       start = prev = positions[0]

@@ -22,7 +22,7 @@ describe Banzai::ObjectRenderer do
       end
 
       it 'retrieves field content using Banzai::Renderer.render_field' do
-        expect(Banzai::Renderer).to receive(:render_field).with(object, :note).and_call_original
+        expect(Banzai::Renderer).to receive(:render_field).with(object, :note, {}).and_call_original
 
         renderer.render([object], :note)
       end
@@ -68,7 +68,7 @@ describe Banzai::ObjectRenderer do
       end
 
       it 'retrieves field content using Banzai::Renderer.cacheless_render_field' do
-        expect(Banzai::Renderer).to receive(:cacheless_render_field).with(commit, :title).and_call_original
+        expect(Banzai::Renderer).to receive(:cacheless_render_field).with(commit, :title, {}).and_call_original
 
         renderer.render([commit], :title)
       end

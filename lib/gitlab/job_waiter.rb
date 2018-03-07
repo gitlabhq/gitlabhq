@@ -15,15 +15,23 @@ module Gitlab
   # push to that array when done. Once the waiter has popped `count` items, it
   # knows all the jobs are done.
   class JobWaiter
+    KEY_PREFIX = "gitlab:job_waiter".freeze
+
     def self.notify(key, jid)
       Gitlab::Redis::SharedState.with { |redis| redis.lpush(key, jid) }
     end
 
-    attr_reader :key, :jobs_remaining, :finished
+    def self.key?(key)
+      key.is_a?(String) && key =~ /\A#{KEY_PREFIX}:\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/
+    end
+
+    attr_reader :key, :finished
+    attr_accessor :jobs_remaining
 
     # jobs_remaining - the number of jobs left to wait for
-    def initialize(jobs_remaining)
-      @key = "gitlab:job_waiter:#{SecureRandom.uuid}"
+    # key - The key of this waiter.
+    def initialize(jobs_remaining = 0, key = "#{KEY_PREFIX}:#{SecureRandom.uuid}")
+      @key = key
       @jobs_remaining = jobs_remaining
       @finished = []
     end

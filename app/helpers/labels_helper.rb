@@ -1,5 +1,13 @@
 module LabelsHelper
+  extend self
   include ActionView::Helpers::TagHelper
+
+  def show_label_issuables_link?(label, issuables_type, current_user: nil, project: nil)
+    return true if label.is_a?(GroupLabel)
+    return true unless project
+
+    project.feature_available?(issuables_type, current_user)
+  end
 
   # Link to a Label
   #

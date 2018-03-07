@@ -25,6 +25,11 @@ module Gitlab
             }
           end
         end
+
+        def self.transform_reactive_result(result)
+          result[:metrics] = result.delete :data
+          result
+        end
       end
     end
   end

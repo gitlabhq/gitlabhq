@@ -38,4 +38,29 @@ describe Gitlab::Git do
       expect(described_class.ref_name(utf8_invalid_ref)).to eq("an_invalid_ref_å")
     end
   end
+
+  describe '.shas_eql?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:sha1, :sha2, :result) do
+      sha           = RepoHelpers.sample_commit.id
+      short_sha     = sha[0, Gitlab::Git::Commit::MIN_SHA_LENGTH]
+      too_short_sha = sha[0, Gitlab::Git::Commit::MIN_SHA_LENGTH - 1]
+
+      [
+        [sha, sha,           true],
+        [sha, short_sha,     true],
+        [sha, sha.reverse,   false],
+        [sha, too_short_sha, false],
+        [sha, nil,           false]
+      ]
+    end
+
+    with_them do
+      it { expect(described_class.shas_eql?(sha1, sha2)).to eq(result) }
+      it 'is commutative' do
+        expect(described_class.shas_eql?(sha2, sha1)).to eq(result)
+      end
+    end
+  end
 end

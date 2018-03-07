@@ -1,6 +1,7 @@
 /* eslint-disable promise/catch-or-return */
-
+import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
+import MockAdapter from 'axios-mock-adapter';
 
 describe('common_utils', () => {
   describe('parseUrl', () => {
@@ -84,46 +85,106 @@ describe('common_utils', () => {
       expectGetElementIdToHaveBeenCalledWith('definição');
       expectGetElementIdToHaveBeenCalledWith('user-content-definição');
     });
+
+    it('scrolls element into view', () => {
+      document.body.innerHTML += `
+        <div id="parent">
+          <div style="height: 2000px;"></div>
+          <div id="test" style="height: 2000px;"></div>
+        </div>
+      `;
+
+      window.history.pushState({}, null, '#test');
+      commonUtils.handleLocationHash();
+
+      expectGetElementIdToHaveBeenCalledWith('test');
+      expect(window.scrollY).toBe(document.getElementById('test').offsetTop);
+
+      document.getElementById('parent').remove();
+    });
+
+    it('scrolls user content element into view', () => {
+      document.body.innerHTML += `
+        <div id="parent">
+          <div style="height: 2000px;"></div>
+          <div id="user-content-test" style="height: 2000px;"></div>
+        </div>
+      `;
+
+      window.history.pushState({}, null, '#test');
+      commonUtils.handleLocationHash();
+
+      expectGetElementIdToHaveBeenCalledWith('test');
+      expectGetElementIdToHaveBeenCalledWith('user-content-test');
+      expect(window.scrollY).toBe(document.getElementById('user-content-test').offsetTop);
+
+      document.getElementById('parent').remove();
+    });
+
+    it('scrolls to element with offset from navbar', () => {
+      spyOn(window, 'scrollBy').and.callThrough();
+      document.body.innerHTML += `
+        <div id="parent">
+          <div class="navbar-gitlab" style="position: fixed; top: 0; height: 50px;"></div>
+          <div style="height: 2000px; margin-top: 50px;"></div>
+          <div id="user-content-test" style="height: 2000px;"></div>
+        </div>
+      `;
+
+      window.history.pushState({}, null, '#test');
+      commonUtils.handleLocationHash();
+
+      expectGetElementIdToHaveBeenCalledWith('test');
+      expectGetElementIdToHaveBeenCalledWith('user-content-test');
+      expect(window.scrollY).toBe(document.getElementById('user-content-test').offsetTop - 50);
+      expect(window.scrollBy).toHaveBeenCalledWith(0, -50);
+
+      document.getElementById('parent').remove();
+    });
   });
 
-  describe('setParamInURL', () => {
+  describe('historyPushState', () => {
     afterEach(() => {
-      window.history.pushState({}, null, '');
+      window.history.replaceState({}, null, null);
     });
 
-    it('should return the parameter', () => {
-      window.history.replaceState({}, null, '');
+    it('should call pushState with the correct path', () => {
+      spyOn(window.history, 'pushState');
 
-      expect(commonUtils.setParamInURL('page', 156)).toBe('?page=156');
-      expect(commonUtils.setParamInURL('page', '156')).toBe('?page=156');
+      commonUtils.historyPushState('newpath?page=2');
+
+      expect(window.history.pushState).toHaveBeenCalled();
+      expect(window.history.pushState.calls.allArgs()[0][2]).toContain('newpath?page=2');
+    });
+  });
+
+  describe('parseQueryStringIntoObject', () => {
+    it('should return object with query parameters', () => {
+      expect(commonUtils.parseQueryStringIntoObject('scope=all&page=2')).toEqual({ scope: 'all', page: '2' });
+      expect(commonUtils.parseQueryStringIntoObject('scope=all')).toEqual({ scope: 'all' });
+      expect(commonUtils.parseQueryStringIntoObject()).toEqual({});
+    });
+  });
+
+  describe('objectToQueryString', () => {
+    it('returns empty string when `param` is undefined, null or empty string', () => {
+      expect(commonUtils.objectToQueryString()).toBe('');
+      expect(commonUtils.objectToQueryString('')).toBe('');
     });
 
-    it('should update the existing parameter when its a number', () => {
-      window.history.pushState({}, null, '?page=15');
+    it('returns query string with values of `params`', () => {
+      const singleQueryParams = { foo: true };
+      const multipleQueryParams = { foo: true, bar: true };
 
-      expect(commonUtils.setParamInURL('page', 16)).toBe('?page=16');
-      expect(commonUtils.setParamInURL('page', '16')).toBe('?page=16');
-      expect(commonUtils.setParamInURL('page', true)).toBe('?page=true');
+      expect(commonUtils.objectToQueryString(singleQueryParams)).toBe('foo=true');
+      expect(commonUtils.objectToQueryString(multipleQueryParams)).toBe('foo=true&bar=true');
     });
+  });
 
-    it('should update the existing parameter when its a string', () => {
-      window.history.pushState({}, null, '?scope=all');
-
-      expect(commonUtils.setParamInURL('scope', 'finished')).toBe('?scope=finished');
-    });
-
-    it('should update the existing parameter when more than one parameter exists', () => {
-      window.history.pushState({}, null, '?scope=all&page=15');
-
-      expect(commonUtils.setParamInURL('scope', 'finished')).toBe('?scope=finished&page=15');
-    });
-
-    it('should add a new parameter to the end of the existing ones', () => {
-      window.history.pushState({}, null, '?scope=all');
-
-      expect(commonUtils.setParamInURL('page', 16)).toBe('?scope=all&page=16');
-      expect(commonUtils.setParamInURL('page', '16')).toBe('?scope=all&page=16');
-      expect(commonUtils.setParamInURL('page', true)).toBe('?scope=all&page=true');
+  describe('buildUrlWithCurrentLocation', () => {
+    it('should build an url with current location and given parameters', () => {
+      expect(commonUtils.buildUrlWithCurrentLocation()).toEqual(window.location.pathname);
+      expect(commonUtils.buildUrlWithCurrentLocation('?page=2')).toEqual(`${window.location.pathname}?page=2`);
     });
   });
 
@@ -368,58 +429,99 @@ describe('common_utils', () => {
 
   describe('setCiStatusFavicon', () => {
     const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/-/jobs/1/status.json`;
+    let mock;
 
     beforeEach(() => {
       const favicon = document.createElement('link');
       favicon.setAttribute('id', 'favicon');
       document.body.appendChild(favicon);
+      mock = new MockAdapter(axios);
     });
 
     afterEach(() => {
+      mock.restore();
       document.body.removeChild(document.getElementById('favicon'));
     });
 
-    it('should reset favicon in case of error', () => {
-      const favicon = document.getElementById('favicon');
-      spyOn($, 'ajax').and.callFake(function (options) {
-        options.error();
-        expect(favicon.getAttribute('href')).toEqual('null');
-      });
+    it('should reset favicon in case of error', (done) => {
+      mock.onGet(BUILD_URL).networkError();
 
-      commonUtils.setCiStatusFavicon(BUILD_URL);
+      commonUtils.setCiStatusFavicon(BUILD_URL)
+        .then(() => {
+          const favicon = document.getElementById('favicon');
+          expect(favicon.getAttribute('href')).toEqual('null');
+          done();
+        })
+        // Error is already caught in catch() block of setCiStatusFavicon,
+        // It won't throw another error for us to catch
+        .catch(done.fail);
     });
 
-    it('should set page favicon to CI status favicon based on provided status', () => {
+    it('should set page favicon to CI status favicon based on provided status', (done) => {
       const FAVICON_PATH = '//icon_status_success';
-      const favicon = document.getElementById('favicon');
 
-      spyOn($, 'ajax').and.callFake(function (options) {
-        options.success({ favicon: FAVICON_PATH });
-        expect(favicon.getAttribute('href')).toEqual(FAVICON_PATH);
+      mock.onGet(BUILD_URL).reply(200, {
+        favicon: FAVICON_PATH,
       });
 
-      commonUtils.setCiStatusFavicon(BUILD_URL);
+      commonUtils.setCiStatusFavicon(BUILD_URL)
+        .then(() => {
+          const favicon = document.getElementById('favicon');
+          expect(favicon.getAttribute('href')).toEqual(FAVICON_PATH);
+          done();
+        })
+        .catch(done.fail);
     });
   });
 
-  describe('ajaxPost', () => {
-    it('should perform `$.ajax` call and do `POST` request', () => {
-      const requestURL = '/some/random/api';
-      const data = { keyname: 'value' };
-      const ajaxSpy = spyOn($, 'ajax').and.callFake(() => {});
+  describe('spriteIcon', () => {
+    let beforeGon;
 
-      commonUtils.ajaxPost(requestURL, data);
-      expect(ajaxSpy.calls.allArgs()[0][0].type).toEqual('POST');
+    beforeEach(() => {
+      window.gon = window.gon || {};
+      beforeGon = Object.assign({}, window.gon);
+      window.gon.sprite_icons = 'icons.svg';
     });
 
-    describe('gl.utils.spriteIcon', () => {
-      beforeEach(() => {
-        window.gon.sprite_icons = 'icons.svg';
-      });
+    afterEach(() => {
+      window.gon = beforeGon;
+    });
 
-      it('should return the svg for a linked icon', () => {
-        expect(gl.utils.spriteIcon('test')).toEqual('<svg><use xlink:href="icons.svg#test" /></svg>');
+    it('should return the svg for a linked icon', () => {
+      expect(commonUtils.spriteIcon('test')).toEqual('<svg ><use xlink:href="icons.svg#test" /></svg>');
+    });
+
+    it('should set svg className when passed', () => {
+      expect(commonUtils.spriteIcon('test', 'fa fa-test')).toEqual('<svg class="fa fa-test"><use xlink:href="icons.svg#test" /></svg>');
+    });
+  });
+
+  describe('convertObjectPropsToCamelCase', () => {
+    it('returns new object with camelCase property names by converting object with snake_case names', () => {
+      const snakeRegEx = /(_\w)/g;
+      const mockObj = {
+        id: 1,
+        group_name: 'GitLab.org',
+        absolute_web_url: 'https://gitlab.com/gitlab-org/',
+      };
+      const mappings = {
+        id: 'id',
+        groupName: 'group_name',
+        absoluteWebUrl: 'absolute_web_url',
+      };
+
+      const convertedObj = commonUtils.convertObjectPropsToCamelCase(mockObj);
+
+      Object.keys(convertedObj).forEach((prop) => {
+        expect(snakeRegEx.test(prop)).toBeFalsy();
+        expect(convertedObj[prop]).toBe(mockObj[mappings[prop]]);
       });
+    });
+
+    it('return empty object if method is called with null or undefined', () => {
+      expect(Object.keys(commonUtils.convertObjectPropsToCamelCase(null)).length).toBe(0);
+      expect(Object.keys(commonUtils.convertObjectPropsToCamelCase()).length).toBe(0);
+      expect(Object.keys(commonUtils.convertObjectPropsToCamelCase({})).length).toBe(0);
     });
   });
 });

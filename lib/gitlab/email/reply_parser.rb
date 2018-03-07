@@ -43,7 +43,7 @@ module Gitlab
         return "" unless decoded
 
         # Certain trigger phrases that means we didn't parse correctly
-        if decoded =~ /(Content\-Type\:|multipart\/alternative|text\/plain)/
+        if decoded =~ %r{(Content\-Type\:|multipart/alternative|text/plain)}
           return ""
         end
 

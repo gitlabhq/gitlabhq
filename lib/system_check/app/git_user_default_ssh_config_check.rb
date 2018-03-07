@@ -5,12 +5,13 @@ module SystemCheck
       # whitelisted as it may change the SSH client's behaviour dramatically.
       WHITELIST = %w[
         authorized_keys
+        authorized_keys.lock
         authorized_keys2
         known_hosts
       ].freeze
 
       set_name 'Git user has default SSH configuration?'
-      set_skip_reason 'skipped (git user is not present or configured)'
+      set_skip_reason 'skipped (git user is not present / configured)'
 
       def skip?
         !home_dir || !File.directory?(home_dir)

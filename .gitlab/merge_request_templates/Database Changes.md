@@ -1,20 +1,5 @@
-Remove this section and replace it with a description of your MR. Also follow the
-checklist below and check off any tasks that are done. If a certain task can not
-be done you should explain so in the MR body. You are free to remove any
-sections that do not apply to your MR.
-
-When gathering statistics (e.g. the output of `EXPLAIN ANALYZE`) you should make
-sure your database has enough data. Having around 10 000 rows in the tables
-being queries should provide a reasonable estimate of how a query will behave.
-Also make sure that PostgreSQL uses the following settings:
-
-* `random_page_cost`: `1`
-* `work_mem`: `16MB`
-* `maintenance_work_mem`: at least `64MB`
-* `shared_buffers`: at least `256MB`
-
-If you have access to GitLab.com's staging environment you should also run your
-measurements there, and include the results in this MR.
+Add a description of your merge request here. Merge requests without an adequate
+description will not be reviewed until one is added.
 
 ## Database Checklist
 
@@ -23,34 +8,23 @@ When adding migrations:
 - [ ] Updated `db/schema.rb`
 - [ ] Added a `down` method so the migration can be reverted
 - [ ] Added the output of the migration(s) to the MR body
-- [ ] Added the execution time of the migration(s) to the MR body
-- [ ] Added tests for the migration in `spec/migrations` if necessary (e.g. when
-  migrating data)
-- [ ] Made sure the migration won't interfere with a running GitLab cluster,
-  for example by disabling transactions for long running migrations
+- [ ] Added tests for the migration in `spec/migrations` if necessary (e.g. when migrating data)
 
 When adding or modifying queries to improve performance:
 
-- [ ] Included the raw SQL queries of the relevant queries
-- [ ] Included the output of `EXPLAIN ANALYZE` and execution timings of the
-  relevant queries
-- [ ] Added tests for the relevant changes
-
-When adding indexes:
-
-- [ ] Described the need for these indexes in the MR body
-- [ ] Made sure existing indexes can not be reused instead
+- [ ] Included data that shows the performance improvement, preferably in the form of a benchmark
+- [ ] Included the output of `EXPLAIN (ANALYZE, BUFFERS)` of the relevant queries
 
 When adding foreign keys to existing tables:
 
-- [ ] Included a migration to remove orphaned rows in the source table
+- [ ] Included a migration to remove orphaned rows in the source table before adding the foreign key
 - [ ] Removed any instances of `dependent: ...` that may no longer be necessary
 
 When adding tables:
 
-- [ ] Ordered columns based on their type sizes in descending order
-- [ ] Added foreign keys if necessary
-- [ ] Added indexes if necessary
+- [ ] Ordered columns based on the [Ordering Table Columns](https://docs.gitlab.com/ee/development/ordering_table_columns.html#ordering-table-columns) guidelines
+- [ ] Added foreign keys to any columns pointing to data in other tables
+- [ ] Added indexes for fields that are used in statements such as WHERE, ORDER BY, GROUP BY, and JOINs
 
 When removing columns, tables, indexes or other structures:
 
@@ -64,8 +38,6 @@ When removing columns, tables, indexes or other structures:
 - [ ] API support added
 - [ ] Tests added for this feature/bug
 - Review
-  - [ ] Has been reviewed by UX
-  - [ ] Has been reviewed by Frontend
   - [ ] Has been reviewed by Backend
   - [ ] Has been reviewed by Database
 - [ ] Conform by the [merge request performance guides](http://docs.gitlab.com/ce/development/merge_request_performance_guidelines.html)

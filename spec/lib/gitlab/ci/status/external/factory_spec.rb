@@ -8,7 +8,7 @@ describe Gitlab::Ci::Status::External::Factory do
   let(:external_url) { 'http://gitlab.com/status' }
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
   end
 
   context 'when external status has a simple core status' do

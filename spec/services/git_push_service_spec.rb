@@ -11,7 +11,7 @@ describe GitPushService, services: true do
   let(:ref)      { 'refs/heads/master' }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   describe 'Push branches' do
@@ -266,8 +266,8 @@ describe GitPushService, services: true do
     let(:commit) { project.commit }
 
     before do
-      project.team << [commit_author, :developer]
-      project.team << [user, :developer]
+      project.add_developer(commit_author)
+      project.add_developer(user)
 
       allow(commit).to receive_messages(
         safe_message: "this commit \n mentions #{issue.to_reference}",
@@ -323,8 +323,8 @@ describe GitPushService, services: true do
     let(:commit_time) { Time.now }
 
     before do
-      project.team << [commit_author, :developer]
-      project.team << [user, :developer]
+      project.add_developer(commit_author)
+      project.add_developer(user)
 
       allow(commit).to receive_messages(
         safe_message: "this commit \n mentions #{issue.to_reference}",
@@ -376,7 +376,7 @@ describe GitPushService, services: true do
       allow_any_instance_of(ProcessCommitWorker).to receive(:build_commit)
         .and_return(closing_commit)
 
-      project.team << [commit_author, :master]
+      project.add_master(commit_author)
     end
 
     context "to default branches" do

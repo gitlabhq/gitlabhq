@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Issue Boards new issue', js: true do
+describe 'Issue Boards new issue', :js do
   let(:project) { create(:project, :public) }
   let(:board)   { create(:board, project: project) }
   let!(:list)   { create(:list, board: board, position: 0) }
@@ -8,7 +8,7 @@ describe 'Issue Boards new issue', js: true do
 
   context 'authorized user' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
 
       sign_in(user)
 

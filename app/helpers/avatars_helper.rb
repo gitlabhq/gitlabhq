@@ -8,27 +8,46 @@ module AvatarsHelper
     }))
   end
 
+  def user_avatar_url_for(options = {})
+    if options[:url]
+      options[:url]
+    elsif options[:user]
+      avatar_icon_for_user(options[:user], options[:size])
+    else
+      avatar_icon_for_email(options[:user_email], options[:size])
+    end
+  end
+
   def user_avatar_without_link(options = {})
     avatar_size = options[:size] || 16
     user_name = options[:user].try(:name) || options[:user_name]
-    avatar_url = options[:url] || avatar_icon(options[:user] || options[:user_email], avatar_size)
+
+    avatar_url = user_avatar_url_for(options.merge(size: avatar_size))
+
     has_tooltip = options[:has_tooltip].nil? ? true : options[:has_tooltip]
-    data_attributes = {}
+    data_attributes = options[:data] || {}
     css_class = %W[avatar s#{avatar_size}].push(*options[:css_class])
 
     if has_tooltip
       css_class.push('has-tooltip')
-      data_attributes = { container: 'body' }
+      data_attributes[:container] = 'body'
     end
 
-    image_tag(
-      avatar_url,
+    if options[:lazy]
+      css_class << 'lazy'
+      data_attributes[:src] = avatar_url
+      avatar_url = LazyImageTagHelper.placeholder_image
+    end
+
+    image_options = {
+      alt:   "#{user_name}'s avatar",
+      src:   avatar_url,
+      data:  data_attributes,
       class: css_class,
-      alt: "#{user_name}'s avatar",
-      title: user_name,
-      data: data_attributes,
-      lazy: true
-    )
+      title: user_name
+    }
+
+    tag(:img, image_options)
   end
 
   def user_avatar(options = {})

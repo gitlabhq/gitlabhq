@@ -1,30 +1,30 @@
 /* global BoardService */
-/* global boardsMockInterceptor */
 /* global List */
-/* global listObj */
 /* global ListIssue */
-/* global mockBoardService */
 import Vue from 'vue';
-import _ from 'underscore';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import Sortable from 'vendor/Sortable';
-import BoardList from '~/boards/components/board_list';
+import BoardList from '~/boards/components/board_list.vue';
 import eventHub from '~/boards/eventhub';
 import '~/boards/mixins/sortable_default_options';
 import '~/boards/models/issue';
 import '~/boards/models/list';
 import '~/boards/stores/boards_store';
-import './mock_data';
+import { listObj, boardsMockInterceptor, mockBoardService } from './mock_data';
 
 window.Sortable = Sortable;
 
 describe('Board list component', () => {
+  let mock;
   let component;
 
   beforeEach((done) => {
     const el = document.createElement('div');
 
     document.body.appendChild(el);
-    Vue.http.interceptors.push(boardsMockInterceptor);
+    mock = new MockAdapter(axios);
+    mock.onAny().reply(boardsMockInterceptor);
     gl.boardService = mockBoardService();
     gl.issueBoards.BoardsStore.create();
     gl.IssueBoardsApp = new Vue();
@@ -60,7 +60,7 @@ describe('Board list component', () => {
   });
 
   afterEach(() => {
-    Vue.http.interceptors = _.without(Vue.http.interceptors, boardsMockInterceptor);
+    mock.restore();
   });
 
   it('renders component', () => {
@@ -154,6 +154,18 @@ describe('Board list component', () => {
     });
   });
 
+  it('sets data attribute with invalid id', (done) => {
+    component.showCount = true;
+
+    Vue.nextTick(() => {
+      expect(
+        component.$el.querySelector('.board-list-count').getAttribute('data-issue-id'),
+      ).toBe('-1');
+
+      done();
+    });
+  });
+
   it('shows how many more issues to load', (done) => {
     component.showCount = true;
     component.list.issuesSize = 20;
@@ -172,9 +184,9 @@ describe('Board list component', () => {
     component.$refs.list.style.height = '100px';
     component.$refs.list.style.overflow = 'scroll';
 
-    for (let i = 0; i < 19; i += 1) {
-      const issue = component.list.issues[0];
-      issue.id += 1;
+    for (let i = 1; i < 20; i += 1) {
+      const issue = Object.assign({}, component.list.issues[0]);
+      issue.id += i;
       component.list.issues.push(issue);
     }
 

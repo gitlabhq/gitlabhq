@@ -1,15 +1,14 @@
 /* eslint-disable no-new */
-/* global LabelsSelect */
-/* global MilestoneSelect */
-/* global IssueStatusSelect */
-/* global SubscriptionSelect */
-
+import LabelsSelect from './labels_select';
+import subscriptionSelect from './subscription_select';
 import UsersSelect from './users_select';
+import issueStatusSelect from './issue_status_select';
+import MilestoneSelect from './milestone_select';
 
 export default () => {
   new UsersSelect();
   new LabelsSelect();
   new MilestoneSelect();
-  new IssueStatusSelect();
-  new SubscriptionSelect();
+  issueStatusSelect();
+  subscriptionSelect();
 };

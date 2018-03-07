@@ -1,0 +1,5 @@
+---
+title: Fix JavaScript bundle running on Cluster update/destroy pages
+merge_request:
+author:
+type: fixed

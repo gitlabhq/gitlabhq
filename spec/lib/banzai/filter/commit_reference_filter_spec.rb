@@ -42,7 +42,7 @@ describe Banzai::Filter::CommitReferenceFilter do
     it 'links with adjacent text' do
       doc = reference_filter("See (#{reference}.)")
 
-      expect(doc.to_html).to match(/\(<a.+>#{commit.short_id}<\/a>\.\)/)
+      expect(doc.to_html).to match(%r{\(<a.+>#{commit.short_id}</a>\.\)})
     end
 
     it 'ignores invalid commit IDs' do
@@ -91,6 +91,18 @@ describe Banzai::Filter::CommitReferenceFilter do
 
       expect(link).not_to match %r(https?://)
       expect(link).to eq urls.project_commit_url(project, reference, only_path: true)
+    end
+
+    context "in merge request context" do
+      let(:noteable) { create(:merge_request, target_project: project, source_project: project) }
+      let(:commit) { noteable.commits.first }
+
+      it 'handles merge request contextual commit references' do
+        url = urls.diffs_project_merge_request_url(project, noteable, commit_id: commit.id)
+        doc = reference_filter("See #{reference}", noteable: noteable)
+
+        expect(doc.css('a').first[:href]).to eq(url)
+      end
     end
   end
 
@@ -187,12 +199,12 @@ describe Banzai::Filter::CommitReferenceFilter do
     it 'links with adjacent text' do
       doc = reference_filter("Fixed (#{reference}.)")
 
-      expect(doc.to_html).to match(/\(<a.+>#{commit.reference_link_text(project)}<\/a>\.\)/)
+      expect(doc.to_html).to match(%r{\(<a.+>#{commit.reference_link_text(project)}</a>\.\)})
     end
 
     it 'ignores invalid commit IDs on the referenced project' do
       act = "Committed #{invalidate_reference(reference)}"
-      expect(reference_filter(act).to_html).to match(/<a.+>#{Regexp.escape(invalidate_reference(reference))}<\/a>/)
+      expect(reference_filter(act).to_html).to match(%r{<a.+>#{Regexp.escape(invalidate_reference(reference))}</a>})
     end
   end
 end

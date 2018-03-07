@@ -5,7 +5,7 @@ describe HealthCheckController do
 
   let(:json_response) { JSON.parse(response.body) }
   let(:xml_response) { Hash.from_xml(response.body)['hash'] }
-  let(:token) { current_application_settings.health_check_access_token }
+  let(:token) { Gitlab::CurrentSettings.health_check_access_token }
   let(:whitelisted_ip) { '127.0.0.1' }
   let(:not_whitelisted_ip) { '127.0.0.2' }
 
@@ -100,7 +100,7 @@ describe HealthCheckController do
       it 'supports failure plaintext response' do
         get :index
 
-        expect(response).to have_http_status(500)
+        expect(response).to have_gitlab_http_status(500)
         expect(response.content_type).to eq 'text/plain'
         expect(response.body).to include('The server is on fire')
       end
@@ -108,7 +108,7 @@ describe HealthCheckController do
       it 'supports failure json response' do
         get :index, format: :json
 
-        expect(response).to have_http_status(500)
+        expect(response).to have_gitlab_http_status(500)
         expect(response.content_type).to eq 'application/json'
         expect(json_response['healthy']).to be false
         expect(json_response['message']).to include('The server is on fire')
@@ -117,7 +117,7 @@ describe HealthCheckController do
       it 'supports failure xml response' do
         get :index, format: :xml
 
-        expect(response).to have_http_status(500)
+        expect(response).to have_gitlab_http_status(500)
         expect(response.content_type).to eq 'application/xml'
         expect(xml_response['healthy']).to be false
         expect(xml_response['message']).to include('The server is on fire')
@@ -126,7 +126,7 @@ describe HealthCheckController do
       it 'supports failure responses for specific checks' do
         get :index, checks: 'email', format: :json
 
-        expect(response).to have_http_status(500)
+        expect(response).to have_gitlab_http_status(500)
         expect(response.content_type).to eq 'application/json'
         expect(json_response['healthy']).to be false
         expect(json_response['message']).to include('Email is on fire')

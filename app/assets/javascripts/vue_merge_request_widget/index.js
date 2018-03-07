@@ -2,8 +2,11 @@ import {
   Vue,
   mrWidgetOptions,
 } from './dependencies';
+import Translate from '../vue_shared/translate';
 
-document.addEventListener('DOMContentLoaded', () => {
+Vue.use(Translate);
+
+export default () => {
   gl.mrWidgetData.gitlabLogo = gon.gitlab_logo;
 
   const vm = new Vue(mrWidgetOptions);
@@ -11,4 +14,4 @@ document.addEventListener('DOMContentLoaded', () => {
   window.gl.mrWidget = {
     checkStatus: vm.checkStatus,
   };
-});
+};

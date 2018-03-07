@@ -148,6 +148,7 @@ module Gitlab
             stream.seek(@offset)
             append = @offset > 0
           end
+
           start_offset = @offset
 
           open_new_tag
@@ -155,7 +156,10 @@ module Gitlab
           stream.each_line do |line|
             s = StringScanner.new(line)
             until s.eos?
-              if s.scan(/\e([@-_])(.*?)([@-~])/)
+
+              if s.scan(Gitlab::Regex.build_trace_section_regex)
+                handle_section(s)
+              elsif s.scan(/\e([@-_])(.*?)([@-~])/)
                 handle_sequence(s)
               elsif s.scan(/\e(([@-_])(.*?)?)?$/)
                 break
@@ -166,6 +170,7 @@ module Gitlab
               else
                 @out << s.scan(/./m)
               end
+
               @offset += s.matched_size
             end
           end
@@ -181,6 +186,15 @@ module Gitlab
             size: stream.tell - start_offset,
             total: stream.size
           )
+        end
+
+        def handle_section(s)
+          action = s[1]
+          timestamp = s[2]
+          section = s[3]
+          line = s.matched()[0...-5] # strips \r\033[0K
+
+          @out << %{<div class="hidden" data-action="#{action}" data-timestamp="#{timestamp}" data-section="#{section}">#{line}</div>}
         end
 
         def handle_sequence(s)
@@ -223,10 +237,12 @@ module Gitlab
             # Most terminals show bold colored text in the light color variant
             # Let's mimic that here
             if @style_mask & STYLE_SWITCHES[:bold] != 0
-              fg_color.sub!(/fg-(\w{2,}+)/, 'fg-l-\1')
+              fg_color.sub!(/fg-([a-z]{2,}+)/, 'fg-l-\1')
             end
+
             css_classes << fg_color
           end
+
           css_classes << @bg_color unless @bg_color.nil?
 
           STYLE_SWITCHES.each do |css_class, flag|

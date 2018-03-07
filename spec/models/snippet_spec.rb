@@ -88,7 +88,7 @@ describe Snippet do
   end
 
   describe '.search' do
-    let(:snippet) { create(:snippet) }
+    let(:snippet) { create(:snippet, title: 'test snippet') }
 
     it 'returns snippets with a matching title' do
       expect(described_class.search(snippet.title)).to eq([snippet])

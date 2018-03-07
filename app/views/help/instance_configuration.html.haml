@@ -1,0 +1,17 @@
+- page_title 'Instance Configuration'
+.wiki.documentation
+  %h1 Instance Configuration
+
+  %p
+    In this page you will find information about the settings that are used in your current instance.
+
+  = render 'help/instance_configuration/ssh_info'
+  = render 'help/instance_configuration/gitlab_pages'
+  = render 'help/instance_configuration/gitlab_ci'
+  %p
+    %strong Table of contents
+
+    %ul
+      = content_for :table_content
+
+  = content_for :settings_content

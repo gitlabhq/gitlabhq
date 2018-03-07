@@ -178,15 +178,29 @@ module Gitlab
           end
 
           context 'when kubernetes is active' do
-            let(:project) { create(:kubernetes_project) }
-            let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+            shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+              it 'returns seeds for kubernetes dependent job' do
+                seeds = subject.stage_seeds(pipeline)
 
-            it 'returns seeds for kubernetes dependent job' do
-              seeds = subject.stage_seeds(pipeline)
+                expect(seeds.size).to eq 2
+                expect(seeds.first.builds.dig(0, :name)).to eq 'spinach'
+                expect(seeds.second.builds.dig(0, :name)).to eq 'production'
+              end
+            end
 
-              expect(seeds.size).to eq 2
-              expect(seeds.first.builds.dig(0, :name)).to eq 'spinach'
-              expect(seeds.second.builds.dig(0, :name)).to eq 'production'
+            context 'when user configured kubernetes from Integration > Kubernetes' do
+              let(:project) { create(:kubernetes_project) }
+              let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+
+              it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+            end
+
+            context 'when user configured kubernetes from CI/CD > Clusters' do
+              let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+              let(:project) { cluster.project }
+              let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+
+              it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
             end
           end
 
@@ -1380,11 +1394,15 @@ EOT
 
       describe "Error handling" do
         it "fails to parse YAML" do
-          expect {Gitlab::Ci::YamlProcessor.new("invalid: yaml: test")}.to raise_error(Psych::SyntaxError)
+          expect do
+            Gitlab::Ci::YamlProcessor.new("invalid: yaml: test")
+          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError)
         end
 
         it "indicates that object is invalid" do
-          expect {Gitlab::Ci::YamlProcessor.new("invalid_yaml")}.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError)
+          expect do
+            Gitlab::Ci::YamlProcessor.new("invalid_yaml")
+          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError)
         end
 
         it "returns errors if tags parameter is invalid" do
@@ -1674,37 +1692,36 @@ EOT
       end
 
       describe "#validation_message" do
-        context "when the YAML could not be parsed" do
-          it "returns an error about invalid configutaion" do
-            content = YAML.dump("invalid: yaml: test")
+        subject { Gitlab::Ci::YamlProcessor.validation_message(content) }
 
-            expect(Gitlab::Ci::YamlProcessor.validation_message(content))
-              .to eq "Invalid configuration format"
-          end
+        context "when the YAML could not be parsed" do
+          let(:content) { YAML.dump("invalid: yaml: test") }
+
+          it { is_expected.to eq "Invalid configuration format" }
         end
 
         context "when the tags parameter is invalid" do
-          it "returns an error about invalid tags" do
-            content = YAML.dump({ rspec: { script: "test", tags: "mysql" } })
+          let(:content) { YAML.dump({ rspec: { script: "test", tags: "mysql" } }) }
 
-            expect(Gitlab::Ci::YamlProcessor.validation_message(content))
-              .to eq "jobs:rspec tags should be an array of strings"
-          end
+          it { is_expected.to eq "jobs:rspec tags should be an array of strings" }
         end
 
         context "when YAML content is empty" do
-          it "returns an error about missing content" do
-            expect(Gitlab::Ci::YamlProcessor.validation_message(''))
-              .to eq "Please provide content of .gitlab-ci.yml"
-          end
+          let(:content) { '' }
+
+          it { is_expected.to eq "Please provide content of .gitlab-ci.yml" }
+        end
+
+        context 'when the YAML contains an unknown alias' do
+          let(:content) { 'steps: *bad_alias' }
+
+          it { is_expected.to eq "Unknown alias: bad_alias" }
         end
 
         context "when the YAML is valid" do
-          it "does not return any errors" do
-            content = File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
+          let(:content) { File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml')) }
 
-            expect(Gitlab::Ci::YamlProcessor.validation_message(content)).to be_nil
-          end
+          it { is_expected.to be_nil }
         end
       end
 

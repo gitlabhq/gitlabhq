@@ -37,6 +37,7 @@ module Gitlab
           def value
             return { name: @config } if string?
             return @config if hash?
+
             {}
           end
         end

@@ -1,0 +1,23 @@
+- if (readme = @repository.readme) && readme.rich_viewer
+  %article.file-holder.readme-holder{ id: 'readme', class: ("limited-width-container" unless fluid_layout) }
+    .js-file-title.file-title
+      = blob_icon readme.mode, readme.name
+      = link_to project_blob_path(@project, tree_join(@ref, readme.path)) do
+        %strong
+          = readme.name
+    = render 'projects/blob/viewer', viewer: readme.rich_viewer, viewer_url: namespace_project_blob_path(@project.namespace, @project, tree_join(@ref, readme.path), viewer: :rich, format: :json)
+
+- else
+  .row-content-block.second-block.center
+    %h4
+      This project does not have a README yet
+
+    - if can?(current_user, :push_code, @project)
+      %p
+        A
+        %code README
+        file contains information about other files in a repository and is commonly
+        distributed with computer software, forming part of its documentation.
+        GitLab will render it here instead of this message.
+      %p
+        = link_to "Add Readme", @project.add_readme_path, class: 'btn btn-new'

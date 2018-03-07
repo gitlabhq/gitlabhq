@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-feature 'Template Undo Button', js: true do
+feature 'Template Undo Button', :js do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in user
   end
 

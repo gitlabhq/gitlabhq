@@ -1,0 +1,13 @@
+- form = local_assigns.fetch(:form)
+
+.radio
+  = label_tag :project_merge_method_rebase_merge do
+    = form.radio_button :merge_method, :rebase_merge, class: "js-merge-method-radio"
+    %strong Merge commit with semi-linear history
+    %br
+    %span.descr
+      A merge commit is created for every merge, but merging is only allowed if fast-forward merge is possible.
+      This way you could make sure that if this merge request would build, after merging to target branch it would also build.
+    %br
+    %span.descr
+      When fast-forward merge is not possible, the user is given the option to rebase.

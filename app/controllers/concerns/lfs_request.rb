@@ -10,6 +10,8 @@
 module LfsRequest
   extend ActiveSupport::Concern
 
+  CONTENT_TYPE = 'application/vnd.git-lfs+json'.freeze
+
   included do
     before_action :require_lfs_enabled!
     before_action :lfs_check_access!
@@ -50,7 +52,7 @@ module LfsRequest
         message: 'Access forbidden. Check your access level.',
         documentation_url: help_url
       },
-      content_type: "application/vnd.git-lfs+json",
+      content_type: CONTENT_TYPE,
       status: 403
     )
   end
@@ -61,7 +63,7 @@ module LfsRequest
         message: 'Not found.',
         documentation_url: help_url
       },
-      content_type: "application/vnd.git-lfs+json",
+      content_type: CONTENT_TYPE,
       status: 404
     )
   end
@@ -74,8 +76,9 @@ module LfsRequest
 
   def lfs_upload_access?
     return false unless project.lfs_enabled?
+    return false unless has_authentication_ability?(:push_code)
 
-    has_authentication_ability?(:push_code) && can?(user, :push_code, project)
+    lfs_deploy_token? || can?(user, :push_code, project)
   end
 
   def lfs_deploy_token?
@@ -91,16 +94,7 @@ module LfsRequest
   end
 
   def storage_project
-    @storage_project ||= begin
-      result = project
-
-      loop do
-        break unless result.forked?
-        result = result.forked_from_project
-      end
-
-      result
-    end
+    @storage_project ||= project.lfs_storage_project
   end
 
   def objects

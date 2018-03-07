@@ -13,20 +13,20 @@ describe "Admin Runners" do
 
     context "when there are runners" do
       before do
-        runner = FactoryGirl.create(:ci_runner, contacted_at: Time.now)
-        FactoryGirl.create(:ci_build, pipeline: pipeline, runner_id: runner.id)
+        runner = FactoryBot.create(:ci_runner, contacted_at: Time.now)
+        FactoryBot.create(:ci_build, pipeline: pipeline, runner_id: runner.id)
         visit admin_runners_path
       end
 
       it 'has all necessary texts' do
-        expect(page).to have_text "How to setup"
+        expect(page).to have_text "Setup a shared Runner manually"
         expect(page).to have_text "Runners with last contact more than a minute ago: 1"
       end
 
       describe 'search' do
         before do
-          FactoryGirl.create :ci_runner, description: 'runner-foo'
-          FactoryGirl.create :ci_runner, description: 'runner-bar'
+          FactoryBot.create :ci_runner, description: 'runner-foo'
+          FactoryBot.create :ci_runner, description: 'runner-bar'
         end
 
         it 'shows correct runner when description matches' do
@@ -54,7 +54,7 @@ describe "Admin Runners" do
       end
 
       it 'has all necessary texts including no runner message' do
-        expect(page).to have_text "How to setup"
+        expect(page).to have_text "Setup a shared Runner manually"
         expect(page).to have_text "Runners with last contact more than a minute ago: 0"
         expect(page).to have_text 'No runners found'
       end
@@ -62,11 +62,11 @@ describe "Admin Runners" do
   end
 
   describe "Runner show page" do
-    let(:runner) { FactoryGirl.create :ci_runner }
+    let(:runner) { FactoryBot.create :ci_runner }
 
     before do
-      @project1 = FactoryGirl.create(:project)
-      @project2 = FactoryGirl.create(:project)
+      @project1 = FactoryBot.create(:project)
+      @project2 = FactoryBot.create(:project)
       visit admin_runner_path(runner)
     end
 
@@ -76,8 +76,8 @@ describe "Admin Runners" do
 
     describe 'projects' do
       it 'contains project names' do
-        expect(page).to have_content(@project1.name_with_namespace)
-        expect(page).to have_content(@project2.name_with_namespace)
+        expect(page).to have_content(@project1.full_name)
+        expect(page).to have_content(@project2.full_name)
       end
     end
 
@@ -89,8 +89,8 @@ describe "Admin Runners" do
       end
 
       it 'contains name of correct project' do
-        expect(page).to have_content(@project1.name_with_namespace)
-        expect(page).not_to have_content(@project2.name_with_namespace)
+        expect(page).to have_content(@project1.full_name)
+        expect(page).not_to have_content(@project2.full_name)
       end
     end
 
@@ -156,7 +156,7 @@ describe "Admin Runners" do
   end
 
   describe 'runners registration token' do
-    let!(:token) { current_application_settings.runners_registration_token }
+    let!(:token) { Gitlab::CurrentSettings.runners_registration_token }
 
     before do
       visit admin_runners_path

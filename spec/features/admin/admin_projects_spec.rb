@@ -28,7 +28,7 @@ describe "Admin::Projects"  do
       expect(page).not_to have_content(archived_project.name)
     end
 
-    it 'renders all projects', js: true do
+    it 'renders all projects', :js do
       find(:css, '#sort-projects-dropdown').click
       click_link 'Show archived projects'
 
@@ -37,7 +37,7 @@ describe "Admin::Projects"  do
       expect(page).to have_xpath("//span[@class='label label-warning']", text: 'archived')
     end
 
-    it 'renders only archived projects', js: true do
+    it 'renders only archived projects', :js do
       find(:css, '#sort-projects-dropdown').click
       click_link 'Show archived projects only'
 
@@ -58,7 +58,7 @@ describe "Admin::Projects"  do
       expect(current_path).to eq admin_project_path(project)
       expect(page).to have_content(project.path)
       expect(page).to have_content(project.name)
-      expect(page).to have_content(project.name_with_namespace)
+      expect(page).to have_content(project.full_name)
       expect(page).to have_content(project.creator.name)
     end
   end
@@ -74,7 +74,7 @@ describe "Admin::Projects"  do
         .to receive(:move_uploads_to_new_namespace).and_return(true)
     end
 
-    it 'transfers project to group web', js: true do
+    it 'transfers project to group web', :js do
       visit admin_project_path(project)
 
       click_button 'Search for Namespace'
@@ -88,10 +88,10 @@ describe "Admin::Projects"  do
 
   describe 'add admin himself to a project' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
     end
 
-    it 'adds admin a to a project as developer', js: true do
+    it 'adds admin a to a project as developer', :js do
       visit project_project_members_path(project)
 
       page.within '.users-project-form' do
@@ -110,8 +110,8 @@ describe "Admin::Projects"  do
 
   describe 'admin remove himself from a project' do
     before do
-      project.team << [user, :master]
-      project.team << [current_user, :developer]
+      project.add_master(user)
+      project.add_developer(current_user)
     end
 
     it 'removes admin from the project' do

@@ -62,4 +62,23 @@ describe 'User accepts a merge request', :js do
       wait_for_requests
     end
   end
+
+  context 'when modifying the merge commit message' do
+    before do
+      merge_request.mark_as_mergeable
+
+      visit(merge_request_path(merge_request))
+    end
+
+    it 'accepts a merge request' do
+      click_button('Modify commit message')
+      fill_in('Commit message', with: 'wow such merge')
+
+      click_button('Merge')
+
+      page.within('.status-box') do
+        expect(page).to have_content('Merged')
+      end
+    end
+  end
 end

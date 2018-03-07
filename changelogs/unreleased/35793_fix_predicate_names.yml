@@ -1,5 +1,0 @@
----
-title: Remove `is_` prefix from predicate method names
-merge_request: 13810
-author: Maxim Rydkin
-type: other

@@ -6,8 +6,7 @@ class MetricsService
     Gitlab::HealthChecks::Redis::RedisCheck,
     Gitlab::HealthChecks::Redis::CacheCheck,
     Gitlab::HealthChecks::Redis::QueuesCheck,
-    Gitlab::HealthChecks::Redis::SharedStateCheck,
-    Gitlab::HealthChecks::FsShardsCheck
+    Gitlab::HealthChecks::Redis::SharedStateCheck
   ].freeze
 
   def prometheus_metrics_text
@@ -21,7 +20,7 @@ class MetricsService
   end
 
   def metrics_text
-    "#{health_metrics_text}#{prometheus_metrics_text}"
+    prometheus_metrics_text.concat(health_metrics_text)
   end
 
   private

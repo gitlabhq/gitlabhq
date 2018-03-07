@@ -1,13 +1,7 @@
 - breadcrumb_title _("Schedules")
 
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'common_vue'
-  = webpack_bundle_tag 'schedules_index'
-
 - @no_container = true
 - page_title _("Pipeline Schedules")
-
-= render "projects/pipelines/head"
 
 %div{ class: container_class }
   #pipeline-schedules-callout{ data: { docs_url: help_page_path('user/project/pipelines/schedules') } }

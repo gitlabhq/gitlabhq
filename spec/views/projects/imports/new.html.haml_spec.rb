@@ -8,7 +8,7 @@ describe "projects/imports/new.html.haml" do
 
     before do
       sign_in(user)
-      project.team << [user, :master]
+      project.add_master(user)
     end
 
     it "escapes HTML in import errors" do

@@ -1,0 +1,24 @@
+.gl-responsive-table-row
+  .table-section.section-30
+    .table-mobile-header{ role: "rowheader" }= s_("ClusterIntegration|Kubernetes cluster")
+    .table-mobile-content
+      = link_to cluster.name, namespace_project_cluster_path(@project.namespace, @project, cluster)
+  .table-section.section-30
+    .table-mobile-header{ role: "rowheader" }= s_("ClusterIntegration|Environment scope")
+    .table-mobile-content= cluster.environment_scope
+  .table-section.section-30
+    .table-mobile-header{ role: "rowheader" }= s_("ClusterIntegration|Project namespace")
+    .table-mobile-content= cluster.platform_kubernetes&.actual_namespace
+  .table-section.section-10
+    .table-mobile-header{ role: "rowheader" }
+    .table-mobile-content
+      %button.js-project-feature-toggle.project-feature-toggle{ type: "button",
+        class: "#{'is-checked' if cluster.enabled?} #{'is-disabled' if !cluster.can_toggle_cluster?}",
+        "aria-label": s_("ClusterIntegration|Toggle Kubernetes Cluster"),
+        disabled: !cluster.can_toggle_cluster?,
+        data: { endpoint: namespace_project_cluster_path(@project.namespace, @project, cluster, format: :json) } }
+        %input.js-project-feature-toggle-input{ type: "hidden", value: cluster.enabled? }
+        = icon("spinner spin", class: "loading-icon")
+        %span.toggle-icon
+          = sprite_icon('status_success_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-checked')
+          = sprite_icon('status_failed_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-unchecked')

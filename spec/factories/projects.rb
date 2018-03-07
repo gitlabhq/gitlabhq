@@ -1,6 +1,6 @@
 require_relative '../support/test_env'
 
-FactoryGirl.define do
+FactoryBot.define do
   # Project without repository
   #
   # Project does not have bare repository.
@@ -81,8 +81,10 @@ FactoryGirl.define do
       archived true
     end
 
-    trait :hashed do
-      storage_version Project::LATEST_STORAGE_VERSION
+    storage_version Project::LATEST_STORAGE_VERSION
+
+    trait :legacy_storage do
+      storage_version nil
     end
 
     trait :access_requestable do
@@ -90,7 +92,13 @@ FactoryGirl.define do
     end
 
     trait :with_avatar do
-      avatar { File.open(Rails.root.join('spec/fixtures/dk.png')) }
+      avatar { fixture_file_upload('spec/fixtures/dk.png') }
+    end
+
+    trait :with_export do
+      after(:create) do |project, evaluator|
+        ProjectExportWorker.new.perform(project.creator.id, project.id)
+      end
     end
 
     trait :broken_storage do
@@ -141,6 +149,16 @@ FactoryGirl.define do
         # an API that isn't running
         FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.disk_path}.git", 'hooks'))
       end
+    end
+
+    trait :wiki_repo do
+      after(:create) do |project|
+        raise 'Failed to create wiki repository!' unless project.create_wiki
+      end
+    end
+
+    trait :read_only do
+      repository_read_only true
     end
 
     trait :broken_repo do
@@ -233,7 +251,8 @@ FactoryGirl.define do
       project.create_prometheus_service(
         active: true,
         properties: {
-          api_url: 'https://prometheus.example.com'
+          api_url: 'https://prometheus.example.com/',
+          manual_configuration: true
         }
       )
     end

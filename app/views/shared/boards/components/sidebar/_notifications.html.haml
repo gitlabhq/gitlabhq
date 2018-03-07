@@ -1,7 +1,5 @@
 - if current_user
-  .block.light.subscription{ ":data-url" => "'#{build_issue_link_base}/' + issue.iid + '/toggle_subscription'" }
-    %span.issuable-header-text.hide-collapsed.pull-left
-      Notifications
-    %button.btn.btn-default.pull-right.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button" }
-      %span
-        {{issue.subscribed ? 'Unsubscribe' : 'Subscribe'}}
+  .block.subscriptions
+    %subscriptions{ ":loading" => "issue.isFetching && issue.isFetching.subscriptions",
+      ":subscribed" => "issue.subscribed",
+      ":id" => "issue.id" }

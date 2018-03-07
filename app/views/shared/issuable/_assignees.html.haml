@@ -1,14 +1,10 @@
-- max_render = 3
-- max = [max_render, issue.assignees.length].min
+- max_render = 4
+- assignees_rendering_overflow = issue.assignees.size > max_render
+- render_count = assignees_rendering_overflow ? max_render - 1 : max_render
+- more_assignees_count = issue.assignees.size - render_count
 
-- issue.assignees.take(max).each do |assignee|
+- issue.assignees.take(render_count).each do |assignee|
   = link_to_member(@project, assignee, name: false, title: "Assigned to :name")
 
-- if issue.assignees.length > max_render
-  - counter = issue.assignees.length - max_render
-
-  %span{ class: 'avatar-counter has-tooltip', data: { container: 'body', placement: 'bottom', 'line-type' => 'old', 'original-title' => "+#{counter} more assignees" } }
-    - if counter < 99
-      = "+#{counter}"
-    - else
-      99+
+- if more_assignees_count.positive?
+  %span{ class: 'avatar-counter has-tooltip', data: { container: 'body', placement: 'bottom', 'line-type' => 'old', 'original-title' => "+#{more_assignees_count} more assignees" } } +#{more_assignees_count}

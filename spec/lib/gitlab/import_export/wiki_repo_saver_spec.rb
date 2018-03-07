@@ -5,12 +5,12 @@ describe Gitlab::ImportExport::WikiRepoSaver do
     let(:user) { create(:user) }
     let!(:project) { create(:project, :public, name: 'searchable_project') }
     let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
-    let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: project.full_path) }
+    let(:shared) { project.import_export_shared }
     let(:wiki_bundler) { described_class.new(project: project, shared: shared) }
     let!(:project_wiki) { ProjectWiki.new(project, user) }
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
       project_wiki.wiki
       project_wiki.create_page("index", "test content")

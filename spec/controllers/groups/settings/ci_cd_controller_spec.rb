@@ -13,7 +13,7 @@ describe Groups::Settings::CiCdController do
     it 'renders show with 200 status code' do
       get :show, group_id: group
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(response).to render_template(:show)
     end
   end

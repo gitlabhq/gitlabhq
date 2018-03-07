@@ -1,6 +1,5 @@
 class PostReceive
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   def perform(gl_repository, identifier, changes)
     project, is_wiki = Gitlab::GlRepository.parse(gl_repository)

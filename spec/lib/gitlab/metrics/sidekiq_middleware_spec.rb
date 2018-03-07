@@ -8,8 +8,8 @@ describe Gitlab::Metrics::SidekiqMiddleware do
     it 'tracks the transaction' do
       worker = double(:worker, class: double(:class, name: 'TestWorker'))
 
-      expect(Gitlab::Metrics::Transaction).to receive(:new)
-        .with('TestWorker#perform')
+      expect(Gitlab::Metrics::BackgroundTransaction).to receive(:new)
+        .with(worker.class)
         .and_call_original
 
       expect_any_instance_of(Gitlab::Metrics::Transaction).to receive(:set)
@@ -23,8 +23,8 @@ describe Gitlab::Metrics::SidekiqMiddleware do
     it 'tracks the transaction (for messages without `enqueued_at`)' do
       worker = double(:worker, class: double(:class, name: 'TestWorker'))
 
-      expect(Gitlab::Metrics::Transaction).to receive(:new)
-        .with('TestWorker#perform')
+      expect(Gitlab::Metrics::BackgroundTransaction).to receive(:new)
+        .with(worker.class)
         .and_call_original
 
       expect_any_instance_of(Gitlab::Metrics::Transaction).to receive(:set)

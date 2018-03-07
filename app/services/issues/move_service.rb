@@ -19,19 +19,10 @@ module Issues
       # on rewriting notes (unfolding references)
       #
       ActiveRecord::Base.transaction do
-        # New issue tasks
-        #
         @new_issue = create_new_issue
 
-        rewrite_notes
-        rewrite_award_emoji
-        add_note_moved_from
-
-        # Old issue tasks
-        #
-        add_note_moved_to
-        close_issue
-        mark_as_moved
+        update_new_issue
+        update_old_issue
       end
 
       notify_participants
@@ -41,11 +32,24 @@ module Issues
 
     private
 
+    def update_new_issue
+      rewrite_notes
+      rewrite_issue_award_emoji
+      add_note_moved_from
+    end
+
+    def update_old_issue
+      add_note_moved_to
+      close_issue
+      mark_as_moved
+    end
+
     def create_new_issue
       new_params = { id: nil, iid: nil, label_ids: cloneable_label_ids,
                      milestone_id: cloneable_milestone_id,
                      project: @new_project, author: @old_issue.author,
-                     description: rewrite_content(@old_issue.description) }
+                     description: rewrite_content(@old_issue.description),
+                     assignee_ids: @old_issue.assignee_ids }
 
       new_params = @old_issue.serializable_hash.symbolize_keys.merge(new_params)
       CreateService.new(@new_project, @current_user, new_params).execute
@@ -76,7 +80,7 @@ module Issues
     end
 
     def rewrite_notes
-      @old_issue.notes.find_each do |note|
+      @old_issue.notes_with_associations.find_each do |note|
         new_note = note.dup
         new_params = { project: @new_project, noteable: @new_issue,
                        note: rewrite_content(new_note.note),
@@ -84,13 +88,19 @@ module Issues
                        updated_at: note.updated_at }
 
         new_note.update(new_params)
+
+        rewrite_award_emoji(note, new_note)
       end
     end
 
-    def rewrite_award_emoji
-      @old_issue.award_emoji.each do |award|
+    def rewrite_issue_award_emoji
+      rewrite_award_emoji(@old_issue, @new_issue)
+    end
+
+    def rewrite_award_emoji(old_awardable, new_awardable)
+      old_awardable.award_emoji.each do |award|
         new_award = award.dup
-        new_award.awardable = @new_issue
+        new_award.awardable = new_awardable
         new_award.save
       end
     end

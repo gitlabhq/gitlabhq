@@ -8,7 +8,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step "I don't have write access" do
     @project = create(:project, :repository, name: "Other Project", path: "other-project")
-    @project.team << [@user, :reporter]
+    @project.add_reporter(@user)
     visit project_tree_path(@project, root_ref)
   end
 
@@ -46,10 +46,6 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     expect(page).to have_content new_gitignore_content
   end
 
-  step 'I should see its content with new lines preserved at end of file' do
-    expect(evaluate_script('ace.edit("editor").getValue()')).to eq "Sample\n\n\n"
-  end
-
   step 'I click link "Raw"' do
     click_link 'Open raw'
   end
@@ -70,18 +66,9 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     click_link 'Fork'
   end
 
-  step 'I can edit code' do
-    set_new_content
-    expect(evaluate_script('ace.edit("editor").getValue()')).to eq new_gitignore_content
-  end
-
   step 'I edit code' do
     expect(page).to have_selector('.file-editor')
     set_new_content
-  end
-
-  step 'I edit code with new lines at end of file' do
-    execute_script('ace.edit("editor").setValue("Sample\n\n\n")')
   end
 
   step 'I fill the new file name' do
@@ -291,17 +278,6 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     expect(page).to have_content('Your changes could not be committed')
   end
 
-  step 'I create bare repo' do
-    click_link 'Create empty bare repository'
-  end
-
-  step 'I click on "README" link' do
-    click_link 'README'
-
-    # Remove pre-receive hook so we can push without auth
-    FileUtils.rm_f(File.join(@project.repository.path, 'hooks', 'pre-receive'))
-  end
-
   step "I switch ref to 'test'" do
     first('.js-project-refs-dropdown').click
 
@@ -395,6 +371,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   private
 
   def set_new_content
+    find('#editor')
     execute_script("ace.edit('editor').setValue('#{new_gitignore_content}')")
   end
 

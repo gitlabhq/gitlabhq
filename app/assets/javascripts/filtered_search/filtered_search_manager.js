@@ -1,19 +1,48 @@
+import _ from 'underscore';
+import {
+  getParameterByName,
+  getUrlParamsArray,
+} from '~/lib/utils/common_utils';
+import { visitUrl } from '../lib/utils/url_utility';
+import Flash from '../flash';
 import FilteredSearchContainer from './container';
+import FilteredSearchTokenKeys from './filtered_search_token_keys';
 import RecentSearchesRoot from './recent_searches_root';
 import RecentSearchesStore from './stores/recent_searches_store';
 import RecentSearchesService from './services/recent_searches_service';
 import eventHub from './event_hub';
 import { addClassIfElementExists } from '../lib/utils/dom_utils';
+import FilteredSearchTokenizer from './filtered_search_tokenizer';
+import FilteredSearchDropdownManager from './filtered_search_dropdown_manager';
+import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
+import DropdownUtils from './dropdown_utils';
 
-class FilteredSearchManager {
-  constructor(page) {
+export default class FilteredSearchManager {
+  constructor({
+    page,
+    isGroup = false,
+    isGroupAncestor = false,
+    isGroupDecendent = false,
+    filteredSearchTokenKeys = FilteredSearchTokenKeys,
+    stateFiltersSelector = '.issues-state-filters',
+  }) {
+    this.isGroup = isGroup;
+    this.isGroupAncestor = isGroupAncestor;
+    this.isGroupDecendent = isGroupDecendent;
+    this.states = ['opened', 'closed', 'merged', 'all'];
+
     this.page = page;
     this.container = FilteredSearchContainer.container;
     this.filteredSearchInput = this.container.querySelector('.filtered-search');
     this.filteredSearchInputForm = this.filteredSearchInput.form;
     this.clearSearchButton = this.container.querySelector('.clear-search');
     this.tokensContainer = this.container.querySelector('.tokens-container');
-    this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
+    this.filteredSearchTokenKeys = filteredSearchTokenKeys;
+    this.stateFiltersSelector = stateFiltersSelector;
+    this.recentsStorageKeyNames = {
+      issues: 'issue-recent-searches',
+      merge_requests: 'merge-request-recent-searches',
+    };
 
     this.recentSearchesStore = new RecentSearchesStore({
       isLocalStorageAvailable: RecentSearchesService.isAvailable(),
@@ -22,11 +51,7 @@ class FilteredSearchManager {
     this.searchHistoryDropdownElement = document.querySelector('.js-filtered-search-history-dropdown');
     const fullPath = this.searchHistoryDropdownElement ?
       this.searchHistoryDropdownElement.dataset.fullPath : 'project';
-    let recentSearchesPagePrefix = 'issue-recent-searches';
-    if (this.page === 'merge_requests') {
-      recentSearchesPagePrefix = 'merge-request-recent-searches';
-    }
-    const recentSearchesKey = `${fullPath}-${recentSearchesPagePrefix}`;
+    const recentSearchesKey = `${fullPath}-${this.recentsStorageKeyNames[this.page]}`;
     this.recentSearchesService = new RecentSearchesService(recentSearchesKey);
   }
 
@@ -36,7 +61,7 @@ class FilteredSearchManager {
       .catch((error) => {
         if (error.name === 'RecentSearchesServiceError') return undefined;
         // eslint-disable-next-line no-new
-        new window.Flash('An error occured while parsing recent searches');
+        new Flash('An error occurred while parsing recent searches');
         // Gracefully fail to empty array
         return [];
       })
@@ -54,8 +79,15 @@ class FilteredSearchManager {
       });
 
     if (this.filteredSearchInput) {
-      this.tokenizer = gl.FilteredSearchTokenizer;
-      this.dropdownManager = new gl.FilteredSearchDropdownManager(this.filteredSearchInput.getAttribute('data-base-endpoint') || '', this.tokenizer, this.page);
+      this.tokenizer = FilteredSearchTokenizer;
+      this.dropdownManager = new FilteredSearchDropdownManager({
+        baseEndpoint: this.filteredSearchInput.getAttribute('data-base-endpoint') || '',
+        tokenizer: this.tokenizer,
+        page: this.page,
+        isGroup: this.isGroup,
+        isGroupAncestor: this.isGroupAncestor,
+        filteredSearchTokenKeys: this.filteredSearchTokenKeys,
+      });
 
       this.recentSearchesRoot = new RecentSearchesRoot(
         this.recentSearchesStore,
@@ -67,7 +99,6 @@ class FilteredSearchManager {
       this.bindEvents();
       this.loadSearchParamsFromURL();
       this.dropdownManager.setDropdown();
-
       this.cleanupWrapper = this.cleanup.bind(this);
       document.addEventListener('beforeunload', this.cleanupWrapper);
     }
@@ -83,38 +114,31 @@ class FilteredSearchManager {
   }
 
   bindStateEvents() {
-    this.stateFilters = document.querySelector('.container-fluid .issues-state-filters');
+    this.stateFilters = document.querySelector(`.container-fluid ${this.stateFiltersSelector}`);
 
     if (this.stateFilters) {
       this.searchStateWrapper = this.searchState.bind(this);
 
-      this.stateFilters.querySelector('[data-state="opened"]')
-        .addEventListener('click', this.searchStateWrapper);
-      this.stateFilters.querySelector('[data-state="closed"]')
-        .addEventListener('click', this.searchStateWrapper);
-      this.stateFilters.querySelector('[data-state="all"]')
-        .addEventListener('click', this.searchStateWrapper);
-
-      this.mergedState = this.stateFilters.querySelector('[data-state="merged"]');
-      if (this.mergedState) {
-        this.mergedState.addEventListener('click', this.searchStateWrapper);
-      }
+      this.applyToStateFilters((filterEl) => {
+        filterEl.addEventListener('click', this.searchStateWrapper);
+      });
     }
   }
 
   unbindStateEvents() {
     if (this.stateFilters) {
-      this.stateFilters.querySelector('[data-state="opened"]')
-        .removeEventListener('click', this.searchStateWrapper);
-      this.stateFilters.querySelector('[data-state="closed"]')
-        .removeEventListener('click', this.searchStateWrapper);
-      this.stateFilters.querySelector('[data-state="all"]')
-        .removeEventListener('click', this.searchStateWrapper);
-
-      if (this.mergedState) {
-        this.mergedState.removeEventListener('click', this.searchStateWrapper);
-      }
+      this.applyToStateFilters((filterEl) => {
+        filterEl.removeEventListener('click', this.searchStateWrapper);
+      });
     }
+  }
+
+  applyToStateFilters(callback) {
+    this.stateFilters.querySelectorAll('a[data-state]').forEach((filterEl) => {
+      if (this.states.indexOf(filterEl.dataset.state) > -1) {
+        callback(filterEl);
+      }
+    });
   }
 
   bindEvents() {
@@ -125,7 +149,7 @@ class FilteredSearchManager {
     this.handleInputVisualTokenWrapper = this.handleInputVisualToken.bind(this);
     this.checkForEnterWrapper = this.checkForEnter.bind(this);
     this.onClearSearchWrapper = this.onClearSearch.bind(this);
-    this.checkForBackspaceWrapper = this.checkForBackspace.bind(this);
+    this.checkForBackspaceWrapper = this.checkForBackspace.call(this);
     this.removeSelectedTokenKeydownWrapper = this.removeSelectedTokenKeydown.bind(this);
     this.unselectEditTokensWrapper = this.unselectEditTokens.bind(this);
     this.editTokenWrapper = this.editToken.bind(this);
@@ -178,22 +202,34 @@ class FilteredSearchManager {
     this.unbindStateEvents();
   }
 
-  checkForBackspace(e) {
-    // 8 = Backspace Key
-    // 46 = Delete Key
-    if (e.keyCode === 8 || e.keyCode === 46) {
-      const { lastVisualToken } = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+  checkForBackspace() {
+    let backspaceCount = 0;
 
-      const sanitizedTokenName = lastVisualToken && lastVisualToken.querySelector('.name').textContent.trim();
-      const canEdit = sanitizedTokenName && this.canEdit && this.canEdit(sanitizedTokenName);
-      if (this.filteredSearchInput.value === '' && lastVisualToken && canEdit) {
-        this.filteredSearchInput.value = gl.FilteredSearchVisualTokens.getLastTokenPartial();
-        gl.FilteredSearchVisualTokens.removeLastTokenPartial();
+    // closure for keeping track of the number of backspace keystrokes
+    return (e) => {
+      // 8 = Backspace Key
+      // 46 = Delete Key
+      if (e.keyCode === 8 || e.keyCode === 46) {
+        const { lastVisualToken } = FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+        const { tokenName, tokenValue } = DropdownUtils.getVisualTokenValues(lastVisualToken);
+        const canEdit = tokenName && this.canEdit && this.canEdit(tokenName, tokenValue);
+
+        if (this.filteredSearchInput.value === '' && lastVisualToken && canEdit) {
+          backspaceCount += 1;
+
+          if (backspaceCount === 2) {
+            backspaceCount = 0;
+            this.filteredSearchInput.value = FilteredSearchVisualTokens.getLastTokenPartial();
+            FilteredSearchVisualTokens.removeLastTokenPartial();
+          }
+        }
+
+        // Reposition dropdown so that it is aligned with cursor
+        this.dropdownManager.updateCurrentDropdownOffset();
+      } else {
+        backspaceCount = 0;
       }
-
-      // Reposition dropdown so that it is aligned with cursor
-      this.dropdownManager.updateCurrentDropdownOffset();
-    }
+    };
   }
 
   checkForEnter(e) {
@@ -252,7 +288,7 @@ class FilteredSearchManager {
       e.stopImmediatePropagation();
 
       const button = e.target.closest('.selectable');
-      gl.FilteredSearchVisualTokens.selectToken(button, true);
+      FilteredSearchVisualTokens.selectToken(button, true);
       this.removeSelectedToken();
     }
   }
@@ -264,7 +300,7 @@ class FilteredSearchManager {
     const isElementTokensContainer = e.target.classList.contains('tokens-container');
 
     if ((!isElementInFilteredSearch && !isElementInFilterDropdown) || isElementTokensContainer) {
-      gl.FilteredSearchVisualTokens.moveInputToTheRight();
+      FilteredSearchVisualTokens.moveInputToTheRight();
       this.dropdownManager.resetDropdowns();
     }
   }
@@ -277,13 +313,13 @@ class FilteredSearchManager {
     if (token && canEdit) {
       e.preventDefault();
       e.stopPropagation();
-      gl.FilteredSearchVisualTokens.editToken(token);
+      FilteredSearchVisualTokens.editToken(token);
       this.tokenChange();
     }
   }
 
   toggleClearSearchButton() {
-    const query = gl.DropdownUtils.getSearchQuery();
+    const query = DropdownUtils.getSearchQuery();
     const hidden = 'hidden';
     const hasHidden = this.clearSearchButton.classList.contains(hidden);
 
@@ -295,7 +331,7 @@ class FilteredSearchManager {
   }
 
   handleInputPlaceholder() {
-    const query = gl.DropdownUtils.getSearchQuery();
+    const query = DropdownUtils.getSearchQuery();
     const placeholder = 'Search or filter results...';
     const currentPlaceholder = this.filteredSearchInput.placeholder;
 
@@ -315,7 +351,7 @@ class FilteredSearchManager {
   }
 
   removeSelectedToken() {
-    gl.FilteredSearchVisualTokens.removeSelectedToken();
+    FilteredSearchVisualTokens.removeSelectedToken();
     this.handleInputPlaceholder();
     this.toggleClearSearchButton();
     this.dropdownManager.updateCurrentDropdownOffset();
@@ -335,8 +371,8 @@ class FilteredSearchManager {
       let canClearToken = t.classList.contains('js-visual-token');
 
       if (canClearToken) {
-        const tokenKey = t.querySelector('.name').textContent.trim();
-        canClearToken = this.canEdit && this.canEdit(tokenKey);
+        const { tokenName, tokenValue } = DropdownUtils.getVisualTokenValues(t);
+        canClearToken = this.canEdit && this.canEdit(tokenName, tokenValue);
       }
 
       if (canClearToken) {
@@ -363,12 +399,12 @@ class FilteredSearchManager {
     const { tokens, searchToken }
       = this.tokenizer.processTokens(input.value, this.filteredSearchTokenKeys.getKeys());
     const { isLastVisualTokenValid }
-      = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+      = FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
     if (isLastVisualTokenValid) {
       tokens.forEach((t) => {
         input.value = input.value.replace(`${t.key}:${t.symbol}${t.value}`, '');
-        gl.FilteredSearchVisualTokens.addFilterVisualToken(t.key, `${t.symbol}${t.value}`);
+        FilteredSearchVisualTokens.addFilterVisualToken(t.key, `${t.symbol}${t.value}`);
       });
 
       const fragments = searchToken.split(':');
@@ -381,10 +417,10 @@ class FilteredSearchManager {
           const searchTerms = inputValues.join(' ');
 
           input.value = input.value.replace(searchTerms, '');
-          gl.FilteredSearchVisualTokens.addSearchVisualToken(searchTerms);
+          FilteredSearchVisualTokens.addSearchVisualToken(searchTerms);
         }
 
-        gl.FilteredSearchVisualTokens.addFilterVisualToken(tokenKey);
+        FilteredSearchVisualTokens.addFilterVisualToken(tokenKey);
         input.value = input.value.replace(`${tokenKey}:`, '');
       }
     } else {
@@ -392,7 +428,7 @@ class FilteredSearchManager {
       const valueCompletedRegex = /([~%@]{0,1}".+")|([~%@]{0,1}'.+')|^((?![~%@]')(?![~%@]")(?!')(?!")).*/g;
 
       if (searchToken.match(valueCompletedRegex) && input.value[input.value.length - 1] === ' ') {
-        gl.FilteredSearchVisualTokens.addFilterVisualToken(searchToken);
+        FilteredSearchVisualTokens.addFilterVisualToken(searchToken);
 
         // Trim the last space as seen in the if statement above
         input.value = input.value.replace(searchToken, '').trim();
@@ -408,7 +444,7 @@ class FilteredSearchManager {
   saveCurrentSearchQuery() {
     // Don't save before we have fetched the already saved searches
     this.fetchingRecentSearchesPromise.then(() => {
-      const searchQuery = gl.DropdownUtils.getSearchQuery();
+      const searchQuery = DropdownUtils.getSearchQuery();
       if (searchQuery.length > 0) {
         const resultantSearches = this.recentSearchesStore.addRecentSearch(searchQuery);
         this.recentSearchesService.save(resultantSearches);
@@ -424,7 +460,7 @@ class FilteredSearchManager {
   }
 
   loadSearchParamsFromURL() {
-    const urlParams = gl.utils.getUrlParamsArray();
+    const urlParams = getUrlParamsArray();
     const params = this.getAllParams(urlParams);
     const usernameParams = this.getUsernameParams();
     let hasFilteredSearch = false;
@@ -440,7 +476,7 @@ class FilteredSearchManager {
       if (condition) {
         hasFilteredSearch = true;
         const canEdit = this.canEdit && this.canEdit(condition.tokenKey);
-        gl.FilteredSearchVisualTokens.addFilterVisualToken(
+        FilteredSearchVisualTokens.addFilterVisualToken(
           condition.tokenKey,
           condition.value,
           canEdit,
@@ -468,8 +504,8 @@ class FilteredSearchManager {
           }
 
           hasFilteredSearch = true;
-          const canEdit = this.canEdit && this.canEdit(sanitizedKey);
-          gl.FilteredSearchVisualTokens.addFilterVisualToken(
+          const canEdit = this.canEdit && this.canEdit(sanitizedKey, sanitizedValue);
+          FilteredSearchVisualTokens.addFilterVisualToken(
             sanitizedKey,
             `${symbol}${quotationsToUse}${sanitizedValue}${quotationsToUse}`,
             canEdit,
@@ -480,7 +516,7 @@ class FilteredSearchManager {
             hasFilteredSearch = true;
             const tokenName = 'assignee';
             const canEdit = this.canEdit && this.canEdit(tokenName);
-            gl.FilteredSearchVisualTokens.addFilterVisualToken(tokenName, `@${usernameParams[id]}`, canEdit);
+            FilteredSearchVisualTokens.addFilterVisualToken(tokenName, `@${usernameParams[id]}`, canEdit);
           }
         } else if (!match && keyParam === 'author_id') {
           const id = parseInt(value, 10);
@@ -488,7 +524,7 @@ class FilteredSearchManager {
             hasFilteredSearch = true;
             const tokenName = 'author';
             const canEdit = this.canEdit && this.canEdit(tokenName);
-            gl.FilteredSearchVisualTokens.addFilterVisualToken(tokenName, `@${usernameParams[id]}`, canEdit);
+            FilteredSearchVisualTokens.addFilterVisualToken(tokenName, `@${usernameParams[id]}`, canEdit);
           }
         } else if (!match && keyParam === 'search') {
           hasFilteredSearch = true;
@@ -520,13 +556,13 @@ class FilteredSearchManager {
 
   search(state = null) {
     const paths = [];
-    const searchQuery = gl.DropdownUtils.getSearchQuery();
+    const searchQuery = DropdownUtils.getSearchQuery();
 
     this.saveCurrentSearchQuery();
 
     const { tokens, searchToken }
       = this.tokenizer.processTokens(searchQuery, this.filteredSearchTokenKeys.getKeys());
-    const currentState = state || gl.utils.getParameterByName('state') || 'opened';
+    const currentState = state || getParameterByName('state') || 'opened';
     paths.push(`state=${currentState}`);
 
     tokens.forEach((token) => {
@@ -565,7 +601,7 @@ class FilteredSearchManager {
     if (this.updateObject) {
       this.updateObject(parameterizedUrl);
     } else {
-      gl.utils.visitUrl(parameterizedUrl);
+      visitUrl(parameterizedUrl);
     }
   }
 
@@ -605,6 +641,3 @@ class FilteredSearchManager {
     return true;
   }
 }
-
-window.gl = window.gl || {};
-gl.FilteredSearchManager = FilteredSearchManager;

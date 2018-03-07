@@ -13,8 +13,8 @@ describe 'projects/pipelines_settings/_show' do
         render
 
         expect(rendered).to have_css('.settings-message')
-        expect(rendered).to have_text('Auto Review Apps and Auto Deploy need a domain name and the')
-        expect(rendered).to have_link('Kubernetes service')
+        expect(rendered).to have_text('Auto Review Apps and Auto Deploy need a domain name and a')
+        expect(rendered).to have_link('Kubernetes cluster')
       end
     end
 
@@ -27,15 +27,15 @@ describe 'projects/pipelines_settings/_show' do
         render
 
         expect(rendered).to have_css('.settings-message')
-        expect(rendered).to have_text('Auto Review Apps and Auto Deploy need the')
-        expect(rendered).to have_link('Kubernetes service')
+        expect(rendered).to have_text('Auto Review Apps and Auto Deploy need a')
+        expect(rendered).to have_link('Kubernetes cluster')
       end
     end
   end
 
   context 'when kubernetes is active' do
     before do
-      project.build_kubernetes_service(active: true)
+      create(:kubernetes_service, project: project)
     end
 
     context 'when auto devops domain is not defined' do

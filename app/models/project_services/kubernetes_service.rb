@@ -1,5 +1,9 @@
+##
+# NOTE:
+# We'll move this class to Clusters::Platforms::Kubernetes, which contains exactly the same logic.
+# After we've migrated data, we'll remove KubernetesService. This would happen in a few months.
+# If you're modyfiyng this class, please note that you should update the same change in Clusters::Platforms::Kubernetes.
 class KubernetesService < DeploymentService
-  include Gitlab::CurrentSettings
   include Gitlab::Kubernetes
   include ReactiveCaching
 
@@ -26,6 +30,7 @@ class KubernetesService < DeploymentService
 
   before_validation :enforce_namespace_to_lower_case
 
+  validate :deprecation_validation, unless: :template?
   validates :namespace,
     allow_blank: true,
     length: 1..63,
@@ -134,6 +139,22 @@ class KubernetesService < DeploymentService
     { pods: read_pods }
   end
 
+  def kubeclient
+    @kubeclient ||= build_kubeclient!
+  end
+
+  def deprecated?
+    !active
+  end
+
+  def deprecation_message
+    content = _("Kubernetes service integration has been deprecated. %{deprecated_message_content} your Kubernetes clusters using the new <a href=\"%{url}\"/>Kubernetes Clusters</a> page") % {
+      deprecated_message_content: deprecated_message_content,
+      url: Gitlab::Routing.url_helpers.project_clusters_path(project)
+    }
+    content.html_safe
+  end
+
   TEMPLATE_PLACEHOLDER = 'Kubernetes namespace'.freeze
 
   private
@@ -151,7 +172,10 @@ class KubernetesService < DeploymentService
   end
 
   def default_namespace
-    "#{project.path}-#{project.id}" if project.present?
+    return unless project
+
+    slug = "#{project.path}-#{project.id}".downcase
+    slug.gsub(/[^-a-z0-9]/, '-').gsub(/^-+/, '')
   end
 
   def build_kubeclient!(api_path: 'api', api_version: 'v1')
@@ -173,6 +197,7 @@ class KubernetesService < DeploymentService
     kubeclient.get_pods(namespace: actual_namespace).as_json
   rescue KubeException => err
     raise err unless err.error_code == 404
+
     []
   end
 
@@ -204,11 +229,27 @@ class KubernetesService < DeploymentService
     {
       token: token,
       ca_pem: ca_pem,
-      max_session_time: current_application_settings.terminal_max_session_time
+      max_session_time: Gitlab::CurrentSettings.terminal_max_session_time
     }
   end
 
   def enforce_namespace_to_lower_case
     self.namespace = self.namespace&.downcase
+  end
+
+  def deprecation_validation
+    return if active_changed?(from: true, to: false)
+
+    if deprecated?
+      errors[:base] << deprecation_message
+    end
+  end
+
+  def deprecated_message_content
+    if active?
+      _("Your Kubernetes cluster information on this page is still editable, but you are advised to disable and reconfigure")
+    else
+      _("Fields on this page are now uneditable, you can configure")
+    end
   end
 end

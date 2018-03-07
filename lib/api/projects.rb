@@ -3,6 +3,7 @@ require_dependency 'declarative_policy'
 module API
   class Projects < Grape::API
     include PaginationParams
+    include Helpers::CustomAttributes
 
     before { authenticate_non_get! }
 
@@ -76,14 +77,15 @@ module API
 
       def present_projects(projects, options = {})
         projects = reorder_projects(projects)
-        projects = projects.with_statistics if params[:statistics]
-        projects = projects.with_issues_enabled if params[:with_issues_enabled]
+        projects = projects.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
         projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
+        projects = projects.with_statistics if params[:statistics]
+        projects = paginate(projects)
+        projects, options = with_custom_attributes(projects, options)
 
         if current_user
-          projects = projects.includes(:route, :taggings, namespace: :route)
-          project_members = current_user.project_members
-          group_members = current_user.group_members
+          project_members = current_user.project_members.preload(:source, user: [notification_settings: :source])
+          group_members = current_user.group_members.preload(:source, user: [notification_settings: :source])
         end
 
         options = options.reverse_merge(
@@ -95,7 +97,7 @@ module API
         )
         options[:with] = Entities::BasicProjectDetails if params[:simple]
 
-        present paginate(projects), options
+        present options[:with].prepare_relation(projects, options), options
       end
     end
 
@@ -107,6 +109,7 @@ module API
         requires :user_id, type: String, desc: 'The ID or username of the user'
         use :collection_params
         use :statistics_params
+        use :with_custom_attributes
       end
       get ":user_id/projects" do
         user = find_user(params[:user_id])
@@ -119,12 +122,15 @@ module API
     end
 
     resource :projects do
+      include CustomAttributesEndpoints
+
       desc 'Get a list of visible projects for authenticated user' do
         success Entities::BasicProjectDetails
       end
       params do
         use :collection_params
         use :statistics_params
+        use :with_custom_attributes
       end
       get do
         present_projects load_projects
@@ -152,6 +158,7 @@ module API
           if project.errors[:limit_reached].present?
             error!(project.errors[:limit_reached], 403)
           end
+
           render_validation_error!(project)
         end
       end
@@ -193,11 +200,19 @@ module API
       end
       params do
         use :statistics_params
+        use :with_custom_attributes
       end
       get ":id" do
-        entity = current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails
-        present user_project, with: entity, current_user: current_user,
-                              user_can_admin_project: can?(current_user, :admin_project, user_project), statistics: params[:statistics]
+        options = {
+          with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
+          current_user: current_user,
+          user_can_admin_project: can?(current_user, :admin_project, user_project),
+          statistics: params[:statistics]
+        }
+
+        project, options = with_custom_attributes(user_project, options)
+
+        present project, options
       end
 
       desc 'Fork new project for the current user or provided namespace.' do
@@ -207,6 +222,8 @@ module API
         optional :namespace, type: String, desc: 'The ID or name of the namespace that the project will be forked into'
       end
       post ':id/fork' do
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42284')
+
         fork_params = declared_params(include_missing: false)
         namespace_id = fork_params[:namespace]
 
@@ -237,6 +254,7 @@ module API
       end
       params do
         use :collection_params
+        use :with_custom_attributes
       end
       get ':id/forks' do
         forks = ForkProjectsFinder.new(user_project, params: project_finder_params, current_user: current_user).execute
@@ -253,6 +271,7 @@ module API
           [
             :jobs_enabled,
             :resolve_outdated_diff_discussions,
+            :ci_config_path,
             :container_registry_enabled,
             :default_branch,
             :description,
@@ -365,15 +384,16 @@ module API
       post ":id/fork/:forked_from_id" do
         authenticated_as_admin!
 
-        forked_from_project = find_project!(params[:forked_from_id])
-        not_found!("Source Project") unless forked_from_project
+        fork_from_project = find_project!(params[:forked_from_id])
 
-        if user_project.forked_from_project.nil?
-          user_project.create_forked_project_link(forked_to_project_id: user_project.id, forked_from_project_id: forked_from_project.id)
+        not_found!("Source Project") unless fork_from_project
 
-          ::Projects::ForksCountService.new(forked_from_project).refresh_cache
+        result = ::Projects::ForkService.new(fork_from_project, current_user).execute(user_project)
+
+        if result
+          present user_project.reload, with: Entities::Project
         else
-          render_api_error!("Project already forked", 409)
+          render_api_error!("Project already forked", 409) if user_project.forked?
         end
       end
 
@@ -381,11 +401,11 @@ module API
       delete ":id/fork" do
         authorize! :remove_fork_project, user_project
 
-        if user_project.forked?
-          destroy_conditionally!(user_project.forked_project_link)
-        else
-          not_modified!
+        result = destroy_conditionally!(user_project) do
+          ::Projects::UnlinkForkService.new(user_project, current_user).execute
         end
+
+        result ? status(204) : not_modified!
       end
 
       desc 'Share the project with a group' do

@@ -1,27 +1,10 @@
 - page_title "Account"
 - @content_class = "limit-container-width" unless fluid_layout
-= render 'profiles/head'
 
 - if current_user.ldap_user?
   .alert.alert-info
     Some options are unavailable for LDAP accounts
 
-.row.prepend-top-default
-  .col-lg-4.profile-settings-sidebar
-    %h4.prepend-top-0
-      Private Tokens
-    %p
-      Keep these tokens secret, anyone with access to them can interact with
-      GitLab as if they were you.
-  .col-lg-8.private-tokens-reset
-    = render partial: 'reset_token', locals: { label: 'Private token', button_label: 'Reset private token', help_text: 'Your private token is used to access the API and Atom feeds without username/password authentication.' }
-
-    = render partial: 'reset_token', locals: { label: 'RSS token', button_label: 'Reset RSS token', help_text: 'Your RSS token is used to create urls for personalized RSS feeds.' }
-
-    - if incoming_email_token_enabled?
-      = render partial: 'reset_token', locals: { label: 'Incoming email token', button_label: 'Reset incoming email token', help_text: 'Your incoming email token is used to create new issues by email, and is included in your project-specific email addresses.' }
-
-%hr
 .row.prepend-top-default
   .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
@@ -33,10 +16,6 @@
       Status: #{current_user.two_factor_enabled? ? 'Enabled' : 'Disabled'}
     - if current_user.two_factor_enabled?
       = link_to 'Manage two-factor authentication', profile_two_factor_auth_path, class: 'btn btn-info'
-      = link_to 'Disable', profile_two_factor_auth_path,
-                method: :delete,
-                data: { confirm: "Are you sure? This will invalidate your registered applications and U2F devices." },
-                class: 'btn btn-danger'
     - else
       .append-bottom-10
         = link_to 'Enable two-factor authentication', profile_two_factor_auth_path, class: 'btn btn-success'
@@ -97,21 +76,28 @@
 .row.prepend-top-default
   .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0.danger-title
-      Remove account
+      = s_('Profiles|Delete account')
   .col-lg-8
     - if @user.can_be_removed? && can?(current_user, :destroy_user, @user)
       %p
-        Deleting an account has the following effects:
+        = s_('Profiles|Deleting an account has the following effects:')
       = render 'users/deletion_guidance', user: current_user
-      = link_to 'Delete account', user_registration_path, data: { confirm: "REMOVE #{current_user.name}? Are you sure?" }, method: :delete, class: "btn btn-remove"
+
+      %button#delete-account-button.btn.btn-danger.disabled{ data: { toggle: 'modal',
+        target: '#delete-account-modal' } }
+        = s_('Profiles|Delete account')
+
+      #delete-account-modal{ data: { action_url: user_registration_path,
+        confirm_with_password: ('true' if current_user.confirm_deletion_with_password?),
+        username: current_user.username } }
     - else
       - if @user.solo_owned_groups.present?
         %p
-          Your account is currently an owner in these groups:
+          = s_('Profiles|Your account is currently an owner in these groups:')
           %strong= @user.solo_owned_groups.map(&:name).join(', ')
         %p
-          You must transfer ownership or delete these groups before you can delete your account.
+          = s_('Profiles|You must transfer ownership or delete these groups before you can delete your account.')
       - else
         %p
-          You don't have access to delete this user.
+          = s_("Profiles|You don't have access to delete this user.")
 .append-bottom-default

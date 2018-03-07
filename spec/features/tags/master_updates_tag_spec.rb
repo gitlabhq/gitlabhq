@@ -5,7 +5,7 @@ feature 'Master updates tag' do
   let(:project) { create(:project, :repository, namespace: user.namespace) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
     visit project_tags_path(project)
   end

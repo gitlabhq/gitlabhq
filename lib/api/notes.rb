@@ -18,6 +18,10 @@ module API
         end
         params do
           requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
+          optional :order_by, type: String, values: %w[created_at updated_at], default: 'created_at',
+                              desc: 'Return notes ordered by `created_at` or `updated_at` fields.'
+          optional :sort, type: String, values: %w[asc desc], default: 'desc',
+                          desc: 'Return notes sorted in `asc` or `desc` order.'
           use :pagination
         end
         get ":id/#{noteables_str}/:noteable_id/notes" do
@@ -29,11 +33,12 @@ module API
             # at the DB query level (which we cannot in that case), the current
             # page can have less elements than :per_page even if
             # there's more than one page.
+            raw_notes = noteable.notes.with_metadata.reorder(params[:order_by] => params[:sort])
             notes =
               # paginate() only works with a relation. This could lead to a
               # mismatch between the pagination headers info and the actual notes
               # array returned, but this is really a edge-case.
-              paginate(noteable.notes)
+              paginate(raw_notes)
               .reject { |n| n.cross_reference_not_visible_for?(current_user) }
             present notes, with: Entities::Note
           else
@@ -50,7 +55,7 @@ module API
         end
         get ":id/#{noteables_str}/:noteable_id/notes/:note_id" do
           noteable = find_project_noteable(noteables_str, params[:noteable_id])
-          note = noteable.notes.find(params[:note_id])
+          note = noteable.notes.with_metadata.find(params[:note_id])
           can_read_note = can?(current_user, noteable_read_ability_name(noteable), noteable) && !note.cross_reference_not_visible_for?(current_user)
 
           if can_read_note
@@ -78,6 +83,8 @@ module API
           }
 
           if can?(current_user, noteable_read_ability_name(noteable), noteable)
+            authorize! :create_note, noteable
+
             if params[:created_at] && (current_user.admin? || user_project.owner == current_user)
               opts[:created_at] = params[:created_at]
             end

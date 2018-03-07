@@ -24,6 +24,7 @@ def main
     unless system(*%W[git clone --bare #{SOURCE} #{REPO_NAME}], chdir: dir)
       abort "git clone failed"
     end
+
     repo = File.join(dir, REPO_NAME)
     erb = ERB.new(DATA.read)
     erb.run(binding)
@@ -33,6 +34,7 @@ end
 def capture!(cmd, dir)
   output = IO.popen(cmd, 'r', chdir: dir) { |io| io.read }
   raise "command failed with #{$?}: #{cmd.join(' ')}" unless $?.success?
+
   output.chomp
 end
 

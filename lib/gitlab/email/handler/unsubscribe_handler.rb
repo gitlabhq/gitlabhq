@@ -16,6 +16,7 @@ module Gitlab
 
           noteable = sent_notification.noteable
           raise NoteableNotFoundError unless noteable
+
           noteable.unsubscribe(sent_notification.recipient)
         end
 

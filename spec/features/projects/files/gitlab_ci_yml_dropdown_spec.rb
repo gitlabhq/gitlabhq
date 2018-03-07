@@ -4,7 +4,7 @@ feature 'User wants to add a .gitlab-ci.yml file' do
   before do
     user = create(:user)
     project = create(:project, :repository)
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in user
     visit project_new_blob_path(project, 'master', file_name: '.gitlab-ci.yml')
   end
@@ -13,7 +13,7 @@ feature 'User wants to add a .gitlab-ci.yml file' do
     expect(page).to have_css('.gitlab-ci-yml-selector')
   end
 
-  scenario 'user can pick a template from the dropdown', js: true do
+  scenario 'user can pick a template from the dropdown', :js do
     find('.js-gitlab-ci-yml-selector').click
     wait_for_requests
     within '.gitlab-ci-yml-selector' do

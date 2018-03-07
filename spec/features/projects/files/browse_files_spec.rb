@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-feature 'user browses project', js: true do
+feature 'user browses project', :js do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
     visit project_tree_path(project, project.default_branch)
   end

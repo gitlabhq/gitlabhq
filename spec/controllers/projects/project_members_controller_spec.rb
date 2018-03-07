@@ -8,7 +8,7 @@ describe Projects::ProjectMembersController do
     it 'should have the project_members address with a 200 status code' do
       get :index, namespace_id: project.namespace, project_id: project
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
   end
 
@@ -21,7 +21,7 @@ describe Projects::ProjectMembersController do
 
     context 'when user does not have enough rights' do
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       it 'returns 404' do
@@ -30,14 +30,14 @@ describe Projects::ProjectMembersController do
                       user_ids: project_user.id,
                       access_level: Gitlab::Access::GUEST
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(project.users).not_to include project_user
       end
     end
 
     context 'when user has enough rights' do
       before do
-        project.team << [user, :master]
+        project.add_master(user)
       end
 
       it 'adds user to members' do
@@ -66,6 +66,26 @@ describe Projects::ProjectMembersController do
     end
   end
 
+  describe 'PUT update' do
+    let(:requester) { create(:project_member, :access_request, project: project) }
+
+    before do
+      project.add_master(user)
+      sign_in(user)
+    end
+
+    Gitlab::Access.options.each do |label, value|
+      it "can change the access level to #{label}" do
+        xhr :put, :update, project_member: { access_level: value },
+                           namespace_id: project.namespace,
+                           project_id: project,
+                           id: requester
+
+        expect(requester.reload.human_access).to eq(label)
+      end
+    end
+  end
+
   describe 'DELETE destroy' do
     let(:member) { create(:project_member, :developer, project: project) }
 
@@ -79,14 +99,14 @@ describe Projects::ProjectMembersController do
                          project_id: project,
                          id: 42
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
     context 'when member is found' do
       context 'when user does not have enough rights' do
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         it 'returns 404' do
@@ -94,14 +114,14 @@ describe Projects::ProjectMembersController do
                            project_id: project,
                            id: member
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
           expect(project.members).to include member
         end
       end
 
       context 'when user has enough rights' do
         before do
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it '[HTML] removes user from members' do
@@ -137,14 +157,14 @@ describe Projects::ProjectMembersController do
         delete :leave, namespace_id: project.namespace,
                        project_id: project
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
     context 'when member is found' do
       context 'and is not an owner' do
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         it 'removes user from members' do
@@ -161,14 +181,14 @@ describe Projects::ProjectMembersController do
         let(:project) { create(:project, namespace: user.namespace) }
 
         before do
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it 'cannot remove himself from the project' do
           delete :leave, namespace_id: project.namespace,
                          project_id: project
 
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
         end
       end
 
@@ -221,14 +241,14 @@ describe Projects::ProjectMembersController do
                                       project_id: project,
                                       id: 42
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
     context 'when member is found' do
       context 'when user does not have enough rights' do
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         it 'returns 404' do
@@ -236,14 +256,14 @@ describe Projects::ProjectMembersController do
                                         project_id: project,
                                         id: member
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
           expect(project.members).not_to include member
         end
       end
 
       context 'when user has enough rights' do
         before do
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it 'adds user to members' do
@@ -265,8 +285,8 @@ describe Projects::ProjectMembersController do
     let(:member) { create(:user) }
 
     before do
-      project.team << [user, :master]
-      another_project.team << [member, :guest]
+      project.add_master(user)
+      another_project.add_guest(member)
       sign_in(user)
     end
 
@@ -280,7 +300,7 @@ describe Projects::ProjectMembersController do
 
     context 'when user can access source project members' do
       before do
-        another_project.team << [user, :guest]
+        another_project.add_guest(user)
       end
 
       include_context 'import applied'
@@ -312,7 +332,7 @@ describe Projects::ProjectMembersController do
 
     context 'when creating owner' do
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         sign_in(user)
       end
 
@@ -328,7 +348,7 @@ describe Projects::ProjectMembersController do
 
     context 'when create master' do
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         sign_in(user)
       end
 

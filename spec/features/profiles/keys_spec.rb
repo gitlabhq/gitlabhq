@@ -12,7 +12,7 @@ feature 'Profile > SSH Keys' do
       visit profile_keys_path
     end
 
-    scenario 'auto-populates the title', js: true do
+    scenario 'auto-populates the title', :js do
       fill_in('Key', with: attributes_for(:key).fetch(:key))
 
       expect(page).to have_field("Title", with: "dummy@gitlab.com")
@@ -27,6 +27,7 @@ feature 'Profile > SSH Keys' do
 
       expect(page).to have_content("Title: #{attrs[:title]}")
       expect(page).to have_content(attrs[:key])
+      expect(find('.breadcrumbs-sub-title')).to have_link(attrs[:title])
     end
 
     context 'when only DSA and ECDSA keys are allowed' do

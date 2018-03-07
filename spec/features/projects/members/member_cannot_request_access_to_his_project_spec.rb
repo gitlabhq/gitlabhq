@@ -5,7 +5,7 @@ feature 'Projects > Members > Member cannot request access to his project' do
   let(:project) { create(:project) }
 
   background do
-    project.team << [member, :developer]
+    project.add_developer(member)
     sign_in(member)
     visit project_path(project)
   end

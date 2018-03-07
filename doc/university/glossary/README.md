@@ -1,4 +1,8 @@
-## What is the Glossary
+---
+comments: false
+---
+
+# What is the Glossary
 
 This contains a simplified list and definitions of some of the terms that you will encounter in your day to day activities when working with GitLab.
 Please add any terms that you discover that you think would be useful for others.
@@ -18,6 +22,10 @@ A Microsoft-based [directory service](https://msdn.microsoft.com/en-us/library/b
 ### Agile
 
 Building and [delivering software](http://agilemethodology.org/) in phases/parts rather than trying to build everything at once then delivering to the user/client. The latter is known as the WaterFall model.
+
+### Amazon RDS
+
+External reference: <http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html>
 
 ### Application Lifecycle Management (ALM)
 
@@ -64,7 +72,7 @@ A branch is a parallel version of a repository. This allows you to work on the r
 
 Having your own logo on [your GitLab instance login page](https://docs.gitlab.com/ee/customization/branded_login_page.html) instead of the GitLab logo.
 
-### Job triggers
+### Job triggers (Build Triggers)
 These protect your code base against breaks, for instance when a team is working on the same project. Learn about [setting up](https://docs.gitlab.com/ce/ci/triggers/README.html) job triggers.
 
 ### CEPH
@@ -105,15 +113,15 @@ Atlassian's product for collaboration on documents and projects.
 
 ### Continuous Delivery
 
-A [software engineering approach](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/) in which continuous integration, automated testing, and automated deployment capabilities allow software to be developed and deployed rapidly, reliably and repeatedly with minimal human intervention. Still, the deployment to production is defined strategically and triggered manually.
+A [software engineering approach](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/) in which continuous integration, automated testing, and automated deployment capabilities allow software to be developed and deployed rapidly, reliably and repeatedly with minimal human intervention. Still, the deployment to production is defined strategically and triggered manually. [Amazon moves toward continuous delivery](https://www.youtube.com/watch?v=esEFaY0FDKc)
 
 ### Continuous Deployment
 
-A [software development practice](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/) in which every code change goes through the entire pipeline and is put into production automatically, resulting in many production deployments every day. It does everything that Continuous Delivery does, but the process is fully automated, there's no human intervention at all.
+A [software development practice](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/) in which every code change goes through the entire pipeline and is put into production automatically, resulting in many production deployments every day. It does everything that Continuous Delivery does, but the process is fully automated, there's no human intervention at all. [The difference between Continuous Delivery and Continuous Integration.](https://www.youtube.com/watch?v=igwFj8PPSnw)
 
 ### Continuous Integration
 
-A [software development practice](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/) in which you build and test software every time a developer pushes code to the application, and it happens several times a day.
+A [software development practice](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/) in which you build and test software every time a developer pushes code to the application, and it happens several times a day. [Thoughtworks discusses continuous integration.](https://www.thoughtworks.com/continuous-integration)
 
 ### Contributor
 
@@ -123,6 +131,10 @@ Term used for a person contributing to an open source project.
 
 A [natural evolution](https://about.gitlab.com/2016/09/14/gitlab-live-event-recap/) of software development that carries a conversation across functional groups throughout the development process, enabling developers to track the full path of development in a cohesive and intuitive way. ConvDev accelerates the development lifecycle by fostering collaboration and knowledge sharing from idea to production.
 
+### Cycle Analytics
+
+See <https://gitlab.com/gitlab-org/gitlab-ce/issues/22458>
+
 ### Cycle Time
 
 The time it takes to move from [idea to production](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab).
@@ -130,6 +142,10 @@ The time it takes to move from [idea to production](https://about.gitlab.com/201
 ### Data Centre
 
 Atlassian product for High Availability.
+
+### Dependencies
+
+As in "specify [dependencies](https://gitlab.com/gitlab-org/gitlab-ce/issues/14728) between stages."
 
 ### Deploy Keys
 
@@ -147,25 +163,43 @@ The intersection of software engineering, quality assurance, and technology oper
 
 The difference between two commits, or saved changes. This will also be shown visually after the changes.
 
-#### Directory
+### Directory
 
 A folder used for storing multiple files.
 
 ### Docker Container Registry
 
-A [feature](https://docs.gitlab.com/ce/user/project/container_registry.html) of GitLab projects. Containers wrap up a piece of software in a complete filesystem that contains everything it needs to run: code, runtime, system tools, system libraries – anything you can install on a server. This guarantees that it will always run the same, regardless of the environment it is running in.
+A [feature](https://docs.gitlab.com/ce/user/project/container_registry.html) of [GitLab projects](https://about.gitlab.com/2016/05/23/gitlab-container-registry/). Containers wrap up a piece of software in a complete filesystem that contains everything it needs to run: code, runtime, system tools, system libraries – anything you can install on a server. This guarantees that it will always run the same, regardless of the environment it is running in.
 
-### Dynamic Environment
+### Dynamic Environment (review apps)
 
-### ElasticSearch
+### EC2 Instance
+
+### Elasticsearch
 
 Elasticsearch is a flexible, scalable and powerful search service. When [enabled](https://gitlab.com/help/integration/elasticsearch.md), it helps keep GitLab's search fast when dealing with a huge amount of data.
 
 ### Emacs
 
+External reference: <https://www.masteringemacs.org/article/mastering-key-bindings-emacs>
+
+### First Byte
+
+External reference: <https://en.wikipedia.org/wiki/Time_To_First_Byte>
+
+First Byte (sometimes referred to as time to first byte or [TTFB](https://en.wikipedia.org/wiki/Time_To_First_Byte)) measures the time between making a request and receiving the first byte of information in return. As a result, First Byte encompasses everything that is the backend as well as network transit issues. It differs from [_Speed Index_](#speed-index) mostly by frontend related issues which are included in Speed Index such as javascript loading, page rendering, and so on.
+
 ### Fork
 
 Your [own copy](https://docs.gitlab.com/ce/workflow/forking_workflow.html) of a repository that allows you to make changes to the repository without affecting the original.
+
+### Funnel, or: TOFU, MOFU, BOFU
+
+External reference: [Blog post](https://www.weidert.com/whole_brain_marketing_blog/bid/113688/ToFu-MoFu-BoFu-Serving-Up-The-Right-Content-for-Lead-Nurturing)
+
+TOFU: top of funnel
+MOFU: middle of funnel
+BOFU:  bottom of funnel
 
 ### Gerrit
 
@@ -178,6 +212,8 @@ A [git attributes file](https://git-scm.com/docs/gitattributes) is a simple text
 ### Git Hooks
 
 [Scripts](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) you can use to trigger actions at certain points.
+
+Difference between a [webhook](#webhooks) and a git hook: a git hook is local to its repo (usually) while a webhook is not (it can make API or http calls). So for example if you want your linter to fire before you commit, you can set that up with a git hook. If the linter fails, the commit does not go through. A git hook _can_ be configured to go beyond its repo, e.g. by having it make an API call.
 
 ### GitHost.io
 
@@ -193,7 +229,7 @@ Our free on Premise solution with >100,000 users
 
 ### GitLab CI
 
-Our own Continuos Integration [feature](https://about.gitlab.com/gitlab-ci/) that is shipped with each instance
+Our own Continuous Integration [feature](https://about.gitlab.com/gitlab-ci/) that is shipped with each instance
 
 ### GitLab EE
 
@@ -207,8 +243,19 @@ Our free SaaS for public and private repositories.
 
 Allows you to replicate your GitLab instance to other geographical locations as a read-only fully operational version. It [can be used](https://docs.gitlab.com/ee/gitlab-geo/README.html) for cloning and fetching projects, in addition to reading any data. This will make working with large repositories over large distances much faster.
 
+### GitLab High Availability
+
+### GitLab Master Plan
+
+Related blog post: <https://about.gitlab.com/2016/09/13/gitlab-master-plan/>.
+
 ### GitLab Pages
+
 These allow you to [create websites](https://gitlab.com/help/pages/README.md) for your GitLab projects, groups, or user account.
+
+### GitLab Runner
+
+Related project: <https://gitlab.com/gitlab-org/gitlab-runner>
 
 ### Gitolite
 
@@ -221,6 +268,10 @@ A web-based hosting service for projects using Git. It was acquired by GitLab an
 ### Go
 
 An open source programming [language](https://golang.org/).
+
+### Gogs
+
+External reference: <https://gogs.io/>
 
 ### GUI/ Git GUI
 
@@ -252,7 +303,7 @@ A [tool](https://docs.gitlab.com/ee/integration/external-issue-tracker.html) use
 
 ### Jenkins
 
-An Open Source CI tool written using the Java programming language. [Jenkins](https://jenkins-ci.org/) does the same job as GitLab CI, Bamboo, and Travis CI. It is extremely popular.
+An Open Source CI tool written using the Java programming language. [Jenkins](https://jenkins-ci.org/) does the same job as GitLab CI, Bamboo, and Travis CI. It is extremely popular. Related [documentation](https://docs.gitlab.com/ee/integration/jenkins.html). 
 
 ### Jira
 
@@ -285,6 +336,10 @@ GitLab [integrates](https://docs.gitlab.com/ce/administration/auth/ldap.html) wi
 ### LDAP Group Sync
 
 Allows you to synchronize the members of a GitLab group with one or more LDAP groups.
+
+### Lint
+
+Static code analysis for our various file types. For example, we use [scss-lint](https://github.com/brigade/scss-lint) to ensure that a consistent code styling is respected. Similar tools: rubocop / eslint.
 
 ### Load Balancer
 
@@ -326,6 +381,10 @@ Takes changes from one branch, and [applies them](https://git-scm.com/docs/git-m
 
 [Arises](https://about.gitlab.com/2016/09/06/resolving-merge-conflicts-from-the-gitlab-ui/) when a merge can't be performed cleanly between two versions of the same file.
 
+#### Merge Request
+
+[Takes changes](https://docs.gitlab.com/ce/gitlab-basics/add-merge-request.html) from one branch, and applies them into another branch.
+
 ### Meteor
 
 A [platform](https://www.meteor.com) for building javascript apps.
@@ -346,6 +405,14 @@ A type of software license. It lets people do anything with your code with prope
 
 A free disaster recovery [software](https://help.ubuntu.com/community/MondoMindi).
 
+#### Mount
+
+External reference: 
+
+As stated on the [wikipedia page](https://en.wikipedia.org/wiki/Mount_(Unix)), "Mounting makes file systems, files, directories, devices and special files available for use and available to the user."
+
+For example, we have NFS servers where the _git files_  reside. In order for a worker node to "see" or "use" the git files, the NFS server needs to be _mounted_ on the worker; that is, the worker needs to know that the NFS server exists and how to connect to it. Think of it as getting a shared drive to show up in your Finder (on Mac) or Explorer (on Windows).
+
 ### MySQL
 
 A relational [database](http://www.mysql.com/) owned by Oracle. Currently only supported if you are using EE.
@@ -356,7 +423,7 @@ A set of symbols that are used to organize objects of various kinds so that thes
 
 ### Nginx
 
-A web [server](https://www.nginx.com/resources/wiki/) (pronounced "engine x"). It can act as a reverse proxy server for HTTP, HTTPS, SMTP, POP3, and IMAP protocols, as well as a load balancer and an HTTP cache.
+A web [server](https://www.nginx.com/resources/wiki/) (pronounced "engine x"). [It can act]((https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/nginx.md) as a reverse proxy server for HTTP, HTTPS, SMTP, POP3, and IMAP protocols, as well as a load balancer and an HTTP cache.
 
 ### OAuth
 
@@ -376,7 +443,11 @@ GitLab's [business model](https://about.gitlab.com/2016/07/20/gitlab-is-open-cor
 
 ### Open Source Software
 
-Software for which the original source code is freely [available](https://opensource.org/docs/osd) and may be redistributed and modified. GitLab prioritizes open source [stewardship](https://about.gitlab.com/2016/01/11/being-a-good-open-source-steward/).
+Software for which the original source code is freely [available](https://opensource.org/docs/osd) and may be redistributed and modified. GitLab prioritizes open source [stewardship](https://about.gitlab.com/2016/01/11/being-a-good-open-source-steward/). Including to providing access to the source code, open source software must comply with a number of criteria, among them free distribution and no discrimination against persons, groups, or fields of endeavor.
+
+#### Open Source Stewardship
+
+[Related blog post](https://about.gitlab.com/2016/01/11/being-a-good-open-source-steward/). 
 
 ### Owner
 
@@ -426,6 +497,8 @@ A popular DevOps [automation tool](https://puppet.com/product/how-puppet-works).
 
 Git [command](https://git-scm.com/docs/git-push) to send commits from the local repository to the remote repository. Read about [advanced push rules](https://gitlab.com/help/pages/README.md) in GitLab.
 
+### Raketasks
+
 ### RE Read Only
 
 Permissions to see a file and its contents, but not change it.
@@ -434,9 +507,23 @@ Permissions to see a file and its contents, but not change it.
 
 In addition to the merge, the [rebase](https://git-scm.com/book/en/v2/Git-Branching-Rebasing) is a main way to integrate changes from one branch into another.
 
+### Regression
+
+A regression is something that used to work one way in the last release and then we made a **breaking change** and it no longer works the same way.
+
+_or_
+
+A regression is defined as a change that results in a negative impact on the functionality of an existing feature due to recent changes, i.e. the latest release.
+
+### Remote mirroring
+
 ### (Git) Repository
 
 A directory where Git [has been initiatlized](https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository) to start version controlling your files. The history of your work is stored here. A remote repository is not on your machine, but usually online (like on GitLab.com, for instance). The main remote repository is usually called "Origin."
+
+##### Remote repository
+
+A [repository](https://about.gitlab.com/2015/05/18/simple-words-for-a-gitlab-newbie/) that is not-on-your-machine, so it's anything that is not your computer. Usually, it is online, GitLab.com for instance. The main remote repository is usually called “Origin”.
 
 ### Requirements management
 
@@ -456,7 +543,7 @@ A route table contains rules (called routes) that determine where network traffi
 
 ### Runners
 
-Actual build machines/containers that [run and execute tests](https://gitlab.com/gitlab-org/gitlab-ci-multi-runner) you have specified to be run on GitLab CI.
+Actual build machines/containers that [run and execute tests](https://gitlab.com/gitlab-org/gitlab-runner) you have specified to be run on GitLab CI.
 
 ### Sidekiq
 
@@ -470,7 +557,11 @@ Software that is hosted centrally and accessed on-demand (i.e. whenever you want
 
 This term is often used by people when they mean "Version Control."
 
-## Scrum
+#### SCLAU
+
+Abbreviation for SQO Count [Large And Up](https://about.gitlab.com/handbook/sales/#market-segmentation). This is the number of opportunities in large and strategic organizations passed from marketing to sales.
+
+### Scrum 
 
 An Agile [framework](https://www.scrum.org/Resources/What-is-Scrum) designed to typically help complete complex software projects. It's made up of several parts: product requirements backlog, sprint planning, sprint (development), sprint review, and retrospec (analyzing the sprint). The goal is to end up with potentially shippable products.
 
@@ -480,7 +571,9 @@ The board used to track the status and progress of each of the sprint backlog it
 
 ### Shell
 
-Terminal on Mac OSX, GitBash on Windows, or Linux Terminal on Linux. You [use git]() and make changes to GitLab projects in your shell. You [use git](https://docs.gitlab.com/ce/gitlab-basics/start-using-git.html) and make changes to GitLab projects in your shell.
+Terminal on Mac OSX, GitBash on Windows, or Linux Terminal on Linux. You [use git](https://docs.gitlab.com/ce/gitlab-basics/start-using-git.html) and make changes to GitLab projects in your shell. You [use git](https://docs.gitlab.com/ce/gitlab-basics/start-using-git.html) and make changes to GitLab projects in your shell.
+
+### Shell command runner
 
 ### Single-tenant
 
@@ -490,6 +583,8 @@ The tenant purchases their own copy of the software and the software can be cust
 
 Real time messaging app for teams that is used internally by  GitLab team members. GitLab users can enable [Slack integration](https://docs.gitlab.com/ce/project_services/slack.html) to trigger push, issue, and merge request events among others.
 
+### Slash commands
+
 ### Slave Servers
 
 Also known as secondary servers, these help to spread the load over multiple machines. They also provide backups when the master/primary server crashes.
@@ -497,6 +592,10 @@ Also known as secondary servers, these help to spread the load over multiple mac
 ### Source Code
 
 Program code as typed by a computer programmer (i.e. it has not yet been compiled/translated by the computer to machine language).
+
+### Speed Index
+
+[Speed Index](https://sites.google.com/a/webpagetest.org/docs/using-webpagetest/metrics/speed-index) is "the average time at which visible parts of the page are displayed".
 
 ### SSH Key
 
@@ -538,6 +637,16 @@ An open source version control system. Read about [migrating from SVN](https://d
 
 [Represents](https://docs.gitlab.com/ce/api/tags.html) a version of a particular branch at a moment in time.
 
+### Tenancy
+
+#### Multi-tenant
+
+A [multi-tenant](http://whatis.techtarget.com/definition/multi-tenancy) GitLab instance can have any number of customers - such as companies or groups of users using it. GitLab.com is an example of a multi-tenant GitLab instance.
+
+#### Single-tenant
+
+A [single-tenant](http://searchcloudapplications.techtarget.com/definition/single-tenancy) GitLab instance has only one customer - such as a company - using it. On premise GitLab instances are almost exclusively single-tenant.
+
 ### Tool Stack
 
 The set of tools used in a process to achieve a common outcome (e.g. set of tools used in Application Lifecycle Management).
@@ -546,9 +655,17 @@ The set of tools used in a process to achieve a common outcome (e.g. set of tool
 
 An open source project management and bug tracking web [application](https://trac.edgewall.org/).
 
+### True-Up licensing model
+
+### Ubuntu
+
 ### Untracked files
 
-New files that Git has not [been told](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository) to track previously.
+New files that Git has not [been told](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository) to track previously. Add them by using the command "git add [file path]"
+
+### Upstream repository vs. GitLab repository
+
+[External conversation](https://news.ycombinator.com/item?id=12487112)
 
 ### User
 
@@ -556,11 +673,11 @@ Anyone interacting with the software.
 
 ### Version Control Software (VCS)
 
-Version control is a system that records changes to a file or set of files over time so that you can recall specific versions later. VCS [has evolved](https://docs.google.com/presentation/d/16sX7hUrCZyOFbpvnrAFrg6tVO5_yT98IgdAqOmXwBho/edit#slide=id.gd69537a19_0_32) from local version control systems, to centralized version control systems, to the present distributed version control systems like Git, Mercurial, Bazaar, and Darcs.
+Version control is a system that records changes to a file or set of files over time so that you can recall specific versions later. VCS [has evolved](https://docs.google.com/presentation/d/16sX7hUrCZyOFbpvnrAFrg6tVO5_yT98IgdAqOmXwBho/edit#slide=id.gd69537a19_0_32) from local version control systems, to centralized version control systems, to the present [distributed version control systems](https://en.wikipedia.org/wiki/Distributed_version_control) like Git, Mercurial, Bazaar, and Darcs. If any server dies, and these systems were collaborating via it, any of the client repositories can be copied back up to the server to restore it.
 
 ### Virtual Private Cloud (VPC)
 
-An on demand configurable pool of shared computing resources allocated within a public cloud environment, providing some isolation between the different users using the resources. GitLab users need to create a new Amazon VPC in order to [setup High Availability](https://docs.gitlab.com/ce/university/high-availability/aws/).
+A [VPC](https://docs.gitlab.com/ce/university/glossary/README.html#virtual-private-cloud-vpc) is an on demand configurable pool of shared computing resources allocated within a public cloud environment, providing some isolation between the different users using the resources. GitLab users need to create a new Amazon VPC in order to [setup High Availability](https://docs.gitlab.com/ce/university/high-availability/aws/).
 
 ### Virtual private server (VPS)
 
@@ -568,7 +685,7 @@ A [virtual machine](https://en.wikipedia.org/wiki/Virtual_private_server) sold a
 
 ### VM Instance
 
-In object-oriented programming, an [instance](http://stackoverflow.com/questions/20461907/what-is-meaning-of-instance-in-programming) is a specific realization of any object. An object may be varied in a number of ways. Each realized variation of that object is an instance. Therefore, a VM instance is an instance of a virtual machine, which is an emulation of a computer system.
+In object-oriented programming, an [instance](http://stackoverflow.com/questions/20461907/what-is-meaning-of-instance-in-programming) is a specific realization of any [object](https://cloud.google.com/compute/docs/instances/). An object may be varied in a number of ways. Each realized variation of that object is an instance. Therefore, a VM instance is an instance of a virtual machine, which is an emulation of a computer system.
 
 ### Waterfall
 
@@ -581,6 +698,10 @@ A way for for an app to [provide](https://docs.gitlab.com/ce/user/project/integr
 ### Wiki
 
 A [website/system](http://www.wiki.com/) that allows for collaborative editing of its content by the users. In programming, wikis usually contain documentation of how to use the software.
+
+### Working area
+
+Files that have been modified but are not committed. Check them by using the command "git status". 
 
 ### Working Tree
 

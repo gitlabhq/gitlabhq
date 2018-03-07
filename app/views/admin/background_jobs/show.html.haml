@@ -1,6 +1,5 @@
 - @no_container = true
 - page_title "Background Jobs"
-= render 'admin/monitoring/head'
 
 %div{ class: container_class }
   %h3.page-title Background Jobs
@@ -43,4 +42,4 @@
 
 
   .panel.panel-default
-    %iframe{ src: sidekiq_path, width: '100%', height: 970, style: "border: none" }
+    %iframe{ src: sidekiq_path, width: '100%', height: 970, style: "border: 0" }

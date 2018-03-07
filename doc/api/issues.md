@@ -46,6 +46,10 @@ GET /issues?my_reaction_emoji=star
 | `order_by`          | string           | no         | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                                               |
 | `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                                                    |
 | `search`            | string           | no         | Search issues against their `title` and `description`                                                                                               |
+| `created_after`     | datetime         | no         | Return issues created on or after the given time                                                                                                    |
+| `created_before`    | datetime         | no         | Return issues created on or before the given time                                                                                                   |
+| `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                                                    |
+| `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                                                   |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/issues
@@ -110,7 +114,8 @@ Example response:
          "human_time_estimate": null,
          "human_total_time_spent": null
       },
-      "confidential": false
+      "confidential": false,
+      "discussion_locked": false
    }
 ]
 ```
@@ -151,6 +156,10 @@ GET /groups/:id/issues?my_reaction_emoji=star
 | `order_by`          | string           | no         | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                         |
 | `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                              |
 | `search`            | string           | no         | Search group issues against their `title` and `description`                                                                   |
+| `created_after`     | datetime         | no         | Return issues created on or after the given time                                                                              |
+| `created_before`    | datetime         | no         | Return issues created on or before the given time                                                                             |
+| `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                              |
+| `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                             |
 
 
 ```bash
@@ -216,7 +225,8 @@ Example response:
          "human_time_estimate": null,
          "human_total_time_spent": null
       },
-      "confidential": false
+      "confidential": false,
+      "discussion_locked": false
    }
 ]
 ```
@@ -257,8 +267,10 @@ GET /projects/:id/issues?my_reaction_emoji=star
 | `order_by`          | string           | no         | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                         |
 | `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                              |
 | `search`            | string           | no         | Search project issues against their `title` and `description`                                                                 |
-| `created_after`     | datetime         | no         | Return issues created after the given time (inclusive)                                                                        |
-| `created_before`    | datetime         | no         | Return issues created before the given time (inclusive)                                                                       |
+| `created_after`     | datetime         | no         | Return issues created on or after the given time                                                                              |
+| `created_before`    | datetime         | no         | Return issues created on or before the given time                                                                             |
+| `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                              |
+| `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                             |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/issues
@@ -323,7 +335,8 @@ Example response:
          "human_time_estimate": null,
          "human_total_time_spent": null
       },
-      "confidential": false
+      "confidential": false,
+      "discussion_locked": false
    }
 ]
 ```
@@ -407,6 +420,7 @@ Example response:
       "human_total_time_spent": null
    },
    "confidential": false,
+   "discussion_locked": false,
    "_links": {
       "self": "http://example.com/api/v4/projects/1/issues/2",
       "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
@@ -482,6 +496,7 @@ Example response:
       "human_total_time_spent": null
    },
    "confidential": false,
+   "discussion_locked": false,
    "_links": {
       "self": "http://example.com/api/v4/projects/1/issues/2",
       "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
@@ -509,12 +524,14 @@ PUT /projects/:id/issues/:issue_iid
 | `title`        | string  | no       | The title of an issue                                                                                      |
 | `description`  | string  | no       | The description of an issue                                                                                |
 | `confidential` | boolean | no       | Updates an issue to be confidential                                                                        |
-| `assignee_ids`  | Array[integer] | no       | The ID of the users to assign the issue to                                                                    |
-| `milestone_id` | integer | no       | The ID of a milestone to assign the issue to                                                               |
-| `labels`       | string  | no       | Comma-separated label names for an issue                                                                   |
+| `assignee_ids`  | Array[integer] | no  | The ID of the user(s) to assign the issue to. Set to `0` or provide an empty value to unassign all assignees.  |
+| `milestone_id` | integer | no       | The ID of a milestone to assign the issue to. Set to `0` or provide an empty value to unassign a milestone.|
+| `labels`       | string  | no       | Comma-separated label names for an issue. Set to an empty string to unassign all labels.                   |
 | `state_event`  | string  | no       | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it                      |
 | `updated_at`   | string  | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
 | `due_date`     | string  | no       | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`                                           |
+| `discussion_locked` | boolean | no  | Flag indicating if the issue's discussion is locked. If the discussion is locked only project members can add or edit comments. |
+
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/issues/85?state_event=close
@@ -558,6 +575,7 @@ Example response:
       "human_total_time_spent": null
    },
    "confidential": false,
+   "discussion_locked": false,
    "_links": {
       "self": "http://example.com/api/v4/projects/1/issues/2",
       "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
@@ -657,6 +675,7 @@ Example response:
     "human_total_time_spent": null
   },
   "confidential": false,
+  "discussion_locked": false,
   "_links": {
     "self": "http://example.com/api/v4/projects/1/issues/2",
     "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
@@ -735,6 +754,7 @@ Example response:
     "human_total_time_spent": null
   },
   "confidential": false,
+  "discussion_locked": false,
   "_links": {
     "self": "http://example.com/api/v4/projects/1/issues/2",
     "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
@@ -763,6 +783,44 @@ POST /projects/:id/issues/:issue_iid/unsubscribe
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/unsubscribe
+```
+
+Example response:
+
+```json
+{
+  "id": 93,
+  "iid": 12,
+  "project_id": 5,
+  "title": "Incidunt et rerum ea expedita iure quibusdam.",
+  "description": "Et cumque architecto sed aut ipsam.",
+  "state": "opened",
+  "created_at": "2016-04-05T21:41:45.217Z",
+  "updated_at": "2016-04-07T13:02:37.905Z",
+  "labels": [],
+  "milestone": null,
+  "assignee": {
+    "name": "Edwardo Grady",
+    "username": "keyon",
+    "id": 21,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/3e6f06a86cf27fa8b56f3f74f7615987?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/keyon"
+  },
+  "author": {
+    "name": "Vivian Hermann",
+    "username": "orville",
+    "id": 11,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/5224fd70153710e92fb8bcf79ac29d67?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/orville"
+  },
+  "subscribed": false,
+  "due_date": null,
+  "web_url": "http://example.com/example/example/issues/12",
+  "confidential": false,
+  "discussion_locked": false
+}
 ```
 
 ## Create a todo
@@ -857,7 +915,8 @@ Example response:
     "downvotes": 0,
     "due_date": null,
     "web_url": "http://example.com/example/example/issues/110",
-    "confidential": false
+    "confidential": false,
+    "discussion_locked": false
   },
   "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ci/issues/10",
   "body": "Vel voluptas atque dicta mollitia adipisci qui at.",
@@ -1070,6 +1129,45 @@ Example response:
       "human_time_estimate": null,
       "human_total_time_spent": null
     }
+  }
+]
+```
+
+
+## Participants on issues
+
+```
+GET /projects/:id/issues/:issue_iid/participants
+```
+
+| Attribute   | Type    | Required | Description                          |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `issue_iid` | integer | yes      | The internal ID of a project's issue |
+
+```bash
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/participants
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 1,
+    "name": "John Doe1",
+    "username": "user1",
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/c922747a93b40d1ea88262bf1aebee62?s=80&d=identicon",
+    "web_url": "http://localhost/user1"
+  },
+  {
+    "id": 5,
+    "name": "John Doe5",
+    "username": "user5",
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/4aea8cf834ed91844a2da4ff7ae6b491?s=80&d=identicon",
+    "web_url": "http://localhost/user5"
   }
 ]
 ```

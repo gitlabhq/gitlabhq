@@ -7,7 +7,7 @@ describe Gitlab::Ci::Status::Pipeline::Factory do
   let(:factory) { described_class.new(pipeline, user) }
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
   end
 
   context 'when pipeline has a core status' do

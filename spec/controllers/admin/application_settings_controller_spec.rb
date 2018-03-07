@@ -51,6 +51,13 @@ describe Admin::ApplicationSettingsController do
       sign_in(admin)
     end
 
+    it 'updates the password_authentication_enabled_for_git setting' do
+      put :update, application_setting: { password_authentication_enabled_for_git: "0" }
+
+      expect(response).to redirect_to(admin_application_settings_path)
+      expect(ApplicationSetting.current.password_authentication_enabled_for_git).to eq(false)
+    end
+
     it 'updates the default_project_visibility for string value' do
       put :update, application_setting: { default_project_visibility: "20" }
 

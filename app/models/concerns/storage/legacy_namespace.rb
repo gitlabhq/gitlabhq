@@ -7,12 +7,18 @@ module Storage
         raise Gitlab::UpdatePathError.new('Namespace cannot be moved, because at least one project has tags in container registry')
       end
 
+      expires_full_path_cache
+
       # Move the namespace directory in all storage paths used by member projects
       repository_storage_paths.each do |repository_storage_path|
         # Ensure old directory exists before moving it
         gitlab_shell.add_namespace(repository_storage_path, full_path_was)
 
+        # Ensure new directory exists before moving it (if there's a parent)
+        gitlab_shell.add_namespace(repository_storage_path, parent.full_path) if parent
+
         unless gitlab_shell.mv_namespace(repository_storage_path, full_path_was, full_path)
+
           Rails.logger.error "Exception moving path #{repository_storage_path} from #{full_path_was} to #{full_path}"
 
           # if we cannot move namespace directory we should rollback
@@ -32,6 +38,8 @@ module Storage
       # So we basically we mute exceptions in next actions
       begin
         send_update_instructions
+        write_projects_repository_config
+
         true
       rescue
         # Returning false does not rollback after_* transaction but gives
@@ -83,20 +91,10 @@ module Storage
       remove_exports!
     end
 
-    def remove_exports!
-      Gitlab::Popen.popen(%W(find #{export_path} -not -path #{export_path} -delete))
-    end
+    def remove_legacy_exports!
+      legacy_export_path = File.join(Gitlab::ImportExport.storage_path, full_path_was)
 
-    def export_path
-      File.join(Gitlab::ImportExport.storage_path, full_path_was)
-    end
-
-    def full_path_was
-      if parent
-        parent.full_path + '/' + path_was
-      else
-        path_was
-      end
+      FileUtils.rm_rf(legacy_export_path)
     end
   end
 end

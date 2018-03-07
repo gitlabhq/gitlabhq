@@ -1,4 +1,0 @@
----
-title: Handle unsubscribe from email notifications via replying to reply+%{key}+unsubscribe@ address
-merge_request: 6597
-author:

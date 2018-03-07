@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe Projects::BlobController do
+  include ProjectForksHelper
+
   let(:project) { create(:project, :public, :repository) }
 
   describe "GET show" do
@@ -87,7 +89,7 @@ describe Projects::BlobController do
     end
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
 
       sign_in(user)
     end
@@ -145,13 +147,13 @@ describe Projects::BlobController do
       let(:developer) { create(:user) }
 
       before do
-        project.team << [developer, :developer]
+        project.add_developer(developer)
         sign_in(developer)
         get :edit, default_params
       end
 
       it 'redirects to blob show' do
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
     end
 
@@ -159,13 +161,13 @@ describe Projects::BlobController do
       let(:master) { create(:user) }
 
       before do
-        project.team << [master, :master]
+        project.add_master(master)
         sign_in(master)
         get :edit, default_params
       end
 
       it 'redirects to blob show' do
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
     end
   end
@@ -188,7 +190,7 @@ describe Projects::BlobController do
     end
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
 
       sign_in(user)
     end
@@ -226,9 +228,8 @@ describe Projects::BlobController do
     end
 
     context 'when user has forked project' do
-      let(:forked_project_link) { create(:forked_project_link, forked_from_project: project) }
-      let!(:forked_project) { forked_project_link.forked_to_project }
-      let(:guest) { forked_project.owner }
+      let!(:forked_project) { fork_project(project, guest, namespace: guest.namespace, repository: true) }
+      let(:guest) { create(:user) }
 
       before do
         sign_in(guest)

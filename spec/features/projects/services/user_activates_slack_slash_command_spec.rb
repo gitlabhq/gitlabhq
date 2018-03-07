@@ -6,7 +6,7 @@ feature 'Slack slash commands' do
   given(:service) { project.create_slack_slash_commands_service }
 
   background do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
     visit edit_project_service_path(project, service)
   end

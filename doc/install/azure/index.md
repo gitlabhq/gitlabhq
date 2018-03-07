@@ -38,9 +38,10 @@ create SQL Databases, author websites, and perform lots of other cloud tasks.
 ## Create New VM
 
 The [Azure Marketplace][Azure-Marketplace] is an online store for pre-configured applications and 
-services which have been optimized for the cloud by software vendors like GitLab, and both 
-the [Community Edition ("CE")][CE] and the [Enterprise Edition ("EE")][EE] versions of GitLab are 
-available on the Azure Marketplace as pre-configured solutions.
+services which have been optimized for the cloud by software vendors like GitLab,
+available on the Azure Marketplace as pre-configured solutions. In this tutorial
+we will install GitLab Community Edition, but for GitLab Enterprise Edition you
+can follow the same process.
 
 To begin creating a new GitLab VM, click on the **+ New** icon, type "GitLab" into the search 
 box, and then click the **"GitLab Community Edition"** search result:
@@ -178,7 +179,7 @@ address. Read [IP address types and allocation methods in Azure][Azure-IP-Addres
 
 At this stage you should have a running and fully operational VM. However, none of the services on 
 your VM (e.g. GitLab) will be publicly accessible via the internet until you have opened up the 
-neccessary ports to enable access to those services.
+necessary ports to enable access to those services.
 
 Ports are opened by adding _security rules_ to the **"Network security group"** (NSG) which our VM 
 has been assigned to. If you followed the process above, then Azure will have automatically created 

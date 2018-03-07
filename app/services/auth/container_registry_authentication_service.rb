@@ -1,7 +1,5 @@
 module Auth
   class ContainerRegistryAuthenticationService < BaseService
-    extend Gitlab::CurrentSettings
-
     AUDIENCE = 'container_registry'.freeze
 
     def execute(authentication_abilities:)
@@ -32,7 +30,7 @@ module Auth
     end
 
     def self.token_expire_at
-      Time.now + current_application_settings.container_registry_token_expire_delay.minutes
+      Time.now + Gitlab::CurrentSettings.container_registry_token_expire_delay.minutes
     end
 
     private
@@ -56,11 +54,22 @@ module Auth
     def process_scope(scope)
       type, name, actions = scope.split(':', 3)
       actions = actions.split(',')
-      path = ContainerRegistry::Path.new(name)
 
-      return unless type == 'repository'
+      case type
+      when 'registry'
+        process_registry_access(type, name, actions)
+      when 'repository'
+        path = ContainerRegistry::Path.new(name)
+        process_repository_access(type, path, actions)
+      end
+    end
 
-      process_repository_access(type, path, actions)
+    def process_registry_access(type, name, actions)
+      return unless current_user&.admin?
+      return unless name == 'catalog'
+      return unless actions == ['*']
+
+      { type: type, name: name, actions: ['*'] }
     end
 
     def process_repository_access(type, path, actions)

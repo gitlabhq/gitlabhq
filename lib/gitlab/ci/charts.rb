@@ -6,7 +6,7 @@ module Gitlab
           query
             .group("DATE(#{::Ci::Pipeline.table_name}.created_at)")
             .count(:created_at)
-            .transform_keys { |date| date.strftime(@format) }
+            .transform_keys { |date| date.strftime(@format) } # rubocop:disable Gitlab/ModuleWithInstanceVariables
         end
 
         def interval_step
@@ -68,10 +68,11 @@ module Gitlab
 
       class YearChart < Chart
         include MonthlyInterval
+        attr_reader :to, :from
 
         def initialize(*)
-          @to     = Date.today.end_of_month
-          @from   = @to.years_ago(1).beginning_of_month
+          @to     = Date.today.end_of_month.end_of_day
+          @from   = @to.years_ago(1).beginning_of_month.beginning_of_day
           @format = '%d %B %Y'
 
           super
@@ -80,10 +81,11 @@ module Gitlab
 
       class MonthChart < Chart
         include DailyInterval
+        attr_reader :to, :from
 
         def initialize(*)
-          @to     = Date.today
-          @from   = @to - 30.days
+          @to     = Date.today.end_of_day
+          @from   = 1.month.ago.beginning_of_day
           @format = '%d %B'
 
           super
@@ -92,10 +94,11 @@ module Gitlab
 
       class WeekChart < Chart
         include DailyInterval
+        attr_reader :to, :from
 
         def initialize(*)
-          @to     = Date.today
-          @from   = @to - 7.days
+          @to     = Date.today.end_of_day
+          @from   = 1.week.ago.beginning_of_day
           @format = '%d %B'
 
           super
