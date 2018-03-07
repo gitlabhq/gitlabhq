@@ -7,6 +7,12 @@ import editorOptions from './editor_options';
 
 import gitlabTheme from 'ee/ide/lib/themes/gl_theme'; // eslint-disable-line import/first
 
+const clearDomElement = (el) => {
+  while (el.firstChild) {
+    el.removeChild(el.firstChild);
+  }
+};
+
 export default class Editor {
   static create(monaco) {
     if (this.editorInstance) return this.editorInstance;
@@ -34,9 +40,7 @@ export default class Editor {
 
   createInstance(domElement) {
     if (!this.instance) {
-      Object.assign(domElement, {
-        innerHTML: '',
-      });
+      clearDomElement(domElement);
 
       this.disposable.add(
         this.instance = this.monaco.editor.create(domElement, {
@@ -59,9 +63,7 @@ export default class Editor {
 
   createDiffInstance(domElement) {
     if (!this.instance) {
-      Object.assign(domElement, {
-        innerHTML: '',
-      });
+      clearDomElement(domElement);
 
       this.disposable.add(
         this.instance = this.monaco.editor.createDiffEditor(domElement, {
