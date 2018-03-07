@@ -2,7 +2,24 @@
 
 ## Mediator
 
-The [mediator pattern][mediator-pattern] is a common design pattern used in GitLab frontend to ensure that a single network request can update the store of two or more different Vue apps. Each page on GitLab is made up of multiple Vue apps and each app has it's own separate concerns. However, sometimes these Vue app's leverage the same network request to fetch data (E.g. Issuable sidebar items). In these cases, it would be ideal to take advantage of the mediator pattern, so that only one network request is needed to fetch the data, rather than one network request for each Vue app on the page.
+The [mediator pattern][mediator-pattern] is a common design pattern used in GitLab frontend to ensure that a single network request can update the store of two or more different Vue apps.
+
+Each page on GitLab is made up of multiple Vue apps and each app has it's own separate concerns. However, sometimes these Vue app's leverage the same network request to fetch data (E.g. Issuable sidebar items). In these cases, it would be ideal to take advantage of the mediator pattern, so that only one network request is needed to fetch the data, rather than one network request for each Vue app on the page.
+
+**Without Mediator**
+```mermaid
+graph TD
+    A(Vue App 1's service) -- fetches --> C(API endpoint)
+    B(Vue App 2's service) -- fetches --> D(API endpoint)
+```
+
+**With Mediator**
+```mermaid
+graph TD
+    A(Vue App 1's service) -- fetches --> C(Vue App 1 and 2's mediator)
+    B(Vue App 2's service) -- fetches --> C(Vue App 1 and 2's mediator)
+    C(Vue App 1 and 2's mediator) -- fetches -->D(API endpoint)
+```
 
 ## Creating features that update realtime
 
