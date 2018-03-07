@@ -1,9 +1,9 @@
 export default () => {
   const { protocol, host, pathname } = location;
-  const shareBtn = document.querySelector('#share-btn');
-  const embedBtn = document.querySelector('#embed-btn');
-  const snippetUrlArea = document.querySelector('#snippet-url-area');
-  const embedAction = document.querySelector('#embed-action');
+  const shareBtn = document.querySelector('.js-share-btn');
+  const embedBtn = document.querySelector('.js-embed-btn');
+  const snippetUrlArea = document.querySelector('.js-snippet-url-area');
+  const embedAction = document.querySelector('.js-embed-action');
   const url = `${protocol}//${host + pathname}`;
 
   shareBtn.addEventListener('click', () => {
