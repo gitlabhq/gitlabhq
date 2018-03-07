@@ -150,21 +150,19 @@ class Environment < ActiveRecord::Base
   end
 
   def has_metrics?
-    project.monitoring_service.present? && available? && last_deployment.present?
+    prometheus_adapter&.can_query? && available? && last_deployment.present?
   end
 
   def metrics
-    project.monitoring_service.environment_metrics(self) if has_metrics?
-  end
-
-  def has_additional_metrics?
-    project.prometheus_service.present? && available? && last_deployment.present?
+    prometheus_adapter.query(:environment, self) if has_metrics?
   end
 
   def additional_metrics
-    if has_additional_metrics?
-      project.prometheus_service.additional_environment_metrics(self)
-    end
+    prometheus_adapter.query(:additional_metrics_environment, self) if has_metrics?
+  end
+
+  def prometheus_adapter
+    @prometheus_adapter ||= Prometheus::AdapterService.new(project, deployment_platform).prometheus_adapter
   end
 
   def slug
