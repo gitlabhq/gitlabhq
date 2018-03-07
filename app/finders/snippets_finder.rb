@@ -82,9 +82,6 @@ class SnippetsFinder < UnionFinder
   end
 
   def feature_available_projects
-    # Don't return any project related snippets if the user cannot read cross project
-    return table[:id].eq(nil) unless Ability.allowed?(current_user, :read_cross_project)
-
     projects = projects_for_user do |part|
       part.with_feature_available_for_user(:snippets, current_user)
     end.select(:id)
