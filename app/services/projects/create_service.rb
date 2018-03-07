@@ -87,7 +87,7 @@ module Projects
     end
 
     def after_create_actions
-      log_info("#{@project.owner.name} created a new project \"#{@project.name_with_namespace}\"")
+      log_info("#{@project.owner.name} created a new project \"#{@project.full_name}\"")
 
       unless @project.gitlab_project_import?
         @project.write_repository_config

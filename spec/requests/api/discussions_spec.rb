@@ -30,6 +30,7 @@ describe API::Discussions do
       let(:note) { snippet_note }
     end
   end
+<<<<<<< HEAD
 
   context "when noteable is an Epic" do
     let(:group) { create(:group, :public, owner: user) }
@@ -48,4 +49,6 @@ describe API::Discussions do
       let(:note) { epic_note }
     end
   end
+=======
+>>>>>>> upstream/master
 end

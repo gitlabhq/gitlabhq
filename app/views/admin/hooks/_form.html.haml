@@ -1,21 +1,20 @@
 = form_errors(hook)
 
 .form-group
-  = form.label :url, 'URL', class: 'control-label'
-  .col-sm-10
-    = form.text_field :url, class: 'form-control'
+  = form.label :url, 'URL', class: 'label-light'
+  = form.text_field :url, class: 'form-control'
 .form-group
-  = form.label :token, 'Secret Token', class: 'control-label'
-  .col-sm-10
-    = form.text_field :token, class: 'form-control'
-    %p.help-block
-      Use this token to validate received payloads
+  = form.label :token, 'Secret Token', class: 'label-light'
+  = form.text_field :token, class: 'form-control'
+  %p.help-block
+    Use this token to validate received payloads
 .form-group
-  = form.label :url, 'Trigger', class: 'control-label'
-  .col-sm-10.prepend-top-10
-    %div
-      System hook will be triggered on set of events like creating project
-      or adding ssh key. But you can also enable extra triggers like Push events.
+  = form.label :url, 'Trigger', class: 'label-light'
+  %ul.list-unstyled
+    %li
+      .help-block
+        System hook will be triggered on set of events like creating project
+        or adding ssh key. But you can also enable extra triggers like Push events.
 
     .prepend-top-default
       = form.check_box :repository_update_events, class: 'pull-left'
@@ -24,21 +23,21 @@
           %strong Repository update events
         %p.light
           This URL will be triggered when repository is updated
-    %div
+    %li
       = form.check_box :push_events, class: 'pull-left'
       .prepend-left-20
         = form.label :push_events, class: 'list-label' do
           %strong Push events
         %p.light
           This URL will be triggered for each branch updated to the repository
-    %div
+    %li
       = form.check_box :tag_push_events, class: 'pull-left'
       .prepend-left-20
         = form.label :tag_push_events, class: 'list-label' do
           %strong Tag push events
         %p.light
           This URL will be triggered when a new tag is pushed to the repository
-    %div
+    %li
       = form.check_box :merge_requests_events, class: 'pull-left'
       .prepend-left-20
         = form.label :merge_requests_events, class: 'list-label' do
@@ -46,9 +45,8 @@
         %p.light
           This URL will be triggered when a merge request is created/updated/merged
 .form-group
-  = form.label :enable_ssl_verification, 'SSL verification', class: 'control-label checkbox'
-  .col-sm-10
-    .checkbox
-      = form.label :enable_ssl_verification do
-        = form.check_box :enable_ssl_verification
-        %strong Enable SSL verification
+  = form.label :enable_ssl_verification, 'SSL verification', class: 'label-light checkbox'
+  .checkbox
+    = form.label :enable_ssl_verification do
+      = form.check_box :enable_ssl_verification
+      %strong Enable SSL verification

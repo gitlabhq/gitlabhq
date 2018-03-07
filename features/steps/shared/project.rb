@@ -82,7 +82,7 @@ module SharedProject
 
   step 'I should see project "Shop" activity feed' do
     project = Project.find_by(name: "Shop")
-    expect(page).to have_content "#{@user.name} pushed new branch fix at #{project.name_with_namespace}"
+    expect(page).to have_content "#{@user.name} pushed new branch fix at #{project.full_name}"
   end
 
   step 'I should see project settings' do
@@ -113,12 +113,12 @@ module SharedProject
 
   step 'I should not see project "Archive"' do
     project = Project.find_by(name: "Archive")
-    expect(page).not_to have_content project.name_with_namespace
+    expect(page).not_to have_content project.full_name
   end
 
   step 'I should see project "Archive"' do
     project = Project.find_by(name: "Archive")
-    expect(page).to have_content project.name_with_namespace
+    expect(page).to have_content project.full_name
   end
 
   # ----------------------------------------

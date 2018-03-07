@@ -31,7 +31,7 @@
       cssClass: {
         type: String,
         required: false,
-        default: 'btn btn-default btn-transparent btn-clipboard',
+        default: 'btn-default',
       },
     },
   };
@@ -40,6 +40,7 @@
 <template>
   <button
     type="button"
+    class="btn"
     :class="cssClass"
     :title="title"
     :data-clipboard-text="text"

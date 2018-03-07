@@ -112,12 +112,14 @@ class Projects::LabelsController < Projects::ApplicationController
     begin
       return render_404 unless promote_service.execute(@label)
 
+      flash[:notice] = "#{@label.title} promoted to group label."
       respond_to do |format|
         format.html do
-          redirect_to(project_labels_path(@project),
-                      notice: 'Label was promoted to a Group Label')
+          redirect_to(project_labels_path(@project), status: 303)
         end
-        format.js
+        format.json do
+          render json: { url: project_labels_path(@project) }
+        end
       end
     rescue ActiveRecord::RecordInvalid => e
       Gitlab::AppLogger.error "Failed to promote label \"#{@label.title}\" to group label"
