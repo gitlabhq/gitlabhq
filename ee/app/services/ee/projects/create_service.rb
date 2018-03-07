@@ -9,7 +9,7 @@ module EE
         mirror = params.delete(:mirror)
         mirror_user_id = params.delete(:mirror_user_id)
         mirror_trigger_builds = params.delete(:mirror_trigger_builds)
-        ci_cd_only = Gitlab::Utils.to_boolean(params.delete(:ci_cd_only))
+        ci_cd_only = ::Gitlab::Utils.to_boolean(params.delete(:ci_cd_only))
 
         project = super do |project|
           # Repository size limit comes as MB from the view

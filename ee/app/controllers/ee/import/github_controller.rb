@@ -11,7 +11,7 @@ module EE
       override :extra_import_params
       def extra_import_params
         extra_params = super
-        ci_cd_only = Gitlab::Utils.to_boolean(params[:ci_cd_only])
+        ci_cd_only = ::Gitlab::Utils.to_boolean(params[:ci_cd_only])
 
         extra_params[:ci_cd_only] = true if ci_cd_only
         extra_params
