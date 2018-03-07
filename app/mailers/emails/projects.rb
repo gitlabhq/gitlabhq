@@ -38,5 +38,13 @@ module Emails
            reply_to:  @message.reply_to,
            subject:   @message.subject)
     end
+
+    def mirror_was_hard_failed_email(project_id, user_id)
+      @project = Project.find(project_id)
+      user = User.find(user_id)
+
+      mail(to: user.notification_email,
+           subject: subject('Repository mirroring paused'))
+    end
   end
 end

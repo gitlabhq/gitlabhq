@@ -8,10 +8,10 @@ module ImportHelper
     "#{namespace}/#{name}"
   end
 
-  def provider_project_link(provider, path_with_namespace)
-    url = __send__("#{provider}_project_url", path_with_namespace) # rubocop:disable GitlabSecurity/PublicSend
+  def provider_project_link(provider, full_path)
+    url = __send__("#{provider}_project_url", full_path) # rubocop:disable GitlabSecurity/PublicSend
 
-    link_to path_with_namespace, url, target: '_blank', rel: 'noopener noreferrer'
+    link_to full_path, url, target: '_blank', rel: 'noopener noreferrer'
   end
 
   def import_will_timeout_message(_ci_cd_only)
@@ -38,8 +38,8 @@ module ImportHelper
 
   private
 
-  def github_project_url(path_with_namespace)
-    "#{github_root_url}/#{path_with_namespace}"
+  def github_project_url(full_path)
+    "#{github_root_url}/#{full_path}"
   end
 
   def github_root_url
@@ -49,7 +49,7 @@ module ImportHelper
     @github_url = provider.fetch('url', 'https://github.com') if provider
   end
 
-  def gitea_project_url(path_with_namespace)
-    "#{@gitea_host_url.sub(%r{/+\z}, '')}/#{path_with_namespace}"
+  def gitea_project_url(full_path)
+    "#{@gitea_host_url.sub(%r{/+\z}, '')}/#{full_path}"
   end
 end

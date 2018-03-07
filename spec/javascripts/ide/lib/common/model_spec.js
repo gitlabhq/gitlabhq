@@ -64,7 +64,7 @@ describe('Multi-file editor library model', () => {
       model.getModel().setValue('123');
 
       setTimeout(() => {
-        expect(spy).toHaveBeenCalledWith(model.getModel(), jasmine.anything());
+        expect(spy).toHaveBeenCalledWith(model, jasmine.anything());
         done();
       });
     });

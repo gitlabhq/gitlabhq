@@ -258,7 +258,7 @@ feature 'Pages' do
         end
 
         let(:ci_build) do
-          build(
+          create(
             :ci_build,
             project: project,
             pipeline: pipeline,

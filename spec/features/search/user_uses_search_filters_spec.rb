@@ -31,7 +31,7 @@ describe 'User uses search filters', :js do
 
         wait_for_requests
 
-        expect(page).to have_link(group_project.name_with_namespace)
+        expect(page).to have_link(group_project.full_name)
       end
     end
   end
@@ -43,10 +43,10 @@ describe 'User uses search filters', :js do
 
         wait_for_requests
 
-        click_link(project.name_with_namespace)
+        click_link(project.full_name)
       end
 
-      expect(find('.js-search-project-dropdown')).to have_content(project.name_with_namespace)
+      expect(find('.js-search-project-dropdown')).to have_content(project.full_name)
     end
   end
 end

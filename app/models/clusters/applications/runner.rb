@@ -56,12 +56,13 @@ module Clusters
       def specification
         {
           "gitlabUrl" => gitlab_url,
-          "runnerToken" => ensure_runner.token
+          "runnerToken" => ensure_runner.token,
+          "runners" => { "privileged" => privileged }
         }
       end
 
       def content_values
-        specification.merge(YAML.load_file(chart_values_file))
+        YAML.load_file(chart_values_file).deep_merge!(specification)
       end
     end
   end

@@ -103,6 +103,99 @@ Notes:
 - You can use [`git rerere`](https://git-scm.com/blog/2010/03/08/rerere.html)
   to avoid resolving the same conflicts multiple times.
 
+### Cherry-picking from CE to EE
+
+For avoiding merge conflicts, we use a method of creating equivalent branches
+for CE and EE. If the `ee-compat-check` job fails, this process is required.
+
+This method only requires that you have cloned both CE and EE into your computer.
+If you don't have them yet, please go ahead and clone them:
+
+- Clone CE repo: `git clone git@gitlab.com:gitlab-org/gitlab-ce.git`
+- Clone EE repo: `git clone git@gitlab.com:gitlab-org/gitlab-ee.git`
+
+And the only additional setup we need is to add CE as remote of EE and vice-versa:
+
+- Open two terminal windows, one in CE, and another one in EE:
+  - In EE: `git remote add ce git@gitlab.com:gitlab-org/gitlab-ce.git`
+  - In CE: `git remote add ee git@gitlab.com:gitlab-org/gitlab-ee.git`
+
+That's all setup we need, so that we can cherry-pick a commit from CE to EE, and
+from EE to CE.
+
+Now, every time you create an MR for CE and EE:
+
+1. Open two terminal windows, one in CE, and another one in EE
+1. In the CE terminal:
+  1. Create the CE branch, e.g., `branch-example`
+  1. Make your changes and push a commit (commit A)
+  1. Create the CE merge request in GitLab
+1. In the EE terminal:
+  1. Create the EE-equivalent branch ending with `-ee`, e.g.,
+  `git checkout -b branch-example-ee`
+  1. Fetch the CE branch: `git fetch ce branch-example`
+  1. Cherry-pick the commit A: `git cherry-pick commit-A-SHA`
+  1. If Git prompts you to fix the conflicts, do a `git status`
+  to check which files contain conflicts, fix them, save the files
+  1. Add the changes with `git add .` but **DO NOT commit** them
+  1. Continue cherry-picking: `git cherry-pick --continue`
+  1. Push to EE: `git push origin branch-example-ee`
+1. Create the EE-equivalent MR and link to the CE MR from the
+description "Ports [CE-MR-LINK] to EE"
+1. Once all the jobs are passing in both CE and EE, you've addressed the
+feedback from your own team, and got them approved, the merge requests can be merged.
+1. When both MRs are ready, the EE merge request will be merged first, and the
+CE-equivalent will be merged next.
+
+**Important notes:**
+
+- The commit SHA can be easily found from the GitLab UI. From a merge request,
+open the tab **Commits** and click the copy icon to copy the commit SHA.
+- To cherry-pick a **commit range**, such as [A > B > C > D] use:
+
+    ```shell
+    git cherry-pick "oldest-commit-SHA^..newest-commit-SHA"
+    ```
+
+    For example, suppose the commit A is the oldest, and its SHA is `4f5e4018c09ed797fdf446b3752f82e46f5af502`,
+    and the commit D is the newest, and its SHA is `80e1c9e56783bd57bd7129828ec20b252ebc0538`.
+    The cherry-pick command will be:
+
+    ```shell
+    git cherry-pick "4f5e4018c09ed797fdf446b3752f82e46f5af502^..80e1c9e56783bd57bd7129828ec20b252ebc0538"
+    ```
+
+- To cherry-pick a **merge commit**, use the flag `-m 1`. For example, suppose that the
+merge commit SHA is `138f5e2f20289bb376caffa0303adb0cac859ce1`:
+
+    ```shell
+    git cherry-pick -m 1 138f5e2f20289bb376caffa0303adb0cac859ce1
+    ```
+- To cherry-pick multiple commits, such as B and D in a range [A > B > C > D], use:
+
+    ```shell
+    git cherry-pick commmit-B-SHA commit-D-SHA
+    ```
+
+    For example, suppose commit B SHA = `4f5e4018c09ed797fdf446b3752f82e46f5af502`,
+    and the commit D SHA = `80e1c9e56783bd57bd7129828ec20b252ebc0538`.
+    The cherry-pick command will be:
+
+    ```shell
+    git cherry-pick 4f5e4018c09ed797fdf446b3752f82e46f5af502 80e1c9e56783bd57bd7129828ec20b252ebc0538
+    ```
+
+    This case is particularly useful when you have a merge commit in a sequence of
+    commits and you want to cherry-pick all but the merge commit.
+
+- If you push more commits to the CE branch, you can safely repeat the procedure
+to cherry-pick them to the EE-equivalent branch. You can do that as many times as
+necessary, using the same CE and EE branches.
+- If you submitted the merge request to the CE repo and the `ee-compat-check` job passed,
+you are not required to submit the EE-equivalent MR, but it's still recommended. If the
+job failed, you are required to submit the EE MR so that you can fix the conflicts in EE
+before merging your changes into CE.
+
 ---
 
 [Return to Development documentation](README.md)

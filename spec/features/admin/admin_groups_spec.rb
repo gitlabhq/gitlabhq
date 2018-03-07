@@ -174,7 +174,7 @@ feature 'Admin Groups' do
 
       visit admin_group_path(group)
 
-      expect(page).to have_content(empty_project.name_with_namespace)
+      expect(page).to have_content(empty_project.full_name)
       expect(page).to have_content('Projects shared with')
     end
   end

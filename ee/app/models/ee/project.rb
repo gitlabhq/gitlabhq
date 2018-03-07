@@ -224,6 +224,11 @@ module EE
       end
     end
 
+    override :multiple_issue_boards_available?
+    def multiple_issue_boards_available?
+      feature_available?(:multiple_project_issue_boards)
+    end
+
     def service_desk_enabled
       ::EE::Gitlab::ServiceDesk.enabled?(project: self) && super
     end
@@ -313,13 +318,13 @@ module EE
     alias_method :reset_approvals_on_push?, :reset_approvals_on_push
 
     def approver_ids=(value)
-      value.split(",").map(&:strip).each do |user_id|
+      ::Gitlab::Utils.ensure_array_from_string(value).each do |user_id|
         approvers.find_or_create_by(user_id: user_id, target_id: id)
       end
     end
 
     def approver_group_ids=(value)
-      value.split(",").map(&:strip).each do |group_id|
+      ::Gitlab::Utils.ensure_array_from_string(value).each do |group_id|
         approver_groups.find_or_initialize_by(group_id: group_id, target_id: id)
       end
     end

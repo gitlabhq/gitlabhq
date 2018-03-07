@@ -210,4 +210,3 @@ DELETE /groups/:id/-/epics/:epic_iid
 ```bash
 curl --header DELETE "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/-/epics/5?title=New%20Title
 ```
-

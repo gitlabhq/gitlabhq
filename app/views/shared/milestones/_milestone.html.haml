@@ -27,7 +27,7 @@
             - milestone.milestones.each do |milestone|
               = link_to milestone_path(milestone) do
                 %span.label.label-gray
-                  = dashboard ? milestone.project.name_with_namespace : milestone.project.name
+                  = dashboard ? milestone.project.full_name : milestone.project.name
       - if @group
         .col-sm-6.milestone-actions
           - if can?(current_user, :admin_milestones, @group)

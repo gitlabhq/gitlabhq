@@ -1693,8 +1693,9 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def multiple_issue_boards_available?(user)
-    feature_available?(:multiple_issue_boards, user)
+  # Overridden on EE module
+  def multiple_issue_boards_available?
+    false
   end
 
   def full_path_was

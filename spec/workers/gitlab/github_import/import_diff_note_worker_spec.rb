@@ -5,7 +5,7 @@ describe Gitlab::GithubImport::ImportDiffNoteWorker do
 
   describe '#import' do
     it 'imports a diff note' do
-      project = double(:project, path_with_namespace: 'foo/bar')
+      project = double(:project, full_path: 'foo/bar')
       client = double(:client)
       importer = double(:importer)
       hash = {

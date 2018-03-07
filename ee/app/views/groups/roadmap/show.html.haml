@@ -5,8 +5,6 @@
 - breadcrumb_title _("Epics Roadmap")
 
 - if @epics_count != 0
-  - content_for :page_specific_javascripts do
-    = webpack_bundle_tag 'common_vue'
   #js-roadmap{ data: { epics_path: group_epics_path(@group, format: :json), group_id: @group.id, empty_state_illustration: image_path('illustrations/epics/roadmap.svg') } }
 - else
   = render 'shared/empty_states/roadmap'

@@ -129,7 +129,7 @@ class ChatNotificationService < Service
   end
 
   def project_name
-    project.name_with_namespace.gsub(/\s/, '')
+    project.full_name.gsub(/\s/, '')
   end
 
   def project_url
