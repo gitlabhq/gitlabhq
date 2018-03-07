@@ -2,7 +2,7 @@
 
 ## Mediator
 
-> TODO: Add Info
+The [mediator pattern][mediator-pattern] is a common design pattern used in GitLab frontend to ensure that a single network request can update the store of two or more different Vue apps. Each page on GitLab is made up of multiple Vue apps and each app has it's own separate concerns. However, sometimes these Vue app's leverage the same network request to fetch data (E.g. Issuable sidebar items). In these cases, it would be ideal to take advantage of the mediator pattern, so that only one network request is needed to fetch the data, rather than one network request for each Vue app on the page.
 
 ## Creating features that update realtime
 
@@ -26,7 +26,6 @@ Polling should be disabled when the following responses are received from the ba
 
 > TODO: Grab data from backend using data attributes
 
-
-
+[mediator-pattern]: https://en.wikipedia.org/wiki/Mediator_pattern
 [poll-js]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/lib/utils/poll.js
 [visibility-js]: https://github.com/ai/visibilityjs
