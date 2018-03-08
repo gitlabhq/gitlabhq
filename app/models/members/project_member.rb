@@ -13,7 +13,6 @@ class ProjectMember < Member
 
   scope :in_project, ->(project) { where(source_id: project.id) }
 
-  before_destroy :delete_member_todos
   before_destroy :delete_member_branch_protection
 
   class << self
@@ -93,10 +92,6 @@ class ProjectMember < Member
   end
 
   private
-
-  def delete_member_todos
-    user.todos.where(project_id: source_id).destroy_all if user
-  end
 
   def delete_member_branch_protection
     if user.present? && project.present?
