@@ -1,8 +1,11 @@
+<<<<<<< HEAD
 ## EE-specific
 get  'unsubscribes/:email', to: 'unsubscribes#show', as: :unsubscribe
 post 'unsubscribes/:email', to: 'unsubscribes#create'
 ## EE-specific
 
+=======
+>>>>>>> upstream/master
 devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks,
                                   registrations: :registrations,
                                   passwords: :passwords,
