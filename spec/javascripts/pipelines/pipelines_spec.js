@@ -95,16 +95,16 @@ describe('Pipelines', () => {
         expect(vm.$el.querySelector('.js-pipelines-tab-all').textContent.trim()).toContain('All');
       });
 
-      it('renders Run Pipeline button', () => {
+      it('renders Run Pipeline link', () => {
         expect(vm.$el.querySelector('.js-run-pipeline').getAttribute('href')).toEqual(paths.newPipelinePath);
       });
 
-      it('renders CI Lint button', () => {
+      it('renders CI Lint link', () => {
         expect(vm.$el.querySelector('.js-ci-lint').getAttribute('href')).toEqual(paths.ciLintPath);
       });
 
       it('renders Clear Runner Cache button', () => {
-        expect(vm.$el.querySelector('.js-clear-cache').getAttribute('href')).toEqual(paths.resetCachePath);
+        expect(vm.$el.querySelector('.js-clear-cache').textContent.trim()).toEqual('Clear Runner Caches');
       });
 
       it('renders pipelines table', () => {
@@ -139,16 +139,16 @@ describe('Pipelines', () => {
         expect(vm.$el.querySelector('.js-pipelines-tab-all').textContent.trim()).toContain('All');
       });
 
-      it('renders Run Pipeline button', () => {
+      it('renders Run Pipeline link', () => {
         expect(vm.$el.querySelector('.js-run-pipeline').getAttribute('href')).toEqual(paths.newPipelinePath);
       });
 
-      it('renders CI Lint button', () => {
+      it('renders CI Lint link', () => {
         expect(vm.$el.querySelector('.js-ci-lint').getAttribute('href')).toEqual(paths.ciLintPath);
       });
 
       it('renders Clear Runner Cache button', () => {
-        expect(vm.$el.querySelector('.js-clear-cache').getAttribute('href')).toEqual(paths.resetCachePath);
+        expect(vm.$el.querySelector('.js-clear-cache').textContent.trim()).toEqual('Clear Runner Caches');
       });
 
       it('renders tab empty state', () => {
@@ -218,7 +218,7 @@ describe('Pipelines', () => {
       it('renders buttons', () => {
         expect(vm.$el.querySelector('.js-run-pipeline').getAttribute('href')).toEqual(paths.newPipelinePath);
         expect(vm.$el.querySelector('.js-ci-lint').getAttribute('href')).toEqual(paths.ciLintPath);
-        expect(vm.$el.querySelector('.js-clear-cache').getAttribute('href')).toEqual(paths.resetCachePath);
+        expect(vm.$el.querySelector('.js-clear-cache').textContent.trim()).toEqual('Clear Runner Caches');
       });
 
       it('renders error state', () => {
