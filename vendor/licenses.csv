@@ -9,14 +9,17 @@
 JSONStream,1.3.2,MIT
 RedCloth,4.3.2,MIT
 abbrev,1.0.9,ISC
+abbrev,1.1.1,ISC
 accepts,1.3.3,MIT
+accepts,1.3.4,MIT
 ace-rails-ap,4.1.2,MIT
 acorn,3.3.0,MIT
 acorn,4.0.13,MIT
 acorn,5.1.1,MIT
-acorn,5.3.0,MIT
+acorn,5.4.1,MIT
 acorn-dynamic-import,2.0.2,MIT
 acorn-jsx,3.0.1,MIT
+acorn-node,1.3.0,Apache 2.0
 actionmailer,4.2.10,MIT
 actionpack,4.2.10,MIT
 actionview,4.2.10,MIT
@@ -25,6 +28,7 @@ activemodel,4.2.10,MIT
 activerecord,4.2.10,MIT
 activesupport,4.2.10,MIT
 acts-as-taggable-on,4.0.0,MIT
+address,1.0.3,MIT
 addressable,2.5.2,Apache 2.0
 addressparser,1.0.1,MIT
 after,0.8.2,MIT
@@ -32,59 +36,70 @@ agent-base,2.1.1,MIT
 ajv,4.11.8,MIT
 ajv,5.2.2,MIT
 ajv,5.5.2,MIT
+ajv,6.1.1,MIT
 ajv-keywords,1.5.1,MIT
-ajv-keywords,2.1.0,MIT
+ajv-keywords,3.1.0,MIT
 akismet,2.0.0,MIT
 align-text,0.1.4,MIT
 allocations,1.0.5,MIT
 alphanum-sort,1.0.2,MIT
 amdefine,1.0.1,BSD-3-Clause OR MIT
+amqplib,0.5.2,MIT
+ansi-align,2.0.0,ISC
 ansi-escapes,1.4.0,MIT
-ansi-html,0.0.5,"Apache, Version 2.0"
+ansi-escapes,3.0.0,MIT
 ansi-html,0.0.7,Apache 2.0
 ansi-regex,2.1.1,MIT
 ansi-regex,3.0.0,MIT
 ansi-styles,2.2.1,MIT
 ansi-styles,3.2.0,MIT
 anymatch,1.3.2,ISC
+anymatch,2.0.0,ISC
 append-transform,0.4.0,MIT
-aproba,1.1.2,ISC
+aproba,1.2.0,ISC
 are-we-there-yet,1.1.4,ISC
 arel,6.0.4,MIT
 argparse,1.0.9,MIT
 arr-diff,2.0.0,MIT
-arr-flatten,1.0.1,MIT
+arr-diff,4.0.0,MIT
+arr-flatten,1.1.0,MIT
+arr-union,3.1.0,MIT
 array-filter,0.0.1,MIT
 array-find,1.0.0,MIT
 array-find-index,1.0.2,MIT
 array-flatten,1.1.1,MIT
 array-flatten,2.1.1,MIT
+array-includes,3.0.3,MIT
 array-map,0.0.0,MIT
 array-reduce,0.0.0,MIT
 array-slice,0.2.3,MIT
 array-union,1.0.2,MIT
 array-uniq,1.0.3,MIT
 array-unique,0.2.1,MIT
+array-unique,0.3.2,MIT
 arraybuffer.slice,0.0.7,MIT
 arrify,1.0.1,MIT
 asana,0.6.0,MIT
 asciidoctor,1.5.3,MIT
 asciidoctor-plantuml,0.0.7,MIT
 asn1,0.2.3,MIT
-asn1.js,4.9.1,MIT
+asn1.js,4.10.1,MIT
 assert,1.4.1,MIT
 assert-plus,0.2.0,MIT
 assert-plus,1.0.0,MIT
 asset_sync,2.2.0,MIT
-ast-types,0.10.1,MIT
+assign-symbols,1.0.0,MIT
+ast-types,0.11.1,MIT
 astw,2.2.0,MIT
 async,0.9.2,MIT
 async,1.5.2,MIT
 async,2.1.5,MIT
 async,2.4.1,MIT
+async,2.6.0,MIT
 async-each,1.0.1,MIT
 async-limiter,1.0.0,MIT
 asynckit,0.4.0,MIT
+atob,2.0.3,(MIT OR Apache-2.0)
 atomic,1.1.99,Apache 2.0
 attr_encrypted,3.0.3,MIT
 attr_required,1.0.0,MIT
@@ -176,9 +191,10 @@ babylon,7.0.0-beta.32,MIT
 backo2,1.0.2,MIT
 balanced-match,0.4.2,MIT
 balanced-match,1.0.0,MIT
+base,0.11.2,MIT
 base32,0.3.2,MIT
 base64-arraybuffer,0.1.5,MIT
-base64-js,1.2.0,MIT
+base64-js,1.2.3,MIT
 base64id,1.0.0,MIT
 batch,0.6.1,MIT
 batch-loader,1.2.1,MIT
@@ -186,50 +202,57 @@ bcrypt,3.1.11,MIT
 bcrypt-pbkdf,1.0.1,New BSD
 bcrypt_pbkdf,1.0.0,MIT
 better-assert,1.0.2,MIT
+bfj-node4,5.2.1,MIT
 big.js,3.1.3,MIT
-binary-extensions,1.10.0,MIT
+binary-extensions,1.11.0,MIT
 bindata,2.4.1,ruby
+bitsyntax,0.0.4,Unknown
 bl,1.1.2,MIT
 blackst0ne-mermaid,7.1.0-fixed,MIT
 blob,0.0.4,MIT*
 block-stream,0.0.9,ISC
-bluebird,2.11.0,MIT
 bluebird,3.5.0,MIT
-bn.js,4.11.6,MIT
-body-parser,1.17.2,MIT
+bluebird,3.5.1,MIT
+bn.js,4.11.8,MIT
+body-parser,1.18.2,MIT
 bonjour,3.5.0,MIT
 boom,2.10.1,New BSD
 boom,4.3.1,New BSD
 boom,5.2.0,New BSD
 bootstrap-sass,3.3.6,MIT
 bootstrap_form,2.7.0,MIT
+boxen,1.3.0,MIT
+brace-expansion,1.1.11,MIT
 brace-expansion,1.1.8,MIT
 braces,0.1.5,MIT
 braces,1.8.5,MIT
-brorand,1.0.7,MIT
+braces,2.3.1,MIT
+brorand,1.1.0,MIT
 browser,2.2.0,MIT
-browser-pack,6.0.2,MIT
+browser-pack,6.0.4,MIT
 browser-resolve,1.11.2,MIT
 browserify,14.5.0,MIT
-browserify-aes,1.0.6,MIT
+browserify-aes,1.1.1,MIT
 browserify-cipher,1.0.0,MIT
 browserify-des,1.0.0,MIT
 browserify-rsa,4.0.1,MIT
-browserify-sign,4.0.0,ISC
+browserify-sign,4.0.4,ISC
 browserify-zlib,0.1.4,MIT
 browserify-zlib,0.2.0,MIT
 browserslist,1.7.7,MIT
 buffer,4.9.1,MIT
-buffer,5.0.8,MIT
+buffer,5.1.0,MIT
 buffer-indexof,1.1.0,MIT
+buffer-more-ints,0.0.2,MIT
 buffer-xor,1.0.3,MIT
 builder,3.2.3,MIT
 buildmail,4.0.1,MIT
 builtin-modules,1.1.1,MIT
 builtin-status-codes,3.0.0,MIT
-bytes,2.4.0,MIT
 bytes,2.5.0,MIT
 bytes,3.0.0,MIT
+cacache,10.0.4,ISC
+cache-base,1.0.1,MIT
 cached-path-relative,1.0.1,MIT
 caller-path,0.1.0,MIT
 callsite,1.0.0,MIT*
@@ -241,6 +264,7 @@ camelcase,4.1.0,MIT
 camelcase-keys,2.1.0,MIT
 caniuse-api,1.6.1,MIT
 caniuse-db,1.0.30000649,CC-BY-4.0
+capture-stack-trace,1.0.0,MIT
 carrierwave,1.2.1,MIT
 caseless,0.11.0,Apache 2.0
 caseless,0.12.0,Apache 2.0
@@ -248,18 +272,27 @@ cause,0.1,MIT
 center-align,0.1.3,MIT
 chalk,1.1.3,MIT
 chalk,2.3.0,MIT
+chalk,2.3.1,MIT
+chardet,0.4.2,MIT
 charlock_holmes,0.7.5,MIT
+chart.js,1.0.2,MIT
+check-types,7.3.0,MIT
 chokidar,1.7.0,MIT
+chokidar,2.0.2,MIT
+chownr,1.0.1,ISC
 chronic,0.10.2,MIT
 chronic_duration,0.10.6,MIT
 chunky_png,1.3.5,MIT
-cipher-base,1.0.3,MIT
+cipher-base,1.0.4,MIT
 circular-json,0.3.3,MIT
-circular-json,0.4.0,MIT
+circular-json,0.5.1,MIT
 citrus,3.0.2,MIT
 clap,1.1.3,MIT
+class-utils,0.3.6,MIT
 classlist-polyfill,1.2.0,Unlicense
+cli-boxes,1.0.0,MIT
 cli-cursor,1.0.2,MIT
+cli-cursor,2.1.0,MIT
 cli-width,2.1.0,ISC
 clipboard,1.7.1,MIT
 cliui,2.1.0,ISC
@@ -270,6 +303,7 @@ co,4.6.0,MIT
 coa,1.0.1,MIT
 code-point-at,1.1.0,MIT
 coercible,1.0.0,MIT
+collection-visit,1.0.0,MIT
 color,0.11.4,MIT
 color-convert,1.9.1,MIT
 color-name,1.1.2,MIT
@@ -278,21 +312,23 @@ colormin,1.1.2,MIT
 colors,1.1.2,MIT
 combine-lists,1.0.1,MIT
 combine-source-map,0.7.2,MIT
-combined-stream,1.0.5,MIT
-commander,2.9.0,MIT
+combine-source-map,0.8.0,MIT
+combined-stream,1.0.6,MIT
+commander,2.14.1,MIT
 commondir,1.0.1,MIT
+commonmarker,0.17.8,MIT
 component-bind,1.0.0,MIT*
 component-emitter,1.2.1,MIT
 component-inherit,0.0.3,MIT*
 compressible,2.0.11,MIT
 compression,1.7.0,MIT
-compression-webpack-plugin,1.0.0,MIT
+compression-webpack-plugin,1.1.7,MIT
 concat-map,0.0.1,MIT
 concat-stream,1.5.2,MIT
 concat-stream,1.6.0,MIT
 concurrent-ruby-ext,1.0.5,MIT
-configstore,1.4.0,Simplified BSD
-connect,3.6.3,MIT
+configstore,3.1.1,Simplified BSD
+connect,3.6.6,MIT
 connect-history-api-fallback,1.3.0,MIT
 connection_pool,2.2.1,MIT
 console-browserify,1.1.0,MIT
@@ -301,21 +337,25 @@ consolidate,0.14.5,MIT
 constants-browserify,1.0.0,MIT
 contains-path,0.1.0,MIT
 content-disposition,0.5.2,MIT
-content-type,1.0.2,MIT
+content-type,1.0.4,MIT
 convert-source-map,1.1.3,MIT
 convert-source-map,1.5.0,MIT
 cookie,0.3.1,MIT
 cookie-signature,1.0.6,MIT
-copy-webpack-plugin,4.0.1,MIT
+copy-concurrently,1.0.5,ISC
+copy-descriptor,0.1.1,MIT
+copy-webpack-plugin,4.4.1,MIT
 core-js,2.3.0,MIT
 core-js,2.4.1,MIT
 core-js,2.5.1,MIT
+core-js,2.5.3,MIT
 core-util-is,1.0.2,MIT
 cosmiconfig,2.1.1,MIT
 crack,0.4.3,MIT
 create-ecdh,4.0.0,MIT
-create-hash,1.1.2,MIT
-create-hmac,1.1.4,MIT
+create-error-class,3.0.2,MIT
+create-hash,1.1.3,MIT
+create-hmac,1.1.6,MIT
 creole,0.5.0,ruby
 cropper,2.3.0,MIT
 cross-spawn,5.1.0,MIT
@@ -323,9 +363,9 @@ cryptiles,2.0.5,New BSD
 cryptiles,3.1.2,New BSD
 crypto-browserify,3.11.0,MIT
 crypto-browserify,3.12.0,MIT
+crypto-random-string,1.0.0,MIT
 css-color-names,0.0.4,MIT
-css-loader,0.28.0,MIT
-css-selector-tokenizer,0.6.0,MIT
+css-loader,0.28.9,MIT
 css-selector-tokenizer,0.7.0,MIT
 css_parser,1.5.0,MIT
 cssesc,0.1.0,MIT
@@ -333,6 +373,7 @@ cssnano,3.10.0,MIT
 csso,2.3.2,MIT
 currently-unhandled,0.4.1,MIT
 custom-event,1.0.1,MIT
+cyclist,0.2.2,MIT*
 d,0.1.1,MIT
 d,1.0.0,MIT
 d3,3.5.17,New BSD
@@ -363,7 +404,6 @@ date-format,1.2.0,MIT
 date-now,0.1.4,MIT
 de-indent,1.0.2,MIT
 debug,2.2.0,MIT
-debug,2.6.7,MIT
 debug,2.6.8,MIT
 debug,2.6.9,MIT
 debug,3.1.0,MIT
@@ -372,6 +412,7 @@ decamelize,1.2.0,MIT
 deckar01-task_list,2.0.0,MIT
 declarative,0.0.10,MIT
 declarative-option,0.1.0,MIT
+decode-uri-component,0.2.0,MIT
 decompress-response,3.3.0,MIT
 deep-equal,1.0.1,MIT
 deep-extend,0.4.2,MIT
@@ -379,6 +420,9 @@ deep-is,0.1.3,MIT
 default-require-extensions,1.0.0,MIT
 default_value_for,3.0.2,MIT
 define-properties,1.1.2,MIT
+define-property,0.2.5,MIT
+define-property,1.0.0,MIT
+define-property,2.0.2,MIT
 defined,1.0.0,MIT
 degenerator,1.0.4,MIT
 del,2.2.2,MIT
@@ -386,14 +430,15 @@ del,3.0.0,MIT
 delayed-stream,1.0.0,MIT
 delegate,3.1.2,MIT
 delegates,1.0.0,MIT
-depd,1.1.0,MIT
 depd,1.1.1,MIT
 deps-sort,2.0.0,MIT
 des.js,1.0.0,MIT
 descendants_tracker,0.0.4,MIT
 destroy,1.0.4,MIT
 detect-indent,4.0.0,MIT
+detect-libc,1.0.3,Apache 2.0
 detect-node,2.0.3,ISC
+detect-port-alt,1.1.5,MIT
 detective,4.7.1,MIT
 devise,4.2.0,MIT
 devise-two-factor,3.0.0,MIT
@@ -402,6 +447,7 @@ diff,3.4.0,New BSD
 diff-lcs,1.3,"MIT,Artistic-2.0,GPL-2.0+"
 diffie-hellman,5.0.2,MIT
 diffy,3.1.0,MIT
+dir-glob,2.0.0,MIT
 dns-equal,1.0.0,MIT
 dns-packet,1.2.2,MIT
 dns-txt,2.0.2,MIT
@@ -418,26 +464,28 @@ domhandler,2.4.1,Simplified BSD
 domutils,1.6.2,Simplified BSD
 doorkeeper,4.2.6,MIT
 doorkeeper-openid_connect,1.2.0,MIT
+dot-prop,4.2.0,MIT
 double-ended-queue,2.1.0-0,MIT
 dropzone,4.2.0,MIT
 dropzonejs-rails,0.7.2,MIT
 duplexer,0.1.1,MIT
 duplexer2,0.1.4,New BSD
 duplexer3,0.1.4,New BSD
-duplexify,3.5.1,MIT
+duplexify,3.5.3,MIT
 ecc-jsbn,0.1.1,MIT
 ee-first,1.1.1,MIT
-ejs,2.5.6,Apache 2.0
+ejs,2.5.7,Apache 2.0
 electron-to-chromium,1.3.3,ISC
-elliptic,6.3.3,MIT
+elliptic,6.4.0,MIT
 email_reply_trimmer,0.1.6,MIT
 emoji-unicode-version,0.2.1,MIT
 emojis-list,2.1.0,MIT
-encodeurl,1.0.1,MIT
+encodeurl,1.0.2,MIT
 encryptor,3.0.0,MIT
 end-of-stream,1.4.0,MIT
-engine.io,3.1.4,MIT
-engine.io-client,3.1.4,MIT
+end-of-stream,1.4.1,MIT
+engine.io,3.1.5,MIT
+engine.io-client,3.1.5,MIT
 engine.io-parser,2.1.2,MIT
 enhanced-resolve,0.9.1,MIT
 enhanced-resolve,3.4.1,MIT
@@ -447,7 +495,7 @@ equalizer,0.0.11,MIT
 errno,0.1.4,MIT
 error-ex,1.3.0,MIT
 erubis,2.7.0,MIT
-es-abstract,1.8.2,MIT
+es-abstract,1.10.0,MIT
 es-to-primitive,1.1.1,MIT
 es5-ext,0.10.24,MIT
 es6-iterator,2.0.1,MIT
@@ -487,28 +535,35 @@ estraverse,4.1.1,Simplified BSD
 estraverse,4.2.0,Simplified BSD
 esutils,2.0.2,Simplified BSD
 et-orbi,1.0.3,MIT
-etag,1.8.0,MIT
+etag,1.8.1,MIT
 eve-raphael,0.5.0,Apache 2.0
 event-emitter,0.3.5,MIT
 event-stream,3.3.4,MIT
 eventemitter3,1.2.0,MIT
 events,1.1.1,MIT
 eventsource,0.1.6,MIT
-evp_bytestokey,1.0.0,MIT
+evp_bytestokey,1.0.3,MIT
 excon,0.57.1,MIT
 execa,0.7.0,MIT
 execjs,2.6.0,MIT
 exit-hook,1.1.1,MIT
 expand-braces,0.1.2,MIT
 expand-brackets,0.1.5,MIT
+expand-brackets,2.1.4,MIT
 expand-range,0.1.1,MIT
 expand-range,1.8.2,MIT
-exports-loader,0.6.4,MIT
-express,4.15.4,MIT
+expand-tilde,2.0.2,MIT
+exports-loader,0.7.0,MIT
+express,4.16.2,MIT
 expression_parser,0.9.0,MIT
 extend,3.0.1,MIT
+extend-shallow,2.0.1,MIT
+extend-shallow,3.0.2,MIT
+external-editor,2.1.0,MIT
 extglob,0.3.2,MIT
+extglob,2.0.4,MIT
 extsprintf,1.3.0,MIT
+extsprintf,1.4.0,MIT
 faraday,0.12.2,MIT
 faraday_middleware,0.11.0.1,MIT
 faraday_middleware-multi_json,0.0.6,MIT
@@ -520,18 +575,19 @@ fast_gettext,1.4.0,"MIT,ruby"
 fastparse,1.1.1,MIT
 faye-websocket,0.10.0,MIT
 faye-websocket,0.11.1,MIT
-faye-websocket,0.7.3,MIT
 ffi,1.9.18,New BSD
 figures,1.7.0,MIT
+figures,2.0.0,MIT
 file-entry-cache,2.0.0,MIT
-file-loader,0.11.1,MIT
+file-loader,1.1.8,MIT
 file-uri-to-path,1.0.0,MIT
-filename-regex,2.0.0,MIT
+filename-regex,2.0.1,MIT
 fileset,2.0.3,MIT
-filesize,3.3.0,New BSD
-filesize,3.5.10,New BSD
+filesize,3.5.11,New BSD
+filesize,3.6.0,New BSD
 fill-range,2.2.3,MIT
-finalhandler,1.0.4,MIT
+fill-range,4.0.0,MIT
+finalhandler,1.1.0,MIT
 find-cache-dir,1.0.0,MIT
 find-root,0.1.2,MIT
 find-up,1.1.2,MIT
@@ -542,6 +598,7 @@ flipper,0.11.0,MIT
 flipper-active_record,0.11.0,MIT
 flipper-active_support_cache_store,0.11.0,MIT
 flowdock,0.7.1,MIT
+flush-write-stream,1.0.2,MIT
 fog-aliyun,0.2.0,MIT
 fog-aws,1.4.0,MIT
 fog-core,1.44.3,MIT
@@ -554,26 +611,26 @@ fog-xml,0.1.3,MIT
 follow-redirects,1.0.0,MIT
 follow-redirects,1.2.6,MIT
 font-awesome-rails,4.7.0.1,"MIT,SIL Open Font License"
-for-each,0.3.2,MIT
-for-in,0.1.6,MIT
-for-own,0.1.4,MIT
+for-in,1.0.2,MIT
+for-own,0.1.5,MIT
 foreach,2.0.5,MIT
 forever-agent,0.6.1,Apache 2.0
 form-data,2.0.0,MIT
 form-data,2.1.4,MIT
-form-data,2.3.1,MIT
+form-data,2.3.2,MIT
 formatador,0.2.5,MIT
-forwarded,0.1.0,MIT
-fresh,0.5.0,MIT
+forwarded,0.1.2,MIT
+fragment-cache,0.2.1,MIT
+fresh,0.5.2,MIT
 from,0.1.7,MIT
+from2,2.3.0,MIT
 fs-access,1.0.1,MIT
-fs-extra,0.26.7,MIT
+fs-write-stream-atomic,1.0.10,ISC
 fs.realpath,1.0.0,ISC
-fsevents,1.1.2,MIT
+fsevents,1.1.3,MIT
 fstream,1.0.11,ISC
 fstream-ignore,1.0.5,ISC
 ftp,0.3.10,MIT
-function-bind,1.1.0,MIT
 function-bind,1.1.1,MIT
 fuzzaldrin-plus,0.5.0,MIT
 gauge,2.7.4,ISC
@@ -585,28 +642,33 @@ get-caller-file,1.0.2,ISC
 get-stdin,4.0.1,MIT
 get-stream,3.0.0,MIT
 get-uri,2.0.1,MIT
+get-value,2.0.6,MIT
 get_process_mem,0.2.0,MIT
 getpass,0.1.7,MIT
 gettext_i18n_rails,1.8.0,MIT
 gettext_i18n_rails_js,1.2.0,MIT
-gitaly-proto,0.84.0,MIT
-github-linguist,4.7.6,MIT
+gitaly-proto,0.88.0,MIT
+github-linguist,5.3.3,MIT
 github-markup,1.6.1,MIT
 gitlab-flowdock-git-hook,1.0.1,MIT
 gitlab-grit,2.8.2,MIT
 gitlab-markup,1.6.3,MIT
 gitlab_omniauth-ldap,2.0.4,MIT
 glob,5.0.15,ISC
-glob,6.0.4,ISC
 glob,7.1.1,ISC
 glob,7.1.2,ISC
 glob-base,0.3.0,MIT
 glob-parent,2.0.0,ISC
+glob-parent,3.1.0,ISC
+global-dirs,0.1.1,MIT
+global-modules,1.0.0,MIT
+global-prefix,1.0.2,MIT
 globalid,0.4.1,MIT
 globals,10.4.0,MIT
 globals,9.18.0,MIT
 globby,5.0.0,MIT
 globby,6.1.0,MIT
+globby,7.1.1,MIT
 gollum-grit_adapter,1.0.1,MIT
 gollum-lib,4.2.7,MIT
 gollum-rugged_adapter,0.4.4,MIT
@@ -615,19 +677,19 @@ good-listener,1.2.2,MIT
 google-api-client,0.13.6,Apache 2.0
 google-protobuf,3.5.1,New BSD
 googleapis-common-protos-types,1.0.1,Apache 2.0
-googleauth,0.5.3,Apache 2.0
-got,3.3.1,MIT
+googleauth,0.6.2,Apache 2.0
+got,6.7.1,MIT
 got,7.1.0,MIT
 gpgme,2.0.13,LGPL-2.1+
 graceful-fs,4.1.11,ISC
-graceful-readlink,1.0.1,MIT
 grape,1.0.0,MIT
 grape-entity,0.6.0,MIT
 grape-route-helpers,2.1.0,MIT
 grape_logging,1.7.0,MIT
 graphlib,2.1.1,MIT
-grpc,1.8.3,Apache 2.0
+grpc,1.10.0,Apache 2.0
 gzip-size,3.0.0,MIT
+gzip-size,4.1.0,MIT
 hamlit,2.6.1,MIT
 handle-thing,1.2.5,MIT
 handlebars,4.0.6,MIT
@@ -642,11 +704,18 @@ has-binary2,1.0.2,MIT
 has-cors,1.1.0,MIT
 has-flag,1.0.0,MIT
 has-flag,2.0.0,MIT
+has-flag,3.0.0,MIT
 has-symbol-support-x,1.3.0,MIT
 has-to-string-tag-x,1.3.0,MIT
 has-unicode,2.0.1,ISC
+has-value,0.3.1,MIT
+has-value,1.0.0,MIT
+has-values,0.1.4,MIT
+has-values,1.0.0,MIT
+hash-base,2.0.2,MIT
+hash-base,3.0.4,MIT
 hash-sum,1.0.2,MIT
-hash.js,1.0.3,MIT
+hash.js,1.1.3,MIT
 hashie,3.5.6,MIT
 hashie-forbidden_attributes,0.1.1,MIT
 hawk,3.1.3,New BSD
@@ -655,9 +724,11 @@ he,1.1.1,MIT
 health_check,2.6.0,MIT
 hipchat,1.5.2,MIT
 hipchat-notifier,1.1.0,MIT
+hmac-drbg,1.0.1,MIT
 hoek,2.16.3,New BSD
-hoek,4.2.0,New BSD
+hoek,4.2.1,New BSD
 home-or-tmp,2.0.0,MIT
+homedir-polyfill,1.0.1,MIT
 hosted-git-info,2.2.0,ISC
 hpack.js,2.1.6,MIT
 html-comment-regex,1.1.1,MIT
@@ -670,7 +741,6 @@ htmlparser2,3.9.2,MIT
 http,0.9.8,MIT
 http-cookie,1.0.3,MIT
 http-deceiver,1.2.7,MIT
-http-errors,1.6.1,MIT
 http-errors,1.6.2,MIT
 http-form_data,1.0.1,MIT
 http-proxy,1.16.2,MIT
@@ -690,26 +760,31 @@ i18n,0.9.1,MIT
 ice_nine,0.11.2,MIT
 iconv-lite,0.4.15,MIT
 iconv-lite,0.4.19,MIT
-icss-replace-symbols,1.0.2,ISC
+icss-replace-symbols,1.1.0,ISC
+icss-utils,2.1.0,ISC
 ieee754,1.1.8,New BSD
+iferr,0.1.5,MIT
 ignore,3.3.3,MIT
+ignore,3.3.7,MIT
 ignore-by-default,1.0.1,ISC
 immediate,3.0.6,MIT
-imports-loader,0.7.1,MIT
+import-lazy,2.1.0,MIT
+import-local,1.0.0,MIT
+imports-loader,0.8.0,MIT
 imurmurhash,0.1.4,MIT
 indent-string,2.1.0,MIT
 indexes-of,1.0.1,MIT
 indexof,0.0.1,MIT*
-infinity-agent,2.0.3,MIT
 inflection,1.10.0,MIT
 inflection,1.3.8,MIT
 inflight,1.0.6,ISC
 influxdb,0.2.3,MIT
 inherits,2.0.1,ISC
 inherits,2.0.3,ISC
-ini,1.3.4,ISC
+ini,1.3.5,ISC
 inline-source-map,0.6.2,MIT
 inquirer,0.12.0,MIT
+inquirer,3.3.0,MIT
 insert-module-globals,7.0.1,MIT
 internal-ip,1.2.0,MIT
 interpret,1.0.1,MIT
@@ -717,46 +792,62 @@ invariant,2.2.2,New BSD
 invert-kv,1.0.0,MIT
 ip,1.0.1,MIT
 ip,1.1.5,MIT
-ipaddr.js,1.4.0,MIT
+ipaddr.js,1.6.0,MIT
 ipaddress,0.8.3,MIT
 is-absolute,0.2.6,MIT
 is-absolute-url,2.1.0,MIT
+is-accessor-descriptor,0.1.6,MIT
+is-accessor-descriptor,1.0.0,MIT
 is-arrayish,0.2.1,MIT
 is-binary-path,1.0.1,MIT
 is-buffer,1.1.5,MIT
 is-buffer,1.1.6,MIT
 is-builtin-module,1.0.0,MIT
 is-callable,1.1.3,MIT
+is-data-descriptor,0.1.4,MIT
+is-data-descriptor,1.0.0,MIT
 is-date-object,1.0.1,MIT
-is-dotfile,1.0.2,MIT
+is-descriptor,0.1.6,MIT
+is-descriptor,1.0.2,MIT
+is-dotfile,1.0.3,MIT
 is-equal-shallow,0.1.3,MIT
 is-extendable,0.1.1,MIT
+is-extendable,1.0.1,MIT
 is-extglob,1.0.0,MIT
 is-extglob,2.1.1,MIT
 is-finite,1.0.2,MIT
 is-fullwidth-code-point,1.0.0,MIT
 is-fullwidth-code-point,2.0.0,MIT
-is-function,1.0.1,MIT
 is-glob,2.0.1,MIT
 is-glob,3.1.0,MIT
+is-glob,4.0.0,MIT
+is-installed-globally,0.1.0,MIT
+is-my-ip-valid,1.0.0,MIT
 is-my-json-valid,2.16.0,MIT
-is-my-json-valid,2.17.1,MIT
+is-my-json-valid,2.17.2,MIT
 is-npm,1.0.0,MIT
 is-number,0.1.1,MIT
 is-number,2.1.0,MIT
+is-number,3.0.0,MIT
+is-number,4.0.0,MIT
+is-obj,1.0.1,MIT
 is-object,1.0.1,MIT
+is-odd,2.0.0,MIT
 is-path-cwd,1.0.0,MIT
 is-path-in-cwd,1.0.0,MIT
 is-path-inside,1.0.0,MIT
 is-plain-obj,1.1.0,MIT
+is-plain-object,2.0.4,MIT
 is-posix-bracket,0.1.1,MIT
 is-primitive,2.0.0,MIT
+is-promise,2.1.0,MIT
 is-property,1.0.2,MIT
 is-redirect,1.0.0,MIT
 is-regex,1.0.4,MIT
 is-relative,0.2.1,MIT
 is-resolvable,1.0.0,MIT
 is-retry-allowed,1.1.0,MIT
+is-root,1.0.0,MIT
 is-stream,1.1.0,MIT
 is-svg,2.1.0,MIT
 is-symbol,1.0.1,MIT
@@ -764,12 +855,16 @@ is-typedarray,1.0.0,MIT
 is-unc-path,0.1.2,MIT
 is-utf8,0.2.1,MIT
 is-windows,0.2.0,MIT
+is-windows,1.0.2,MIT
+is-wsl,1.1.0,MIT
 isarray,0.0.1,MIT
 isarray,1.0.0,MIT
 isarray,2.0.1,MIT
 isbinaryfile,3.0.2,MIT
 isexe,1.1.2,ISC
+isexe,2.0.0,ISC
 isobject,2.1.0,MIT
+isobject,3.0.1,MIT
 isstream,0.1.2,MIT
 istanbul,0.4.5,New BSD
 istanbul-api,1.2.1,New BSD
@@ -784,10 +879,11 @@ jasmine-core,2.9.0,MIT
 jasmine-jquery,2.1.1,MIT
 jed,1.1.1,MIT
 jira-ruby,1.4.1,MIT
-jquery,2.2.4,MIT
+jquery,3.3.1,MIT
 jquery-atwho-rails,1.3.2,MIT
 jquery-rails,4.3.1,MIT
 jquery-ujs,1.2.2,MIT
+jquery.waitforimages,2.2.0,MIT
 js-base64,2.1.9,New BSD
 js-cookie,2.1.3,MIT
 js-tokens,3.0.2,MIT
@@ -806,7 +902,6 @@ json-stable-stringify,1.0.1,MIT
 json-stringify-safe,5.0.1,ISC
 json3,3.3.2,MIT
 json5,0.5.1,MIT
-jsonfile,2.4.0,MIT
 jsonify,0.0.0,Public Domain
 jsonparse,1.3.1,MIT
 jsonpointer,4.0.1,MIT
@@ -820,18 +915,23 @@ kaminari-activerecord,1.0.1,MIT
 kaminari-core,1.0.1,MIT
 karma,2.0.0,MIT
 karma-chrome-launcher,2.2.0,MIT
-karma-coverage-istanbul-reporter,1.3.3,MIT
+karma-coverage-istanbul-reporter,1.4.1,MIT
 karma-jasmine,1.1.1,MIT
 karma-mocha-reporter,2.2.5,MIT
 karma-sourcemap-loader,0.3.7,MIT
 karma-webpack,2.0.7,MIT
+katex,0.8.3,MIT
 kgio,2.10.0,LGPL-2.1+
-kind-of,3.1.0,MIT
-klaw,1.3.1,MIT
+killable,1.0.0,ISC
+kind-of,3.2.2,MIT
+kind-of,4.0.0,MIT
+kind-of,5.1.0,MIT
+kind-of,6.0.2,MIT
 kubeclient,2.2.0,MIT
 labeled-stream-splicer,2.0.0,MIT
-latest-version,1.0.1,MIT
+latest-version,3.1.0,MIT
 lazy-cache,1.0.4,MIT
+lazy-cache,2.0.2,MIT
 lcid,1.0.0,MIT
 levn,0.3.0,MIT
 lexical-scope,1.2.0,MIT
@@ -850,37 +950,31 @@ locale,2.1.2,"ruby,LGPLv3+"
 locate-path,2.0.0,MIT
 lodash,3.10.1,MIT
 lodash,4.17.4,MIT
-lodash._baseassign,3.2.0,MIT
-lodash._basecopy,3.0.1,MIT
+lodash,4.17.5,MIT
 lodash._baseget,3.7.2,MIT
-lodash._bindcallback,3.0.1,MIT
-lodash._createassigner,3.1.1,MIT
-lodash._getnative,3.9.1,MIT
-lodash._isiterateecall,3.0.9,MIT
 lodash._topath,3.8.1,MIT
-lodash.assign,3.2.0,MIT
 lodash.camelcase,4.1.1,MIT
 lodash.camelcase,4.3.0,MIT
 lodash.capitalize,4.2.1,MIT
 lodash.clonedeep,4.5.0,MIT
 lodash.cond,4.5.2,MIT
 lodash.deburr,4.1.0,MIT
-lodash.defaults,3.1.2,MIT
+lodash.endswith,4.2.1,MIT
 lodash.escaperegexp,4.1.2,MIT
 lodash.get,3.7.0,MIT
-lodash.isarguments,3.1.0,MIT
 lodash.isarray,3.0.4,MIT
+lodash.isfunction,3.0.9,MIT
+lodash.isstring,4.0.1,MIT
 lodash.kebabcase,4.0.1,MIT
-lodash.keys,3.1.2,MIT
 lodash.memoize,3.0.4,MIT
 lodash.memoize,4.1.2,MIT
 lodash.mergewith,4.6.0,MIT
-lodash.restparam,3.6.1,MIT
 lodash.snakecase,4.0.1,MIT
+lodash.startswith,4.2.1,MIT
 lodash.uniq,4.5.0,MIT
 lodash.words,4.2.0,MIT
 log-symbols,2.1.0,MIT
-log4js,2.4.1,Apache 2.0
+log4js,2.5.3,Apache 2.0
 logging,2.2.2,MIT
 loggly,1.1.1,MIT
 loglevel,1.4.1,MIT
@@ -890,7 +984,6 @@ loofah,2.0.3,MIT
 loose-envify,1.3.1,MIT
 loud-rejection,1.6.0,MIT
 lowercase-keys,1.0.0,MIT
-lru-cache,2.2.4,MIT
 lru-cache,2.6.5,ISC
 lru-cache,4.1.1,ISC
 macaddress,0.2.8,MIT
@@ -899,10 +992,14 @@ mail_room,0.9.1,MIT
 mailcomposer,4.0.1,MIT
 mailgun-js,0.7.15,MIT
 make-dir,1.0.0,MIT
+map-cache,0.2.2,MIT
 map-obj,1.0.1,MIT
 map-stream,0.1.0,Unknown
+map-visit,1.0.0,MIT
 marked,0.3.12,MIT
+match-at,0.1.1,MIT
 math-expression-evaluator,1.2.16,MIT
+md5.js,1.3.4,MIT
 media-typer,0.3.0,MIT
 mem,1.1.0,MIT
 memoist,0.16.0,MIT
@@ -913,14 +1010,13 @@ merge-descriptors,1.0.1,MIT
 method_source,0.8.2,MIT
 methods,1.1.2,MIT
 micromatch,2.3.11,MIT
-miller-rabin,4.0.0,MIT
-mime,1.3.4,MIT
+micromatch,3.1.6,MIT
+miller-rabin,4.0.1,MIT
+mime,1.4.1,MIT
 mime,1.6.0,MIT
-mime-db,1.27.0,MIT
 mime-db,1.29.0,MIT
-mime-db,1.30.0,MIT
-mime-types,2.1.15,MIT
-mime-types,2.1.17,MIT
+mime-db,1.33.0,MIT
+mime-types,2.1.18,MIT
 mime-types,3.1,MIT
 mime-types-data,3.2016.0521,MIT
 mimemagic,0.3.0,MIT
@@ -929,19 +1025,24 @@ mimic-response,1.0.0,MIT
 mini_mime,0.1.4,MIT
 mini_portile2,2.3.0,MIT
 minimalistic-assert,1.0.0,ISC
+minimalistic-crypto-utils,1.0.1,MIT
 minimatch,3.0.3,ISC
 minimatch,3.0.4,ISC
+minimist,0.0.10,MIT
 minimist,0.0.8,MIT
 minimist,1.2.0,MIT
+mississippi,2.0.0,Simplified BSD
+mixin-deep,1.3.1,MIT
 mkdirp,0.5.1,MIT
 module-deps,4.1.1,MIT
 moment,2.19.2,MIT
 monaco-editor,0.10.0,MIT
 mousetrap,1.4.6,Apache 2.0
 mousetrap-rails,1.4.6,"MIT,Apache"
+move-concurrently,1.0.1,ISC
 ms,0.7.1,MIT
 ms,2.0.0,MIT
-multi_json,1.12.2,MIT
+multi_json,1.13.1,MIT
 multi_xml,0.6.0,MIT
 multicast-dns,6.1.1,MIT
 multicast-dns-service-types,1.1.0,MIT
@@ -949,21 +1050,21 @@ multipart-post,2.0.0,MIT
 mustermann,1.0.0,MIT
 mustermann-grape,1.0.0,MIT
 mute-stream,0.0.5,ISC
+mute-stream,0.0.7,ISC
 mysql2,0.4.10,MIT
 name-all-modules-plugin,1.0.1,MIT
-nan,2.6.2,MIT
+nan,2.8.0,MIT
+nanomatch,1.2.9,MIT
 natural-compare,1.4.0,MIT
 negotiator,0.6.1,MIT
-nested-error-stacks,1.0.2,MIT
 net-ldap,0.16.0,MIT
 net-ssh,4.1.0,MIT
 netmask,1.0.6,MIT
 netrc,0.11.0,MIT
-node-dir,0.1.17,MIT
 node-forge,0.6.33,New BSD
 node-libs-browser,1.1.1,MIT
 node-libs-browser,2.0.0,MIT
-node-pre-gyp,0.6.37,New BSD
+node-pre-gyp,0.6.39,New BSD
 node-uuid,1.4.8,MIT
 nodemailer,2.7.2,MIT
 nodemailer-direct-transport,3.3.2,MIT
@@ -972,7 +1073,7 @@ nodemailer-shared,1.1.0,MIT
 nodemailer-smtp-pool,2.8.2,MIT
 nodemailer-smtp-transport,2.7.2,MIT
 nodemailer-wellknown,0.1.10,MIT
-nodemon,1.11.0,MIT
+nodemon,1.15.1,MIT
 nokogiri,1.8.2,MIT
 nopt,1.0.10,MIT
 nopt,3.0.6,ISC
@@ -990,12 +1091,13 @@ numerizer,0.1.1,MIT
 oauth,0.5.1,MIT
 oauth-sign,0.8.2,Apache 2.0
 oauth2,1.4.0,MIT
-object-assign,3.0.0,MIT
 object-assign,4.1.1,MIT
 object-component,0.0.3,MIT*
-object-inspect,1.3.0,MIT
+object-copy,0.1.0,MIT
 object-keys,1.0.11,MIT
+object-visit,1.0.1,MIT
 object.omit,2.0.1,MIT
+object.pick,1.3.0,MIT
 obuf,1.1.1,MIT
 octokit,4.6.2,MIT
 oj,2.17.5,MIT
@@ -1021,8 +1123,9 @@ on-finished,2.3.0,MIT
 on-headers,1.0.1,MIT
 once,1.4.0,ISC
 onetime,1.1.0,MIT
+onetime,2.0.1,MIT
 opener,1.4.3,(WTFPL OR MIT)
-opn,4.0.2,MIT
+opn,5.2.0,MIT
 optimist,0.6.1,MIT
 optionator,0.8.2,MIT
 org-ruby,0.9.12,MIT
@@ -1035,27 +1138,33 @@ os-homedir,1.0.2,MIT
 os-locale,1.4.0,MIT
 os-locale,2.1.0,MIT
 os-tmpdir,1.0.2,MIT
-osenv,0.1.4,ISC
+osenv,0.1.5,ISC
 p-cancelable,0.3.0,MIT
 p-finally,1.0.0,MIT
 p-limit,1.1.0,MIT
+p-limit,1.2.0,MIT
 p-locate,2.0.0,MIT
 p-map,1.1.1,MIT
 p-timeout,1.2.0,MIT
+p-try,1.0.0,MIT
 pac-proxy-agent,1.1.0,MIT
 pac-resolver,2.0.0,MIT
-package-json,1.2.0,MIT
+package-json,4.0.1,MIT
 pako,0.2.9,MIT
 pako,1.0.5,(MIT AND Zlib)
 pako,1.0.6,(MIT AND Zlib)
+parallel-transform,1.1.0,MIT
 parents,1.0.1,MIT
-parse-asn1,5.0.0,ISC
+parse-asn1,5.1.0,ISC
 parse-glob,3.0.4,MIT
 parse-json,2.2.0,MIT
+parse-passwd,1.0.0,MIT
 parseqs,0.0.5,MIT
 parseuri,0.0.5,MIT
-parseurl,1.3.1,MIT
+parseurl,1.3.2,MIT
+pascalcase,0.1.1,MIT
 path-browserify,0.0.0,MIT
+path-dirname,1.0.2,MIT
 path-exists,2.1.0,MIT
 path-exists,3.0.0,MIT
 path-is-absolute,1.0.1,MIT
@@ -1067,13 +1176,14 @@ path-proxy,1.0.0,MIT
 path-to-regexp,0.1.7,MIT
 path-type,1.1.0,MIT
 path-type,2.0.0,MIT
+path-type,3.0.0,MIT
 pause-stream,0.0.11,Apache 2.0
-pbkdf2,3.0.9,MIT
+pbkdf2,3.0.14,MIT
 peek,1.0.1,MIT
 peek-gc,0.0.2,MIT
 peek-host,1.0.0,MIT
 peek-mysql2,1.1.0,MIT
-peek-performance_bar,1.3.0,MIT
+peek-performance_bar,1.3.1,MIT
 peek-pg,1.3.0,MIT
 peek-rblineprof,0.2.0,MIT
 peek-redis,1.2.0,MIT
@@ -1092,10 +1202,12 @@ pkg-up,1.0.0,MIT
 pluralize,1.2.1,MIT
 po_to_json,1.0.1,MIT
 portfinder,1.0.13,MIT
+posix-character-classes,0.1.1,MIT
 posix-spawn,0.3.13,MIT
 postcss,5.2.16,MIT
 postcss,6.0.14,MIT
 postcss,6.0.15,MIT
+postcss,6.0.19,MIT
 postcss-calc,5.3.1,MIT
 postcss-colormin,2.2.2,MIT
 postcss-convert-values,2.6.1,MIT
@@ -1116,10 +1228,10 @@ postcss-minify-font-values,1.0.5,MIT
 postcss-minify-gradients,1.0.5,MIT
 postcss-minify-params,1.2.2,MIT
 postcss-minify-selectors,2.1.1,MIT
-postcss-modules-extract-imports,1.0.1,ISC
-postcss-modules-local-by-default,1.1.1,MIT
-postcss-modules-scope,1.0.2,ISC
-postcss-modules-values,1.2.2,ISC
+postcss-modules-extract-imports,1.2.0,ISC
+postcss-modules-local-by-default,1.2.0,MIT
+postcss-modules-scope,1.1.0,ISC
+postcss-modules-values,1.3.0,ISC
 postcss-normalize-charset,1.1.1,MIT
 postcss-normalize-url,3.0.8,MIT
 postcss-ordered-values,2.2.3,MIT
@@ -1140,26 +1252,31 @@ prettier,1.8.2,MIT
 prettier,1.9.2,MIT
 prismjs,1.6.0,MIT
 private,0.1.8,MIT
+process,0.11.10,MIT
 process,0.11.9,MIT
 process-nextick-args,1.0.7,MIT
+process-nextick-args,2.0.0,MIT
 progress,1.1.8,MIT
 prometheus-client-mmap,0.9.1,Apache 2.0
-proxy-addr,1.1.5,MIT
+promise-inflight,1.0.1,ISC
+proxy-addr,2.0.3,MIT
 proxy-agent,2.0.0,MIT
 prr,0.0.0,MIT
 ps-tree,1.1.0,MIT
 pseudomap,1.0.2,ISC
+pstree.remy,1.1.0,MIT
 public-encrypt,4.0.0,MIT
-public_suffix,3.0.0,MIT
+public_suffix,3.0.2,MIT
+pump,2.0.1,MIT
+pumpify,1.4.0,MIT
 punycode,1.3.2,MIT
 punycode,1.4.1,MIT
 pyu-ruby-sasl,0.0.3.3,MIT
 q,1.4.1,MIT
 q,1.5.0,MIT
-qjobs,1.1.5,MIT
+qjobs,1.2.0,MIT
 qs,6.2.3,New BSD
 qs,6.4.0,New BSD
-qs,6.5.0,New BSD
 qs,6.5.1,New BSD
 query-string,4.3.2,MIT
 querystring,0.2.0,MIT
@@ -1183,14 +1300,12 @@ railties,4.2.10,MIT
 rainbow,2.2.2,MIT
 raindrops,0.18.0,LGPL-2.1+
 rake,12.3.0,MIT
-randomatic,1.1.6,MIT
-randombytes,2.0.3,MIT
+randomatic,1.1.7,MIT
 randombytes,2.0.6,MIT
-randomfill,1.0.3,MIT
+randomfill,1.0.4,MIT
 range-parser,1.2.0,MIT
 raphael,2.2.7,MIT
 raven-js,3.22.1,Simplified BSD
-raw-body,2.2.0,MIT
 raw-body,2.3.2,MIT
 raw-loader,0.5.1,MIT
 rb-fsevent,0.10.2,MIT
@@ -1198,10 +1313,11 @@ rb-inotify,0.9.10,MIT
 rbnacl,4.0.2,MIT
 rbnacl-libsodium,1.0.11,MIT
 rc,1.2.1,(BSD-2-Clause OR MIT OR Apache-2.0)
+rc,1.2.5,(BSD-2-Clause OR MIT OR Apache-2.0)
 rdoc,4.2.2,ruby
 re2,1.1.1,New BSD
-react-dev-utils,0.5.2,New BSD
-read-all-stream,3.1.0,MIT
+react-dev-utils,5.0.0,MIT
+react-error-overlay,4.0.0,MIT
 read-only-stream,2.0.0,MIT
 read-pkg,1.1.0,MIT
 read-pkg,2.0.0,MIT
@@ -1210,12 +1326,13 @@ read-pkg-up,2.0.0,MIT
 readable-stream,1.1.14,MIT
 readable-stream,2.0.6,MIT
 readable-stream,2.3.3,MIT
+readable-stream,2.3.4,MIT
 readdirp,2.1.0,MIT
 readline2,1.0.1,MIT
 recaptcha,3.0.0,MIT
 rechoir,0.6.2,MIT
 recursive-open-struct,1.0.0,MIT
-recursive-readdir,2.1.1,MIT
+recursive-readdir,2.2.1,MIT
 redcarpet,3.4.0,MIT
 redent,1.0.0,MIT
 redis,2.8.0,MIT
@@ -1233,9 +1350,11 @@ reduce-function-call,1.0.2,MIT
 regenerate,1.3.2,MIT
 regenerator-runtime,0.11.0,MIT
 regenerator-transform,0.10.1,BSD
-regex-cache,0.4.3,MIT
+regex-cache,0.4.4,MIT
+regex-not,1.0.2,MIT
 regexpu-core,1.0.0,MIT
 regexpu-core,2.0.0,MIT
+registry-auth-token,3.3.2,MIT
 registry-url,3.1.0,MIT
 regjsgen,0.2.0,MIT
 regjsparser,0.1.5,Simplified BSD
@@ -1243,14 +1362,13 @@ remove-trailing-separator,1.1.0,ISC
 repeat-element,1.1.2,MIT
 repeat-string,0.2.2,MIT
 repeat-string,1.6.1,MIT
-repeating,1.1.3,MIT
 repeating,2.0.1,MIT
 representable,3.0.4,MIT
 request,2.75.0,Apache 2.0
 request,2.81.0,Apache 2.0
 request,2.83.0,Apache 2.0
 request_store,1.3.1,MIT
-requestretry,1.12.2,MIT
+requestretry,1.13.0,MIT
 require-all,2.2.0,MIT
 require-directory,2.1.1,MIT
 require-from-string,1.2.1,MIT
@@ -1258,22 +1376,28 @@ require-main-filename,1.0.1,ISC
 require-uncached,1.0.3,MIT
 requires-port,1.0.0,MIT
 resolve,1.1.7,MIT
-resolve,1.4.0,MIT
 resolve,1.5.0,MIT
+resolve-cwd,2.0.0,MIT
+resolve-dir,1.0.1,MIT
 resolve-from,1.0.1,MIT
+resolve-from,3.0.0,MIT
+resolve-url,0.2.1,MIT
 responders,2.3.0,MIT
 rest-client,2.0.0,MIT
 restore-cursor,1.0.1,MIT
-resumer,0.0.0,MIT
+restore-cursor,2.0.0,MIT
+ret,0.1.15,MIT
 retriable,3.1.1,MIT
 right-align,0.1.3,MIT
 rimraf,2.6.1,ISC
+rimraf,2.6.2,ISC
 rinku,2.0.0,ISC
-ripemd160,1.0.1,New BSD
+ripemd160,2.0.1,MIT
 rotp,2.1.2,MIT
 rouge,2.2.1,MIT
 rqrcode,0.7.0,MIT
 rqrcode-rails3,0.1.7,MIT
+ruby-enum,0.7.2,MIT
 ruby-fogbugz,0.2.1,MIT
 ruby-prof,0.16.2,Simplified BSD
 ruby-saml,1.4.1,MIT
@@ -1283,9 +1407,13 @@ rubypants,0.2.0,BSD
 rufus-scheduler,3.4.0,MIT
 rugged,0.26.0,MIT
 run-async,0.1.0,MIT
+run-async,2.3.0,MIT
+run-queue,1.0.3,ISC
 rx-lite,3.1.2,Apache 2.0
-safe-buffer,5.0.1,MIT
+rx-lite,4.0.8,Apache 2.0
+rx-lite-aggregates,4.0.8,Apache 2.0
 safe-buffer,5.1.1,MIT
+safe-regex,1.1.0,MIT
 safe_yaml,1.0.4,MIT
 sanitize,2.1.0,MIT
 sanitize-html,1.16.3,MIT
@@ -1295,6 +1423,7 @@ sass-rails,5.0.6,MIT
 sawyer,0.8.1,MIT
 sax,1.2.2,ISC
 schema-utils,0.3.0,MIT
+schema-utils,0.4.5,MIT
 securecompare,1.0.0,MIT
 seed-fu,2.3.7,MIT
 select,1.1.2,MIT
@@ -1304,19 +1433,24 @@ select2-rails,3.5.9.3,MIT
 selfsigned,1.10.1,MIT
 semver,5.0.3,ISC
 semver,5.3.0,ISC
+semver,5.5.0,ISC
 semver-diff,2.1.0,MIT
-send,0.15.4,MIT
+send,0.16.1,MIT
 sentry-raven,2.5.3,Apache 2.0
+serialize-javascript,1.4.0,New BSD
 serve-index,1.9.0,MIT
-serve-static,1.12.4,MIT
+serve-static,1.13.1,MIT
 set-blocking,2.0.0,ISC
+set-getter,0.1.0,MIT
 set-immediate-shim,1.0.1,MIT
+set-value,0.4.3,MIT
+set-value,2.0.0,MIT
 setimmediate,1.0.5,MIT
 setprototypeof,1.0.3,ISC
+setprototypeof,1.1.0,ISC
 settingslogic,2.0.9,MIT
 sexp_processor,4.9.0,MIT
-sha.js,2.4.8,MIT
-sha.js,2.4.9,MIT
+sha.js,2.4.10,MIT
 shasum,1.0.2,MIT
 shebang-command,1.2.0,MIT
 shebang-regex,1.0.0,MIT
@@ -1326,64 +1460,72 @@ sidekiq,5.0.5,LGPL
 sidekiq-cron,0.6.0,MIT
 sidekiq-limit_fetch,3.4.0,MIT
 signal-exit,3.0.2,ISC
-signet,0.7.3,Apache 2.0
+signet,0.8.1,Apache 2.0
 slack-node,0.2.0,MIT
 slack-notifier,1.5.1,MIT
 slash,1.0.0,MIT
 slice-ansi,0.0.4,MIT
-slide,1.1.6,ISC
 smart-buffer,1.1.15,MIT
 smtp-connection,2.12.0,MIT
+snapdragon,0.8.1,MIT
+snapdragon-node,2.1.1,MIT
+snapdragon-util,3.0.1,MIT
 sntp,1.0.9,BSD
 sntp,2.1.0,BSD
 socket.io,2.0.4,MIT
 socket.io-adapter,1.1.1,MIT
 socket.io-client,2.0.4,MIT
 socket.io-parser,3.1.2,MIT
-sockjs,0.3.18,MIT
-sockjs-client,1.0.1,MIT
+sockjs,0.3.19,MIT
 sockjs-client,1.1.4,MIT
 socks,1.1.10,MIT
 socks,1.1.9,MIT
 socks-proxy-agent,2.1.1,MIT
 sort-keys,1.1.2,MIT
-source-list-map,0.1.8,MIT
 source-list-map,2.0.0,MIT
 source-map,0.2.0,New BSD
 source-map,0.4.4,New BSD
+source-map,0.5.0,New BSD
 source-map,0.5.6,New BSD
 source-map,0.5.7,New BSD
 source-map,0.6.1,New BSD
+source-map-resolve,0.5.1,MIT
 source-map-support,0.4.18,MIT
+source-map-url,0.4.0,MIT
 spdx-correct,1.0.2,Apache 2.0
 spdx-expression-parse,1.0.4,(MIT AND CC-BY-3.0)
 spdx-license-ids,1.2.2,Unlicense
 spdy,3.4.7,MIT
 spdy-transport,2.0.20,MIT
 split,0.3.3,MIT
+split-string,3.1.0,MIT
 sprintf-js,1.0.3,New BSD
 sprockets,3.7.1,MIT
 sprockets-rails,3.2.1,MIT
 sql.js,0.4.0,MIT
 srcset,1.0.0,MIT
+sshkey,1.9.0,MIT
 sshpk,1.13.1,MIT
+ssri,5.2.4,ISC
 state_machines,0.4.0,MIT
 state_machines-activemodel,0.4.0,MIT
 state_machines-activerecord,0.4.0,MIT
+static-extend,0.1.2,MIT
 statuses,1.3.1,MIT
+statuses,1.4.0,MIT
 stream-browserify,2.0.1,MIT
 stream-combiner,0.0.4,MIT
 stream-combiner2,1.1.1,MIT
+stream-each,1.2.2,MIT
 stream-http,2.6.3,MIT
-stream-http,2.7.2,MIT
+stream-http,2.8.0,MIT
 stream-shift,1.0.0,MIT
 stream-splicer,2.0.0,MIT
 streamroller,0.7.0,MIT
 strict-uri-encode,1.1.0,MIT
-string-length,1.0.1,MIT
 string-width,1.0.2,MIT
 string-width,2.0.0,MIT
-string.prototype.trim,1.1.2,MIT
+string-width,2.1.1,MIT
 string_decoder,0.10.31,MIT
 string_decoder,1.0.3,MIT
 stringex,2.7.1,MIT
@@ -1395,23 +1537,25 @@ strip-bom,3.0.0,MIT
 strip-eof,1.0.0,MIT
 strip-indent,1.0.1,MIT
 strip-json-comments,2.0.1,MIT
+style-loader,0.20.2,MIT
 subarg,1.0.0,MIT
 supports-color,2.0.0,MIT
 supports-color,3.2.3,MIT
 supports-color,4.2.1,MIT
 supports-color,4.5.0,MIT
 supports-color,5.1.0,MIT
+supports-color,5.2.0,MIT
 svg4everybody,2.1.9,CC0-1.0
 svgo,0.7.2,MIT
-syntax-error,1.3.0,MIT
+syntax-error,1.4.0,MIT
 sys-filesystem,1.1.6,Artistic 2.0
 table,3.8.3,New BSD
 tapable,0.1.10,MIT
 tapable,0.2.8,MIT
-tape,4.8.0,MIT
 tar,2.2.1,ISC
-tar-pack,3.4.0,Simplified BSD
+tar-pack,3.4.1,Simplified BSD
 temple,0.7.7,MIT
+term-size,1.2.0,MIT
 test-exclude,4.1.1,ISC
 text,1.3.1,MIT
 text-table,0.2.0,MIT
@@ -1427,35 +1571,37 @@ thunky,0.1.0,MIT*
 tilt,2.0.6,MIT
 time-stamp,2.0.0,MIT
 timeago.js,3.0.2,MIT
-timed-out,2.0.0,MIT
 timed-out,4.0.1,MIT
 timers-browserify,1.4.2,MIT
 timers-browserify,2.0.4,MIT
 timespan,2.3.0,MIT
 timfel-krb5-auth,0.8.3,LGPL
 tiny-emitter,2.0.2,MIT
-tmp,0.0.31,MIT
 tmp,0.0.33,MIT
 to-array,0.1.4,MIT
 to-arraybuffer,1.0.1,MIT
 to-fast-properties,1.0.3,MIT
 to-fast-properties,2.0.0,MIT
-toml-rb,0.3.15,MIT
-touch,1.0.0,ISC
-tough-cookie,2.3.2,New BSD
+to-object-path,0.3.0,MIT
+to-regex,3.0.1,MIT
+to-regex-range,2.1.1,MIT
+toml-rb,1.0.0,MIT
+touch,3.1.0,ISC
 tough-cookie,2.3.3,New BSD
 traverse,0.6.6,MIT
 trim-newlines,1.0.0,MIT
 trim-right,1.0.1,MIT
 truncato,0.7.10,MIT
+tryer,1.0.0,MIT
 tryit,1.0.3,MIT
 tsscmp,1.0.5,MIT
 tty-browserify,0.0.0,MIT
+tty-browserify,0.0.1,MIT
 tunnel-agent,0.4.3,Apache 2.0
 tunnel-agent,0.6.0,Apache 2.0
 tweetnacl,0.14.5,Unlicense
 type-check,0.3.2,MIT
-type-is,1.6.15,MIT
+type-is,1.6.16,MIT
 typedarray,0.0.6,MIT
 tzinfo,1.2.4,MIT
 u2f,0.2.1,MIT
@@ -1465,40 +1611,48 @@ uglify-js,2.8.29,Simplified BSD
 uglify-to-browserify,1.0.2,MIT
 uglifyjs-webpack-plugin,0.4.6,MIT
 uid-number,0.0.6,ISC
-ultron,1.1.0,MIT
+ultron,1.1.1,MIT
 umd,3.0.1,MIT
 unc-path-regex,0.1.2,MIT
-undefsafe,0.0.3,MIT / http://rem.mit-license.org
+undefsafe,2.0.2,MIT
 underscore,1.7.0,MIT
 underscore,1.8.3,MIT
 unf,0.1.4,BSD
 unf_ext,0.0.7.4,MIT
 unicorn,5.1.0,ruby
 unicorn-worker-killer,0.4.4,ruby
+union-value,1.0.0,MIT
 uniq,1.0.1,MIT
 uniqid,4.1.1,MIT
 uniqs,2.0.0,MIT
+unique-filename,1.1.0,ISC
+unique-slug,2.0.0,ISC
+unique-string,1.0.0,MIT
 unpipe,1.0.0,MIT
-update-notifier,0.5.0,Simplified BSD
+unset-value,1.0.0,MIT
+unzip-response,2.0.1,MIT
+upath,1.0.2,MIT
+update-notifier,2.3.0,Simplified BSD
+urix,0.1.0,MIT
 url,0.11.0,MIT
-url-loader,0.5.8,MIT
+url-loader,0.6.2,MIT
 url-parse,1.0.5,MIT
-url-parse,1.1.7,MIT
 url-parse,1.1.9,MIT
 url-parse-lax,1.0.0,MIT
 url-to-options,1.0.1,MIT
 url_safe_base64,0.2.2,MIT
+use,2.0.2,MIT
 user-home,2.0.0,MIT
-useragent,2.2.1,MIT
+useragent,2.3.0,MIT
 util,0.10.3,MIT
 util-deprecate,1.0.2,MIT
-utils-merge,1.0.0,MIT
-uuid,2.0.3,MIT
-uuid,3.1.0,MIT
-uws,0.14.5,Zlib
+utils-merge,1.0.1,MIT
+uuid,3.2.1,MIT
+uws,9.14.0,Zlib
 validate-npm-package-license,3.0.1,Apache 2.0
 validates_hostname,1.0.6,MIT
 vary,1.1.1,MIT
+vary,1.1.2,MIT
 vendors,1.0.1,MIT
 verror,1.10.0,MIT
 version_sorter,2.1.0,MIT
@@ -1510,21 +1664,20 @@ void-elements,2.0.1,MIT
 vue,2.5.13,MIT
 vue-eslint-parser,2.0.1,MIT
 vue-hot-reload-api,2.2.4,MIT
-vue-loader,13.7.0,MIT
+vue-loader,14.1.1,MIT
 vue-resource,1.3.5,MIT
 vue-router,3.0.1,MIT
-vue-style-loader,3.0.3,MIT
+vue-style-loader,4.0.2,MIT
 vue-template-compiler,2.5.13,MIT
 vue-template-es2015-compiler,1.6.0,MIT
 vuex,3.0.1,MIT
 warden,1.2.6,MIT
 watchpack,1.4.0,MIT
 wbuf,1.7.2,MIT
-webpack,3.5.5,MIT
-webpack-bundle-analyzer,2.8.2,MIT
-webpack-dev-middleware,1.11.0,MIT
+webpack,3.11.0,MIT
+webpack-bundle-analyzer,2.10.0,MIT
 webpack-dev-middleware,1.12.2,MIT
-webpack-dev-server,2.7.1,MIT
+webpack-dev-server,2.11.2,MIT
 webpack-rails,0.9.10,MIT
 webpack-sources,1.0.1,MIT
 webpack-stats-plugin,0.1.5,MIT
@@ -1533,9 +1686,11 @@ websocket-extensions,0.1.1,MIT
 when,3.7.8,MIT
 whet.extend,0.9.9,MIT
 which,1.2.12,ISC
+which,1.3.0,ISC
 which-module,1.0.0,ISC
 which-module,2.0.0,ISC
 wide-align,1.1.2,ISC
+widest-line,2.0.0,MIT
 wikicloth,0.8.1,MIT
 window-size,0.1.0,MIT
 wordwrap,0.0.2,MIT
@@ -1545,15 +1700,16 @@ worker-loader,1.1.0,MIT
 wrap-ansi,2.1.0,MIT
 wrappy,1.0.2,ISC
 write,0.2.1,MIT
-write-file-atomic,1.3.4,ISC
-ws,2.3.1,MIT
+write-file-atomic,2.3.0,ISC
 ws,3.3.3,MIT
-xdg-basedir,2.0.0,MIT
+ws,4.0.0,MIT
+xdg-basedir,3.0.0,MIT
 xml-simple,1.1.5,ruby
 xmlhttprequest-ssl,1.5.5,MIT
 xregexp,2.0.0,MIT
 xtend,4.0.1,MIT
 y18n,3.2.1,ISC
+y18n,4.0.0,ISC
 yallist,2.1.2,ISC
 yargs,3.10.0,MIT
 yargs,6.6.0,MIT
