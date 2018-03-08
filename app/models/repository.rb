@@ -35,7 +35,7 @@ class Repository
   CACHED_METHODS = %i(size commit_count rendered_readme contribution_guide
                       changelog license_blob license_key gitignore koding_yml
                       gitlab_ci_yml branch_names tag_names branch_count
-                      tag_count avatar exists? empty? root_ref has_visible_content?
+                      tag_count avatar exists? root_ref has_visible_content?
                       issue_template_names merge_request_template_names).freeze
 
   # Methods that use cache_method but only memoize the value
@@ -359,7 +359,7 @@ class Repository
   def expire_emptiness_caches
     return unless empty?
 
-    expire_method_caches(%i(empty? has_visible_content?))
+    expire_method_caches(%i(has_visible_content?))
   end
 
   def lookup_cache
@@ -509,12 +509,14 @@ class Repository
   end
   cache_method :exists?
 
+  # We don't need to cache the output of this method because both exists? and
+  # has_visible_content? are already memoized and cached. There's no guarantee
+  # that the values are expired and loaded atomically.
   def empty?
     return true unless exists?
 
     !has_visible_content?
   end
-  cache_method :empty?
 
   # The size of this repository in megabytes.
   def size
