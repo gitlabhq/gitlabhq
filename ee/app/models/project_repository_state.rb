@@ -8,6 +8,9 @@ class ProjectRepositoryState < ActiveRecord::Base
 
   validates :project, presence: true, uniqueness: true
 
+  scope :verification_failed_repos, -> { where(arel_table[:last_repository_verification_failed].eq(true)) }
+  scope :verification_failed_wikis, -> { where(arel_table[:last_wiki_verification_failed].eq(true)) }
+
   def repository_checksum_outdated?(timestamp)
     repository_verification_checksum.nil? || recalculate_repository_checksum?(timestamp)
   end
@@ -18,7 +21,15 @@ class ProjectRepositoryState < ActiveRecord::Base
     wiki_verification_checksum.nil? || recalculate_wiki_checksum?(timestamp)
   end
 
-  private
+  def self.verified_repos
+    where.not(repository_verification_checksum: nil)
+    .where(last_repository_verification_failed: false)
+  end
+
+  def self.verified_wikis
+    where.not(wiki_verification_checksum: nil)
+    .where(last_wiki_verification_failed: false)
+  end
 
   def recalculate_repository_checksum?(timestamp)
     last_repository_verification_at.nil? || timestamp > last_repository_verification_at

@@ -1047,6 +1047,10 @@ ActiveRecord::Schema.define(version: 20180307164427) do
     t.integer "job_artifacts_failed_count"
     t.string "version"
     t.string "revision"
+    t.integer "repositories_verified_count"
+    t.integer "repositories_verification_failed_count"
+    t.integer "wikis_verified_count"
+    t.integer "wikis_verification_failed_count"
   end
 
   add_index "geo_node_statuses", ["geo_node_id"], name: "index_geo_node_statuses_on_geo_node_id", unique: true, using: :btree

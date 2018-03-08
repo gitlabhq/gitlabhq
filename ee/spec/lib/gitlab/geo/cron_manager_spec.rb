@@ -28,6 +28,7 @@ describe Gitlab::Geo::CronManager, :geo do
       geo_repository_verification_primary_batch_worker
       geo_repository_sync_worker
       geo_file_download_dispatch_worker
+      geo_repository_verification_secondary_scheduler_worker
       geo_metrics_update_worker
     ].freeze
 
@@ -46,7 +47,8 @@ describe Gitlab::Geo::CronManager, :geo do
     let(:secondary_jobs) do
       [
         job('geo_file_download_dispatch_worker'),
-        job('geo_repository_sync_worker')
+        job('geo_repository_sync_worker'),
+        job('geo_repository_verification_secondary_scheduler_worker')
       ]
     end
 
