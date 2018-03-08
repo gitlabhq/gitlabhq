@@ -1,5 +1,19 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.5.4 (2018-03-08)
+
+### Fixed (4 changes)
+
+- Supresses error being raised due to async remote removal being run outside a transaction. !4747
+- Mark empty repos as synced in Geo. !4757
+- Fix: Geo WikiSyncService attempts to sync projects that have no Wiki.
+- Geo - Fix repository synchronization order for projects updated recently.
+
+### Other (1 change)
+
+- Rename "Approve Additionally" to "Add approval".
+
+
 ## 10.5.3 (2018-03-01)
 
 ### Security (2 changes)
