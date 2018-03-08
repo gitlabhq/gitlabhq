@@ -42,6 +42,7 @@ Naming/FileName:
     - 'qa/bin/*'
     - 'config/**/*'
     - 'lib/generators/**/*'
+    - 'ee/lib/generators/**/*'
   IgnoreExecutableScripts: true
   AllowedAcronyms:
     - EE

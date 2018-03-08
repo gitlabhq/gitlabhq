@@ -8,7 +8,7 @@ module DeclarativePolicy
     end
 
     def method_missing(m, *a, &b)
-      return super unless a.size == 0 && !block_given?
+      return super unless a.empty? && !block_given?
 
       @rule_dsl.delegate(@delegate_name, m)
     end
