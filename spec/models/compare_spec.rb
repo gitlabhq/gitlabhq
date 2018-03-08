@@ -59,6 +59,36 @@ describe Compare do
     end
   end
 
+  describe '#base_commit_sha' do
+    it 'returns @base_sha if it is present' do
+      expect(project).not_to receive(:merge_base_commit)
+
+      sha = double
+      service = described_class.new(raw_compare, project, base_sha: sha)
+
+      expect(service.base_commit_sha).to eq(sha)
+    end
+
+    it 'fetches merge base SHA from repo when @base_sha is nil' do
+      expect(project).to receive(:merge_base_commit)
+        .with(start_commit.id, head_commit.id)
+        .once
+        .and_call_original
+
+      expect(subject.base_commit_sha)
+        .to eq(project.repository.merge_base(start_commit.id, head_commit.id))
+    end
+
+    it 'is memoized on first call' do
+      expect(project).to receive(:merge_base_commit)
+        .with(start_commit.id, head_commit.id)
+        .once
+        .and_call_original
+
+      3.times { subject.base_commit_sha }
+    end
+  end
+
   describe '#diff_refs' do
     it 'uses base_commit sha as base_sha' do
       expect(subject).to receive(:base_commit).at_least(:once).and_call_original
