@@ -8,7 +8,8 @@ module SendFileUpload
     if file_upload.file_storage?
       send_file file_upload.path, send_params
     elsif file_upload.class.proxy_download_enabled?
-      Gitlab::Workhorse.send_url(file_upload.url(**redirect_params))
+      headers.store(*Gitlab::Workhorse.send_url(file_upload.url(**redirect_params)))
+      head :ok
     else
       redirect_to file_upload.url(**redirect_params)
     end

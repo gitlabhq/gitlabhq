@@ -243,17 +243,34 @@ describe 'Git LFS API and storage' do
             it_behaves_like 'responds with a file'
 
             context 'when LFS uses object storage' do
-              let(:before_get) do
-                stub_lfs_object_storage
-                lfs_object.file.migrate!(LfsObjectUploader::Store::REMOTE)
+              context 'when proxy download is enabled' do
+                let(:before_get) do
+                  stub_lfs_object_storage(proxy_download: true)
+                  lfs_object.file.migrate!(LfsObjectUploader::Store::REMOTE)
+                end
+
+                it 'responds with redirect' do
+                  expect(response).to have_gitlab_http_status(200)
+                end
+
+                it 'responds with the workhorse send-url' do
+                  expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("send-url:")
+                end
               end
 
-              it 'responds with redirect' do
-                expect(response).to have_gitlab_http_status(302)
-              end
+              context 'when proxy download is disabled' do
+                let(:before_get) do
+                  stub_lfs_object_storage(proxy_download: false)
+                  lfs_object.file.migrate!(LfsObjectUploader::Store::REMOTE)
+                end
 
-              it 'responds with the file location' do
-                expect(response.location).to include(lfs_object.reload.file.path)
+                it 'responds with redirect' do
+                  expect(response).to have_gitlab_http_status(302)
+                end
+
+                it 'responds with the file location' do
+                  expect(response.location).to include(lfs_object.reload.file.path)
+                end
               end
             end
           end
@@ -1379,9 +1396,6 @@ describe 'Git LFS API and storage' do
 
     def lfs_tmp_file
       "#{sample_oid}012345678"
-    end
-
-    def setup_tempfile(lfs_tmp)
     end
   end
 

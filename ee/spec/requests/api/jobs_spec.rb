@@ -39,19 +39,25 @@ describe API::Jobs do
       end
     end
 
-    context 'normal authentication' do
+    context 'for normal authentication when job with artifacts are stored remotely' do
       before do
-        stub_artifacts_object_storage
+        stub_artifacts_object_storage(proxy_download: proxy_download)
+
+        create(:ci_job_artifact, :archive, :remote_store, job: job)
+
+        get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
       end
 
-      context 'when job with artifacts are stored remotely' do
-        let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: job) }
+      context 'when proxy download is enabled' do
+        let(:proxy_download) { true }
 
-        before do
-          job.reload
-
-          get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+        it 'responds with the workhorse send-url' do
+          expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("send-url:")
         end
+      end
+
+      context 'when proxy download is disabled' do
+        let(:proxy_download) { false }
 
         it 'returns location redirect' do
           expect(response).to have_gitlab_http_status(302)
