@@ -98,8 +98,8 @@ coach is going to finish the merge request we assign the
 
 ## Helping others
 
-Please help other GitLab users when you can. The channels people will reach out
-on can be found on the [getting help page][getting-help].
+Please help other GitLab users when you can.
+The methods people will use to seek help can be found on the [getting help page][getting-help].
 
 Sign up for the mailing list, answer GitLab questions on StackOverflow or
 respond in the IRC channel. You can also sign up on [CodeTriage][codetriage] to help with
