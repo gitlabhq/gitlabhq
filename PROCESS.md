@@ -202,6 +202,9 @@ you can ask for an exception to be made.
 Go to [Release tasks issue tracker](https://gitlab.com/gitlab-org/release/tasks/issues/new) and create an issue
 using the `Exception-request` issue template.
 
+**Do not** set the relevant `Pick into X.Y` label (see above) before request an
+exception; this should be done after the exception is approved.
+
 You can find who is who on the [team page](https://about.gitlab.com/team/).
 
 Whether an exception is made is determined by weighing the benefit and urgency of the change
