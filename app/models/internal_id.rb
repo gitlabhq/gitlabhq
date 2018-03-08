@@ -25,14 +25,8 @@ class InternalId < ActiveRecord::Base
       raise "Unknown through '#{through}' for '#{scope}'" unless scope.respond_to?(through)
 
       scope.transaction do
-        # Reload scope so we can check if the foreign key to InternalId is present already
-        scope.reload
-
         # Create a record in internal_ids if one does not yet exist
-        id = get(scope, through) || create_record(subject, scope, through, init).tap do |id|
-          scope.public_send("#{through}=".to_sym, id)
-          scope.save!
-        end
+        id = get(scope, through) || create_record(subject, scope, through, init)
 
         # This will lock the InternalId record with ROW SHARE
         # and increment #last_value
@@ -60,7 +54,10 @@ class InternalId < ActiveRecord::Base
       # create a new InternalId record each and update the `through`
       # column (one record will be lost in the process).
       scope.lock!
-      get(scope, through) || new(last_value: init.call(subject) || 0)
+      get(scope, through) || create!(last_value: init.call(subject) || 0).tap do |id|
+        scope.public_send("#{through}=".to_sym, id) # rubocop:disable GitlabSecurity/PublicSend
+        scope.save!
+      end
     end
   end
 end

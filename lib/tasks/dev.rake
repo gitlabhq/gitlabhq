@@ -14,13 +14,14 @@ namespace :dev do
   end
 
   task idtest: :environment do
-    project = Project.where(name: 'lkjlkjlkjlkj').first
-    user = User.second
+    ActiveRecord::Base.logger = Logger.new(STDOUT)
     i = 0
     begin
-      Issue.create(author: user, title: "Issue #{i}", project: project)
+      project = Project.first
+      user = User.second
+      issue = Issue.create!(author: user, title: "Issue #{i}", project: project)
       i += 1
-      puts i
-    end while true
+      puts issue.iid
+    end while i < 10
   end
 end

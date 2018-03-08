@@ -24,7 +24,7 @@ class Issue < ActiveRecord::Base
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
 
-  has_internal_id :iid, scope: :project, through: :issues_iid, init: ->(o) { o.project.issues.maximum(:iid) }
+  #has_internal_id :iid, scope: :project, through: :issues_iid, init: ->(o) { o.project.issues.maximum(:iid) }
 
   has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
