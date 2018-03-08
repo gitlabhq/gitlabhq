@@ -1,5 +1,3 @@
-require 'constraints/user_url_constrainer'
-
 devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks,
                                   registrations: :registrations,
                                   passwords: :passwords,
@@ -35,7 +33,7 @@ scope(constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }) d
   get '/u/:username/contributed', to: redirect('users/%{username}/contributed')
 end
 
-constraints(UserUrlConstrainer.new) do
+constraints(::Constraints::UserUrlConstrainer.new) do
   # Get all keys of user
   get ':username.keys' => 'profiles/keys#get_keys', constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }
 
