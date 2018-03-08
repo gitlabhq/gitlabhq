@@ -113,6 +113,7 @@
 - cronjob:geo_prune_event_log
 - cronjob:geo_repository_sync
 - cronjob:geo_repository_verification_primary_batch
+- cronjob:geo_repository_verification_secondary_scheduler
 - cronjob:geo_sidekiq_cron_config
 - cronjob:historical_data
 - cronjob:ldap_all_groups_sync
@@ -133,6 +134,7 @@
 - geo:geo_repository_shard_sync
 - geo:geo_repository_verification_primary_shard
 - geo:geo_repository_verification_primary_single
+- geo:geo_repository_verification_secondary_single
 
 - object_storage_upload
 - object_storage:object_storage_background_move

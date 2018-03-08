@@ -6,7 +6,8 @@ module EE::Admin::LogsController
   def loggers
     strong_memoize(:loggers) do
       super + [
-        Gitlab::GeoLogger
+        Gitlab::GeoLogger,
+        Gitlab::Geo::RepositoryVerificationLogger
       ]
     end
   end

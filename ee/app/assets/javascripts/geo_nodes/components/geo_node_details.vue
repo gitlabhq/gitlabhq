@@ -204,6 +204,22 @@
       <template v-if="showAdvanceItems">
         <template v-if="node.primary">
           <geo-node-detail-item
+            :item-title="s__('GeoNodes|Repositories checksummed:')"
+            :success-label="s__('GeoNodes|Checksummed')"
+            :neutral-label="s__('GeoNodes|Not checksummed')"
+            :failure-label="s__('GeoNodes|Failed')"
+            :item-value="nodeDetails.verifiedRepositories"
+            :item-value-type="valueType.GRAPH"
+          />
+          <geo-node-detail-item
+            :item-title="s__('GeoNodes|Wikis checksummed:')"
+            :success-label="s__('GeoNodes|Checksummed')"
+            :neutral-label="s__('GeoNodes|Not checksummed')"
+            :failure-label="s__('GeoNodes|Failed')"
+            :item-value="nodeDetails.verifiedWikis"
+            :item-value-type="valueType.GRAPH"
+          />
+          <geo-node-detail-item
             :item-title="s__('GeoNodes|Replication slots:')"
             :success-label="s__('GeoNodes|Used slots')"
             :neutral-label="s__('GeoNodes|Unused slots')"
@@ -219,6 +235,22 @@
           />
         </template>
         <template v-else>
+          <geo-node-detail-item
+            :item-title="s__('GeoNodes|Repository checksums verified:')"
+            :success-label="s__('GeoNodes|Verified')"
+            :neutral-label="s__('GeoNodes|Unverified')"
+            :failure-label="s__('GeoNodes|Failed')"
+            :item-value="nodeDetails.verifiedRepositories"
+            :item-value-type="valueType.GRAPH"
+          />
+          <geo-node-detail-item
+            :item-title="s__('GeoNodes|Wiki checksums verified:')"
+            :success-label="s__('GeoNodes|Verified')"
+            :neutral-label="s__('GeoNodes|Unverified')"
+            :failure-label="s__('GeoNodes|Failed')"
+            :item-value="nodeDetails.verifiedWikis"
+            :item-value-type="valueType.GRAPH"
+          />
           <geo-node-detail-item
             css-class="node-detail-value-bold"
             :item-title="s__('GeoNodes|Database replication lag:')"
