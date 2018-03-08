@@ -20,16 +20,17 @@ module Peek
       private
 
       def details
-        ::Gitlab::GitalyClient.call_details
+        ::Gitlab::GitalyClient.list_call_details
+          .values
           .sort { |a, b| b[:duration] <=> a[:duration] }
           .map(&method(:format_call_details))
       end
 
       def format_call_details(call)
-        pretty_request = call[:request].reject { |k, v| v.blank? }.to_h.pretty_inspect
+        pretty_request = call[:request]&.reject { |k, v| v.blank? }.to_h.pretty_inspect
 
         call.merge(duration: (call[:duration] * 1000).round(3),
-                   request: pretty_request)
+                   request: pretty_request || {})
       end
 
       def formatted_duration

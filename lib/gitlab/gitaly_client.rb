@@ -119,7 +119,8 @@ module Gitlab
     #
     def self.call(storage, service, rpc, request, remote_storage: nil, timeout: nil)
       start = Gitlab::Metrics::System.monotonic_time
-      @last_request = request.is_a?(Google::Protobuf::MessageExts) ? request.to_h : nil
+      request_hash = request.is_a?(Google::Protobuf::MessageExts) ? request.to_h : {}
+      @current_call_id ||= SecureRandom.uuid
 
       enforce_gitaly_request_limits(:call)
 
@@ -137,6 +138,10 @@ module Gitlab
       gitaly_controller_action_duration_seconds.observe(
         current_transaction_labels.merge(gitaly_service: service.to_s, rpc: rpc.to_s),
         duration)
+
+      add_call_details(id: @current_call_id, feature: service, duration: duration, request: request_hash)
+
+      @current_call_id = nil
     end
 
     def self.handle_grpc_unavailable!(ex)
@@ -254,15 +259,16 @@ module Gitlab
           feature_stack.unshift(feature)
           begin
             start = Gitlab::Metrics::System.monotonic_time
+            @current_call_id = SecureRandom.uuid
+            call_details = { id: @current_call_id }
             yield is_enabled
           ensure
             total_time = Gitlab::Metrics::System.monotonic_time - start
             gitaly_migrate_call_duration_seconds.observe({ gitaly_enabled: is_enabled, feature: feature }, total_time)
             feature_stack.shift
             Thread.current[:gitaly_feature_stack] = nil if feature_stack.empty?
-            add_call_details(feature: feature,
-                             duration: total_time,
-                             request: is_enabled ? @last_request : {})
+
+            add_call_details(call_details.merge(feature: feature, duration: total_time))
           end
         end
       end
@@ -350,16 +356,19 @@ module Gitlab
     end
 
     def self.add_call_details(details)
-      return unless RequestStore.active? && RequestStore.store[:peek_enabled]
+      id = details.delete(:id)
 
-      RequestStore.store['gitaly_call_details'] ||= []
-      RequestStore.store['gitaly_call_details'] << details
+      return unless id && RequestStore.active? && RequestStore.store[:peek_enabled]
+
+      RequestStore.store['gitaly_call_details'] ||= {}
+      RequestStore.store['gitaly_call_details'][id] ||= {}
+      RequestStore.store['gitaly_call_details'][id].merge!(details)
     end
 
-    def self.call_details
-      return [] unless RequestStore.active? && RequestStore.store[:peek_enabled]
+    def self.list_call_details
+      return {} unless RequestStore.active? && RequestStore.store[:peek_enabled]
 
-      RequestStore.store['gitaly_call_details'] || []
+      RequestStore.store['gitaly_call_details'] || {}
     end
 
     def self.expected_server_version
