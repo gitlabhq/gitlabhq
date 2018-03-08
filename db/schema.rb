@@ -1535,10 +1535,6 @@ ActiveRecord::Schema.define(version: 20180307164427) do
     t.string "merge_jid"
     t.boolean "discussion_locked"
     t.integer "latest_merge_request_diff_id"
-<<<<<<< HEAD
-    t.string "rebase_commit_sha"
-=======
->>>>>>> master
     t.boolean "allow_maintainer_to_push"
   end
 
