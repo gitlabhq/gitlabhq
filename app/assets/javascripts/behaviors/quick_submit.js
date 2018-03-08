@@ -72,5 +72,5 @@ $(document).on('keyup.quick_submit', '.js-quick-submit input[type=submit], .js-q
     title,
     trigger: 'manual',
   });
-  $this.tooltip('show').one('blur', () => $this.tooltip('hide'));
+  $this.tooltip('show').one('blur click', () => $this.tooltip('hide'));
 });
