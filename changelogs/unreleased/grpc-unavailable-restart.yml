@@ -1,5 +1,0 @@
----
-title: Restart Unicorn and Sidekiq when GRPC throws 14:Endpoint read failed
-merge_request: 17293
-author:
-type: fixed
