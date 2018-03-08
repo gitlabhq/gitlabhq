@@ -291,6 +291,15 @@ export const getTimeframeWindow = (length, date) => {
   return timeframe;
 };
 
+/**
+ * Returns the time difference between two dates in minutes
+ *
+ * @param {Date} dateStart
+ * @param {Date} dateEnd
+ */
+
+export const timeDifferenceMinutes = (dateStart, dateEnd) => (dateEnd - dateStart) / 1000 / 60;
+
 window.gl = window.gl || {};
 window.gl.utils = {
   ...(window.gl.utils || {}),

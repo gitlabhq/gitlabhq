@@ -1,8 +1,10 @@
 <script>
   import { scaleLinear, scaleTime } from 'd3-scale';
   import { axisLeft, axisBottom } from 'd3-axis';
-  import { max, extent } from 'd3-array';
+  import { max, extent, min } from 'd3-array';
   import { select } from 'd3-selection';
+  import { timeMinute } from 'd3-time';
+  import { timeDifferenceMinutes } from '~/lib/utils/datetime_utility';
   import GraphLegend from './graph/legend.vue';
   import GraphFlag from './graph/flag.vue';
   import GraphDeployment from './graph/deployment.vue';
@@ -14,7 +16,7 @@
   import createTimeSeries from '../utils/multiple_time_series';
   import bp from '../../breakpoints';
 
-  const d3 = { scaleLinear, scaleTime, axisLeft, axisBottom, max, extent, select };
+  const d3 = { scaleLinear, scaleTime, axisLeft, axisBottom, max, min, extent, select, timeMinute };
 
   export default {
     components: {
@@ -206,9 +208,23 @@
         const allValues = this.timeSeries.reduce((all, { values }) => all.concat(values), []);
         axisXScale.domain(d3.extent(allValues, d => d.time));
         axisYScale.domain([0, d3.max(allValues.map(d => d.value))]);
+        // time difference
+        const dateEnd = d3.max(allValues.map(d => d.time));
+        const dateStart = d3.min(allValues.map(d => d.time));
+        const timeDifference = timeDifferenceMinutes(dateStart, dateEnd);
+
+        let timeTicks;
+        if (timeDifference > 90) {
+          timeTicks = 60;
+        } else if (timeDifference > 45 && timeDifference <= 90) {
+          timeTicks = 30;
+        } else if (timeDifference <= 45) {
+          timeTicks = 15;
+        }
 
         const xAxis = d3.axisBottom()
           .scale(axisXScale)
+          .ticks(d3.timeMinute.every(timeTicks))
           .tickFormat(timeScaleFormat);
 
         const yAxis = d3.axisLeft()

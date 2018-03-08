@@ -170,3 +170,12 @@ describe('getTimeframeWindow', () => {
     });
   });
 });
+
+describe('timeDifferenceMinutes', () => {
+  it('returns the time difference between two dates in minutes', () => {
+    const dateStart = new Date('2018-03-08 12:00:00');
+    const dateEnd = new Date('2018-03-08 13:00:00');
+
+    expect(datetimeUtility.timeDifferenceMinutes(dateStart, dateEnd)).toEqual(60);
+  });
+});
