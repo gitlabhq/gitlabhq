@@ -308,6 +308,7 @@ describe ProjectPolicy do
   it_behaves_like 'project policies as owner'
   it_behaves_like 'project policies as admin'
 
+<<<<<<< HEAD
   context 'EE' do
     let(:additional_guest_permissions)  { [:read_issue_link] }
     let(:additional_reporter_permissions) { [:admin_issue_link]}
@@ -358,6 +359,42 @@ describe ProjectPolicy do
           is_expected.to be_allowed(*auditor_permissions)
         end
       end
+=======
+  context 'when a public project has merge requests allowing access' do
+    include ProjectForksHelper
+    let(:user) { create(:user) }
+    let(:target_project) { create(:project, :public) }
+    let(:project) { fork_project(target_project) }
+    let!(:merge_request) do
+      create(
+        :merge_request,
+        target_project: target_project,
+        source_project: project,
+        allow_maintainer_to_push: true
+      )
+    end
+    let(:maintainer_abilities) do
+      %w(create_build update_build create_pipeline update_pipeline)
+    end
+
+    subject { described_class.new(user, project) }
+
+    it 'does not allow pushing code' do
+      expect_disallowed(*maintainer_abilities)
+    end
+
+    it 'allows pushing if the user is a member with push access to the target project' do
+      target_project.add_developer(user)
+
+      expect_allowed(*maintainer_abilities)
+    end
+
+    it 'dissallows abilities to a maintainer if the merge request was closed' do
+      target_project.add_developer(user)
+      merge_request.close!
+
+      expect_disallowed(*maintainer_abilities)
+>>>>>>> upstream/master
     end
   end
 end

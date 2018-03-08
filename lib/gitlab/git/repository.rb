@@ -1447,12 +1447,12 @@ module Gitlab
         end
       end
 
-      def last_commit_id_for_path(sha, path)
+      def last_commit_for_path(sha, path)
         gitaly_migrate(:last_commit_for_path) do |is_enabled|
           if is_enabled
-            last_commit_for_path_by_gitaly(sha, path).id
+            last_commit_for_path_by_gitaly(sha, path)
           else
-            last_commit_id_for_path_by_shelling_out(sha, path)
+            last_commit_for_path_by_rugged(sha, path)
           end
         end
       end
@@ -1900,7 +1900,7 @@ module Gitlab
       end
 
       def last_commit_for_path_by_rugged(sha, path)
-        sha = last_commit_id_for_path(sha, path)
+        sha = last_commit_id_for_path_by_shelling_out(sha, path)
         commit(sha)
       end
 

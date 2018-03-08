@@ -37,6 +37,14 @@ module MergeRequests
       end
     end
 
+    def filter_params(merge_request)
+      super
+
+      unless merge_request.can_allow_maintainer_to_push?(current_user)
+        params.delete(:allow_maintainer_to_push)
+      end
+    end
+
     def merge_request_metrics_service(merge_request)
       MergeRequestMetricsService.new(merge_request.metrics)
     end

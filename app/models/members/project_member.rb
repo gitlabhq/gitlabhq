@@ -13,8 +13,11 @@ class ProjectMember < Member
 
   scope :in_project, ->(project) { where(source_id: project.id) }
 
+<<<<<<< HEAD
   before_destroy :delete_member_branch_protection
 
+=======
+>>>>>>> upstream/master
   class << self
     # Add users to projects with passed access option
     #
@@ -93,6 +96,7 @@ class ProjectMember < Member
 
   private
 
+<<<<<<< HEAD
   def delete_member_branch_protection
     if user.present? && project.present?
       project.protected_branches.merge_access_by_user(user).destroy_all
@@ -100,6 +104,8 @@ class ProjectMember < Member
     end
   end
 
+=======
+>>>>>>> upstream/master
   def send_invite
     notification_service.invite_project_member(self, @raw_invite_token) unless @skip_notification
 

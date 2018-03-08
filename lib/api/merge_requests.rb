@@ -146,6 +146,7 @@ module API
           optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign the merge request'
           optional :labels, type: String, desc: 'Comma-separated list of label names'
           optional :remove_source_branch, type: Boolean, desc: 'Remove source branch when merging'
+          optional :allow_maintainer_to_push, type: Boolean, desc: 'Whether a maintainer of the target project can push to the source project'
 
           use :optional_params_ee
         end

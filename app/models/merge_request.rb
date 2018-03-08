@@ -892,7 +892,7 @@ class MergeRequest < ActiveRecord::Base
 
   def can_be_merged_by?(user)
     access = ::Gitlab::UserAccess.new(user, project: project)
-    access.can_push_to_branch?(target_branch) || access.can_merge_to_branch?(target_branch)
+    access.can_update_branch?(target_branch)
   end
 
   def can_be_merged_via_command_line_by?(user)
@@ -1117,5 +1117,23 @@ class MergeRequest < ActiveRecord::Base
     return false if project.team.max_member_access(author_id) > Gitlab::Access::GUEST
 
     project.merge_requests.merged.where(author_id: author_id).empty?
+  end
+
+  def allow_maintainer_to_push
+    maintainer_push_possible? && super
+  end
+
+  alias_method :allow_maintainer_to_push?, :allow_maintainer_to_push
+
+  def maintainer_push_possible?
+    source_project.present? && for_fork? &&
+      target_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE &&
+      source_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE &&
+      !ProtectedBranch.protected?(source_project, source_branch)
+  end
+
+  def can_allow_maintainer_to_push?(user)
+    maintainer_push_possible? &&
+      Ability.allowed?(user, :push_code, source_project)
   end
 end
