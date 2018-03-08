@@ -419,6 +419,33 @@ feature 'Jobs' do
         expect(page).to have_content('This job is in pending state and is waiting to be picked by a runner')
       end
     end
+
+    context 'Canceled job' do
+      context 'with log' do
+        let(:job) { create(:ci_build, :canceled, :trace_artifact, pipeline: pipeline) }
+
+        before do
+          visit project_job_path(project, job)
+        end
+
+        it 'renders job log' do
+          expect(page).to have_selector('.js-build-output')
+        end
+      end
+
+      context 'without log' do
+        let(:job) { create(:ci_build, :canceled, pipeline: pipeline) }
+
+        before do
+          visit project_job_path(project, job)
+        end
+
+        it 'renders empty state' do
+          expect(page).not_to have_selector('.js-build-output')
+          expect(page).to have_content('This job has been canceled')
+        end
+      end
+    end
   end
 
   describe "POST /:project/jobs/:id/cancel", :js do
