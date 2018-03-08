@@ -6,6 +6,7 @@ module Gitlab
       SECONDARY_JOBS = %w[
         geo_repository_sync_worker
         geo_file_download_dispatch_worker
+        geo_repository_verification_secondary_scheduler_worker
       ].freeze
 
       GEO_JOBS = (COMMON_JOBS + PRIMARY_JOBS + SECONDARY_JOBS).freeze

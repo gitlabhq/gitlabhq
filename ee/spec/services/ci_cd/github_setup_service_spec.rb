@@ -1,7 +1,15 @@
 require 'spec_helper'
 
 describe CiCd::GithubSetupService do
-  let(:project) { create(:project) }
+  let(:repo_full_name) { "MyUser/my-project" }
+  let(:api_token) { "abcdefghijk123" }
+  let(:import_url) { "https://#{api_token}@github.com/#{repo_full_name}.git" }
+  let(:credentials) { { user: api_token } }
+  let(:project) do
+    create(:project, import_source: repo_full_name,
+                     import_url: import_url,
+                     import_data_attributes: { credentials: credentials } )
+  end
 
   subject do
     described_class.new(project)

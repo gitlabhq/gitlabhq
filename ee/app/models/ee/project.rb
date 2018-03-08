@@ -54,7 +54,12 @@ module EE
       end
 
       scope :with_remote_mirrors, -> { joins(:remote_mirrors).where(remote_mirrors: { enabled: true }).distinct }
-      scope :with_wiki_enabled, -> { with_feature_enabled(:wiki) }
+      scope :with_wiki_enabled,   -> { with_feature_enabled(:wiki) }
+
+      scope :verified_repos, -> { joins(:repository_state).merge(ProjectRepositoryState.verified_repos) }
+      scope :verified_wikis, -> { joins(:repository_state).merge(ProjectRepositoryState.verified_wikis) }
+      scope :verification_failed_repos, -> { joins(:repository_state).merge(ProjectRepositoryState.verification_failed_repos) }
+      scope :verification_failed_wikis, -> { joins(:repository_state).merge(ProjectRepositoryState.verification_failed_wikis) }
 
       delegate :shared_runners_minutes, :shared_runners_seconds, :shared_runners_seconds_last_reset,
         to: :statistics, allow_nil: true

@@ -377,6 +377,8 @@ export default {
           v-if="shouldRenderRelatedLinks"
           :related-links="mr.relatedLinks"
           />
+        <mr-widget-maintainer-edit
+          :maintainerEditAllowed="mr.maintainerEditAllowed" />
       </div>
       <div class="mr-widget-footer" v-if="shouldRenderMergeHelp">
         <mr-widget-merge-help />

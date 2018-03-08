@@ -1047,6 +1047,10 @@ ActiveRecord::Schema.define(version: 20180307164427) do
     t.integer "job_artifacts_failed_count"
     t.string "version"
     t.string "revision"
+    t.integer "repositories_verified_count"
+    t.integer "repositories_verification_failed_count"
+    t.integer "wikis_verified_count"
+    t.integer "wikis_verification_failed_count"
   end
 
   add_index "geo_node_statuses", ["geo_node_id"], name: "index_geo_node_statuses_on_geo_node_id", unique: true, using: :btree
@@ -1531,7 +1535,10 @@ ActiveRecord::Schema.define(version: 20180307164427) do
     t.string "merge_jid"
     t.boolean "discussion_locked"
     t.integer "latest_merge_request_diff_id"
+<<<<<<< HEAD
     t.string "rebase_commit_sha"
+=======
+>>>>>>> master
     t.boolean "allow_maintainer_to_push"
   end
 
@@ -2000,6 +2007,21 @@ ActiveRecord::Schema.define(version: 20180307164427) do
   add_index "projects", ["runners_token"], name: "index_projects_on_runners_token", using: :btree
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
+
+  create_table "prometheus_metrics", force: :cascade do |t|
+    t.integer "project_id"
+    t.string "title", null: false
+    t.string "query", null: false
+    t.string "y_label"
+    t.string "unit"
+    t.string "legend"
+    t.integer "group", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "prometheus_metrics", ["group"], name: "index_prometheus_metrics_on_group", using: :btree
+  add_index "prometheus_metrics", ["project_id"], name: "index_prometheus_metrics_on_project_id", using: :btree
 
   create_table "protected_branch_merge_access_levels", force: :cascade do |t|
     t.integer "protected_branch_id", null: false
@@ -2701,6 +2723,7 @@ ActiveRecord::Schema.define(version: 20180307164427) do
   add_foreign_key "project_mirror_data", "projects", name: "fk_d1aad367d7", on_delete: :cascade
   add_foreign_key "project_repository_states", "projects", on_delete: :cascade
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
+  add_foreign_key "prometheus_metrics", "projects", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "namespaces", column: "group_id", name: "fk_98f3d044fe", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches", name: "fk_8a3072ccb3", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "users"

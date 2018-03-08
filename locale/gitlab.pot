@@ -8,8 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2018-03-08 08:54+0100\n"
 "PO-Revision-Date: 2018-03-08 08:54+0100\n"
+=======
+"POT-Creation-Date: 2018-03-08 00:12+0100\n"
+"PO-Revision-Date: 2018-03-08 00:12+0100\n"
+>>>>>>> master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -3101,6 +3106,15 @@ msgid "PrometheusService|To enable the installation of Prometheus on your cluste
 msgstr ""
 
 msgid "PrometheusService|Waiting for your first deployment to an environment to find common metrics"
+msgstr ""
+
+msgid "Promote"
+msgstr ""
+
+msgid "Promote to Group Label"
+msgstr ""
+
+msgid "Promote to Group Milestone"
 msgstr ""
 
 msgid "Promote"
