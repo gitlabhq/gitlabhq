@@ -53,7 +53,7 @@ Below we describe the contributing process to GitLab for two reasons:
 Several people from the [GitLab team][team] are helping community members to get
 their contributions accepted by meeting our [Definition of done][done].
 
-What you can expect from them is described at https://about.gitlab.com/jobs/merge-request-coach/.
+What you can expect from them is described at https://about.gitlab.com/roles/merge-request-coach/.
 
 ## Assigning issues
 
@@ -201,6 +201,9 @@ you can ask for an exception to be made.
 
 Go to [Release tasks issue tracker](https://gitlab.com/gitlab-org/release/tasks/issues/new) and create an issue
 using the `Exception-request` issue template.
+
+**Do not** set the relevant `Pick into X.Y` label (see above) before request an
+exception; this should be done after the exception is approved.
 
 You can find who is who on the [team page](https://about.gitlab.com/team/).
 
