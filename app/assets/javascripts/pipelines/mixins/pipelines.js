@@ -51,12 +51,10 @@ export default {
       }
     });
 
-    eventHub.$on('refreshPipelines', this.fetchPipelines);
     eventHub.$on('postAction', this.postAction);
   },
   beforeDestroy() {
-    eventHub.$off('refreshPipelines');
-    eventHub.$on('postAction', this.postAction);
+    eventHub.$off('postAction', this.postAction);
   },
   destroyed() {
     this.poll.stop();
@@ -92,7 +90,7 @@ export default {
     },
     postAction(endpoint) {
       this.service.postAction(endpoint)
-        .then(() => eventHub.$emit('refreshPipelines'))
+        .then(() => this.fetchPipelines())
         .catch(() => Flash(__('An error occurred while making the request.')));
     },
   },
