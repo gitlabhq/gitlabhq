@@ -1,3 +1,4 @@
+<script>
 import { getTimeago } from '../../lib/utils/datetime_utility';
 
 export default {
@@ -21,6 +22,9 @@ export default {
       const deployedSince = getTimeago().format(this.deploymentTime * 1000);
       return `Deployed ${deployedSince}`;
     },
+  },
+  mounted() {
+    this.renderGraph(this.deploymentTime, this.metrics);
   },
   methods: {
     /**
@@ -103,15 +107,27 @@ export default {
       this.dotY = dotY;
     },
   },
-  mounted() {
-    this.renderGraph(this.deploymentTime, this.metrics);
-  },
-  template: `
-    <div class="memory-graph-container">
-      <svg class="has-tooltip" :title="getFormattedMedian" :width="width" :height="height" xmlns="http://www.w3.org/2000/svg">
-        <path :d="pathD" :viewBox="pathViewBox" />
-        <circle r="1.5" :cx="dotX" :cy="dotY" tranform="translate(0 -1)" />
-      </svg>
-    </div>
-  `,
 };
+</script>
+
+<template>
+  <div class="memory-graph-container">
+    <svg
+      class="has-tooltip"
+      :title="getFormattedMedian"
+      :width="width"
+      :height="height"
+      xmlns="http://www.w3.org/2000/svg">
+      <path
+        :d="pathD"
+        :viewBox="pathViewBox"
+      />
+      <circle
+        r="1.5"
+        :cx="dotX"
+        :cy="dotY"
+        tranform="translate(0 -1)"
+      />
+    </svg>
+  </div>
+</template>

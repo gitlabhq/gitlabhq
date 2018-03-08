@@ -1,7 +1,7 @@
 import { getTimeago } from '~/lib/utils/datetime_utility';
 import { visitUrl } from '../../lib/utils/url_utility';
 import Flash from '../../flash';
-import MemoryUsage from './mr_widget_memory_usage';
+import MemoryUsage from './memory_usage.vue';
 import StatusIcon from './mr_widget_status_icon.vue';
 import MRWidgetService from '../services/mr_widget_service';
 
@@ -12,8 +12,8 @@ export default {
     service: { type: Object, required: true },
   },
   components: {
-    'mr-widget-memory-usage': MemoryUsage,
-    'status-icon': StatusIcon,
+    MemoryUsage,
+    StatusIcon,
   },
   methods: {
     formatDate(date) {
@@ -100,7 +100,7 @@ export default {
               class="btn btn-default btn-xs">
               Stop environment
             </button>
-            <mr-widget-memory-usage
+            <memory-usage
               v-if="deployment.metrics_url"
               :metrics-url="deployment.metrics_url"
               :metrics-monitoring-url="deployment.metrics_monitoring_url"

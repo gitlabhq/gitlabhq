@@ -1,11 +1,15 @@
+<script>
 import statusCodes from '../../lib/utils/http_status';
 import { bytesToMiB } from '../../lib/utils/number_utils';
 import { backOff } from '../../lib/utils/common_utils';
-import MemoryGraph from '../../vue_shared/components/memory_graph';
+import MemoryGraph from '../../vue_shared/components/memory_graph.vue';
 import MRWidgetService from '../services/mr_widget_service';
 
 export default {
   name: 'MemoryUsage',
+  components: {
+    MemoryGraph,
+  },
   props: {
     metricsUrl: {
       type: String,
@@ -27,9 +31,6 @@ export default {
       loadingMetrics: true,
       backOffRequestCounter: 0,
     };
-  },
-  components: {
-    'mr-memory-graph': MemoryGraph,
   },
   computed: {
     shouldShowLoading() {
@@ -56,6 +57,10 @@ export default {
 
       return 'unchanged';
     },
+  },
+  mounted() {
+    this.loadingMetrics = true;
+    this.loadMetrics();
   },
   methods: {
     getMegabytes(bytesString) {
@@ -114,40 +119,42 @@ export default {
         });
     },
   },
-  mounted() {
-    this.loadingMetrics = true;
-    this.loadMetrics();
-  },
-  template: `
-    <div class="mr-info-list clearfix mr-memory-usage js-mr-memory-usage">
-      <p
-        v-if="shouldShowLoading"
-        class="usage-info js-usage-info usage-info-loading">
-        <i
-          class="fa fa-spinner fa-spin usage-info-load-spinner"
-          aria-hidden="true" />Loading deployment statistics
-      </p>
-      <p
-        v-if="shouldShowMemoryGraph"
-        class="usage-info js-usage-info">
-        <a :href="metricsMonitoringUrl">Memory</a> usage <b>{{memoryChangeType}}</b> from {{memoryFrom}}MB to {{memoryTo}}MB
-      </p>
-      <p
-        v-if="shouldShowLoadFailure"
-        class="usage-info js-usage-info usage-info-failed">
-        Failed to load deployment statistics
-      </p>
-      <p
-        v-if="shouldShowMetricsUnavailable"
-        class="usage-info js-usage-info usage-info-unavailable">
-        Deployment statistics are not available currently
-      </p>
-      <mr-memory-graph
-        v-if="shouldShowMemoryGraph"
-        :metrics="memoryMetrics"
-        :deploymentTime="deploymentTime"
-        height="25"
-        width="100" />
-    </div>
-  `,
 };
+</script>
+
+<template>
+  <div class="mr-info-list clearfix mr-memory-usage js-mr-memory-usage">
+    <p
+      v-if="shouldShowLoading"
+      class="usage-info js-usage-info usage-info-loading">
+      <i
+        class="fa fa-spinner fa-spin usage-info-load-spinner"
+        aria-hidden="true">
+      </i>Loading deployment statistics
+    </p>
+    <p
+      v-if="shouldShowMemoryGraph"
+      class="usage-info js-usage-info">
+      <a
+        :href="metricsMonitoringUrl"
+      >Memory</a> usage <b>{{ memoryChangeType }}</b> from {{ memoryFrom }}MB to {{ memoryTo }}MB
+    </p>
+    <p
+      v-if="shouldShowLoadFailure"
+      class="usage-info js-usage-info usage-info-failed">
+      Failed to load deployment statistics
+    </p>
+    <p
+      v-if="shouldShowMetricsUnavailable"
+      class="usage-info js-usage-info usage-info-unavailable">
+      Deployment statistics are not available currently
+    </p>
+    <memory-graph
+      v-if="shouldShowMemoryGraph"
+      :metrics="memoryMetrics"
+      :deployment-time="deploymentTime"
+      height="25"
+      width="100"
+    />
+  </div>
+</template>

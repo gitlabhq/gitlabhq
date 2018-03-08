@@ -133,6 +133,15 @@ describe Projects::UpdateService, '#execute' do
         expect(result).to eq({ status: :success })
         expect(project.wiki_repository_exists?).to be false
       end
+
+      it 'handles empty project feature attributes' do
+        project.project_feature.update(wiki_access_level: ProjectFeature::DISABLED)
+
+        result = update_project(project, user, { name: 'test1' })
+
+        expect(result).to eq({ status: :success })
+        expect(project.wiki_repository_exists?).to be false
+      end
     end
 
     context 'when enabling a wiki' do
