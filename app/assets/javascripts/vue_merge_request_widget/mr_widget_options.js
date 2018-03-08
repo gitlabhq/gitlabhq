@@ -33,6 +33,7 @@ import {
   stateMaps,
   SquashBeforeMerge,
   notify,
+  SourceBranchRemovalStatus,
 } from './dependencies';
 import { setFavicon } from '../lib/utils/common_utils';
 
@@ -68,6 +69,9 @@ export default {
     },
     shouldRenderDeployments() {
       return this.mr.deployments.length;
+    },
+    shouldRenderSourceBranchRemovalStatus() {
+      return !this.mr.canRemoveSourceBranch && this.mr.shouldRemoveSourceBranch;
     },
   },
   methods: {
@@ -234,6 +238,7 @@ export default {
     'mr-widget-merge-when-pipeline-succeeds': MergeWhenPipelineSucceedsState,
     'mr-widget-auto-merge-failed': AutoMergeFailed,
     'mr-widget-rebase': RebaseState,
+    SourceBranchRemovalStatus,
   },
   template: `
     <div class="mr-state-widget prepend-top-default">
@@ -259,6 +264,9 @@ export default {
           v-if="shouldRenderRelatedLinks"
           :state="mr.state"
           :related-links="mr.relatedLinks" />
+        <source-branch-removal-status
+          v-if="shouldRenderSourceBranchRemovalStatus"
+        />
       </div>
       <div
         class="mr-widget-footer"
