@@ -165,6 +165,19 @@ module MergeRequestsHelper
     link_to(url[merge_request.project, merge_request], data: data_attrs, &block)
   end
 
+  def allow_maintainer_push_unavailable_reason(merge_request)
+    return if merge_request.can_allow_maintainer_to_push?(current_user)
+
+    minimum_visibility = [merge_request.target_project.visibility_level,
+                          merge_request.source_project.visibility_level].min
+
+    if minimum_visibility < Gitlab::VisibilityLevel::INTERNAL
+      _('Not available for private projects')
+    elsif ProtectedBranch.protected?(merge_request.source_project, merge_request.source_branch)
+      _('Not available for protected branches')
+    end
+  end
+
   def merge_params_ee(merge_request)
     { squash: merge_request.squash }
   end
