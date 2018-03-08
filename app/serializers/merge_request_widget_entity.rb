@@ -11,6 +11,7 @@ class MergeRequestWidgetEntity < IssuableEntity
   expose :source_project_id
   expose :target_branch
   expose :target_project_id
+  expose :allow_maintainer_to_push
 
   expose :should_be_rebased?, as: :should_be_rebased
   expose :ff_only_enabled do |merge_request|
@@ -29,6 +30,7 @@ class MergeRequestWidgetEntity < IssuableEntity
   expose :can_push_to_source_branch do |merge_request|
     presenter(merge_request).can_push_to_source_branch?
   end
+
   expose :rebase_path do |merge_request|
     presenter(merge_request).rebase_path
   end
@@ -38,7 +40,7 @@ class MergeRequestWidgetEntity < IssuableEntity
 
   # Diff sha's
   expose :diff_head_sha do |merge_request|
-    merge_request.diff_head_sha if merge_request.diff_head_commit
+    merge_request.diff_head_sha.presence
   end
 
   expose :merge_commit_message
@@ -115,6 +117,14 @@ class MergeRequestWidgetEntity < IssuableEntity
     expose :can_cherry_pick_on_current_merge_request do |merge_request|
       presenter(merge_request).can_cherry_pick_on_current_merge_request?
     end
+
+    expose :can_create_note do |issue|
+      can?(request.current_user, :create_note, issue.project)
+    end
+
+    expose :can_update do |issue|
+      can?(request.current_user, :update_issue, issue)
+    end
   end
 
   # Paths
@@ -128,8 +138,8 @@ class MergeRequestWidgetEntity < IssuableEntity
   end
 
   expose :new_blob_path do |merge_request|
-    if can?(current_user, :push_code, merge_request.project)
-      project_new_blob_path(merge_request.project, merge_request.source_branch)
+    if presenter(merge_request).can_push_to_source_branch?
+      project_new_blob_path(merge_request.source_project, merge_request.source_branch)
     end
   end
 
@@ -187,6 +197,10 @@ class MergeRequestWidgetEntity < IssuableEntity
     else
       0
     end
+  end
+
+  expose :create_note_path do |merge_request|
+    project_notes_path(merge_request.project, target_type: 'merge_request', target_id: merge_request.id)
   end
 
   expose :commit_change_content_path do |merge_request|

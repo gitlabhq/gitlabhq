@@ -17,10 +17,8 @@ class Projects::CompareController < Projects::ApplicationController
 
   def show
     apply_diff_view_cookie!
-    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37430
-    Gitlab::GitalyClient.allow_n_plus_1_calls do
-      render
-    end
+
+    render
   end
 
   def diff_for_path

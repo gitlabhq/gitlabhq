@@ -1,5 +1,5 @@
 class BranchesFinder
-  def initialize(repository, params)
+  def initialize(repository, params = {})
     @repository = repository
     @params = params
   end

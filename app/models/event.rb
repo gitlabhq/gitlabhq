@@ -65,6 +65,7 @@ class Event < ActiveRecord::Base
   # Callbacks
   after_create :reset_project_activity
   after_create :set_last_repository_updated_at, if: :push?
+  after_create :track_user_interacted_projects
 
   # Scopes
   scope :recent, -> { reorder(id: :desc) }
@@ -158,7 +159,7 @@ class Event < ActiveRecord::Base
 
   def project_name
     if project
-      project.name_with_namespace
+      project.full_name
     else
       "(deleted project)"
     end
@@ -388,5 +389,12 @@ class Event < ActiveRecord::Base
   def set_last_repository_updated_at
     Project.unscoped.where(id: project_id)
       .update_all(last_repository_updated_at: created_at)
+  end
+
+  def track_user_interacted_projects
+    # Note the call to .available? is due to earlier migrations
+    # that would otherwise conflict with the call to .track
+    # (because the table does not exist yet).
+    UserInteractedProject.track(self) if UserInteractedProject.available?
   end
 end

@@ -11,4 +11,4 @@
     .description.term
       = search_md_sanitize(merge_request, :description)
   %span.light
-    #{merge_request.project.name_with_namespace}
+    #{merge_request.project.full_name}

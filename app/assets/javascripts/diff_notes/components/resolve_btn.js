@@ -87,6 +87,7 @@ const ResolveBtn = Vue.extend({
           CommentsStore.update(this.discussionId, this.noteId, !this.isResolved, resolved_by);
           this.discussion.updateHeadline(data);
           gl.mrWidget.checkStatus();
+          document.dispatchEvent(new CustomEvent('refreshVueNotes'));
 
           this.updateTooltip();
         })

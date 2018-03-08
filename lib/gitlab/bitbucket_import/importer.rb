@@ -135,7 +135,7 @@ module Gitlab
           if label.valid?
             @labels[label_params[:title]] = label
           else
-            raise "Failed to create label \"#{label_params[:title]}\" for project \"#{project.name_with_namespace}\""
+            raise "Failed to create label \"#{label_params[:title]}\" for project \"#{project.full_name}\""
           end
         end
       end

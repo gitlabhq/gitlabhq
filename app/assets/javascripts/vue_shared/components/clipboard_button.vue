@@ -1,8 +1,8 @@
 <script>
-  import tooltip from '../directives/tooltip';
   /**
    * Falls back to the code used in `copy_to_clipboard.js`
    */
+  import tooltip from '../directives/tooltip';
 
   export default {
     name: 'ClipboardButton',
@@ -28,6 +28,11 @@
         required: false,
         default: false,
       },
+      cssClass: {
+        type: String,
+        required: false,
+        default: 'btn-default',
+      },
     },
   };
 </script>
@@ -35,7 +40,8 @@
 <template>
   <button
     type="button"
-    class="btn btn-transparent btn-clipboard"
+    class="btn"
+    :class="cssClass"
     :title="title"
     :data-clipboard-text="text"
     v-tooltip

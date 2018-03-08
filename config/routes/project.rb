@@ -1,10 +1,8 @@
-require 'constraints/project_url_constrainer'
-
 resources :projects, only: [:index, :new, :create]
 
 draw :git_http
 
-constraints(ProjectUrlConstrainer.new) do
+constraints(::Constraints::ProjectUrlConstrainer.new) do
   # If the route has a wildcard segment, the segment has a regex constraint,
   # the segment is potentially followed by _another_ wildcard segment, and
   # the `format` option is not set to false, we need to specify that
@@ -55,7 +53,7 @@ constraints(ProjectUrlConstrainer.new) do
       end
 
       resource :pages, only: [:show, :destroy] do
-        resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains', constraints: { id: %r{[^/]+} } do
+        resources :domains, except: :index, controller: 'pages_domains', constraints: { id: %r{[^/]+} } do
           member do
             post :verify
           end
@@ -69,7 +67,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :services, constraints: { id: %r{[^/]+} }, only: [:index, :edit, :update] do
+      resources :services, constraints: { id: %r{[^/]+} }, only: [:edit, :update] do
         member do
           put :test
         end
@@ -103,6 +101,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :toggle_subscription
           post :remove_wip
           post :assign_related_issues
+          get :discussions, format: :json
           post :rebase
 
           scope constraints: { format: nil }, action: :show do
@@ -380,7 +379,8 @@ constraints(ProjectUrlConstrainer.new) do
 
       get 'noteable/:target_type/:target_id/notes' => 'notes#index', as: 'noteable_notes'
 
-      resources :boards, only: [:index, :show, :create, :update, :destroy]
+      # On CE only index and show are needed
+      resources :boards, only: [:index, :show]
 
       resources :todos, only: [:create]
 

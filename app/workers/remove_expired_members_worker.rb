@@ -5,7 +5,7 @@ class RemoveExpiredMembersWorker
   def perform
     Member.expired.find_each do |member|
       begin
-        Members::AuthorizedDestroyService.new(member).execute
+        Members::DestroyService.new.execute(member, skip_authorization: true)
       rescue => ex
         logger.error("Expired Member ID=#{member.id} cannot be removed - #{ex}")
       end

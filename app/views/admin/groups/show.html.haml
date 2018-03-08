@@ -68,7 +68,7 @@
         - @projects.each do |project|
           %li
             %strong
-              = link_to project.name_with_namespace, [:admin, project.namespace.becomes(Namespace), project]
+              = link_to project.full_name, [:admin, project.namespace.becomes(Namespace), project]
               %span.badge
                 = storage_counter(project.statistics.storage_size)
             %span.pull-right.light
@@ -86,7 +86,7 @@
           - @group.shared_projects.sort_by(&:name).each do |project|
             %li
               %strong
-                = link_to project.name_with_namespace, [:admin, project.namespace.becomes(Namespace), project]
+                = link_to project.full_name, [:admin, project.namespace.becomes(Namespace), project]
                 %span.badge
                   = storage_counter(project.statistics.storage_size)
               %span.pull-right.light

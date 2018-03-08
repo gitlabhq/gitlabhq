@@ -112,6 +112,7 @@
                   - if can?(current_user, :admin_label, board.parent)
                     = render partial: "shared/issuable/label_page_create"
                   = dropdown_loading
-              #js-add-issues-btn.prepend-left-10
+              - if @project
+                #js-add-issues-btn.prepend-left-10{ data: { can_admin_list: can?(current_user, :admin_list, @project) } }
           - elsif type != :boards_modal
             = render 'shared/sort_dropdown'

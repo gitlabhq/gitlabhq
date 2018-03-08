@@ -34,7 +34,7 @@ describe 'User searches for issues', :js do
         find('.js-search-project-dropdown').click
 
         page.within('.project-filter') do
-          click_link(project.name_with_namespace)
+          click_link(project.full_name)
         end
 
         fill_in('dashboard_search', with: issue1.title)

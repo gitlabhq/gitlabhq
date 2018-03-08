@@ -43,4 +43,5 @@
   .form-actions
     = button_tag s_('TagsPage|Create tag'), class: 'btn btn-create'
     = link_to s_('TagsPage|Cancel'), project_tags_path(@project), class: 'btn btn-cancel'
+-# haml-lint:disable InlineJavaScript
 %script#availableRefs{ type: "application/json" }= @project.repository.ref_names.to_json.html_safe

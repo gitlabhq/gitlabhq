@@ -1,67 +1,67 @@
 <script>
-export default {
-  name: 'PipelineNavControls',
-  props: {
-    newPipelinePath: {
-      type: String,
-      required: true,
-    },
+  import LoadingButton from '../../vue_shared/components/loading_button.vue';
 
-    hasCiEnabled: {
-      type: Boolean,
-      required: true,
+  export default {
+    name: 'PipelineNavControls',
+    components: {
+      LoadingButton,
     },
+    props: {
+      newPipelinePath: {
+        type: String,
+        required: false,
+        default: null,
+      },
 
-    helpPagePath: {
-      type: String,
-      required: true,
-    },
+      resetCachePath: {
+        type: String,
+        required: false,
+        default: null,
+      },
 
-    resetCachePath: {
-      type: String,
-      required: true,
-    },
+      ciLintPath: {
+        type: String,
+        required: false,
+        default: null,
+      },
 
-    ciLintPath: {
-      type: String,
-      required: true,
+      isResetCacheButtonLoading: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
     },
-
-    canCreatePipeline: {
-      type: Boolean,
-      required: true,
+    methods: {
+      onClickResetCache() {
+        this.$emit('resetRunnersCache', this.resetCachePath);
+      },
     },
-  },
-};
+  };
 </script>
 <template>
   <div class="nav-controls">
     <a
-      v-if="canCreatePipeline"
+      v-if="newPipelinePath"
       :href="newPipelinePath"
-      class="btn btn-create">
-      Run Pipeline
+      class="btn btn-create js-run-pipeline"
+    >
+      {{ s__('Pipelines|Run Pipeline') }}
     </a>
 
-    <a
-      v-if="!hasCiEnabled"
-      :href="helpPagePath"
-      class="btn btn-info">
-      Get started with Pipelines
-    </a>
+    <loading-button
+      v-if="resetCachePath"
+      @click="onClickResetCache"
+      :loading="isResetCacheButtonLoading"
+      class="btn btn-default js-clear-cache"
+      :label="s__('Pipelines|Clear Runner Caches')"
+    />
 
     <a
-      data-method="post"
-      rel="nofollow"
-      :href="resetCachePath"
-      class="btn btn-default">
-      Clear runner caches
-    </a>
-
-    <a
+      v-if="ciLintPath"
       :href="ciLintPath"
-      class="btn btn-default">
-      CI Lint
+      class="btn btn-default js-ci-lint"
+    >
+      {{ s__('Pipelines|CI Lint') }}
     </a>
   </div>
 </template>

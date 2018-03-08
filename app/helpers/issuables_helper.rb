@@ -99,7 +99,7 @@ module IssuablesHelper
     project = Project.find_by(id: project_id)
 
     if project
-      project.name_with_namespace
+      project.full_name
     else
       default_label
     end

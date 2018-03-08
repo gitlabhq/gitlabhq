@@ -1,10 +1,6 @@
 require 'spec_helper'
 
 feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
-  before do
-    allow_any_instance_of(U2fHelper).to receive(:inject_u2f_api?).and_return(true)
-  end
-
   def manage_two_factor_authentication
     click_on 'Manage two-factor authentication'
     expect(page).to have_content("Setup new U2F device")

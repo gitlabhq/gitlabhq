@@ -9,8 +9,12 @@ class Projects::BlobController < Projects::ApplicationController
 
   before_action :require_non_empty_project, except: [:new, :create]
   before_action :authorize_download_code!
-  before_action :authorize_edit_tree!, only: [:new, :create, :update, :destroy]
+
+  # We need to assign the blob vars before `authorize_edit_tree!` so we can
+  # validate access to a specific ref.
   before_action :assign_blob_vars
+  before_action :authorize_edit_tree!, only: [:new, :create, :update, :destroy]
+
   before_action :commit, except: [:new, :create]
   before_action :blob, except: [:new, :create]
   before_action :require_branch_head, only: [:edit, :update]
@@ -38,7 +42,7 @@ class Projects::BlobController < Projects::ApplicationController
       end
 
       format.json do
-        page_title @blob.path, @ref, @project.name_with_namespace
+        page_title @blob.path, @ref, @project.full_name
 
         show_json
       end
@@ -46,7 +50,7 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def edit
-    if can_collaborate_with_project?
+    if can_collaborate_with_project?(project, ref: @ref)
       blob.load_all_data!
     else
       redirect_to action: 'show'

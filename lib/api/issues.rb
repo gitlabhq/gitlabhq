@@ -32,6 +32,8 @@ module API
         optional :search, type: String, desc: 'Search issues for text present in the title or description'
         optional :created_after, type: DateTime, desc: 'Return issues created after the specified time'
         optional :created_before, type: DateTime, desc: 'Return issues created before the specified time'
+        optional :updated_after, type: DateTime, desc: 'Return issues updated after the specified time'
+        optional :updated_before, type: DateTime, desc: 'Return issues updated before the specified time'
         optional :author_id, type: Integer, desc: 'Return issues which are authored by the user with the given ID'
         optional :assignee_id, type: Integer, desc: 'Return issues which are assigned to the user with the given ID'
         optional :scope, type: String, values: %w[created-by-me assigned-to-me all],

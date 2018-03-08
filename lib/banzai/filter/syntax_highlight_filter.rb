@@ -1,3 +1,4 @@
+require 'rouge/plugins/common_mark'
 require 'rouge/plugins/redcarpet'
 
 module Banzai

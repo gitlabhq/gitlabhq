@@ -63,11 +63,12 @@ module Gitlab
         end
       end
 
-      def fetch_remote(name, timeout, force:, tags:, ssh_key: nil, known_hosts: nil)
+      def fetch_remote(name, timeout, force:, tags:, ssh_key: nil, known_hosts: nil, prune: true)
         tags_option = tags ? '--tags' : '--no-tags'
 
         logger.info "Fetching remote #{name} for repository #{repository_absolute_path}."
-        cmd = %W(git fetch #{name} --prune --quiet)
+        cmd = %W(git fetch #{name} --quiet)
+        cmd << '--prune' if prune
         cmd << '--force' if force
         cmd << tags_option
 

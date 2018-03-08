@@ -36,7 +36,7 @@ class Projects::TreeController < Projects::ApplicationController
       end
 
       format.json do
-        page_title @path.presence || _("Files"), @ref, @project.name_with_namespace
+        page_title @path.presence || _("Files"), @ref, @project.full_name
 
         # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/38261
         Gitlab::GitalyClient.allow_n_plus_1_calls do

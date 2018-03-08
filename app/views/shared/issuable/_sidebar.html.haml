@@ -1,7 +1,4 @@
 - todo = issuable_todo(issuable)
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag('common_vue')
-  = webpack_bundle_tag('sidebar')
 
 %aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { signed: { in: current_user.present? } }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
   .issuable-sidebar{ data: { endpoint: "#{issuable_json_path(issuable)}" } }
@@ -120,10 +117,12 @@
                   = render partial: "shared/issuable/label_page_create"
 
       - if issuable.has_attribute?(:confidential)
+        -# haml-lint:disable InlineJavaScript
         %script#js-confidential-issue-data{ type: "application/json" }= { is_confidential: @issue.confidential, is_editable: can_edit_issuable }.to_json.html_safe
         #js-confidential-entry-point
 
       - if issuable.has_attribute?(:discussion_locked)
+        -# haml-lint:disable InlineJavaScript
         %script#js-lock-issue-data{ type: "application/json" }= { is_locked: issuable.discussion_locked?, is_editable: can_edit_issuable }.to_json.html_safe
         #js-lock-entry-point
 
@@ -160,4 +159,5 @@
                   = _('Move')
                   = icon('spinner spin', class: 'sidebar-move-issue-confirmation-loading-icon')
 
+    -# haml-lint:disable InlineJavaScript
     %script.js-sidebar-options{ type: "application/json" }= issuable_sidebar_options(issuable, can_edit_issuable).to_json.html_safe

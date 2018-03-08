@@ -55,6 +55,7 @@
 
 .issue-details.issuable-details
   .detail-page-description.content-block
+    -# haml-lint:disable InlineJavaScript
     %script#js-issuable-app-initial-data{ type: "application/json" }= issuable_initial_data(@issue).to_json
     #js-issuable-app
       %h2.title= markdown_field(@issue, :title)
@@ -73,7 +74,7 @@
 
   .content-block.emoji-block
     .row
-      .col-sm-8.js-issue-note-awards
+      .col-sm-8.js-noteable-awards
         = render 'award_emoji/awards_block', awardable: @issue, inline: true
       .col-sm-4.new-branch-col
         = render 'new_branch' unless @issue.confidential?

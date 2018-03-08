@@ -30,7 +30,8 @@
             ]
           }
         },
-        "status_reason": { "type": ["string", "null"] }
+        "status_reason": { "type": ["string", "null"] },
+        "external_ip": { "type": ["string", "null"] }
       },
       "required" : [ "name", "status" ]
     }

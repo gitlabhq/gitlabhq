@@ -71,3 +71,5 @@
   - [pages_domain_verification, 1]
   - [object_storage_upload, 1]
   - [object_storage, 1]
+  - [plugin, 1]
+  - [pipeline_background, 1]
