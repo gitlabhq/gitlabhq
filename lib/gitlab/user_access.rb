@@ -63,15 +63,12 @@ module Gitlab
 
     request_cache def can_push_to_branch?(ref)
       return false unless can_access_git?
+      return false unless user.can?(:push_code, project) || project.branch_allows_maintainer_push?(user, ref)
 
       if protected?(ProtectedBranch, project, ref)
-        return true if project.user_can_push_to_empty_repo?(user)
-
-        protected_branch_accessible_to?(ref, action: :push)
-      elsif user.can?(:push_code, project)
-        true
+        project.user_can_push_to_empty_repo?(user) || protected_branch_accessible_to?(ref, action: :push)
       else
-        project.branch_allows_maintainer_push?(user, ref)
+        true
       end
     end
 

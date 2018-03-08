@@ -1,4 +1,4 @@
-# Allow maintainer pushes for merge requests accross forks
+# Allow maintainer pushes for merge requests across forks
 
 This feature is available for merge requests across forked projects that are
 publicly accessible. It makes it easier for maintainers of projects to collaborate
