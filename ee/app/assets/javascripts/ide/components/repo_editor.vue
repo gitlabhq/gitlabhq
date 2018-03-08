@@ -90,7 +90,7 @@ export default {
       });
     },
     setupEditor() {
-      if (!this.activeFile) return;
+      if (!this.activeFile || !this.editor.instance) return;
 
       this.model = this.editor.createModel(this.activeFile);
 

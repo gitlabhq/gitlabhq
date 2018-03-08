@@ -63,7 +63,7 @@ describe('RepoEditor', () => {
 
   describe('createEditorInstance', () => {
     it('calls createInstance when viewer is editor', (done) => {
-      spyOn(vm.editor, 'createInstance').and.callThrough();
+      spyOn(vm.editor, 'createInstance');
 
       vm.createEditorInstance();
 
@@ -77,7 +77,7 @@ describe('RepoEditor', () => {
     it('calls createDiffInstance when viewer is diff', (done) => {
       vm.$store.state.viewer = 'diff';
 
-      spyOn(vm.editor, 'createDiffInstance').and.callThrough();
+      spyOn(vm.editor, 'createDiffInstance');
 
       vm.createEditorInstance();
 
