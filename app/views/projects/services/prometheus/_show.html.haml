@@ -7,11 +7,6 @@
       = link_to s_('PrometheusService|More information'), help_page_path('user/project/integrations/prometheus_library/metrics'), target: '_blank', rel: "noopener noreferrer"
 
   .col-lg-9
-<<<<<<< HEAD
-    .panel.panel-default.js-panel-monitored-metrics{ data: { active_metrics: active_common_project_prometheus_metrics_path(@project, :json), metrics_help_path: help_page_path('user/project/integrations/prometheus_library/metrics') } }
-      .panel-heading
-        %h3.panel-title
-=======
     .panel.panel-default.custom-monitored-metrics.js-panel-custom-monitored-metrics{ data: { active_custom_metrics: project_prometheus_metrics_path(@project), environments_data: environments_list_data } }
       .panel-heading
         %h3.panel-title
@@ -33,7 +28,6 @@
     .panel.panel-default.js-panel-monitored-metrics{ data: { active_metrics: active_common_project_prometheus_metrics_path(@project, :json), metrics_help_path: help_page_path('user/project/integrations/prometheus_library/metrics') } }
       .panel-heading
         %h3.panel-title
->>>>>>> master
           = s_('PrometheusService|Common metrics')
           %span.badge.js-monitored-count 0
       .panel-body
