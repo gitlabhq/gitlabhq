@@ -308,7 +308,6 @@ describe ProjectPolicy do
   it_behaves_like 'project policies as owner'
   it_behaves_like 'project policies as admin'
 
-<<<<<<< HEAD
   context 'EE' do
     let(:additional_guest_permissions)  { [:read_issue_link] }
     let(:additional_reporter_permissions) { [:admin_issue_link]}
@@ -359,7 +358,9 @@ describe ProjectPolicy do
           is_expected.to be_allowed(*auditor_permissions)
         end
       end
-=======
+    end
+  end
+
   context 'when a public project has merge requests allowing access' do
     include ProjectForksHelper
     let(:user) { create(:user) }
@@ -394,7 +395,6 @@ describe ProjectPolicy do
       merge_request.close!
 
       expect_disallowed(*maintainer_abilities)
->>>>>>> upstream/master
     end
   end
 end
