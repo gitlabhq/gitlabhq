@@ -125,6 +125,8 @@ module Gitlab
       kwargs = yield(kwargs) if block_given?
 
       stub(service, storage).__send__(rpc, request, kwargs) # rubocop:disable GitlabSecurity/PublicSend
+    rescue GRPC::Unavailable => ex
+      handle_grpc_unavailable!(ex)
     ensure
       duration = Gitlab::Metrics::System.monotonic_time - start
 
@@ -134,6 +136,27 @@ module Gitlab
         current_transaction_labels.merge(gitaly_service: service.to_s, rpc: rpc.to_s),
         duration)
     end
+
+    def self.handle_grpc_unavailable!(ex)
+      status = ex.to_status
+      raise ex unless status.details == 'Endpoint read failed'
+
+      # There is a bug in grpc 1.8.x that causes a client process to get stuck
+      # always raising '14:Endpoint read failed'. The only thing that we can
+      # do to recover is to restart the process.
+      #
+      # See https://gitlab.com/gitlab-org/gitaly/issues/1029
+
+      if Sidekiq.server?
+        raise Gitlab::SidekiqMiddleware::Shutdown::WantShutdown.new(ex.to_s)
+      else
+        # SIGQUIT requests a Unicorn worker to shut down gracefully after the current request.
+        Process.kill('QUIT', Process.pid)
+      end
+
+      raise ex
+    end
+    private_class_method :handle_grpc_unavailable!
 
     def self.current_transaction_labels
       Gitlab::Metrics::Transaction.current&.labels || {}

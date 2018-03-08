@@ -41,7 +41,7 @@ module Gitlab
       end
 
       def apply_gitattributes(revision)
-        request = Gitaly::ApplyGitattributesRequest.new(repository: @gitaly_repo, revision: revision)
+        request = Gitaly::ApplyGitattributesRequest.new(repository: @gitaly_repo, revision: encode_binary(revision))
         GitalyClient.call(@storage, :repository_service, :apply_gitattributes, request)
       end
 

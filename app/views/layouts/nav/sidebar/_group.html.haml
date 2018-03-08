@@ -1,5 +1,6 @@
-- issues_count = IssuesFinder.new(current_user, group_id: @group.id, state: 'opened').execute.count
-- merge_requests_count = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened', non_archived: true).execute.count
+- issues_count = group_issues_count(state: 'opened')
+- merge_requests_count = group_merge_requests_count(state: 'opened')
+- issues_sub_menu_items = ['groups#issues', 'labels#index', 'milestones#index']
 
 .nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?) }
   .nav-sidebar-inner-scroll

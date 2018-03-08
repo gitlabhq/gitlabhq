@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'spec_helper'
 
 describe Gitlab::ProjectSearchResults do
@@ -102,6 +103,32 @@ describe Gitlab::ProjectSearchResults do
           expect(subject.ref).to eq('master')
           expect(subject.startline).to eq(1)
           expect(subject.data).to eq('blah:9:blah')
+        end
+      end
+
+      context 'when the search returns non-ASCII data' do
+        context 'with UTF-8' do
+          let(:results) { project.repository.search_files_by_content("файл", 'master') }
+
+          it 'returns results as UTF-8' do
+            expect(subject.filename).to eq('encoding/russian.rb')
+            expect(subject.basename).to eq('encoding/russian')
+            expect(subject.ref).to eq('master')
+            expect(subject.startline).to eq(1)
+            expect(subject.data).to eq("Хороший файл")
+          end
+        end
+
+        context 'with ISO-8859-1' do
+          let(:search_result) { "master:encoding/iso8859.txt\x001\x00\xC4\xFC\nmaster:encoding/iso8859.txt\x002\x00\nmaster:encoding/iso8859.txt\x003\x00foo\n".force_encoding(Encoding::ASCII_8BIT) }
+
+          it 'returns results as UTF-8' do
+            expect(subject.filename).to eq('encoding/iso8859.txt')
+            expect(subject.basename).to eq('encoding/iso8859')
+            expect(subject.ref).to eq('master')
+            expect(subject.startline).to eq(1)
+            expect(subject.data).to eq("Äü\n\nfoo")
+          end
         end
       end
 

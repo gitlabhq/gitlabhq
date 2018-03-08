@@ -105,10 +105,6 @@ class TodosFinder
     ids
   end
 
-  def projects(items)
-    ProjectsFinder.new(current_user: current_user, project_ids_relation: project_ids(items)).execute
-  end
-
   def type?
     type.present? && %w(Issue MergeRequest).include?(type)
   end
@@ -147,13 +143,14 @@ class TodosFinder
 
   def by_project(items)
     if project?
-      items = items.where(project: project)
+      items.where(project: project)
     else
-      item_projects = projects(items)
-      items = items.merge(item_projects).joins(:project)
-    end
+      projects = Project
+        .public_or_visible_to_user(current_user)
+        .order_id_desc
 
-    items
+      items.joins(:project).merge(projects)
+    end
   end
 
   def by_state(items)
