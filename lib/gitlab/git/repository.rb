@@ -228,7 +228,7 @@ module Gitlab
       end
 
       def has_local_branches?
-        gitaly_migrate(:has_local_branches) do |is_enabled|
+        gitaly_migrate(:has_local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_repository_client.has_local_branches?
           else
@@ -715,7 +715,7 @@ module Gitlab
       end
 
       def add_branch(branch_name, user:, target:)
-        gitaly_migrate(:operation_user_create_branch) do |is_enabled|
+        gitaly_migrate(:operation_user_create_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_add_branch(branch_name, user, target)
           else
@@ -725,7 +725,7 @@ module Gitlab
       end
 
       def add_tag(tag_name, user:, target:, message: nil)
-        gitaly_migrate(:operation_user_add_tag) do |is_enabled|
+        gitaly_migrate(:operation_user_add_tag, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_add_tag(tag_name, user: user, target: target, message: message)
           else
@@ -735,7 +735,7 @@ module Gitlab
       end
 
       def rm_branch(branch_name, user:)
-        gitaly_migrate(:operation_user_delete_branch) do |is_enabled|
+        gitaly_migrate(:operation_user_delete_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_operations_client.user_delete_branch(branch_name, user)
           else
@@ -810,7 +810,7 @@ module Gitlab
       end
 
       def revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
-        gitaly_migrate(:revert) do |is_enabled|
+        gitaly_migrate(:revert, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           args = {
             user: user,
             commit: commit,
@@ -876,7 +876,7 @@ module Gitlab
 
       # Delete the specified branch from the repository
       def delete_branch(branch_name)
-        gitaly_migrate(:delete_branch) do |is_enabled|
+        gitaly_migrate(:delete_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.delete_branch(branch_name)
           else
@@ -903,7 +903,7 @@ module Gitlab
       #   create_branch("feature")
       #   create_branch("other-feature", "master")
       def create_branch(ref, start_point = "HEAD")
-        gitaly_migrate(:create_branch) do |is_enabled|
+        gitaly_migrate(:create_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.create_branch(ref, start_point)
           else
@@ -1010,7 +1010,7 @@ module Gitlab
       end
 
       def languages(ref = nil)
-        Gitlab::GitalyClient.migrate(:commit_languages) do |is_enabled|
+        gitaly_migrate(:commit_languages, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_commit_client.languages(ref)
           else
@@ -1443,12 +1443,12 @@ module Gitlab
         end
       end
 
-      def last_commit_id_for_path(sha, path)
+      def last_commit_for_path(sha, path)
         gitaly_migrate(:last_commit_for_path) do |is_enabled|
           if is_enabled
-            last_commit_for_path_by_gitaly(sha, path).id
+            last_commit_for_path_by_gitaly(sha, path)
           else
-            last_commit_id_for_path_by_shelling_out(sha, path)
+            last_commit_for_path_by_rugged(sha, path)
           end
         end
       end
@@ -1896,7 +1896,7 @@ module Gitlab
       end
 
       def last_commit_for_path_by_rugged(sha, path)
-        sha = last_commit_id_for_path(sha, path)
+        sha = last_commit_id_for_path_by_shelling_out(sha, path)
         commit(sha)
       end
 

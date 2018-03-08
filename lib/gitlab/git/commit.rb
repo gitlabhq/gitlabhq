@@ -347,7 +347,7 @@ module Gitlab
       #
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/324
       def to_diff
-        Gitlab::GitalyClient.migrate(:commit_patch) do |is_enabled|
+        Gitlab::GitalyClient.migrate(:commit_patch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             @repository.gitaly_commit_client.patch(id)
           else

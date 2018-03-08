@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Project do
+  include ProjectForksHelper
+
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
@@ -3374,6 +3376,105 @@ describe Project do
 
         it 'returns the project and the project nested groups badges' do
           expect(project.badges.count).to eq 5
+        end
+      end
+    end
+  end
+
+  context 'with cross project merge requests' do
+    let(:user) { create(:user) }
+    let(:target_project) { create(:project, :repository) }
+    let(:project) { fork_project(target_project, nil, repository: true) }
+    let!(:merge_request) do
+      create(
+        :merge_request,
+        target_project: target_project,
+        target_branch: 'target-branch',
+        source_project: project,
+        source_branch: 'awesome-feature-1',
+        allow_maintainer_to_push: true
+      )
+    end
+
+    before do
+      target_project.add_developer(user)
+    end
+
+    describe '#merge_requests_allowing_push_to_user' do
+      it 'returns open merge requests for which the user has developer access to the target project' do
+        expect(project.merge_requests_allowing_push_to_user(user)).to include(merge_request)
+      end
+
+      it 'does not include closed merge requests' do
+        merge_request.close
+
+        expect(project.merge_requests_allowing_push_to_user(user)).to be_empty
+      end
+
+      it 'does not include merge requests for guest users' do
+        guest = create(:user)
+        target_project.add_guest(guest)
+
+        expect(project.merge_requests_allowing_push_to_user(guest)).to be_empty
+      end
+
+      it 'does not include the merge request for other users' do
+        other_user = create(:user)
+
+        expect(project.merge_requests_allowing_push_to_user(other_user)).to be_empty
+      end
+
+      it 'is empty when no user is passed' do
+        expect(project.merge_requests_allowing_push_to_user(nil)).to be_empty
+      end
+    end
+
+    describe '#branch_allows_maintainer_push?' do
+      it 'allows access if the user can merge the merge request' do
+        expect(project.branch_allows_maintainer_push?(user, 'awesome-feature-1'))
+          .to be_truthy
+      end
+
+      it 'does not allow guest users access' do
+        guest = create(:user)
+        target_project.add_guest(guest)
+
+        expect(project.branch_allows_maintainer_push?(guest, 'awesome-feature-1'))
+          .to be_falsy
+      end
+
+      it 'does not allow access to branches for which the merge request was closed' do
+        create(:merge_request, :closed,
+               target_project: target_project,
+               target_branch: 'target-branch',
+               source_project: project,
+               source_branch: 'rejected-feature-1',
+               allow_maintainer_to_push: true)
+
+        expect(project.branch_allows_maintainer_push?(user, 'rejected-feature-1'))
+          .to be_falsy
+      end
+
+      it 'does not allow access if the user cannot merge the merge request' do
+        create(:protected_branch, :masters_can_push, project: target_project, name: 'target-branch')
+
+        expect(project.branch_allows_maintainer_push?(user, 'awesome-feature-1'))
+          .to be_falsy
+      end
+
+      it 'caches the result' do
+        control = ActiveRecord::QueryRecorder.new { project.branch_allows_maintainer_push?(user, 'awesome-feature-1') }
+
+        expect { 3.times { project.branch_allows_maintainer_push?(user, 'awesome-feature-1') } }
+          .not_to exceed_query_limit(control)
+      end
+
+      context 'when the requeststore is active', :request_store do
+        it 'only queries per project across instances' do
+          control = ActiveRecord::QueryRecorder.new { project.branch_allows_maintainer_push?(user, 'awesome-feature-1') }
+
+          expect { 2.times { described_class.find(project.id).branch_allows_maintainer_push?(user, 'awesome-feature-1') } }
+            .not_to exceed_query_limit(control).with_threshold(2)
         end
       end
     end

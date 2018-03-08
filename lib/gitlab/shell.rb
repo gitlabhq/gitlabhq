@@ -125,13 +125,13 @@ module Gitlab
     # Ex.
     #   fetch_remote(my_repo, "upstream")
     #
-    def fetch_remote(repository, remote, ssh_auth: nil, forced: false, no_tags: false)
+    def fetch_remote(repository, remote, ssh_auth: nil, forced: false, no_tags: false, prune: true)
       gitaly_migrate(:fetch_remote) do |is_enabled|
         if is_enabled
-          repository.gitaly_repository_client.fetch_remote(remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, timeout: git_timeout)
+          repository.gitaly_repository_client.fetch_remote(remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, timeout: git_timeout, prune: prune)
         else
           storage_path = Gitlab.config.repositories.storages[repository.storage]["path"]
-          local_fetch_remote(storage_path, repository.relative_path, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
+          local_fetch_remote(storage_path, repository.relative_path, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, prune: prune)
         end
       end
     end
@@ -428,8 +428,8 @@ module Gitlab
       )
     end
 
-    def local_fetch_remote(storage_path, repository_relative_path, remote, ssh_auth: nil, forced: false, no_tags: false)
-      vars = { force: forced, tags: !no_tags }
+    def local_fetch_remote(storage_path, repository_relative_path, remote, ssh_auth: nil, forced: false, no_tags: false, prune: true)
+      vars = { force: forced, tags: !no_tags, prune: prune }
 
       if ssh_auth&.ssh_import?
         if ssh_auth.ssh_key_auth? && ssh_auth.ssh_private_key.present?

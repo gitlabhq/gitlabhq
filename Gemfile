@@ -126,6 +126,7 @@ gem 'html-pipeline', '~> 1.11.0'
 gem 'deckar01-task_list', '2.0.0'
 gem 'gitlab-markup', '~> 1.6.2'
 gem 'redcarpet', '~> 3.4'
+gem 'commonmarker', '~> 0.17'
 gem 'RedCloth', '~> 4.3.2'
 gem 'rdoc', '~> 4.2'
 gem 'org-ruby', '~> 0.9.12'
@@ -412,9 +413,7 @@ end
 
 # Gitaly GRPC client
 gem 'gitaly-proto', '~> 0.88.0', require: 'gitaly'
-# Explicitly lock grpc as we know 1.9 is bad
-# 1.10 is still being tested. See gitlab-org/gitaly#1059
-gem 'grpc', '~> 1.8.3'
+gem 'grpc', '~> 1.10.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed
 gem 'google-protobuf', '= 3.5.1'

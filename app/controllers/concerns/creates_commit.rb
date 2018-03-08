@@ -4,7 +4,7 @@ module CreatesCommit
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def create_commit(service, success_path:, failure_path:, failure_view: nil, success_notice: nil)
-    if can?(current_user, :push_code, @project)
+    if user_access(@project).can_push_to_branch?(branch_name_or_ref)
       @project_to_commit_into = @project
       @branch_name ||= @ref
     else
@@ -50,7 +50,7 @@ module CreatesCommit
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def authorize_edit_tree!
-    return if can_collaborate_with_project?
+    return if can_collaborate_with_project?(project, ref: branch_name_or_ref)
 
     access_denied!
   end
@@ -122,5 +122,9 @@ module CreatesCommit
     # we don't want to create a merge request.
     params[:create_merge_request].present? &&
       (different_project? || @start_branch != @branch_name) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  end
+
+  def branch_name_or_ref
+    @branch_name || @ref # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 end
