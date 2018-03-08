@@ -535,7 +535,6 @@ Creates a new merge request.
 POST /projects/:id/merge_requests
 ```
 
-<<<<<<< HEAD
 | Attribute              | Type    | Required | Description                                                                     |
 | ---------              | ----    | -------- | -----------                                                                     |
 | `id`                   | integer/string  | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
@@ -550,6 +549,7 @@ POST /projects/:id/merge_requests
 | `remove_source_branch` | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
 | `approvals_before_merge` | integer| no | Number of approvals required before this can be merged (see below) |
 | `squash` | boolean| no | Squash commits into a single commit when merging |
+| `allow_maintainer_to_push` | boolean | no       | Whether or not a maintainer of the target project can push to the source branch  |
 
 If `approvals_before_merge` is not provided, it inherits the value from the
 target project. If it is provided, then the following conditions must hold in
@@ -559,21 +559,6 @@ order for it to take effect:
    value of zero disables approvals for that project.)
 2. The provided value of `approvals_before_merge` must be greater than the
    target project's `approvals_before_merge`.
-=======
-| Attribute                  | Type    | Required | Description                                                                     |
-| ---------                  | ----    | -------- | -----------                                                                     |
-| `id`                       | integer/string  | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `source_branch`            | string  | yes      | The source branch                                                               |
-| `target_branch`            | string  | yes      | The target branch                                                               |
-| `title`                    | string  | yes      | Title of MR                                                                     |
-| `assignee_id`              | integer | no       | Assignee user ID                                                                |
-| `description`              | string  | no       | Description of MR                                                               |
-| `target_project_id`        | integer | no       | The target project (numeric id)                                                 |
-| `labels`                   | string  | no       | Labels for MR as a comma-separated list                                         |
-| `milestone_id`             | integer | no       | The ID of a milestone                                                           |
-| `remove_source_branch`     | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
-| `allow_maintainer_to_push` | boolean | no       | Whether or not a maintainer of the target project can push to the source branch  |
->>>>>>> upstream/master
 
 ```json
 {
@@ -649,7 +634,6 @@ Updates an existing merge request. You can change the target branch, title, or e
 PUT /projects/:id/merge_requests/:merge_request_iid
 ```
 
-<<<<<<< HEAD
 | Attribute              | Type    | Required | Description                                                                     |
 | ---------              | ----    | -------- | -----------                                                                     |
 | `id`                   | integer/string | yes  | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
@@ -664,22 +648,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 | `remove_source_branch` | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
 | `squash` | boolean| no | Squash commits into a single commit when merging |
 | `discussion_locked`    | boolean | no       | Flag indicating if the merge request's discussion is locked. If the discussion is locked only project members can add, edit or resolve comments. |
-=======
-| Attribute                  | Type    | Required | Description                                                                     |
-| ---------                  | ----    | -------- | -----------                                                                     |
-| `id`                       | integer/string | yes  | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `merge_request_iid`        | integer | yes      | The ID of a merge request                                                       |
-| `target_branch`            | string  | no       | The target branch                                                               |
-| `title`                    | string  | no       | Title of MR                                                                     |
-| `assignee_id`              | integer | no       | The ID of the user to assign the merge request to. Set to `0` or provide an empty value to unassign all assignees.  |
-| `milestone_id`             | integer | no       | The ID of a milestone to assign the merge request to. Set to `0` or provide an empty value to unassign a milestone.|
-| `labels`                   | string  | no       | Comma-separated label names for a merge request. Set to an empty string to unassign all labels.                    |
-| `description`              | string  | no       | Description of MR                                                               |
-| `state_event`              | string  | no       | New state (close/reopen)                                                        |
-| `remove_source_branch`     | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
-| `discussion_locked`        | boolean | no       | Flag indicating if the merge request's discussion is locked. If the discussion is locked only project members can add, edit or resolve comments. |
-| `allow_maintainer_to_push` | boolean | no       | Whether or not a maintainer of the target project can push to the source branch |
->>>>>>> upstream/master
+| `allow_maintainer_to_push` | boolean | no       | Whether or not a maintainer of the target project can push to the source branch  |
 
 Must include at least one non-required attribute from above.
 
