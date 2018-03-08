@@ -67,3 +67,6 @@ eslint-report.html
 /locale/**/*.time_stamp
 /.rspec
 /plugins/*
+app/assets/images/icons.json
+app/assets/images/icons.svg
+app/assets/images/illustrations/*
