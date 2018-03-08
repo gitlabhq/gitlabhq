@@ -784,6 +784,12 @@ describe('ee merge request widget options', () => {
 
   describe('rendering source branch removal status', () => {
     it('renders when user cannot remove branch and branch should be removed', (done) => {
+      vm = mountComponent(Component, {
+        mrData: {
+          ...mockData,
+        },
+      });
+
       vm.mr.canRemoveSourceBranch = false;
       vm.mr.shouldRemoveSourceBranch = true;
 
