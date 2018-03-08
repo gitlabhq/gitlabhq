@@ -428,9 +428,7 @@ end
 
 # Gitaly GRPC client
 gem 'gitaly-proto', '~> 0.88.0', require: 'gitaly'
-# Explicitly lock grpc as we know 1.9 is bad
-# 1.10 is still being tested. See gitlab-org/gitaly#1059
-gem 'grpc', '~> 1.8.3'
+gem 'grpc', '~> 1.10.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed
 gem 'google-protobuf', '= 3.5.1'

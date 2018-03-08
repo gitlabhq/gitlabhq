@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-08 00:12+0100\n"
-"PO-Revision-Date: 2018-03-08 00:12+0100\n"
+"POT-Creation-Date: 2018-03-08 09:20+0100\n"
+"PO-Revision-Date: 2018-03-08 09:20+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -31,6 +31,11 @@ msgid_plural "%d commits behind"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d exporter"
+msgid_plural "%d exporters"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d issue"
 msgid_plural "%d issues"
 msgstr[0] ""
@@ -43,6 +48,11 @@ msgstr[1] ""
 
 msgid "%d merge request"
 msgid_plural "%d merge requests"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d metric"
+msgid_plural "%d metrics"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -650,6 +660,9 @@ msgstr ""
 msgid "Browse files"
 msgstr ""
 
+msgid "Business"
+msgstr ""
+
 msgid "ByAuthor|by"
 msgstr ""
 
@@ -1010,6 +1023,9 @@ msgstr ""
 msgid "ClusterIntegration|Learn more about environments"
 msgstr ""
 
+msgid "ClusterIntegration|Learn more about security configuration"
+msgstr ""
+
 msgid "ClusterIntegration|Machine type"
 msgstr ""
 
@@ -1070,6 +1086,9 @@ msgstr ""
 msgid "ClusterIntegration|Save changes"
 msgstr ""
 
+msgid "ClusterIntegration|Security"
+msgstr ""
+
 msgid "ClusterIntegration|See and edit the details for your Kubernetes cluster"
 msgstr ""
 
@@ -1095,6 +1114,9 @@ msgid "ClusterIntegration|Something went wrong while creating your Kubernetes cl
 msgstr ""
 
 msgid "ClusterIntegration|Something went wrong while installing %{title}"
+msgstr ""
+
+msgid "ClusterIntegration|The default cluster configuration grants access to a wide set of functionalities needed to successfully build and deploy a containerised application."
 msgstr ""
 
 msgid "ClusterIntegration|This account must have permissions to create a Kubernetes cluster in the %{link_to_container_project} specified below"
@@ -1813,6 +1835,9 @@ msgstr ""
 msgid "GeoNodeSyncStatus|Node is slow, overloaded, or it just recovered after an outage."
 msgstr ""
 
+msgid "GeoNodes|Checksummed"
+msgstr ""
+
 msgid "GeoNodes|Database replication lag:"
 msgstr ""
 
@@ -1864,6 +1889,9 @@ msgstr ""
 msgid "GeoNodes|Node was successfully removed."
 msgstr ""
 
+msgid "GeoNodes|Not checksummed"
+msgstr ""
+
 msgid "GeoNodes|Out of sync"
 msgstr ""
 
@@ -1876,7 +1904,13 @@ msgstr ""
 msgid "GeoNodes|Replication slots:"
 msgstr ""
 
+msgid "GeoNodes|Repositories checksummed:"
+msgstr ""
+
 msgid "GeoNodes|Repositories:"
+msgstr ""
+
+msgid "GeoNodes|Repository checksums verified:"
 msgstr ""
 
 msgid "GeoNodes|Selective"
@@ -1903,7 +1937,19 @@ msgstr ""
 msgid "GeoNodes|Unused slots"
 msgstr ""
 
+msgid "GeoNodes|Unverified"
+msgstr ""
+
 msgid "GeoNodes|Used slots"
+msgstr ""
+
+msgid "GeoNodes|Verified"
+msgstr ""
+
+msgid "GeoNodes|Wiki checksums verified:"
+msgstr ""
+
+msgid "GeoNodes|Wikis checksummed:"
 msgstr ""
 
 msgid "GeoNodes|Wikis:"
@@ -2136,6 +2182,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Instance does not support multiple Kubernetes clusters"
+msgstr ""
+
+msgid "Integrations"
 msgstr ""
 
 msgid "Interested parties can even contribute by pushing commits if they want to."
@@ -2381,6 +2430,75 @@ msgid "Merged"
 msgstr ""
 
 msgid "Messages"
+msgstr ""
+
+msgid "Metrics|Business"
+msgstr ""
+
+msgid "Metrics|Create metric"
+msgstr ""
+
+msgid "Metrics|Edit metric"
+msgstr ""
+
+msgid "Metrics|For grouping similar metrics"
+msgstr ""
+
+msgid "Metrics|Label of the chart's vertical axis. Usually the type of the unit being charted. The horizontal axis (X-axis) always represents time."
+msgstr ""
+
+msgid "Metrics|Legend label (optional)"
+msgstr ""
+
+msgid "Metrics|Must be a valid PromQL query."
+msgstr ""
+
+msgid "Metrics|Name"
+msgstr ""
+
+msgid "Metrics|New metric"
+msgstr ""
+
+msgid "Metrics|Prometheus Query Documentation"
+msgstr ""
+
+msgid "Metrics|Query"
+msgstr ""
+
+msgid "Metrics|Response"
+msgstr ""
+
+msgid "Metrics|System"
+msgstr ""
+
+msgid "Metrics|Type"
+msgstr ""
+
+msgid "Metrics|Unit label"
+msgstr ""
+
+msgid "Metrics|Used as a title for the chart"
+msgstr ""
+
+msgid "Metrics|Used if the query returns a single series. If it returns multiple series, their legend labels will be picked up from the response."
+msgstr ""
+
+msgid "Metrics|Y-axis label"
+msgstr ""
+
+msgid "Metrics|e.g. HTTP requests"
+msgstr ""
+
+msgid "Metrics|e.g. Requests/second"
+msgstr ""
+
+msgid "Metrics|e.g. Throughput"
+msgstr ""
+
+msgid "Metrics|e.g. rate(http_requests_total[5m])"
+msgstr ""
+
+msgid "Metrics|e.g. req/sec"
 msgstr ""
 
 msgid "Milestone"
@@ -3021,6 +3139,12 @@ msgstr ""
 msgid "ProjectsDropdown|This feature requires browser localStorage support"
 msgstr ""
 
+msgid "PrometheusService|%{exporters} with %{metrics} were found"
+msgstr ""
+
+msgid "PrometheusService|<p class=\"text-tertiary\">No <a href=\"%{docsUrl}\">common metrics</a> were found</p>"
+msgstr ""
+
 msgid "PrometheusService|Active"
 msgstr ""
 
@@ -3033,7 +3157,19 @@ msgstr ""
 msgid "PrometheusService|By default, Prometheus listens on ‘http://localhost:9090’. It’s not recommended to change the default address and port as this might affect or conflict with other services running on the GitLab server."
 msgstr ""
 
+msgid "PrometheusService|Common metrics"
+msgstr ""
+
+msgid "PrometheusService|Common metrics are automatically monitored based on a library of metrics from popular exporters."
+msgstr ""
+
+msgid "PrometheusService|Custom metrics"
+msgstr ""
+
 msgid "PrometheusService|Finding and configuring metrics..."
+msgstr ""
+
+msgid "PrometheusService|Finding custom metrics..."
 msgstr ""
 
 msgid "PrometheusService|Install Prometheus on clusters"
@@ -3048,25 +3184,22 @@ msgstr ""
 msgid "PrometheusService|Metrics"
 msgstr ""
 
-msgid "PrometheusService|Metrics are automatically configured and monitored based on a library of metrics from popular exporters."
-msgstr ""
-
 msgid "PrometheusService|Missing environment variable"
-msgstr ""
-
-msgid "PrometheusService|Monitored"
 msgstr ""
 
 msgid "PrometheusService|More information"
 msgstr ""
 
-msgid "PrometheusService|No metrics are being monitored. To start monitoring, deploy to an environment."
+msgid "PrometheusService|New metric"
 msgstr ""
 
 msgid "PrometheusService|Prometheus API Base URL, like http://prometheus.example.com/"
 msgstr ""
 
 msgid "PrometheusService|Prometheus is being automatically managed on your clusters"
+msgstr ""
+
+msgid "PrometheusService|These metrics will only be monitored after your first deployment to an environment"
 msgstr ""
 
 msgid "PrometheusService|Time-series monitoring service"
@@ -3078,7 +3211,7 @@ msgstr ""
 msgid "PrometheusService|To enable the installation of Prometheus on your clusters, deactivate the manual configuration below"
 msgstr ""
 
-msgid "PrometheusService|View environments"
+msgid "PrometheusService|Waiting for your first deployment to an environment to find common metrics"
 msgstr ""
 
 msgid "Promote"
@@ -3193,6 +3326,9 @@ msgid "Reset runners registration token"
 msgstr ""
 
 msgid "Resolve discussion"
+msgstr ""
+
+msgid "Response"
 msgstr ""
 
 msgid "Reveal value"
@@ -3547,6 +3683,9 @@ msgstr ""
 msgid "Switch branch/tag"
 msgstr ""
 
+msgid "System"
+msgstr ""
+
 msgid "System Hooks"
 msgstr ""
 
@@ -3802,6 +3941,9 @@ msgid "This project"
 msgstr ""
 
 msgid "This repository"
+msgstr ""
+
+msgid "This will delete the custom metric, Are you sure?"
 msgstr ""
 
 msgid "Those emails automatically become issues (with the comments becoming the email conversation) listed here."
