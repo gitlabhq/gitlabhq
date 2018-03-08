@@ -58,7 +58,7 @@ module Projects
     def enabling_wiki?
       return false if @project.wiki_enabled?
 
-      params[:project_feature_attributes][:wiki_access_level].to_i > ProjectFeature::DISABLED
+      params.dig(:project_feature_attributes, :wiki_access_level).to_i > ProjectFeature::DISABLED
     end
 
     def ensure_wiki_exists
