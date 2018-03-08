@@ -81,6 +81,29 @@ describe('mrWidgetOptions', () => {
       });
     });
 
+    describe('shouldRenderSourceBranchRemovalStatus', () => {
+      it('should return true when cannot remove source branch and branch will be removed', () => {
+        vm.mr.canRemoveSourceBranch = false;
+        vm.mr.shouldRemoveSourceBranch = true;
+
+        expect(vm.shouldRenderSourceBranchRemovalStatus).toBeTruthy();
+      });
+
+      it('should return false when can remove source branch and branch will be removed', () => {
+        vm.mr.canRemoveSourceBranch = true;
+        vm.mr.shouldRemoveSourceBranch = true;
+
+        expect(vm.shouldRenderSourceBranchRemovalStatus).toBeFalsy();
+      });
+
+      it('should return false when cannot remove source branch and branch will not be removed', () => {
+        vm.mr.canRemoveSourceBranch = false;
+        vm.mr.shouldRemoveSourceBranch = false;
+
+        expect(vm.shouldRenderSourceBranchRemovalStatus).toBeFalsy();
+      });
+    });
+
     describe('shouldRenderDeployments', () => {
       it('should return false for the initial data', () => {
         expect(vm.shouldRenderDeployments).toBeFalsy();
@@ -375,6 +398,24 @@ describe('mrWidgetOptions', () => {
       vm.mr.state = stateKey.nothingToMerge;
       Vue.nextTick(() => {
         expect(vm.$el.querySelector('.close-related-link')).toBeNull();
+        done();
+      });
+    });
+  });
+
+  describe('rendering source branch removal status', () => {
+    it('renders when user cannot remove branch and branch should be removed', (done) => {
+      vm.mr.canRemoveSourceBranch = false;
+      vm.mr.shouldRemoveSourceBranch = true;
+
+      vm.$nextTick(() => {
+        const tooltip = vm.$el.querySelector('.fa-question-circle');
+
+        expect(vm.$el.textContent).toContain('Removes source branch');
+        expect(tooltip.getAttribute('data-original-title')).toBe(
+          'A user with write access to the source branch selected this option',
+        );
+
         done();
       });
     });
