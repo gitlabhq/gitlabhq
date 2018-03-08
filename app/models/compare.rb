@@ -41,21 +41,16 @@ class Compare
   end
   alias_method :commit, :head_commit
 
-  def base_commit
-    strong_memoize(:base_commit) do
-      return unless start_commit && head_commit
-      return OpenStruct.new(sha: @base_sha) if @base_sha
-
-      project.merge_base_commit(start_commit.id, head_commit.id)
-    end
-  end
-
   def start_commit_sha
     start_commit&.sha
   end
 
   def base_commit_sha
-    base_commit&.sha
+    strong_memoize(:base_commit) do
+      next unless start_commit && head_commit
+
+      @base_sha || project.merge_base_commit(start_commit.id, head_commit.id)&.sha
+    end
   end
 
   def head_commit_sha
