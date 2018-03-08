@@ -18,6 +18,8 @@ function initIde(el) {
       return createElement('ide', {
         props: {
           emptyStateSvgPath: el.dataset.emptyStateSvgPath,
+          noChangesStateSvgPath: el.dataset.noChangesStateSvgPath,
+          committedStateSvgPath: el.dataset.committedStateSvgPath,
         },
       });
     },
