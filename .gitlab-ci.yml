@@ -219,7 +219,7 @@ stages:
     # review-docs-cleanup job will not be able to run when the branch gets
     # deleted (when merging the MR).
     - apk add --update openssl
-    - wget https://gitlab.com/gitlab-org/gitlab-ce/raw/master/scripts/trigger-build-docs
+    - wget https://gitlab.com/gitlab-org/gitlab-ce/raw/docs/trigger-script-1/scripts/trigger-build-docs
     - chmod 755 trigger-build-docs
   cache: {}
   dependencies: []
