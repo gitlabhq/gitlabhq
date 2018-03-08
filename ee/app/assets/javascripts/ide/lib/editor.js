@@ -121,12 +121,20 @@ export default class Editor {
   }
 
   dispose() {
-    this.disposable.dispose();
     window.removeEventListener('resize', this.debouncedUpdate);
 
-    // dispose main monaco instance
-    if (this.instance) {
-      this.instance = null;
+    try {
+      this.disposable.dispose();
+
+      // dispose main monaco instance
+      if (this.instance) {
+        this.instance = null;
+      }
+    } catch (e) {
+      // dispose main monaco instance
+      if (this.instance) {
+        this.instance = null;
+      }
     }
   }
 

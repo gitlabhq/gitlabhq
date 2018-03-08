@@ -5,8 +5,16 @@ import { file } from '../helpers';
 
 describe('Multi-file editor library', () => {
   let instance;
+  let el;
+  let holder;
 
   beforeEach((done) => {
+    el = document.createElement('div');
+    holder = document.createElement('div');
+    el.appendChild(holder);
+
+    document.body.appendChild(el);
+
     monacoLoader(['vs/editor/editor.main'], () => {
       instance = editor.create(monaco);
 
@@ -16,6 +24,8 @@ describe('Multi-file editor library', () => {
 
   afterEach(() => {
     instance.dispose();
+
+    el.remove();
   });
 
   it('creates instance of editor', () => {
@@ -27,46 +37,34 @@ describe('Multi-file editor library', () => {
   });
 
   describe('createInstance', () => {
-    let el;
-
-    beforeEach(() => {
-      el = document.createElement('div');
-    });
-
     it('creates editor instance', () => {
       spyOn(instance.monaco.editor, 'create').and.callThrough();
 
-      instance.createInstance(el);
+      instance.createInstance(holder);
 
       expect(instance.monaco.editor.create).toHaveBeenCalled();
     });
 
     it('creates dirty diff controller', () => {
-      instance.createInstance(el);
+      instance.createInstance(holder);
 
       expect(instance.dirtyDiffController).not.toBeNull();
     });
 
     it('creates model manager', () => {
-      instance.createInstance(el);
+      instance.createInstance(holder);
 
       expect(instance.modelManager).not.toBeNull();
     });
   });
 
   describe('createDiffInstance', () => {
-    let el;
-
-    beforeEach(() => {
-      el = document.createElement('div');
-    });
-
     it('creates editor instance', () => {
       spyOn(instance.monaco.editor, 'createDiffEditor').and.callThrough();
 
-      instance.createDiffInstance(el);
+      instance.createDiffInstance(holder);
 
-      expect(instance.monaco.editor.createDiffEditor).toHaveBeenCalledWith(el, {
+      expect(instance.monaco.editor.createDiffEditor).toHaveBeenCalledWith(holder, {
         readOnly: true,
       });
     });
