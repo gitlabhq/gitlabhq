@@ -201,7 +201,7 @@ The following guide assumes that:
     for more information.
 
 1. Save the file and reconfigure GitLab for the database listen changes and
-   the replication slot changes to be applied.
+   the replication slot changes to be applied:
 
     ```bash
     gitlab-ctl reconfigure
@@ -553,6 +553,55 @@ the instructions below:
 
     ```bash
     gitlab-ctl restart
+    ```
+
+## PGBouncer support (optional)
+
+[PGBouncer](http://pgbouncer.github.io/) may be used with GitLab Geo to pool
+PostgreSQL connections. We recommend using PGBouncer if you use GitLab in a
+high-availability configuration with a cluster of nodes supporting a Geo
+primary and another cluster of nodes supporting a Geo secondary. For more
+information, see the [Omnibus HA](https://docs.gitlab.com/ee/administration/high_availability/database.html#configure-using-omnibus-for-high-availability)
+documentation.
+
+For a Geo secondary to work properly with PGBouncer in front of the database,
+it will need a separate read-only user to make [PostgreSQL FDW queries][FDW]
+work:
+
+1. On the primary Geo database, enter the PostgreSQL on the console as an
+admin user. If you are using an Omnibus-managed database, log onto the primary
+node that is running the PostgreSQL database:
+
+    ```bash
+     sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h /var/opt/gitlab/postgresql gitlabhq_production
+    ```
+
+2. Then create the read-only user:
+
+    ```sql
+    -- NOTE: Use the password defined earlier
+    CREATE USER gitlab_geo_fdw WITH password 'mypassword';
+    GRANT CONNECT ON DATABASE gitlabhq_production to gitlab_geo_fdw;
+    GRANT USAGE ON SCHEMA public TO gitlab_geo_fdw;
+    GRANT SELECT ON ALL TABLES IN SCHEMA public TO gitlab_geo_fdw;
+    GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO gitlab_geo_fdw;
+
+    -- Tables created by "gitlab" should be made read-only for "gitlab_geo_fdw"
+    -- automatically.
+    ALTER DEFAULT PRIVILEGES FOR USER gitlab IN SCHEMA public GRANT SELECT ON TABLES TO gitlab_geo_fdw;
+    ALTER DEFAULT PRIVILEGES FOR USER gitlab IN SCHEMA public GRANT SELECT ON SEQUENCES TO gitlab_geo_fdw;
+    ```
+
+3. On the Geo secondary nodes, change `/etc/gitlab/gitlab.rb`:
+
+    ```
+    geo_postgresql['fdw_external_user'] = 'gitlab_geo_fdw'
+    ```
+
+4. Save the file and reconfigure GitLab for the changes to be applied:
+
+    ```bash
+    gitlab-ctl reconfigure
     ```
 
 ## MySQL replication
