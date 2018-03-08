@@ -147,7 +147,9 @@
   .dropdown {
     display: flex;
     margin-left: auto;
+    margin-bottom: 1px;
     padding: 0 $grid-size;
+    border-left: 1px solid $white-dark;
     background-color: $white-light;
 
     &.shadow {

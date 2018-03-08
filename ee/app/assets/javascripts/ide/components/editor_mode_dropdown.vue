@@ -8,7 +8,8 @@
     props: {
       hasChanges: {
         type: Boolean,
-        required: true,
+        required: false,
+        default: false,
       },
       viewer: {
         type: String,
