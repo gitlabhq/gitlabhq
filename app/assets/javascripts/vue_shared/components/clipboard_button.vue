@@ -28,6 +28,11 @@
         required: false,
         default: false,
       },
+      cssClass: {
+        type: String,
+        required: false,
+        default: 'btn-default',
+      },
     },
   };
 </script>
@@ -35,7 +40,8 @@
 <template>
   <button
     type="button"
-    class="btn btn-transparent btn-clipboard"
+    class="btn"
+    :class="cssClass"
     :title="title"
     :data-clipboard-text="text"
     v-tooltip

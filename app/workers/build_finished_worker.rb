@@ -12,7 +12,7 @@ class BuildFinishedWorker
 
       # We execute that async as this are two indepentent operations that can be executed after TraceSections and Coverage
       BuildHooksWorker.perform_async(build.id)
-      CreateTraceArtifactWorker.perform_async(build.id)
+      ArchiveTraceWorker.perform_async(build.id)
     end
   end
 end

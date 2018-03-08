@@ -1,19 +1,23 @@
 module API
   class Notes < Grape::API
     include PaginationParams
+    helpers ::API::Helpers::NotesHelpers
 
     before { authenticate! }
 
     NOTEABLE_TYPES = [Issue, MergeRequest, Snippet].freeze
 
-    params do
-      requires :id, type: String, desc: 'The ID of a project'
-    end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
-      NOTEABLE_TYPES.each do |noteable_type|
+    NOTEABLE_TYPES.each do |noteable_type|
+      parent_type = noteable_type.parent_class.to_s.underscore
+      noteables_str = noteable_type.to_s.underscore.pluralize
+
+      params do
+        requires :id, type: String, desc: "The ID of a #{parent_type}"
+      end
+      resource parent_type.pluralize.to_sym, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
         noteables_str = noteable_type.to_s.underscore.pluralize
 
-        desc 'Get a list of project +noteable+ notes' do
+        desc "Get a list of #{noteable_type.to_s.downcase} notes" do
           success Entities::Note
         end
         params do
@@ -25,7 +29,7 @@ module API
           use :pagination
         end
         get ":id/#{noteables_str}/:noteable_id/notes" do
-          noteable = find_project_noteable(noteables_str, params[:noteable_id])
+          noteable = find_noteable(parent_type, noteables_str, params[:noteable_id])
 
           if can?(current_user, noteable_read_ability_name(noteable), noteable)
             # We exclude notes that are cross-references and that cannot be viewed
@@ -46,7 +50,7 @@ module API
           end
         end
 
-        desc 'Get a single +noteable+ note' do
+        desc "Get a single #{noteable_type.to_s.downcase} note" do
           success Entities::Note
         end
         params do
@@ -54,18 +58,11 @@ module API
           requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
         end
         get ":id/#{noteables_str}/:noteable_id/notes/:note_id" do
-          noteable = find_project_noteable(noteables_str, params[:noteable_id])
-          note = noteable.notes.with_metadata.find(params[:note_id])
-          can_read_note = can?(current_user, noteable_read_ability_name(noteable), noteable) && !note.cross_reference_not_visible_for?(current_user)
-
-          if can_read_note
-            present note, with: Entities::Note
-          else
-            not_found!("Note")
-          end
+          noteable = find_noteable(parent_type, noteables_str, params[:noteable_id])
+          get_note(noteable, params[:note_id])
         end
 
-        desc 'Create a new +noteable+ note' do
+        desc "Create a new #{noteable_type.to_s.downcase} note" do
           success Entities::Note
         end
         params do
@@ -74,34 +71,25 @@ module API
           optional :created_at, type: String, desc: 'The creation date of the note'
         end
         post ":id/#{noteables_str}/:noteable_id/notes" do
-          noteable = find_project_noteable(noteables_str, params[:noteable_id])
+          noteable = find_noteable(parent_type, noteables_str, params[:noteable_id])
 
           opts = {
             note: params[:body],
             noteable_type: noteables_str.classify,
-            noteable_id: noteable.id
+            noteable_id: noteable.id,
+            created_at: params[:created_at]
           }
 
-          if can?(current_user, noteable_read_ability_name(noteable), noteable)
-            authorize! :create_note, noteable
+          note = create_note(noteable, opts)
 
-            if params[:created_at] && (current_user.admin? || user_project.owner == current_user)
-              opts[:created_at] = params[:created_at]
-            end
-
-            note = ::Notes::CreateService.new(user_project, current_user, opts).execute
-
-            if note.valid?
-              present note, with: Entities.const_get(note.class.name)
-            else
-              not_found!("Note #{note.errors.messages}")
-            end
+          if note.valid?
+            present note, with: Entities.const_get(note.class.name)
           else
-            not_found!("Note")
+            bad_request!("Note #{note.errors.messages}")
           end
         end
 
-        desc 'Update an existing +noteable+ note' do
+        desc "Update an existing #{noteable_type.to_s.downcase} note" do
           success Entities::Note
         end
         params do
@@ -110,24 +98,12 @@ module API
           requires :body, type: String, desc: 'The content of a note'
         end
         put ":id/#{noteables_str}/:noteable_id/notes/:note_id" do
-          note = user_project.notes.find(params[:note_id])
+          noteable = find_noteable(parent_type, noteables_str, params[:noteable_id])
 
-          authorize! :admin_note, note
-
-          opts = {
-            note: params[:body]
-          }
-
-          note = ::Notes::UpdateService.new(user_project, current_user, opts).execute(note)
-
-          if note.valid?
-            present note, with: Entities::Note
-          else
-            render_api_error!("Failed to save note #{note.errors.messages}", 400)
-          end
+          update_note(noteable, params[:note_id])
         end
 
-        desc 'Delete a +noteable+ note' do
+        desc "Delete a #{noteable_type.to_s.downcase} note" do
           success Entities::Note
         end
         params do
@@ -135,24 +111,10 @@ module API
           requires :note_id, type: Integer, desc: 'The ID of a note'
         end
         delete ":id/#{noteables_str}/:noteable_id/notes/:note_id" do
-          note = user_project.notes.find(params[:note_id])
+          noteable = find_noteable(parent_type, noteables_str, params[:noteable_id])
 
-          authorize! :admin_note, note
-
-          destroy_conditionally!(note) do |note|
-            ::Notes::DestroyService.new(user_project, current_user).execute(note)
-          end
+          delete_note(noteable, params[:note_id])
         end
-      end
-    end
-
-    helpers do
-      def find_project_noteable(noteables_str, noteable_id)
-        public_send("find_project_#{noteables_str.singularize}", noteable_id) # rubocop:disable GitlabSecurity/PublicSend
-      end
-
-      def noteable_read_ability_name(noteable)
-        "read_#{noteable.class.to_s.underscore}".to_sym
       end
     end
   end

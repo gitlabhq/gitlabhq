@@ -168,6 +168,7 @@ MergeRequest:
 - last_edited_by_id
 - head_pipeline_id
 - discussion_locked
+- allow_maintainer_to_push
 MergeRequestDiff:
 - id
 - state
@@ -536,3 +537,12 @@ LfsFileLock:
 - user_id
 - project_id
 - created_at
+Badge:
+- id
+- link_url
+- image_url
+- project_id
+- group_id
+- created_at
+- updated_at
+- type

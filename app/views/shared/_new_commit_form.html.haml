@@ -1,3 +1,6 @@
+- project = @project.present(current_user: current_user)
+- branch_name = selected_branch
+
 = render 'shared/commit_message_container', placeholder: placeholder
 
 - if @project.empty_repo?
@@ -7,12 +10,14 @@
     .form-group.branch
       = label_tag 'branch_name', _('Target Branch'), class: 'control-label'
       .col-sm-10
-        = text_field_tag 'branch_name', @branch_name || tree_edit_branch, required: true, class: "form-control js-branch-name ref-name"
+        = text_field_tag 'branch_name', branch_name, required: true, class: "form-control js-branch-name ref-name"
 
         .js-create-merge-request-container
           = render 'shared/new_merge_request_checkbox'
+  - elsif project.can_current_user_push_to_branch?(branch_name)
+    = hidden_field_tag 'branch_name', branch_name
   - else
-    = hidden_field_tag 'branch_name', @branch_name || tree_edit_branch
+    = hidden_field_tag 'branch_name', branch_name
     = hidden_field_tag 'create_merge_request', 1
 
   = hidden_field_tag 'original_branch', @ref, class: 'js-original-branch'

@@ -5,14 +5,15 @@ import Vue from 'vue';
 
 import Flash from '~/flash';
 import { __ } from '~/locale';
+import '~/vue_shared/models/label';
 
 import FilteredSearchBoards from './filtered_search_boards';
 import eventHub from './eventhub';
 import sidebarEventHub from '~/sidebar/event_hub'; // eslint-disable-line import/first
 import './models/issue';
-import './models/label';
 import './models/list';
 import './models/milestone';
+import './models/project';
 import './models/assignee';
 import './stores/boards_store';
 import './stores/modal_store';
@@ -89,7 +90,7 @@ export default () => {
       sidebarEventHub.$off('toggleSubscription', this.toggleSubscription);
     },
     mounted () {
-      this.filterManager = new FilteredSearchBoards(Store.filter, true);
+      this.filterManager = new FilteredSearchBoards(Store.filter, true, Store.cantEdit);
       this.filterManager.setup();
 
       Store.disabled = this.disabled;
@@ -179,6 +180,7 @@ export default () => {
       return {
         modal: ModalStore.store,
         store: Store.state,
+        canAdminList: this.$options.el.hasAttribute('data-can-admin-list'),
       };
     },
     computed: {
@@ -232,6 +234,7 @@ export default () => {
           :class="{ 'disabled': disabled }"
           :title="tooltipTitle"
           :aria-disabled="disabled"
+          v-if="canAdminList"
           @click="openModal">
           Add issues
         </button>

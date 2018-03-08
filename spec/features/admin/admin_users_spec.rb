@@ -382,7 +382,7 @@ describe "Admin::Users" do
 
   describe 'update user identities' do
     before do
-      allow(Gitlab::OAuth::Provider).to receive(:providers).and_return([:twitter, :twitter_updated])
+      allow(Gitlab::Auth::OAuth::Provider).to receive(:providers).and_return([:twitter, :twitter_updated])
     end
 
     it 'modifies twitter identity' do

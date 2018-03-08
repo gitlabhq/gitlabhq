@@ -1,0 +1,5 @@
+---
+title: Don't error out in system hook if user has `nil` datetime columns
+merge_request:
+author:
+type: fixed

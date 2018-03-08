@@ -35,7 +35,7 @@ class Repository
   CACHED_METHODS = %i(size commit_count rendered_readme contribution_guide
                       changelog license_blob license_key gitignore koding_yml
                       gitlab_ci_yml branch_names tag_names branch_count
-                      tag_count avatar exists? empty? root_ref has_visible_content?
+                      tag_count avatar exists? root_ref has_visible_content?
                       issue_template_names merge_request_template_names).freeze
 
   # Methods that use cache_method but only memoize the value
@@ -139,7 +139,7 @@ class Repository
     end
   end
 
-  def commits(ref, path: nil, limit: nil, offset: nil, skip_merges: false, after: nil, before: nil)
+  def commits(ref = nil, path: nil, limit: nil, offset: nil, skip_merges: false, after: nil, before: nil, all: nil)
     options = {
       repo: raw_repository,
       ref: ref,
@@ -149,7 +149,8 @@ class Repository
       after: after,
       before: before,
       follow: Array(path).length == 1,
-      skip_merges: skip_merges
+      skip_merges: skip_merges,
+      all: all
     }
 
     commits = Gitlab::Git::Commit.where(options)
@@ -252,7 +253,7 @@ class Repository
   # branches or tags, but we want to keep some of these commits around, for
   # example if they have comments or CI builds.
   def keep_around(sha)
-    return unless sha && commit_by(oid: sha)
+    return unless sha.present? && commit_by(oid: sha)
 
     return if kept_around?(sha)
 
@@ -359,7 +360,7 @@ class Repository
   def expire_emptiness_caches
     return unless empty?
 
-    expire_method_caches(%i(empty? has_visible_content?))
+    expire_method_caches(%i(has_visible_content?))
   end
 
   def lookup_cache
@@ -505,12 +506,14 @@ class Repository
   end
   cache_method :exists?
 
+  # We don't need to cache the output of this method because both exists? and
+  # has_visible_content? are already memoized and cached. There's no guarantee
+  # that the values are expired and loaded atomically.
   def empty?
     return true unless exists?
 
     !has_visible_content?
   end
-  cache_method :empty?
 
   # The size of this repository in megabytes.
   def size
@@ -589,15 +592,7 @@ class Repository
   def license_key
     return unless exists?
 
-    # The licensee gem creates a Rugged object from the path:
-    # https://github.com/benbalter/licensee/blob/v8.7.0/lib/licensee/projects/git_project.rb
-    begin
-      Licensee.license(path).try(:key)
-    # Normally we would rescue Rugged::Error, but that is banned by lint-rugged
-    # and we need to migrate this endpoint to Gitaly:
-    # https://gitlab.com/gitlab-org/gitaly/issues/1026
-    rescue
-    end
+    raw_repository.license_short_name
   end
   cache_method :license_key
 
@@ -658,14 +653,15 @@ class Repository
   end
 
   def last_commit_for_path(sha, path)
-    commit_by(oid: last_commit_id_for_path(sha, path))
+    commit = raw_repository.last_commit_for_path(sha, path)
+    ::Commit.new(commit, @project) if commit
   end
 
   def last_commit_id_for_path(sha, path)
     key = path.blank? ? "last_commit_id_for_path:#{sha}" : "last_commit_id_for_path:#{sha}:#{Digest::SHA1.hexdigest(path)}"
 
     cache.fetch(key) do
-      raw_repository.last_commit_id_for_path(sha, path)
+      last_commit_for_path(sha, path)&.id
     end
   end
 
@@ -873,20 +869,20 @@ class Repository
     raw_repository.ancestor?(ancestor_id, descendant_id)
   end
 
-  def fetch_as_mirror(url, forced: false, refmap: :all_refs, remote_name: nil)
+  def fetch_as_mirror(url, forced: false, refmap: :all_refs, remote_name: nil, prune: true)
     unless remote_name
       remote_name = "tmp-#{SecureRandom.hex}"
       tmp_remote_name = true
     end
 
     add_remote(remote_name, url, mirror_refmap: refmap)
-    fetch_remote(remote_name, forced: forced)
+    fetch_remote(remote_name, forced: forced, prune: prune)
   ensure
     remove_remote(remote_name) if tmp_remote_name
   end
 
-  def fetch_remote(remote, forced: false, ssh_auth: nil, no_tags: false)
-    gitlab_shell.fetch_remote(raw_repository, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
+  def fetch_remote(remote, forced: false, ssh_auth: nil, no_tags: false, prune: true)
+    gitlab_shell.fetch_remote(raw_repository, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, prune: prune)
   end
 
   def fetch_source_branch!(source_repository, source_branch, local_ref)

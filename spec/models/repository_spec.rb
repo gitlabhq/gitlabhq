@@ -242,23 +242,51 @@ describe Repository do
   end
 
   describe '#commits' do
-    it 'sets follow when path is a single path' do
-      expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: true)).and_call_original.twice
-
-      repository.commits('master', limit: 1, path: 'README.md')
-      repository.commits('master', limit: 1, path: ['README.md'])
+    context 'when neither the all flag nor a ref are specified' do
+      it 'returns every commit from default branch' do
+        expect(repository.commits(limit: 60).size).to eq(37)
+      end
     end
 
-    it 'does not set follow when path is multiple paths' do
-      expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
+    context 'when ref is passed' do
+      it 'returns every commit from the specified ref' do
+        expect(repository.commits('master', limit: 60).size).to eq(37)
+      end
 
-      repository.commits('master', limit: 1, path: ['README.md', 'CHANGELOG'])
+      context 'when all' do
+        it 'returns every commit from the repository' do
+          expect(repository.commits('master', limit: 60, all: true).size).to eq(60)
+        end
+      end
+
+      context 'with path' do
+        it 'sets follow when it is a single path' do
+          expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: true)).and_call_original.twice
+
+          repository.commits('master', limit: 1, path: 'README.md')
+          repository.commits('master', limit: 1, path: ['README.md'])
+        end
+
+        it 'does not set follow when it is multiple paths' do
+          expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
+
+          repository.commits('master', limit: 1, path: ['README.md', 'CHANGELOG'])
+        end
+      end
+
+      context 'without path' do
+        it 'does not set follow' do
+          expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
+
+          repository.commits('master', limit: 1)
+        end
+      end
     end
 
-    it 'does not set follow when there are no paths' do
-      expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
-
-      repository.commits('master', limit: 1)
+    context "when 'all' flag is set" do
+      it 'returns every commit from the repository' do
+        expect(repository.commits(all: true, limit: 60).size).to eq(60)
+      end
     end
   end
 
@@ -976,7 +1004,7 @@ describe Repository do
       end
     end
 
-    context 'with Gitaly disabled', :skip_gitaly_mock do
+    context 'with Gitaly disabled', :disable_gitaly do
       context 'when pre hooks were successful' do
         it 'runs without errors' do
           hook = double(trigger: [true, nil])
@@ -1419,7 +1447,6 @@ describe Repository do
     it 'expires the caches for an empty repository' do
       allow(repository).to receive(:empty?).and_return(true)
 
-      expect(cache).to receive(:expire).with(:empty?)
       expect(cache).to receive(:expire).with(:has_visible_content?)
 
       repository.expire_emptiness_caches
@@ -1428,7 +1455,6 @@ describe Repository do
     it 'does not expire the cache for a non-empty repository' do
       allow(repository).to receive(:empty?).and_return(false)
 
-      expect(cache).not_to receive(:expire).with(:empty?)
       expect(cache).not_to receive(:expire).with(:has_visible_content?)
 
       repository.expire_emptiness_caches
@@ -1868,7 +1894,7 @@ describe Repository do
       it_behaves_like 'adding tag'
     end
 
-    context 'when Gitaly operation_user_add_tag feature is disabled', :skip_gitaly_mock do
+    context 'when Gitaly operation_user_add_tag feature is disabled', :disable_gitaly do
       it_behaves_like 'adding tag'
 
       it 'passes commit SHA to pre-receive and update hooks and tag SHA to post-receive hook' do
@@ -1927,7 +1953,7 @@ describe Repository do
       end
     end
 
-    context 'with gitaly disabled', :skip_gitaly_mock do
+    context 'with gitaly disabled', :disable_gitaly do
       it_behaves_like "user deleting a branch"
 
       let(:old_rev) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' } # git rev-parse feature

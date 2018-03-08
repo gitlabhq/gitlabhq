@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::ImportExport::UploadsRestorer do
   describe 'bundle a project Git repo' do
     let(:export_path) { "#{Dir.tmpdir}/uploads_saver_spec" }
-    let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: project.full_path) }
+    let(:shared) { project.import_export_shared }
 
     before do
       allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
