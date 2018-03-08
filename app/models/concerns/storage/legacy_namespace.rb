@@ -27,8 +27,15 @@ module Storage
         end
       end
 
-      Gitlab::UploadsTransfer.new.rename_namespace(full_path_was, full_path)
-      Gitlab::PagesTransfer.new.rename_namespace(full_path_was, full_path)
+      if parent_changed?
+        former_parent_full_path = parent_id_was.nil? ? nil : Namespace.find(parent_id_was).full_path
+        parent_full_path = parent&.full_path
+        Gitlab::UploadsTransfer.new.move_namespace(path, former_parent_full_path, parent_full_path)
+        Gitlab::PagesTransfer.new.move_namespace(path, former_parent_full_path, parent_full_path)
+      else
+        Gitlab::UploadsTransfer.new.rename_namespace(full_path_was, full_path)
+        Gitlab::PagesTransfer.new.rename_namespace(full_path_was, full_path)
+      end
 
       remove_exports!
 

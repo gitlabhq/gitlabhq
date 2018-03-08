@@ -29,6 +29,41 @@ describe Gitlab::ProjectTransfer do
     end
   end
 
+  describe '#move_namespace' do
+    context 'when moving namespace from root into another namespace' do
+      it "moves namespace projects' upload" do
+        child_namespace = 'test_child_namespace'
+        FileUtils.mkdir_p(File.join(@root_dir, child_namespace, @project_path))
+        @project_transfer.move_namespace(child_namespace, nil, @namespace_path)
+
+        expected_path = File.join(@root_dir, @namespace_path, child_namespace, @project_path)
+        expect(Dir.exist?(expected_path)).to be_truthy
+      end
+    end
+
+    context 'when moving namespace from one parent to another' do
+      it "moves namespace projects' upload" do
+        child_namespace = 'test_child_namespace'
+        FileUtils.mkdir_p(File.join(@root_dir, @namespace_path_was, child_namespace, @project_path))
+        @project_transfer.move_namespace(child_namespace, @namespace_path_was, @namespace_path)
+
+        expected_path = File.join(@root_dir, @namespace_path, child_namespace, @project_path)
+        expect(Dir.exist?(expected_path)).to be_truthy
+      end
+    end
+
+    context 'when moving namespace from having a parent to root' do
+      it "moves namespace projects' upload" do
+        child_namespace = 'test_child_namespace'
+        FileUtils.mkdir_p(File.join(@root_dir, @namespace_path_was, child_namespace, @project_path))
+        @project_transfer.move_namespace(child_namespace, @namespace_path_was, nil)
+
+        expected_path = File.join(@root_dir, child_namespace, @project_path)
+        expect(Dir.exist?(expected_path)).to be_truthy
+      end
+    end
+  end
+
   describe '#rename_project' do
     it "renames project" do
       FileUtils.mkdir_p(File.join(@root_dir, @namespace_path, @project_path_was))
