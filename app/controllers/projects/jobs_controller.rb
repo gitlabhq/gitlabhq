@@ -1,12 +1,12 @@
 class Projects::JobsController < Projects::ApplicationController
-  prepend EE::Projects::JobsController
+  include SendFileUpload
 
   before_action :build, except: [:index, :cancel_all]
 
   before_action :authorize_read_build!,
-    only: [:index, :show, :status, :raw, :trace]
+                only: [:index, :show, :status, :raw, :trace]
   before_action :authorize_update_build!,
-    except: [:index, :show, :status, :raw, :trace, :cancel_all, :erase]
+                except: [:index, :show, :status, :raw, :trace, :cancel_all, :erase]
   before_action :authorize_erase_build!, only: [:erase]
 
   layout 'project'
@@ -27,10 +27,10 @@ class Projects::JobsController < Projects::ApplicationController
         @builds
       end
     @builds = @builds.includes([
-      { pipeline: :project },
-      :project,
-      :tags
-    ])
+                                 { pipeline: :project },
+                                 :project,
+                                 :tags
+                               ])
     @builds = @builds.page(params[:page]).per(30).without_count
   end
 
@@ -55,8 +55,8 @@ class Projects::JobsController < Projects::ApplicationController
         Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
         render json: BuildSerializer
-          .new(project: @project, current_user: @current_user)
-          .represent(@build, {}, BuildDetailsEntity)
+                 .new(project: @project, current_user: @current_user)
+                 .represent(@build, {}, BuildDetailsEntity)
       end
     end
   end
@@ -105,25 +105,31 @@ class Projects::JobsController < Projects::ApplicationController
 
   def status
     render json: BuildSerializer
-      .new(project: @project, current_user: @current_user)
-      .represent_status(@build)
+             .new(project: @project, current_user: @current_user)
+             .represent_status(@build)
   end
 
   def erase
     if @build.erase(erased_by: current_user)
       redirect_to project_job_path(project, @build),
-                notice: "Job has been successfully erased!"
+                  notice: "Job has been successfully erased!"
     else
       respond_422
     end
   end
 
   def raw
-    build.trace.read do |stream|
-      if stream.file?
-        send_file stream.path, type: 'text/plain; charset=utf-8', disposition: 'inline'
-      else
-        render_404
+    if trace_artifact_file
+      send_upload(trace_artifact_file,
+                  send_params: raw_send_params,
+                  redirect_params: raw_redirect_params)
+    else
+      build.trace.read do |stream|
+        if stream.file?
+          send_file stream.path, type: 'text/plain; charset=utf-8', disposition: 'inline'
+        else
+          render_404
+        end
       end
     end
   end
@@ -136,6 +142,18 @@ class Projects::JobsController < Projects::ApplicationController
 
   def authorize_erase_build!
     return access_denied! unless can?(current_user, :erase_build, build)
+  end
+
+  def raw_send_params
+    { type: 'text/plain; charset=utf-8', disposition: 'inline' }
+  end
+
+  def raw_redirect_params
+    { query: { 'response-content-type' => 'text/plain; charset=utf-8', 'response-content-disposition' => 'inline' } }
+  end
+
+  def trace_artifact_file
+    @trace_artifact_file ||= build.job_artifacts_trace&.file
   end
 
   def build
