@@ -21,6 +21,7 @@ describe API::Jobs do
   let(:guest) { create(:project_member, :guest, project: project).user }
 
   before do
+    stub_licensed_features(cross_project_pipelines: true)
     project.add_developer(user)
   end
 
@@ -316,11 +317,6 @@ describe API::Jobs do
       end
     end
 
-    before do
-      stub_artifacts_object_storage
-      get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
-    end
-
     context 'normal authentication' do
       context 'job with artifacts' do
         context 'when artifacts are stored locally' do
@@ -344,8 +340,10 @@ describe API::Jobs do
         end
 
         context 'when artifacts are stored remotely' do
+          let(:proxy_download) { false }
+
           before do
-            stub_artifacts_object_storage
+            stub_artifacts_object_storage(proxy_download: proxy_download)
           end
 
           let(:job) { create(:ci_build, pipeline: pipeline) }
@@ -355,6 +353,20 @@ describe API::Jobs do
             job.reload
 
             get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+          end
+
+          context 'when proxy download is enabled' do
+            let(:proxy_download) { true }
+
+            it 'responds with the workhorse send-url' do
+              expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("send-url:")
+            end
+          end
+
+          context 'when proxy download is disabled' do
+            it 'returns location redirect' do
+              expect(response).to have_gitlab_http_status(302)
+            end
           end
 
           context 'authorized user' do
@@ -494,6 +506,29 @@ describe API::Jobs do
         end
 
         it_behaves_like 'a valid file'
+      end
+
+      context 'when using job_token to authenticate' do
+        before do
+          pipeline.reload
+          pipeline.update(ref: 'master',
+                          sha: project.commit('master').sha)
+
+          get api("/projects/#{project.id}/jobs/artifacts/master/download"), job: job.name, job_token: job.token
+        end
+
+        context 'when user is reporter' do
+          it_behaves_like 'a valid file'
+        end
+
+        context 'when user is admin, but not member' do
+          let(:api_user) { create(:admin) }
+          let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user) }
+
+          it 'does not allow to see that artfiact is present' do
+            expect(response).to have_gitlab_http_status(404)
+          end
+        end
       end
     end
   end

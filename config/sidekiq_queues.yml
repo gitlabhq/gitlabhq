@@ -64,7 +64,6 @@
   - [update_user_activity, 1]
   - [propagate_service_template, 1]
   - [background_migration, 1]
-  - [object_storage_upload, 1]
   - [gcp_cluster, 1]
   - [project_migrate_hashed_storage, 1]
   - [storage_migrator, 1]
