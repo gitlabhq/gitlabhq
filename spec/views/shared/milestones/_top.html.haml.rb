@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'shared/milestones/_top.html.haml' do
-  let(:group) { create(:group) }
+  set(:group) { create(:group) }
   let(:project) { create(:project, group: group) }
   let(:milestone) { create(:milestone, project: project) }
 
