@@ -9,6 +9,13 @@ import MRWidgetService from '../services/mr_widget_service';
 
 export default {
   name: 'Deployment',
+  components: {
+    MemoryUsage,
+    StatusIcon,
+  },
+  directives: {
+    tooltip,
+  },
   mixins: [
     timeagoMixin,
   ],
@@ -18,22 +25,21 @@ export default {
       required: true,
     },
   },
-  components: {
-    MemoryUsage,
-    StatusIcon,
-  },
   computed: {
     deployTimeago() {
       return this.timeFormated(this.deployment.deployed_at);
     },
     hasExternalUrls() {
-      return this.deployment.external_url && this.deployment.external_url_formatted;
+      return !!(this.deployment.external_url && this.deployment.external_url_formatted);
     },
     hasDeploymentTime() {
-      return this.deployment.deployed_at && this.deployment.deployed_at_formatted;
+      return !!(this.deployment.deployed_at && this.deployment.deployed_at_formatted);
     },
     hasDeploymentMeta() {
-      return this.deployment.url && this.deployment.name;
+      return !!(this.deployment.url && this.deployment.name);
+    },
+    hasMetrics() {
+      return !!(this.deployment.metrics_url);
     },
   },
   methods: {
@@ -67,7 +73,8 @@ export default {
       <div class="media-body">
         <div class="deploy-body">
           <span
-            v-if="hasDeploymentMeta">
+            v-if="hasDeploymentMeta"
+          >
             Deployed to
           </span>
           <span class="deploy-link">
@@ -77,11 +84,12 @@ export default {
               target="_blank"
               rel="noopener noreferrer nofollow"
               class="js-deploy-meta">
-              {{deployment.name}}
+              {{ deployment.name }}
             </a>
           </span>
           <span
-            v-if="hasExternalUrls">
+            v-if="hasExternalUrls"
+          >
             on
           </span>
           <span class="deploy-link">
@@ -93,8 +101,10 @@ export default {
               class="js-deploy-url">
               <i
                 class="fa fa-external-link"
-                aria-hidden="true" />
-              {{deployment.external_url_formatted}}
+                aria-hidden="true"
+              >
+              </i>
+              {{ deployment.external_url_formatted }}
             </a>
           </span>
           <span
@@ -103,7 +113,7 @@ export default {
             class="js-deploy-time"
             data-toggle="tooltip"
             data-placement="top">
-            {{deployTimeago}}
+            {{ deployTimeago }}
           </span>
           <button
             type="button"
@@ -114,7 +124,7 @@ export default {
           </button>
         </div>
         <memory-usage
-          v-if="deployment.metrics_url"
+          v-if="hasMetrics"
           :metrics-url="deployment.metrics_url"
           :metrics-monitoring-url="deployment.metrics_monitoring_url"
         />
