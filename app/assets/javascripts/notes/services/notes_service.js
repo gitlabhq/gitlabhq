@@ -30,7 +30,7 @@ export default {
     const { endpoint, lastFetchedAt } = data;
     const options = {
       headers: {
-        'X-Last-Fetched-At': lastFetchedAt,
+        'X-Last-Fetched-At': `${lastFetchedAt}`,
       },
     };
 
