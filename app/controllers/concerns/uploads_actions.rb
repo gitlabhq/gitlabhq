@@ -1,5 +1,6 @@
 module UploadsActions
   include Gitlab::Utils::StrongMemoize
+  include SendFileUpload
 
   UPLOAD_MOUNTS = %w(avatar attachment file logo header_logo).freeze
 
@@ -26,14 +27,11 @@ module UploadsActions
   def show
     return render_404 unless uploader&.exists?
 
-    if uploader.file_storage?
-      disposition = uploader.image_or_video? ? 'inline' : 'attachment'
-      expires_in 0.seconds, must_revalidate: true, private: true
+    expires_in 0.seconds, must_revalidate: true, private: true
 
-      send_file uploader.file.path, disposition: disposition
-    else
-      redirect_to uploader.url
-    end
+    disposition = uploader.image_or_video? ? 'inline' : 'attachment'
+
+    send_upload(uploader, attachment: uploader.filename, disposition: disposition)
   end
 
   private

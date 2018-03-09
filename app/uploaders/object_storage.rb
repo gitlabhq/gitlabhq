@@ -127,6 +127,14 @@ module ObjectStorage
         object_store_options.background_upload
       end
 
+      def proxy_download_enabled?
+        object_store_options.proxy_download
+      end
+
+      def direct_download_enabled?
+        !proxy_download_enabled?
+      end
+
       def object_store_credentials
         object_store_options.connection.to_hash.deep_symbolize_keys
       end

@@ -25,7 +25,7 @@ module API
 
         render_api_error!('404 Not found or has expired', 404) unless path
 
-        present_file!(path, File.basename(path), 'application/gzip')
+        present_disk_file!(path, File.basename(path), 'application/gzip')
       end
 
       desc 'Start export' do
