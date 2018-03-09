@@ -86,21 +86,21 @@ describe('mrWidgetOptions', () => {
         vm.mr.canRemoveSourceBranch = false;
         vm.mr.shouldRemoveSourceBranch = true;
 
-        expect(vm.shouldRenderSourceBranchRemovalStatus).toBeTruthy();
+        expect(vm.shouldRenderSourceBranchRemovalStatus).toEqual(true);
       });
 
       it('should return false when can remove source branch and branch will be removed', () => {
         vm.mr.canRemoveSourceBranch = true;
         vm.mr.shouldRemoveSourceBranch = true;
 
-        expect(vm.shouldRenderSourceBranchRemovalStatus).toBeFalsy();
+        expect(vm.shouldRenderSourceBranchRemovalStatus).toEqual(false);
       });
 
       it('should return false when cannot remove source branch and branch will not be removed', () => {
         vm.mr.canRemoveSourceBranch = false;
         vm.mr.shouldRemoveSourceBranch = false;
 
-        expect(vm.shouldRenderSourceBranchRemovalStatus).toBeFalsy();
+        expect(vm.shouldRenderSourceBranchRemovalStatus).toEqual(false);
       });
     });
 
