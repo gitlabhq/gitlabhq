@@ -1,4 +1,5 @@
 <script>
+  import $ from 'jquery';
   import eventHub from '../event_hub';
 
   import { SCROLL_BAR_SIZE } from '../constants';

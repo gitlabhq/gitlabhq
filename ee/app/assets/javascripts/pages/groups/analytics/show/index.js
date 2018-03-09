@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Chart from 'chart.js';
 
 document.addEventListener('DOMContentLoaded', () => {

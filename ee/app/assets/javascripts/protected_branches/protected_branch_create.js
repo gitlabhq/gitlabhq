@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
 import AccessorUtilities from '~/lib/utils/accessor';
 import Flash from '~/flash';

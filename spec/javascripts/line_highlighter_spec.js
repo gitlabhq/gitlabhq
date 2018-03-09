@@ -1,5 +1,6 @@
 /* eslint-disable space-before-function-paren, no-var, no-param-reassign, quotes, prefer-template, no-else-return, new-cap, dot-notation, no-return-assign, comma-dangle, no-new, one-var, one-var-declaration-per-line, jasmine/no-spec-dupes, no-underscore-dangle, max-len */
 
+import $ from 'jquery';
 import LineHighlighter from '~/line_highlighter';
 
 (function() {

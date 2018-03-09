@@ -1,4 +1,6 @@
 /* eslint-disable comma-dangle, space-before-function-paren, one-var */
+
+import $ from 'jquery';
 import Sortable from 'vendor/Sortable';
 import Vue from 'vue';
 import boardPromotionState from 'ee/boards/components/board_promotion_state';

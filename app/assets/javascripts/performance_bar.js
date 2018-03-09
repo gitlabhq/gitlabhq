@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import 'vendor/peek';
 import 'vendor/peek.performance_bar';
 import { getParameterValues } from './lib/utils/url_utility';

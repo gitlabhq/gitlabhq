@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 function isValidProjectId(id) {
   return id > 0;
 }

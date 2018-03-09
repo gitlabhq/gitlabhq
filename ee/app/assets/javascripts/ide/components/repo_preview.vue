@@ -1,4 +1,5 @@
 <script>
+  import $ from 'jquery';
   import { mapGetters } from 'vuex';
   import LineHighlighter from '~/line_highlighter';
   import syntaxHighlight from '~/syntax_highlight';

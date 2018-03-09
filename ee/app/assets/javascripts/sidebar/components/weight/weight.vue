@@ -1,6 +1,7 @@
 <script>
   /* eslint-disable vue/require-default-prop */
 
+  import $ from 'jquery';
   import { s__ } from '~/locale';
   import eventHub from '~/sidebar/event_hub';
   import icon from '~/vue_shared/components/icon.vue';

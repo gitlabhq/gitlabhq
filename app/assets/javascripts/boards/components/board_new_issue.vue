@@ -1,4 +1,5 @@
 <script>
+import $ from 'jquery';
 import eventHub from '../eventhub';
 import ProjectSelect from 'ee/boards/components/project_select.vue'; // eslint-disable-line import/first
 import ListIssue from '../models/issue';

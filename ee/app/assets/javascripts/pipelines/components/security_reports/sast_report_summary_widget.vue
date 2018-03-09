@@ -1,4 +1,5 @@
 <script>
+  import $ from 'jquery';
   import { n__, s__ } from '~/locale';
   import ciIcon from '~/vue_shared/components/ci_icon.vue';
 

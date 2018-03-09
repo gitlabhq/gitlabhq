@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import _ from 'underscore';
 import Vue from 'vue';
 import notesApp from '~/notes/components/notes_app.vue';

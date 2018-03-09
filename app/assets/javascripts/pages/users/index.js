@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import UserCallout from '~/user_callout';
 import Cookies from 'js-cookie';
 import UserTabs from './user_tabs';

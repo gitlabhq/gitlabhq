@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 let instanceCount = 0;
 
 class AutoWidthDropdownSelect {

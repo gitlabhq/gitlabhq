@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-expressions, no-prototype-builtins, no-new, no-shadow, max-len */
 
+import $ from 'jquery';
 import 'vendor/jquery.endless-scroll';
 import Activities from '~/activities';
 

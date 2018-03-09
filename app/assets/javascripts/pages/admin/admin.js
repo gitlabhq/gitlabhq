@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import { refreshCurrentPage } from '../../lib/utils/url_utility';
 
 function showBlacklistType() {

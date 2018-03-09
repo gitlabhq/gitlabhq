@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import timeago from 'timeago.js';
 import dateFormat from 'vendor/date.format';
 import { pluralize } from './text_utility';
