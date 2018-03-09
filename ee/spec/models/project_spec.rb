@@ -1292,6 +1292,14 @@ describe Project do
       expect(project.external_authorization_classification_label)
         .to eq('hello')
     end
+
+    it 'does not break when not stubbing the license check' do
+      enable_external_authorization_service
+      enable_namespace_license_check!
+      project = build(:project)
+
+      expect { project.external_authorization_classification_label }.not_to raise_error
+    end
   end
 
   describe '#user_can_push_to_empty_repo?' do
