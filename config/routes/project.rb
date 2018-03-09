@@ -145,7 +145,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resources :approver_groups, only: :destroy
         ## EE-specific
 
-        resources :discussions, only: [], constraints: { id: /\h{40}/ } do
+        resources :discussions, only: [:show], constraints: { id: /\h{40}/ } do
           member do
             post :resolve
             delete :resolve, action: :unresolve
