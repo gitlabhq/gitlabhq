@@ -373,12 +373,15 @@ export default {
           :is="componentName"
           :mr="mr"
           :service="service" />
-        <mr-widget-related-links
-          v-if="shouldRenderRelatedLinks"
-          :related-links="mr.relatedLinks"
-          />
         <mr-widget-maintainer-edit
           :maintainerEditAllowed="mr.maintainerEditAllowed" />
+        <mr-widget-related-links
+          v-if="shouldRenderRelatedLinks"
+          :state="mr.state"
+          :related-links="mr.relatedLinks" />
+        <source-branch-removal-status
+          v-if="shouldRenderSourceBranchRemovalStatus"
+        />
       </div>
       <div class="mr-widget-footer" v-if="shouldRenderMergeHelp">
         <mr-widget-merge-help />
