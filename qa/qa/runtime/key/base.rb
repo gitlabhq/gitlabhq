@@ -2,9 +2,12 @@ module QA
   module Runtime
     module Key
       class Base
-        attr_reader :private_key, :public_key, :fingerprint
+        attr_reader :name, :bits, :private_key, :public_key, :fingerprint
 
         def initialize(name, bits)
+          @name = name
+          @bits = bits
+
           Dir.mktmpdir do |dir|
             path = "#{dir}/id_#{name}"
 
