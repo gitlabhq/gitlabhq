@@ -197,7 +197,7 @@ const pollSuccessCallBack = (resp, commit, state, getters) => {
     });
   }
 
-  commit(types.SET_LAST_FETCHED_AT, resp.lastFetchedAt);
+  commit(types.SET_LAST_FETCHED_AT, resp.last_fetched_at);
 
   return resp;
 };
