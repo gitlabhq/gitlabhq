@@ -240,8 +240,7 @@ available in the package repositories.
 
 Regressions are very important, and they should be considered high priority 
 issues that should be solved as soon as possible, expecially if they affect
-users. Anyway, ~regression label itself is not a [priority label], and this
-means that regressions should still follow the scheduling process.
+users. Anyway, ~regression label itself is not a [priority label].
 
 When a regression is found:
 1. Create an issue describing the problem in the most detailed way possible
@@ -250,20 +249,17 @@ When a regression is found:
    and any other label that may apply in the specific case
 3. Add the ~regression label
 4. Add the proper milestone
-4. Ping the Product Manager for proper scheduling, see
-   [product categories](https://about.gitlab.com/handbook/product/categories/)
-   to find who manages that specific area of the Product
+
+If the regression is relevant and not just a minor fix, ping the Product Manager
+in the issue, see [product categories](https://about.gitlab.com/handbook/product/categories/)
+to find who manages that specific area of the Product. In case you are in doubt
+to ping or not, do it.
 
 A very important step is helping the PM to understand the impact the regression
 may have on users, by providing examples and how to reproduce it. This will
-allow proper scheduling with a [priority label]. Normally it will be
-~"Next Patch Release" if after the final release, or ~Deliverable if between the
-feature freeze and the final release.
-
-In case of very urgent fixes, a developer can choose to pick up the issue even
-before it is properly scheduled, in order to speed up the process. The PM should
-be pinged in the issue anyway to get confirmation about the actual priority as
-soon as possible.
+allow proper scheduling. Feel free to put ~"Next Patch Release" label to the
+issue so the fix can start immediately, the PM will discuss and prioritize it as
+needed if necessary.
 
 ## Release retrospective and kickoff
 
