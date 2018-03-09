@@ -117,7 +117,7 @@ When using default setup, minimum configuration requires:
 - `CONSUL_PASSWORD_HASH`. This is a hash generated out of consul username/password pair.
 Can be generated with:
     ```sh
-    echo -n 'CONSUL_DATABASE_PASSWORDCONSUL_USERNAME' | md5sum
+    sudo gitlab-ctl pg-password-md5 CONSUL_USERNAME
     ```
 - `CONSUL_SERVER_NODES`.  The IP addresses or DNS records of the Consul server nodes.
 
@@ -159,7 +159,7 @@ We will need the following password information for the application's database u
 - `POSTGRESQL_PASSWORD_HASH`. This is a hash generated out of the username/password pair.
 Can be generated with:
     ```sh
-    echo -n 'POSTGRESQL_USER_PASSWORDPOSTGRESQL_USERNAME' | md5sum
+    sudo gitlab-ctl pg-password-md5 POSTGRESQL_USERNAME
     ```
 
 ##### Pgbouncer information
@@ -171,7 +171,7 @@ When using default setup, minimum configuration requires:
 - `PGBOUNCER_PASSWORD_HASH`. This is a hash generated out of pgbouncer username/password pair.
 Can be generated with:
     ```sh
-    echo -n 'PGBOUNCER_PASSWORDPGBOUNCER_USERNAME' | md5sum
+    sudo gitlab-ctl pg-password-md5 PGBOUNCER_USERNAME
     ```
 - `PGBOUNCER_NODE`, is the IP address or a FQDN of the node running Pgbouncer.
 
@@ -228,7 +228,7 @@ On each Consul node perform the following:
       server: true,
       retry_join: %w(Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z)
     }
-    
+
     # Disable auto migrations
     gitlab_rails['auto_migrate'] = false
     #
