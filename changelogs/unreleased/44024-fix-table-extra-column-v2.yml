@@ -1,0 +1,5 @@
+---
+title: Fix markdown table showing extra column
+merge_request: 17670
+author:
+type: fixed
