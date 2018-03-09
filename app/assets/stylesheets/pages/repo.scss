@@ -229,6 +229,11 @@
   .vertical-center {
     min-height: auto;
   }
+
+  .monaco-diff-editor.vs .diffOverview,
+  .monaco-diff-editor.vs .diffViewport {
+    background-color: $white-light;
+  }
 }
 
 .multi-file-editor-holder {
