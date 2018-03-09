@@ -124,18 +124,14 @@ export default class Editor {
   dispose() {
     window.removeEventListener('resize', this.debouncedUpdate);
 
+    // catch any potential errors with disposing the error
+    // this is mainly for tests caused by elements not existing
     try {
       this.disposable.dispose();
 
-      // dispose main monaco instance
-      if (this.instance) {
-        this.instance = null;
-      }
+      this.instance = null;
     } catch (e) {
-      // dispose main monaco instance
-      if (this.instance) {
-        this.instance = null;
-      }
+      this.instance = null;
     }
   }
 

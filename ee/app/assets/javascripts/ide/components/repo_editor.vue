@@ -20,9 +20,6 @@ export default {
     shouldHideEditor() {
       return this.activeFile && this.activeFile.binary && !this.activeFile.raw;
     },
-    ideClassName() {
-      return `ide-editor-${this.viewer}`;
-    },
   },
   watch: {
     activeFile(oldVal, newVal) {
@@ -141,7 +138,6 @@ export default {
   <div
     id="ide"
     class="blob-viewer-container blob-editor-container"
-    :class="ideClassName"
   >
     <div
       v-if="shouldHideEditor"
