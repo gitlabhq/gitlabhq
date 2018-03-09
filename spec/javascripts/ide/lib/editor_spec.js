@@ -66,6 +66,7 @@ describe('Multi-file editor library', () => {
 
       expect(instance.monaco.editor.createDiffEditor).toHaveBeenCalledWith(holder, {
         readOnly: true,
+        scrollBeyondLastLine: false,
       });
     });
   });
