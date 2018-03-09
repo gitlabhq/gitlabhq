@@ -5,7 +5,7 @@ import {
   WidgetHeader,
   WidgetMergeHelp,
   WidgetPipeline,
-  WidgetDeployment,
+  Deployment,
   WidgetMaintainerEdit,
   WidgetRelatedLinks,
   MergedState,
@@ -133,7 +133,16 @@ export default {
         .then(res => res.data)
         .then((data) => {
           if (data.length) {
-            this.mr.deployments = data;
+            data[0].stop_url = 'asd';
+            this.mr.deployments = data.concat({
+              ...data[0],
+              id: data[0].id + 1,
+              name: 'review/1-make-homepage-more-descriptive',
+              deployed_at: new Date(),
+              deployed_at_formatted: '123',
+              external_url_formatted: 'ad3-minmal-ruby-app-review-1-make-hom-gnm6yk.gitlab.training',
+              metrics_url: 'a',
+            });
           }
         })
         .catch(() => {
@@ -216,7 +225,7 @@ export default {
     'mr-widget-header': WidgetHeader,
     'mr-widget-merge-help': WidgetMergeHelp,
     'mr-widget-pipeline': WidgetPipeline,
-    'mr-widget-deployment': WidgetDeployment,
+    Deployment,
     'mr-widget-maintainer-edit': WidgetMaintainerEdit,
     'mr-widget-related-links': WidgetRelatedLinks,
     'mr-widget-merged': MergedState,
@@ -250,10 +259,12 @@ export default {
         :ci-status="mr.ciStatus"
         :has-ci="mr.hasCI"
         />
-      <mr-widget-deployment
+      <deployment
         v-if="shouldRenderDeployments"
-        :mr="mr"
-        :service="service" />
+        v-for="deployment in mr.deployments"
+        :key="deployment.id"
+        :deployment="deployment"
+      />
       <div class="mr-widget-section">
         <component
           :is="componentName"

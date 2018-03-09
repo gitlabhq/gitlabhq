@@ -727,3 +727,23 @@
 .fork-sprite {
   margin-right: -5px;
 }
+
+.deploy-body {
+  display: flex;
+  flex-wrap: wrap;
+
+  > *:not(:last-child) {
+    margin-right: .3em;
+  }
+}
+
+.deploy-link {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1 1 100px;
+}
+
+.mr-memory-usage {
+  width: 100%;
+}
