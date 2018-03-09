@@ -217,9 +217,9 @@ describe Namespace do
           expected_upload_path = File.join(uploads_dir, namespace_path, 'the-project')
           expected_pages_path = File.join(pages_dir, namespace_path, 'the-project')
 
-          expect(File.directory?(expected_repository_path)).to be(true)
-          expect(File.directory?(expected_upload_path)).to be(true)
-          expect(File.directory?(expected_pages_path)).to be(true)
+          expect(File.directory?(expected_repository_path)).to be_truthy
+          expect(File.directory?(expected_upload_path)).to be_truthy
+          expect(File.directory?(expected_pages_path)).to be_truthy
         end
 
         before do
