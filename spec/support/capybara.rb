@@ -3,6 +3,8 @@ require 'capybara/rails'
 require 'capybara/rspec'
 require 'capybara-screenshot/rspec'
 require 'selenium-webdriver'
+require 'net/http'
+require 'uri'
 
 # Give CI some extra time
 timeout = (ENV['CI'] || ENV['CI_SERVER']) ? 60 : 30
@@ -36,11 +38,14 @@ Capybara.register_driver :chrome do |app|
   # Disable /dev/shm use in CI. See https://gitlab.com/gitlab-org/gitlab-ee/issues/4252
   options.add_argument("disable-dev-shm-usage") if ENV['CI'] || ENV['CI_SERVER']
 
+  args = {}.merge( ENV['SELENIUM_REMOTE_URL'] ? { url: ENV['SELENIUM_REMOTE_URL'] } : {})
+
   Capybara::Selenium::Driver.new(
     app,
     browser: :chrome,
     desired_capabilities: capabilities,
-    options: options
+    options: options,
+    **args
   )
 end
 
@@ -74,6 +79,16 @@ RSpec.configure do |config|
     # reset window size between tests
     unless session.current_window.size == [1240, 1400]
       session.current_window.resize_to(1240, 1400) rescue nil
+    end
+
+
+    if ENV['SELENIUM_REMOTE_URL']
+      uri =  URI("#{ENV['SELENIUM_REMOTE_URL']}/session/#{session.driver.browser.capabilities['webdriver.remote.sessionid']}/gitlab-meta")
+      req = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
+      req.body = self.class.description.to_json
+      res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+        http.request(req)
+      end
     end
   end
 
