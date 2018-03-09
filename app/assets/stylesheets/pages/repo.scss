@@ -231,13 +231,20 @@
   }
 
   .monaco-diff-editor.vs .diffOverview {
-    margin-top: -1px;
     background-color: $white-light;
     border-left: 1px solid $white-dark;
   }
 
   .monaco-diff-editor.vs .diffViewport {
     display: none;
+  }
+
+  .monaco-diff-editor .char-insert {
+    background-color: #c7f0d2;
+  }
+
+  .monaco-diff-editor .char-delete {
+    background-color: #fac5cd;
   }
 }
 

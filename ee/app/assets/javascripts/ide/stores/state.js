@@ -21,4 +21,5 @@ export default () => ({
   rightPanelCollapsed: false,
   panelResizing: false,
   viewer: 'editor',
+  delayViewerUpdated: false,
 });

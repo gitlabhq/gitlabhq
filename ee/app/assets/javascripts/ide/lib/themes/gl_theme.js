@@ -6,6 +6,8 @@ export default {
     rules: [],
     colors: {
       'editorLineNumber.foreground': '#CCCCCC',
+      'diffEditor.insertedTextBackground': '#ecfdf0',
+      'diffEditor.removedTextBackground': '#fbe9eb',
     },
   },
 };

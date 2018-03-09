@@ -62,6 +62,11 @@ export default {
       viewer,
     });
   },
+  [types.UPDATE_DELAY_VIEWER_CHANGE](state, delayViewerUpdated) {
+    Object.assign(state, {
+      delayViewerUpdated,
+    });
+  },
   ...projectMutations,
   ...fileMutations,
   ...treeMutations,

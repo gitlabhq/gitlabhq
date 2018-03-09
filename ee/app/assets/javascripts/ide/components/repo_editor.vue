@@ -16,6 +16,7 @@ export default {
       'rightPanelCollapsed',
       'panelResizing',
       'viewer',
+      'delayViewerUpdated',
     ]),
     shouldHideEditor() {
       return this.activeFile && this.activeFile.binary && !this.activeFile.raw;
@@ -63,6 +64,8 @@ export default {
       'setFileLanguage',
       'setEditorPosition',
       'setFileEOL',
+      'updateViewer',
+      'updateDelayViewerUpdated',
     ]),
     initMonaco() {
       if (this.shouldHideEditor) return;
@@ -70,7 +73,15 @@ export default {
       this.editor.clearEditor();
 
       this.getRawFileData(this.activeFile)
-        .then(() => this.createEditorInstance())
+        .then(() => {
+          const viewerPromise = this.delayViewerUpdated ? this.updateViewer('editor') : Promise.resolve();
+
+          return viewerPromise;
+        })
+        .then(() => {
+          this.updateDelayViewerUpdated(false);
+          this.createEditorInstance();
+        })
         .catch((err) => {
           flash('Error setting up monaco. Please try again.', 'alert', document, null, false, true);
           throw err;
