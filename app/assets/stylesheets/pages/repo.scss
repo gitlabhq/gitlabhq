@@ -230,9 +230,17 @@
     min-height: auto;
   }
 
-  .monaco-diff-editor.vs .diffOverview,
-  .monaco-diff-editor.vs .diffViewport {
+  .monaco-diff-editor.vs .diffOverview {
+    margin-top: -1px;
     background-color: $white-light;
+  }
+
+  .monaco-diff-editor.vs .diffOverview {
+    border-left: 1px solid $white-dark;
+  }
+
+  .monaco-diff-editor.vs .diffViewport {
+    display: none;
   }
 }
 
