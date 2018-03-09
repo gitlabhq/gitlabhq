@@ -12,7 +12,7 @@ this order:
 1. [Trigger variables][triggers] or [scheduled pipeline variables](../../user/project/pipelines/schedules.md#making-use-of-scheduled-pipeline-variables) (take precedence over all)
 1. Project-level [secret variables](#secret-variables) or [protected secret variables](#protected-secret-variables)
 1. Group-level [secret variables](#secret-variables) or [protected secret variables](#protected-secret-variables)
-1. YAML-defined [job-level variables](../yaml/README.md#job-variables)
+1. YAML-defined [job-level variables](../yaml/README.md#variables)
 1. YAML-defined [global variables](../yaml/README.md#variables)
 1. [Deployment variables](#deployment-variables)
 1. [Predefined variables](#predefined-variables-environment-variables) (are the
