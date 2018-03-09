@@ -11,9 +11,12 @@ module QA
     autoload :Scenario, 'qa/runtime/scenario'
     autoload :Browser, 'qa/runtime/browser'
     autoload :Env, 'qa/runtime/env'
-    autoload :RSAKey, 'qa/runtime/rsa_key'
     autoload :Address, 'qa/runtime/address'
     autoload :API, 'qa/runtime/api'
+
+    module Key
+      autoload :RSA, 'qa/runtime/key/rsa'
+    end
   end
 
   ##

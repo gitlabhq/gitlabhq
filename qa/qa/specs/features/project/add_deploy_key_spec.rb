@@ -4,7 +4,7 @@ module QA
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 
-      key = Runtime::RSAKey.new
+      key = Runtime::Key::RSA.new
       deploy_key_title = 'deploy key title'
       deploy_key_value = key.public_key
 

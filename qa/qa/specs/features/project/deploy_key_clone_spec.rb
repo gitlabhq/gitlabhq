@@ -3,7 +3,7 @@ require 'digest/sha1'
 module QA
   feature 'cloning code using a deploy key', :core, :docker do
     let(:runner_name) { "qa-runner-#{Time.now.to_i}" }
-    let(:key) { Runtime::RSAKey.new }
+    let(:key) { Runtime::Key::RSA.new }
 
     given(:project) do
       Factory::Resource::Project.fabricate! do |resource|
