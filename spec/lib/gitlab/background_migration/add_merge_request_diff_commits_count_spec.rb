@@ -37,6 +37,18 @@ describe Gitlab::BackgroundMigration::AddMergeRequestDiffCommitsCount, :migratio
       expect(diff.reload.commits_count).to eq(0)
     end
 
+    it 'skips diffs that have commits_count already set' do
+      timestamp = 2.days.ago
+      diff = merge_request_diffs_table.create!(
+        merge_request_id: merge_request.id,
+        commits_count: 0,
+        updated_at: timestamp)
+
+      subject.perform(diff.id, diff.id)
+
+      expect(diff.reload.updated_at).to be_within(1.second).of(timestamp)
+    end
+
     it 'migrates multiple diffs to the correct values' do
       diffs = Array.new(3).map.with_index { |_, i| create_diff!(i, commits: 3) }
 
