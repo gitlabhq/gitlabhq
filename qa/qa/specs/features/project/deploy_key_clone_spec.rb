@@ -35,7 +35,7 @@ module QA
       Factory::Resource::SecretVariable.fabricate! do |resource|
         resource.project = project
         resource.key = 'DEPLOY_KEY'
-        resource.value = key.to_pem
+        resource.value = key.private_key
       end
 
       project.visit!

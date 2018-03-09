@@ -46,7 +46,6 @@ GEM
     mini_mime (1.0.0)
     mini_portile2 (2.3.0)
     minitest (5.11.1)
-    net-ssh (4.1.0)
     netrc (0.11.0)
     nokogiri (1.8.1)
       mini_portile2 (~> 2.3.0)
@@ -98,7 +97,6 @@ DEPENDENCIES
   airborne (~> 0.2.13)
   capybara (~> 2.16.1)
   capybara-screenshot (~> 1.0.18)
-  net-ssh
   pry-byebug (~> 3.5.1)
   rake (~> 12.3.0)
   rspec (~> 3.7)
