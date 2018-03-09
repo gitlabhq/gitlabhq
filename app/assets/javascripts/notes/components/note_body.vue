@@ -1,4 +1,5 @@
 <script>
+  import $ from 'jquery';
   import noteEditedText from './note_edited_text.vue';
   import noteAwardsList from './note_awards_list.vue';
   import noteAttachment from './note_attachment.vue';

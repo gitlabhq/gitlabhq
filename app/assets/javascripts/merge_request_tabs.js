@@ -1,5 +1,6 @@
 /* eslint-disable no-new, class-methods-use-this */
 
+import $ from 'jquery';
 import Cookies from 'js-cookie';
 import axios from './lib/utils/axios_utils';
 import flash from './flash';

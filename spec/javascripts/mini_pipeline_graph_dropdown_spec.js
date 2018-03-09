@@ -1,5 +1,6 @@
 /* eslint-disable no-new */
 
+import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import MiniPipelineGraph from '~/mini_pipeline_graph_dropdown';

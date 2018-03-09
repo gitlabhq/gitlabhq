@@ -1,4 +1,6 @@
 /* eslint-disable func-names, prefer-arrow-callback, no-return-assign */
+
+import $ from 'jquery';
 import { visitUrl } from './lib/utils/url_utility';
 import { convertPermissionToBoolean } from './lib/utils/common_utils';
 

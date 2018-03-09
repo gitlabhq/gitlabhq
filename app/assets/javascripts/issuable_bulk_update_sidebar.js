@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this, no-new */
 
+import $ from 'jquery';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
 import MilestoneSelect from './milestone_select';
 import issueStatusSelect from './issue_status_select';

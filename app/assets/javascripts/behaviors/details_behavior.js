@@ -1,3 +1,4 @@
+import $ from 'jquery';
 
 $(() => {
   $('body').on('click', '.js-details-target', function target() {

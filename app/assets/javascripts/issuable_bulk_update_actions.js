@@ -1,4 +1,6 @@
 /* eslint-disable comma-dangle, quotes, consistent-return, func-names, array-callback-return, space-before-function-paren, prefer-arrow-callback, max-len, no-unused-expressions, no-sequences, no-underscore-dangle, no-unused-vars, no-param-reassign */
+
+import $ from 'jquery';
 import _ from 'underscore';
 import axios from './lib/utils/axios_utils';
 import Flash from './flash';

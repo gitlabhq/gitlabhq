@@ -1,6 +1,8 @@
 /* eslint-disable no-useless-return, func-names, space-before-function-paren, wrap-iife, no-var, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, no-unused-vars, one-var-declaration-per-line, prefer-template, no-new, consistent-return, object-shorthand, comma-dangle, no-shadow, no-param-reassign, brace-style, vars-on-top, quotes, no-lonely-if, no-else-return, dot-notation, no-empty, no-return-assign, camelcase, prefer-spread */
 /* global Issuable */
 /* global ListLabel */
+
+import $ from 'jquery';
 import _ from 'underscore';
 import { __ } from './locale';
 import axios from './lib/utils/axios_utils';

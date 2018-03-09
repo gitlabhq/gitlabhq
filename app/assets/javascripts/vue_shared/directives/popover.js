@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 /**
  * Helper to user bootstrap popover in vue.js.
  * Follow docs for html attributes: https://getbootstrap.com/docs/3.3/javascript/#static-popover

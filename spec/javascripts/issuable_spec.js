@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import MockAdaptor from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import IssuableIndex from '~/issuable_index';

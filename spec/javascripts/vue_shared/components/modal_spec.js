@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Vue from 'vue';
 import modal from '~/vue_shared/components/modal.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
