@@ -4,11 +4,6 @@ const DESCRIPTION_TYPE = 'changed the description';
 
 const changeDescriptionNote = (note, descriptionChangedTimes, timeDifferenceMinutes) => {
   const descriptionNote = note;
-  descriptionNote.note = sprintf(s__(`MergeRequest|
-  changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}`), {
-    descriptionChangedTimes,
-    timeDifferenceMinutes: n__('within %d minute, ', 'within %d minutes, ', timeDifferenceMinutes),
-  });
 
   descriptionNote.note_html = sprintf(s__(`MergeRequest|
   <p dir="auto">changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}</p>`), {
@@ -43,14 +38,14 @@ const collapseSystemNotes = (notes) => {
   notes.forEach((note) => {
     const currentNote = note.notes[0];
     const isDescriptionNote = currentNote.system &&
-      currentNote.note.includes(DESCRIPTION_TYPE);
+      currentNote.note === DESCRIPTION_TYPE;
 
     if (isDescriptionNote && !descriptionNote) {
       descriptionNote = currentNote;
       descriptionNoteIndex = noteCounter;
       collapsedNotes.push(note);
       noteCounter += 1;
-    } else if (descriptionNote) {
+    } else if (isDescriptionNote && descriptionNote) {
       timeDifferenceMinutes =
         getTimeDifferenceMinutes(descriptionNote, currentNote);
 
