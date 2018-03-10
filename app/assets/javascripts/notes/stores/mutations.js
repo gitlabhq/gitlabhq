@@ -93,16 +93,18 @@ export default {
       // To support legacy notes, should be very rare case.
       if (note.individual_note && note.notes.length > 1) {
         note.notes.forEach((n) => {
-          const nn = Object.assign({}, note);
-          nn.notes = [n]; // override notes array to only have one item to mimick individual_note
-          notes.push(nn);
+          notes.push({
+            ...note,
+            notes: [n], // override notes array to only have one item to mimick individual_note
+          });
         });
       } else {
-        const nn = Object.assign({}, note);
         const oldNote = utils.findNoteObjectById(state.notes, note.id);
-        nn.expanded = oldNote ? oldNote.expanded : note.expanded;
 
-        notes.push(nn);
+        notes.push({
+          ...note,
+          expanded: (oldNote ? oldNote.expanded : note.expanded),
+        });
       }
     });
 
