@@ -165,11 +165,25 @@ stages:
     - export NEW_FLAKY_RSPEC_REPORT_PATH=rspec_flaky/new_${JOB_NAME[0]}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export FLAKY_RSPEC_GENERATE_REPORT=true
     - export CACHE_CLASSES=true
+    - export default SELENIUM_REMOTE_URL=http://localhost:4545/wd/hub
+    - export default GITLAB_TARGET_SELENIUM_REMOTE_URL=http://localhost:4444/wd/hub
     - cp ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
     - '[[ -f $FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${FLAKY_RSPEC_REPORT_PATH}'
     - '[[ -f $NEW_FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${NEW_FLAKY_RSPEC_REPORT_PATH}'
     - scripts/gitaly-test-spawn
+    # The `&` at the end causes it to run in the background and not block the following commands
+    - nohup chromedriver --port=4444 --url-base=wd/hub &
+    # Wait for the chromedriver to come up
+    - echo 'Waiting for chromedriver' && while ! curl --output /dev/null --silent --fail http://localhost:4444/wd/hub/status ; do printf '.' && sleep 1 ; done
+    - nohup npm run gitlab-selenium-server &
+    # Wait for the GitLab Selenium server to come up
+    - echo 'Waiting for GitLab Selenium Proxy' && while ! curl --output /dev/null --silent --head --fail http://localhost:4545/ ; do printf '.' && sleep 1 ; done
+    # Show the logs for the GitLab Selenium Server service
+    - curl http://localhost:4545/server-log || true
+    #- bundle exec rspec spec/features/issues/notes_on_issues_spec.rb spec/features/issues/todo_spec.rb
     - knapsack rspec "--color --format documentation"
+    - mkdir -p selenium/ && curl -s http://localhost:4545/logs.tar.gz | tar -xvzf - -C selenium/
+    - mkdir -p selenium/ && curl http://localhost:4545/server-log --output selenium/server-log.txt
   artifacts:
     expire_in: 31d
     when: always
@@ -178,6 +192,7 @@ stages:
       - knapsack/
       - rspec_flaky/
       - tmp/capybara/
+      - selenium/
 
 .rspec-metadata-pg: &rspec-metadata-pg
   <<: *rspec-metadata
