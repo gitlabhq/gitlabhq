@@ -40,11 +40,14 @@ Capybara.register_driver :chrome do |app|
   # Disable /dev/shm use in CI. See https://gitlab.com/gitlab-org/gitlab-ee/issues/4252
   options.add_argument("disable-dev-shm-usage") if ENV['CI'] || ENV['CI_SERVER']
 
+  args = {}.merge(ENV['SELENIUM_REMOTE_URL'] ? { url: ENV['SELENIUM_REMOTE_URL'] } : {})
+
   Capybara::Selenium::Driver.new(
     app,
     browser: :chrome,
     desired_capabilities: capabilities,
-    options: options
+    options: options,
+    **args
   )
 end
 
