@@ -123,6 +123,17 @@ describe EE::NotificationService, :mailer do
   describe 'mirror hard failed' do
     let(:user) { create(:user) }
 
+    context 'when the project has invited members' do
+      it 'sends email' do
+        project = create(:project, :mirror, :import_hard_failed)
+        create(:project_member, :invited, project: project)
+
+        expect(Notify).to receive(:mirror_was_hard_failed_email).with(project.id, project.owner.id).and_call_original
+
+        subject.mirror_was_hard_failed(project)
+      end
+    end
+
     context 'when user is owner' do
       it 'sends email' do
         project = create(:project, :mirror, :import_hard_failed)
