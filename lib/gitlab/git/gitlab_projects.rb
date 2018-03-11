@@ -67,7 +67,7 @@ module Gitlab
         tags_option = tags ? '--tags' : '--no-tags'
 
         logger.info "Fetching remote #{name} for repository #{repository_absolute_path}."
-        cmd = %W(git fetch #{name} --quiet)
+        cmd = %W(#{git_fetch_binary} fetch #{name} --quiet)
         cmd << '--prune' if prune
         cmd << '--force' if force
         cmd << tags_option
@@ -81,6 +81,14 @@ module Gitlab
 
           success
         end
+      end
+
+      # This is a workaround for Geo until we can ship git 2.16
+      # See https://gitlab.com/gitlab-org/gitlab-ee/issues/5214
+      def git_fetch_binary
+        return 'git' unless ENV['USE_SYSTEM_GIT_FOR_FETCH'] == "1"
+
+        '/usr/bin/git'
       end
 
       def push_branches(remote_name, timeout, force, branch_names)
