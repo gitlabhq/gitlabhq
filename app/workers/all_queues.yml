@@ -107,6 +107,13 @@
 - web_hook
 
 # EE-specific queues
+
+# Deprecated queues: remove after 10.7
+- geo_base_scheduler
+- geo_file_download
+- geo_project_sync
+- geo_repository_shard_sync
+
 - cronjob:clear_shared_runners_minutes
 - cronjob:geo_file_download_dispatch
 - cronjob:geo_metrics_update
