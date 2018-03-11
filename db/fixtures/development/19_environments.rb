@@ -41,7 +41,7 @@ class Gitlab::Seeder::Environments
   end
 
   def create_deployment!(project, name, ref, sha)
-    environment = find_or_create_environment!(project, name)
+    environment = find_or_create_environment!(project, 'review')
     environment.deployments.create!(
       project: project,
       ref: ref,
