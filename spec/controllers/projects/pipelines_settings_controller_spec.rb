@@ -47,10 +47,38 @@ describe Projects::PipelinesSettingsController do
           expect_any_instance_of(Projects::UpdateService).to receive(:run_auto_devops_pipeline?).and_return(true)
         end
 
-        it 'queues a CreatePipelineWorker' do
-          expect(CreatePipelineWorker).to receive(:perform_async).with(project.id, user.id, project.default_branch, :web, any_args)
+        context 'when the project repository is empty' do
+          before do
+            allow_any_instance_of(Project).to receive(:empty_repo?).and_return(true)
+          end
 
-          subject
+          it 'sets a warning flash' do
+            expect(subject).to set_flash[:warning]
+          end
+
+          it 'does not queue a CreatePipelineWorker' do
+            expect(CreatePipelineWorker).not_to receive(:perform_async).with(project.id, user.id, project.default_branch, :web, any_args)
+
+            subject
+          end
+        end
+
+        context 'when the project repository is not empty' do
+          before do
+            allow_any_instance_of(Project).to receive(:empty_repo?).and_return(false)
+          end
+
+          it 'sets a success flash' do
+            allow(CreatePipelineWorker).to receive(:perform_async).with(project.id, user.id, project.default_branch, :web, any_args)
+
+            expect(subject).to set_flash[:success]
+          end
+
+          it 'queues a CreatePipelineWorker' do
+            expect(CreatePipelineWorker).to receive(:perform_async).with(project.id, user.id, project.default_branch, :web, any_args)
+
+            subject
+          end
         end
       end
 

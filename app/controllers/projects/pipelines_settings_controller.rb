@@ -11,8 +11,12 @@ class Projects::PipelinesSettingsController < Projects::ApplicationController
         flash[:notice] = "Pipelines settings for '#{@project.name}' were successfully updated."
 
         if service.run_auto_devops_pipeline?
-          CreatePipelineWorker.perform_async(project.id, current_user.id, project.default_branch, :web, ignore_skip_ci: true, save_on_errors: false)
-          flash[:success] = "A new Auto DevOps pipeline has been created, go to <a href=\"#{project_pipelines_path(@project)}\">Pipelines page</a> for details".html_safe
+          if @project.empty_repo?
+            flash[:warning] = "This repository is currently empty. A new Auto DevOps pipeline will be created after a new file has been pushed to a branch."
+          else
+            CreatePipelineWorker.perform_async(project.id, current_user.id, project.default_branch, :web, ignore_skip_ci: true, save_on_errors: false)
+            flash[:success] = "A new Auto DevOps pipeline has been created, go to <a href=\"#{project_pipelines_path(@project)}\">Pipelines page</a> for details".html_safe
+          end
         end
 
         redirect_to project_settings_ci_cd_path(@project)
