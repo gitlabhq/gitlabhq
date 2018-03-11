@@ -36,14 +36,14 @@ module Users
       # is done by a foreign_key. Otherwise they won't be called
       user.members.find_each { |member| member.run_callbacks(:destroy) }
 
-      user.solo_owned_groups.each do |group|
+      user.solo_owned_groups.find_each do |group|
         Groups::DestroyService.new(group, current_user).execute
       end
 
       namespace = user.namespace
       namespace.prepare_for_destroy
 
-      user.personal_projects.each do |project|
+      user.personal_projects.find_each do |project|
         # Skip repository removal because we remove directory with namespace
         # that contain all this repositories
         ::Projects::DestroyService.new(project, current_user, skip_repo: project.legacy_storage?).execute
