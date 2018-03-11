@@ -170,6 +170,22 @@ RSpec.describe Geo::WikiSyncService do
           expect(registry.last_wiki_sync_failure).to eq('Error syncing wiki repository: shell error')
         end
       end
+
+      context 'no Wiki repository' do
+        let(:project) { create(:project, :repository) }
+
+        it 'does not raise an error' do
+          create(
+            :geo_project_registry,
+            project: project,
+            force_to_redownload_wiki: true
+          )
+
+          expect(subject).not_to receive(:fail_registry!).and_call_original
+
+          subject.execute
+        end
+      end
     end
   end
 end
