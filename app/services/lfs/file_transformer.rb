@@ -36,7 +36,11 @@ module Lfs
     private
 
     def lfs_file?(file_path)
-      repository.attributes_at(branch_name, file_path)['filter'] == 'lfs'
+      cached_attributes.attributes(file_path)['filter'] == 'lfs'
+    end
+
+    def cached_attributes
+      @cached_attributes ||= Gitlab::Git::AttributesAtRefParser.new(repository, branch_name)
     end
 
     def create_lfs_object!(lfs_pointer_file, file_content)
