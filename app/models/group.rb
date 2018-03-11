@@ -189,12 +189,6 @@ class Group < Namespace
     owners.include?(user) && owners.size == 1
   end
 
-  def avatar_type
-    unless self.avatar.image?
-      self.errors.add :avatar, "only images allowed"
-    end
-  end
-
   def post_create_hook
     Gitlab::AppLogger.info("Group \"#{name}\" was created")
 
