@@ -22,7 +22,7 @@ module Avatarable
 
   def avatar_type
     unless self.avatar.image?
-      self.errors.add :avatar, "only images allowed"
+      errors.add :avatar, "file format is not supported. Please try one of the following supported formats: #{AvatarUploader::IMAGE_EXT.join(', ')}"
     end
   end
 
