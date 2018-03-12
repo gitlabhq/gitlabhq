@@ -7,6 +7,10 @@ module Storage
         raise Gitlab::UpdatePathError.new('Namespace cannot be moved, because at least one project has tags in container registry')
       end
 
+      parent_was = if parent_changed? && parent_id_was.present?
+                     Namespace.find(parent_id_was) # raise NotFound early if needed
+                   end
+
       expires_full_path_cache
 
       # Move the namespace directory in all storage paths used by member projects
@@ -28,7 +32,7 @@ module Storage
       end
 
       if parent_changed?
-        former_parent_full_path = parent_id_was.nil? ? nil : Namespace.find(parent_id_was).full_path
+        former_parent_full_path = parent_was.full_path
         parent_full_path = parent&.full_path
         Gitlab::UploadsTransfer.new.move_namespace(path, former_parent_full_path, parent_full_path)
         Gitlab::PagesTransfer.new.move_namespace(path, former_parent_full_path, parent_full_path)
