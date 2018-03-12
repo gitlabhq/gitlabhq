@@ -236,7 +236,7 @@ gem 'mousetrap-rails', '~> 1.4.6'
 gem 'charlock_holmes', '~> 0.7.5'
 
 # Faster JSON
-gem 'oj', '~> 2.17.4'
+gem 'oj', '~> 3.5'
 
 # Faster blank
 gem 'fast_blank'
