@@ -53,13 +53,13 @@ you can find a clear separation of concerns:
 ```
 new_feature
 ├── components
-│   └── component.js.es6
+│   └── component.vue
 │   └── ...
-├── store
-│  └── new_feature_store.js.es6
-├── service
-│  └── new_feature_service.js.es6
-├── new_feature_bundle.js.es6
+├── stores
+│  └── new_feature_store.js
+├── services
+│  └── new_feature_service.js
+├── new_feature_bundle.js
 ```
 _For consistency purposes, we recommend you to follow the same structure._
 
