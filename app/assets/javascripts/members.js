@@ -1,7 +1,10 @@
 import $ from 'jquery';
+<<<<<<< HEAD
 import Flash from './flash';
 import { __ } from './locale';
 import axios from './lib/utils/axios_utils';
+=======
+>>>>>>> upstream/master
 
 export default class Members {
   constructor() {

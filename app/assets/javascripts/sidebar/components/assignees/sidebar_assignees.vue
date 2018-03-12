@@ -1,6 +1,6 @@
 <script>
 import Flash from '../../../flash';
-import AssigneeTitle from './assignee_title';
+import AssigneeTitle from './assignee_title.vue';
 import Assignees from './assignees.vue';
 import Store from '../../stores/sidebar_store';
 import eventHub from '../../event_hub';

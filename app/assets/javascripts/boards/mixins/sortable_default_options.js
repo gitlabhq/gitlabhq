@@ -2,7 +2,11 @@
 /* global DocumentTouch */
 
 import $ from 'jquery';
+<<<<<<< HEAD
 import sortableConfig from 'ee/sortable/sortable_config';
+=======
+import sortableConfig from '../../sortable/sortable_config';
+>>>>>>> upstream/master
 
 window.gl = window.gl || {};
 window.gl.issueBoards = window.gl.issueBoards || {};
