@@ -239,7 +239,7 @@ available in the package repositories.
 ### How to manage a regression
 
 Regressions are very important, and they should be considered high priority 
-issues that should be solved as soon as possible, expecially if they affect
+issues that should be solved as soon as possible, especially if they affect
 users. Anyway, ~regression label itself is not a [priority label].
 
 When a regression is found:
