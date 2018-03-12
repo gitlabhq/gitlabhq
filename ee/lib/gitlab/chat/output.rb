@@ -59,7 +59,18 @@ module Gitlab
       #
       # output - A `String` containing the output of a trace section.
       def without_executed_command_line(output)
-        output.split("\n")[1..-1].join("\n")
+        # If `output.split("\n")` produces an empty Array then the slicing that
+        # follows it will produce a nil. For example:
+        #
+        #     "\n".split("\n")        # => []
+        #     "\n".split("\n")[1..-1] # => nil
+        #
+        # To work around this we only "join" if we're given an Array.
+        if (converted = output.split("\n")[1..-1])
+          converted.join("\n")
+        else
+          ''
+        end
       end
 
       # Returns the trace section for the given name, or `nil` if the section
