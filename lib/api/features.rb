@@ -5,7 +5,7 @@ module API
     helpers do
       def gate_value(params)
         case params[:value]
-        when 'true'
+        when '100', 'true'
           true
         when '0', 'false'
           false
@@ -49,7 +49,13 @@ module API
         case value
         when true
           if targets.present?
-            targets.each { |target| feature.enable(target) }
+            targets.each do |target|
+              # We need to disable it first so that the percentage_of_time_value
+              # gate gets reset otherwise setting it to 'true' will do nothing
+              # for features that are set to something else than 100%
+              feature.disable(target)
+              feature.enable(target)
+            end
           else
             feature.enable
           end
