@@ -718,6 +718,8 @@
 }
 
 .mr-memory-usage {
+  width: 100%;
+
   p.usage-info-loading .usage-info-load-spinner {
     margin-right: 10px;
     font-size: 16px;
@@ -762,8 +764,4 @@
   @media (min-width: $screen-md-min) {
     max-width: 100%;
   }
-}
-
-.mr-memory-usage {
-  width: 100%;
 }
