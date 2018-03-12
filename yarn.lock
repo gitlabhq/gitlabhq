@@ -54,6 +54,7 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
+<<<<<<< HEAD
 "@gitlab-org/csslab@^0.0.3":
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@gitlab-org/csslab/-/csslab-0.0.3.tgz#12018af6a737a0c6cf1ff62ab0ad2b469a3b74b4"
@@ -63,6 +64,17 @@
 "@gitlab-org/gitlab-svgs@^1.14.0":
   version "1.14.0"
   resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.14.0.tgz#b4a5cca3106f33224c5486cf674ba3b70cee727e"
+=======
+"@gitlab-org/csslab@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@gitlab-org/csslab/-/csslab-0.0.2.tgz#e35af583f9080a97f4608bf7e500fa1e76ac7b5d"
+  dependencies:
+    bootstrap-sass "^3.3.7"
+
+"@gitlab-org/gitlab-svgs@^1.13.0":
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.13.0.tgz#9e856ef9fa7bbe49b2dce9789187a89e11311215"
+>>>>>>> Add csslab
 
 "@types/jquery@^2.0.40":
   version "2.0.48"
