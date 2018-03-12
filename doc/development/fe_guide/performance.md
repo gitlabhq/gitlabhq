@@ -87,10 +87,10 @@ In addition to these page-specific bundles, the code within `main.js` and
 
 - **Keep Entry Points Lite:**
   Page-specific javascript entry points should be as lite as possible.  These
-  files are exempt from tests, and should be used primarily for instantiation
-  and dependency injection of classes and methods that live in modules outside
-  of the entry point script.  Just import, read the DOM, instantiate, and
-  nothing else.
+  files are exempt from unit tests, and should be used primarily for
+  instantiation and dependency injection of classes and methods that live in
+  modules outside of the entry point script.  Just import, read the DOM,
+  instantiate, and nothing else.
 
 - **Entry Points May Be Asynchronous:**
   _DO NOT ASSUME_ that the DOM has been fully loaded and available when an
