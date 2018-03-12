@@ -75,15 +75,12 @@ bundle and included on the page.
 > manually generated webpack bundles. However under this new system you should
 > not ever need to manually add an entry point to the `webpack.config.js` file.
 
-In addition to these page-specific bundles, the code within `main.js` and
-`commons/index.js` are imported on _all_ pages.
+> **Tip:**
+> If you are unsure what controller and action corresponds to a given page, you
+> can find this out by inspecting `document.body.dataset.page` within your
+> browser's developer console while on any page within gitlab.
 
-#### Important Tips and Considerations:
-
-- **Identifying Controller Paths:**
-  If you are unsure what controller and action corresponds to a given page, you
-  can find this out by inspecting `document.body.dataset.page` within your
-  browser's developer console while on any page within gitlab.
+#### Important Considerations:
 
 - **Keep Entry Points Lite:**
   Page-specific javascript entry points should be as lite as possible.  These
