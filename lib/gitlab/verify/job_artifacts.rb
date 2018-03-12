@@ -1,11 +1,8 @@
 module Gitlab
   module Verify
     class JobArtifacts < BatchVerifier
-<<<<<<< HEAD
       prepend ::EE::Gitlab::Verify::JobArtifacts
 
-=======
->>>>>>> upstream/master
       def name
         'Job artifacts'
       end
