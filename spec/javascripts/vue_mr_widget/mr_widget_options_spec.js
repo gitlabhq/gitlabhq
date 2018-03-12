@@ -427,6 +427,7 @@ describe('mrWidgetOptions', () => {
     it('renders when user cannot remove branch and branch should be removed', (done) => {
       vm.mr.canRemoveSourceBranch = false;
       vm.mr.shouldRemoveSourceBranch = true;
+      vm.mr.state = 'readyToMerge';
 
       vm.$nextTick(() => {
         const tooltip = vm.$el.querySelector('.fa-question-circle');
