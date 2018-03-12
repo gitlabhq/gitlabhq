@@ -80,19 +80,22 @@ In addition to these page-specific bundles, the code within `main.js` and
 
 #### Important Tips and Considerations:
 
-- If you are unsure what controller and action corresponds to a given page, you
+- **Identifying Controller Paths:**
+  If you are unsure what controller and action corresponds to a given page, you
   can find this out by checking `document.body.dataset.page` while on any page
   within gitlab.com.
 
-- Page-specific javascript entry points should be as lite as possible.  These
+- **Keep Entry Points Lite:**
+  Page-specific javascript entry points should be as lite as possible.  These
   files are exempt from tests, and should be used primarily for instantiation
   and dependency injection of classes and methods that live in modules outside
   of the entry point script.  Just import, read the DOM, instantiate, and
   nothing else.
 
-- **DO NOT ASSUME** that the DOM has been fully loaded and available when an
+- **Entry Points May Be Asynchronous:**
+  _DO NOT ASSUME_ that the DOM has been fully loaded and available when an
   entry point script is run.  If you require that some code be run after the
-  DOM has loaded, you must attach an event handler to the `DOMContentLoaded`
+  DOM has loaded, you should attach an event handler to the `DOMContentLoaded`
   event with:
 
     ```javascript
@@ -103,20 +106,22 @@ In addition to these page-specific bundles, the code within `main.js` and
     });
     ```
 
-- If a class or a module is specific to a particular route, try to locate it
-  close to the entry point it will be used. For instance, if `my_widget.js` is
-  only imported within `pages/widget/show/index.js`, you should place the
-  module at `pages/widget/show/my_widget.js` and import it with a relative path
-  (e.g. `import initMyWidget from './my_widget';`).
-  
-- If a class or module is used by multiple routes, place it within a shared
-  directory at the closest common parent directory for the entry points that
-  import it.  For example, if `my_widget.js` is imported within both
-  `pages/widget/show/index.js` and `pages/widget/run/index.js`, then place the
-  module at `pages/widget/shared/my_widget.js` and import it with a relative
-  path if possible `../shared/my_widget`.
+- **Supporting Module Placement:**  
+    - If a class or a module is _specific to a particular route_, try to locate
+      it close to the entry point it will be used. For instance, if
+      `my_widget.js` is only imported within `pages/widget/show/index.js`, you
+      should place the module at `pages/widget/show/my_widget.js` and import it
+      with a relative path (e.g. `import initMyWidget from './my_widget';`).
+      
+    - If a class or module is _used by multiple routes_, place it within a
+      shared directory at the closest common parent directory for the entry
+      points that import it.  For example, if `my_widget.js` is imported within
+      both `pages/widget/show/index.js` and `pages/widget/run/index.js`, then
+      place the module at `pages/widget/shared/my_widget.js` and import it with
+      a relative path if possible (e.g. `../shared/my_widget`).
 
-- For GitLab Enterprise Edition, page-specific entry points will override their
+- **Enterprise Edition Caveats:**
+  For GitLab Enterprise Edition, page-specific entry points will override their
   Community Edition counterparts with the same name, so if
   `ee/app/assets/javascripts/pages/foo/bar/index.js` exists, it will take
   precedence over `app/assets/javascripts/pages/foo/bar/index.js`.  If you want
@@ -139,7 +144,7 @@ import(/* webpackChunkName: 'emoji' */ '~/emoji')
 
 Please try to use `webpackChunkName` when generating these dynamic imports as
 it will provide a deterministic filename for the chunk which can then be cached
-the browser.
+the browser across GitLab versions.
 
 More information is available in [webpack's code splitting documentation](https://webpack.js.org/guides/code-splitting/#dynamic-imports).
 
