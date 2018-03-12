@@ -47,6 +47,15 @@ properties once, and handle the actual animation with transforms.
 
 ## Reducing Asset Footprint
 
+### Universal code
+
+Code that is contained within `main.js` and `commons/index.js` are loaded and
+run on _all_ pages. **DO NOT ADD** anything to these files unless it is truly
+needed _everywhere_. This includes ubiquitous libraries like `vue`, `axios`,
+and `jQuery`, as well as code for the main navigation and sidebar. Where
+possible we should aim to remove modules from these bundles to reduce our code
+footprint.
+
 ### Page-specific JavaScript
 
 Webpack has been configured to automatically generate entry point bundles based
@@ -74,11 +83,6 @@ In addition to these page-specific bundles, the code within `main.js` and
 - If you are unsure what controller and action corresponds to a given page, you
   can find this out by checking `document.body.dataset.page` while on any page
   within gitlab.com.
-
-- Since `main.js` and `commons/index.js` are imported on all pages, it is
-  important to not add anything to these bundles unless it is truly needed
-  _everywhere_.  This includes ubiquitous libraries like `vue`, `axios`, and
-  `jQuery`, as well as code for the main navigation and sidebar.
 
 - Page-specific javascript entry points should be as lite as possible.  These
   files are exempt from tests, and should be used primarily for instantiation
