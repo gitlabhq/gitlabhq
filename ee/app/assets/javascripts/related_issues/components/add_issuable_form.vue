@@ -1,4 +1,5 @@
 <script>
+import $ from 'jquery';
 import GfmAutoComplete from '~/gfm_auto_complete';
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import eventHub from '../event_hub';

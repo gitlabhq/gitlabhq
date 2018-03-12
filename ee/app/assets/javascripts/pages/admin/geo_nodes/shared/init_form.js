@@ -1,7 +1,7 @@
 /* global Flash */
-import {
-  s__,
-} from '~/locale';
+
+import $ from 'jquery';
+import { s__ } from '~/locale';
 import '~/flash';
 import Api from '~/api';
 

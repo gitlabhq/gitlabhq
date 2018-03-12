@@ -1,4 +1,6 @@
 /* eslint-disable no-var, comma-dangle, object-shorthand */
+
+import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtils from '~/lib/utils/url_utility';

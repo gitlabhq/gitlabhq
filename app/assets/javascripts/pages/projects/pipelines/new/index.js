@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import NewBranchForm from '~/new_branch_form';
 
 document.addEventListener('DOMContentLoaded', () => {

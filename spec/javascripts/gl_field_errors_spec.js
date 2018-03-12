@@ -1,5 +1,6 @@
 /* eslint-disable space-before-function-paren, arrow-body-style */
 
+import $ from 'jquery';
 import GlFieldErrors from '~/gl_field_errors';
 
 describe('GL Style Field Errors', function() {

@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 export default () => {
   const showGroupLink = () => {
     const $cnLink = $('.cn-link');

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import initTodoToggle from '~/header';
 
 describe('Header', function () {

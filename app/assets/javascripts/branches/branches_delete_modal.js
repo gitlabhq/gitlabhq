@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 const MODAL_SELECTOR = '#modal-delete-branch';
 
 class DeleteModal {

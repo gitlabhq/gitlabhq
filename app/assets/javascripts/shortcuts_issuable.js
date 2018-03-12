@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Mousetrap from 'mousetrap';
 import _ from 'underscore';
 import Sidebar from './right_sidebar';

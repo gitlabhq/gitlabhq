@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import ProjectNew from '~/pages/projects/shared/project_new';
 
 describe('ApproversSelect', function () {

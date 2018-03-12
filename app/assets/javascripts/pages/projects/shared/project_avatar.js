@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 export default function projectAvatar() {
   $('.js-choose-project-avatar-button').bind('click', function onClickAvatar() {
     const form = $(this).closest('form');

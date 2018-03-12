@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this, object-shorthand, no-unused-vars, no-use-before-define, no-new, max-len, no-restricted-syntax, guard-for-in, no-continue */
 
+import $ from 'jquery';
 import _ from 'underscore';
 import { insertText, getSelectedFragment, nodeMatchesSelector } from '../lib/utils/common_utils';
 import { placeholderImage } from '../lazy_loader';

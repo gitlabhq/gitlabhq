@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Visibility from 'visibilityjs';
 import Flash from '../../flash';
 import Poll from '../../lib/utils/poll';

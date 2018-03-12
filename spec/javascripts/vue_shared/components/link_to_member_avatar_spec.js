@@ -1,5 +1,6 @@
 /* eslint-disable no-restricted-syntax */
 
+import $ from 'jquery';
 import Vue from 'vue';
 import linkToMemberAvatar from 'ee/vue_shared/components/link_to_member_avatar';
 

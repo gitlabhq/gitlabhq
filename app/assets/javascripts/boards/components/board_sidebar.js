@@ -1,5 +1,6 @@
 /* eslint-disable comma-dangle, space-before-function-paren, no-new */
 
+import $ from 'jquery';
 import Vue from 'vue';
 import weight from 'ee/sidebar/components/weight/weight.vue';
 import Flash from '../../flash';

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import initEETrialBanner from 'ee/ee_trial_banner';
 
 $(() => {
