@@ -197,4 +197,8 @@ export default {
   [types.REOPEN_ISSUE](state) {
     Object.assign(state.noteableData, { state: constants.REOPENED });
   },
+
+  [types.TOGGLE_STATE_BUTTON_LOADING](state, value) {
+    Object.assign(state, { isToggleStateButtonLoading: value });
+  },
 };
