@@ -866,7 +866,7 @@ ActiveRecord::Schema.define(version: 20180309160427) do
 
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
 
-  create_table "internal_ids", force: :cascade do |t|
+  create_table "internal_ids", id: :bigserial, force: :cascade do |t|
     t.integer "project_id"
     t.integer "usage", null: false
     t.integer "last_value", null: false
