@@ -1,0 +1,5 @@
+---
+title: Avoid re-fetching merge-base SHA from Gitaly unnecessarily
+merge_request:
+author:
+type: performance
