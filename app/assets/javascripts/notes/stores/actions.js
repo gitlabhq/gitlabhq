@@ -203,12 +203,10 @@ const pollSuccessCallBack = (resp, commit, state, getters) => {
 };
 
 export const poll = ({ commit, state, getters }) => {
-  const requestData = { endpoint: state.notesData.notesPath, lastFetchedAt: state.lastFetchedAt };
-
   eTagPoll = new Poll({
     resource: service,
     method: 'poll',
-    data: requestData,
+    data: state,
     successCallback: resp => resp.json()
       .then(data => pollSuccessCallBack(data, commit, state, getters)),
     errorCallback: () => Flash('Something went wrong while fetching latest comments.'),
@@ -217,7 +215,7 @@ export const poll = ({ commit, state, getters }) => {
   if (!Visibility.hidden()) {
     eTagPoll.makeRequest();
   } else {
-    service.poll(requestData);
+    service.poll(state);
   }
 
   Visibility.change(() => {
