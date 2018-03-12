@@ -312,12 +312,12 @@ describe 'Issue Boards', :js do
       expect(card).not_to have_content(stretch.title)
     end
 
-    it 'creates new label' do
+    it 'creates project label' do
       click_card(card)
 
       page.within('.labels') do
         click_link 'Edit'
-        click_link 'Create new label'
+        click_link 'Create project label'
         fill_in 'new_label_name', with: 'test label'
         first('.suggest-colors-dropdown a').click
         click_button 'Create'

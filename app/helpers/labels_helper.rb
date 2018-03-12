@@ -174,6 +174,39 @@ module LabelsHelper
     end
   end
 
+  def create_label_title(subject)
+    case subject
+    when Group
+      _('Create group label')
+    when Project
+      _('Create project label')
+    else
+      _('Create new label')
+    end
+  end
+
+  def manage_labels_title(subject)
+    case subject
+    when Group
+      _('Manage group labels')
+    when Project
+      _('Manage project labels')
+    else
+      _('Manage labels')
+    end
+  end
+
+  def view_labels_title(subject)
+    case subject
+    when Group
+      _('View group labels')
+    when Project
+      _('View project labels')
+    else
+      _('View labels')
+    end
+  end
+
   # Required for Banzai::Filter::LabelReferenceFilter
   module_function :render_colored_label, :text_color_for_bg, :escape_once
 end
