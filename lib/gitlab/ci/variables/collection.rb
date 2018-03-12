@@ -27,10 +27,15 @@ module Gitlab
           end
         end
 
+        ##
+        # If `file: true` has been provided we expose it, otherwise we
+        # don't expose `file` attribute at all (stems from what the runner
+        # expects).
+        #
         def to_runner_variables
           self.map do |variable|
-            variable.to_h.reject do |key, value|
-              key == :file && value == false
+            variable.to_h.reject do |component, value|
+              component == :file && value == false
             end
           end
         end
@@ -40,10 +45,10 @@ module Gitlab
         def fabricate(resource)
           case resource
           when Hash
-            Variable.new(resource.fetch(:key),
-                         resource.fetch(:value),
-                         resource.fetch(:public, false),
-                         resource.fetch(:file, false))
+            Collection::Variable.new(resource.fetch(:key),
+                                     resource.fetch(:value),
+                                     resource.fetch(:public, false),
+                                     resource.fetch(:file, false))
           when ::Ci::Variable
             Variable.new(resource.key, resource.value, false, false)
           when Collection::Variable
