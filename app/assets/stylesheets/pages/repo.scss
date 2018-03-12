@@ -233,6 +233,7 @@
   .monaco-diff-editor.vs .diffOverview {
     background-color: $white-light;
     border-left: 1px solid $white-dark;
+    cursor: pointer;
   }
 
   .monaco-diff-editor.vs .diffViewport {
@@ -240,11 +241,11 @@
   }
 
   .monaco-diff-editor .char-insert {
-    background-color: #c7f0d2;
+    background-color: $line-added-dark;
   }
 
   .monaco-diff-editor .char-delete {
-    background-color: #fac5cd;
+    background-color: $line-removed-dark;
   }
 }
 
