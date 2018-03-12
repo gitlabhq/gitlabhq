@@ -253,8 +253,8 @@ When a regression is found:
 
 Feel free to put ~"Next Patch Release" label to the issue so the fix can start
 as soon as possible. You can ping the Engineering Manager or the Product Manager
-for the relative area area to make them aware of the issue earlier. They will
-analyze the priority and take proper actions if needed.
+for the relative area to make them aware of the issue earlier. They will analyze
+the priority and take proper actions if needed.
 
 ## Release retrospective and kickoff
 
