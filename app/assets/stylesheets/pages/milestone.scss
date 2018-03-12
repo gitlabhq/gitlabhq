@@ -217,4 +217,12 @@
   .text-container {
     position: relative;
   }
+
+  @media (max-width: $screen-xs-max) {
+    .illustration {
+      display: block;
+      text-align: center;
+      margin: $gl-padding 0;
+    }
+  }
 }
