@@ -3,10 +3,11 @@ require 'spec_helper'
 describe Gitlab::Ci::Variables::Collection do
   describe '.new' do
     it 'can be initialized with an array' do
-      variable = { key: 'SOME_VAR', value: 'Some Value' }
+      variable = { key: 'VAR', value: 'value', public: true }
+
       collection = described_class.new([variable])
 
-      expect(collection.first.to_h).to include variable
+      expect(collection.first.to_hash).to eq variable
     end
 
     it 'can be initialized without an argument' do

@@ -105,7 +105,7 @@ class KubernetesService < DeploymentService
   def predefined_variables
     config = YAML.dump(kubeconfig)
 
-    variables = Gitlab::Ci::Variables::Collection.new.tap do |collection|
+    Gitlab::Ci::Variables::Collection.new.tap do |collection|
       collection.append(key: 'KUBE_URL', value: api_url, public: true)
       collection.append(key: 'KUBE_TOKEN', value: token, public: false)
       collection.append(key: 'KUBE_NAMESPACE', value: actual_namespace, public: true)
@@ -114,8 +114,6 @@ class KubernetesService < DeploymentService
       collection.append(key: 'KUBE_CA_PEM', value: ca_pem, public: true)
       collection.append(key: 'KUBE_CA_PEM_FILE', value: ca_pem, public: true, file: true)
     end
-
-    variables.to_runner_variables
   end
 
   # Constructs a list of terminals from the reactive cache

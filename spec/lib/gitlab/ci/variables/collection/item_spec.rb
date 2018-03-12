@@ -1,0 +1,47 @@
+require 'spec_helper'
+
+describe Gitlab::Ci::Variables::Collection::Item do
+  let(:variable) do
+    { key: 'VAR', value: 'something', public: true }
+  end
+
+  describe '.fabricate' do
+    it 'supports using a hash' do
+      resource = described_class.fabricate(variable)
+
+      expect(resource).to be_a(described_class)
+      expect(resource).to eq variable
+    end
+
+    it 'supports using an active record resource' do
+      resource = described_class.fabricate(create(:ci_variable))
+
+      expect(resource).to be_a(described_class)
+      expect(resource).to eq(key: 'VARIABLE_1',
+                             value: 'VARIABLE_VALUE',
+                             public: false)
+    end
+
+    it 'supports using another collection item' do
+      item = described_class.new(**variable)
+
+      resource = described_class.fabricate(item)
+
+      expect(resource).to be_a(described_class)
+      expect(resource).to eq variable
+      expect(resource.object_id).not_to eq item.object_id
+    end
+  end
+
+  describe '#==' do
+    it 'compares a hash representation of a variable' do
+      expect(described_class.new(**variable) == variable).to be true
+    end
+  end
+
+  describe '#to_hash' do
+    it 'returns a hash representation of a collection item' do
+      expect(described_class.new(**variable).to_hash).to eq variable
+    end
+  end
+end
