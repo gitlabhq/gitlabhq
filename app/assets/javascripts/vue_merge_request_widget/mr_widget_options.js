@@ -133,16 +133,7 @@ export default {
         .then(res => res.data)
         .then((data) => {
           if (data.length) {
-            data[0].stop_url = 'asd';
-            this.mr.deployments = data.concat({
-              ...data[0],
-              id: data[0].id + 1,
-              name: 'review/1-make-homepage-more-descriptive',
-              deployed_at: new Date(),
-              deployed_at_formatted: '123',
-              external_url_formatted: 'ad3-minmal-ruby-app-review-1-make-hom-gnm6yk.gitlab.training',
-              metrics_url: 'a',
-            });
+            this.mr.deployments = data;
           }
         })
         .catch(() => {

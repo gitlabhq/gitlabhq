@@ -12,7 +12,7 @@ const returnPromise = data => new Promise((resolve) => {
   });
 });
 
-fdescribe('mrWidgetOptions', () => {
+describe('mrWidgetOptions', () => {
   let vm;
   let MrWidgetOptions;
 
