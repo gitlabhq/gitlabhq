@@ -244,22 +244,17 @@ users. Despite that, ~regression label itself is not a [priority label].
 
 When a regression is found:
 1. Create an issue describing the problem in the most detailed way possible
-2. Label the issue properly, using the [team label](../CONTRIBUTING.md#team-labels-ci-discussion-edge-platform-etc),
+1. Label the issue properly, using the [team label](../CONTRIBUTING.md#team-labels-ci-discussion-edge-platform-etc),
    the [subject label](../CONTRIBUTING.md#subject-labels-wiki-container-registry-ldap-api-etc)
    and any other label that may apply in the specific case
-3. Add the ~bug and ~regression labels
-4. Add the proper milestone
+1. Add the ~bug and ~regression labels
+1. Add the proper milestone
+1. If possible, provide links to real examples and how to reproduce the problem
 
-If the regression is relevant and not just a minor fix, ping the Product Manager
-in the issue, see [product categories](https://about.gitlab.com/handbook/product/categories/)
-to find who manages that specific area of the Product. In case you are in doubt
-to ping or not, do it.
-
-A very important step is helping the PM to understand the impact the regression
-may have on users, by providing examples and how to reproduce it. This will
-allow proper scheduling. Feel free to put ~"Next Patch Release" label to the
-issue so the fix can start immediately, the PM will discuss and prioritize it as
-needed if necessary.
+Feel free to put ~"Next Patch Release" label to the issue so the fix can start
+as soon as possible. You can ping the Engineering Manager or the Product Manager
+for the relative area area to make them aware of the issue earlier. They will
+analyze the priority and take proper actions if needed.
 
 ## Release retrospective and kickoff
 
