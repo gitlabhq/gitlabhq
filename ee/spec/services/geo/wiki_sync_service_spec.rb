@@ -181,7 +181,7 @@ RSpec.describe Geo::WikiSyncService do
             force_to_redownload_wiki: true
           )
 
-          expect(subject).not_to receive(:fail_registry!).and_call_original
+          expect(subject).not_to receive(:fail_registry!)
 
           subject.execute
         end
