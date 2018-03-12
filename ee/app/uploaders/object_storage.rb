@@ -183,7 +183,7 @@ module ObjectStorage
 
         {
           ID: id,
-          GetURL: connection.get_object_https_url(remote_store_path, upload_path, expire_at),
+          GetURL: connection.get_object_url(remote_store_path, upload_path, expire_at),
           DeleteURL: connection.delete_object_url(remote_store_path, upload_path, expire_at),
           StoreURL: connection.put_object_url(remote_store_path, upload_path, expire_at, options)
         }
