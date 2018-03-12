@@ -728,12 +728,27 @@
   margin-right: -5px;
 }
 
+.deploy-heading {
+  .media-body {
+    min-width: 0;
+  }
+}
+
 .deploy-body {
   display: flex;
   flex-wrap: wrap;
 
+  @media (min-width: $screen-md-min) {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+
   > *:not(:last-child) {
     margin-right: .3em;
+  }
+
+  .btn {
+    margin-left: $gl-padding;
   }
 }
 
@@ -741,7 +756,12 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  flex: 1 1 100px;
+  min-width: 100px;
+  max-width: 150px;
+
+  @media (min-width: $screen-md-min) {
+    max-width: 100%;
+  }
 }
 
 .mr-memory-usage {
