@@ -6,7 +6,7 @@ class CreateInternalIdsTable < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    create_table :internal_ids do |t|
+    create_table :internal_ids, id: :bigserial do |t|
       t.references :project
       t.integer :usage, null: false
       t.integer :last_value, null: false

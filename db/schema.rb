@@ -1222,7 +1222,7 @@ ActiveRecord::Schema.define(version: 20180309160427) do
 
   add_index "index_statuses", ["project_id"], name: "index_index_statuses_on_project_id", unique: true, using: :btree
 
-  create_table "internal_ids", force: :cascade do |t|
+  create_table "internal_ids", id: :bigserial, force: :cascade do |t|
     t.integer "project_id"
     t.integer "usage", null: false
     t.integer "last_value", null: false
