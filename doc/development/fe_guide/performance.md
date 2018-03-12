@@ -23,7 +23,7 @@ controlled by the server.
 1. The backend code will most likely be using etags. You do not and should not check for status
 `304 Not Modified`. The browser will transform it for you.
 
-### Lazy Loading
+### Lazy Loading Images
 
 To improve the time to first render we are using lazy loading for images. This works by setting 
 the actual image source on the `data-src` attribute. After the HTML is rendered and JavaScript is loaded, 
