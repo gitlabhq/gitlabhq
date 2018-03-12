@@ -240,7 +240,7 @@ available in the package repositories.
 
 Regressions are very important, and they should be considered high priority 
 issues that should be solved as soon as possible, especially if they affect
-users. Anyway, ~regression label itself is not a [priority label].
+users. Despite that, ~regression label itself is not a [priority label].
 
 When a regression is found:
 1. Create an issue describing the problem in the most detailed way possible
