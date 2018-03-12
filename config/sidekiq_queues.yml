@@ -88,3 +88,9 @@
   - [export_csv, 1]
   - [object_storage_upload, 1]
   - [object_storage, 1]
+
+  # Deprecated queues: Remove after 10.7
+  - geo_base_scheduler
+  - geo_file_download
+  - geo_project_sync
+  - geo_repository_shard_sync
