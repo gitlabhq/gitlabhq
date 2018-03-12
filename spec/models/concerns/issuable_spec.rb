@@ -34,7 +34,7 @@ describe Issuable do
     subject { build(:issue) }
 
     before do
-      allow(subject).to receive(:set_iid).and_return(false)
+      allow(InternalId).to receive(:generate_next).and_return(nil)
     end
 
     it { is_expected.to validate_presence_of(:project) }

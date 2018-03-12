@@ -1,21 +1,26 @@
 # An InternalId is a strictly monotone sequence of integers
-# for a given project and usage (e.g. issues).
+# generated for a given scope and usage.
 #
-# For possible usages, see InternalId#usage enum.
+# For example, issues use their project to scope internal ids:
+# In that sense, scope is "project" and usage is "issues".
+# Generated internal ids for an issue are unique per project.
+#
+# See InternalId#usage enum for available usages.
+#
+# In order to leverage InternalId for other usages, the idea is to
+# * Add `usage` value to enum
+# * (Optionally) add columns to `internal_ids` if needed for scope.
 class InternalId < ActiveRecord::Base
   belongs_to :project
 
   enum usage: { issues: 0 }
 
   validates :usage, presence: true
-  validates :project_id, presence: true
 
   # Increments #last_value and saves the record
   #
-  # The operation locks the record and gathers
-  # a `ROW SHARE` lock (in PostgreSQL). As such,
-  # the increment is atomic and safe to be called
-  # concurrently.
+  # The operation locks the record and gathers a `ROW SHARE` lock (in PostgreSQL).
+  # As such, the increment is atomic and safe to be called concurrently.
   def increment_and_save!
     lock!
     self.last_value = (last_value || 0) + 1
@@ -24,59 +29,79 @@ class InternalId < ActiveRecord::Base
   end
 
   class << self
-    # Generate next internal id for a given project and usage.
+    def generate_next(subject, scope, usage, init)
+      InternalIdGenerator.new(subject, scope, usage, init).generate
+    end
+  end
+
+  class InternalIdGenerator
+    # Generate next internal id for a given scope and usage.
     #
     # For currently supported usages, see #usage enum.
     #
     # The method implements a locking scheme that has the following properties:
-    # 1) Generated sequence of internal ids is unique per (project, usage)
+    # 1) Generated sequence of internal ids is unique per (scope and usage)
     # 2) The method is thread-safe and may be used in concurrent threads/processes.
     # 3) The generated sequence is gapless.
     # 4) In the absence of a record in the internal_ids table, one will be created
     #    and last_value will be calculated on the fly.
-    def generate_next(subject, scope, usage, init)
-      scope = [scope].flatten.compact
+    #
+    # subject: The instance we're generating an internal id for. Gets passed to init if called.
+    # scope: Attributes that define the scope for id generation.
+    # usage: Symbol to define the usage of the internal id, see InternalId.usages
+    # init: Block that gets called to initialize InternalId record if not yet present (optional)
+    attr_reader :subject, :scope, :init, :scope_attrs, :usage
+    def initialize(subject, scope, usage, init)
+      @subject = subject
+      @scope = scope
+      @init = init || ->(s) { 0 }
+      @usage = usage
+
       raise 'scope is not well-defined, need at least one column for scope (given: 0)' if scope.empty?
-      raise "usage #{usage} is unknown. Supported values are InternalId.usages = #{InternalId.usages.keys.to_s}" unless InternalId.usages.include?(usage.to_sym)
 
-      init ||= ->(s) { 0 }
-
-      scope_attrs = scope.inject({}) do |h, e|
-        h[e] = subject.public_send(e)
-        h
+      unless InternalId.usages.keys.include?(usage.to_s)
+        raise "Usage '#{usage}' is unknown. Supported values are #{InternalId.usages.keys} from InternalId.usages"
       end
+    end
 
-      transaction do
+    # Generates next internal id and returns it
+    def generate
+      subject.transaction do
         # Create a record in internal_ids if one does not yet exist
-        id = (lookup(scope_attrs, usage) || create_record(scope_attrs, usage, init, subject))
-
-        # This will lock the InternalId record with ROW SHARE
-        # and increment #last_value
-        id.increment_and_save!
+        # and increment it's last value
+        #
+        # Note this will acquire a ROW SHARE lock on the InternalId record
+        (lookup || create_record).increment_and_save!
       end
     end
 
     private
 
     # Retrieve InternalId record for (project, usage) combination, if it exists
-    def lookup(scope_attrs, usage)
-      InternalId.find_by(usage: usages[usage.to_s], **scope_attrs)
+    def lookup
+      InternalId.find_by(**scope, usage: usage_value)
     end
 
-    # Create InternalId record for (project, usage) combination, if it doesn't exist
+    def usage_value
+      @usage_value ||= InternalId.usages[usage.to_s]
+    end
+
+    # Create InternalId record for (scope, usage) combination, if it doesn't exist
     #
-    # We blindly insert without any synchronization. If another process
+    # We blindly insert without synchronization. If another process
     # was faster in doing this, we'll realize once we hit the unique key constraint
     # violation. We can safely roll-back the nested transaction and perform
     # a lookup instead to retrieve the record.
-    def create_record(scope_attrs, usage, init, subject)
-      begin
-        transaction(requires_new: true) do
-          create!(usage: usages[usage.to_s], **scope_attrs, last_value: init.call(subject) || 0)
-        end
-      rescue ActiveRecord::RecordNotUnique
-        lookup(scope_attrs, usage)
+    def create_record
+      subject.transaction(requires_new: true) do
+        InternalId.create!(
+          **scope,
+          usage: usage_value,
+          last_value: init.call(subject) || 0
+        )
       end
+    rescue ActiveRecord::RecordNotUnique
+      lookup
     end
   end
 end
