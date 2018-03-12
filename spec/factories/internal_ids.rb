@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :internal_id do
     project
-    usage { InternalId.usages.keys.first }
+    usage :issues
+    last_value { project.issues.maximum(:iid) || 0 }
   end
 end

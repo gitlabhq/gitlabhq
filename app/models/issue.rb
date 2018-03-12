@@ -28,6 +28,8 @@ class Issue < ActiveRecord::Base
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
 
+  has_internal_id :iid, scope: :project, init: ->(s) { s.project.issues.maximum(:iid) }
+
   has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :merge_requests_closing_issues,
