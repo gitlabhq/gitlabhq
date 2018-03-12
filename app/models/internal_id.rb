@@ -23,17 +23,6 @@ class InternalId < ActiveRecord::Base
     last_value
   end
 
-  before_create :calculate_last_value!
-
-  # Calculate #last_value by counting the number of
-  # existing records for this usage.
-  def calculate_last_value!
-    return if last_value
-
-    parent = project # ??|| group
-    self.last_value = parent.send(usage.to_sym).maximum(:iid) || 0 # rubocop:disable GitlabSecurity/PublicSend
-  end
-
   class << self
     # Generate next internal id for a given project and usage.
     #
@@ -45,12 +34,21 @@ class InternalId < ActiveRecord::Base
     # 3) The generated sequence is gapless.
     # 4) In the absence of a record in the internal_ids table, one will be created
     #    and last_value will be calculated on the fly.
-    def generate_next(project, usage)
-      raise 'project not set - this is required' unless project
+    def generate_next(subject, scope, usage, init)
+      scope = [scope].flatten.compact
+      raise 'scope is not well-defined, need at least one column for scope (given: 0)' if scope.empty?
+      raise "usage #{usage} is unknown. Supported values are InternalId.usages = #{InternalId.usages.keys.to_s}" unless InternalId.usages.include?(usage.to_sym)
 
-      project.transaction do
+      init ||= ->(s) { 0 }
+
+      scope_attrs = scope.inject({}) do |h, e|
+        h[e] = subject.public_send(e)
+        h
+      end
+
+      transaction do
         # Create a record in internal_ids if one does not yet exist
-        id = (lookup(project, usage) || create_record(project, usage))
+        id = (lookup(scope_attrs, usage) || create_record(scope_attrs, usage, init, subject))
 
         # This will lock the InternalId record with ROW SHARE
         # and increment #last_value
@@ -61,8 +59,8 @@ class InternalId < ActiveRecord::Base
     private
 
     # Retrieve InternalId record for (project, usage) combination, if it exists
-    def lookup(project, usage)
-      project.internal_ids.find_by(usage: usages[usage.to_s])
+    def lookup(scope_attrs, usage)
+      InternalId.find_by(usage: usages[usage.to_s], **scope_attrs)
     end
 
     # Create InternalId record for (project, usage) combination, if it doesn't exist
@@ -71,13 +69,13 @@ class InternalId < ActiveRecord::Base
     # was faster in doing this, we'll realize once we hit the unique key constraint
     # violation. We can safely roll-back the nested transaction and perform
     # a lookup instead to retrieve the record.
-    def create_record(project, usage)
+    def create_record(scope_attrs, usage, init, subject)
       begin
-        project.transaction(requires_new: true) do
-          create!(project: project, usage: usages[usage.to_s])
+        transaction(requires_new: true) do
+          create!(usage: usages[usage.to_s], **scope_attrs, last_value: init.call(subject) || 0)
         end
       rescue ActiveRecord::RecordNotUnique
-        lookup(project, usage)
+        lookup(scope_attrs, usage)
       end
     end
   end

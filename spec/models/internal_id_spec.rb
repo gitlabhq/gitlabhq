@@ -3,6 +3,9 @@ require 'spec_helper'
 describe InternalId do
   let(:project) { create(:project) }
   let(:usage) { :issues }
+  let(:issue) { build(:issue, project: project) }
+  let(:scope) { :project }
+  let(:init) { ->(s) { project.issues.size } }
 
   context 'validations' do
     it { is_expected.to validate_presence_of(:usage) }
@@ -11,7 +14,7 @@ describe InternalId do
 
   describe '.generate_next' do
     context 'in the absence of a record' do
-      subject { described_class.generate_next(project, usage) }
+      subject { described_class.generate_next(issue, scope, usage, init) }
 
       it 'creates a record if not yet present' do
         expect { subject }.to change { described_class.count }.from(0).to(1)
@@ -22,13 +25,14 @@ describe InternalId do
 
         described_class.first.tap do |record|
           expect(record.project).to eq(project)
-          expect(record.usage).to eq(usage.to_s) # TODO
+          expect(record.usage).to eq(usage.to_s)
         end
       end
 
       context 'with existing issues' do
         before do
           rand(10).times { create(:issue, project: project) }
+          InternalId.delete_all
         end
 
         it 'calculates last_value values automatically' do
@@ -39,7 +43,7 @@ describe InternalId do
 
     it 'generates a strictly monotone, gapless sequence' do
       seq = (0..rand(1000)).map do
-        described_class.generate_next(project, usage)
+        described_class.generate_next(issue, scope, usage, init)
       end
       normalized = seq.map { |i| i - seq.min }
       expect(normalized).to eq((0..seq.size - 1).to_a)
@@ -65,22 +69,6 @@ describe InternalId do
 
       it 'returns 1' do
         expect(subject).to eq(1)
-      end
-    end
-  end
-
-  describe '#calculate_last_value! (for issues)' do
-    subject do
-      build(:internal_id, project: project, usage: :issues)
-    end
-
-    context 'with existing issues' do
-      before do
-        rand(10).times { create(:issue, project: project) }
-      end
-
-      it 'counts related issues and saves' do
-        expect { subject.calculate_last_value! }.to change { subject.last_value }.from(nil).to(project.issues.size)
       end
     end
   end
