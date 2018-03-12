@@ -1,4 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, quotes, no-var, object-shorthand, consistent-return, no-unused-vars, comma-dangle, vars-on-top, prefer-template, max-len */
+
+import $ from 'jquery';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import axios from './lib/utils/axios_utils';
 

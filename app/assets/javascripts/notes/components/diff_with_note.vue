@@ -1,4 +1,5 @@
 <script>
+  import $ from 'jquery';
   import syntaxHighlight from '~/syntax_highlight';
   import imageDiffHelper from '~/image_diff/helpers/index';
   import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';

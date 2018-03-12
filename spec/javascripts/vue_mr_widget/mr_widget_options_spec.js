@@ -81,6 +81,49 @@ describe('mrWidgetOptions', () => {
       });
     });
 
+    describe('shouldRenderSourceBranchRemovalStatus', () => {
+      beforeEach(() => {
+        vm.mr.state = 'readyToMerge';
+      });
+
+      it('should return true when cannot remove source branch and branch will be removed', () => {
+        vm.mr.canRemoveSourceBranch = false;
+        vm.mr.shouldRemoveSourceBranch = true;
+
+        expect(vm.shouldRenderSourceBranchRemovalStatus).toEqual(true);
+      });
+
+      it('should return false when can remove source branch and branch will be removed', () => {
+        vm.mr.canRemoveSourceBranch = true;
+        vm.mr.shouldRemoveSourceBranch = true;
+
+        expect(vm.shouldRenderSourceBranchRemovalStatus).toEqual(false);
+      });
+
+      it('should return false when cannot remove source branch and branch will not be removed', () => {
+        vm.mr.canRemoveSourceBranch = false;
+        vm.mr.shouldRemoveSourceBranch = false;
+
+        expect(vm.shouldRenderSourceBranchRemovalStatus).toEqual(false);
+      });
+
+      it('should return false when in merged state', () => {
+        vm.mr.canRemoveSourceBranch = false;
+        vm.mr.shouldRemoveSourceBranch = true;
+        vm.mr.state = 'merged';
+
+        expect(vm.shouldRenderSourceBranchRemovalStatus).toEqual(false);
+      });
+
+      it('should return false when in nothing to merge state', () => {
+        vm.mr.canRemoveSourceBranch = false;
+        vm.mr.shouldRemoveSourceBranch = true;
+        vm.mr.state = 'nothingToMerge';
+
+        expect(vm.shouldRenderSourceBranchRemovalStatus).toEqual(false);
+      });
+    });
+
     describe('shouldRenderDeployments', () => {
       it('should return false for the initial data', () => {
         expect(vm.shouldRenderDeployments).toBeFalsy();
@@ -375,6 +418,38 @@ describe('mrWidgetOptions', () => {
       vm.mr.state = stateKey.nothingToMerge;
       Vue.nextTick(() => {
         expect(vm.$el.querySelector('.close-related-link')).toBeNull();
+        done();
+      });
+    });
+  });
+
+  describe('rendering source branch removal status', () => {
+    it('renders when user cannot remove branch and branch should be removed', (done) => {
+      vm.mr.canRemoveSourceBranch = false;
+      vm.mr.shouldRemoveSourceBranch = true;
+      vm.mr.state = 'readyToMerge';
+
+      vm.$nextTick(() => {
+        const tooltip = vm.$el.querySelector('.fa-question-circle');
+
+        expect(vm.$el.textContent).toContain('Removes source branch');
+        expect(tooltip.getAttribute('data-original-title')).toBe(
+          'A user with write access to the source branch selected this option',
+        );
+
+        done();
+      });
+    });
+
+    it('does not render in merged state', (done) => {
+      vm.mr.canRemoveSourceBranch = false;
+      vm.mr.shouldRemoveSourceBranch = true;
+      vm.mr.state = 'merged';
+
+      vm.$nextTick(() => {
+        expect(vm.$el.textContent).toContain('The source branch has been removed');
+        expect(vm.$el.textContent).not.toContain('Removes source branch');
+
         done();
       });
     });

@@ -1,4 +1,5 @@
 <script>
+  import $ from 'jquery';
   import { mapActions, mapGetters } from 'vuex';
   import _ from 'underscore';
   import Autosize from 'autosize';

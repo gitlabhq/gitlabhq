@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Vue from 'vue';
 import Autosize from 'autosize';
 import store from '~/notes/stores';

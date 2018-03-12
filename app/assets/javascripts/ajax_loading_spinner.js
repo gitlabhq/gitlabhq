@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 export default class AjaxLoadingSpinner {
   static init() {
     const $elements = $('.js-ajax-loading-spinner');

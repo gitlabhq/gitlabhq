@@ -117,6 +117,12 @@ module Gitlab
     config.assets.precompile << "test.css"
     config.assets.precompile << "locale/**/app.js"
 
+    # Import gitlab-svgs directly from vendored directory
+    config.assets.paths << "#{config.root}/node_modules/@gitlab-org/gitlab-svgs/dist"
+    config.assets.precompile << "icons.svg"
+    config.assets.precompile << "icons.json"
+    config.assets.precompile << "illustrations/*.svg"
+
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 

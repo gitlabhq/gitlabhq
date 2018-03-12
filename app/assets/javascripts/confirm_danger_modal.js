@@ -1,4 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, one-var, no-var, camelcase, one-var-declaration-per-line, no-else-return, max-len */
+
+import $ from 'jquery';
 import { rstrip } from './lib/utils/common_utils';
 
 window.ConfirmDangerModal = (function() {

@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars, no-mixed-operators, comma-dangle */
 /* global DocumentTouch */
 
+import $ from 'jquery';
 import sortableConfig from '../../sortable/sortable_config';
 
 window.gl = window.gl || {};
