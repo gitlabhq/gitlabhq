@@ -509,4 +509,20 @@ feature 'File blob', :js do
       end
     end
   end
+
+  context 'realtime pipelines' do
+    let(:user) { create(:user) }
+    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'feature', sha: project.commit.id, user: user, status: :success) }
+
+    before do
+      project.add_master(user)
+      sign_in(user)
+      visit_blob('files/ruby/popen.rb', ref: 'feature')
+    end
+    
+    it 'should show the realtime pipeline status' do
+      wait_for_requests
+      expect(find('.js-commit-pipeline-status')).not_to be nil
+    end
+  end
 end
