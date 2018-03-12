@@ -9,6 +9,7 @@ import {
   findEntry,
   createTemp,
   createOrMergeEntry,
+  sortTree,
 } from '../utils';
 
 export const getTreeData = (
@@ -19,7 +20,7 @@ export const getTreeData = (
   if (!tree && state.trees[`${projectId}/${branch}`] && !force) {
     resolve();
   } else {
-    if (tree) commit(types.TOGGLE_LOADING, tree);
+    if (tree) commit(types.TOGGLE_LOADING, { entry: tree });
     const selectedProject = state.projects[projectId];
     // We are merging the web_url that we got on the project info with the endpoint
     // we got on the tree entry, as both contain the projectId, we replace it in the tree endpoint
@@ -34,16 +35,12 @@ export const getTreeData = (
         return res.json();
       })
       .then((data) => {
-        if (!state.isInitialRoot) {
-          commit(types.SET_ROOT, data.path === '/');
-        }
-
         dispatch('updateDirectoryData', { data, tree, projectId, branch, clearTree: false });
         const selectedTree = tree || state.trees[`${projectId}/${branch}`];
 
         commit(types.SET_PARENT_TREE_URL, data.parent_tree_url);
         commit(types.SET_LAST_COMMIT_URL, { tree: selectedTree, url: data.last_commit_path });
-        if (tree) commit(types.TOGGLE_LOADING, selectedTree);
+        if (tree) commit(types.TOGGLE_LOADING, { entry: selectedTree });
 
         const prevLastCommitPath = selectedTree.lastCommitPath;
         if (prevLastCommitPath !== null) {
@@ -53,7 +50,7 @@ export const getTreeData = (
       })
       .catch((e) => {
         flash('Error loading tree data. Please try again.', 'alert', document, null, false, true);
-        if (tree) commit(types.TOGGLE_LOADING, tree);
+        if (tree) commit(types.TOGGLE_LOADING, { entry: tree });
         reject(e);
       });
     } else {
@@ -62,16 +59,7 @@ export const getTreeData = (
   }
 });
 
-export const toggleTreeOpen = ({ commit, dispatch }, { endpoint, tree }) => {
-  if (tree.opened) {
-    // send empty data to clear the tree
-    const data = { trees: [], blobs: [], submodules: [] };
-
-    dispatch('updateDirectoryData', { data, tree, projectId: tree.projectId, branchId: tree.branchId });
-  } else {
-    dispatch('getTreeData', { endpoint, tree, projectId: tree.projectId, branch: tree.branchId });
-  }
-
+export const toggleTreeOpen = ({ commit, dispatch }, { tree }) => {
   commit(types.TOGGLE_TREE_OPEN, tree);
 };
 
@@ -82,7 +70,7 @@ export const handleTreeEntryAction = ({ commit, dispatch }, row) => {
       tree: row,
     });
   } else if (row.type === 'submodule') {
-    commit(types.TOGGLE_LOADING, row);
+    commit(types.TOGGLE_LOADING, { entry: row });
     visitUrl(row.url);
   } else if (row.type === 'blob' && (row.opened || row.changed)) {
     if (row.changed && !row.opened) {
@@ -198,3 +186,95 @@ export const updateDirectoryData = (
 
   commit(types.SET_DIRECTORY_DATA, { tree: selectedTree, data: formattedData });
 };
+
+export const getFiles = (
+  { state, commit, dispatch },
+  { projectId, branchId } = {},
+) => new Promise((resolve, reject) => {
+  if (!state.trees[`${projectId}/${branchId}`]) {
+    const selectedProject = state.projects[projectId];
+    commit(types.CREATE_TREE, { treePath: `${projectId}/${branchId}` });
+
+    service
+      .getFiles(selectedProject.web_url, branchId)
+      .then(res => res.json())
+      .then((data) => {
+        const newTree = data.reduce((outputArray, file) => {
+          const pathSplit = file.split('/');
+          const blobName = pathSplit.pop();
+          let selectedFolderTree;
+          let foundFolder = null;
+          let fullPath = '';
+
+          if (pathSplit.length > 0) {
+            const newBaseFolders = pathSplit.reduce((newFolders, folder, currentIndex) => {
+              fullPath += `/${folder}`;
+              foundFolder = findEntry(selectedFolderTree || outputArray, 'tree', fullPath, 'path');
+              if (!foundFolder) {
+                foundFolder = createOrMergeEntry({
+                  projectId,
+                  branchId,
+                  entry: {
+                    id: fullPath,
+                    name: folder,
+                    path: fullPath,
+                    url: `/${projectId}/tree/${branchId}/${fullPath}`,
+                  },
+                  level: currentIndex,
+                  type: 'tree',
+                  parentTreeUrl: '',
+                  state,
+                });
+
+                if (selectedFolderTree) {
+                  selectedFolderTree.push(foundFolder);
+                } else {
+                  newFolders.push(foundFolder);
+                }
+              }
+              selectedFolderTree = foundFolder.tree;
+              return newFolders;
+            }, []);
+            if (newBaseFolders.length) outputArray.push(newBaseFolders[0]);
+          }
+
+          // Add file
+          const blobEntry = createOrMergeEntry({
+            projectId,
+            branchId,
+            entry: {
+              id: file,
+              name: blobName,
+              path: file,
+              url: `/${projectId}/blob/${branchId}/${file}`,
+            },
+            level: foundFolder ? (foundFolder.level + 1) : 0,
+            type: 'blob',
+            parentTreeUrl: foundFolder ? foundFolder.url : '',
+            state,
+          });
+
+          if (selectedFolderTree) {
+            selectedFolderTree.push(blobEntry);
+          } else {
+            outputArray.push(blobEntry);
+          }
+
+          return outputArray;
+        }, []);
+
+        const selectedTree = state.trees[`${projectId}/${branchId}`];
+        commit(types.SET_DIRECTORY_DATA, { tree: selectedTree, data: sortTree(newTree) });
+        commit(types.TOGGLE_LOADING, { entry: selectedTree, forceValue: false });
+
+        resolve();
+      })
+      .catch((e) => {
+        flash('Error loading tree data. Please try again.', 'alert', document, null, false, true);
+        reject(e);
+      });
+  } else {
+    resolve();
+  }
+});
+

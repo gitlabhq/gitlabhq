@@ -10,6 +10,7 @@
   import changedFileIcon from 'ee/ide/components/changed_file_icon.vue'; // eslint-disable-line import/first
 
   export default {
+    name: 'RepoFile',
     components: {
       skeletonLoadingContainer,
       newDropdown,
@@ -51,9 +52,6 @@
       shortId() {
         return this.file.id.substr(0, 8);
       },
-      submoduleColSpan() {
-        return !this.leftPanelCollapsed && this.isSubmodule ? 3 : 1;
-      },
       fileClass() {
         if (this.file.type === 'blob') {
           if (this.file.active) {
@@ -87,82 +85,62 @@
 </script>
 
 <template>
-  <tr
-    class="file"
-    :class="fileClass"
-  >
-    <td
-      class="multi-file-table-name"
-      :colspan="submoduleColSpan"
-      @click="clickFile(file)"
+  <div>
+    <div
+      class="file"
+      :class="fileClass"
     >
-      <a
-        class="repo-file-name str-truncated"
+      <div
+        class="file-name"
+        @click="clickFile(file)"
       >
-        <file-icon
-          :file-name="file.name"
-          :loading="file.loading"
-          :folder="file.type === 'tree'"
-          :opened="file.opened"
-          :style="levelIndentation"
-          :size="16"
-        />
-        {{ file.name }}
-        <file-status-icon :file="file" />
-      </a>
-      <new-dropdown
-        v-if="isTree"
-        :project-id="file.projectId"
-        :branch="file.branchId"
-        :path="file.path"
-        :parent="file"
-      />
-      <changed-file-icon
-        v-if="file.changed || file.tempFile"
-        :file="file"
-        class="prepend-top-5 pull-right"
-      />
-      <template v-if="isSubmodule && file.id">
-        @
-        <span class="commit-sha">
-          <a
-            @click.stop
-            :href="file.tree_url"
-          >
-            {{ shortId }}
-          </a>
-        </span>
-      </template>
-    </td>
-
-    <template v-if="showExtraColumns && !isSubmodule">
-      <td class="multi-file-table-col-commit-message hidden-sm hidden-xs">
         <a
-          v-if="file.lastCommit.message"
-          @click.stop
-          :href="file.lastCommit.url"
+          class="ide-file-name str-truncated"
         >
-          {{ file.lastCommit.message }}
+          <file-icon
+            :file-name="file.name"
+            :loading="file.loading"
+            :folder="file.type === 'tree'"
+            :opened="file.opened"
+            :style="levelIndentation"
+            :size="16"
+          />
+          {{ file.name }}
+          <file-status-icon :file="file" />
         </a>
-        <skeleton-loading-container
-          v-else
-          :small="true"
+        <new-dropdown
+          v-if="isTree"
+          :project-id="file.projectId"
+          :branch="file.branchId"
+          :path="file.path"
+          :parent="file"
         />
-      </td>
-
-      <td class="commit-update hidden-xs text-right">
-        <span
-          v-if="file.lastCommit.updatedAt"
-          :title="tooltipTitle(file.lastCommit.updatedAt)"
-        >
-          {{ timeFormated(file.lastCommit.updatedAt) }}
-        </span>
-        <skeleton-loading-container
-          v-else
-          class="animation-container-right"
-          :small="true"
+        <changed-file-icon
+          :file="file"
+          v-if="file.changed || file.tempFile"
+          class="prepend-top-5"
         />
-      </td>
+        <template v-if="isSubmodule && file.id">
+          @
+          <span class="commit-sha">
+            <a
+              @click.stop
+              :href="file.tree_url"
+            >
+              {{ shortId }}
+            </a>
+          </span>
+        </template>
+      </div>
+    </div>
+    <template
+      v-if="file.opened"
+    >
+      <repo-file
+        v-for="childFile in file.tree"
+        :key="childFile.key"
+        :file="childFile"
+      />
     </template>
-  </tr>
+  </div>
 </template>

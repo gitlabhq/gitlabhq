@@ -70,10 +70,9 @@ router.beforeEach((to, from, next) => {
           branchId: to.params.branch,
         });
 
-        store.dispatch('getTreeData', {
+        store.dispatch('getFiles', {
           projectId: fullProjectId,
-          branch: to.params.branch,
-          endpoint: `/tree/${to.params.branch}`,
+          branchId: to.params.branch,
         })
         .then(() => {
           if (to.params[0]) {

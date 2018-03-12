@@ -51,13 +51,23 @@ describe('Multi-file store mutations', () => {
 
   describe('TOGGLE_LOADING', () => {
     it('toggles loading of entry', () => {
-      mutations.TOGGLE_LOADING(localState, entry);
+      mutations.TOGGLE_LOADING(localState, { entry });
 
       expect(entry.loading).toBeTruthy();
 
-      mutations.TOGGLE_LOADING(localState, entry);
+      mutations.TOGGLE_LOADING(localState, { entry });
 
       expect(entry.loading).toBeFalsy();
+    });
+
+    it('toggles loading of entry and sets specific value', () => {
+      mutations.TOGGLE_LOADING(localState, { entry });
+
+      expect(entry.loading).toBeTruthy();
+
+      mutations.TOGGLE_LOADING(localState, { entry, forceValue: true });
+
+      expect(entry.loading).toBeTruthy();
     });
   });
 
@@ -70,20 +80,6 @@ describe('Multi-file store mutations', () => {
       mutations.TOGGLE_EDIT_MODE(localState);
 
       expect(localState.editMode).toBeTruthy();
-    });
-  });
-
-  describe('SET_ROOT', () => {
-    it('sets isRoot & initialRoot', () => {
-      mutations.SET_ROOT(localState, true);
-
-      expect(localState.isRoot).toBeTruthy();
-      expect(localState.isInitialRoot).toBeTruthy();
-
-      mutations.SET_ROOT(localState, false);
-
-      expect(localState.isRoot).toBeFalsy();
-      expect(localState.isInitialRoot).toBeFalsy();
     });
   });
 

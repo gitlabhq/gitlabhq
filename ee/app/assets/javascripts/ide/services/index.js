@@ -44,4 +44,12 @@ export default {
       },
     });
   },
+  getFiles(projectUrl, branchId) {
+    const url = `${projectUrl}/files/${branchId}`;
+    return Vue.http.get(url, {
+      params: {
+        format: 'json',
+      },
+    });
+  },
 };
