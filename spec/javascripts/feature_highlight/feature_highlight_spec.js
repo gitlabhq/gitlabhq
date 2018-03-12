@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import * as featureHighlightHelper from '~/feature_highlight/feature_highlight_helper';
 import * as featureHighlight from '~/feature_highlight/feature_highlight';
 import axios from '~/lib/utils/axios_utils';

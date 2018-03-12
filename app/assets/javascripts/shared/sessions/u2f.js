@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import U2FAuthenticate from '../../u2f/authenticate';
 
 export default () => {

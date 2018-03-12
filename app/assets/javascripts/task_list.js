@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import 'deckar01-task_list';
 import axios from './lib/utils/axios_utils';
 import Flash from './flash';

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Autosave from '~/autosave';
 import AccessorUtilities from '~/lib/utils/accessor';
 
