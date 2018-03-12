@@ -46,19 +46,35 @@
       background: $white-normal;
     }
 
-    .repo-file-name {
+    .ide-file-name {
+      flex: 1;
       white-space: nowrap;
       text-overflow: ellipsis;
+
+      svg {
+        vertical-align: middle;
+        margin-right: 2px;
+      }
+
+      .loading-container {
+        margin-right: 4px;
+        display: inline-block;
+      }
     }
 
-    .repo-new-btn {
+    .ide-file-changed-icon {
+      margin-left: auto;
+    }
+
+    .ide-new-btn {
       display: none;
       margin-top: -4px;
       margin-bottom: -4px;
+      margin-right: -8px;
     }
 
     &:hover {
-      .repo-new-btn {
+      .ide-new-btn {
         display: block;
       }
     }
@@ -81,10 +97,10 @@
   }
 }
 
-.multi-file-table-name,
-.multi-file-table-col-commit-message {
+.file-name,
+.file-col-commit-message {
+  display: flex;
   overflow: visible;
-  max-width: 0;
   padding: 6px 12px;
 }
 
@@ -98,21 +114,6 @@
     div {
       background: $gray-light;
     }
-  }
-}
-
-table.table tr td.multi-file-table-name {
-  width: 350px;
-  padding: 6px 12px;
-
-  svg {
-    vertical-align: middle;
-    margin-right: 2px;
-  }
-
-  .loading-container {
-    margin-right: 4px;
-    display: inline-block;
   }
 }
 
@@ -558,7 +559,7 @@ table.table tr td.multi-file-table-name {
   justify-content: center;
 }
 
-.repo-new-btn {
+.ide-new-btn {
   .dropdown-toggle svg {
     margin-top: -2px;
     margin-bottom: 2px;

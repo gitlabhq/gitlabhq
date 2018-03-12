@@ -47,7 +47,7 @@
 </script>
 
 <template>
-  <div class="repo-new-btn pull-right">
+  <div class="ide-new-btn">
     <div
       class="dropdown"
       :class="{

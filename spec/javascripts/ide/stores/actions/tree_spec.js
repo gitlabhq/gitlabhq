@@ -11,6 +11,7 @@ describe('Multi-file store tree actions', () => {
     endpoint: 'rootEndpoint',
     projectId: 'abcproject',
     branch: 'master',
+    branchId: 'master',
   };
 
   beforeEach(() => {
@@ -113,18 +114,6 @@ describe('Multi-file store tree actions', () => {
         }).catch(done.fail);
     });
 
-    it('sets root if not currently at root', (done) => {
-      store.state.isInitialRoot = false;
-
-      store.dispatch('getTreeData', basicCallParameters)
-        .then(() => {
-          expect(store.state.isInitialRoot).toBeTruthy();
-          expect(store.state.isRoot).toBeTruthy();
-
-          done();
-        }).catch(done.fail);
-    });
-
     it('sets page title', (done) => {
       store.dispatch('getTreeData', basicCallParameters)
         .then(() => {
@@ -145,6 +134,42 @@ describe('Multi-file store tree actions', () => {
           expect(getLastCommitDataSpy).toHaveBeenCalledWith(projectTree);
 
           store._actions.getLastCommitData = oldGetLastCommitData; // eslint-disable-line
+
+          done();
+        }).catch(done.fail);
+    });
+  });
+
+  describe('getFiles', () => {
+    beforeEach(() => {
+      spyOn(service, 'getFiles').and.returnValue(Promise.resolve({
+        json: () => Promise.resolve([
+          'file.txt',
+          'folder/fileinfolder.js',
+          'folder/subfolder/fileinsubfolder.js',
+        ]),
+      }));
+    });
+
+    it('calls service getFiles', (done) => {
+      store.dispatch('getFiles', basicCallParameters)
+      .then(() => {
+        expect(service.getFiles).toHaveBeenCalledWith('', 'master');
+
+        done();
+      }).catch(done.fail);
+    });
+
+    it('adds data into tree', (done) => {
+      store.dispatch('getFiles', basicCallParameters)
+        .then(() => {
+          projectTree = store.state.trees['abcproject/master'];
+          expect(projectTree.tree.length).toBe(2);
+          expect(projectTree.tree[0].type).toBe('tree');
+          expect(projectTree.tree[0].tree[1].name).toBe('fileinfolder.js');
+          expect(projectTree.tree[1].type).toBe('blob');
+          expect(projectTree.tree[0].tree[0].tree[0].type).toBe('blob');
+          expect(projectTree.tree[0].tree[0].tree[0].name).toBe('fileinsubfolder.js');
 
           done();
         }).catch(done.fail);
@@ -176,42 +201,9 @@ describe('Multi-file store tree actions', () => {
 
     it('toggles the tree open', (done) => {
       store.dispatch('toggleTreeOpen', {
-        endpoint: 'test',
         tree,
       }).then(() => {
         expect(tree.opened).toBeTruthy();
-
-        done();
-      }).catch(done.fail);
-    });
-
-    it('calls getTreeData if tree is closed', (done) => {
-      store.dispatch('toggleTreeOpen', {
-        endpoint: 'test',
-        tree,
-      }).then(() => {
-        expect(getTreeDataSpy).toHaveBeenCalledWith({
-          projectId: 'abcproject',
-          branch: 'master',
-          endpoint: 'test',
-          tree,
-        });
-
-        done();
-      }).catch(done.fail);
-    });
-
-    it('resets entries tree', (done) => {
-      Object.assign(tree, {
-        opened: true,
-        tree: ['a'],
-      });
-
-      store.dispatch('toggleTreeOpen', {
-        endpoint: 'test',
-        tree,
-      }).then(() => {
-        expect(tree.tree.length).toBe(0);
 
         done();
       }).catch(done.fail);

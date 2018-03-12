@@ -18,20 +18,14 @@ export default {
       currentBlobView: 'repo-editor',
     });
   },
-  [types.TOGGLE_LOADING](state, entry) {
+  [types.TOGGLE_LOADING](state, { entry, forceValue = undefined }) {
     Object.assign(entry, {
-      loading: !entry.loading,
+      loading: forceValue !== undefined ? forceValue : !entry.loading,
     });
   },
   [types.TOGGLE_EDIT_MODE](state) {
     Object.assign(state, {
       editMode: !state.editMode,
-    });
-  },
-  [types.SET_ROOT](state, isRoot) {
-    Object.assign(state, {
-      isRoot,
-      isInitialRoot: isRoot,
     });
   },
   [types.SET_LEFT_PANEL_COLLAPSED](state, collapsed) {

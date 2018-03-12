@@ -6,7 +6,6 @@ export default () => ({
   changedFiles: [],
   editMode: true,
   endpoints: {},
-  isRoot: false,
   isInitialRoot: false,
   lastCommitMsg: '',
   lastCommitPath: '',
