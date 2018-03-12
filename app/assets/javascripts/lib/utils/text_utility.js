@@ -65,20 +65,6 @@ export function capitalizeFirstCharacter(text) {
   return `${text[0].toUpperCase()}${text.slice(1)}`;
 }
 
-export function camelCase(str) {
-  return str.replace(/_+([a-z])/gi, ($1, $2) => $2.toUpperCase());
-}
-
-export function camelCaseKeys(obj = {}) {
-  return Object.keys(obj).reduce((acc, key) => {
-    const camelKey = camelCase(key);
-    return {
-      ...acc,
-      [camelKey]: obj[key],
-    };
-  }, {});
-}
-
 /**
  * Replaces all html tags from a string with the given replacement.
  *

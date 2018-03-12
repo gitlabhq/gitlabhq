@@ -3,6 +3,7 @@
 - show_footer = local_assigns.fetch(:show_footer, true)
 - filter_placeholder = local_assigns.fetch(:filter_placeholder, 'Search')
 - show_boards_content = local_assigns.fetch(:show_boards_content, false)
+- subject = @project || @group
 .dropdown-page-one
   = dropdown_title(title)
   - if show_boards_content
@@ -17,11 +18,11 @@
         - if can?(current_user, :admin_label, current_board_parent)
           %li
             %a.dropdown-toggle-page{ href: "#" }
-              = _('Create new label')
+              = create_label_title(subject)
         %li
           = link_to labels_path, :"data-is-link" => true do
             - if show_create && can?(current_user, :admin_label, current_board_parent)
-              = _('Manage labels')
+              = manage_labels_title(subject)
             - else
-              = _('View labels')
+              = view_labels_title(subject)
   = dropdown_loading
