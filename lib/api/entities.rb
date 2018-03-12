@@ -547,6 +547,7 @@ module API
       expose :discussion_locked
       expose :should_remove_source_branch?, as: :should_remove_source_branch
       expose :force_remove_source_branch?, as: :force_remove_source_branch
+      expose :allow_maintainer_to_push, if: -> (merge_request, _) { merge_request.for_fork? }
 
       expose :web_url do |merge_request, options|
         Gitlab::UrlBuilder.build(merge_request)
@@ -644,6 +645,7 @@ module API
       NOTEABLE_TYPES_WITH_IID = %w(Issue MergeRequest).freeze
 
       expose :id
+      expose :type
       expose :note, as: :body
       expose :attachment_identifier, as: :attachment
       expose :author, using: Entities::UserBasic
@@ -653,6 +655,12 @@ module API
 
       # Avoid N+1 queries as much as possible
       expose(:noteable_iid) { |note| note.noteable.iid if NOTEABLE_TYPES_WITH_IID.include?(note.noteable_type) }
+    end
+
+    class Discussion < Grape::Entity
+      expose :id
+      expose :individual_note?, as: :individual_note
+      expose :notes, using: Entities::Note
     end
 
     class AwardEmoji < Grape::Entity

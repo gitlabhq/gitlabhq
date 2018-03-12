@@ -1146,6 +1146,7 @@ ActiveRecord::Schema.define(version: 20180308052825) do
     t.boolean "discussion_locked"
     t.integer "latest_merge_request_diff_id"
     t.string "rebase_commit_sha"
+    t.boolean "allow_maintainer_to_push"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -1846,6 +1847,13 @@ ActiveRecord::Schema.define(version: 20180308052825) do
   add_index "user_custom_attributes", ["key", "value"], name: "index_user_custom_attributes_on_key_and_value", using: :btree
   add_index "user_custom_attributes", ["user_id", "key"], name: "index_user_custom_attributes_on_user_id_and_key", unique: true, using: :btree
 
+  create_table "user_interacted_projects", id: false, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "project_id", null: false
+  end
+
+  add_index "user_interacted_projects", ["project_id", "user_id"], name: "index_user_interacted_projects_on_project_id_and_user_id", unique: true, using: :btree
+
   create_table "user_synced_attributes_metadata", force: :cascade do |t|
     t.boolean "name_synced", default: false
     t.boolean "email_synced", default: false
@@ -2118,6 +2126,8 @@ ActiveRecord::Schema.define(version: 20180308052825) do
   add_foreign_key "u2f_registrations", "users"
   add_foreign_key "user_callouts", "users", on_delete: :cascade
   add_foreign_key "user_custom_attributes", "users", on_delete: :cascade
+  add_foreign_key "user_interacted_projects", "projects", name: "fk_722ceba4f7", on_delete: :cascade
+  add_foreign_key "user_interacted_projects", "users", name: "fk_0894651f08", on_delete: :cascade
   add_foreign_key "user_synced_attributes_metadata", "users", on_delete: :cascade
   add_foreign_key "users_star_projects", "projects", name: "fk_22cd27ddfc", on_delete: :cascade
   add_foreign_key "web_hook_logs", "web_hooks", on_delete: :cascade

@@ -529,18 +529,19 @@ Creates a new merge request.
 POST /projects/:id/merge_requests
 ```
 
-| Attribute              | Type    | Required | Description                                                                     |
-| ---------              | ----    | -------- | -----------                                                                     |
-| `id`                   | integer/string  | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `source_branch`        | string  | yes      | The source branch                                                               |
-| `target_branch`        | string  | yes      | The target branch                                                               |
-| `title`                | string  | yes      | Title of MR                                                                     |
-| `assignee_id`          | integer | no       | Assignee user ID                                                                |
-| `description`          | string  | no       | Description of MR                                                               |
-| `target_project_id`    | integer | no       | The target project (numeric id)                                                 |
-| `labels`               | string  | no       | Labels for MR as a comma-separated list                                         |
-| `milestone_id`         | integer | no       | The ID of a milestone                                                           |
-| `remove_source_branch` | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
+| Attribute                  | Type    | Required | Description                                                                     |
+| ---------                  | ----    | -------- | -----------                                                                     |
+| `id`                       | integer/string  | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `source_branch`            | string  | yes      | The source branch                                                               |
+| `target_branch`            | string  | yes      | The target branch                                                               |
+| `title`                    | string  | yes      | Title of MR                                                                     |
+| `assignee_id`              | integer | no       | Assignee user ID                                                                |
+| `description`              | string  | no       | Description of MR                                                               |
+| `target_project_id`        | integer | no       | The target project (numeric id)                                                 |
+| `labels`                   | string  | no       | Labels for MR as a comma-separated list                                         |
+| `milestone_id`             | integer | no       | The ID of a milestone                                                           |
+| `remove_source_branch`     | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
+| `allow_maintainer_to_push` | boolean | no       | Whether or not a maintainer of the target project can push to the source branch  |
 
 ```json
 {
@@ -548,7 +549,7 @@ POST /projects/:id/merge_requests
   "iid": 1,
   "target_branch": "master",
   "source_branch": "test1",
-  "project_id": 3,
+  "project_id": 4,
   "title": "test1",
   "state": "opened",
   "upvotes": 0,
@@ -569,7 +570,7 @@ POST /projects/:id/merge_requests
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
   },
-  "source_project_id": 4,
+  "source_project_id": 3,
   "target_project_id": 4,
   "labels": [ ],
   "description": "fixed login page css paddings",
@@ -596,6 +597,7 @@ POST /projects/:id/merge_requests
   "force_remove_source_branch": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
   "discussion_locked": false,
+  "allow_maintainer_to_push": false,
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -613,19 +615,20 @@ Updates an existing merge request. You can change the target branch, title, or e
 PUT /projects/:id/merge_requests/:merge_request_iid
 ```
 
-| Attribute              | Type    | Required | Description                                                                     |
-| ---------              | ----    | -------- | -----------                                                                     |
-| `id`                   | integer/string | yes  | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `merge_request_iid`    | integer | yes      | The ID of a merge request                                                       |
-| `target_branch`        | string  | no       | The target branch                                                               |
-| `title`                | string  | no       | Title of MR                                                                     |
-| `assignee_id`          | integer | no       | The ID of the user to assign the merge request to. Set to `0` or provide an empty value to unassign all assignees.  |
-| `milestone_id`         | integer | no       | The ID of a milestone to assign the merge request to. Set to `0` or provide an empty value to unassign a milestone.|
-| `labels`               | string  | no       | Comma-separated label names for a merge request. Set to an empty string to unassign all labels.                    |
-| `description`          | string  | no       | Description of MR                                                               |
-| `state_event`          | string  | no       | New state (close/reopen)                                                        |
-| `remove_source_branch` | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
-| `discussion_locked`    | boolean | no       | Flag indicating if the merge request's discussion is locked. If the discussion is locked only project members can add, edit or resolve comments. |
+| Attribute                  | Type    | Required | Description                                                                     |
+| ---------                  | ----    | -------- | -----------                                                                     |
+| `id`                       | integer/string | yes  | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `merge_request_iid`        | integer | yes      | The ID of a merge request                                                       |
+| `target_branch`            | string  | no       | The target branch                                                               |
+| `title`                    | string  | no       | Title of MR                                                                     |
+| `assignee_id`              | integer | no       | The ID of the user to assign the merge request to. Set to `0` or provide an empty value to unassign all assignees.  |
+| `milestone_id`             | integer | no       | The ID of a milestone to assign the merge request to. Set to `0` or provide an empty value to unassign a milestone.|
+| `labels`                   | string  | no       | Comma-separated label names for a merge request. Set to an empty string to unassign all labels.                    |
+| `description`              | string  | no       | Description of MR                                                               |
+| `state_event`              | string  | no       | New state (close/reopen)                                                        |
+| `remove_source_branch`     | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
+| `discussion_locked`        | boolean | no       | Flag indicating if the merge request's discussion is locked. If the discussion is locked only project members can add, edit or resolve comments. |
+| `allow_maintainer_to_push` | boolean | no       | Whether or not a maintainer of the target project can push to the source branch |
 
 Must include at least one non-required attribute from above.
 
@@ -634,7 +637,7 @@ Must include at least one non-required attribute from above.
   "id": 1,
   "iid": 1,
   "target_branch": "master",
-  "project_id": 3,
+  "project_id": 4,
   "title": "test1",
   "state": "opened",
   "upvotes": 0,
@@ -655,7 +658,7 @@ Must include at least one non-required attribute from above.
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
   },
-  "source_project_id": 4,
+  "source_project_id": 3,
   "target_project_id": 4,
   "labels": [ ],
   "description": "description1",
@@ -682,6 +685,7 @@ Must include at least one non-required attribute from above.
   "force_remove_source_branch": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
   "discussion_locked": false,
+  "allow_maintainer_to_push": false,
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
