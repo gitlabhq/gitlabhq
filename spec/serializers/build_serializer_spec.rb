@@ -39,6 +39,7 @@ describe BuildSerializer do
         expect(subject[:label]).to eq(status.label)
         expect(subject[:icon]).to eq(status.icon)
         expect(subject[:favicon]).to match_asset_path("/assets/ci_favicons/#{status.favicon}.ico")
+        expect(subject[:failure_reason]).to eq('Unknown failure')
       end
     end
   end

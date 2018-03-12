@@ -28,5 +28,22 @@ module Ci
           trigger_request.user_variables
         end
     end
+
+    def failure_reason_description
+      failure_descriptions[failure_reason]
+    end
+
+    private
+
+    def failure_descriptions
+      {
+        "unknown_failure" => "Unknown failure",
+        "script_failure" => "Script failure",
+        "api_failure" => "API failure",
+        "stuck_or_timeout_failure" => "Stuck or timeout failure",
+        "runner_system_failure" => "Runner system failure",
+        "missing_dependency_failure" => "Missing dependency failure"
+      }
+    end
   end
 end

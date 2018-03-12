@@ -25,7 +25,10 @@ class JobEntity < Grape::Entity
   expose :playable?, as: :playable
   expose :created_at
   expose :updated_at
-  expose :detailed_status, as: :status, with: StatusEntity
+  expose :status do
+    expose :failure_reason
+    expose :detailed_status, merge: true, with: StatusEntity
+  end
 
   private
 
@@ -49,5 +52,9 @@ class JobEntity < Grape::Entity
 
   def path_to(route, build)
     send("#{route}_path", build.project.namespace, build.project, build) # rubocop:disable GitlabSecurity/PublicSend
+  end
+
+  def failure_reason
+    Ci::BuildPresenter.new(build).failure_reason_description
   end
 end
