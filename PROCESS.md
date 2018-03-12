@@ -247,7 +247,7 @@ When a regression is found:
 2. Label the issue properly, using the [team label](../CONTRIBUTING.md#team-labels-ci-discussion-edge-platform-etc),
    the [subject label](../CONTRIBUTING.md#subject-labels-wiki-container-registry-ldap-api-etc)
    and any other label that may apply in the specific case
-3. Add the ~regression label
+3. Add the ~bug and ~regression labels
 4. Add the proper milestone
 
 If the regression is relevant and not just a minor fix, ping the Product Manager
