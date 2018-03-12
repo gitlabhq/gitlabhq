@@ -3,6 +3,8 @@ module Gitlab
     module Variables
       class Collection
         class Item
+          # TODO, public by default?
+          #
           def initialize(**options)
             @variable = {
               key: options.fetch(:key),
@@ -28,6 +30,8 @@ module Gitlab
           end
 
           def self.fabricate(resource)
+            # TODO, to_runner_variable by default for class < ActiveRecord::Base
+            #
             case resource
             when Hash
               self.new(resource)

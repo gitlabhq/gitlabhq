@@ -14,6 +14,7 @@ module Gitlab
           @variables.append(Collection::Item.fabricate(resource))
         end
 
+        # TODO, specs
         def concat(resources)
           resources.each { |variable| self.append(variable) }
         end
