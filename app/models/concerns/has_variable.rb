@@ -20,8 +20,12 @@ module HasVariable
       super(new_key.to_s.strip)
     end
 
-    def to_runner_variable
+    def to_hash
       { key: key, value: value, public: false }
+    end
+
+    def to_runner_variable
+      to_hash
     end
   end
 end

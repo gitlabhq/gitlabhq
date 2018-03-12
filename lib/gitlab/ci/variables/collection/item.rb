@@ -33,10 +33,12 @@ module Gitlab
               self.new(resource)
             when ::Ci::Variable
               self.new(resource.to_hash)
+            when ::Ci::PipelineVariable
+              self.new(resource.to_hash)
             when self
               resource.dup
             else
-              raise ArgumentError, 'Unknown CI/CD variable resource!'
+              raise ArgumentError, "Unknown `#{resource.class}` variable resource!"
             end
           end
         end

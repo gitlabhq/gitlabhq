@@ -1571,15 +1571,17 @@ class Project < ActiveRecord::Base
   end
 
   def predefined_variables
-    [
-      { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
-      { key: 'CI_PROJECT_NAME', value: path, public: true },
-      { key: 'CI_PROJECT_PATH', value: full_path, public: true },
-      { key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug, public: true },
-      { key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true },
-      { key: 'CI_PROJECT_URL', value: web_url, public: true },
-      { key: 'CI_PROJECT_VISIBILITY', value: Gitlab::VisibilityLevel.string_level(visibility_level), public: true }
-    ]
+    visibility = Gitlab::VisibilityLevel.string_level(visibility_level)
+
+    Gitlab::Ci::Variables::Collection.new.tap do |variables|
+      variables.append(key: 'CI_PROJECT_ID', value: id.to_s, public: true)
+      variables.append(key: 'CI_PROJECT_NAME', value: path, public: true)
+      variables.append(key: 'CI_PROJECT_PATH', value: full_path, public: true)
+      variables.append(key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug, public: true)
+      variables.append(key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true)
+      variables.append(key: 'CI_PROJECT_URL', value: web_url, public: true)
+      variables.append(key: 'CI_PROJECT_VISIBILITY', value: visibility, public: true)
+    end
   end
 
   def container_registry_variables

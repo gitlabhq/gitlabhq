@@ -7,11 +7,15 @@ module Gitlab
         def initialize(variables = [])
           @variables = []
 
-          variables.each { |variable| append(variable) }
+          variables.each { |variable| self.append(variable) }
         end
 
         def append(resource)
           @variables.append(Collection::Item.fabricate(resource))
+        end
+
+        def concat(resources)
+          resources.each { |variable| self.append(variable) }
         end
 
         def each

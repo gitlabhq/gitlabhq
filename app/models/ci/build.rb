@@ -252,23 +252,25 @@ module Ci
     # All variables, including those dependent on environment, which could
     # contain unexpanded variables.
     def variables(environment: persisted_environment)
-      variables = predefined_variables
-      variables += project.predefined_variables
-      variables += pipeline.predefined_variables
-      variables += runner.predefined_variables if runner
-      variables += project.container_registry_variables
-      variables += project.deployment_variables if has_environment?
-      variables += project.auto_devops_variables
-      variables += yaml_variables
-      variables += user_variables
-      variables += project.group.secret_variables_for(ref, project).map(&:to_runner_variable) if project.group
-      variables += secret_variables(environment: environment)
-      variables += trigger_request.user_variables if trigger_request
-      variables += pipeline.variables.map(&:to_runner_variable)
-      variables += pipeline.pipeline_schedule.job_variables if pipeline.pipeline_schedule
-      variables += persisted_environment_variables if environment
+      collection = Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        variables.concat(predefined_variables)
+        variables.concat(project.predefined_variables)
+        variables.concat(pipeline.predefined_variables)
+        variables.concat(runner.predefined_variables) if runner
+        variables.concat(project.container_registry_variables)
+        variables.concat(project.deployment_variables) if has_environment?
+        variables.concat(project.auto_devops_variables)
+        variables.concat(yaml_variables)
+        variables.concat(user_variables)
+        variables.concat(project.group.secret_variables_for(ref, project).map(&:to_runner_variable)) if project.group
+        variables.concat(secret_variables(environment: environment))
+        variables.concat(trigger_request.user_variables) if trigger_request
+        variables.concat(pipeline.variables)
+        variables.concat(pipeline.pipeline_schedule.job_variables) if pipeline.pipeline_schedule
+        variables.concat(persisted_environment_variables) if environment
+      end
 
-      variables
+      collection.to_runner_variables
     end
 
     def features
