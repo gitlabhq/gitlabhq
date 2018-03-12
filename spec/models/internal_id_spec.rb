@@ -4,12 +4,11 @@ describe InternalId do
   let(:project) { create(:project) }
   let(:usage) { :issues }
   let(:issue) { build(:issue, project: project) }
-  let(:scope) { :project }
-  let(:init) { ->(s) { project.issues.size } }
+  let(:scope) { { project: project } }
+  let(:init) { ->(s) { s.project.issues.size } }
 
   context 'validations' do
     it { is_expected.to validate_presence_of(:usage) }
-    it { is_expected.to validate_presence_of(:project_id) }
   end
 
   describe '.generate_next' do
@@ -31,8 +30,8 @@ describe InternalId do
 
       context 'with existing issues' do
         before do
-          rand(10).times { create(:issue, project: project) }
-          InternalId.delete_all
+          rand(1..10).times { create(:issue, project: project) }
+          described_class.delete_all
         end
 
         it 'calculates last_value values automatically' do
