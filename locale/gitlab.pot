@@ -222,6 +222,9 @@ msgstr ""
 msgid "Alternatively, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
 msgstr ""
 
+msgid "Alternatively, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
+msgstr ""
+
 msgid "An error occurred previewing the blob"
 msgstr ""
 
@@ -606,6 +609,9 @@ msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to s
 msgstr ""
 
 msgid "Choose file..."
+msgstr ""
+
+msgid "Choose which repositories you want to import."
 msgstr ""
 
 msgid "Choose which repositories you want to import."
@@ -1289,6 +1295,9 @@ msgstr ""
 msgid "Done"
 msgstr ""
 
+msgid "Done"
+msgstr ""
+
 msgid "Download"
 msgstr ""
 
@@ -1442,6 +1451,9 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
+msgid "Failed"
+msgstr ""
+
 msgid "Failed Jobs"
 msgstr ""
 
@@ -1505,6 +1517,9 @@ msgid "Forking in progress"
 msgstr ""
 
 msgid "Format"
+msgstr ""
+
+msgid "From %{provider_title}"
 msgstr ""
 
 msgid "From %{provider_title}"
@@ -1660,6 +1675,12 @@ msgid "If you already have files you can push them using the %{link_to_cli} belo
 msgstr ""
 
 msgid "If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>."
+msgstr ""
+
+msgid "Import"
+msgstr ""
+
+msgid "Import all repositories"
 msgstr ""
 
 msgid "Import"
@@ -1833,6 +1854,9 @@ msgid "Leave project"
 msgstr ""
 
 msgid "List your GitHub repositories"
+msgstr ""
+
+msgid "Loading the GitLab IDE..."
 msgstr ""
 
 msgid "Lock"
@@ -2882,6 +2906,12 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
+msgid "Started"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
 msgid "Stopped"
 msgstr ""
 
@@ -3308,6 +3338,15 @@ msgstr ""
 msgid "To import GitHub repositories, you first need to authorize GitLab to access the list of your GitHub repositories:"
 msgstr ""
 
+msgid "To GitLab"
+msgstr ""
+
+msgid "To import GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
+msgstr ""
+
+msgid "To import GitHub repositories, you first need to authorize GitLab to access the list of your GitHub repositories:"
+msgstr ""
+
 msgid "To import an SVN repository, check out %{svn_link}."
 msgstr ""
 
@@ -3633,6 +3672,9 @@ msgid "confidentiality|You are going to turn off the confidentiality. This means
 msgstr ""
 
 msgid "confidentiality|You are going to turn on the confidentiality. This means that only team members with <strong>at least Reporter access</strong> are able to see and leave comments on the issue."
+msgstr ""
+
+msgid "connecting"
 msgstr ""
 
 msgid "connecting"
