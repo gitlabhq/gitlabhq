@@ -218,10 +218,15 @@
     position: relative;
   }
 
+  .btn-link {
+    padding: 0;
+  }
+
   @media (max-width: $screen-xs-max) {
+    text-align: center;
+
     .illustration {
       display: block;
-      text-align: center;
       margin: $gl-padding 0;
     }
   }
