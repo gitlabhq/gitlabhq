@@ -62,6 +62,7 @@ FactoryBot.define do
     end
 
     trait :pending do
+      queued_at 'Di 29. Okt 09:50:59 CET 2013'
       status 'pending'
     end
 
