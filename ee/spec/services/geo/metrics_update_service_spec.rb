@@ -56,7 +56,7 @@ describe Geo::MetricsUpdateService, :geo do
   describe '#execute' do
     before do
       request = double(success?: true, parsed_response: data.stringify_keys, code: 200)
-      allow(Geo::NodeStatusFetchService).to receive(:get).and_return(request)
+      allow(Gitlab::HTTP).to receive(:get).and_return(request)
     end
 
     context 'when current node is nil' do
@@ -65,7 +65,7 @@ describe Geo::MetricsUpdateService, :geo do
       end
 
       it 'skips fetching the status' do
-        expect(Geo::NodeStatusFetchService).to receive(:get).never
+        expect(Gitlab::HTTP).to receive(:get).never
 
         subject.execute
       end

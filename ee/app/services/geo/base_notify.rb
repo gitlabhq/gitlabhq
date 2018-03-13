@@ -1,20 +1,17 @@
 module Geo
   class BaseNotify
-    include HTTParty
-
-    # HTTParty timeout
-    default_timeout Gitlab.config.gitlab.webhook_timeout
-
     def notify(notify_url, content)
-      response = self.class.post(notify_url,
-                                 body: content,
-                                 headers: {
-                                   'Content-Type' => 'application/json',
-                                   'PRIVATE-TOKEN' => private_token
-                                 })
+      response = Gitlab::HTTP.post(notify_url,
+                                   timeout: Gitlab.config.gitlab.webhook_timeout,
+                                   body: content,
+                                   allow_local_requests: true,
+                                   headers: {
+                                     'Content-Type' => 'application/json',
+                                     'PRIVATE-TOKEN' => private_token
+                                   })
 
       [(response.code >= 200 && response.code < 300), ActionView::Base.full_sanitizer.sanitize(response.to_s)]
-    rescue HTTParty::Error, Errno::ECONNREFUSED => e
+    rescue Gitlab::HTTP::Error, Errno::ECONNREFUSED => e
       [false, ActionView::Base.full_sanitizer.sanitize(e.message)]
     end
 

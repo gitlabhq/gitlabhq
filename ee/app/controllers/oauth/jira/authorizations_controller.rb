@@ -31,7 +31,7 @@ class Oauth::Jira::AuthorizationsController < ApplicationController
                     .slice(:code, :client_id, :client_secret)
                     .merge(grant_type: 'authorization_code', redirect_uri: oauth_jira_callback_url)
 
-    auth_response = HTTParty.post(oauth_token_url, body: auth_params)
+    auth_response = Gitlab::HTTP.post(oauth_token_url, body: auth_params, allow_local_requests: true)
     token_type, scope, token = auth_response['token_type'], auth_response['scope'], auth_response['access_token']
 
     render text: "access_token=#{token}&scope=#{scope}&token_type=#{token_type}"

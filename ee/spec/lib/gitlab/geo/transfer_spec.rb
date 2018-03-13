@@ -32,7 +32,7 @@ describe Gitlab::Geo::Transfer do
     it 'when the HTTP response is successful' do
       expect(FileUtils).to receive(:mv).with(anything, lfs_object.file.path).and_call_original
       response = double(success?: true)
-      expect(HTTParty).to receive(:get).and_yield(content.to_s).and_return(response)
+      expect(Gitlab::HTTP).to receive(:get).and_yield(content.to_s).and_return(response)
 
       expect(subject.download_from_primary).to eq(size)
       stat = File.stat(lfs_object.file.path)
@@ -44,7 +44,7 @@ describe Gitlab::Geo::Transfer do
     it 'when the HTTP response is unsuccessful' do
       expect(FileUtils).not_to receive(:mv).with(anything, lfs_object.file.path).and_call_original
       response = double(success?: false, code: 404, msg: 'No such file')
-      expect(HTTParty).to receive(:get).and_return(response)
+      expect(Gitlab::HTTP).to receive(:get).and_return(response)
 
       expect(subject.download_from_primary).to eq(-1)
     end

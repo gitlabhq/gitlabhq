@@ -93,7 +93,7 @@ describe 'Billing plan pages', :feature do
   end
 
   before do
-    expect(HTTParty).to receive(:get).and_return(double(body: plans_data.to_json))
+    expect(Gitlab::HTTP).to receive(:get).and_return(double(body: plans_data.to_json))
     stub_application_setting(check_namespace_plan: true)
     allow(Gitlab).to receive(:com?) { true }
     gitlab_sign_in(user)

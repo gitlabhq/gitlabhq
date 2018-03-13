@@ -14,7 +14,7 @@ describe Geo::NodeStatusFetchService, :geo do
                        code: 401,
                        message: 'Unauthorized',
                        parsed_response: { 'message' => 'Test' } )
-      allow(described_class).to receive(:get).and_return(request)
+      allow(Gitlab::HTTP).to receive(:get).and_return(request)
 
       status = subject.call(secondary)
 
@@ -71,7 +71,7 @@ describe Geo::NodeStatusFetchService, :geo do
                cursor_last_event_id: 1,
                cursor_last_event_timestamp: Time.now.to_i }
       request = double(success?: true, parsed_response: data.stringify_keys, code: 200)
-      allow(described_class).to receive(:get).and_return(request)
+      allow(Gitlab::HTTP).to receive(:get).and_return(request)
 
       status = subject.call(secondary)
 
@@ -84,7 +84,7 @@ describe Geo::NodeStatusFetchService, :geo do
                        code: 401,
                        message: 'Unauthorized',
                        parsed_response: '<html><h1>You are not allowed</h1></html>')
-      allow(described_class).to receive(:get).and_return(request)
+      allow(Gitlab::HTTP).to receive(:get).and_return(request)
 
       status = subject.call(secondary)
 
@@ -94,7 +94,7 @@ describe Geo::NodeStatusFetchService, :geo do
 
     it 'alerts on bad SSL certficate' do
       message = 'bad certificate'
-      allow(described_class).to receive(:get).and_raise(OpenSSL::SSL::SSLError.new(message))
+      allow(Gitlab::HTTP).to receive(:get).and_raise(OpenSSL::SSL::SSLError.new(message))
 
       status = subject.call(secondary)
 
@@ -102,7 +102,7 @@ describe Geo::NodeStatusFetchService, :geo do
     end
 
     it 'handles connection refused' do
-      allow(described_class).to receive(:get).and_raise(Errno::ECONNREFUSED.new('bad connection'))
+      allow(Gitlab::HTTP).to receive(:get).and_raise(Errno::ECONNREFUSED.new('bad connection'))
 
       status = subject.call(secondary)
 
@@ -126,7 +126,7 @@ describe Geo::NodeStatusFetchService, :geo do
     end
 
     it 'returns the status from database if it could not fetch it' do
-      allow(described_class).to receive(:get).and_raise(Errno::ECONNREFUSED.new('bad connection'))
+      allow(Gitlab::HTTP).to receive(:get).and_raise(Errno::ECONNREFUSED.new('bad connection'))
       db_status = create(:geo_node_status, :healthy, geo_node: secondary)
 
       status = subject.call(secondary)

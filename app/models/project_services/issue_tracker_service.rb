@@ -81,13 +81,13 @@ class IssueTrackerService < Service
     result = false
 
     begin
-      response = HTTParty.head(self.project_url, verify: true)
+      response = Gitlab::HTTP.head(self.project_url, verify: true)
 
       if response
         message = "#{self.type} received response #{response.code} when attempting to connect to #{self.project_url}"
         result = true
       end
-    rescue HTTParty::Error, Timeout::Error, SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED, OpenSSL::SSL::SSLError => error
+    rescue Gitlab::HTTP::Error, Timeout::Error, SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED, OpenSSL::SSL::SSLError => error
       message = "#{self.type} had an error when trying to connect to #{self.project_url}: #{error.message}"
     end
     Rails.logger.info(message)

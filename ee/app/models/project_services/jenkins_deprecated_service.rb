@@ -89,14 +89,14 @@ class JenkinsDeprecatedService < CiService
     parsed_url = URI.parse(build_page(sha, ref))
 
     if parsed_url.userinfo.blank?
-      response = HTTParty.get(build_page(sha, ref), verify: false)
+      response = Gitlab::HTTP.get(build_page(sha, ref), verify: false, allow_local_requests: true)
     else
       get_url = build_page(sha, ref).gsub("#{parsed_url.userinfo}@", "")
       auth = {
         username: CGI.unescape(parsed_url.user),
         password: CGI.unescape(parsed_url.password)
       }
-      response = HTTParty.get(get_url, verify: false, basic_auth: auth)
+      response = Gitlab::HTTP.get(get_url, verify: false, basic_auth: auth, allow_local_requests: true)
     end
 
     if response.code == 200
