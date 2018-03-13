@@ -740,7 +740,7 @@
   display: flex;
   flex-wrap: wrap;
 
-  @media (min-width: $screen-md-min) {
+  @media (min-width: $screen-xs) {
     flex-wrap: nowrap;
     white-space: nowrap;
   }
@@ -761,7 +761,8 @@
   min-width: 100px;
   max-width: 150px;
 
-  @media (min-width: $screen-md-min) {
+  @media (min-width: $screen-xs) {
+    min-width: 0;
     max-width: 100%;
   }
 }

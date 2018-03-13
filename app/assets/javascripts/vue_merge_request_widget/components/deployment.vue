@@ -1,6 +1,7 @@
 <script>
 import timeagoMixin from '../../vue_shared/mixins/timeago';
 import tooltip from '../../vue_shared/directives/tooltip';
+import LoadingButton from '../../vue_shared/components/loading_button.vue';
 import { visitUrl } from '../../lib/utils/url_utility';
 import createFlash from '../../flash';
 import MemoryUsage from './memory_usage.vue';
@@ -10,6 +11,7 @@ import MRWidgetService from '../services/mr_widget_service';
 export default {
   name: 'Deployment',
   components: {
+    LoadingButton,
     MemoryUsage,
     StatusIcon,
   },
@@ -24,6 +26,11 @@ export default {
       type: Object,
       required: true,
     },
+  },
+  data() {
+    return {
+      isStopping: false,
+    };
   },
   computed: {
     deployTimeago() {
@@ -43,19 +50,26 @@ export default {
     },
   },
   methods: {
-    stopEnvironment(deployment) {
+    stopEnvironment() {
       const msg = 'Are you sure you want to stop this environment?';
       const isConfirmed = confirm(msg); // eslint-disable-line
 
       if (isConfirmed) {
-        MRWidgetService.stopEnvironment(deployment.stop_url)
+        this.isStopping = true;
+
+        MRWidgetService.stopEnvironment(this.deployment.stop_url)
           .then(res => res.data)
           .then((data) => {
             if (data.redirect_url) {
               visitUrl(data.redirect_url);
             }
+
+            this.isStopping = false;
           })
-          .catch(() => createFlash('Something went wrong while stopping this environment. Please try again.'));
+          .catch(() => {
+            createFlash('Something went wrong while stopping this environment. Please try again.');
+            this.isStopping = false;
+          });
       }
     },
   },
@@ -72,56 +86,57 @@ export default {
       </div>
       <div class="media-body">
         <div class="deploy-body">
-          <span
-            v-if="hasDeploymentMeta"
-          >
-            Deployed to
-          </span>
-          <span class="deploy-link">
-            <a
-              v-if="hasDeploymentMeta"
-              :href="deployment.url"
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              class="js-deploy-meta">
-              {{ deployment.name }}
-            </a>
-          </span>
-          <span
-            v-if="hasExternalUrls"
-          >
-            on
-          </span>
-          <span class="deploy-link">
-            <a
-              v-if="hasExternalUrls"
-              :href="deployment.external_url"
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              class="js-deploy-url">
-              <i
-                class="fa fa-external-link"
-                aria-hidden="true"
+          <template v-if="hasDeploymentMeta">
+            <span>
+              Deployed to
+            </span>
+            <span class="deploy-link">
+              <a
+                :href="deployment.url"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                class="js-deploy-meta"
               >
-              </i>
-              {{ deployment.external_url_formatted }}
-            </a>
-          </span>
+                {{ deployment.name }}
+              </a>
+            </span>
+          </template>
+          <template v-if="hasExternalUrls">
+            <span>
+              on
+            </span>
+            <span class="deploy-link">
+              <a
+                :href="deployment.external_url"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                class="js-deploy-url"
+              >
+                <i
+                  class="fa fa-external-link"
+                  aria-hidden="true"
+                >
+                </i>
+                {{ deployment.external_url_formatted }}
+              </a>
+            </span>
+          </template>
           <span
             v-if="hasDeploymentTime"
             :data-title="deployment.deployed_at_formatted"
             class="js-deploy-time"
             data-toggle="tooltip"
-            data-placement="top">
+            data-placement="top"
+          >
             {{ deployTimeago }}
           </span>
-          <button
-            type="button"
+          <loading-button
             v-if="deployment.stop_url"
-            @click="stopEnvironment(deployment)"
-            class="btn btn-default btn-xs">
-            Stop environment
-          </button>
+            container-class="btn btn-default btn-xs"
+            label="Stop environment"
+            :loading="isStopping"
+            @click="stopEnvironment"
+          />
         </div>
         <memory-usage
           v-if="hasMetrics"
