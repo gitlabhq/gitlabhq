@@ -8,7 +8,53 @@ choice already. Some examples including HAProxy (open-source), F5 Big-IP LTM,
 and Citrix Net Scaler. This documentation will outline what ports and protocols
 you need to use with GitLab.
 
-## Basic ports
+## SSL
+
+How will you handle SSL in your HA environment? There are several different
+options:
+
+- Each application node terminates SSL
+- The load balancer(s) terminate SSL and communication is not secure between
+  the load balancer(s) and the application nodes
+- The load balancer(s) terminate SSL and communication is *secure* between the
+  load balancer(s) and the application nodes
+
+### Application nodes terminate SSL
+
+Configure your load balancer(s) to pass connections on port 443 as 'TCP' rather
+than 'HTTP(S)' protocol. This will pass the connection to the application nodes
+Nginx service untouched. Nginx will have the SSL certificate and listen on port 443.
+
+See [Nginx HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
+for details on managing SSL certificates and configuring Nginx.
+
+### Load Balancer(s) terminate SSL without backend SSL
+
+Configure your load balancer(s) to use the 'HTTP(S)' protocol rather than 'TCP'.
+The load balancer(s) will then be responsible for managing SSL certificates and
+terminating SSL.
+
+Since communication between the load balancer(s) and GitLab will not be secure,
+there is some additional configuration needed. See
+[Nginx Proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#supporting-proxied-ssl)
+for details.
+
+### Load Balancer(s) terminate SSL with backend SSL
+
+Configure your load balancer(s) to use the 'HTTP(S)' protocol rather than 'TCP'.
+The load balancer(s) will be responsible for managing SSL certificates that
+end users will see.
+
+Traffic will also be secure between the load balancer(s) and Nginx in this
+scenario. There is no need to add configuration for proxied SSL since the
+connection will be secure all the way. However, configuration will need to be
+added to GitLab to configure SSL certificates. See
+[Nginx HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
+for details on managing SSL certificates and configuring Nginx.
+
+## Ports
+
+### Basic ports
 
 | LB Port | Backend Port | Protocol        |
 | ------- | ------------ | --------------- |
@@ -16,9 +62,9 @@ you need to use with GitLab.
 | 443     | 443          | TCP or HTTPS [^1] [^2] |
 | 22      | 22           | TCP             |
 
-## GitLab Pages Ports
+### GitLab Pages Ports
 
-If you're using GitLab Pages with custom domain support you will need some 
+If you're using GitLab Pages with custom domain support you will need some
 additional port configurations.
 GitLab Pages requires a separate virtual IP address. Configure DNS to point the
 `pages_external_url` from `/etc/gitlab/gitlab.rb` at the new virtual IP address. See the
@@ -29,7 +75,7 @@ GitLab Pages requires a separate virtual IP address. Configure DNS to point the
 | 80      | Varies [^3]  | HTTP     |
 | 443     | Varies [^3]  | TCP [^4] |
 
-## Alternate SSH Port
+### Alternate SSH Port
 
 Some organizations have policies against opening SSH port 22. In this case,
 it may be helpful to configure an alternate SSH hostname that allows users
