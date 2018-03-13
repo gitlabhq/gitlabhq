@@ -14,6 +14,10 @@ module Gitlab
             }
           end
 
+          def [](key)
+            @variable.fetch(key)
+          end
+
           def ==(other)
             to_hash == self.class.fabricate(other).to_hash
           end
@@ -38,6 +42,8 @@ module Gitlab
             when ::Ci::Variable
               self.new(resource.to_hash)
             when ::Ci::PipelineVariable
+              self.new(resource.to_hash)
+            when ::Ci::GroupVariable
               self.new(resource.to_hash)
             when self
               resource.dup

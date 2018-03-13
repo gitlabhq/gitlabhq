@@ -1581,21 +1581,21 @@ class Project < ActiveRecord::Base
       variables.append(key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true)
       variables.append(key: 'CI_PROJECT_URL', value: web_url, public: true)
       variables.append(key: 'CI_PROJECT_VISIBILITY', value: visibility, public: true)
+      variables.concat(container_registry_variables)
+      variables.concat(auto_devops_variables)
     end
   end
 
   def container_registry_variables
-    return [] unless Gitlab.config.registry.enabled
+    Gitlab::Ci::Variables::Collection.new.tap do |variables|
+      return variables unless Gitlab.config.registry.enabled
 
-    variables = [
-      { key: 'CI_REGISTRY', value: Gitlab.config.registry.host_port, public: true }
-    ]
+      variables.append(key: 'CI_REGISTRY', value: Gitlab.config.registry.host_port, public: true)
 
-    if container_registry_enabled?
-      variables << { key: 'CI_REGISTRY_IMAGE', value: container_registry_url, public: true }
+      if container_registry_enabled?
+        variables.append(key: 'CI_REGISTRY_IMAGE', value: container_registry_url, public: true)
+      end
     end
-
-    variables
   end
 
   def secret_variables_for(ref:, environment: nil)
@@ -1624,7 +1624,7 @@ class Project < ActiveRecord::Base
   def auto_devops_variables
     return [] unless auto_devops_enabled?
 
-    (auto_devops || build_auto_devops)&.variables
+    (auto_devops || build_auto_devops)&.predefined_variables
   end
 
   def append_or_update_attribute(name, value)
