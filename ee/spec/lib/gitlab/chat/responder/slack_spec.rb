@@ -32,7 +32,7 @@ describe Gitlab::Chat::Responder::Slack do
     it 'returns the output for a successful build' do
       expect(responder)
         .to receive(:send_response)
-        .with(hash_including(text: '<@U123>: hello', response_type: :in_channel))
+        .with(hash_including(text: /<@U123>:.+hello/, response_type: :in_channel))
 
       responder.success('hello')
     end
@@ -40,15 +40,13 @@ describe Gitlab::Chat::Responder::Slack do
     it 'limits the output to a fixed size' do
       expect(responder)
         .to receive(:send_response)
-        .with(hash_including(text: /The command output is too large/))
+        .with(hash_including(text: /The output is too large/))
 
       responder.success('a' * 4000)
     end
 
-    it 'returns a generic message when the build did not produce any output' do
-      expect(responder)
-        .to receive(:send_response)
-        .with(hash_including(text: /did not write any data to STDOUT/))
+    it 'does not send a response if the output is empty' do
+      expect(responder).not_to receive(:send_response)
 
       responder.success('')
     end
@@ -58,7 +56,7 @@ describe Gitlab::Chat::Responder::Slack do
     it 'returns the output for a failed build' do
       expect(responder).to receive(:send_response).with(
         hash_including(
-          text: '<@U123>: Sorry, the build failed!',
+          text: /<@U123>:.+Sorry, the build failed!/,
           response_type: :in_channel
         )
       )
@@ -71,7 +69,7 @@ describe Gitlab::Chat::Responder::Slack do
     it 'returns the output for a scheduled build' do
       output = responder.scheduled_output
 
-      expect(output[:text]).to eq('<@U123>: The command has been scheduled!')
+      expect(output[:text]).to match(/<@U123>:.+The command has been scheduled!/)
     end
   end
 end
