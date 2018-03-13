@@ -3,8 +3,6 @@ module Gitlab
     module Variables
       class Collection
         class Item
-          # TODO, public by default?
-          #
           def initialize(**options)
             @variable = {
               key: options.fetch(:key),
@@ -34,17 +32,11 @@ module Gitlab
           end
 
           def self.fabricate(resource)
-            # TODO, to_runner_variable by default for class < ActiveRecord::Base
-            #
             case resource
             when Hash
               self.new(resource)
-            when ::Ci::Variable
-              self.new(resource.to_hash)
-            when ::Ci::PipelineVariable
-              self.new(resource.to_hash)
-            when ::Ci::GroupVariable
-              self.new(resource.to_hash)
+            when ::HasVariable
+              self.new(resource.to_runner_variable)
             when self
               resource.dup
             else

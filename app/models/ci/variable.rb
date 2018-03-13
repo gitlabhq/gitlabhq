@@ -12,9 +12,5 @@ module Ci
     }
 
     scope :unprotected, -> { where(protected: false) }
-
-    def to_hash
-      { key: key, value: value, public: false }
-    end
   end
 end
