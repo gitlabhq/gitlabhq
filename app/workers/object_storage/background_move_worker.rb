@@ -11,7 +11,6 @@ module ObjectStorage
 
       return unless uploader_class < ObjectStorage::Concern
       return unless uploader_class.object_store_enabled?
-      return unless uploader_class.licensed?
       return unless uploader_class.background_upload_enabled?
 
       subject = subject_class.find(subject_id)

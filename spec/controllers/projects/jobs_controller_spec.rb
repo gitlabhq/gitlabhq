@@ -483,14 +483,18 @@ describe Projects::JobsController do
   end
 
   describe 'GET raw' do
-    before do
-      get_raw
+    subject do
+      post :raw, namespace_id: project.namespace,
+                 project_id: project,
+                 id: job.id
     end
 
     context 'when job has a trace artifact' do
       let(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
 
       it 'returns a trace' do
+        response = subject
+
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.content_type).to eq 'text/plain; charset=utf-8'
         expect(response.body).to eq job.job_artifacts_trace.open.read
@@ -501,6 +505,8 @@ describe Projects::JobsController do
       let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
 
       it 'send a trace file' do
+        response = subject
+
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.content_type).to eq 'text/plain; charset=utf-8'
         expect(response.body).to eq 'BUILD TRACE'
@@ -511,14 +517,22 @@ describe Projects::JobsController do
       let(:job) { create(:ci_build, pipeline: pipeline) }
 
       it 'returns not_found' do
+        response = subject
+
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
-    def get_raw
-      post :raw, namespace_id: project.namespace,
-                 project_id: project,
-                 id: job.id
+    context 'when the trace artifact is in ObjectStorage' do
+      let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+
+      before do
+        allow_any_instance_of(JobArtifactUploader).to receive(:file_storage?) { false }
+      end
+
+      it 'redirect to the trace file url' do
+        expect(subject).to redirect_to(job.job_artifacts_trace.file.url)
+      end
     end
 
     context 'when the trace artifact is in ObjectStorage' do

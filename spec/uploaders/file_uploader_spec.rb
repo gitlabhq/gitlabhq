@@ -87,29 +87,6 @@ describe FileUploader do
     end
   end
 
-  describe 'callbacks' do
-    describe '#prune_store_dir after :remove' do
-      before do
-        uploader.store!(fixture_file_upload('spec/fixtures/doc_sample.txt'))
-      end
-
-      def store_dir
-        File.expand_path(uploader.store_dir, uploader.root)
-      end
-
-      it 'is called' do
-        expect(uploader).to receive(:prune_store_dir).once
-
-        uploader.remove!
-      end
-
-      it 'prune the store directory' do
-        expect { uploader.remove! }
-          .to change { File.exist?(store_dir) }.from(true).to(false)
-      end
-    end
-  end
-
   describe "#migrate!" do
     before do
       uploader.store!(fixture_file_upload(Rails.root.join('spec/fixtures/dk.png')))
@@ -134,16 +111,6 @@ describe FileUploader do
       expect(uploader).to receive(:apply_context!).with(a_hash_including(secret: secret, identifier: 'file.txt'))
 
       uploader.upload = upload
-    end
-
-    context 'uploader_context is empty' do
-      it 'fallbacks to regex based extraction' do
-        expect(upload).to receive(:uploader_context).and_return({})
-
-        uploader.upload = upload
-        expect(uploader.secret).to eq(secret)
-        expect(uploader.instance_variable_get(:@identifier)).to eq('file.txt')
-      end
     end
   end
 end

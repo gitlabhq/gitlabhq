@@ -150,7 +150,6 @@ describe Projects::ArtifactsController do
         end
       end
 
-      ## EE specific begins
       context 'when using remote file storage' do
         before do
           stub_artifacts_object_storage
@@ -163,7 +162,6 @@ describe Projects::ArtifactsController do
           let(:archive_path) { 'https://' }
         end
       end
-      ## EE specific ends
     end
   end
 
