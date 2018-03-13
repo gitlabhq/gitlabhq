@@ -3,6 +3,7 @@ import flash from './flash';
 
 export default class Milestone {
   constructor() {
+    Milestone.initDeprecationMessage();
     this.bindTabsSwitching();
 
     // Load merge request tab if it is active
@@ -41,5 +42,38 @@ export default class Milestone {
         })
         .catch(() => flash('Error loading milestone tab'));
     }
+  }
+
+  static initDeprecationMessage() {
+    const deprecationMesssage = document.querySelector('.milestone-deprecation-message');
+
+    if (!deprecationMesssage) return;
+
+    const deprecationMesssageTemplate = deprecationMesssage.querySelector('.milestone-deprecation-message-template');
+    const popoverLink = deprecationMesssage.querySelector('.popover-link');
+    const $popoverLink = $(popoverLink);
+
+    $popoverLink
+      .popover({
+        html: true,
+        placement: 'bottom',
+        content: deprecationMesssageTemplate.innerHTML,
+        trigger: 'hover',
+      })
+      .on('inserted.bs.popover', () => {
+        const $popover = $popoverLink.siblings('.popover').first();
+        const $popoverContent = $('.popover-content', $popover);
+
+        $popoverContent.on('mouseleave', () => {
+          $popoverContent.off('mouseleave');
+          $popoverLink.popover('hide');
+        });
+      })
+      .on('hidden.bs.popover', (event) => {
+        $(event.target).data('bs.popover').inState.click = false;
+      })
+      .on('mouseleave', () => {
+
+      });
   }
 }
