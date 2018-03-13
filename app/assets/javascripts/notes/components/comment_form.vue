@@ -1,6 +1,6 @@
 <script>
   import $ from 'jquery';
-  import { mapActions, mapGetters } from 'vuex';
+  import { mapActions, mapGetters, mapState } from 'vuex';
   import _ from 'underscore';
   import Autosize from 'autosize';
   import { __, sprintf } from '~/locale';
@@ -52,6 +52,9 @@
         'getNoteableData',
         'getNotesData',
         'openState',
+      ]),
+      ...mapState([
+        'isToggleStateButtonLoading',
       ]),
       noteableDisplayName() {
         return this.noteableType.replace(/_/g, ' ');
@@ -143,6 +146,7 @@
         'closeIssue',
         'reopenIssue',
         'toggleIssueLocalState',
+        'toggleStateButtonLoading',
       ]),
       setIsSubmitButtonDisabled(note, isSubmitting) {
         if (!_.isEmpty(note) && !isSubmitting) {
@@ -170,13 +174,14 @@
           if (this.noteType === constants.DISCUSSION) {
             noteData.data.note.type = constants.DISCUSSION_NOTE;
           }
+
           this.note = ''; // Empty textarea while being requested. Repopulate in catch
           this.resizeTextarea();
           this.stopPolling();
 
           this.saveNote(noteData)
             .then((res) => {
-              this.isSubmitting = false;
+              this.enableButton();
               this.restartPolling();
 
               if (res.errors) {
@@ -198,7 +203,7 @@
               }
             })
             .catch(() => {
-              this.isSubmitting = false;
+              this.enableButton();
               this.discard(false);
               const msg =
                 `Your comment could not be submitted!
@@ -220,6 +225,7 @@ Please check your network connection and try again.`;
             .then(() => this.enableButton())
             .catch(() => {
               this.enableButton();
+              this.toggleStateButtonLoading(false);
               Flash(
                 sprintf(
                   __('Something went wrong while closing the %{issuable}. Please try again later'),
@@ -232,6 +238,7 @@ Please check your network connection and try again.`;
             .then(() => this.enableButton())
             .catch(() => {
               this.enableButton();
+              this.toggleStateButtonLoading(false);
               Flash(
                 sprintf(
                   __('Something went wrong while reopening the %{issuable}. Please try again later'),
@@ -419,13 +426,13 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
 
                 <loading-button
                   v-if="canUpdateIssue"
-                  :loading="isSubmitting"
+                  :loading="isToggleStateButtonLoading"
                   @click="handleSave(true)"
                   :container-class="[
                     actionButtonClassNames,
                     'btn btn-comment btn-comment-and-close js-action-button'
                   ]"
-                  :disabled="isSubmitting"
+                  :disabled="isToggleStateButtonLoading || isSubmitting"
                   :label="issueActionButtonTitle"
                 />
 
