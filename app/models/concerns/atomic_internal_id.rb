@@ -26,7 +26,7 @@ module AtomicInternalId
 
   included do
     class << self
-      def has_internal_id(on, scope:, usage: nil, init: nil) # rubocop:disable Naming/PredicateName
+      def has_internal_id(on, scope:, usage: nil, init:) # rubocop:disable Naming/PredicateName
         before_validation(on: :create) do
           if self.public_send(on).blank? # rubocop:disable GitlabSecurity/PublicSend
 
