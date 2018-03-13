@@ -67,11 +67,7 @@ module Gitlab
         tags_option = tags ? '--tags' : '--no-tags'
 
         logger.info "Fetching remote #{name} for repository #{repository_absolute_path}."
-<<<<<<< HEAD
-        cmd = %W(#{git_fetch_binary} fetch #{name} --quiet)
-=======
         cmd = %W(#{Gitlab.config.git.bin_path} fetch #{name} --quiet)
->>>>>>> upstream/master
         cmd << '--prune' if prune
         cmd << '--force' if force
         cmd << tags_option
