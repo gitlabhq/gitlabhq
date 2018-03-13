@@ -1916,13 +1916,13 @@ describe Ci::Build do
           allow_any_instance_of(Project)
             .to receive(:predefined_variables) { [project_pre_var] }
 
-          allow_any_instance_of(EE::Project)
+          allow_any_instance_of(Project)
             .to receive(:secret_variables_for)
             .with(ref: 'master', environment: nil) do
             [create(:ci_variable, key: 'secret', value: 'value')]
           end
 
-          allow_any_instance_of(EE::Ci::Pipeline)
+          allow_any_instance_of(Ci::Pipeline)
             .to receive(:predefined_variables) { [pipeline_pre_var] }
         end
 
