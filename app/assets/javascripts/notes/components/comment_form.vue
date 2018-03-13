@@ -1,6 +1,6 @@
 <script>
   import $ from 'jquery';
-  import { mapActions, mapGetters } from 'vuex';
+  import { mapActions, mapGetters, mapState } from 'vuex';
   import _ from 'underscore';
   import Autosize from 'autosize';
   import { __, sprintf } from '~/locale';
@@ -52,6 +52,8 @@
         'getNoteableData',
         'getNotesData',
         'openState',
+      ]),
+      ...mapState([
         'isToggleStateButtonLoading',
       ]),
       noteableDisplayName() {
