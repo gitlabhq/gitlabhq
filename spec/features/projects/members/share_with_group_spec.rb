@@ -40,7 +40,6 @@ feature 'Project > Members > Share with Group', :js do
           click_on 'share-with-group-tab'
 
           select2 group_to_share_with.id, from: '#link_group_id'
-          page.find('body').click
           find('.btn-create').click
 
           page.within('.project-members-groups') do

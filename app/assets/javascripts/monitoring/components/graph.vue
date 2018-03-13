@@ -209,6 +209,7 @@
 
         const xAxis = d3.axisBottom()
           .scale(axisXScale)
+          .ticks(this.graphWidth / 120)
           .tickFormat(timeScaleFormat);
 
         const yAxis = d3.axisLeft()

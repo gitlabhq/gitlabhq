@@ -123,6 +123,10 @@ module Gitlab
     config.assets.precompile << "icons.json"
     config.assets.precompile << "illustrations/*.svg"
 
+    # Import csslab
+    config.assets.paths << "#{config.root}/node_modules/@gitlab-org/csslab/dist/css"
+    config.assets.precompile << "csslab-slim.css"
+
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
