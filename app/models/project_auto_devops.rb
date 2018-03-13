@@ -16,9 +16,10 @@ class ProjectAutoDevops < ActiveRecord::Base
 
   def predefined_variables
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
-      variables.append(key: 'AUTO_DEVOPS_DOMAIN',
-                       value: domain.presence || instance_domain,
-                       public: true) if has_domain?
+      if has_domain?
+        variables.append(key: 'AUTO_DEVOPS_DOMAIN',
+                         value: domain.presence || instance_domain)
+      end
     end
   end
 end
