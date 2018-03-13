@@ -181,6 +181,7 @@ RSpec.describe Geo::WikiSyncService do
             force_to_redownload_wiki: true
           )
 
+          expect(project.wiki.repository).to receive(:expire_exists_cache).twice.and_call_original
           expect(subject).not_to receive(:fail_registry!)
 
           subject.execute
