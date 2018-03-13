@@ -1,16 +1,16 @@
 # Geo database replication
 
->**Note:**
+NOTE: **Note:**
 This is the documentation for the Omnibus GitLab packages. For installations
 from source, follow the
 [**database replication for installations from source**][database-source] guide.
 
->**Note:**
+NOTE: **Note:**
 If your GitLab installation uses external PostgreSQL, the Omnibus roles
 will not be able to perform all necessary configuration steps. Refer to the
 section on [External PostreSQL][external postgresql] for additional instructions.
 
->**Note:**
+NOTE: **Note:**
 The stages of the setup process must be completed in the documented order.
 Before attempting the steps in this stage, [complete all prior stages][toc].
 
@@ -28,7 +28,7 @@ The GitLab primary node where the write operations happen will connect to
 the primary database server, and the secondary nodes which are read-only will
 connect to the secondary database servers (which are also read-only).
 
->**Note:**
+NOTE: **Note:**
 In database documentation you may see "primary" being referenced as "master"
 and "secondary" as either "slave" or "standby" server (read-only).
 
@@ -256,7 +256,8 @@ The following guide assumes that:
     gitlab-ctl stop sidekiq
     ```
 
-   > **Note**: This step is important so we don't try to execute anything before the node is fully configured. 
+    NOTE: **Note**: 
+    This step is important so we don't try to execute anything before the node is fully configured. 
 
 1. [Check TCP connectivity][rake-maintenance] to the primary's PostgreSQL server:
 
@@ -264,7 +265,8 @@ The following guide assumes that:
     gitlab-rake gitlab:tcp_check[1.2.3.4,5432]
     ```
 
-    > **Note**: If this step fails, you may be using the wrong IP address, or a firewall may
+    NOTE: **Note**: 
+    If this step fails, you may be using the wrong IP address, or a firewall may
     be preventing access to the server. Check the IP address, paying close
     attention to the difference between public and private addresses and ensure
     that, if a firewall is present, the secondary is permitted to connect to the
@@ -352,7 +354,7 @@ The directories used are the defaults that are set up in Omnibus. If you have
 changed any defaults or are using a source installation, configure it as you
 see fit replacing the directories and paths.
 
->**Warning:**
+CAUTION: **Warning:**
 Make sure to run this on the **secondary** server as it removes all PostgreSQL's
 data before running `pg_basebackup`.
 
@@ -368,8 +370,8 @@ data before running `pg_basebackup`.
    name as shown in the commands below.
 
 1. Execute the command below to start a backup/restore and begin the replication
-   >**Warning:** Each Geo secondary must have its own unique replication slot name.
-   Using the same slot name between two secondaries will break PostgreSQL replication.
+    CAUTION: **Warning:** Each Geo secondary must have its own unique replication slot name.
+    Using the same slot name between two secondaries will break PostgreSQL replication.
 
     ```bash
     gitlab-ctl replicate-geo-database --slot-name=secondary_example --host=1.2.3.4
