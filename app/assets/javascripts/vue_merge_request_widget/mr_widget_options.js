@@ -71,7 +71,8 @@ export default {
       return this.mr.deployments.length;
     },
     shouldRenderSourceBranchRemovalStatus() {
-      return !this.mr.canRemoveSourceBranch && this.mr.shouldRemoveSourceBranch;
+      return !this.mr.canRemoveSourceBranch && this.mr.shouldRemoveSourceBranch &&
+        (!this.mr.isNothingToMergeState && !this.mr.isMergedState);
     },
   },
   methods: {

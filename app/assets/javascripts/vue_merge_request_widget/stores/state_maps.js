@@ -49,6 +49,7 @@ export const stateKey = {
   notAllowedToMerge: 'notAllowedToMerge',
   readyToMerge: 'readyToMerge',
   rebase: 'rebase',
+  merged: 'merged',
 };
 
 export default {

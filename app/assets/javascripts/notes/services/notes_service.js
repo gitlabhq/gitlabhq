@@ -27,10 +27,11 @@ export default {
     return Vue.http[method](endpoint);
   },
   poll(data = {}) {
-    const { endpoint, lastFetchedAt } = data;
+    const endpoint = data.notesData.notesPath;
+    const lastFetchedAt = data.lastFetchedAt;
     const options = {
       headers: {
-        'X-Last-Fetched-At': lastFetchedAt,
+        'X-Last-Fetched-At': lastFetchedAt ? `${lastFetchedAt}` : undefined,
       },
     };
 
