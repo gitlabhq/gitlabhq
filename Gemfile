@@ -421,9 +421,9 @@ gem 'google-protobuf', '= 3.5.1'
 gem 'toml-rb', '~> 1.0.0', require: false
 
 # Feature toggles
-gem 'flipper', '~> 0.11.0'
-gem 'flipper-active_record', '~> 0.11.0'
-gem 'flipper-active_support_cache_store', '~> 0.11.0'
+gem 'flipper', '~> 0.13.0'
+gem 'flipper-active_record', '~> 0.13.0'
+gem 'flipper-active_support_cache_store', '~> 0.13.0'
 
 # Structured logging
 gem 'lograge', '~> 0.5'
