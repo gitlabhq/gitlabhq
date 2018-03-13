@@ -1916,7 +1916,7 @@ describe Ci::Build do
           allow_any_instance_of(Project)
             .to receive(:predefined_variables) { [project_pre_var] }
 
-          allow_any_instance_of(Project)
+          allow_any_instance_of(EE::Project)
             .to receive(:secret_variables_for)
             .with(ref: 'master', environment: nil) do
             [create(:ci_variable, key: 'secret', value: 'value')]
