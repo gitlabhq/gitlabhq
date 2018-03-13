@@ -70,21 +70,32 @@ export const toggleResolveNote = ({ commit }, { endpoint, isResolved, discussion
     commit(mutationType, res);
   });
 
-export const closeIssue = ({ commit, dispatch, state }) => service
+export const closeIssue = ({ commit, dispatch, state }) => {
+  dispatch('toggleStateButtonLoading', true);
+  return service
   .toggleIssueState(state.notesData.closePath)
   .then(res => res.json())
   .then((data) => {
     commit(types.CLOSE_ISSUE);
     dispatch('emitStateChangedEvent', data);
+    dispatch('toggleStateButtonLoading', false);
   });
+};
 
-export const reopenIssue = ({ commit, dispatch, state }) => service
+export const reopenIssue = ({ commit, dispatch, state }) => {
+  dispatch('toggleStateButtonLoading', true);
+  return service
   .toggleIssueState(state.notesData.reopenPath)
   .then(res => res.json())
   .then((data) => {
     commit(types.REOPEN_ISSUE);
     dispatch('emitStateChangedEvent', data);
+    dispatch('toggleStateButtonLoading', false);
   });
+};
+
+export const toggleStateButtonLoading = ({ commit }, value) =>
+  commit(types.TOGGLE_STATE_BUTTON_LOADING, value);
 
 export const emitStateChangedEvent = ({ commit, getters }, data) => {
   const event = new CustomEvent('issuable_vue_app:change', { detail: {
