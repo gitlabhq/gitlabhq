@@ -37,6 +37,31 @@ describe Gitlab::Ci::Variables::Collection do
     end
   end
 
+  describe '#concat' do
+    it 'appends all elements from an array' do
+      collection = described_class.new([{ key: 'VAR_1', value: '1' }])
+      variables = [{ key: 'VAR_2', value: '2' }, { key: 'VAR_3', value: '3' }]
+
+      collection.concat(variables)
+
+      expect(collection).to include(key: 'VAR_1', value: '1', public: true)
+      expect(collection).to include(key: 'VAR_2', value: '2', public: true)
+      expect(collection).to include(key: 'VAR_3', value: '3', public: true)
+    end
+
+    it 'appends all elements from other collection' do
+      collection = described_class.new([{ key: 'VAR_1', value: '1' }])
+      additional = described_class.new([{ key: 'VAR_2', value: '2' },
+                                        { key: 'VAR_3', value: '3' }])
+
+      collection.concat(additional)
+
+      expect(collection).to include(key: 'VAR_1', value: '1', public: true)
+      expect(collection).to include(key: 'VAR_2', value: '2', public: true)
+      expect(collection).to include(key: 'VAR_3', value: '3', public: true)
+    end
+  end
+
   describe '#+' do
     it 'makes it possible to combine with an array' do
       collection = described_class.new([{ key: 'TEST', value: 1 }])

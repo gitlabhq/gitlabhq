@@ -39,6 +39,14 @@ describe Gitlab::Ci::Variables::Collection::Item do
     end
   end
 
+  describe '#[]' do
+    it 'behaves like a hash accessor' do
+      item = described_class.new(**variable)
+
+      expect(item[:key]).to eq 'VAR'
+    end
+  end
+
   describe '#to_hash' do
     it 'returns a hash representation of a collection item' do
       expect(described_class.new(**variable).to_hash).to eq variable
