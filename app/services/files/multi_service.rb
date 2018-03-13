@@ -15,8 +15,9 @@ module Files
     def actions_after_lfs_transformation(transformer, actions)
       actions.map do |action|
         if action[:action] == 'create'
-          content = transformer.new_file(action[:file_path], action[:content])
-          action[:content] = content
+          result = transformer.new_file(action[:file_path], action[:content], encoding: action[:encoding])
+          action[:content] = result.content
+          action[:encoding] = result.encoding
         end
 
         action

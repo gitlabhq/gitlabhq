@@ -16,6 +16,18 @@ describe Lfs::FileTransformer do
 
         subject.new_file(file_path, file_content)
       end
+
+      it 'returns untransformed content' do
+        result = subject.new_file(file_path, file_content)
+
+        expect(result.content).to eq(file_content)
+      end
+
+      it 'returns untransformed encoding' do
+        result = subject.new_file(file_path, file_content, encoding: 'base64')
+
+        expect(result.encoding).to eq('base64')
+      end
     end
 
     context 'with lfs enabled' do
@@ -38,17 +50,23 @@ describe Lfs::FileTransformer do
         expect(LfsObject.last.file.read).to eq file_content
       end
 
-      it 'creates an LFS pointer' do
-        new_content = subject.new_file(file_path, file_content)
+      it 'returns an LFS pointer' do
+        result = subject.new_file(file_path, file_content)
 
-        expect(new_content).to start_with('version https://git-lfs.github.com/spec/v1')
+        expect(result.content).to start_with('version https://git-lfs.github.com/spec/v1')
+      end
+
+      it 'returns LFS pointer encoding as text' do
+        result = subject.new_file(file_path, file_content, encoding: 'base64')
+
+        expect(result.encoding).to eq('text')
       end
 
       context "when doesn't use LFS" do
         let(:file_path) { 'other.filetype' }
 
         it "doesn't create LFS pointers" do
-          new_content = subject.new_file(file_path, file_content)
+          new_content = subject.new_file(file_path, file_content).content
 
           expect(new_content).not_to start_with('version https://git-lfs.github.com/spec/v1')
           expect(new_content).to eq(file_content)

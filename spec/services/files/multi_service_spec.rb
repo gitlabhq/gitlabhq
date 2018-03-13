@@ -16,17 +16,17 @@ describe Files::MultiService do
     Gitlab::Git::Commit.last_for_path(project.repository, branch_name, original_file_path).sha
   end
 
-  let(:actions) do
-    [
-      {
-        action: action,
-        file_path: new_file_path,
-        previous_path: original_file_path,
-        content: file_content,
-        last_commit_id: original_commit_id
-      }
-    ]
+  let(:default_action) do
+    {
+      action: action,
+      file_path: new_file_path,
+      previous_path: original_file_path,
+      content: file_content,
+      last_commit_id: original_commit_id
+    }
   end
+
+  let(:actions) { [default_action] }
 
   let(:commit_params) do
     {
@@ -133,6 +133,26 @@ describe Files::MultiService do
         subject.execute
 
         expect(LfsObject.last.file.read).to eq file_content
+      end
+
+      context 'with base64 encoded content' do
+        let(:raw_file_content) { 'Raw content' }
+        let(:file_content) { Base64.encode64(raw_file_content) }
+        let(:actions) { [default_action.merge(encoding: 'base64')] }
+
+        it 'creates an LFS pointer' do
+          subject.execute
+
+          blob = repository.blob_at('lfs', new_file_path)
+
+          expect(blob.data).to start_with('version https://git-lfs.github.com/spec/v1')
+        end
+
+        it "creates an LfsObject with the file's content" do
+          subject.execute
+
+          expect(LfsObject.last.file.read).to eq raw_file_content
+        end
       end
 
       it 'links the LfsObject to the project' do

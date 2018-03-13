@@ -20,16 +20,26 @@ module Lfs
       @branch_name = branch_name
     end
 
-    def new_file(file_path, file_content)
+    def new_file(file_path, file_content, encoding: nil)
       if project.lfs_enabled? && lfs_file?(file_path)
+        file_content = Base64.decode64(file_content) if encoding == 'base64'
         lfs_pointer_file = Gitlab::Git::LfsPointerFile.new(file_content)
         lfs_object = create_lfs_object!(lfs_pointer_file, file_content)
 
         link_lfs_object!(lfs_object)
 
-        lfs_pointer_file.pointer
+        Result.new(content: lfs_pointer_file.pointer, encoding: 'text')
       else
-        file_content
+        Result.new(content: file_content, encoding: encoding)
+      end
+    end
+
+    class Result
+      attr_reader :content, :encoding
+
+      def initialize(content:, encoding:)
+        @content = content
+        @encoding = encoding
       end
     end
 
