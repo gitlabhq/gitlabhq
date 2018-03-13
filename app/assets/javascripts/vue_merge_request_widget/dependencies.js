@@ -24,7 +24,7 @@ export { default as MergingState } from './components/states/mr_widget_merging.v
 export { default as WipState } from './components/states/mr_widget_wip';
 export { default as ArchivedState } from './components/states/mr_widget_archived.vue';
 export { default as ConflictsState } from './components/states/mr_widget_conflicts.vue';
-export { default as NothingToMergeState } from './components/states/mr_widget_nothing_to_merge';
+export { default as NothingToMergeState } from './components/states/nothing_to_merge.vue';
 export { default as MissingBranchState } from './components/states/mr_widget_missing_branch.vue';
 export { default as NotAllowedState } from './components/states/mr_widget_not_allowed.vue';
 export { default as ReadyToMergeState } from './components/states/mr_widget_ready_to_merge';

@@ -101,10 +101,21 @@ describe('Notes Store mutations', () => {
       const state = {
         notes: [],
       };
+      const legacyNote = {
+        id: 2,
+        individual_note: true,
+        notes: [{
+          note: '1',
+        }, {
+          note: '2',
+        }],
+      };
 
-      mutations.SET_INITIAL_NOTES(state, [note]);
+      mutations.SET_INITIAL_NOTES(state, [note, legacyNote]);
       expect(state.notes[0].id).toEqual(note.id);
-      expect(state.notes.length).toEqual(1);
+      expect(state.notes[1].notes[0].note).toBe(legacyNote.notes[0].note);
+      expect(state.notes[2].notes[0].note).toBe(legacyNote.notes[1].note);
+      expect(state.notes.length).toEqual(3);
     });
   });
 
