@@ -1,4 +1,4 @@
-# Geo configuration
+# Geo configuration (source)
 
 >**Note:**
 This is the documentation for installations from source. For installations

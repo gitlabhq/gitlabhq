@@ -1,4 +1,4 @@
-# Geo database replication
+# Geo database replication (source)
 
 >**Note:**
 This is the documentation for installations from source. For installations

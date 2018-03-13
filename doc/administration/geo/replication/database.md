@@ -1,4 +1,4 @@
-# Geo database replication
+# Geo database replication (omnibus)
 
 >**Note:**
 This is the documentation for the Omnibus GitLab packages. For installations
@@ -165,9 +165,10 @@ The following guide assumes that:
     
     ##
     # Secondary addresses
+    # - replace '1.2.3.4' with the primary public or VPC address
     # - replace '5.6.7.8' with the secondary public or VPC address
     ##
-    postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
+    postgresql['md5_auth_cidr_addresses'] = ['1.2.3.4/32','5.6.7.8/32']
 
     ##
     ## Replication settings
