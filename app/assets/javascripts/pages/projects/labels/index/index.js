@@ -30,6 +30,7 @@ const initLabelIndex = () => {
       labelColor: button.dataset.labelColor,
       labelTextColor: button.dataset.labelTextColor,
       url: button.dataset.url,
+      groupName: button.dataset.groupName,
     };
     eventHub.$once('promoteLabelModal.requestStarted', onRequestStarted);
     eventHub.$emit('promoteLabelModal.props', modalProps);
@@ -62,6 +63,7 @@ const initLabelIndex = () => {
             labelColor: '',
             labelTextColor: '',
             url: '',
+            groupName: '',
           },
         };
       },

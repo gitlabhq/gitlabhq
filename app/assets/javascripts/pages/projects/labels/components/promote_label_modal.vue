@@ -27,11 +27,18 @@
         type: String,
         required: true,
       },
+      groupName: {
+        type: String,
+        required: true,
+      },
     },
     computed: {
       text() {
-        return s__(`Milestones|Promoting this label will make it available for all projects inside the group. 
-        Existing project labels with the same title will be merged. This action cannot be reversed.`);
+        return sprintf(s__(`Labels|Promoting %{labelTitle} will make it available for all projects inside %{groupName}. 
+        Existing project labels with the same title will be merged. This action cannot be reversed.`), {
+          labelTitle: this.labelTitle,
+          groupName: this.groupName,
+        });
       },
       title() {
         const label = `<span
