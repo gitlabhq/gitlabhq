@@ -3,10 +3,9 @@ require 'spec_helper'
 describe 'projects/ci/lints/show' do
   include Devise::Test::ControllerHelpers
   let(:project) { create(:project, :repository) }
+  let(:config_processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(content)) }
 
   describe 'XSS protection' do
-    let(:config_processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(content)) }
-
     before do
       assign(:project, project)
       assign(:status, true)
@@ -50,21 +49,19 @@ describe 'projects/ci/lints/show' do
     end
   end
 
-  let(:content) do
-    {
-      build_template: {
-        script: './build.sh',
-        tags: ['dotnet'],
-        only: ['test@dude/repo'],
-        except: ['deploy'],
-        environment: 'testing'
-      }
-    }
-  end
-
-  let(:config_processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(content)) }
-
   context 'when the content is valid' do
+    let(:content) do
+      {
+        build_template: {
+          script: './build.sh',
+          tags: ['dotnet'],
+          only: ['test@dude/repo'],
+          except: ['deploy'],
+          environment: 'testing'
+        }
+      }
+    end
+
     before do
       assign(:project, project)
       assign(:status, true)

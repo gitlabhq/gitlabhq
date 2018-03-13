@@ -5,7 +5,7 @@
 
 %h2 Check your .gitlab-ci.yml
 
-.ci-linter
+.project-ci-linter
   .row
     = form_tag project_ci_lint_path(@project), method: :post do
       .form-group
@@ -23,5 +23,5 @@
 
   .row.prepend-top-20
     .col-sm-12
-      .results.ci-template
+      .results.project-ci-template
         = render partial: 'create' if defined?(@status)
