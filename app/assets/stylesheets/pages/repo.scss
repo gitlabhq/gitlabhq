@@ -230,22 +230,64 @@
     min-height: auto;
   }
 
-  .monaco-diff-editor.vs .diffOverview {
-    background-color: $white-light;
-    border-left: 1px solid $white-dark;
-    cursor: pointer;
-  }
-
-  .monaco-diff-editor.vs .diffViewport {
+  .monaco-editor .lines-content .cigr {
     display: none;
   }
 
-  .monaco-diff-editor .char-insert {
-    background-color: $line-added-dark;
-  }
+  .monaco-diff-editor.vs {
+    .diagonal-fill {
+      display: none !important;
+    }
 
-  .monaco-diff-editor .char-delete {
-    background-color: $line-removed-dark;
+    .diffOverview {
+      background-color: $white-light;
+      border-left: 1px solid $white-dark;
+      cursor: move;
+    }
+
+    .diffViewport {
+      display: none;
+    }
+
+    .char-insert {
+      background-color: $line-added-dark;
+    }
+
+    .char-delete {
+      background-color: $line-removed-dark;
+    }
+
+    .line-numbers {
+      color: $black-transparent;
+    }
+
+    .view-overlays {
+      .line-insert {
+        background-color: $line-added;
+      }
+
+      .line-delete {
+        background-color: $line-removed;
+      }
+    }
+
+    .margin {
+      background-color: $gray-light;
+      border-right: 1px solid $white-normal;
+
+      .line-insert {
+        border-right: 1px solid $line-added-dark;
+      }
+
+      .line-delete {
+        border-right: 1px solid $line-removed-dark;
+      }
+    }
+
+    .margin-view-overlays .insert-sign,
+    .margin-view-overlays .delete-sign {
+      opacity: .3;
+    }
   }
 }
 
