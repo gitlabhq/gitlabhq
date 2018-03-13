@@ -4,6 +4,7 @@
   import panelResizer from '~/vue_shared/components/panel_resizer.vue';
   import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
   import projectTree from './ide_project_tree.vue';
+  import ResizablePanel from './resizable_panel.vue';
 
   export default {
     components: {
@@ -11,6 +12,7 @@
       icon,
       panelResizer,
       skeletonLoadingContainer,
+      ResizablePanel,
     },
     data() {
       return {
@@ -61,12 +63,10 @@
 </script>
 
 <template>
-  <div
-    class="multi-file-commit-panel"
-    :class="{
-      'is-collapsed': leftPanelCollapsed,
-    }"
-    :style="panelStyle"
+  <resizable-panel
+    :collapsible="false"
+    :initial-width="290"
+    side="left"
   >
     <div class="multi-file-commit-panel-inner">
       <template v-if="showLoading">
@@ -84,31 +84,5 @@
         :project="project"
       />
     </div>
-    <button
-      type="button"
-      class="btn btn-transparent left-collapse-btn"
-      @click="toggleCollapsed"
-    >
-      <icon
-        :name="currentIcon"
-        :size="18"
-      />
-      <span
-        v-if="!leftPanelCollapsed"
-        class="collapse-text"
-      >
-        Collapse sidebar
-      </span>
-    </button>
-    <panel-resizer
-      :size.sync="width"
-      :enabled="!leftPanelCollapsed"
-      :start-size="290"
-      :min-size="200"
-      :max-size="maxSize"
-      @resize-start="resizingStarted"
-      @resize-end="resizingEnded"
-      side="right"
-    />
-  </div>
+  </resizable-panel>
 </template>

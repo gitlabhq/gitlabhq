@@ -3,39 +3,59 @@ import { findIndexOfFile } from '../utils';
 
 export default {
   [types.SET_FILE_ACTIVE](state, { file, active }) {
-    Object.assign(file, {
-      active,
-    });
-
     Object.assign(state, {
-      selectedFile: file,
+      entries: {
+        ...state.entries,
+        [file.path]: {
+          ...state.entries[file.path],
+          active,
+        },
+      },
     });
   },
   [types.TOGGLE_FILE_OPEN](state, file) {
-    Object.assign(file, {
-      opened: !file.opened,
+    Object.assign(state, {
+      entries: {
+        ...state.entries,
+        [file.path]: {
+          ...state.entries[file.path],
+          opened: !state.entries[file.path].opened,
+        },
+      },
     });
 
-    if (file.opened) {
-      state.openFiles.push(file);
+    if (state.entries[file.path].opened) {
+      state.openFiles.push(file.path);
     } else {
-      state.openFiles.splice(findIndexOfFile(state.openFiles, file), 1);
+      state.openFiles.splice(state.openFiles.indexOf(file.path), 1);
     }
   },
   [types.SET_FILE_DATA](state, { data, file }) {
-    Object.assign(file, {
-      id: data.id,
-      blamePath: data.blame_path,
-      commitsPath: data.commits_path,
-      permalink: data.permalink,
-      rawPath: data.raw_path,
-      binary: data.binary,
-      renderError: data.render_error,
+    Object.assign(state, {
+      entries: {
+        ...state.entries,
+        [file.path]: {
+          ...state.entries[file.path],
+          id: data.id,
+          blamePath: data.blame_path,
+          commitsPath: data.commits_path,
+          permalink: data.permalink,
+          rawPath: data.raw_path,
+          binary: data.binary,
+          renderError: data.render_error,
+        },
+      },
     });
   },
   [types.SET_FILE_RAW_DATA](state, { file, raw }) {
-    Object.assign(file, {
-      raw,
+    Object.assign(state, {
+      entries: {
+        ...state.entries,
+        [file.path]: {
+          ...state.entries[file.path],
+          raw,
+        },
+      },
     });
   },
   [types.UPDATE_FILE_CONTENT](state, { file, content }) {
@@ -47,19 +67,37 @@ export default {
     });
   },
   [types.SET_FILE_LANGUAGE](state, { file, fileLanguage }) {
-    Object.assign(file, {
-      fileLanguage,
+    Object.assign(state, {
+      entries: {
+        ...state.entries,
+        [file.path]: {
+          ...state.entries[file.path],
+          fileLanguage,
+        },
+      },
     });
   },
   [types.SET_FILE_EOL](state, { file, eol }) {
-    Object.assign(file, {
-      eol,
+    Object.assign(state, {
+      entries: {
+        ...state.entries,
+        [file.path]: {
+          ...state.entries[file.path],
+          eol,
+        },
+      },
     });
   },
   [types.SET_FILE_POSITION](state, { file, editorRow, editorColumn }) {
-    Object.assign(file, {
-      editorRow,
-      editorColumn,
+    Object.assign(state, {
+      entries: {
+        ...state.entries,
+        [file.path]: {
+          ...state.entries[file.path],
+          editorRow,
+          editorColumn,
+        },
+      },
     });
   },
   [types.DISCARD_FILE_CHANGES](state, file) {

@@ -8,25 +8,22 @@ export default {
   [types.SET_INITIAL_DATA](state, data) {
     Object.assign(state, data);
   },
-  [types.SET_PREVIEW_MODE](state) {
-    Object.assign(state, {
-      currentBlobView: 'repo-preview',
-    });
-  },
-  [types.SET_EDIT_MODE](state) {
-    Object.assign(state, {
-      currentBlobView: 'repo-editor',
-    });
-  },
   [types.TOGGLE_LOADING](state, { entry, forceValue = undefined }) {
-    Object.assign(entry, {
-      loading: forceValue !== undefined ? forceValue : !entry.loading,
-    });
-  },
-  [types.TOGGLE_EDIT_MODE](state) {
-    Object.assign(state, {
-      editMode: !state.editMode,
-    });
+    if (entry.path) {
+      Object.assign(state, {
+        entries: {
+          ...state.entries,
+          [entry.path]: {
+            ...state.entries[entry.path],
+            loading: forceValue !== undefined ? forceValue : !state.entries[entry.path].loading,
+          },
+        },
+      });
+    } else {
+      Object.assign(entry, {
+        loading: forceValue !== undefined ? forceValue : !entry.loading,
+      });
+    }
   },
   [types.SET_LEFT_PANEL_COLLAPSED](state, collapsed) {
     Object.assign(state, {
@@ -55,6 +52,11 @@ export default {
   [types.SET_LAST_COMMIT_MSG](state, lastCommitMsg) {
     Object.assign(state, {
       lastCommitMsg,
+    });
+  },
+  [types.SET_ENTRIES](state, entries) {
+    Object.assign(state, {
+      entries,
     });
   },
   ...projectMutations,

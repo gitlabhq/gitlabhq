@@ -1,5 +1,5 @@
 <script>
-  import { mapState } from 'vuex';
+  import { mapGetters } from 'vuex';
   import RepoTab from './repo_tab.vue';
 
   export default {
@@ -7,8 +7,8 @@
       'repo-tab': RepoTab,
     },
     computed: {
-      ...mapState([
-        'openFiles',
+      ...mapGetters([
+        'openFilesMap',
       ]),
     },
   };
@@ -19,7 +19,7 @@
     class="multi-file-tabs list-unstyled append-bottom-0"
   >
     <repo-tab
-      v-for="tab in openFiles"
+      v-for="tab in openFilesMap"
       :key="tab.key"
       :tab="tab"
     />

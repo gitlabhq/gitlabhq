@@ -10,8 +10,8 @@ import {
   findIndexOfFile,
 } from '../utils';
 
-export const closeFile = ({ commit, state, dispatch }, file) => {
-  const indexOfClosedFile = findIndexOfFile(state.openFiles, file);
+export const closeFile = ({ commit, state, getters, dispatch }, file) => {
+  const indexOfClosedFile = state.openFiles.indexOf(file.path);
   const fileWasActive = file.active;
 
   commit(types.TOGGLE_FILE_OPEN, file);
@@ -19,7 +19,7 @@ export const closeFile = ({ commit, state, dispatch }, file) => {
 
   if (state.openFiles.length > 0 && fileWasActive) {
     const nextIndexToOpen = indexOfClosedFile === 0 ? 0 : indexOfClosedFile - 1;
-    const nextFileToOpen = state.openFiles[nextIndexToOpen];
+    const nextFileToOpen = state.entries[state.openFiles[nextIndexToOpen]];
 
     router.push(`/project${nextFileToOpen.url}`);
   } else if (!state.openFiles.length) {
@@ -89,21 +89,21 @@ export const changeFileContent = ({ state, commit }, { file, content }) => {
   }
 };
 
-export const setFileLanguage = ({ state, commit }, { fileLanguage }) => {
-  if (state.selectedFile) {
-    commit(types.SET_FILE_LANGUAGE, { file: state.selectedFile, fileLanguage });
+export const setFileLanguage = ({ getters, commit }, { fileLanguage }) => {
+  if (getters.activeFile) {
+    commit(types.SET_FILE_LANGUAGE, { file: getters.activeFile, fileLanguage });
   }
 };
 
-export const setFileEOL = ({ state, commit }, { eol }) => {
-  if (state.selectedFile) {
-    commit(types.SET_FILE_EOL, { file: state.selectedFile, eol });
+export const setFileEOL = ({ getters, commit }, { eol }) => {
+  if (getters.activeFile) {
+    commit(types.SET_FILE_EOL, { file: getters.activeFile, eol });
   }
 };
 
-export const setEditorPosition = ({ state, commit }, { editorRow, editorColumn }) => {
-  if (state.selectedFile) {
-    commit(types.SET_FILE_POSITION, { file: state.selectedFile, editorRow, editorColumn });
+export const setEditorPosition = ({ getters, commit }, { editorRow, editorColumn }) => {
+  if (getters.activeFile) {
+    commit(types.SET_FILE_POSITION, { file: getters.activeFile, editorRow, editorColumn });
   }
 };
 
@@ -133,10 +133,6 @@ export const createTempFile = ({ state, commit, dispatch }, { projectId, branchI
   commit(types.TOGGLE_FILE_OPEN, file);
   commit(types.ADD_FILE_TO_CHANGED, file);
   dispatch('setFileActive', file);
-
-  if (!state.editMode && !file.base64) {
-    dispatch('toggleEditMode', true);
-  }
 
   router.push(`/project${file.url}`);
 

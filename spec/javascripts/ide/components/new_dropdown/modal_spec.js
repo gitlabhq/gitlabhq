@@ -117,16 +117,6 @@ describe('new file modal component', () => {
           });
         });
 
-        it('toggles blob view', (done) => {
-          vm.createEntryInStore();
-
-          setTimeout(() => {
-            expect(vm.$store.state.currentBlobView).toBe('repo-editor');
-
-            done();
-          });
-        });
-
         it('opens newly created file', (done) => {
           if (type === 'blob') {
             vm.createEntryInStore();

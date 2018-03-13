@@ -9,7 +9,7 @@ import {
   findEntry,
   createTemp,
   createOrMergeEntry,
-  sortTree,
+  decorateData,
 } from '../utils';
 
 export const getTreeData = (
@@ -199,72 +199,70 @@ export const getFiles = (
       .getFiles(selectedProject.web_url, branchId)
       .then(res => res.json())
       .then((data) => {
-        const newTree = data.reduce((outputArray, file) => {
-          const pathSplit = file.split('/');
+        const treeList = [];
+        const entries = data.reduce((acc, path) => {
+          const pathSplit = path.split('/');
           const blobName = pathSplit.pop();
-          let selectedFolderTree;
-          let foundFolder = null;
-          let fullPath = '';
 
           if (pathSplit.length > 0) {
-            const newBaseFolders = pathSplit.reduce((newFolders, folder, currentIndex) => {
-              fullPath += `/${folder}`;
-              foundFolder = findEntry(selectedFolderTree || outputArray, 'tree', fullPath, 'path');
-              if (!foundFolder) {
-                foundFolder = createOrMergeEntry({
+            pathSplit.reduce((pathAcc, folderName, folderLevel) => {
+              const folderPath = `${(pathAcc.length ? `${pathAcc[pathAcc.length - 1]}/` : '')}${folderName}`;
+              const foundEntry = state.entries[folderPath];
+
+              if (!foundEntry) {
+                const tree = decorateData({
                   projectId,
                   branchId,
-                  entry: {
-                    id: fullPath,
-                    name: folder,
-                    path: fullPath,
-                    url: `/${projectId}/tree/${branchId}/${fullPath}`,
-                  },
-                  level: currentIndex,
+                  id: folderPath,
+                  name: folderName,
+                  path: folderPath,
+                  url: `/${projectId}/tree/${branchId}/${folderPath}`,
+                  level: folderLevel,
                   type: 'tree',
-                  parentTreeUrl: '',
-                  state,
                 });
 
-                if (selectedFolderTree) {
-                  selectedFolderTree.push(foundFolder);
-                } else {
-                  newFolders.push(foundFolder);
+                Object.assign(acc, {
+                  [folderPath]: tree,
+                });
+
+                if (folderLevel === 0) {
+                  treeList.push(tree.path);
                 }
               }
-              selectedFolderTree = foundFolder.tree;
-              return newFolders;
+
+              return pathAcc;
             }, []);
-            if (newBaseFolders.length) outputArray.push(newBaseFolders[0]);
           }
 
-          // Add file
-          const blobEntry = createOrMergeEntry({
+          const fileFolder = acc[pathSplit.join('/')];
+          const file = decorateData({
             projectId,
             branchId,
-            entry: {
-              id: file,
-              name: blobName,
-              path: file,
-              url: `/${projectId}/blob/${branchId}/${file}`,
-            },
-            level: foundFolder ? (foundFolder.level + 1) : 0,
+            id: path,
+            name: blobName,
+            path,
+            url: `/${projectId}/blob/${branchId}/${path}`,
+            level: fileFolder ? fileFolder.level + 1 : 0,
             type: 'blob',
-            parentTreeUrl: foundFolder ? foundFolder.url : '',
-            state,
           });
 
-          if (selectedFolderTree) {
-            selectedFolderTree.push(blobEntry);
+          Object.assign(acc, {
+            [path]: file,
+          });
+
+          if (fileFolder) {
+            fileFolder.tree.push(path);
           } else {
-            outputArray.push(blobEntry);
+            treeList.push(file.path);
           }
 
-          return outputArray;
-        }, []);
+          return acc;
+        }, {});
 
         const selectedTree = state.trees[`${projectId}/${branchId}`];
-        commit(types.SET_DIRECTORY_DATA, { tree: selectedTree, data: sortTree(newTree) });
+
+        commit(types.SET_ENTRIES, entries);
+        commit(types.SET_DIRECTORY_DATA, { tree: selectedTree, data: treeList });
         commit(types.TOGGLE_LOADING, { entry: selectedTree, forceValue: false });
 
         resolve();

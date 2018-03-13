@@ -3,12 +3,14 @@
   import icon from '~/vue_shared/components/icon.vue';
   import panelResizer from '~/vue_shared/components/panel_resizer.vue';
   import repoCommitSection from './repo_commit_section.vue';
+  import ResizablePanel from './resizable_panel.vue';
 
   export default {
     components: {
       repoCommitSection,
       icon,
       panelResizer,
+      ResizablePanel,
     },
     props: {
       noChangesStateSvgPath: {
@@ -70,13 +72,10 @@
 </script>
 
 <template>
-  <div
-    class="multi-file-commit-panel"
-    :class="{
-      'is-collapsed': rightPanelCollapsed,
-    }"
-    :style="panelStyle"
-    @click="toggleFullbarCollapsed"
+  <resizable-panel
+    :collapsible="true"
+    :initial-width="340"
+    side="right"
   >
     <div
       class="multi-file-commit-panel-section"
@@ -117,15 +116,5 @@
         :committed-state-svg-path="committedStateSvgPath"
       />
     </div>
-    <panel-resizer
-      :size.sync="width"
-      :enabled="!rightPanelCollapsed"
-      :start-size="340"
-      :min-size="200"
-      :max-size="maxSize"
-      @resize-start="resizingStarted"
-      @resize-end="resizingEnded"
-      side="left"
-    />
-  </div>
+  </resizable-panel>
 </template>

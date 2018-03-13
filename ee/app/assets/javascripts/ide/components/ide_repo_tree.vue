@@ -1,5 +1,5 @@
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
 import repoFile from './repo_file.vue';
 
@@ -23,6 +23,9 @@ export default {
         return state.project.name;
       },
     }),
+    ...mapGetters([
+      'treeList',
+    ]),
     selctedTree() {
       return this.trees[this.treeId].tree;
     },
@@ -48,7 +51,7 @@ export default {
       </div>
     </template>
     <repo-file
-      v-for="file in selctedTree"
+      v-for="file in treeList"
       :key="file.key"
       :file="file"
     />

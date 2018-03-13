@@ -2,9 +2,7 @@ export default () => ({
   canCommit: false,
   currentProjectId: '',
   currentBranchId: '',
-  currentBlobView: 'repo-editor',
   changedFiles: [],
-  editMode: true,
   endpoints: {},
   isInitialRoot: false,
   lastCommitMsg: '',
@@ -20,4 +18,5 @@ export default () => ({
   leftPanelCollapsed: false,
   rightPanelCollapsed: false,
   panelResizing: false,
+  entries: {},
 });

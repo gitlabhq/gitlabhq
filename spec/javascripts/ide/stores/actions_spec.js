@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import * as urlUtils from '~/lib/utils/url_utility';
 import store from 'ee/ide/stores';
 import router from 'ee/ide/ide_router';
@@ -81,56 +80,6 @@ describe('Multi-file store actions', () => {
           done();
         })
         .catch(done.fail);
-    });
-  });
-
-  describe('toggleEditMode', () => {
-    it('toggles edit mode', (done) => {
-      store.state.editMode = true;
-
-      store.dispatch('toggleEditMode')
-        .then(() => {
-          expect(store.state.editMode).toBeFalsy();
-
-          done();
-        }).catch(done.fail);
-    });
-
-    it('sets preview mode', (done) => {
-      store.state.currentBlobView = 'repo-editor';
-      store.state.editMode = true;
-
-      store.dispatch('toggleEditMode')
-        .then(Vue.nextTick)
-        .then(() => {
-          expect(store.state.currentBlobView).toBe('repo-preview');
-
-          done();
-        }).catch(done.fail);
-    });
-  });
-
-  describe('toggleBlobView', () => {
-    it('sets edit mode view if in edit mode', (done) => {
-      store.dispatch('toggleBlobView')
-        .then(() => {
-          expect(store.state.currentBlobView).toBe('repo-editor');
-
-          done();
-        })
-        .catch(done.fail);
-    });
-
-    it('sets preview mode view if not in edit mode', (done) => {
-      store.state.editMode = false;
-
-      store.dispatch('toggleBlobView')
-      .then(() => {
-        expect(store.state.currentBlobView).toBe('repo-preview');
-
-        done();
-      })
-      .catch(done.fail);
     });
   });
 

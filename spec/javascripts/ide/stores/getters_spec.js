@@ -26,20 +26,6 @@ describe('Multi-file store getters', () => {
     });
   });
 
-  describe('activeFileExtension', () => {
-    it('returns the file extension for the current active file', () => {
-      localState.openFiles.push(file('active'));
-      localState.openFiles[0].active = true;
-      localState.openFiles[0].path = 'test.js';
-
-      expect(getters.activeFileExtension(localState)).toBe('.js');
-
-      localState.openFiles[0].path = 'test.es6.js';
-
-      expect(getters.activeFileExtension(localState)).toBe('.js');
-    });
-  });
-
   describe('canEditFile', () => {
     beforeEach(() => {
       localState.onTopOfBranch = true;

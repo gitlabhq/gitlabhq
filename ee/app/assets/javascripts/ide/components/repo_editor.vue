@@ -9,7 +9,6 @@ export default {
   computed: {
     ...mapGetters([
       'activeFile',
-      'activeFileExtension',
     ]),
     ...mapState([
       'leftPanelCollapsed',
@@ -22,7 +21,7 @@ export default {
   },
   watch: {
     activeFile(oldVal, newVal) {
-      if (newVal && !newVal.active) {
+      if (newVal.path !== this.activeFile.path) {
         this.initMonaco();
       }
     },

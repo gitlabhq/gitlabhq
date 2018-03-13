@@ -23,19 +23,6 @@ export const closeAllFiles = ({ state, dispatch }) => {
   state.openFiles.forEach(file => dispatch('closeFile', file));
 };
 
-export const toggleEditMode = ({ commit, dispatch }) => {
-  commit(types.TOGGLE_EDIT_MODE);
-  dispatch('toggleBlobView');
-};
-
-export const toggleBlobView = ({ commit, state }) => {
-  if (state.editMode) {
-    commit(types.SET_EDIT_MODE);
-  } else {
-    commit(types.SET_PREVIEW_MODE);
-  }
-};
-
 export const setPanelCollapsedStatus = ({ commit }, { side, collapsed }) => {
   if (side === 'left') {
     commit(types.SET_LEFT_PANEL_COLLAPSED, collapsed);

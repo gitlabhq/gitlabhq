@@ -5,7 +5,6 @@
   import repoTabs from './repo_tabs.vue';
   import repoFileButtons from './repo_file_buttons.vue';
   import ideStatusBar from './ide_status_bar.vue';
-  import repoPreview from './repo_preview.vue';
   import repoEditor from './repo_editor.vue';
 
   export default {
@@ -16,7 +15,6 @@
       repoFileButtons,
       ideStatusBar,
       repoEditor,
-      repoPreview,
     },
     props: {
       emptyStateSvgPath: {
@@ -34,8 +32,6 @@
     },
     computed: {
       ...mapState([
-        'currentBlobView',
-        'selectedFile',
         'changedFiles',
       ]),
       ...mapGetters([
@@ -68,13 +64,12 @@
         v-if="activeFile"
       >
         <repo-tabs/>
-        <component
+        <repo-editor
           class="multi-file-edit-pane-content"
-          :is="currentBlobView"
         />
         <repo-file-buttons />
         <ide-status-bar
-          :file="selectedFile"
+          :file="activeFile"
         />
       </template>
       <template
