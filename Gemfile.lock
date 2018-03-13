@@ -474,7 +474,7 @@ GEM
       toml (= 0.1.2)
       with_env (> 1.0)
       xml-simple
-    licensee (8.7.0)
+    licensee (8.9.2)
       rugged (~> 0.24)
     little-plugger (1.1.4)
     locale (2.1.2)
@@ -1093,7 +1093,7 @@ DEPENDENCIES
   kubeclient (~> 3.0)
   letter_opener_web (~> 1.3.0)
   license_finder (~> 3.1)
-  licensee (~> 8.7.0)
+  licensee (~> 8.9)
   lograge (~> 0.5)
   loofah (~> 2.0.3)
   mail_room (~> 0.9.1)
