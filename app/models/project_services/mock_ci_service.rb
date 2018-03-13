@@ -52,7 +52,7 @@ class MockCiService < CiService
   #
   #
   def commit_status(sha, ref)
-    response = HTTParty.get(commit_status_path(sha), verify: false)
+    response = Gitlab::HTTP.get(commit_status_path(sha), verify: false)
     read_commit_status(response)
   rescue Errno::ECONNREFUSED
     :error

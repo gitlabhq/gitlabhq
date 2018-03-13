@@ -1,6 +1,5 @@
 class PushoverService < Service
-  include HTTParty
-  base_uri 'https://api.pushover.net/1'
+  BASE_URI = 'https://api.pushover.net/1'.freeze
 
   prop_accessor :api_key, :user_key, :device, :priority, :sound
   validates :api_key, :user_key, :priority, presence: true, if: :activated?
@@ -99,6 +98,6 @@ class PushoverService < Service
       pushover_data[:sound] = sound
     end
 
-    PushoverService.post('/messages.json', body: pushover_data)
+    Gitlab::HTTP.post('/messages.json', base_uri: BASE_URI, body: pushover_data)
   end
 end
