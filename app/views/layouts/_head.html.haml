@@ -31,6 +31,7 @@
   = stylesheet_link_tag "print",       media: "print"
   = stylesheet_link_tag "test",        media: "all" if Rails.env.test?
   = stylesheet_link_tag 'performance_bar' if performance_bar_enabled?
+  = stylesheet_link_tag "csslab-slim",        media: "all"
 
   = Gon::Base.render_data
 

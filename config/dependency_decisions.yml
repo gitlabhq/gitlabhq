@@ -467,8 +467,8 @@
 - - :license
   - pikaday
   - MIT
-  - :who: 
-    :why: 
+  - :who:
+    :why:
     :versions: []
     :when: 2017-10-17 17:46:12.367554000 Z
 - - :license
@@ -534,3 +534,9 @@
     :why: https://github.com/squaremo/bitsyntax-js/blob/master/LICENSE-MIT
     :versions: []
     :when: 2018-02-20 22:20:25.958123000 Z
+- - :approve
+  - "@gitlab-org/csslab"
+  - :who: Clement Ho
+    :why: Same license as GitLab CE/EE
+    :versions: []
+    :when: 2018-03-13 17:58:05.809072000 Z

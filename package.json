@@ -12,6 +12,7 @@
     "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js"
   },
   "dependencies": {
+    "@gitlab-org/csslab": "^0.0.3",
     "@gitlab-org/gitlab-svgs": "^1.14.0",
     "autosize": "^4.0.0",
     "axios": "^0.17.1",

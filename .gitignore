@@ -26,6 +26,7 @@ eslint-report.html
 /app/assets/images/icons.svg
 /app/assets/images/illustrations/
 /app/assets/javascripts/locale/**/app.js
+/app/assets/stylesheets/csslab-slim.css
 /backups/*
 /config/aws.yml
 /config/database.yml
