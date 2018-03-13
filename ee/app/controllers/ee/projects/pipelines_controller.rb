@@ -6,7 +6,7 @@ module EE
       def security
         commit
 
-        if pipeline.sast_artifact
+        if pipeline.expose_sast_data?
           render_show
         else
           redirect_to pipeline_path(pipeline)

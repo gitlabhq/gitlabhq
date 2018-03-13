@@ -56,4 +56,31 @@ describe Ci::Pipeline do
       end
     end
   end
+
+  %w(sast dast performance sast_container).each do |type|
+    method = "has_#{type}_data?"
+
+    describe "##{method}" do
+      let(:artifact) { double(success?: true) }
+
+      before do
+        allow(pipeline).to receive(:"#{type}_artifact").and_return(artifact)
+      end
+
+      it { expect(pipeline.send(method.to_sym)).to be_truthy }
+    end
+  end
+
+  %w(sast dast performance sast_container).each do |type|
+    method = "expose_#{type}_data?"
+
+    describe "##{method}" do
+      before do
+        allow(pipeline).to receive(:"has_#{type}_data?").and_return(true)
+        allow(pipeline.project).to receive(:feature_available?).and_return(true)
+      end
+
+      it { expect(pipeline.send(method.to_sym)).to be_truthy }
+    end
+  end
 end
