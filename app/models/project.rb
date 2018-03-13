@@ -1574,13 +1574,13 @@ class Project < ActiveRecord::Base
     visibility = Gitlab::VisibilityLevel.string_level(visibility_level)
 
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
-      variables.append(key: 'CI_PROJECT_ID', value: id.to_s, public: true)
-      variables.append(key: 'CI_PROJECT_NAME', value: path, public: true)
-      variables.append(key: 'CI_PROJECT_PATH', value: full_path, public: true)
-      variables.append(key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug, public: true)
-      variables.append(key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true)
-      variables.append(key: 'CI_PROJECT_URL', value: web_url, public: true)
-      variables.append(key: 'CI_PROJECT_VISIBILITY', value: visibility, public: true)
+      variables.append(key: 'CI_PROJECT_ID', value: id.to_s)
+      variables.append(key: 'CI_PROJECT_NAME', value: path)
+      variables.append(key: 'CI_PROJECT_PATH', value: full_path)
+      variables.append(key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug)
+      variables.append(key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path)
+      variables.append(key: 'CI_PROJECT_URL', value: web_url)
+      variables.append(key: 'CI_PROJECT_VISIBILITY', value: visibility)
       variables.concat(container_registry_variables)
       variables.concat(auto_devops_variables)
     end
@@ -1590,10 +1590,10 @@ class Project < ActiveRecord::Base
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
       return variables unless Gitlab.config.registry.enabled
 
-      variables.append(key: 'CI_REGISTRY', value: Gitlab.config.registry.host_port, public: true)
+      variables.append(key: 'CI_REGISTRY', value: Gitlab.config.registry.host_port)
 
       if container_registry_enabled?
-        variables.append(key: 'CI_REGISTRY_IMAGE', value: container_registry_url, public: true)
+        variables.append(key: 'CI_REGISTRY_IMAGE', value: container_registry_url)
       end
     end
   end

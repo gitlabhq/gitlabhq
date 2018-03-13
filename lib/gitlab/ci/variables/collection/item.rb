@@ -9,7 +9,7 @@ module Gitlab
             @variable = {
               key: options.fetch(:key),
               value: options.fetch(:value),
-              public: options.fetch(:public, false),
+              public: options.fetch(:public, true),
               file: options.fetch(:files, false)
             }
           end

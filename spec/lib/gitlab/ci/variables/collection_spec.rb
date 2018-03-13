@@ -58,7 +58,7 @@ describe Gitlab::Ci::Variables::Collection do
       collection = described_class.new([{ key: 'TEST', value: 1 }])
 
       expect(collection.to_runner_variables)
-        .to eq [{ key: 'TEST', value: 1, public: false }]
+        .to eq [{ key: 'TEST', value: 1, public: true }]
     end
   end
 end
