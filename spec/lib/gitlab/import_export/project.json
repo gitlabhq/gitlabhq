@@ -43,7 +43,6 @@
     {
       "id": 40,
       "title": "Voluptatem",
-      "assignee_id": 1,
       "author_id": 22,
       "project_id": 5,
       "created_at": "2016-06-14T15:02:08.340Z",
@@ -61,7 +60,23 @@
       "issue_assignees": [
         {
           "user_id": 1,
-          "issue_id": 1
+          "issue_id": 40
+        },
+        {
+          "user_id": 15,
+          "issue_id": 40
+        },
+        {
+          "user_id": 16,
+          "issue_id": 40
+        },
+        {
+          "user_id": 16,
+          "issue_id": 40
+        },
+        {
+          "user_id": 6,
+          "issue_id": 40
         }
       ],
       "milestone": {
@@ -319,8 +334,7 @@
     },
     {
       "id": 39,
-      "title": "Delectus veniam ratione in eos culpa et natus molestiae earum aut.",
-      "assignee_id": 20,
+      "title": "Issue without assignees",
       "author_id": 22,
       "project_id": 5,
       "created_at": "2016-06-14T15:02:08.233Z",
@@ -334,6 +348,7 @@
       "confidential": false,
       "due_date": null,
       "moved_to_id": null,
+      "issue_assignees": [],
       "milestone": {
         "id": 1,
         "title": "test milestone",
@@ -539,7 +554,6 @@
     {
       "id": 38,
       "title": "Quasi adipisci non cupiditate dolorem quo qui earum sed.",
-      "assignee_id": 1,
       "author_id": 6,
       "project_id": 5,
       "created_at": "2016-06-14T15:02:08.154Z",
@@ -756,7 +770,6 @@
     {
       "id": 37,
       "title": "Cupiditate quo aut ducimus minima molestiae vero numquam possimus.",
-      "assignee_id": 15,
       "author_id": 20,
       "project_id": 5,
       "created_at": "2016-06-14T15:02:08.051Z",
@@ -952,7 +965,6 @@
     {
       "id": 36,
       "title": "Necessitatibus dolor est enim quia rem suscipit quidem voluptas ullam.",
-      "assignee_id": 20,
       "author_id": 16,
       "project_id": 5,
       "created_at": "2016-06-14T15:02:07.958Z",
@@ -1148,7 +1160,6 @@
     {
       "id": 35,
       "title": "Repellat praesentium deserunt maxime incidunt harum porro qui.",
-      "assignee_id": 6,
       "author_id": 20,
       "project_id": 5,
       "created_at": "2016-06-14T15:02:07.832Z",
@@ -1344,7 +1355,6 @@
     {
       "id": 34,
       "title": "Ullam expedita deserunt libero consequatur quia dolor harum perferendis facere quidem.",
-      "assignee_id": 20,
       "author_id": 1,
       "project_id": 5,
       "created_at": "2016-06-14T15:02:07.717Z",
@@ -1540,7 +1550,6 @@
     {
       "id": 33,
       "title": "Numquam accusamus eos iste exercitationem magni non inventore.",
-      "assignee_id": 15,
       "author_id": 26,
       "project_id": 5,
       "created_at": "2016-06-14T15:02:07.611Z",
@@ -1736,7 +1745,6 @@
     {
       "id": 32,
       "title": "Necessitatibus magnam qui at velit consequatur perspiciatis.",
-      "assignee_id": 22,
       "author_id": 15,
       "project_id": 5,
       "created_at": "2016-06-14T15:02:07.431Z",
@@ -1932,7 +1940,6 @@
     {
       "id": 31,
       "title": "Libero nam magnam incidunt eaque placeat error et.",
-      "assignee_id": 1,
       "author_id": 16,
       "project_id": 5,
       "created_at": "2016-06-14T15:02:07.280Z",
