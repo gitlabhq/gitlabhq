@@ -1,10 +1,14 @@
 require 'spec_helper'
 
 describe 'CI Lint', :js do
-  before do
-    sign_in(create(:user))
+  let(:project) { create(:project, :repository) }
+  let(:user) { create(:user) }
 
-    visit ci_lint_path
+  before do
+    project.add_developer(user)
+    sign_in(user)
+
+    visit project_ci_lint_path(project)
     find('#ci-editor')
     execute_script("ace.edit('ci-editor').setValue(#{yaml_content.to_json});")
 

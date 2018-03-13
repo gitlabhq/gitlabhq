@@ -7,8 +7,8 @@ module Gitlab
 
       attr_reader :cache, :stages, :jobs
 
-      def initialize(config)
-        @ci_config = Gitlab::Ci::Config.new(config)
+      def initialize(config, opts = {})
+        @ci_config = Gitlab::Ci::Config.new(config, opts)
         @config = @ci_config.to_hash
 
         unless @ci_config.valid?
@@ -73,11 +73,11 @@ module Gitlab
         end
       end
 
-      def self.validation_message(content)
+      def self.validation_message(content, opts = {})
         return 'Please provide content of .gitlab-ci.yml' if content.blank?
 
         begin
-          Gitlab::Ci::YamlProcessor.new(content)
+          Gitlab::Ci::YamlProcessor.new(content, opts)
           nil
         rescue ValidationError => e
           e.message

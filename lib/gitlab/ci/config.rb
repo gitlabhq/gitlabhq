@@ -4,7 +4,7 @@ module Gitlab
     # Base GitLab CI Configuration facade
     #
     class Config
-      def initialize(config)
+      def initialize(config, opts = {})
         @config = Loader.new(config).load!
 
         @global = Entry::Global.new(@config)
