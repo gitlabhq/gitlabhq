@@ -1,21 +1,16 @@
-.ci-body {
-  .incorrect-syntax {
-    font-size: 18px;
-    color: $lint-incorrect-color;
-  }
-
-  .correct-syntax {
-    font-size: 18px;
-    color: $lint-correct-color;
-  }
+.ci-linter-container {
+  align-items: center;
+  display: flex;
+  height: calc(100vh - #{$header-height + $performance-bar-height});
+  justify-content: center;
+  text-align: center;
 }
 
-.ci-linter {
-  .ci-editor {
-    height: 400px;
-  }
+.ci-linter-inner {
+  width: auto;
+}
 
-  .ci-template pre {
-    white-space: pre-wrap;
-  }
+.ci-linter-description {
+  color: $common-gray-light;
+  width: 500px;
 }
