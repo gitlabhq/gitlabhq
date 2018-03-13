@@ -1,0 +1,5 @@
+---
+title: Fixed some SSRF vulnerabilities in services, hooks and integrations
+merge_request: 2337
+author:
+type: security
