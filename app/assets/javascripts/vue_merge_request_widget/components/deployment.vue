@@ -90,36 +90,32 @@ export default {
             <span>
               Deployed to
             </span>
-            <span class="deploy-link">
-              <a
-                :href="deployment.url"
-                target="_blank"
-                rel="noopener noreferrer nofollow"
-                class="js-deploy-meta"
-              >
-                {{ deployment.name }}
-              </a>
-            </span>
+            <a
+              :href="deployment.url"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              class="deploy-link js-deploy-meta"
+            >
+              {{ deployment.name }}
+            </a>
           </template>
           <template v-if="hasExternalUrls">
             <span>
               on
             </span>
-            <span class="deploy-link">
-              <a
-                :href="deployment.external_url"
-                target="_blank"
-                rel="noopener noreferrer nofollow"
-                class="js-deploy-url"
+            <a
+              :href="deployment.external_url"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              class="deploy-link js-deploy-url"
+            >
+              <i
+                class="fa fa-external-link"
+                aria-hidden="true"
               >
-                <i
-                  class="fa fa-external-link"
-                  aria-hidden="true"
-                >
-                </i>
-                {{ deployment.external_url_formatted }}
-              </a>
-            </span>
+              </i>
+              {{ deployment.external_url_formatted }}
+            </a>
           </template>
           <span
             v-if="hasDeploymentTime"
