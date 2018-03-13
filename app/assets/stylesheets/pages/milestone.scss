@@ -196,26 +196,26 @@
 }
 
 .milestone-deprecation-message {
-  .popup {
-    max-width: 300px;
-    position: absolute;
-    left: 30px;
+  .popover {
+    padding: 0;
 
-    .body {
-      padding: $gl-padding-8;
+    .popover-content {
+      padding: 0;
     }
 
     .footer {
+      background-color: $white-light;
       padding: $gl-padding-8 $gl-padding;
+      border-bottom-left-radius: $border-radius-default;
+      border-bottom-right-radius: $border-radius-default;
+      border-top: 1px solid $white-dark;
     }
-  }
 
-  .instructions-list {
-    padding: 0 0 0 30px;
-  }
-
-  .text-container {
-    position: relative;
+    .instructions-list {
+      list-style-position: inside;
+      padding: $gl-padding-8 20px;
+      background-color: $gray-light;
+    }
   }
 
   .btn-link {
