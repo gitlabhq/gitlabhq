@@ -481,6 +481,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resource :repository, only: [:show], controller: :repository
       end
 
+      namespace :ci do
+        resource :lint, only: [:show, :create]
+      end
+
       # Since both wiki and repository routing contains wildcard characters
       # its preferable to keep it below all other project routes
       draw :wiki

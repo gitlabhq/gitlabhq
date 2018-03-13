@@ -1,12 +1,14 @@
 require 'spec_helper'
 
-describe 'ci/lints/show' do
+describe 'projects/ci/lints/show' do
   include Devise::Test::ControllerHelpers
+  let(:project) { create(:project, :repository) }
 
   describe 'XSS protection' do
     let(:config_processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(content)) }
 
     before do
+      assign(:project, project)
       assign(:status, true)
       assign(:builds, config_processor.builds)
       assign(:stages, config_processor.stages)
@@ -64,6 +66,7 @@ describe 'ci/lints/show' do
 
   context 'when the content is valid' do
     before do
+      assign(:project, project)
       assign(:status, true)
       assign(:builds, config_processor.builds)
       assign(:stages, config_processor.stages)
@@ -83,6 +86,7 @@ describe 'ci/lints/show' do
 
   context 'when the content is invalid' do
     before do
+      assign(:project, project)
       assign(:status, false)
       assign(:error, 'Undefined error')
     end
