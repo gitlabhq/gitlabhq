@@ -360,27 +360,15 @@ Instead place EE specs in the `ee/spec` folder.
 
 ## JavaScript code in `assets/javascripts/`
 
-To separate EE-specific JS-files we can also move the files into an `ee` folder.
+To separate EE-specific JS-files we should also move the files into an `ee` folder.
 
 For example there can be an
 `app/assets/javascripts/protected_branches/protected_branches_bundle.js` and an
 EE counterpart
 `ee/app/assets/javascripts/protected_branches/protected_branches_bundle.js`.
 
-That way we can create a separate webpack bundle in `webpack.config.js`:
-
-```javascript
-    protected_branches:    '~/protected_branches',
-    ee_protected_branches: 'ee/protected_branches/protected_branches_bundle.js',
-```
-
-With the separate bundle in place, we can decide which bundle to load inside the
-view, using the `page_specific_javascript_bundle_tag` helper.
-
-```haml
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('protected_branches')
-```
+See the frontend guide [performance section](./fe_guide/performance.md) for
+information on managing page-specific javascript within EE.
 
 ## SCSS code in `assets/stylesheets`
 

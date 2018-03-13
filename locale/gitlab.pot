@@ -8,8 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2018-03-08 09:20+0100\n"
 "PO-Revision-Date: 2018-03-08 09:20+0100\n"
+=======
+"POT-Creation-Date: 2018-03-12 19:50+0100\n"
+"PO-Revision-Date: 2018-03-12 19:50+0100\n"
+>>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -118,6 +123,9 @@ msgstr ""
 msgid "2FA enabled"
 msgstr ""
 
+msgid "<strong>Removes</strong> source branch"
+msgstr ""
+
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr ""
 
@@ -125,6 +133,9 @@ msgid "A new branch will be created in your fork and a new merge request will be
 msgstr ""
 
 msgid "A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), %{among_other_things_link}."
+msgstr ""
+
+msgid "A user with write access to the source branch selected this option"
 msgstr ""
 
 msgid "About auto deploy"
@@ -241,7 +252,7 @@ msgstr ""
 msgid "All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings."
 msgstr ""
 
-msgid "Allow edits from maintainers"
+msgid "Allow edits from maintainers."
 msgstr ""
 
 msgid "Allows you to add and manage Kubernetes clusters."
@@ -1390,10 +1401,14 @@ msgstr ""
 msgid "Create empty bare repository"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Create epic"
 msgstr ""
 
 msgid "Create file"
+=======
+msgid "Create group label"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Create lists from labels. Issues with that label appear in that list."
@@ -1418,6 +1433,9 @@ msgid "Create new label"
 msgstr ""
 
 msgid "Create new..."
+msgstr ""
+
+msgid "Create project label"
 msgstr ""
 
 msgid "CreateNewFork|Fork"
@@ -2384,10 +2402,17 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
+=======
+msgid "Manage group labels"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Manage labels"
+msgstr ""
+
+msgid "Manage project labels"
 msgstr ""
 
 msgid "Mar"
@@ -2905,7 +2930,13 @@ msgstr ""
 msgid "Pipelines|Loading Pipelines"
 msgstr ""
 
+msgid "Pipelines|Project cache successfully reset."
+msgstr ""
+
 msgid "Pipelines|Run Pipeline"
+msgstr ""
+
+msgid "Pipelines|Something went wrong while cleaning runners cache."
 msgstr ""
 
 msgid "Pipelines|There are currently no %{scope} pipelines."
@@ -3040,9 +3071,6 @@ msgstr ""
 msgid "Project avatar in repository: %{link}"
 msgstr ""
 
-msgid "Project cache successfully reset."
-msgstr ""
-
 msgid "Project details"
 msgstr ""
 
@@ -3160,12 +3188,15 @@ msgstr ""
 msgid "PrometheusService|Common metrics"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "PrometheusService|Common metrics are automatically monitored based on a library of metrics from popular exporters."
 msgstr ""
 
 msgid "PrometheusService|Custom metrics"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "PrometheusService|Finding and configuring metrics..."
 msgstr ""
 
@@ -3190,9 +3221,12 @@ msgstr ""
 msgid "PrometheusService|More information"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "PrometheusService|New metric"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "PrometheusService|Prometheus API Base URL, like http://prometheus.example.com/"
 msgstr ""
 
@@ -3232,9 +3266,12 @@ msgstr ""
 msgid "Public - The project can be accessed without any authentication."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Push Rules"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Push events"
 msgstr ""
 
@@ -4175,6 +4212,7 @@ msgstr ""
 msgid "Trigger this manual action"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Turn on Service Desk"
 msgstr ""
 
@@ -4184,6 +4222,8 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Unlock"
 msgstr ""
 
@@ -4247,10 +4287,16 @@ msgstr ""
 msgid "View file @ "
 msgstr ""
 
+msgid "View group labels"
+msgstr ""
+
 msgid "View labels"
 msgstr ""
 
 msgid "View open merge request"
+msgstr ""
+
+msgid "View project labels"
 msgstr ""
 
 msgid "View replaced file @ "
