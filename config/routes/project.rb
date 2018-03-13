@@ -140,14 +140,11 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           post :bulk_update
         end
 
-<<<<<<< HEAD
         ## EE-specific
         resources :approvers, only: :destroy
         resources :approver_groups, only: :destroy
         ## EE-specific
 
-=======
->>>>>>> upstream/master
         resources :discussions, only: [:show], constraints: { id: /\h{40}/ } do
           member do
             post :resolve
