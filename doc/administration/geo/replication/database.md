@@ -472,16 +472,16 @@ the instructions below:
 
 1. Edit `/etc/gitlab/gitlab.rb` with the connection params and credentials
 
-```ruby
-# note this is shared between both databases, 
-# make sure you define the same password in both
-gitlab_rails['db_password'] = 'mypassword'
-
-geo_secondary['db_host'] = '2.3.4.5' # change to the correct public IP
-geo_secondary['db_port'] = 5431      # change to the correct port
-geo_secondary['db_fdw'] = true       # enable FDW
-geo_postgresql['enable'] = false     # don't use internal managed instance
-```
+    ```ruby
+    # note this is shared between both databases, 
+    # make sure you define the same password in both
+    gitlab_rails['db_password'] = 'mypassword'
+    
+    geo_secondary['db_host'] = '2.3.4.5' # change to the correct public IP
+    geo_secondary['db_port'] = 5431      # change to the correct port
+    geo_secondary['db_fdw'] = true       # enable FDW
+    geo_postgresql['enable'] = false     # don't use internal managed instance
+    ```
 
 1. Reconfigure GitLab for the changes to take effect:
 
