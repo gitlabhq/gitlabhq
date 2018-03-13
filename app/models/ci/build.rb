@@ -46,7 +46,7 @@ module Ci
     scope :ignore_failures, ->() { where(allow_failure: false) }
     scope :with_artifacts, ->(file_type) do
       where('(artifacts_file IS NOT NULL AND artifacts_file <> ?) OR EXISTS (?)',
-        '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').public_send(file_type))
+        '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').public_send(file_type)) # rubocop:disable GitlabSecurity/PublicSend
     end
     scope :with_artifacts_not_expired, ->() { with_artifacts(:archive).where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
     scope :with_expired_artifacts, ->() { with_artifacts(:archive).where('artifacts_expire_at < ?', Time.now) }
