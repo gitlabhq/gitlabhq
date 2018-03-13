@@ -2,10 +2,11 @@ require 'spec_helper'
 
 describe Mattermost::Team do
   before do
-    Mattermost::Session.base_uri('http://mattermost.example.com')
+    session = Mattermost::Session.new(nil)
+    session.base_uri = 'http://mattermost.example.com'
 
     allow_any_instance_of(Mattermost::Client).to receive(:with_session)
-      .and_yield(Mattermost::Session.new(nil))
+      .and_yield(session)
   end
 
   describe '#all' do
