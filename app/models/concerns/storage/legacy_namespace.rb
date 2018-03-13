@@ -13,26 +13,10 @@ module Storage
 
       expires_full_path_cache
 
-      # Move the namespace directory in all storage paths used by member projects
-      repository_storage_paths.each do |repository_storage_path|
-        # Ensure old directory exists before moving it
-        gitlab_shell.add_namespace(repository_storage_path, full_path_was)
-
-        # Ensure new directory exists before moving it (if there's a parent)
-        gitlab_shell.add_namespace(repository_storage_path, parent.full_path) if parent
-
-        unless gitlab_shell.mv_namespace(repository_storage_path, full_path_was, full_path)
-
-          Rails.logger.error "Exception moving path #{repository_storage_path} from #{full_path_was} to #{full_path}"
-
-          # if we cannot move namespace directory we should rollback
-          # db changes in order to prevent out of sync between db and fs
-          raise Gitlab::UpdatePathError.new('namespace directory cannot be moved')
-        end
-      end
+      move_repositories
 
       if parent_changed?
-        former_parent_full_path = parent_was.full_path
+        former_parent_full_path = parent_was&.full_path
         parent_full_path = parent&.full_path
         Gitlab::UploadsTransfer.new.move_namespace(path, former_parent_full_path, parent_full_path)
         Gitlab::PagesTransfer.new.move_namespace(path, former_parent_full_path, parent_full_path)
@@ -67,6 +51,26 @@ module Storage
     end
 
     private
+
+    def move_repositories
+      # Move the namespace directory in all storage paths used by member projects
+      repository_storage_paths.each do |repository_storage_path|
+        # Ensure old directory exists before moving it
+        gitlab_shell.add_namespace(repository_storage_path, full_path_was)
+
+        # Ensure new directory exists before moving it (if there's a parent)
+        gitlab_shell.add_namespace(repository_storage_path, parent.full_path) if parent
+
+        unless gitlab_shell.mv_namespace(repository_storage_path, full_path_was, full_path)
+
+          Rails.logger.error "Exception moving path #{repository_storage_path} from #{full_path_was} to #{full_path}"
+
+          # if we cannot move namespace directory we should rollback
+          # db changes in order to prevent out of sync between db and fs
+          raise Gitlab::UpdatePathError.new('namespace directory cannot be moved')
+        end
+      end
+    end
 
     def old_repository_storage_paths
       @old_repository_storage_paths ||= repository_storage_paths
