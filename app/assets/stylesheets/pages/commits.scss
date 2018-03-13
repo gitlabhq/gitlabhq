@@ -194,8 +194,6 @@
 
 .commit-actions {
   @media (min-width: $screen-sm-min) {
-    font-size: 0;
-
     .fa-spinner {
       font-size: 12px;
     }
@@ -204,7 +202,7 @@
   .ci-status-link {
     display: inline-block;
     position: relative;
-    top: 1px;
+    top: 2px;
   }
 
   .btn-clipboard,
@@ -226,7 +224,7 @@
 
   .ci-status-icon {
     position: relative;
-    top: 1px;
+    top: 2px;
   }
 }
 
