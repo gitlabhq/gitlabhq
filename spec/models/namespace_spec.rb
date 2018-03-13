@@ -549,7 +549,6 @@ describe Namespace do
       end
     end
 
-    # Note: Group transfers are not yet implemented
     context 'when a group is transferred into a root group' do
       context 'when the root group "Share with group lock" is enabled' do
         let(:root_group) { create(:group, share_with_group_lock: true) }
