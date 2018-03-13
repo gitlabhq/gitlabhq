@@ -553,7 +553,7 @@ class Project < ActiveRecord::Base
     latest_pipeline = pipelines.latest_successful_for(ref)
 
     if latest_pipeline
-      latest_pipeline.builds.latest.with_artifacts
+      latest_pipeline.builds.latest.with_artifacts(:archive)
     else
       builds.none
     end
