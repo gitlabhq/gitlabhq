@@ -768,6 +768,8 @@
 }
 
 .mr-memory-usage {
+  width: 100%;
+
   p.usage-info-loading .usage-info-load-spinner {
     margin-right: 10px;
     font-size: 16px;
@@ -782,4 +784,41 @@
 .mr-widget-icon {
   font-size: 22px;
   margin: 0 10px 0 0;
+}
+
+.deploy-heading {
+  .media-body {
+    min-width: 0;
+  }
+}
+
+.deploy-body {
+  display: flex;
+  flex-wrap: wrap;
+
+  @media (min-width: $screen-xs) {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+
+  > *:not(:last-child) {
+    margin-right: .3em;
+  }
+
+  .btn {
+    margin-left: $gl-padding;
+  }
+}
+
+.deploy-link {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 100px;
+  max-width: 150px;
+
+  @media (min-width: $screen-xs) {
+    min-width: 0;
+    max-width: 100%;
+  }
 }

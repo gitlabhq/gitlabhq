@@ -5,7 +5,7 @@ import {
   WidgetHeader,
   WidgetMergeHelp,
   WidgetPipeline,
-  WidgetDeployment,
+  Deployment,
   WidgetMaintainerEdit,
   WidgetRelatedLinks,
   MergedState,
@@ -217,7 +217,7 @@ export default {
     'mr-widget-header': WidgetHeader,
     'mr-widget-merge-help': WidgetMergeHelp,
     'mr-widget-pipeline': WidgetPipeline,
-    'mr-widget-deployment': WidgetDeployment,
+    Deployment,
     'mr-widget-maintainer-edit': WidgetMaintainerEdit,
     'mr-widget-related-links': WidgetRelatedLinks,
     'mr-widget-merged': MergedState,
@@ -251,10 +251,12 @@ export default {
         :ci-status="mr.ciStatus"
         :has-ci="mr.hasCI"
         />
-      <mr-widget-deployment
+      <deployment
         v-if="shouldRenderDeployments"
-        :mr="mr"
-        :service="service" />
+        v-for="deployment in mr.deployments"
+        :key="deployment.id"
+        :deployment="deployment"
+      />
       <div class="mr-widget-section">
         <component
           :is="componentName"

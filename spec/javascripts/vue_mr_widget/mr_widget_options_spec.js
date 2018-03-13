@@ -189,16 +189,16 @@ describe('mrWidgetOptions', () => {
 
     describe('fetchDeployments', () => {
       it('should fetch deployments', (done) => {
-        spyOn(vm.service, 'fetchDeployments').and.returnValue(returnPromise([{ deployment: 1 }]));
+        spyOn(vm.service, 'fetchDeployments').and.returnValue(returnPromise([{ id: 1 }]));
 
         vm.fetchDeployments();
 
         setTimeout(() => {
           expect(vm.service.fetchDeployments).toHaveBeenCalled();
           expect(vm.mr.deployments.length).toEqual(1);
-          expect(vm.mr.deployments[0].deployment).toEqual(1);
+          expect(vm.mr.deployments[0].id).toBe(1);
           done();
-        }, 333);
+        });
       });
     });
 
@@ -374,7 +374,7 @@ describe('mrWidgetOptions', () => {
       expect(comps['mr-widget-header']).toBeDefined();
       expect(comps['mr-widget-merge-help']).toBeDefined();
       expect(comps['mr-widget-pipeline']).toBeDefined();
-      expect(comps['mr-widget-deployment']).toBeDefined();
+      expect(comps.Deployment).toBeDefined();
       expect(comps['mr-widget-related-links']).toBeDefined();
       expect(comps['mr-widget-merged']).toBeDefined();
       expect(comps['mr-widget-closed']).toBeDefined();
@@ -452,6 +452,36 @@ describe('mrWidgetOptions', () => {
 
         done();
       });
+    });
+  });
+
+  describe('rendering deployments', () => {
+    const deploymentMockData = {
+      id: 15,
+      name: 'review/diplo',
+      url: '/root/acets-review-apps/environments/15',
+      stop_url: '/root/acets-review-apps/environments/15/stop',
+      metrics_url: '/root/acets-review-apps/environments/15/deployments/1/metrics',
+      metrics_monitoring_url: '/root/acets-review-apps/environments/15/metrics',
+      external_url: 'http://diplo.',
+      external_url_formatted: 'diplo.',
+      deployed_at: '2017-03-22T22:44:42.258Z',
+      deployed_at_formatted: 'Mar 22, 2017 10:44pm',
+    };
+
+    beforeEach((done) => {
+      vm.mr.deployments.push({
+        ...deploymentMockData,
+      }, {
+        ...deploymentMockData,
+        id: deploymentMockData.id + 1,
+      });
+
+      vm.$nextTick(done);
+    });
+
+    it('renders multiple deployments', () => {
+      expect(vm.$el.querySelectorAll('.deploy-heading').length).toBe(2);
     });
   });
 });
