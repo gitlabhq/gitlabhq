@@ -7,26 +7,6 @@ describe Gitlab::Ci::Trace::HttpIO do
   let(:url) { remote_trace_url }
   let(:size) { remote_trace_size }
 
-  describe 'Interchangeability between IO and HttpIO' do
-    EXCEPT_METHODS = %i[read_nonblock raw raw! cooked cooked! getch echo= echo?
-                        winsize winsize= iflush oflush ioflush beep goto cursor cursor= pressed?
-                        getpass write_nonblock stat pathconf wait_readable wait_writable getbyte <<
-                        wait lines bytes chars codepoints getc readpartial set_encoding printf print
-                        putc puts readlines gets each each_byte each_char each_codepoint to_io reopen
-                        syswrite to_i fileno sysread fdatasync fsync sync= sync lineno= lineno readchar
-                        ungetbyte readbyte ungetc nonblock= nread rewind pos= eof close_on_exec?
-                        close_on_exec= closed? close_read close_write isatty tty? binmode? sysseek
-                        advise ioctl fcntl pid external_encoding internal_encoding autoclose? autoclose=
-                        posix_fileno nonblock? ready? noecho nonblock].freeze
-
-    it 'HttpIO covers core interfaces in IO' do
-      expected_interfaces = ::IO.instance_methods(false)
-      expected_interfaces -= EXCEPT_METHODS
-
-      expect(expected_interfaces - described_class.instance_methods).to be_empty
-    end
-  end
-
   describe '#close' do
     subject { http_io.close }
 
@@ -47,6 +27,12 @@ describe Gitlab::Ci::Trace::HttpIO do
 
   describe '#path' do
     subject { http_io.path }
+
+    it { is_expected.to be_nil }
+  end
+
+  describe '#url' do
+    subject { http_io.url }
 
     it { is_expected.to eq(url) }
   end

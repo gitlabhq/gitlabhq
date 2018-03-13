@@ -1,5 +1,4 @@
 class JobArtifactUploader < GitlabUploader
-  prepend EE::JobArtifactUploader
   extend Workhorse::UploadPath
   include ObjectStorage::Concern
 
