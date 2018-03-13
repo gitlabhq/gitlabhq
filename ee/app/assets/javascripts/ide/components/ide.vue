@@ -36,6 +36,7 @@
       ]),
       ...mapGetters([
         'activeFile',
+        'openFilesMap',
       ]),
     },
     mounted() {
@@ -63,11 +64,15 @@
       <template
         v-if="activeFile"
       >
-        <repo-tabs/>
+        <repo-tabs
+          :files="openFilesMap"
+        />
         <repo-editor
           class="multi-file-edit-pane-content"
         />
-        <repo-file-buttons />
+        <repo-file-buttons
+          :file="activeFile"
+        />
         <ide-status-bar
           :file="activeFile"
         />
@@ -75,7 +80,10 @@
       <template
         v-else
       >
-        <div class="ide-empty-state">
+        <div
+          v-once
+          class="ide-empty-state"
+        >
           <div class="row js-empty-state">
             <div class="col-xs-12">
               <div class="svg-content svg-250">

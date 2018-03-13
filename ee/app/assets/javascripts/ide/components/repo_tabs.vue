@@ -6,6 +6,12 @@
     components: {
       'repo-tab': RepoTab,
     },
+    props: {
+      files: {
+        type: Array,
+        required: true,
+      },
+    },
     computed: {
       ...mapGetters([
         'openFilesMap',
@@ -19,9 +25,9 @@
     class="multi-file-tabs list-unstyled append-bottom-0"
   >
     <repo-tab
-      v-for="tab in openFilesMap"
-      :key="tab.key"
-      :tab="tab"
+      v-for="file in files"
+      :key="file.key"
+      :tab="file"
     />
   </ul>
 </template>

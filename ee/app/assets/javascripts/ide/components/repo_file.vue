@@ -32,9 +32,6 @@
       },
     },
     computed: {
-      ...mapState([
-        'leftPanelCollapsed',
-      ]),
       isSubmodule() {
         return this.file.type === 'submodule';
       },
@@ -133,14 +130,11 @@
         </template>
       </div>
     </div>
-    <template
+    <repo-file
       v-if="file.opened"
-    >
-      <repo-file
-        v-for="childFile in file.tree"
-        :key="childFile.key"
-        :file="childFile"
-      />
-    </template>
+      v-for="childFile in file.tree"
+      :key="childFile.key"
+      :file="childFile"
+    />
   </div>
 </template>

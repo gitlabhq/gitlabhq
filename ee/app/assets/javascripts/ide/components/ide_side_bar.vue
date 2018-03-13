@@ -14,50 +14,11 @@
       skeletonLoadingContainer,
       ResizablePanel,
     },
-    data() {
-      return {
-        width: 290,
-      };
-    },
     computed: {
       ...mapState([
         'loading',
         'projects',
-        'leftPanelCollapsed',
       ]),
-      currentIcon() {
-        return this.leftPanelCollapsed ? 'angle-double-right' : 'angle-double-left';
-      },
-      maxSize() {
-        return window.innerWidth / 2;
-      },
-      panelStyle() {
-        if (!this.leftPanelCollapsed) {
-          return { width: `${this.width}px` };
-        }
-        return {};
-      },
-      showLoading() {
-        return this.loading;
-      },
-    },
-    methods: {
-      ...mapActions([
-        'setPanelCollapsedStatus',
-        'setResizingStatus',
-      ]),
-      toggleCollapsed() {
-        this.setPanelCollapsedStatus({
-          side: 'left',
-          collapsed: !this.leftPanelCollapsed,
-        });
-      },
-      resizingStarted() {
-        this.setResizingStatus(true);
-      },
-      resizingEnded() {
-        this.setResizingStatus(false);
-      },
     },
   };
 </script>
@@ -69,7 +30,7 @@
     side="left"
   >
     <div class="multi-file-commit-panel-inner">
-      <template v-if="showLoading">
+      <template v-if="loading">
         <div
           class="multi-file-loading-container"
           v-for="n in 3"

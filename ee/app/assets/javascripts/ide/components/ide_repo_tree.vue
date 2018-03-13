@@ -18,11 +18,6 @@ export default {
     ...mapState([
       'trees',
     ]),
-    ...mapState({
-      projectName(state) {
-        return state.project.name;
-      },
-    }),
     ...mapGetters([
       'treeList',
     ]),

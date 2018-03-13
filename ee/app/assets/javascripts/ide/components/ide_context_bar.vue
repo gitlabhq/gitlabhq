@@ -22,11 +22,6 @@
         required: true,
       },
     },
-    data() {
-      return {
-        width: 340,
-      };
-    },
     computed: {
       ...mapState([
         'rightPanelCollapsed',
@@ -34,38 +29,6 @@
       ]),
       currentIcon() {
         return this.rightPanelCollapsed ? 'angle-double-left' : 'angle-double-right';
-      },
-      maxSize() {
-        return window.innerWidth / 2;
-      },
-      panelStyle() {
-        if (!this.rightPanelCollapsed) {
-          return { width: `${this.width}px` };
-        }
-        return {};
-      },
-    },
-    methods: {
-      ...mapActions([
-        'setPanelCollapsedStatus',
-        'setResizingStatus',
-      ]),
-      toggleCollapsed() {
-        this.setPanelCollapsedStatus({
-          side: 'right',
-          collapsed: !this.rightPanelCollapsed,
-        });
-      },
-      toggleFullbarCollapsed() {
-        if (this.rightPanelCollapsed) {
-          this.toggleCollapsed();
-        }
-      },
-      resizingStarted() {
-        this.setResizingStatus(true);
-      },
-      resizingEnded() {
-        this.setResizingStatus(false);
       },
     },
   };
