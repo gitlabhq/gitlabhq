@@ -17,6 +17,8 @@ class InternalId < ActiveRecord::Base
 
   validates :usage, presence: true
 
+  REQUIRED_SCHEMA_VERSION = 20180305095250
+
   # Increments #last_value and saves the record
   #
   # The operation locks the record and gathers a `ROW SHARE` lock (in PostgreSQL).
@@ -30,7 +32,21 @@ class InternalId < ActiveRecord::Base
 
   class << self
     def generate_next(subject, scope, usage, init)
+      # Shortcut if `internal_ids` table is not available (yet)
+      # This can be the case in other (unrelated) migration specs
+      return (init.call(subject) || 0) + 1 unless available?
+
       InternalIdGenerator.new(subject, scope, usage, init).generate
+    end
+
+    def available?
+      @available_flag ||= ActiveRecord::Migrator.current_version >= REQUIRED_SCHEMA_VERSION # rubocop:disable Gitlab/PredicateMemoization
+    end
+
+    # Flushes cached information about schema
+    def reset_column_information
+      @available_flag = nil
+      super
     end
   end
 
@@ -49,12 +65,12 @@ class InternalId < ActiveRecord::Base
     # subject: The instance we're generating an internal id for. Gets passed to init if called.
     # scope: Attributes that define the scope for id generation.
     # usage: Symbol to define the usage of the internal id, see InternalId.usages
-    # init: Block that gets called to initialize InternalId record if not yet present (optional)
+    # init: Block that gets called to initialize InternalId record if not present
     attr_reader :subject, :scope, :init, :scope_attrs, :usage
     def initialize(subject, scope, usage, init)
       @subject = subject
       @scope = scope
-      @init = init || ->(s) { 0 }
+      @init = init
       @usage = usage
 
       raise 'scope is not well-defined, need at least one column for scope (given: 0)' if scope.empty?

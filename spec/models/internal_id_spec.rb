@@ -12,9 +12,9 @@ describe InternalId do
   end
 
   describe '.generate_next' do
-    context 'in the absence of a record' do
-      subject { described_class.generate_next(issue, scope, usage, init) }
+    subject { described_class.generate_next(issue, scope, usage, init) }
 
+    context 'in the absence of a record' do
       it 'creates a record if not yet present' do
         expect { subject }.to change { described_class.count }.from(0).to(1)
       end
@@ -46,6 +46,21 @@ describe InternalId do
       end
       normalized = seq.map { |i| i - seq.min }
       expect(normalized).to eq((0..seq.size - 1).to_a)
+    end
+
+    context 'with an insufficient schema version' do
+      before do
+        described_class.reset_column_information
+        expect(ActiveRecord::Migrator).to receive(:current_version).and_return(InternalId::REQUIRED_SCHEMA_VERSION - 1)
+      end
+
+      let(:init) { double('block') }
+
+      it 'calculates next internal ids on the fly' do
+        val = rand(1..100)
+        expect(init).to receive(:call).with(issue).and_return(val)
+        expect(subject).to eq(val + 1)
+      end
     end
   end
 
