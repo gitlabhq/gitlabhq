@@ -1223,7 +1223,7 @@ ActiveRecord::Schema.define(version: 20180309160427) do
   add_index "index_statuses", ["project_id"], name: "index_index_statuses_on_project_id", unique: true, using: :btree
 
   create_table "internal_ids", id: :bigserial, force: :cascade do |t|
-    t.integer "project_id"
+    t.integer "project_id", null: false
     t.integer "usage", null: false
     t.integer "last_value", null: false
   end
@@ -2676,7 +2676,7 @@ ActiveRecord::Schema.define(version: 20180309160427) do
   add_foreign_key "gpg_signatures", "projects", on_delete: :cascade
   add_foreign_key "group_custom_attributes", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "index_statuses", "projects", name: "fk_74b2492545", on_delete: :cascade
-  add_foreign_key "internal_ids", "projects", name: "fk_f7d46b66c6", on_delete: :cascade
+  add_foreign_key "internal_ids", "projects", on_delete: :cascade
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade
   add_foreign_key "issue_links", "issues", column: "source_id", name: "fk_c900194ff2", on_delete: :cascade
