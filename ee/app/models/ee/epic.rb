@@ -3,7 +3,7 @@ module EE
     extend ActiveSupport::Concern
 
     prepended do
-      include InternalId
+      include NonatomicInternalId
       include Issuable
       include Noteable
       include Referable
