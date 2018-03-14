@@ -299,7 +299,6 @@ export default {
         :has-ci="mr.hasCI"
         />
       <deployment
-        v-if="shouldRenderDeployments"
         v-for="deployment in mr.deployments"
         :key="deployment.id"
         :deployment="deployment"
