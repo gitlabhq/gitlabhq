@@ -65,7 +65,7 @@ module Geo
 
     def find_project_ids_updated_recently(batch_size:)
       shard_restriction(finder.find_projects_updated_recently(batch_size: batch_size))
-        .order('project_registry.last_repository_successful_sync_at ASC NULLS FIRST, projects.last_repository_updated_at ASC')
+        .order('project_registry.last_repository_synced_at ASC NULLS FIRST, projects.last_repository_updated_at ASC')
         .pluck(:id)
     end
 
