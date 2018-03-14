@@ -7,6 +7,8 @@ describe 'Pipeline', :js do
   before do
     sign_in(user)
     project.add_developer(user)
+
+    allow(License).to receive(:feature_available?).and_return(true)
   end
 
   describe 'GET /:project/pipelines/:id/security' do
@@ -16,6 +18,7 @@ describe 'Pipeline', :js do
       before do
         create(
           :ci_build,
+          :success,
           :artifacts,
           name: 'sast',
           pipeline: pipeline,
