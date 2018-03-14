@@ -341,6 +341,10 @@ class License < ActiveRecord::Base
     HistoricalData.during(from..to).maximum(:active_user_count) || 0
   end
 
+  def empty_historical_max?
+    historical_max == 0
+  end
+
   def check_users_limit
     return unless restricted_user_count
 
@@ -350,8 +354,9 @@ class License < ActiveRecord::Base
       return if restricted_user_count >= historical_max
     end
 
-    overage = historical_max - restricted_user_count
-    add_limit_error(user_count: historical_max, restricted_user_count: restricted_user_count, overage: overage)
+    user_count = empty_historical_max? ? current_active_users_count : historical_max
+
+    add_limit_error(current_period: empty_historical_max?, user_count: user_count)
   end
 
   def check_trueup
@@ -359,7 +364,6 @@ class License < ActiveRecord::Base
     trueup_from         = Date.parse(restrictions[:trueup_from]) rescue (starts_at - 1.year)
     trueup_to           = Date.parse(restrictions[:trueup_to]) rescue starts_at
     max_historical      = historical_max(trueup_from, trueup_to)
-    overage             = current_active_users_count - restricted_user_count
     expected_trueup_qty = if previous_user_count
                             max_historical - previous_user_count
                           else
@@ -368,7 +372,7 @@ class License < ActiveRecord::Base
 
     if trueup_qty >= expected_trueup_qty
       if restricted_user_count < current_active_users_count
-        add_limit_error(trueup: true, user_count: current_active_users_count, restricted_user_count: restricted_user_count, overage: overage)
+        add_limit_error(user_count: current_active_users_count)
       end
     else
       message = "You have applied a True-up for #{trueup_qty} #{"user".pluralize(trueup_qty)} "
@@ -379,8 +383,10 @@ class License < ActiveRecord::Base
     end
   end
 
-  def add_limit_error(trueup: false, user_count:, restricted_user_count:, overage:)
-    message =  trueup ? "This GitLab installation currently has " : "During the year before this license started, this GitLab installation had "
+  def add_limit_error(current_period: true, user_count:)
+    overage = user_count - restricted_user_count
+
+    message =  current_period ? "This GitLab installation currently has " : "During the year before this license started, this GitLab installation had "
     message << "#{number_with_delimiter(user_count)} active #{"user".pluralize(user_count)}, "
     message << "exceeding this license's limit of #{number_with_delimiter(restricted_user_count)} by "
     message << "#{number_with_delimiter(overage)} #{"user".pluralize(overage)}. "
