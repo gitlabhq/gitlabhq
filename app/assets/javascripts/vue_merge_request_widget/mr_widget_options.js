@@ -67,9 +67,6 @@ export default {
     shouldRenderRelatedLinks() {
       return !!this.mr.relatedLinks && !this.mr.isNothingToMergeState;
     },
-    shouldRenderDeployments() {
-      return this.mr.deployments.length;
-    },
     shouldRenderSourceBranchRemovalStatus() {
       return !this.mr.canRemoveSourceBranch && this.mr.shouldRemoveSourceBranch &&
         (!this.mr.isNothingToMergeState && !this.mr.isMergedState);
@@ -251,7 +248,6 @@ export default {
         :has-ci="mr.hasCI"
         />
       <deployment
-        v-if="shouldRenderDeployments"
         v-for="deployment in mr.deployments"
         :key="deployment.id"
         :deployment="deployment"

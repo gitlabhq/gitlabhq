@@ -147,16 +147,26 @@ describe('Deployment component', () => {
       el = vm.$el;
     });
 
-    it('should render template elements correctly', () => {
-      expect(el.classList.contains('mr-widget-heading')).toEqual(true);
-      expect(el.querySelector('.js-icon-link')).not.toBeNull();
+    it('renders deployment name', () => {
       expect(el.querySelector('.js-deploy-meta').getAttribute('href')).toEqual(deploymentMockData.url);
       expect(el.querySelector('.js-deploy-meta').innerText).toContain(deploymentMockData.name);
+    });
+
+    it('renders external URL', () => {
       expect(el.querySelector('.js-deploy-url').getAttribute('href')).toEqual(deploymentMockData.external_url);
       expect(el.querySelector('.js-deploy-url').innerText).toContain(deploymentMockData.external_url_formatted);
+    });
+
+    it('renders stop button', () => {
+      expect(el.querySelector('.btn')).not.toBeNull();
+    });
+
+    it('renders deployment time', () => {
       expect(el.querySelector('.js-deploy-time').innerText).toContain(vm.deployTimeago);
+    });
+
+    it('renders metrics component', () => {
       expect(el.querySelector('.js-mr-memory-usage')).not.toBeNull();
-      expect(el.querySelector('button')).not.toBeNull();
     });
   });
 });

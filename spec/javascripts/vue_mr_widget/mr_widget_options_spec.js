@@ -123,17 +123,6 @@ describe('mrWidgetOptions', () => {
         expect(vm.shouldRenderSourceBranchRemovalStatus).toEqual(false);
       });
     });
-
-    describe('shouldRenderDeployments', () => {
-      it('should return false for the initial data', () => {
-        expect(vm.shouldRenderDeployments).toBeFalsy();
-      });
-
-      it('should return true if there is deployments', () => {
-        vm.mr.deployments.push({}, {});
-        expect(vm.shouldRenderDeployments).toBeTruthy();
-      });
-    });
   });
 
   describe('methods', () => {
@@ -365,34 +354,6 @@ describe('mrWidgetOptions', () => {
         vm.stopPolling();
         expect(vm.pollingInterval.stopTimer).toHaveBeenCalled();
       });
-    });
-  });
-
-  describe('components', () => {
-    it('should register all components', () => {
-      const comps = mrWidgetOptions.components;
-      expect(comps['mr-widget-header']).toBeDefined();
-      expect(comps['mr-widget-merge-help']).toBeDefined();
-      expect(comps['mr-widget-pipeline']).toBeDefined();
-      expect(comps.Deployment).toBeDefined();
-      expect(comps['mr-widget-related-links']).toBeDefined();
-      expect(comps['mr-widget-merged']).toBeDefined();
-      expect(comps['mr-widget-closed']).toBeDefined();
-      expect(comps['mr-widget-merging']).toBeDefined();
-      expect(comps['mr-widget-failed-to-merge']).toBeDefined();
-      expect(comps['mr-widget-wip']).toBeDefined();
-      expect(comps['mr-widget-archived']).toBeDefined();
-      expect(comps['mr-widget-conflicts']).toBeDefined();
-      expect(comps['mr-widget-nothing-to-merge']).toBeDefined();
-      expect(comps['mr-widget-not-allowed']).toBeDefined();
-      expect(comps['mr-widget-missing-branch']).toBeDefined();
-      expect(comps['mr-widget-ready-to-merge']).toBeDefined();
-      expect(comps['mr-widget-checking']).toBeDefined();
-      expect(comps['mr-widget-unresolved-discussions']).toBeDefined();
-      expect(comps['mr-widget-pipeline-blocked']).toBeDefined();
-      expect(comps['mr-widget-pipeline-failed']).toBeDefined();
-      expect(comps['mr-widget-merge-when-pipeline-succeeds']).toBeDefined();
-      expect(comps['mr-widget-maintainer-edit']).toBeDefined();
     });
   });
 
