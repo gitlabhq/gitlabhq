@@ -20,6 +20,10 @@ module Gitlab
       def sha256
         @sha256 ||= Digest::SHA256.hexdigest(@data)
       end
+
+      def inspect
+        "#<#{self.class}:#{object_id} @size=#{size}, @sha256=#{sha256.inspect}>"
+      end
     end
   end
 end
