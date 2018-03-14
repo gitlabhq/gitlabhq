@@ -1588,17 +1588,16 @@ class Project < ActiveRecord::Base
   def predefined_variables
     visibility = Gitlab::VisibilityLevel.string_level(visibility_level)
 
-    Gitlab::Ci::Variables::Collection.new.tap do |variables|
-      variables.append(key: 'CI_PROJECT_ID', value: id.to_s)
-      variables.append(key: 'CI_PROJECT_NAME', value: path)
-      variables.append(key: 'CI_PROJECT_PATH', value: full_path)
-      variables.append(key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug)
-      variables.append(key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path)
-      variables.append(key: 'CI_PROJECT_URL', value: web_url)
-      variables.append(key: 'CI_PROJECT_VISIBILITY', value: visibility)
-      variables.concat(container_registry_variables)
-      variables.concat(auto_devops_variables)
-    end
+    Gitlab::Ci::Variables::Collection.new
+      .append(key: 'CI_PROJECT_ID', value: id.to_s)
+      .append(key: 'CI_PROJECT_NAME', value: path)
+      .append(key: 'CI_PROJECT_PATH', value: full_path)
+      .append(key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug)
+      .append(key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path)
+      .append(key: 'CI_PROJECT_URL', value: web_url)
+      .append(key: 'CI_PROJECT_VISIBILITY', value: visibility)
+      .concat(container_registry_variables)
+      .concat(auto_devops_variables)
   end
 
   def container_registry_variables
