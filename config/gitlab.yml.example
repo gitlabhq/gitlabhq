@@ -182,19 +182,18 @@ production: &base
     # storage_path: public/
     # base_dir: uploads/-/system
     object_store:
-      enabled: true
-      remote_directory: uploads # Bucket name
-      # background_upload: false # Temporary option to limit automatic upload (Default: true)
-      # proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
-      connection:
-        provider: AWS
-        aws_access_key_id: AWS_ACCESS_KEY_ID
-        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
-        region: eu-central-1
-        # Use the following options to configure an AWS compatible host
-        # host: 'localhost' # default: s3.amazonaws.com
-        # endpoint: 'http://127.0.0.1:9000' # default: nil
-        # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
+      enabled: false
+    # remote_directory: uploads # Bucket name
+    # background_upload: false # Temporary option to limit automatic upload (Default: true)
+    # proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
+    # connection:
+    #   provider: AWS
+    #   aws_access_key_id: AWS_ACCESS_KEY_ID
+    #   aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+    #   region: eu-central-1
+    #   host: 'localhost' # default: s3.amazonaws.com
+    #   endpoint: 'http://127.0.0.1:9000' # default: nil
+    #   path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
 
   ## GitLab Pages
   pages:
@@ -811,7 +810,6 @@ test:
         region: us-east-1
   uploads:
     storage_path: tmp/tests/public
-    enabled: true
     object_store:
       enabled: false
       connection:
