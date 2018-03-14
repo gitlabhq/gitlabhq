@@ -38,6 +38,12 @@ module EE
           .current_application_settings
           .external_authorization_service_url
       end
+
+      def self.timeout
+        ::Gitlab::CurrentSettings
+          .current_application_settings
+          .external_authorization_service_timeout
+      end
     end
   end
 end

@@ -7,15 +7,20 @@
         .checkbox
           = f.label :external_authorization_service_enabled do
             = f.check_box :external_authorization_service_enabled
-            Enable classification control using an external service
+            = _('Enable classification control using an external service')
         %span.help-block
-          If enabled, access to projects will be validated on an external service
-          using their classification label.
+          = external_authorization_description
           = link_to icon('question-circle'), help_page_path('user/admin_area/settings/external_authorization')
     .form-group
       = f.label :external_authorization_service_url, _('Service URL'), class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_field :external_authorization_service_url, class: 'form-control'
+    .form-group
+      = f.label :external_authorization_service_timeout, _('External authorization request timeout'), class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :external_authorization_service_timeout, class: 'form-control', min: 0.001, max: 10, step: 0.001
+        %span.help-block
+          = external_authorization_timeout_help_text
     .form-group
       = f.label :external_authorization_service_default_label, _('Default classification label'), class: 'control-label col-sm-2'
       .col-sm-10

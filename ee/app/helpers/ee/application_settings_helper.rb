@@ -2,6 +2,17 @@ module EE
   module ApplicationSettingsHelper
     extend ::Gitlab::Utils::Override
 
+    def external_authorization_description
+      _("If enabled, access to projects will be validated on an external service"\
+        " using their classification label.")
+    end
+
+    def external_authorization_timeout_help_text
+      _("Time in seconds GitLab will wait for a response from the external "\
+        "service. When the service does not respond in time, access will be "\
+        "denied.")
+    end
+
     override :visible_attributes
     def visible_attributes
       super + [
@@ -39,7 +50,8 @@ module EE
       [
         :external_authorization_service_enabled,
         :external_authorization_service_url,
-        :external_authorization_service_default_label
+        :external_authorization_service_default_label,
+        :external_authorization_service_timeout
       ]
     end
 
