@@ -170,10 +170,10 @@ describe Ci::Pipeline, :mailer do
   describe '#predefined_variables' do
     subject { pipeline.predefined_variables }
 
-    it 'includes the defined keys' do
-      keys = subject.map { |v| v[:key] }
+    it 'includes all predefined variables in a valid order' do
+      keys = subject.map { |variable| variable.fetch(:key) }
 
-      expect(keys).to include('CI_PIPELINE_ID', 'CI_CONFIG_PATH', 'CI_PIPELINE_SOURCE')
+      expect(keys).to eq %w[CI_PIPELINE_ID CI_CONFIG_PATH CI_PIPELINE_SOURCE]
     end
   end
 
