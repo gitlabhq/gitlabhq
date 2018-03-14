@@ -56,11 +56,17 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> Add csslab slim version
 "@gitlab-org/csslab@^0.0.3":
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@gitlab-org/csslab/-/csslab-0.0.3.tgz#12018af6a737a0c6cf1ff62ab0ad2b469a3b74b4"
+=======
+"@gitlab-org/csslab@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@gitlab-org/csslab/-/csslab-0.0.4.tgz#025b20547d09808ad62c2a131b786b47dedcc27b"
+>>>>>>> Render login page using styles from css lab
   dependencies:
     bootstrap-sass "^3.3.7"
 
