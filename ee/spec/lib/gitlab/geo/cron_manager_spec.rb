@@ -30,6 +30,7 @@ describe Gitlab::Geo::CronManager, :geo do
       geo_file_download_dispatch_worker
       geo_repository_verification_secondary_scheduler_worker
       geo_metrics_update_worker
+      geo_prune_event_log_worker
     ].freeze
 
     before(:all) do
