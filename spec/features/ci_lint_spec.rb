@@ -39,6 +39,7 @@ describe 'CI Lint', :js do
 
       it 'displays information about an error' do
         expect(page).to have_content('Status: syntax is incorrect')
+        expect(page).to have_selector('.ace_content', text: yaml_content)
       end
     end
 
