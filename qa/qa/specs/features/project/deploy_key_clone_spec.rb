@@ -82,7 +82,14 @@ module QA
         Page::Project::Show.act { wait_for_push }
         Page::Menu::Side.act { click_ci_cd_pipelines }
         Page::Project::Pipeline::Index.act { go_to_latest_pipeline }
-        Page::Project::Pipeline::Show.act { go_to_first_job }
+
+        Page::Project::Pipeline::Show.act do
+          go_to_first_job
+
+          wait do
+            !has_content?('running')
+          end
+        end
 
         Page::Project::Job::Show.perform do |job|
           expect(job.output).to include(sha1sum)
