@@ -1,6 +1,4 @@
 <script>
-  import { mapState } from 'vuex';
-
   import timeAgoMixin from '~/vue_shared/mixins/timeago';
   import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
   import fileIcon from '~/vue_shared/components/file_icon.vue';
@@ -130,11 +128,12 @@
         </template>
       </div>
     </div>
-    <repo-file
-      v-if="file.opened"
-      v-for="childFile in file.tree"
-      :key="childFile.key"
-      :file="childFile"
-    />
+    <template v-if="file.opened">
+      <repo-file
+        v-for="childFile in file.tree"
+        :key="childFile.key"
+        :file="childFile"
+      />
+    </template>
   </div>
 </template>

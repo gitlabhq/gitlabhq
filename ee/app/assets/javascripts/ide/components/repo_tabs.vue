@@ -1,21 +1,15 @@
 <script>
-  import { mapGetters } from 'vuex';
   import RepoTab from './repo_tab.vue';
 
   export default {
     components: {
-      'repo-tab': RepoTab,
+      RepoTab,
     },
     props: {
       files: {
         type: Array,
         required: true,
       },
-    },
-    computed: {
-      ...mapGetters([
-        'openFilesMap',
-      ]),
     },
   };
 </script>

@@ -47,14 +47,6 @@ describe('Multi-file store tree mutations', () => {
     });
   });
 
-  describe('SET_PARENT_TREE_URL', () => {
-    it('sets the parent tree url', () => {
-      mutations.SET_PARENT_TREE_URL(localState, 'test');
-
-      expect(localState.parentTreeUrl).toBe('test');
-    });
-  });
-
   describe('CREATE_TMP_TREE', () => {
     it('adds tree into parent tree', () => {
       const tmpEntry = file('tmpTree');

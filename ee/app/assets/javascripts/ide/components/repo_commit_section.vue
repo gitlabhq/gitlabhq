@@ -36,10 +36,8 @@ export default {
       'currentBranchId',
       'rightPanelCollapsed',
       'lastCommitMsg',
+      'changedFiles',
     ]),
-    ...mapGetters({
-      changedFiles: 'changedFilesMap',
-    }),
     ...mapState('commit', [
       'commitMessage',
       'submitCommitLoading',

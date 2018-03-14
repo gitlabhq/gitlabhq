@@ -10,14 +10,8 @@ export default {
   },
   [types.TOGGLE_LOADING](state, { entry, forceValue = undefined }) {
     if (entry.path) {
-      Object.assign(state, {
-        entries: {
-          ...state.entries,
-          [entry.path]: {
-            ...state.entries[entry.path],
-            loading: forceValue !== undefined ? forceValue : !state.entries[entry.path].loading,
-          },
-        },
+      Object.assign(state.entries[entry.path], {
+        loading: forceValue !== undefined ? forceValue : !state.entries[entry.path].loading,
       });
     } else {
       Object.assign(entry, {
@@ -41,7 +35,6 @@ export default {
     });
   },
   [types.SET_LAST_COMMIT_DATA](state, { entry, lastCommit }) {
-    console.log(entry);
     Object.assign(entry.lastCommit, {
       id: lastCommit.commit.id,
       url: lastCommit.commit_path,

@@ -21,11 +21,6 @@ export default {
       tree: data,
     });
   },
-  [types.SET_PARENT_TREE_URL](state, url) {
-    Object.assign(state, {
-      parentTreeUrl: url,
-    });
-  },
   [types.SET_LAST_COMMIT_URL](state, { tree = state, url }) {
     Object.assign(tree, {
       lastCommitPath: url,

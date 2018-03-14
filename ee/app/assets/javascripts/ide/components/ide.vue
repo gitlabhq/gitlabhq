@@ -31,13 +31,13 @@
       },
     },
     computed: {
+      ...mapState([
+        'changedFiles',
+        'openFiles',
+      ]),
       ...mapGetters([
         'activeFile',
       ]),
-      ...mapGetters({
-        openFiles: 'openFilesMap',
-        changedFiles: 'changedFilesMap',
-      }),
     },
     mounted() {
       const returnValue = 'Are you sure you want to lose unsaved changes?';

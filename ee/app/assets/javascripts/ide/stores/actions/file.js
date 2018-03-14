@@ -82,11 +82,11 @@ export const changeFileContent = ({ state, commit }, { path, content }) => {
   const file = state.entries[path];
   commit(types.UPDATE_FILE_CONTENT, { path, content });
 
-  const indexOfChangedFile = state.changedFiles.indexOf(path);
+  const indexOfChangedFile = state.changedFiles.findIndex(f => f.path === path);
 
-  if (!file.changed && indexOfChangedFile === -1) {
+  if (file.changed && indexOfChangedFile === -1) {
     commit(types.ADD_FILE_TO_CHANGED, path);
-  } else if (file.changed && indexOfChangedFile !== -1) {
+  } else if (!file.changed && indexOfChangedFile !== -1) {
     commit(types.REMOVE_FILE_FROM_CHANGED, path);
   }
 };

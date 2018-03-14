@@ -1,7 +1,4 @@
-export const openFilesMap = state => state.openFiles.map(path => state.entries[path]);
-export const changedFilesMap = state => state.changedFiles.map(path => state.entries[path]);
-
-export const activeFile = state => openFilesMap(state).find(file => file.active) || null;
+export const activeFile = state => state.openFiles.find(file => file.active) || null;
 
 export const canEditFile = (state) => {
   const currentActiveFile = activeFile(state);
@@ -10,9 +7,9 @@ export const canEditFile = (state) => {
          (currentActiveFile && !currentActiveFile.renderError && !currentActiveFile.binary);
 };
 
-export const addedFiles = state => changedFilesMap(state).filter(f => f.tempFile);
+export const addedFiles = state => state.changedFiles.filter(f => f.tempFile);
 
-export const modifiedFiles = state => changedFilesMap(state).filter(f => !f.tempFile);
+export const modifiedFiles = state => state.changedFiles.filter(f => !f.tempFile);
 
 export const treeList = (state) => {
   const tree = state.trees[`${state.currentProjectId}/master`];

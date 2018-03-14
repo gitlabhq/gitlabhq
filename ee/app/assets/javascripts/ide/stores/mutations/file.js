@@ -12,9 +12,11 @@ export default {
     });
 
     if (state.entries[path].opened) {
-      state.openFiles.push(path);
+      state.openFiles.push(state.entries[path]);
     } else {
-      state.openFiles.splice(state.openFiles.indexOf(path), 1);
+      Object.assign(state, {
+        openFiles: state.openFiles.filter(f => f.path !== path),
+      });
     }
   },
   [types.SET_FILE_DATA](state, { data, file }) {
@@ -67,10 +69,14 @@ export default {
     parent.tree.push(file);
   },
   [types.ADD_FILE_TO_CHANGED](state, path) {
-    state.changedFiles.push(path);
+    Object.assign(state, {
+      changedFiles: state.changedFiles.concat(state.entries[path]),
+    });
   },
   [types.REMOVE_FILE_FROM_CHANGED](state, path) {
-    state.changedFiles.splice(state.changedFiles.indexOf(path), 1);
+    Object.assign(state, {
+      changedFiles: state.changedFiles.filter(f => f.path !== path),
+    });
   },
   [types.TOGGLE_FILE_CHANGED](state, { file, changed }) {
     Object.assign(state.entries[file.path], {
