@@ -15,7 +15,7 @@ describe MergeRequests::MergeRequestDiffCacheService, :use_clean_rails_memory_st
       cache_key = new_diff.diffs.cache_key
 
       expect(Rails.cache).to receive(:read).with(cache_key).and_call_original
-      expect(Rails.cache).to receive(:write).with(cache_key, anything).and_call_original
+      expect(Rails.cache).to receive(:write).with(cache_key, anything, anything).and_call_original
 
       subject.execute(merge_request, new_diff)
     end
@@ -31,7 +31,7 @@ describe MergeRequests::MergeRequestDiffCacheService, :use_clean_rails_memory_st
 
       expect(Rails.cache).to receive(:delete).with(old_cache_key).and_call_original
       expect(Rails.cache).to receive(:read).with(new_cache_key).and_call_original
-      expect(Rails.cache).to receive(:write).with(new_cache_key, anything).and_call_original
+      expect(Rails.cache).to receive(:write).with(new_cache_key, anything, anything).and_call_original
 
       subject.execute(merge_request, new_diff)
     end

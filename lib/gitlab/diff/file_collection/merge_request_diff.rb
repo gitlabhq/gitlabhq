@@ -72,7 +72,7 @@ module Gitlab
         end
 
         def store_highlight_cache
-          Rails.cache.write(cache_key, highlight_cache) if @highlight_cache_was_empty
+          Rails.cache.write(cache_key, highlight_cache, expires_in: 1.week) if @highlight_cache_was_empty
         end
 
         def cacheable?(diff_file)
