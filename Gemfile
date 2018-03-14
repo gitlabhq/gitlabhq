@@ -152,7 +152,7 @@ end
 gem 'state_machines-activerecord', '~> 0.4.0'
 
 # Issue tags
-gem 'acts-as-taggable-on', '~> 4.0'
+gem 'acts-as-taggable-on', '~> 5.0'
 
 # Background jobs
 gem 'sidekiq', '~> 5.0'
