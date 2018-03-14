@@ -236,17 +236,17 @@ module Geo
 
     # @return [ActiveRecord::Relation<Project>] list of projects updated recently
     def legacy_find_projects_updated_recently
-      registries = Geo::ProjectRegistry.dirty.retry_due.pluck(:project_id, :last_repository_successful_sync_at)
+      registries = Geo::ProjectRegistry.dirty.retry_due.pluck(:project_id, :last_repository_synced_at)
       return Project.none if registries.empty?
 
-      id_and_last_sync_values = registries.map do |id, last_repository_successful_sync_at|
-        "(#{id}, #{quote_value(last_repository_successful_sync_at)})"
+      id_and_last_sync_values = registries.map do |id, last_repository_synced_at|
+        "(#{id}, #{quote_value(last_repository_synced_at)})"
       end
 
       joined_relation = current_node.projects.joins(<<~SQL)
         INNER JOIN
         (VALUES #{id_and_last_sync_values.join(',')})
-        project_registry(id, last_repository_successful_sync_at)
+        project_registry(id, last_repository_synced_at)
         ON #{Project.table_name}.id = project_registry.id
       SQL
 
