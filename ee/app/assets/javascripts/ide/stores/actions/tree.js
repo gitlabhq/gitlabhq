@@ -5,10 +5,8 @@ import service from '../../services';
 import * as types from '../mutation_types';
 import router from '../../ide_router';
 import {
-  setPageTitle,
   findEntry,
   createTemp,
-  createOrMergeEntry,
 } from '../utils';
 import FilesDecoratorWorker from '../workers/files_decorator_worker';
 

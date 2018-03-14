@@ -17,26 +17,17 @@ export const addedFiles = state => changedFilesMap(state).filter(f => f.tempFile
 export const modifiedFiles = state => changedFilesMap(state).filter(f => !f.tempFile);
 
 export const treeList = (state) => {
-  const tree = state.trees['root/testing-123/master'];
+  const tree = state.trees[`${state.currentProjectId}/master`];
 
   if (!tree) return [];
 
-  const map = (arr) => {
-    if (!arr.tree.length) return [];
-
-    return sortTree(arr.tree.reduce((acc, key) => {
-      const entity = state.entries[key];
-
-      if (entity) {
-        return acc.concat({
-          ...entity,
-          tree: map(entity),
-        });
-      }
-
-      return acc;
-    }, []));
-  };
+  const map = arr => sortTree(arr.tree.map((key) => {
+    const entity = state.entries[key];
+    return {
+      ...entity,
+      tree: !arr.tree.length ? [] : map(entity),
+    };
+  }));
 
   return map(tree);
 };
