@@ -264,7 +264,7 @@ gem 'virtus', '~> 1.0.1'
 gem 'base32', '~> 0.3.0'
 
 # Sentry integration
-gem 'sentry-raven', '~> 2.5.3'
+gem 'sentry-raven', '~> 2.7'
 
 gem 'premailer-rails', '~> 1.9.7'
 
