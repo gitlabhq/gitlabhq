@@ -19,7 +19,7 @@ class BoardsStoreEE {
       if (this.$boardApp) {
         this.store.boardConfig = {
           milestoneId: parseInt(this.$boardApp.dataset.boardMilestoneId, 10),
-          milestoneTitle: this.$boardApp.dataset.boardMilestoneTitle,
+          milestoneTitle: this.$boardApp.dataset.boardMilestoneTitle || '',
           assigneeUsername: this.$boardApp.dataset.boardAssigneeUsername,
           labels: JSON.parse(this.$boardApp.dataset.labels || []),
           weight: parseInt(this.$boardApp.dataset.boardWeight, 10),
@@ -42,9 +42,11 @@ class BoardsStoreEE {
     let milestoneTitle = this.store.boardConfig.milestoneTitle;
     if (this.store.boardConfig.milestoneId === 0) {
       milestoneTitle = 'No+Milestone';
+    } else {
+      milestoneTitle = encodeURIComponent(milestoneTitle);
     }
     if (milestoneTitle) {
-      updateFilterPath('milestone_title', encodeURIComponent(milestoneTitle));
+      updateFilterPath('milestone_title', milestoneTitle);
       this.store.cantEdit.push('milestone');
     }
 
