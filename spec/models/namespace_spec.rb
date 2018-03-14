@@ -204,7 +204,7 @@ describe Namespace do
         expect(gitlab_shell.exists?(project.repository_storage_path, "#{namespace.path}/#{project.path}.git")).to be_truthy
       end
 
-      context 'with subgroups' do
+      context 'with subgroups', :nested_groups do
         let(:parent) { create(:group, name: 'parent', path: 'parent') }
         let(:new_parent) { create(:group, name: 'new_parent', path: 'new_parent') }
         let(:child) { create(:group, name: 'child', path: 'child', parent: parent) }
