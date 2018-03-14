@@ -1,0 +1,5 @@
+---
+title: Fix board filters for No Milestone and No Label
+merge_request: 17736
+author:
+type: fixed
