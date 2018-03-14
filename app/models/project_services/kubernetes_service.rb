@@ -105,14 +105,18 @@ class KubernetesService < DeploymentService
   def predefined_variables
     config = YAML.dump(kubeconfig)
 
-    Gitlab::Ci::Variables::Collection.new.tap do |collection|
-      collection.append(key: 'KUBE_URL', value: api_url, public: true)
-      collection.append(key: 'KUBE_TOKEN', value: token, public: false)
-      collection.append(key: 'KUBE_NAMESPACE', value: actual_namespace, public: true)
-      collection.append(key: 'KUBECONFIG', value: config, public: false, file: true)
+    Gitlab::Ci::Variables::Collection.new.tap do |variables|
+      variables
+        .append(key: 'KUBE_URL', value: api_url)
+        .append(key: 'KUBE_TOKEN', value: token, public: false)
+        .append(key: 'KUBE_NAMESPACE', value: actual_namespace)
+        .append(key: 'KUBECONFIG', value: config, public: false, file: true)
 
-      collection.append(key: 'KUBE_CA_PEM', value: ca_pem, public: true)
-      collection.append(key: 'KUBE_CA_PEM_FILE', value: ca_pem, public: true, file: true)
+      if ca_pem.present?
+        variables
+          .append(key: 'KUBE_CA_PEM', value: ca_pem)
+          .append(key: 'KUBE_CA_PEM_FILE', value: ca_pem, file: true)
+      end
     end
   end
 
