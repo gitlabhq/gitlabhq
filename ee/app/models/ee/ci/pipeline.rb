@@ -12,13 +12,6 @@ module EE
         has_one :chat_data, class_name: 'Ci::PipelineChatData'
       end
 
-      def predefined_variables
-        result = super
-        result << { key: 'CI_PIPELINE_SOURCE', value: source.to_s, public: true }
-
-        result
-      end
-
       def codeclimate_artifact
         artifacts.codequality.find(&:has_codeclimate_json?)
       end

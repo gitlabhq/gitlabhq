@@ -1444,6 +1444,17 @@ describe Ci::Build do
         { key: 'CI_COMMIT_SHA', value: build.sha, public: true },
         { key: 'CI_COMMIT_REF_NAME', value: build.ref, public: true },
         { key: 'CI_COMMIT_REF_SLUG', value: build.ref_slug, public: true },
+        { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true },
+        { key: 'CI_REGISTRY_PASSWORD', value: build.token, public: false },
+        { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false },
+        { key: 'CI_BUILD_ID', value: build.id.to_s, public: true },
+        { key: 'CI_BUILD_TOKEN', value: build.token, public: false },
+        { key: 'CI_BUILD_REF', value: build.sha, public: true },
+        { key: 'CI_BUILD_BEFORE_SHA', value: build.before_sha, public: true },
+        { key: 'CI_BUILD_REF_NAME', value: build.ref, public: true },
+        { key: 'CI_BUILD_REF_SLUG', value: build.ref_slug, public: true },
+        { key: 'CI_BUILD_NAME', value: 'test', public: true },
+        { key: 'CI_BUILD_STAGE', value: 'test', public: true },
         { key: 'CI_PROJECT_ID', value: project.id.to_s, public: true },
         { key: 'CI_PROJECT_NAME', value: project.path, public: true },
         { key: 'CI_PROJECT_PATH', value: project.full_path, public: true },
@@ -1453,9 +1464,7 @@ describe Ci::Build do
         { key: 'CI_PROJECT_VISIBILITY', value: 'private', public: true },
         { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
         { key: 'CI_CONFIG_PATH', value: pipeline.ci_yaml_file_path, public: true },
-        { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true },
-        { key: 'CI_REGISTRY_PASSWORD', value: build.token, public: false },
-        { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false }
+        { key: 'CI_PIPELINE_SOURCE', value: pipeline.source, public: true }
       ]
     end
 
@@ -1854,39 +1863,6 @@ describe Ci::Build do
       it { is_expected.to include(ci_config_path) }
     end
 
-    context 'returns variables in valid order' do
-      let(:build_pre_var) { { key: 'build', value: 'value' } }
-      let(:project_pre_var) { { key: 'project', value: 'value' } }
-      let(:pipeline_pre_var) { { key: 'pipeline', value: 'value' } }
-      let(:build_yaml_var) { { key: 'yaml', value: 'value' } }
-
-      before do
-        allow(build).to receive(:predefined_variables) { [build_pre_var] }
-        allow(build).to receive(:yaml_variables) { [build_yaml_var] }
-
-        allow_any_instance_of(Project)
-          .to receive(:predefined_variables) { [project_pre_var] }
-
-        allow_any_instance_of(EE::Project)
-          .to receive(:secret_variables_for)
-          .with(ref: 'master', environment: nil) do
-          [create(:ci_variable, key: 'secret', value: 'value')]
-        end
-
-        allow_any_instance_of(EE::Ci::Pipeline)
-          .to receive(:predefined_variables) { [pipeline_pre_var] }
-      end
-
-      it do
-        is_expected.to eq(
-          [build_pre_var,
-           project_pre_var,
-           pipeline_pre_var,
-           build_yaml_var,
-           { key: 'secret', value: 'value', public: false }])
-      end
-    end
-
     context 'when using auto devops' do
       context 'and is enabled' do
         before do
@@ -1907,6 +1883,81 @@ describe Ci::Build do
         it "includes AUTO_DEVOPS_DOMAIN" do
           is_expected.not_to include(
             { key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true })
+        end
+      end
+    end
+
+    context 'when pipeline variable overrides build variable' do
+      before do
+        build.yaml_variables = [{ key: 'MYVAR', value: 'myvar', public: true }]
+        pipeline.variables.build(key: 'MYVAR', value: 'pipeline value')
+      end
+
+      it 'overrides YAML variable using a pipeline variable' do
+        variables = subject.reverse.uniq { |variable| variable[:key] }.reverse
+
+        expect(variables)
+          .not_to include(key: 'MYVAR', value: 'myvar', public: true)
+        expect(variables)
+          .to include(key: 'MYVAR', value: 'pipeline value', public: false)
+      end
+    end
+
+    describe 'variables ordering' do
+      context 'when variables hierarchy is stubbed' do
+        let(:build_pre_var) { { key: 'build', value: 'value' } }
+        let(:project_pre_var) { { key: 'project', value: 'value' } }
+        let(:pipeline_pre_var) { { key: 'pipeline', value: 'value' } }
+        let(:build_yaml_var) { { key: 'yaml', value: 'value' } }
+
+        before do
+          allow(build).to receive(:predefined_variables) { [build_pre_var] }
+          allow(build).to receive(:yaml_variables) { [build_yaml_var] }
+
+          allow_any_instance_of(Project)
+            .to receive(:predefined_variables) { [project_pre_var] }
+
+          allow_any_instance_of(EE::Project)
+            .to receive(:secret_variables_for)
+            .with(ref: 'master', environment: nil) do
+            [create(:ci_variable, key: 'secret', value: 'value')]
+          end
+
+          allow_any_instance_of(Ci::Pipeline)
+            .to receive(:predefined_variables) { [pipeline_pre_var] }
+        end
+
+        it 'returns variables in order depending on resource hierarchy' do
+          is_expected.to eq(
+            [build_pre_var,
+             project_pre_var,
+             pipeline_pre_var,
+             build_yaml_var,
+             { key: 'secret', value: 'value', public: false }])
+        end
+      end
+
+      context 'when build has environment and user-provided variables' do
+        let(:expected_variables) do
+          predefined_variables.map { |variable| variable.fetch(:key) } +
+            %w[YAML_VARIABLE CI_ENVIRONMENT_NAME CI_ENVIRONMENT_SLUG
+               CI_ENVIRONMENT_URL]
+        end
+
+        before do
+          create(:environment, project: build.project,
+                               name: 'staging')
+
+          build.yaml_variables = [{ key: 'YAML_VARIABLE',
+                                    value: 'var',
+                                    public: true }]
+          build.environment = 'staging'
+        end
+
+        it 'matches explicit variables ordering' do
+          received_variables = subject.map { |variable| variable.fetch(:key) }
+
+          expect(received_variables).to eq expected_variables
         end
       end
     end
