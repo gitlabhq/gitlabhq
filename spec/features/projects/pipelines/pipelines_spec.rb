@@ -357,7 +357,7 @@ describe 'Pipelines', :js do
             visit_project_pipelines
           end
 
-          it 'does not show trace artifact as artifacts'
+          it 'does not show trace artifact as artifacts' do
             expect(page).not_to have_selector('.build-artifacts')
           end
         end
