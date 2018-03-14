@@ -298,11 +298,11 @@ export default {
         :ci-status="mr.ciStatus"
         :has-ci="mr.hasCI"
         />
-      <mr-widget-deployment
-        v-if="shouldRenderDeployments"
-        :mr="mr"
-        :service="service"
-        />
+      <deployment
+        v-for="deployment in mr.deployments"
+        :key="deployment.id"
+        :deployment="deployment"
+      />
       <mr-widget-approvals
         v-if="shouldRenderApprovals"
         :mr="mr"
