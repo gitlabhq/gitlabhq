@@ -244,17 +244,21 @@ users. Despite that, ~regression label itself is not a [priority label].
 
 When a regression is found:
 1. Create an issue describing the problem in the most detailed way possible
+1. If possible, provide links to real examples and how to reproduce the problem
 1. Label the issue properly, using the [team label](../CONTRIBUTING.md#team-labels-ci-discussion-edge-platform-etc),
    the [subject label](../CONTRIBUTING.md#subject-labels-wiki-container-registry-ldap-api-etc)
    and any other label that may apply in the specific case
 1. Add the ~bug and ~regression labels
-1. Add the proper milestone
-1. If possible, provide links to real examples and how to reproduce the problem
+1. Add the proper milestone and priority label:
+  - If the issue is for a feature that was introduced in the previous release.
+    label with the previous milestone and ~"Next Patch Release"
+  - If the issue is for a feature that is introduced in a RC version for the
+    current release, label with the current milestone and ~"Deliverable"
 
-Feel free to put ~"Next Patch Release" label to the issue so the fix can start
-as soon as possible. You can ping the Engineering Manager or the Product Manager
-for the relative area to make them aware of the issue earlier. They will analyze
-the priority and take proper actions if needed.
+When a new issue is found, the fix should start as soon as possible. You can
+ping the Engineering Manager or the Product Manager for the relative area to
+make them aware of the issue earlier. They will analyze the priority and change
+it if needed.
 
 ## Release retrospective and kickoff
 
