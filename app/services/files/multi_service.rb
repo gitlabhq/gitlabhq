@@ -3,11 +3,11 @@ module Files
     UPDATE_FILE_ACTIONS = %w(update move delete).freeze
 
     def create_commit!
-      Lfs::FileTransformer.link_lfs_objects(project, @branch_name) do |transformer|
-        actions = actions_after_lfs_transformation(transformer, params[:actions])
+      transformer = Lfs::FileTransformer.new(project, @branch_name)
 
-        commit_actions!(actions)
-      end
+      actions = actions_after_lfs_transformation(transformer, params[:actions])
+
+      commit_actions!(actions)
     end
 
     private

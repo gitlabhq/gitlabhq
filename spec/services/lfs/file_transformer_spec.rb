@@ -55,44 +55,23 @@ describe Lfs::FileTransformer do
         end
       end
 
-      it 'sets up after_transform! to link LfsObjects to project' do
-        subject.new_file(file_path, file_content)
-
-        expect { subject.after_transform! }.to change { project.lfs_objects.count }.by(1)
-      end
-    end
-  end
-
-  describe '.link_lfs_objects' do
-    context 'with lfs enabled' do
-      before do
-        allow(project).to receive(:lfs_enabled?).and_return(true)
+      it 'links LfsObjects to project' do
+        expect do
+          subject.new_file(file_path, file_content)
+        end.to change { project.lfs_objects.count }.by(1)
       end
 
-      context 'when given a block' do
-        it 'links LfsObject to the project automatically' do
+      context 'when LfsObject already exists' do
+        let(:lfs_pointer) { Gitlab::Git::LfsPointerFile.new(file_content) }
+
+        before do
+          create(:lfs_object, oid: lfs_pointer.sha256, size: lfs_pointer.size)
+        end
+
+        it 'links LfsObjects to project' do
           expect do
-            described_class.link_lfs_objects(project, branch_name) do |t|
-              t.new_file(file_path, file_content)
-            end
+            subject.new_file(file_path, file_content)
           end.to change { project.lfs_objects.count }.by(1)
-        end
-
-        it 'skips linking LfsObjects if the block returns falsey' do
-          expect do
-            described_class.link_lfs_objects(project, branch_name) do |t|
-              t.new_file(file_path, file_content)
-              false
-            end
-          end.not_to change { project.lfs_objects.count }
-        end
-
-        it 'returns the result of the block' do
-          result = described_class.link_lfs_objects(project, branch_name) do |t|
-            :dummy_commit
-          end
-
-          expect(result).to eq :dummy_commit
         end
       end
     end

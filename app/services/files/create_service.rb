@@ -1,10 +1,11 @@
 module Files
   class CreateService < Files::BaseService
     def create_commit!
-      Lfs::FileTransformer.link_lfs_objects(project, @branch_name) do |transformer|
-        content_or_lfs_pointer = transformer.new_file(@file_path, @file_content)
-        create_transformed_commit(content_or_lfs_pointer)
-      end
+      transformer = Lfs::FileTransformer.new(project, @branch_name)
+
+      result = transformer.new_file(@file_path, @file_content)
+
+      create_transformed_commit(result.content)
     end
 
     private
