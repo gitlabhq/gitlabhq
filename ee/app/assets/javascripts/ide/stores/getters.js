@@ -1,6 +1,7 @@
 import { sortTree } from './utils';
 
 export const openFilesMap = state => state.openFiles.map(path => state.entries[path]);
+export const changedFilesMap = state => state.changedFiles.map(path => state.entries[path]);
 
 export const activeFile = state => openFilesMap(state).find(file => file.active) || null;
 
@@ -11,9 +12,9 @@ export const canEditFile = (state) => {
          (currentActiveFile && !currentActiveFile.renderError && !currentActiveFile.binary);
 };
 
-export const addedFiles = state => state.changedFiles.filter(f => f.tempFile);
+export const addedFiles = state => changedFilesMap(state).filter(f => f.tempFile);
 
-export const modifiedFiles = state => state.changedFiles.filter(f => !f.tempFile);
+export const modifiedFiles = state => changedFilesMap(state).filter(f => !f.tempFile);
 
 export const treeList = (state) => {
   const tree = state.trees['root/testing-123/master'];

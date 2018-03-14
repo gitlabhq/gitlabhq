@@ -41,6 +41,7 @@ export default {
     });
   },
   [types.SET_LAST_COMMIT_DATA](state, { entry, lastCommit }) {
+    console.log(entry);
     Object.assign(entry.lastCommit, {
       id: lastCommit.commit.id,
       url: lastCommit.commit_path,

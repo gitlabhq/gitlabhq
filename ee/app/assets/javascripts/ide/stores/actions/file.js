@@ -7,15 +7,15 @@ import {
   findEntry,
   setPageTitle,
   createTemp,
-  findIndexOfFile,
 } from '../utils';
 
-export const closeFile = ({ commit, state, getters, dispatch }, file) => {
-  const indexOfClosedFile = state.openFiles.indexOf(file.path);
+export const closeFile = ({ commit, state, getters, dispatch }, path) => {
+  const indexOfClosedFile = state.openFiles.indexOf(path);
+  const file = state.entries[path];
   const fileWasActive = file.active;
 
-  commit(types.TOGGLE_FILE_OPEN, file);
-  commit(types.SET_FILE_ACTIVE, { file, active: false });
+  commit(types.TOGGLE_FILE_OPEN, path);
+  commit(types.SET_FILE_ACTIVE, { path, active: false });
 
   if (state.openFiles.length > 0 && fileWasActive) {
     const nextIndexToOpen = indexOfClosedFile === 0 ? 0 : indexOfClosedFile - 1;
@@ -29,16 +29,17 @@ export const closeFile = ({ commit, state, getters, dispatch }, file) => {
   dispatch('getLastCommitData');
 };
 
-export const setFileActive = ({ commit, state, getters, dispatch }, file) => {
+export const setFileActive = ({ commit, state, getters, dispatch }, path) => {
+  const file = state.entries[path];
   const currentActiveFile = getters.activeFile;
 
   if (file.active) return;
 
   if (currentActiveFile) {
-    commit(types.SET_FILE_ACTIVE, { file: currentActiveFile, active: false });
+    commit(types.SET_FILE_ACTIVE, { path: currentActiveFile.path, active: false });
   }
 
-  commit(types.SET_FILE_ACTIVE, { file, active: true });
+  commit(types.SET_FILE_ACTIVE, { path, active: true });
   dispatch('scrollToTab');
 
   // reset hash for line highlighting
@@ -61,8 +62,8 @@ export const getFileData = ({ state, commit, dispatch }, file) => {
     })
     .then((data) => {
       commit(types.SET_FILE_DATA, { data, file });
-      commit(types.TOGGLE_FILE_OPEN, file);
-      dispatch('setFileActive', file);
+      commit(types.TOGGLE_FILE_OPEN, file.path);
+      dispatch('setFileActive', file.path);
       commit(types.TOGGLE_LOADING, { entry: file });
     })
     .catch(() => {
@@ -77,15 +78,16 @@ export const getRawFileData = ({ commit, dispatch }, file) => service.getRawFile
   })
   .catch(() => flash('Error loading file content. Please try again.', 'alert', document, null, false, true));
 
-export const changeFileContent = ({ state, commit }, { file, content }) => {
-  commit(types.UPDATE_FILE_CONTENT, { file, content });
+export const changeFileContent = ({ state, commit }, { path, content }) => {
+  const file = state.entries[path];
+  commit(types.UPDATE_FILE_CONTENT, { path, content });
 
-  const indexOfChangedFile = findIndexOfFile(state.changedFiles, file);
+  const indexOfChangedFile = state.changedFiles.indexOf(path);
 
-  if (file.changed && indexOfChangedFile === -1) {
-    commit(types.ADD_FILE_TO_CHANGED, file);
-  } else if (!file.changed && indexOfChangedFile !== -1) {
-    commit(types.REMOVE_FILE_FROM_CHANGED, file);
+  if (!file.changed && indexOfChangedFile === -1) {
+    commit(types.ADD_FILE_TO_CHANGED, path);
+  } else if (file.changed && indexOfChangedFile !== -1) {
+    commit(types.REMOVE_FILE_FROM_CHANGED, path);
   }
 };
 
@@ -130,9 +132,9 @@ export const createTempFile = ({ state, commit, dispatch }, { projectId, branchI
     parent,
     file,
   });
-  commit(types.TOGGLE_FILE_OPEN, file);
-  commit(types.ADD_FILE_TO_CHANGED, file);
-  dispatch('setFileActive', file);
+  commit(types.TOGGLE_FILE_OPEN, file.path);
+  commit(types.ADD_FILE_TO_CHANGED, file.path);
+  dispatch('setFileActive', file.path);
 
   router.push(`/project${file.url}`);
 
@@ -144,6 +146,6 @@ export const discardFileChanges = ({ commit }, file) => {
   commit(types.REMOVE_FILE_FROM_CHANGED, file);
 
   if (file.tempFile && file.opened) {
-    commit(types.TOGGLE_FILE_OPEN, file);
+    commit(types.TOGGLE_FILE_OPEN, file.path);
   }
 };

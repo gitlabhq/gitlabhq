@@ -1,33 +1,32 @@
 import * as types from '../mutation_types';
-import { findIndexOfFile } from '../utils';
 
 export default {
-  [types.SET_FILE_ACTIVE](state, { file, active }) {
+  [types.SET_FILE_ACTIVE](state, { path, active }) {
     Object.assign(state, {
       entries: {
         ...state.entries,
-        [file.path]: {
-          ...state.entries[file.path],
+        [path]: {
+          ...state.entries[path],
           active,
         },
       },
     });
   },
-  [types.TOGGLE_FILE_OPEN](state, file) {
+  [types.TOGGLE_FILE_OPEN](state, path) {
     Object.assign(state, {
       entries: {
         ...state.entries,
-        [file.path]: {
-          ...state.entries[file.path],
-          opened: !state.entries[file.path].opened,
+        [path]: {
+          ...state.entries[path],
+          opened: !state.entries[path].opened,
         },
       },
     });
 
-    if (state.entries[file.path].opened) {
-      state.openFiles.push(file.path);
+    if (state.entries[path].opened) {
+      state.openFiles.push(path);
     } else {
-      state.openFiles.splice(state.openFiles.indexOf(file.path), 1);
+      state.openFiles.splice(state.openFiles.indexOf(path), 1);
     }
   },
   [types.SET_FILE_DATA](state, { data, file }) {
@@ -58,12 +57,18 @@ export default {
       },
     });
   },
-  [types.UPDATE_FILE_CONTENT](state, { file, content }) {
-    const changed = content !== file.raw;
+  [types.UPDATE_FILE_CONTENT](state, { path, content }) {
+    const changed = content !== state.entries[path].raw;
 
-    Object.assign(file, {
-      content,
-      changed,
+    Object.assign(state, {
+      entries: {
+        ...state.entries,
+        [path]: {
+          ...state.entries[path],
+          content,
+          changed,
+        },
+      },
     });
   },
   [types.SET_FILE_LANGUAGE](state, { file, fileLanguage }) {
@@ -101,25 +106,35 @@ export default {
     });
   },
   [types.DISCARD_FILE_CHANGES](state, file) {
-    Object.assign(file, {
-      content: file.raw,
-      changed: false,
+    Object.assign(state, {
+      entries: {
+        ...state.entries,
+        [file.path]: {
+          ...state.entries[file.path],
+          content: state.entries[file.path].raw,
+          changed: false,
+        },
+      },
     });
   },
   [types.CREATE_TMP_FILE](state, { file, parent }) {
     parent.tree.push(file);
   },
-  [types.ADD_FILE_TO_CHANGED](state, file) {
-    state.changedFiles.push(file);
+  [types.ADD_FILE_TO_CHANGED](state, path) {
+    state.changedFiles.push(path);
   },
-  [types.REMOVE_FILE_FROM_CHANGED](state, file) {
-    const indexOfChangedFile = findIndexOfFile(state.changedFiles, file);
-
-    state.changedFiles.splice(indexOfChangedFile, 1);
+  [types.REMOVE_FILE_FROM_CHANGED](state, path) {
+    state.changedFiles.splice(state.changedFiles.indexOf(path), 1);
   },
   [types.TOGGLE_FILE_CHANGED](state, { file, changed }) {
-    Object.assign(file, {
-      changed,
+    Object.assign(state, {
+      entries: {
+        ...state.entries,
+        [file.path]: {
+          ...state.entries[file.path],
+          changed,
+        },
+      },
     });
   },
 };

@@ -31,13 +31,13 @@
       },
     },
     computed: {
-      ...mapState([
-        'changedFiles',
-      ]),
       ...mapGetters([
         'activeFile',
-        'openFilesMap',
       ]),
+      ...mapGetters({
+        openFiles: 'openFilesMap',
+        changedFiles: 'changedFilesMap',
+      }),
     },
     mounted() {
       const returnValue = 'Are you sure you want to lose unsaved changes?';
@@ -65,7 +65,7 @@
         v-if="activeFile"
       >
         <repo-tabs
-          :files="openFilesMap"
+          :files="openFiles"
         />
         <repo-editor
           class="multi-file-edit-pane-content"

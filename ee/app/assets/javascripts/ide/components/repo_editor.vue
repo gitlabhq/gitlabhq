@@ -86,7 +86,7 @@ export default {
 
         if (file.active) {
           this.changeFileContent({
-            file,
+            path: file.path,
             content: model.getModel().getValue(),
           });
         }
