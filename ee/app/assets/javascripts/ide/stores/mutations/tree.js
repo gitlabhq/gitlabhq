@@ -2,14 +2,8 @@ import * as types from '../mutation_types';
 
 export default {
   [types.TOGGLE_TREE_OPEN](state, tree) {
-    Object.assign(state, {
-      entries: {
-        ...state.entries,
-        [tree.path]: {
-          ...state.entries[tree.path],
-          opened: !state.entries[tree.path].opened,
-        },
-      },
+    Object.assign(state.entries[tree.path], {
+      opened: !state.entries[tree.path].opened,
     });
   },
   [types.CREATE_TREE](state, { treePath }) {

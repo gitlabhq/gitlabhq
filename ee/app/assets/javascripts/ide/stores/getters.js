@@ -1,5 +1,3 @@
-import { sortTree } from './utils';
-
 export const openFilesMap = state => state.openFiles.map(path => state.entries[path]);
 export const changedFilesMap = state => state.changedFiles.map(path => state.entries[path]);
 
@@ -21,13 +19,5 @@ export const treeList = (state) => {
 
   if (!tree) return [];
 
-  const map = arr => sortTree(arr.tree.map((key) => {
-    const entity = state.entries[key];
-    return {
-      ...entity,
-      tree: !arr.tree.length ? [] : map(entity),
-    };
-  }));
-
-  return map(tree);
+  return tree.tree;
 };

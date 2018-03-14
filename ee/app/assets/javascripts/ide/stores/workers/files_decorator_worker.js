@@ -1,4 +1,7 @@
-import { decorateData } from '../utils';
+import {
+  decorateData,
+  sortTree,
+} from '../utils';
 
 self.addEventListener('message', (e) => {
   const { data, projectId, branchId } = e.data;
@@ -31,9 +34,9 @@ self.addEventListener('message', (e) => {
           });
 
           if (parentFolder) {
-            parentFolder.tree.push(tree.path);
+            parentFolder.tree.push(tree);
           } else {
-            treeList.push(tree.path);
+            treeList.push(tree);
           }
 
           pathAcc.push(tree.path);
@@ -62,9 +65,9 @@ self.addEventListener('message', (e) => {
     });
 
     if (fileFolder) {
-      fileFolder.tree.push(path);
+      fileFolder.tree.push(file);
     } else {
-      treeList.push(file.path);
+      treeList.push(file);
     }
 
     return acc;
@@ -72,6 +75,6 @@ self.addEventListener('message', (e) => {
 
   self.postMessage({
     entries,
-    treeList,
+    treeList: sortTree(treeList),
   });
 });
