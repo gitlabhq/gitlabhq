@@ -39,6 +39,12 @@ ActiveRecord::Schema.define(version: 20180327101207) do
     t.integer "cached_markdown_version"
     t.text "new_project_guidelines"
     t.text "new_project_guidelines_html"
+    t.text "header_message"
+    t.text "header_message_html"
+    t.text "footer_message"
+    t.text "footer_message_html"
+    t.text "background_color"
+    t.text "font_color"
   end
 
   create_table "application_settings", force: :cascade do |t|
