@@ -5,12 +5,13 @@ module Gitlab
     PULL_CAPACITY_KEY = 'MIRROR_PULL_CAPACITY'.freeze
     JITTER = 1.minute
 
-    # TODO: Make MIN_DELAY configurable and MAX_RETRY adjust according to it
-    # ISSUE: https://gitlab.com/gitlab-org/gitlab-ee/issues/3885
+    # TODO: Dynamically determine mirror update interval based on total number
+    # of mirrors, average update time, and available concurrency.
+    # Issue: https://gitlab.com/gitlab-org/gitlab-ee/issues/5258
+    MIN_DELAY = 30.minutes
     # MAX RETRY value was calculated based on the triangular number with a 15 minutes factor
     # https://en.wikipedia.org/wiki/Triangular_number in order to make sure the mirror
     # gets retried for a full day before it becomes hard failed
-    MIN_DELAY = 15.minutes
     MAX_RETRY = 14
 
     class << self
