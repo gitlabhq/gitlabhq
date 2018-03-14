@@ -1958,7 +1958,7 @@ describe Ci::Build do
       context 'when depended job has not been completed yet' do
         let!(:pre_stage_job) { create(:ci_build, :manual, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
-        it { expect { job.run! }.not_to raise_error(Ci::Build::MissingDependenciesError) }
+        it { expect { job.run! }.not_to raise_error }
       end
 
       context 'when artifacts of depended job has been expired' do
