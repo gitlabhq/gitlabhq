@@ -2,6 +2,7 @@
 /* global CommentsStore */
 /* global ResolveService */
 
+import $ from 'jquery';
 import Vue from 'vue';
 import Flash from '../../flash';
 

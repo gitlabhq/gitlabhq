@@ -1,0 +1,20 @@
+- issuable = local_assigns.fetch(:issuable)
+- form = local_assigns.fetch(:form)
+
+- return unless issuable.is_a?(MergeRequest)
+- return unless issuable.for_fork?
+- return unless can?(current_user, :push_code, issuable.source_project)
+
+%hr
+
+.form-group
+  .control-label
+    = _('Contribution')
+  .col-sm-10
+    .checkbox
+      = form.label :allow_maintainer_to_push do
+        = form.check_box :allow_maintainer_to_push, disabled: !issuable.can_allow_maintainer_to_push?(current_user)
+        = _('Allow edits from maintainers.')
+        = link_to 'About this feature', help_page_path('user/project/merge_requests/maintainer_access')
+        .help-block
+          = allow_maintainer_push_unavailable_reason(issuable)

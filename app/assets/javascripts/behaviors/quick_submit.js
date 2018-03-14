@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import '../commons/bootstrap';
 import { isInIssuePage } from '../lib/utils/common_utils';
 
@@ -72,5 +73,5 @@ $(document).on('keyup.quick_submit', '.js-quick-submit input[type=submit], .js-q
     title,
     trigger: 'manual',
   });
-  $this.tooltip('show').one('blur', () => $this.tooltip('hide'));
+  $this.tooltip('show').one('blur click', () => $this.tooltip('hide'));
 });

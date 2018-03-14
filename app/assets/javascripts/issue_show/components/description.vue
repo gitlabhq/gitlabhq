@@ -1,4 +1,5 @@
 <script>
+  import $ from 'jquery';
   import animateMixin from '../mixins/animate';
   import TaskList from '../../task_list';
   import recaptchaModalImplementor from '../../vue_shared/mixins/recaptcha_modal_implementor';

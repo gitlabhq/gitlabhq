@@ -85,7 +85,7 @@ describe('PrometheusMetrics', () => {
       expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeTruthy();
       expect(prometheusMetrics.$monitoredMetricsList.hasClass('hidden')).toBeFalsy();
 
-      expect(prometheusMetrics.$monitoredMetricsCount.text()).toEqual('12');
+      expect(prometheusMetrics.$monitoredMetricsCount.text()).toEqual('3 exporters with 12 metrics were found');
       expect($metricsListLi.length).toEqual(metrics.length);
       expect($metricsListLi.first().find('.badge').text()).toEqual(`${metrics[0].active_metrics}`);
     });

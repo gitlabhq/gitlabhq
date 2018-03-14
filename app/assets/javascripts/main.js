@@ -1,5 +1,6 @@
 /* eslint-disable import/first */
 /* global ConfirmDangerModal */
+/* global $ */
 
 import jQuery from 'jquery';
 import Cookies from 'js-cookie';

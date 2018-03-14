@@ -6,6 +6,7 @@ import {
   WidgetMergeHelp,
   WidgetPipeline,
   WidgetDeployment,
+  WidgetMaintainerEdit,
   WidgetRelatedLinks,
   MergedState,
   ClosedState,
@@ -32,6 +33,7 @@ import {
   stateMaps,
   SquashBeforeMerge,
   notify,
+  SourceBranchRemovalStatus,
 } from './dependencies';
 import { setFavicon } from '../lib/utils/common_utils';
 
@@ -67,6 +69,10 @@ export default {
     },
     shouldRenderDeployments() {
       return this.mr.deployments.length;
+    },
+    shouldRenderSourceBranchRemovalStatus() {
+      return !this.mr.canRemoveSourceBranch && this.mr.shouldRemoveSourceBranch &&
+        (!this.mr.isNothingToMergeState && !this.mr.isMergedState);
     },
   },
   methods: {
@@ -211,6 +217,7 @@ export default {
     'mr-widget-merge-help': WidgetMergeHelp,
     'mr-widget-pipeline': WidgetPipeline,
     'mr-widget-deployment': WidgetDeployment,
+    'mr-widget-maintainer-edit': WidgetMaintainerEdit,
     'mr-widget-related-links': WidgetRelatedLinks,
     'mr-widget-merged': MergedState,
     'mr-widget-closed': ClosedState,
@@ -232,6 +239,7 @@ export default {
     'mr-widget-merge-when-pipeline-succeeds': MergeWhenPipelineSucceedsState,
     'mr-widget-auto-merge-failed': AutoMergeFailed,
     'mr-widget-rebase': RebaseState,
+    SourceBranchRemovalStatus,
   },
   template: `
     <div class="mr-state-widget prepend-top-default">
@@ -251,11 +259,15 @@ export default {
           :is="componentName"
           :mr="mr"
           :service="service" />
+        <mr-widget-maintainer-edit
+          :maintainerEditAllowed="mr.maintainerEditAllowed" />
         <mr-widget-related-links
           v-if="shouldRenderRelatedLinks"
           :state="mr.state"
-          :related-links="mr.relatedLinks"
-          />
+          :related-links="mr.relatedLinks" />
+        <source-branch-removal-status
+          v-if="shouldRenderSourceBranchRemovalStatus"
+        />
       </div>
       <div
         class="mr-widget-footer"

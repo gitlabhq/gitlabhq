@@ -1,4 +1,6 @@
 /* eslint-disable comma-dangle, no-unused-vars, class-methods-use-this, quotes, consistent-return, func-names, prefer-arrow-callback, space-before-function-paren, max-len */
+
+import $ from 'jquery';
 import Cookies from 'js-cookie';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';

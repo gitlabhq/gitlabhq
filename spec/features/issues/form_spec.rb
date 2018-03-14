@@ -306,10 +306,10 @@ describe 'New/edit issue', :js do
       visit new_project_issue_path(sub_group_project)
     end
 
-    it 'creates new label from dropdown' do
+    it 'creates project label from dropdown' do
       click_button 'Labels'
 
-      click_link 'Create new label'
+      click_link 'Create project label'
 
       page.within '.dropdown-new-label' do
         fill_in 'new_label_name', with: 'test label'

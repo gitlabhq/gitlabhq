@@ -11,7 +11,7 @@ module Notes
       unless @note.system?
         EventCreateService.new.leave_note(@note, @note.author)
 
-        return if @note.for_personal_snippet?
+        return unless @note.for_project_noteable?
 
         @note.create_cross_references!
         execute_note_hooks

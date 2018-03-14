@@ -1004,7 +1004,7 @@ describe Repository do
       end
     end
 
-    context 'with Gitaly disabled', :skip_gitaly_mock do
+    context 'with Gitaly disabled', :disable_gitaly do
       context 'when pre hooks were successful' do
         it 'runs without errors' do
           hook = double(trigger: [true, nil])
@@ -1447,7 +1447,6 @@ describe Repository do
     it 'expires the caches for an empty repository' do
       allow(repository).to receive(:empty?).and_return(true)
 
-      expect(cache).to receive(:expire).with(:empty?)
       expect(cache).to receive(:expire).with(:has_visible_content?)
 
       repository.expire_emptiness_caches
@@ -1456,7 +1455,6 @@ describe Repository do
     it 'does not expire the cache for a non-empty repository' do
       allow(repository).to receive(:empty?).and_return(false)
 
-      expect(cache).not_to receive(:expire).with(:empty?)
       expect(cache).not_to receive(:expire).with(:has_visible_content?)
 
       repository.expire_emptiness_caches
@@ -1896,7 +1894,7 @@ describe Repository do
       it_behaves_like 'adding tag'
     end
 
-    context 'when Gitaly operation_user_add_tag feature is disabled', :skip_gitaly_mock do
+    context 'when Gitaly operation_user_add_tag feature is disabled', :disable_gitaly do
       it_behaves_like 'adding tag'
 
       it 'passes commit SHA to pre-receive and update hooks and tag SHA to post-receive hook' do
@@ -1955,7 +1953,7 @@ describe Repository do
       end
     end
 
-    context 'with gitaly disabled', :skip_gitaly_mock do
+    context 'with gitaly disabled', :disable_gitaly do
       it_behaves_like "user deleting a branch"
 
       let(:old_rev) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' } # git rev-parse feature
@@ -2171,15 +2169,6 @@ describe Repository do
     end
   end
 
-  describe '#expire_method_caches' do
-    it 'expires the caches of the given methods' do
-      expect_any_instance_of(RepositoryCache).to receive(:expire).with(:readme)
-      expect_any_instance_of(RepositoryCache).to receive(:expire).with(:gitignore)
-
-      repository.expire_method_caches(%i(readme gitignore))
-    end
-  end
-
   describe '#expire_all_method_caches' do
     it 'expires the caches of all methods' do
       expect(repository).to receive(:expire_method_caches)
@@ -2322,66 +2311,6 @@ describe Repository do
         repository.find_branch('fix'))
 
       expect(result).to eq(behind: 29, ahead: 2)
-    end
-  end
-
-  describe '#cache_method_output', :use_clean_rails_memory_store_caching do
-    let(:fallback) { 10 }
-
-    context 'with a non-existing repository' do
-      let(:project) { create(:project) } # No repository
-
-      subject do
-        repository.cache_method_output(:cats, fallback: fallback) do
-          repository.cats_call_stub
-        end
-      end
-
-      it 'returns the fallback value' do
-        expect(subject).to eq(fallback)
-      end
-
-      it 'avoids calling the original method' do
-        expect(repository).not_to receive(:cats_call_stub)
-
-        subject
-      end
-    end
-
-    context 'with a method throwing a non-existing-repository error' do
-      subject do
-        repository.cache_method_output(:cats, fallback: fallback) do
-          raise Gitlab::Git::Repository::NoRepository
-        end
-      end
-
-      it 'returns the fallback value' do
-        expect(subject).to eq(fallback)
-      end
-
-      it 'does not cache the data' do
-        subject
-
-        expect(repository.instance_variable_defined?(:@cats)).to eq(false)
-        expect(repository.send(:cache).exist?(:cats)).to eq(false)
-      end
-    end
-
-    context 'with an existing repository' do
-      it 'caches the output' do
-        object = double
-
-        expect(object).to receive(:number).once.and_return(10)
-
-        2.times do
-          val = repository.cache_method_output(:cats) { object.number }
-
-          expect(val).to eq(10)
-        end
-
-        expect(repository.send(:cache).exist?(:cats)).to eq(true)
-        expect(repository.instance_variable_get(:@cats)).to eq(10)
-      end
     end
   end
 

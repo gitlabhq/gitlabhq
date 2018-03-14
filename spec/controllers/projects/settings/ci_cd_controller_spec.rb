@@ -27,7 +27,7 @@ describe Projects::Settings::CiCdController do
       allow(ResetProjectCacheService).to receive_message_chain(:new, :execute).and_return(true)
     end
 
-    subject { post :reset_cache, namespace_id: project.namespace, project_id: project }
+    subject { post :reset_cache, namespace_id: project.namespace, project_id: project, format: :json }
 
     it 'calls reset project cache service' do
       expect(ResetProjectCacheService).to receive_message_chain(:new, :execute)
@@ -35,19 +35,11 @@ describe Projects::Settings::CiCdController do
       subject
     end
 
-    it 'redirects to project pipelines path' do
-      subject
-
-      expect(response).to have_gitlab_http_status(:redirect)
-      expect(response).to redirect_to(project_pipelines_path(project))
-    end
-
     context 'when service returns successfully' do
-      it 'sets the flash notice variable' do
+      it 'returns a success header' do
         subject
 
-        expect(controller).to set_flash[:notice]
-        expect(controller).not_to set_flash[:error]
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
@@ -56,11 +48,10 @@ describe Projects::Settings::CiCdController do
         allow(ResetProjectCacheService).to receive_message_chain(:new, :execute).and_return(false)
       end
 
-      it 'sets the flash error variable' do
+      it 'returns an error header' do
         subject
 
-        expect(controller).not_to set_flash[:notice]
-        expect(controller).to set_flash[:error]
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
   end

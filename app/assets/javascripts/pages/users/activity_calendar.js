@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import _ from 'underscore';
 import { scaleLinear, scaleThreshold } from 'd3-scale';
 import { select } from 'd3-selection';

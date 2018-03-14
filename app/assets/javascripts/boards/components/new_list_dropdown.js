@@ -1,5 +1,6 @@
-/* eslint-disable func-names, no-new, space-before-function-paren, one-var,
-   promise/catch-or-return */
+/* eslint-disable func-names, no-new, space-before-function-paren, one-var, promise/catch-or-return, max-len */
+
+import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
 import _ from 'underscore';
 import CreateLabelDropdown from '../../create_label';

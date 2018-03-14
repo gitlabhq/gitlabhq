@@ -16,11 +16,11 @@ else
 end
 
 Peek.into PEEK_DB_VIEW
+Peek.into Peek::Views::Gitaly
+Peek.into Peek::Views::Rblineprof
 Peek.into Peek::Views::Redis
 Peek.into Peek::Views::Sidekiq
-Peek.into Peek::Views::Rblineprof
 Peek.into Peek::Views::GC
-Peek.into Peek::Views::Gitaly
 
 # rubocop:disable Naming/ClassAndModuleCamelCase
 class PEEK_DB_CLIENT

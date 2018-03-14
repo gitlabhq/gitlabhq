@@ -1,0 +1,5 @@
+---
+title: lazy load diffs on merge request discussions
+merge_request:
+author:
+type: performance

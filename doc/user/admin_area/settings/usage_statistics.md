@@ -8,20 +8,26 @@ under **Admin area > Settings > Usage statistics**.
 
 ## Version check
 
-GitLab can inform you when an update is available and the importance of it.
+If enabled, version check will inform you if a new version is available and the
+importance of it through a status. This is shown on the help page (i.e. `/help`)
+for all signed in users, and on the admin pages. The statuses are:
 
-No information other than the GitLab version and the instance's hostname (through the HTTP referer)
-are collected.
+* Green: You are running the latest version of GitLab.
+* Orange: An updated version of GitLab is available.
+* Red: The version of GitLab you are running is vulnerable. You should install
+  the latest version with security fixes as soon as possible.
 
-In the **Overview** tab you can see if your GitLab version is up to date. There
-are three cases: 1) you are up to date (green), 2) there is an update available
-(yellow) and 3) your version is vulnerable and a security fix is released (red).
+![Orange version check example](img/update-available.png)
 
-In any case, you will see a message informing you of the state and the
-importance of the update.
+GitLab Inc. collects your instance's version and hostname (through the HTTP
+referer) as part of the version check. No other information is collected.
 
-If enabled, the version status will also be shown in the help page (`/help`)
-for all signed in users.
+This information is used, among other things, to identify to which versions
+patches will need to be back ported, making sure active GitLab instances remain
+secure.
+
+If you disable version check, this information will not be collected.  Enable or
+disable the version check at **Admin area > Settings > Usage statistics**.
 
 ## Usage ping
 

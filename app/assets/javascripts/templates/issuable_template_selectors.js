@@ -1,4 +1,6 @@
 /* eslint-disable no-new, class-methods-use-this */
+
+import $ from 'jquery';
 import IssuableTemplateSelector from './issuable_template_selector';
 
 export default class IssuableTemplateSelectors {

@@ -3,6 +3,4 @@
   = link_to 'Cancel', cancel_path,
             class: 'btn btn-cancel', data: {confirm: leave_edit_message}
 
-  - unless can?(current_user, :push_code, @project)
-    .inline.prepend-left-10
-      = commit_in_fork_help
+  = render 'shared/projects/edit_information'

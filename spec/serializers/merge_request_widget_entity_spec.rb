@@ -147,9 +147,9 @@ describe MergeRequestWidgetEntity do
       allow(resource).to receive(:diff_head_sha) { 'sha' }
     end
 
-    context 'when no diff head commit' do
+    context 'when diff head commit is empty' do
       it 'returns nil' do
-        allow(resource).to receive(:diff_head_commit) { nil }
+        allow(resource).to receive(:diff_head_sha) { '' }
 
         expect(subject[:diff_head_sha]).to be_nil
       end
@@ -157,8 +157,6 @@ describe MergeRequestWidgetEntity do
 
     context 'when diff head commit present' do
       it 'returns diff head commit short id' do
-        allow(resource).to receive(:diff_head_commit) { double }
-
         expect(subject[:diff_head_sha]).to eq('sha')
       end
     end

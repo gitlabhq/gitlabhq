@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import stickyMonitor from './lib/utils/sticky';
 
 export default (stickyTop) => {

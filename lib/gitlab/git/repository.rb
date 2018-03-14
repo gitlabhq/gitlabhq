@@ -228,7 +228,7 @@ module Gitlab
       end
 
       def has_local_branches?
-        gitaly_migrate(:has_local_branches) do |is_enabled|
+        gitaly_migrate(:has_local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_repository_client.has_local_branches?
           else
@@ -715,7 +715,7 @@ module Gitlab
       end
 
       def add_branch(branch_name, user:, target:)
-        gitaly_migrate(:operation_user_create_branch) do |is_enabled|
+        gitaly_migrate(:operation_user_create_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_add_branch(branch_name, user, target)
           else
@@ -725,7 +725,7 @@ module Gitlab
       end
 
       def add_tag(tag_name, user:, target:, message: nil)
-        gitaly_migrate(:operation_user_add_tag) do |is_enabled|
+        gitaly_migrate(:operation_user_add_tag, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_add_tag(tag_name, user: user, target: target, message: message)
           else
@@ -735,7 +735,7 @@ module Gitlab
       end
 
       def rm_branch(branch_name, user:)
-        gitaly_migrate(:operation_user_delete_branch) do |is_enabled|
+        gitaly_migrate(:operation_user_delete_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_operations_client.user_delete_branch(branch_name, user)
           else
@@ -810,7 +810,7 @@ module Gitlab
       end
 
       def revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
-        gitaly_migrate(:revert) do |is_enabled|
+        gitaly_migrate(:revert, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           args = {
             user: user,
             commit: commit,
@@ -876,7 +876,7 @@ module Gitlab
 
       # Delete the specified branch from the repository
       def delete_branch(branch_name)
-        gitaly_migrate(:delete_branch) do |is_enabled|
+        gitaly_migrate(:delete_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.delete_branch(branch_name)
           else
@@ -903,7 +903,7 @@ module Gitlab
       #   create_branch("feature")
       #   create_branch("other-feature", "master")
       def create_branch(ref, start_point = "HEAD")
-        gitaly_migrate(:create_branch) do |is_enabled|
+        gitaly_migrate(:create_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.create_branch(ref, start_point)
           else
@@ -1010,7 +1010,7 @@ module Gitlab
       end
 
       def languages(ref = nil)
-        Gitlab::GitalyClient.migrate(:commit_languages) do |is_enabled|
+        gitaly_migrate(:commit_languages, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_commit_client.languages(ref)
           else
@@ -1189,15 +1189,9 @@ module Gitlab
       end
 
       def fsck
-        gitaly_migrate(:git_fsck) do |is_enabled|
-          msg, status = if is_enabled
-                          gitaly_fsck
-                        else
-                          shell_fsck
-                        end
+        msg, status = gitaly_repository_client.fsck
 
-          raise GitError.new("Could not fsck repository: #{msg}") unless status.zero?
-        end
+        raise GitError.new("Could not fsck repository: #{msg}") unless status.zero?
       end
 
       def create_from_bundle(bundle_path)
@@ -1433,22 +1427,12 @@ module Gitlab
         output
       end
 
-      def can_be_merged?(source_sha, target_branch)
-        gitaly_migrate(:can_be_merged) do |is_enabled|
-          if is_enabled
-            gitaly_can_be_merged?(source_sha, find_branch(target_branch).target)
-          else
-            rugged_can_be_merged?(source_sha, target_branch)
-          end
-        end
-      end
-
-      def last_commit_id_for_path(sha, path)
+      def last_commit_for_path(sha, path)
         gitaly_migrate(:last_commit_for_path) do |is_enabled|
           if is_enabled
-            last_commit_for_path_by_gitaly(sha, path).id
+            last_commit_for_path_by_gitaly(sha, path)
           else
-            last_commit_id_for_path_by_shelling_out(sha, path)
+            last_commit_for_path_by_rugged(sha, path)
           end
         end
       end
@@ -1604,14 +1588,6 @@ module Gitlab
         worktree_info_path = File.join(worktree_git_path, 'info')
         FileUtils.mkdir_p(worktree_info_path)
         File.write(File.join(worktree_info_path, 'sparse-checkout'), files)
-      end
-
-      def gitaly_fsck
-        gitaly_repository_client.fsck
-      end
-
-      def shell_fsck
-        run_git(%W[--git-dir=#{path} fsck], nice: true)
       end
 
       def rugged_fetch_source_branch(source_repository, source_branch, local_ref)
@@ -1896,7 +1872,7 @@ module Gitlab
       end
 
       def last_commit_for_path_by_rugged(sha, path)
-        sha = last_commit_id_for_path(sha, path)
+        sha = last_commit_id_for_path_by_shelling_out(sha, path)
         commit(sha)
       end
 
@@ -2402,14 +2378,6 @@ module Gitlab
         gitaly_commit_client
           .commits_by_message(query, revision: ref, path: path, limit: limit, offset: offset)
           .map { |c| commit(c) }
-      end
-
-      def gitaly_can_be_merged?(their_commit, our_commit)
-        !gitaly_conflicts_client(our_commit, their_commit).conflicts?
-      end
-
-      def rugged_can_be_merged?(their_commit, our_commit)
-        !rugged.merge_commits(our_commit, their_commit).conflicts?
       end
 
       def last_commit_for_path_by_gitaly(sha, path)

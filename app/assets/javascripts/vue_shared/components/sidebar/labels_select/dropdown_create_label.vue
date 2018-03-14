@@ -1,5 +1,14 @@
 <script>
+import { __ } from '~/locale';
+
 export default {
+  props: {
+    headerTitle: {
+      type: String,
+      required: false,
+      default: () => __('Create new label'),
+    },
+  },
   created() {
     this.suggestedColors = gon.suggested_label_colors;
   },
@@ -21,7 +30,7 @@ export default {
         >
         </i>
       </button>
-      {{ __('Create new label') }}
+      {{ headerTitle }}
       <button
         type="button"
         class="dropdown-title-button dropdown-menu-close"
