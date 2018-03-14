@@ -169,7 +169,7 @@ class ProjectWiki
   private
 
   def create_repo!(raw_repository)
-    gitlab_shell.add_repository(project.repository_storage, disk_path)
+    gitlab_shell.create_repository(project.repository_storage, disk_path)
 
     raise CouldNotCreateWikiError unless raw_repository.exists?
 
