@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import _ from 'underscore';
+import { findLastIndex } from 'lodash-es';
 import ProtectedBranchAccessDropdown from './protected_branch_access_dropdown';
 import CreateItemDropdown from '../create_item_dropdown';
 import AccessorUtilities from '../lib/utils/accessor';
@@ -73,10 +73,10 @@ export default class ProtectedBranchCreate {
     if (this.isLocalStorageAvailable) {
       const savedDefaults = JSON.parse(window.localStorage.getItem(PB_LOCAL_STORAGE_KEY));
       if (savedDefaults != null) {
-        mergeIndex = _.findLastIndex(mergeDropdown.fullData.roles, {
+        mergeIndex = findLastIndex(mergeDropdown.fullData.roles, {
           id: parseInt(savedDefaults.mergeSelection, 0),
         });
-        pushIndex = _.findLastIndex(pushDropdown.fullData.roles, {
+        pushIndex = findLastIndex(pushDropdown.fullData.roles, {
           id: parseInt(savedDefaults.pushSelection, 0),
         });
       }

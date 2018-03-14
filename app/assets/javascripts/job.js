@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import _ from 'underscore';
+import { throttle } from 'lodash-es';
 import axios from './lib/utils/axios_utils';
 import { visitUrl } from './lib/utils/url_utility';
 import bp from './breakpoints';
@@ -56,7 +56,7 @@ export default class Job {
       .off('click')
       .on('click', this.scrollToBottom.bind(this));
 
-    this.scrollThrottled = _.throttle(this.toggleScroll.bind(this), 100);
+    this.scrollThrottled = throttle(this.toggleScroll.bind(this), 100);
 
     this.$window
       .off('scroll')
@@ -71,7 +71,7 @@ export default class Job {
 
     this.$window
       .off('resize.build')
-      .on('resize.build', _.throttle(this.sidebarOnResize.bind(this), 100));
+      .on('resize.build', throttle(this.sidebarOnResize.bind(this), 100));
 
     this.initAffixTopArea();
 

@@ -1,6 +1,5 @@
 import $ from 'jquery';
-import _ from 'underscore';
-
+import { intersection } from 'lodash-es';
 import '~/smart_interval';
 
 import IssuableTimeTracker from './time_tracker.vue';
@@ -36,7 +35,7 @@ export default {
       } else {
         changedCommands = [];
       }
-      if (changedCommands && _.intersection(subscribedCommands, changedCommands).length) {
+      if (changedCommands && intersection(subscribedCommands, changedCommands).length) {
         this.mediator.fetch();
       }
     },
