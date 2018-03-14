@@ -24,6 +24,7 @@ module Geo
       fail_registry!('Invalid wiki', e, force_to_redownload_wiki: true)
     ensure
       clean_up_temporary_repository if redownload
+      expire_repository_caches
     end
 
     def ssh_url_to_wiki
@@ -36,6 +37,11 @@ module Geo
 
     def ensure_repository
       project.wiki.ensure_repository
+    end
+
+    def expire_repository_caches
+      log_info('Expiring caches')
+      repository.after_sync
     end
 
     def mark_sync_as_successful
