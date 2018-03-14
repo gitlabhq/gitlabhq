@@ -174,8 +174,6 @@ describe Ci::Pipeline, :mailer do
   describe '#predefined_variables' do
     subject { pipeline.predefined_variables }
 
-    it { is_expected.to be_an(Array) }
-
     it 'includes the defined keys' do
       keys = subject.map { |v| v[:key] }
 
