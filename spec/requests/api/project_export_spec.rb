@@ -285,6 +285,17 @@ describe API::ProjectExport do
       context 'when user is not a member' do
         it_behaves_like 'post project export start not found'
       end
+
+      context 'when overriding description' do
+        it 'starts' do
+          params = { description: "Foo" }
+
+          expect_any_instance_of(Projects::ImportExport::ExportService).to receive(:execute)
+          post api(path, project.owner), params
+
+          expect(response).to have_gitlab_http_status(202)
+        end
+      end
     end
   end
 end
