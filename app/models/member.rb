@@ -55,7 +55,7 @@ class Member < ActiveRecord::Base
   scope :active_without_invites, -> do
     left_join_users
       .where(users: { state: 'active' })
-      .where(requested_at: nil)
+      .non_request
       .reorder(nil)
   end
 
