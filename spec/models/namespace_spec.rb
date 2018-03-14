@@ -281,7 +281,7 @@ describe Namespace do
   end
 
   describe '#rm_dir', 'callback' do
-    let(:repository_storage_path) { Gitlab.config.repositories.storages.default['path'] }
+    let(:repository_storage_path) { Gitlab.config.repositories.storages.default.legacy_disk_path }
     let(:path_in_dir) { File.join(repository_storage_path, namespace.full_path) }
     let(:deleted_path) { namespace.full_path.gsub(namespace.path, "#{namespace.full_path}+#{namespace.id}+deleted") }
     let(:deleted_path_in_dir) { File.join(repository_storage_path, deleted_path) }

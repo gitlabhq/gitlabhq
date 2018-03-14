@@ -54,7 +54,7 @@ describe ::Gitlab::BareRepositoryImport::Repository do
   context 'hashed storage' do
     let(:gitlab_shell) { Gitlab::Shell.new }
     let(:repository_storage) { 'default' }
-    let(:root_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
+    let(:root_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
     let(:hash) { '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b' }
     let(:hashed_path) { "@hashed/6b/86/6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b" }
     let(:repo_path) { File.join(root_path, "#{hashed_path}.git") }

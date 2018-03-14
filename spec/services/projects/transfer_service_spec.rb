@@ -146,7 +146,7 @@ describe Projects::TransferService do
 
   context 'namespace which contains orphan repository with same projects path name' do
     let(:repository_storage) { 'default' }
-    let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
+    let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
 
     before do
       group.add_owner(user)

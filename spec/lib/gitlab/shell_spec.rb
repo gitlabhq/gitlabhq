@@ -405,7 +405,7 @@ describe Gitlab::Shell do
     describe '#add_repository' do
       shared_examples '#add_repository' do
         let(:repository_storage) { 'default' }
-        let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
+        let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
         let(:repo_name) { 'project/path' }
         let(:created_path) { File.join(repository_storage_path, repo_name + '.git') }
 
@@ -679,7 +679,7 @@ describe Gitlab::Shell do
 
   describe 'namespace actions' do
     subject { described_class.new }
-    let(:storage_path) { Gitlab.config.repositories.storages.default.path }
+    let(:storage_path) { Gitlab.config.repositories.storages.default.legacy_disk_path }
 
     describe '#add_namespace' do
       it 'creates a namespace' do

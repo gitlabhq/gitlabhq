@@ -99,14 +99,14 @@ describe 'gitlab:gitaly namespace rake task' do
   describe 'storage_config' do
     it 'prints storage configuration in a TOML format' do
       config = {
-        'default' => {
+        'default' => Gitlab::GitalyClient::StorageSettings.new(
           'path' => '/path/to/default',
           'gitaly_address' => 'unix:/path/to/my.socket'
-        },
-        'nfs_01' => {
+        ),
+        'nfs_01' => Gitlab::GitalyClient::StorageSettings.new(
           'path' => '/path/to/nfs_01',
           'gitaly_address' => 'unix:/path/to/my.socket'
-        }
+        )
       }
       allow(Gitlab.config.repositories).to receive(:storages).and_return(config)
       allow(Rails.env).to receive(:test?).and_return(false)
@@ -134,7 +134,7 @@ describe 'gitlab:gitaly namespace rake task' do
 
       parsed_output = TomlRB.parse(expected_output)
       config.each do |name, params|
-        expect(parsed_output['storage']).to include({ 'name' => name, 'path' => params['path'] })
+        expect(parsed_output['storage']).to include({ 'name' => name, 'path' => params.legacy_disk_path })
       end
     end
   end

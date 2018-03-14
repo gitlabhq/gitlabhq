@@ -153,7 +153,7 @@ describe Projects::CreateService, '#execute' do
 
     context 'when another repository already exists on disk' do
       let(:repository_storage) { 'default' }
-      let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
+      let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
 
       let(:opts) do
         {
