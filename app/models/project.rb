@@ -1616,10 +1616,8 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def deployment_variables
-    return [] unless deployment_platform
-
-    deployment_platform.predefined_variables
+  def deployment_variables(environment: nil)
+    deployment_platform(environment: environment)&.predefined_variables || []
   end
 
   def auto_devops_variables

@@ -257,7 +257,7 @@ module Ci
         variables.concat(project.predefined_variables)
         variables.concat(pipeline.predefined_variables)
         variables.concat(runner.predefined_variables) if runner
-        variables.concat(project.deployment_variables) if has_environment?
+        variables.concat(project.deployment_variables(environment: environment)) if has_environment?
         variables.concat(yaml_variables)
         variables.concat(user_variables)
         variables.concat(project.group.secret_variables_for(ref, project)) if project.group
