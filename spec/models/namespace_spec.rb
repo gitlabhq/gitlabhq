@@ -194,11 +194,60 @@ describe Namespace do
         allow(namespace).to receive(:path).and_return('new_path')
       end
 
+<<<<<<< HEAD
       it 'raises an error about not movable project' do
         expect { namespace.move_dir }.to raise_error(/Namespace cannot be moved/)
       end
     end
+||||||| parent of 3fab8dac18... Merge branch 'mk/fix-move-upload-files-on-group-transfer' into 'master'
+      context 'with subgroups' do
+        let(:parent) { create(:group, name: 'parent', path: 'parent') }
+        let(:child) { create(:group, name: 'child', path: 'child', parent: parent) }
+        let!(:project) { create(:project_empty_repo, :legacy_storage, path: 'the-project', namespace: child, skip_disk_validation: true) }
+        let(:uploads_dir) { FileUploader.root }
+        let(:pages_dir) { File.join(TestEnv.pages_path) }
 
+        before do
+          FileUtils.mkdir_p(File.join(uploads_dir, project.full_path))
+          FileUtils.mkdir_p(File.join(pages_dir, project.full_path))
+        end
+
+        context 'renaming child' do
+          it 'correctly moves the repository, uploads and pages' do
+            expected_repository_path = File.join(TestEnv.repos_path, 'parent', 'renamed', 'the-project.git')
+            expected_upload_path = File.join(uploads_dir, 'parent', 'renamed', 'the-project')
+            expected_pages_path = File.join(pages_dir, 'parent', 'renamed', 'the-project')
+=======
+      context 'with subgroups', :nested_groups do
+        let(:parent) { create(:group, name: 'parent', path: 'parent') }
+        let(:new_parent) { create(:group, name: 'new_parent', path: 'new_parent') }
+        let(:child) { create(:group, name: 'child', path: 'child', parent: parent) }
+        let!(:project) { create(:project_empty_repo, :legacy_storage, path: 'the-project', namespace: child, skip_disk_validation: true) }
+        let(:uploads_dir) { FileUploader.root }
+        let(:pages_dir) { File.join(TestEnv.pages_path) }
+
+        def expect_project_directories_at(namespace_path)
+          expected_repository_path = File.join(TestEnv.repos_path, namespace_path, 'the-project.git')
+          expected_upload_path = File.join(uploads_dir, namespace_path, 'the-project')
+          expected_pages_path = File.join(pages_dir, namespace_path, 'the-project')
+
+          expect(File.directory?(expected_repository_path)).to be_truthy
+          expect(File.directory?(expected_upload_path)).to be_truthy
+          expect(File.directory?(expected_pages_path)).to be_truthy
+        end
+
+        before do
+          FileUtils.mkdir_p(File.join(TestEnv.repos_path, "#{project.full_path}.git"))
+          FileUtils.mkdir_p(File.join(uploads_dir, project.full_path))
+          FileUtils.mkdir_p(File.join(pages_dir, project.full_path))
+        end
+
+        context 'renaming child' do
+          it 'correctly moves the repository, uploads and pages' do
+            child.update!(path: 'renamed')
+>>>>>>> 3fab8dac18... Merge branch 'mk/fix-move-upload-files-on-group-transfer' into 'master'
+
+<<<<<<< HEAD
     context 'with subgroups' do
       let(:parent) { create(:group, name: 'parent', path: 'parent') }
       let(:child) { create(:group, name: 'child', path: 'child', parent: parent) }
@@ -210,18 +259,81 @@ describe Namespace do
         FileUtils.mkdir_p(File.join(uploads_dir, 'parent', 'child', 'the-project'))
         FileUtils.mkdir_p(File.join(pages_dir, 'parent', 'child', 'the-project'))
       end
+||||||| parent of 3fab8dac18... Merge branch 'mk/fix-move-upload-files-on-group-transfer' into 'master'
+            child.update_attributes!(path: 'renamed')
 
+            expect(File.directory?(expected_repository_path)).to be(true)
+            expect(File.directory?(expected_upload_path)).to be(true)
+            expect(File.directory?(expected_pages_path)).to be(true)
+          end
+        end
+=======
+            expect_project_directories_at('parent/renamed')
+          end
+        end
+>>>>>>> 3fab8dac18... Merge branch 'mk/fix-move-upload-files-on-group-transfer' into 'master'
+
+<<<<<<< HEAD
       context 'renaming child' do
         it 'correctly moves the repository, uploads and pages' do
           expected_repository_path = File.join(TestEnv.repos_path, 'parent', 'renamed', 'the-project.git')
           expected_upload_path = File.join(uploads_dir, 'parent', 'renamed', 'the-project')
           expected_pages_path = File.join(pages_dir, 'parent', 'renamed', 'the-project')
+||||||| parent of 3fab8dac18... Merge branch 'mk/fix-move-upload-files-on-group-transfer' into 'master'
+        context 'renaming parent' do
+          it 'correctly moves the repository, uploads and pages' do
+            expected_repository_path = File.join(TestEnv.repos_path, 'renamed', 'child', 'the-project.git')
+            expected_upload_path = File.join(uploads_dir, 'renamed', 'child', 'the-project')
+            expected_pages_path = File.join(pages_dir, 'renamed', 'child', 'the-project')
+=======
+        context 'renaming parent' do
+          it 'correctly moves the repository, uploads and pages' do
+            parent.update!(path: 'renamed')
 
+            expect_project_directories_at('renamed/child')
+          end
+        end
+
+        context 'moving from one parent to another' do
+          it 'correctly moves the repository, uploads and pages' do
+            child.update!(parent: new_parent)
+>>>>>>> 3fab8dac18... Merge branch 'mk/fix-move-upload-files-on-group-transfer' into 'master'
+
+<<<<<<< HEAD
           child.update_attributes!(path: 'renamed')
+||||||| parent of 3fab8dac18... Merge branch 'mk/fix-move-upload-files-on-group-transfer' into 'master'
+            parent.update_attributes!(path: 'renamed')
+=======
+            expect_project_directories_at('new_parent/child')
+          end
+        end
 
+        context 'moving from having a parent to root' do
+          it 'correctly moves the repository, uploads and pages' do
+            child.update!(parent: nil)
+
+            expect_project_directories_at('child')
+          end
+        end
+
+        context 'moving from root to having a parent' do
+          it 'correctly moves the repository, uploads and pages' do
+            parent.update!(parent: new_parent)
+>>>>>>> 3fab8dac18... Merge branch 'mk/fix-move-upload-files-on-group-transfer' into 'master'
+
+<<<<<<< HEAD
           expect(File.directory?(expected_repository_path)).to be(true)
           expect(File.directory?(expected_upload_path)).to be(true)
           expect(File.directory?(expected_pages_path)).to be(true)
+||||||| parent of 3fab8dac18... Merge branch 'mk/fix-move-upload-files-on-group-transfer' into 'master'
+            expect(File.directory?(expected_repository_path)).to be(true)
+            expect(File.directory?(expected_upload_path)).to be(true)
+            expect(File.directory?(expected_pages_path)).to be(true)
+          end
+=======
+            expect_project_directories_at('new_parent/parent/child')
+          end
+>>>>>>> 3fab8dac18... Merge branch 'mk/fix-move-upload-files-on-group-transfer' into 'master'
         end
       end
 
@@ -481,7 +593,6 @@ describe Namespace do
       end
     end
 
-    # Note: Group transfers are not yet implemented
     context 'when a group is transferred into a root group' do
       context 'when the root group "Share with group lock" is enabled' do
         let(:root_group) { create(:group, share_with_group_lock: true) }
