@@ -83,6 +83,90 @@ So, in order to access your database service you have to connect to the host
 named `mysql` instead of a socket or `localhost`. Read more in [accessing the
 services](#accessing-the-services).
 
+### How service health check works
+
+Services are designed to provide additional functionality which is **network accessible**.
+It may be a database (like mysql, but also like redis), this may be docker:dind (which
+allows you to use Docker). This may be anything else that is required for the CI/CD job
+to proceed and what is accessed by network.
+
+To make sure this works, Runner is:
+
+1. checking which ports are exposed from the container by default,
+1. starts a special container that waits for these ports to be accessible.
+
+When the second stage of the check fails (either because there is no opened port in the
+service, or service was not started properly before the timeout and the port is not
+responding), it prints the warning: `*** WARNING: Service XYZ probably didn't start properly`.
+
+In most cases it will affect the job, but there may be situations when job still succeeds
+even if such warning was printed, e.g.:
+
+- service was started a little after the warning was raised, and the job is using it not
+  from the very beginning - in that case when the job (e.g. tests) needed to access the
+  service, it may be already there waiting for connections,
+- service container is not providing any networking service, but doing something with job's
+  directory (all services have the job directory mounted as a volume under `/builds`) - in
+  that case the service will do its job, and since tje job is not trying to connect to it,
+  it doesn't fail.
+
+### What services are not for
+
+As it was mentioned before, this feature is designed to provide **network accessible**
+services. A database is the easiest example of such service.
+
+**Services feature is not designed to, and will not add any software from defined
+service image to job's container.**
+
+For example, such definition:
+
+```yaml
+job:
+  services:
+  - php:7
+  - node:latest
+  - golang:1.10
+  image: alpine:3.7
+  script:
+  - php -v
+  - node -v
+  - go version
+```
+
+will not make `php`, `node` or `go` commands available for your script. So each of the
+commands defined in `script:` section will fail.
+
+If you need to have `php`, `node` and `go` available for your script, you should either:
+
+- choose existing Docker image that contain all required tools, or
+- choose the best existing Docker image that fits into your requirements and create
+  your own one, adding all missing tools on top of it.
+
+Looking at the example above, to make the job working as expected we should first
+create an image, let's call it `my-php-node-go-image`, basing on Dockerfile like:
+
+```Dockerfile
+FROM alpine:3.7
+
+RUN command-to-install-php
+RUN command-to-install-node
+RUN command-to-install-golang
+```
+
+and then change the definition in `.gitlab-ci.yml` file to:
+
+```yaml
+job:
+  image: my-php-node-go-image
+  script:
+  - php -v
+  - node -v
+  - go version
+```
+
+This time all required tools are available in job's container, so each of the
+commands defined in `script:` section will eventualy succeed.
+
 ### Accessing the services
 
 Let's say that you need a Wordpress instance to test some API integration with
