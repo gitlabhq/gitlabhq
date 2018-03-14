@@ -12,8 +12,4 @@
 
 - page_card_attributes @epic.card_attributes
 
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'common_vue'
-  = webpack_bundle_tag 'epic_show'
-
-#epic-show-app{ data: { initial: issuable_initial_data(@epic).to_json, meta: epic_meta_data } }
+#epic-show-app{ data: epic_show_app_data(@epic, author_icon: avatar_icon_for_user(@epic.author), initial: issuable_initial_data(@epic)) }

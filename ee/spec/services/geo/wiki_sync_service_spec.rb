@@ -108,6 +108,12 @@ RSpec.describe Geo::WikiSyncService do
     end
 
     context 'tracking database' do
+      context 'temporary repositories' do
+        include_examples 'cleans temporary repositories' do
+          let(:repository) { project.wiki.repository }
+        end
+      end
+
       it 'creates a new registry if does not exists' do
         expect { subject.execute }.to change(Geo::ProjectRegistry, :count).by(1)
       end
@@ -162,6 +168,23 @@ RSpec.describe Geo::WikiSyncService do
 
         it 'sets last_wiki_sync_failure' do
           expect(registry.last_wiki_sync_failure).to eq('Error syncing wiki repository: shell error')
+        end
+      end
+
+      context 'no Wiki repository' do
+        let(:project) { create(:project, :repository) }
+
+        it 'does not raise an error' do
+          create(
+            :geo_project_registry,
+            project: project,
+            force_to_redownload_wiki: true
+          )
+
+          expect(project.wiki.repository).to receive(:expire_exists_cache).twice.and_call_original
+          expect(subject).not_to receive(:fail_registry!)
+
+          subject.execute
         end
       end
     end

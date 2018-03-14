@@ -110,7 +110,7 @@ describe Geo::FileDownloadDispatchWorker, :geo do
     # 1. A total of 10 files in the queue, and we can load a maximimum of 5 and send 2 at a time.
     # 2. We send 2, wait for 1 to finish, and then send again.
     it 'attempts to load a new batch without pending downloads' do
-      stub_const('Geo::BaseSchedulerWorker::DB_RETRIEVE_BATCH_SIZE', 5)
+      stub_const('Geo::Scheduler::BaseWorker::DB_RETRIEVE_BATCH_SIZE', 5)
       secondary.update!(files_max_capacity: 2)
       allow_any_instance_of(::Gitlab::Geo::Transfer).to receive(:download_from_primary).and_return(100)
 

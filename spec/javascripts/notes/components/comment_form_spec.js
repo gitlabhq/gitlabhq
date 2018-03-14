@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Vue from 'vue';
 import Autosize from 'autosize';
 import store from '~/notes/stores';
@@ -197,6 +198,20 @@ describe('issue_comment_form component', () => {
         Vue.nextTick(() => {
           expect(vm.$el.querySelector('.btn-comment-and-close').textContent.trim()).toEqual('Close merge request');
           done();
+        });
+      });
+
+      describe('when clicking close/reopen button', () => {
+        it('should disable button and show a loading spinner', (done) => {
+          const toggleStateButton = vm.$el.querySelector('.js-action-button');
+
+          toggleStateButton.click();
+          Vue.nextTick(() => {
+            expect(toggleStateButton.disabled).toEqual(true);
+            expect(toggleStateButton.querySelector('.js-loading-button-icon')).not.toBeNull();
+
+            done();
+          });
         });
       });
     });

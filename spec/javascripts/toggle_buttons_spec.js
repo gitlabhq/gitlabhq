@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import setupToggleButtons from '~/toggle_buttons';
 import getSetTimeoutPromise from './helpers/set_timeout_promise_helper';
 

@@ -119,4 +119,82 @@ describe EE::NotificationService, :mailer do
       end
     end
   end
+
+  describe 'mirror hard failed' do
+    let(:user) { create(:user) }
+
+    context 'when user is owner' do
+      it 'sends email' do
+        project = create(:project, :mirror, :import_hard_failed)
+
+        expect(Notify).to receive(:mirror_was_hard_failed_email).with(project.id, project.owner.id).and_call_original
+
+        subject.mirror_was_hard_failed(project)
+      end
+    end
+
+    context 'when user is master' do
+      it 'sends email' do
+        project = create(:project, :mirror, :import_hard_failed)
+        project.add_master(user)
+
+        expect(Notify).to receive(:mirror_was_hard_failed_email).with(project.id, project.owner.id).and_call_original
+        expect(Notify).to receive(:mirror_was_hard_failed_email).with(project.id, user.id).and_call_original
+
+        subject.mirror_was_hard_failed(project)
+      end
+    end
+
+    context 'when user is not owner nor master' do
+      it 'does not send email' do
+        project = create(:project, :mirror, :import_hard_failed)
+        project.add_developer(user)
+
+        expect(Notify).not_to receive(:mirror_was_hard_failed_email).with(project.id, user.id).and_call_original
+        expect(Notify).to receive(:mirror_was_hard_failed_email).with(project.id, project.creator.id).and_call_original
+
+        subject.mirror_was_hard_failed(project)
+      end
+
+      context 'when user is group owner' do
+        it 'sends email' do
+          group = create(:group, :public) do |group|
+            group.add_owner(user)
+          end
+
+          project = create(:project, :mirror, :import_hard_failed, namespace: group)
+
+          expect(Notify).to receive(:mirror_was_hard_failed_email).with(project.id, user.id).and_call_original
+
+          subject.mirror_was_hard_failed(project)
+        end
+      end
+
+      context 'when user is group master' do
+        it 'sends email' do
+          group = create(:group, :public) do |group|
+            group.add_master(user)
+          end
+
+          project = create(:project, :mirror, :import_hard_failed, namespace: group)
+
+          expect(Notify).to receive(:mirror_was_hard_failed_email).with(project.id, user.id).and_call_original
+
+          subject.mirror_was_hard_failed(project)
+        end
+      end
+    end
+  end
+
+  context 'mirror user changed' do
+    it 'sends email' do
+      mirror_user = create(:user)
+      project = create(:project, :mirror, mirror_user_id: mirror_user.id)
+      new_mirror_user = project.team.owners.first
+
+      expect(Notify).to receive(:project_mirror_user_changed_email).with(new_mirror_user.id, mirror_user.name, project.id).and_call_original
+
+      subject.project_mirror_user_changed(new_mirror_user, mirror_user.name, project)
+    end
+  end
 end

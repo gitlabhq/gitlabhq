@@ -1,5 +1,31 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.5.4 (2018-03-08)
+
+### Fixed (4 changes)
+
+- Supresses error being raised due to async remote removal being run outside a transaction. !4747
+- Mark empty repos as synced in Geo. !4757
+- Fix: Geo WikiSyncService attempts to sync projects that have no Wiki.
+- Geo - Fix repository synchronization order for projects updated recently.
+
+### Other (1 change)
+
+- Rename "Approve Additionally" to "Add approval".
+
+
+## 10.5.3 (2018-03-01)
+
+### Security (2 changes)
+
+- Project can no longer be shared between groups when both member and group locks are active.
+- Prevent new push rules from using non-RE2 regexes.
+
+### Fixed (1 change)
+
+- Fix LDAP group sync no longer configurable for regular users.
+
+
 ## 10.5.2 (2018-02-25)
 
 - No changes.
@@ -80,6 +106,18 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Geo - add documentation about using shared a S3 bucket with GitLab Container Registry.
 - Geo: Improve replication status. Using pg_stat_wal_receiver.
 - Remove unaproved typo check in sast:container report.
+
+
+## 10.4.5 (2018-03-01)
+
+### Security (2 changes)
+
+- Project can no longer be shared between groups when both member and group locks are active.
+- Prevent new push rules from using non-RE2 regexes.
+
+### Fixed (1 change)
+
+- Fix LDAP group sync no longer configurable for regular users.
 
 
 ## 10.4.4 (2018-02-16)
@@ -181,6 +219,18 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Remove unnecessary NTP checks now included in gitlab:geo:check. !3940
 - Move geo status check after db replication to avoid anticipated failures. !3941
 - Make scoped issue board specs more reliable.
+
+
+## 10.3.8 (2018-03-01)
+
+### Security (2 changes)
+
+- Project can no longer be shared between groups when both member and group locks are active.
+- Prevent new push rules from using non-RE2 regexes.
+
+### Fixed (1 change)
+
+- Fix LDAP group sync no longer configurable for regular users.
 
 
 ## 10.3.7 (2018-02-05)
@@ -1064,7 +1114,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Adds abitlity to render deploy boards in the frontend side. !1233
 - Add filtered search to MR page. !1243
 - Update project list API returns with approvals_before_merge attribute. !1245 (Geoff Webster)
-- Catch Net::LDAP::DN exceptions in EE::Gitlab::LDAP::Group. !1260
+- Catch Net::LDAP::DN exceptions in EE::Gitlab::Auth::LDAP::Group. !1260
 - API: Use `post ":id/#{type}/:subscribable_id/subscribe"` to subscribe and `post ":id/#{type}/:subscribable_id/unsubscribe"` to unsubscribe from a resource. !1274 (Robert Schilling)
 - API: Remove deprecated fields Notes#upvotes and Notes#downvotes. !1275 (Robert Schilling)
 - Deploy board backend. !1278

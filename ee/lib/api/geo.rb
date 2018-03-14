@@ -21,7 +21,7 @@ module API
 
         if response[:code] == :ok
           file = response[:file]
-          present_file!(file.path, file.filename)
+          present_disk_file!(file.path, file.filename)
         else
           status response[:code]
           response
@@ -36,7 +36,7 @@ module API
         authenticate_by_gitlab_geo_node_token!
 
         status = ::GeoNodeStatus.current_node_status
-        present status, with: Entities::GeoNodeStatus
+        present status, with: EE::API::Entities::GeoNodeStatus
       end
     end
 

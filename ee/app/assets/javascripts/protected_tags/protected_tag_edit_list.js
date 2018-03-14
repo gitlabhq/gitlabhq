@@ -1,5 +1,6 @@
 /* eslint-disable no-new */
 
+import $ from 'jquery';
 import ProtectedTagEdit from './protected_tag_edit';
 
 export default class ProtectedTagEditList {

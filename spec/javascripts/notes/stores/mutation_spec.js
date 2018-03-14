@@ -101,10 +101,21 @@ describe('Notes Store mutations', () => {
       const state = {
         notes: [],
       };
+      const legacyNote = {
+        id: 2,
+        individual_note: true,
+        notes: [{
+          note: '1',
+        }, {
+          note: '2',
+        }],
+      };
 
-      mutations.SET_INITIAL_NOTES(state, [note]);
+      mutations.SET_INITIAL_NOTES(state, [note, legacyNote]);
       expect(state.notes[0].id).toEqual(note.id);
-      expect(state.notes.length).toEqual(1);
+      expect(state.notes[1].notes[0].note).toBe(legacyNote.notes[0].note);
+      expect(state.notes[2].notes[0].note).toBe(legacyNote.notes[1].note);
+      expect(state.notes.length).toEqual(3);
     });
   });
 
@@ -215,6 +226,72 @@ describe('Notes Store mutations', () => {
       mutations.UPDATE_NOTE(state, updated);
 
       expect(state.notes[0].notes[0].note).toEqual('Foo');
+    });
+  });
+
+  describe('CLOSE_ISSUE', () => {
+    it('should set issue as closed', () => {
+      const state = {
+        notes: [],
+        targetNoteHash: null,
+        lastFetchedAt: null,
+        isToggleStateButtonLoading: false,
+        notesData: {},
+        userData: {},
+        noteableData: {},
+      };
+
+      mutations.CLOSE_ISSUE(state);
+      expect(state.noteableData.state).toEqual('closed');
+    });
+  });
+
+  describe('REOPEN_ISSUE', () => {
+    it('should set issue as closed', () => {
+      const state = {
+        notes: [],
+        targetNoteHash: null,
+        lastFetchedAt: null,
+        isToggleStateButtonLoading: false,
+        notesData: {},
+        userData: {},
+        noteableData: {},
+      };
+
+      mutations.REOPEN_ISSUE(state);
+      expect(state.noteableData.state).toEqual('reopened');
+    });
+  });
+
+  describe('TOGGLE_STATE_BUTTON_LOADING', () => {
+    it('should set isToggleStateButtonLoading as true', () => {
+      const state = {
+        notes: [],
+        targetNoteHash: null,
+        lastFetchedAt: null,
+        isToggleStateButtonLoading: false,
+        notesData: {},
+        userData: {},
+        noteableData: {},
+      };
+
+      mutations.TOGGLE_STATE_BUTTON_LOADING(state, true);
+      expect(state.isToggleStateButtonLoading).toEqual(true);
+    });
+
+    it('should set isToggleStateButtonLoading as false', () => {
+      const state = {
+        notes: [],
+        targetNoteHash: null,
+        lastFetchedAt: null,
+        isToggleStateButtonLoading: true,
+        notesData: {},
+        userData: {},
+        noteableData: {},
+      };
+
+      mutations.TOGGLE_STATE_BUTTON_LOADING(state, false);
+      expect(state.isToggleStateButtonLoading).toEqual(false);
     });
   });
 });

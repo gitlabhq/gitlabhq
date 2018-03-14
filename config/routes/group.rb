@@ -1,10 +1,8 @@
-require 'constraints/group_url_constrainer'
-
 resources :groups, only: [:index, :new, :create] do
   post :preview_markdown
 end
 
-constraints(GroupUrlConstrainer.new) do
+constraints(::Constraints::GroupUrlConstrainer.new) do
   scope(path: 'groups/*id',
         controller: :groups,
         constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(html|json|atom)/ }) do
@@ -80,7 +78,6 @@ constraints(GroupUrlConstrainer.new) do
     end
 
     resources :billings, only: [:index]
-    resources :boards, only: [:index, :show, :create, :update, :destroy]
     resources :epics do
       member do
         get :realtime_changes
@@ -88,6 +85,9 @@ constraints(GroupUrlConstrainer.new) do
 
       resources :epic_issues, only: [:index, :create, :destroy, :update], as: 'issues', path: 'issues'
     end
+
+    # On CE only index and show are needed
+    resources :boards, only: [:index, :show, :create, :update, :destroy]
 
     legacy_ee_group_boards_redirect = redirect do |params, request|
       path = "/groups/#{params[:group_id]}/-/boards"

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import AssigneeTitle from '~/sidebar/components/assignees/assignee_title';
+import AssigneeTitle from '~/sidebar/components/assignees/assignee_title.vue';
 
 describe('AssigneeTitle component', () => {
   let component;

@@ -66,14 +66,14 @@ The following options are available.
 | Check whether committer is the current authenticated user | **Premium** 10.2 | GitLab will reject any commit that was not committed by the current authenticated user |
 | Check whether commit is signed through GPG | **Premium** 10.1 | Reject commit when it is not signed through GPG. Read [signing commits with GPG][signing-commits]. |
 | Prevent committing secrets to Git | **Starter** 8.12 | GitLab will reject any files that are likely to contain secrets. Read [what files are forbidden](#prevent-pushing-secrets-to-the-repository). |
-| Restrict by commit message | **Starter** 7.10 | Only commit messages that match this Ruby regular expression are allowed to be pushed. Leave empty to allow any commit message. |
-| Restrict by branch name | **Starter** 9.3 | Only branch names that match this Ruby regular expression are allowed to be pushed. Leave empty to allow any branch name. |
-| Restrict by commit author's email | **Starter** 7.10 | Only commit author's email that match this Ruby regular expression are allowed to be pushed. Leave empty to allow any email. |
-| Prohibited file names | **Starter** 7.10 | Any committed filenames that match this Ruby regular expression are not allowed to be pushed. Leave empty to allow any filenames. |
+| Restrict by commit message | **Starter** 7.10 | Only commit messages that match this regular expression are allowed to be pushed. Leave empty to allow any commit message. Uses multiline mode, which can be disabled using `(?-m)`. |
+| Restrict by branch name | **Starter** 9.3 | Only branch names that match this regular expression are allowed to be pushed. Leave empty to allow any branch name. |
+| Restrict by commit author's email | **Starter** 7.10 | Only commit author's email that match this regular expression are allowed to be pushed. Leave empty to allow any email. |
+| Prohibited file names | **Starter** 7.10 | Any committed filenames that match this regular expression are not allowed to be pushed. Leave empty to allow any filenames. |
 | Maximum file size | **Starter** 7.12 | Pushes that contain added or updated files that exceed this file size (in MB) are rejected. Set to 0 to allow files of any size. |
 
 >**Tip:**
-You can check your regular expressions at <http://rubular.com>.
+GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions in push rules. You can check your regular expressions at <https://regex-golang.appspot.com>.
 
 ## Prevent pushing secrets to the repository
 
@@ -152,6 +152,6 @@ bash_history
 [protected-branches]: ../user/project/protected_branches.md
 [signing-commits]: ../user/project/repository/gpg_signed_commits/index.md
 [ee-385]: https://gitlab.com/gitlab-org/gitlab-ee/issues/385
-[list]: https://gitlab.com/gitlab-org/gitlab-ee/blob/master/lib/gitlab/checks/files_blacklist.yml
+[list]: https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/gitlab/checks/files_blacklist.yml
 [hooks]: https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks
 [ee]: https://about.gitlab.com/products/

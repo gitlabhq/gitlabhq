@@ -114,6 +114,18 @@ describe PostReceive do
     end
   end
 
+  describe '#process_wiki_changes' do
+    let(:gl_repository) { "wiki-#{project.id}" }
+
+    it 'updates project activity' do
+      described_class.new.perform(gl_repository, key_id, base64_changes)
+
+      expect { project.reload }
+        .to change(project, :last_activity_at)
+        .and change(project, :last_repository_updated_at)
+    end
+  end
+
   context "webhook" do
     it "fetches the correct project" do
       expect(Project).to receive(:find_by).with(id: project.id.to_s)

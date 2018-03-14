@@ -90,19 +90,21 @@ export default {
     const notes = [];
 
     notesData.forEach((note) => {
-      const nn = Object.assign({}, note);
-
       // To support legacy notes, should be very rare case.
       if (note.individual_note && note.notes.length > 1) {
         note.notes.forEach((n) => {
-          nn.notes = [n]; // override notes array to only have one item to mimick individual_note
-          notes.push(nn);
+          notes.push({
+            ...note,
+            notes: [n], // override notes array to only have one item to mimick individual_note
+          });
         });
       } else {
         const oldNote = utils.findNoteObjectById(state.notes, note.id);
-        nn.expanded = oldNote ? oldNote.expanded : note.expanded;
 
-        notes.push(nn);
+        notes.push({
+          ...note,
+          expanded: (oldNote ? oldNote.expanded : note.expanded),
+        });
       }
     });
 
@@ -196,5 +198,9 @@ export default {
 
   [types.REOPEN_ISSUE](state) {
     Object.assign(state.noteableData, { state: constants.REOPENED });
+  },
+
+  [types.TOGGLE_STATE_BUTTON_LOADING](state, value) {
+    Object.assign(state, { isToggleStateButtonLoading: value });
   },
 };

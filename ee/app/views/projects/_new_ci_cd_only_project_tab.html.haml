@@ -1,0 +1,8 @@
+- return unless ci_cd_projects_available?
+
+%li{ class: active_when(active_tab == 'ci_cd_only'), role: 'presentation' }
+  %a{ href: '#ci-cd-project-pane', id: 'ci-cd-project-tab', data: { toggle: 'tab' }, role: 'tab' }
+    %span.hidden-xs
+      = _('CI/CD for external repo')
+    %span.visible-xs
+      = _('CI/CD')

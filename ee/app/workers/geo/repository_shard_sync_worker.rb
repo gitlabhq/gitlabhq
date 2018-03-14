@@ -1,5 +1,5 @@
 module Geo
-  class RepositoryShardSyncWorker < Geo::BaseSchedulerWorker
+  class RepositoryShardSyncWorker < Geo::Scheduler::SecondaryWorker
     sidekiq_options retry: false
 
     attr_accessor :shard_name

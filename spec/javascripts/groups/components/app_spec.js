@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Vue from 'vue';
 
 import * as utils from '~/lib/utils/url_utility';
@@ -129,7 +130,7 @@ describe('AppComponent', () => {
 
         vm.fetchGroups({});
         setTimeout(() => {
-          expect(vm.isLoading).toBeFalsy();
+          expect(vm.isLoading).toBe(false);
           expect($.scrollTo).toHaveBeenCalledWith(0);
           expect(window.Flash).toHaveBeenCalledWith('An error occurred. Please try again.');
           done();
@@ -144,10 +145,10 @@ describe('AppComponent', () => {
         spyOn(vm, 'updateGroups').and.callThrough();
 
         vm.fetchAllGroups();
-        expect(vm.isLoading).toBeTruthy();
+        expect(vm.isLoading).toBe(true);
         expect(vm.fetchGroups).toHaveBeenCalled();
         setTimeout(() => {
-          expect(vm.isLoading).toBeFalsy();
+          expect(vm.isLoading).toBe(false);
           expect(vm.updateGroups).toHaveBeenCalled();
           done();
         }, 0);
@@ -181,7 +182,7 @@ describe('AppComponent', () => {
         spyOn($, 'scrollTo');
 
         vm.fetchPage(2, null, null, true);
-        expect(vm.isLoading).toBeTruthy();
+        expect(vm.isLoading).toBe(true);
         expect(vm.fetchGroups).toHaveBeenCalledWith({
           page: 2,
           filterGroupsBy: null,
@@ -190,7 +191,7 @@ describe('AppComponent', () => {
           archived: true,
         });
         setTimeout(() => {
-          expect(vm.isLoading).toBeFalsy();
+          expect(vm.isLoading).toBe(false);
           expect($.scrollTo).toHaveBeenCalledWith(0);
           expect(utils.mergeUrlParams).toHaveBeenCalledWith({ page: 2 }, jasmine.any(String));
           expect(window.history.replaceState).toHaveBeenCalledWith({
@@ -216,7 +217,7 @@ describe('AppComponent', () => {
         spyOn(vm.store, 'setGroupChildren');
 
         vm.toggleChildren(groupItem);
-        expect(groupItem.isChildrenLoading).toBeTruthy();
+        expect(groupItem.isChildrenLoading).toBe(true);
         expect(vm.fetchGroups).toHaveBeenCalledWith({
           parentId: groupItem.id,
         });
@@ -232,7 +233,7 @@ describe('AppComponent', () => {
 
         vm.toggleChildren(groupItem);
         expect(vm.fetchGroups).not.toHaveBeenCalled();
-        expect(groupItem.isOpen).toBeTruthy();
+        expect(groupItem.isOpen).toBe(true);
       });
 
       it('should collapse group if it is already expanded', () => {
@@ -241,16 +242,16 @@ describe('AppComponent', () => {
 
         vm.toggleChildren(groupItem);
         expect(vm.fetchGroups).not.toHaveBeenCalled();
-        expect(groupItem.isOpen).toBeFalsy();
+        expect(groupItem.isOpen).toBe(false);
       });
 
       it('should set `isChildrenLoading` back to `false` if load request fails', (done) => {
         spyOn(vm, 'fetchGroups').and.returnValue(returnServicePromise({}, true));
 
         vm.toggleChildren(groupItem);
-        expect(groupItem.isChildrenLoading).toBeTruthy();
+        expect(groupItem.isChildrenLoading).toBe(true);
         setTimeout(() => {
-          expect(groupItem.isChildrenLoading).toBeFalsy();
+          expect(groupItem.isChildrenLoading).toBe(false);
           done();
         }, 0);
       });
@@ -268,10 +269,10 @@ describe('AppComponent', () => {
 
       it('updates props which show modal confirmation dialog', () => {
         const group = Object.assign({}, mockParentGroupItem);
-        expect(vm.updateModal).toBeFalsy();
+        expect(vm.showModal).toBe(false);
         expect(vm.groupLeaveConfirmationMessage).toBe('');
         vm.showLeaveGroupModal(group, mockParentGroupItem);
-        expect(vm.updateModal).toBeTruthy();
+        expect(vm.showModal).toBe(true);
         expect(vm.groupLeaveConfirmationMessage).toBe(`Are you sure you want to leave the "${group.fullName}" group?`);
       });
     });
@@ -280,9 +281,9 @@ describe('AppComponent', () => {
       it('hides modal confirmation which is shown before leaving the group', () => {
         const group = Object.assign({}, mockParentGroupItem);
         vm.showLeaveGroupModal(group, mockParentGroupItem);
-        expect(vm.updateModal).toBeTruthy();
+        expect(vm.showModal).toBe(true);
         vm.hideLeaveGroupModal();
-        expect(vm.updateModal).toBeFalsy();
+        expect(vm.showModal).toBe(false);
       });
     });
 
@@ -307,8 +308,8 @@ describe('AppComponent', () => {
         spyOn($, 'scrollTo');
 
         vm.leaveGroup();
-        expect(vm.updateModal).toBeFalsy();
-        expect(vm.targetGroup.isBeingRemoved).toBeTruthy();
+        expect(vm.showModal).toBe(false);
+        expect(vm.targetGroup.isBeingRemoved).toBe(true);
         expect(vm.service.leaveGroup).toHaveBeenCalledWith(vm.targetGroup.leavePath);
         setTimeout(() => {
           expect($.scrollTo).toHaveBeenCalledWith(0);
@@ -325,12 +326,12 @@ describe('AppComponent', () => {
         spyOn(window, 'Flash');
 
         vm.leaveGroup();
-        expect(vm.targetGroup.isBeingRemoved).toBeTruthy();
+        expect(vm.targetGroup.isBeingRemoved).toBe(true);
         expect(vm.service.leaveGroup).toHaveBeenCalledWith(childGroupItem.leavePath);
         setTimeout(() => {
           expect(vm.store.removeGroup).not.toHaveBeenCalled();
           expect(window.Flash).toHaveBeenCalledWith(message);
-          expect(vm.targetGroup.isBeingRemoved).toBeFalsy();
+          expect(vm.targetGroup.isBeingRemoved).toBe(false);
           done();
         }, 0);
       });
@@ -342,12 +343,12 @@ describe('AppComponent', () => {
         spyOn(window, 'Flash');
 
         vm.leaveGroup(childGroupItem, groupItem);
-        expect(vm.targetGroup.isBeingRemoved).toBeTruthy();
+        expect(vm.targetGroup.isBeingRemoved).toBe(true);
         expect(vm.service.leaveGroup).toHaveBeenCalledWith(childGroupItem.leavePath);
         setTimeout(() => {
           expect(vm.store.removeGroup).not.toHaveBeenCalled();
           expect(window.Flash).toHaveBeenCalledWith(message);
-          expect(vm.targetGroup.isBeingRemoved).toBeFalsy();
+          expect(vm.targetGroup.isBeingRemoved).toBe(false);
           done();
         }, 0);
       });
@@ -379,10 +380,10 @@ describe('AppComponent', () => {
 
       it('should set `isSearchEmpty` prop based on groups count', () => {
         vm.updateGroups(mockGroups);
-        expect(vm.isSearchEmpty).toBeFalsy();
+        expect(vm.isSearchEmpty).toBe(false);
 
         vm.updateGroups([]);
-        expect(vm.isSearchEmpty).toBeTruthy();
+        expect(vm.isSearchEmpty).toBe(true);
       });
     });
   });
@@ -473,13 +474,16 @@ describe('AppComponent', () => {
       });
     });
 
-    it('renders modal confirmation dialog', () => {
+    it('renders modal confirmation dialog', (done) => {
       vm.groupLeaveConfirmationMessage = 'Are you sure you want to leave the "foo" group?';
-      vm.updateModal = true;
-      const modalDialogEl = vm.$el.querySelector('.modal');
-      expect(modalDialogEl).not.toBe(null);
-      expect(modalDialogEl.querySelector('.modal-title').innerText.trim()).toBe('Are you sure?');
-      expect(modalDialogEl.querySelector('.btn.btn-warning').innerText.trim()).toBe('Leave');
+      vm.showModal = true;
+      Vue.nextTick(() => {
+        const modalDialogEl = vm.$el.querySelector('.modal');
+        expect(modalDialogEl).not.toBe(null);
+        expect(modalDialogEl.querySelector('.modal-title').innerText.trim()).toBe('Are you sure?');
+        expect(modalDialogEl.querySelector('.btn.btn-warning').innerText.trim()).toBe('Leave');
+        done();
+      });
     });
   });
 });

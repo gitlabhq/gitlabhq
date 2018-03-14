@@ -9,8 +9,8 @@ import axios from '~/lib/utils/axios_utils';
 import '~/boards/models/assignee';
 
 import eventHub from '~/boards/eventhub';
+import '~/vue_shared/models/label';
 import '~/boards/models/list';
-import '~/boards/models/label';
 import '~/boards/stores/boards_store';
 import boardCard from '~/boards/components/board_card.vue';
 import { listObj, boardsMockInterceptor, mockBoardService } from './mock_data';

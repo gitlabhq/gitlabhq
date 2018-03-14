@@ -19,6 +19,7 @@ describe Group do
     it { is_expected.to have_one(:chat_team) }
     it { is_expected.to have_many(:custom_attributes).class_name('GroupCustomAttribute') }
     it { is_expected.to have_many(:audit_events).dependent(false) }
+    it { is_expected.to have_many(:badges).class_name('GroupBadge') }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }

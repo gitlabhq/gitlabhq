@@ -5,7 +5,7 @@ module EE
 
       override :execute
       def execute
-        if parent.multiple_issue_boards_available?(current_user)
+        if parent.multiple_issue_boards_available?
           super
         else
           super.limit(1)

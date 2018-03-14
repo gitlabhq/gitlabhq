@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import { __ } from './locale';
 import flash from './flash';
 

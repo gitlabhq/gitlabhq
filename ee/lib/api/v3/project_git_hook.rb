@@ -20,16 +20,16 @@ module API
         end
 
         desc 'Get project push rule' do
-          success ::API::Entities::ProjectPushRule
+          success EE::API::Entities::ProjectPushRule
           detail DEPRECATION_MESSAGE
         end
         get ":id/git_hook" do
           push_rule = user_project.push_rule
-          present push_rule, with: ::API::Entities::ProjectPushRule
+          present push_rule, with: EE::API::Entities::ProjectPushRule
         end
 
         desc 'Add a push rule to a project' do
-          success ::API::Entities::ProjectPushRule
+          success EE::API::Entities::ProjectPushRule
           detail DEPRECATION_MESSAGE
         end
         params do
@@ -40,12 +40,12 @@ module API
             error!("Project push rule exists", 422)
           else
             push_rule = user_project.create_push_rule(declared_params)
-            present push_rule, with: ::API::Entities::ProjectPushRule
+            present push_rule, with: EE::API::Entities::ProjectPushRule
           end
         end
 
         desc 'Update an existing project push rule' do
-          success ::API::Entities::ProjectPushRule
+          success EE::API::Entities::ProjectPushRule
           detail DEPRECATION_MESSAGE
         end
         params do
@@ -56,7 +56,7 @@ module API
           not_found!('Push Rule') unless push_rule
 
           if push_rule.update_attributes(declared_params(include_missing: false))
-            present push_rule, with: ::API::Entities::ProjectPushRule
+            present push_rule, with: EE::API::Entities::ProjectPushRule
           else
             render_validation_error!(push_rule)
           end

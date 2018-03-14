@@ -52,8 +52,23 @@ module Geo
 
     private
 
+    def fetch_repository(redownload)
+      log_info("Trying to fetch #{type}")
+      clean_up_temporary_repository
+      update_registry!(started_at: DateTime.now)
+
+      if redownload
+        log_info("Redownloading #{type}")
+        fetch_geo_mirror(build_temporary_repository)
+        set_temp_repository_as_main
+      else
+        ensure_repository
+        fetch_geo_mirror(repository)
+      end
+    end
+
     def retry_count
-      registry.public_send("#{type}_retry_count") || 0 # rubocop:disable GitlabSecurity/PublicSend
+      registry.public_send("#{type}_retry_count") || -1 # rubocop:disable GitlabSecurity/PublicSend
     end
 
     def should_be_retried?
@@ -66,10 +81,6 @@ module Geo
       return true if registry.public_send("force_to_redownload_#{type}") # rubocop:disable GitlabSecurity/PublicSend
 
       (RETRY_BEFORE_REDOWNLOAD..RETRY_LIMIT) === retry_count
-    end
-
-    def sync_repository
-      raise NotImplementedError, 'This class should implement sync_repository method'
     end
 
     def current_node
@@ -101,6 +112,11 @@ module Geo
         attrs["last_#{type}_synced_at"] = started_at
         attrs["#{type}_retry_count"] = retry_count + 1
         attrs["#{type}_retry_at"] = next_retry_time(attrs["#{type}_retry_count"])
+
+        # indicate that repository verification needs to be done again
+        attrs["#{type}_verification_checksum"] = nil
+        attrs["last_#{type}_verification_at"] = nil
+        attrs["last_#{type}_verification_failure"] = nil
       end
 
       if finished_at
@@ -147,17 +163,13 @@ module Geo
       registry.public_send("last_#{type}_synced_at") # rubocop:disable GitlabSecurity/PublicSend
     end
 
-    def random_disk_path(prefix)
-      random_string = SecureRandom.hex(7)
-      "#{repository.disk_path}_#{prefix}#{random_string}"
-    end
-
     def disk_path_temp
-      @disk_path_temp ||= random_disk_path('')
+      # We use "@" as it's not allowed to use it in a group or project name
+      @disk_path_temp ||= "@geo-temporary/#{repository.disk_path}"
     end
 
     def deleted_disk_path_temp
-      @deleted_path ||= "#{repository.disk_path}+failed-geo-sync"
+      @deleted_path ||= "@failed-geo-sync/#{repository.disk_path}"
     end
 
     def build_temporary_repository
@@ -165,16 +177,17 @@ module Geo
         raise Gitlab::Shell::Error, 'Can not create a temporary repository'
       end
 
-      log_info(
-        'Created temporary repository',
-        temp_path: disk_path_temp
-      )
+      log_info("Created temporary repository")
 
       repository.clone.tap { |repo| repo.disk_path = disk_path_temp }
     end
 
     def clean_up_temporary_repository
-      gitlab_shell.remove_repository(project.repository_storage_path, disk_path_temp)
+      exists = gitlab_shell.exists?(project.repository_storage_path, disk_path_temp)
+
+      if exists && !gitlab_shell.remove_repository(project.repository_storage_path, disk_path_temp)
+        raise Gitlab::Shell::Error, "Temporary #{type} can not been removed"
+      end
     end
 
     def set_temp_repository_as_main
@@ -189,7 +202,13 @@ module Geo
       # Remove the deleted path in case it exists, but it may not be there
       gitlab_shell.remove_repository(project.repository_storage_path, deleted_disk_path_temp)
 
-      if project.repository_exists? && !gitlab_shell.mv_repository(project.repository_storage_path, repository.disk_path, deleted_disk_path_temp)
+      # Make sure we have a namespace directory
+      gitlab_shell.add_namespace(project.repository_storage_path, deleted_disk_path_temp)
+
+      # Make sure we have the most current state of exists?
+      repository.expire_exists_cache
+
+      if repository.exists? && !gitlab_shell.mv_repository(project.repository_storage_path, repository.disk_path, deleted_disk_path_temp)
         raise Gitlab::Shell::Error, 'Can not move original repository out of the way'
       end
 

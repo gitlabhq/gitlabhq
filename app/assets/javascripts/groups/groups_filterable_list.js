@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import FilterableList from '~/filterable_list';
 import eventHub from './event_hub';
 import { normalizeHeaders, getParameterByName } from '../lib/utils/common_utils';

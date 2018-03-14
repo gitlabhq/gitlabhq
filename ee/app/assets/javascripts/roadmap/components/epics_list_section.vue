@@ -1,4 +1,5 @@
 <script>
+  import $ from 'jquery';
   import eventHub from '../event_hub';
 
   import { SCROLL_BAR_SIZE } from '../constants';
@@ -32,6 +33,8 @@
         shellHeight: 0,
         emptyRowHeight: 0,
         showEmptyRow: false,
+        offsetLeft: 0,
+        showBottomShadow: false,
       };
     },
     computed: {
@@ -53,11 +56,16 @@
       emptyRowCellStyles() {
         return `height: ${this.emptyRowHeight}px;`;
       },
+      shadowCellStyles() {
+        return `left: ${this.offsetLeft}px;`;
+      },
     },
     watch: {
       shellWidth: function shellWidth() {
         // Scroll view to today indicator only when shellWidth is updated.
         this.scrollToTodayIndicator();
+        // Initialize offsetLeft when shellWidth is updated
+        this.offsetLeft = this.$el.parentElement.offsetLeft;
       },
     },
     mounted() {
@@ -107,6 +115,8 @@
           // set height and show empty row reducing horizontal scrollbar size
           this.emptyRowHeight = (this.shellHeight - approxChildrenHeight) - 1;
           this.showEmptyRow = true;
+        } else {
+          this.showBottomShadow = true;
         }
       },
       /**
@@ -116,7 +126,7 @@
        * update raw element properties upon event via jQuery.
        */
       handleScroll() {
-        const scrollLeft = this.$el.scrollLeft;
+        const { scrollTop, scrollLeft, scrollHeight, clientHeight } = this.$el;
         const tableEl = this.$el.parentElement;
         if (tableEl) {
           const $theadEl = $(tableEl).find('thead');
@@ -126,7 +136,8 @@
           $theadEl.find('th:nth-child(1)').css('left', scrollLeft);
           $tbodyEl.find('td:nth-child(1)').css('left', scrollLeft);
         }
-        eventHub.$emit('epicsListScrolled', this.$el.scrollTop, this.$el.scrollLeft);
+        this.showBottomShadow = (Math.ceil(scrollTop) + clientHeight) < scrollHeight;
+        eventHub.$emit('epicsListScrolled', scrollTop, scrollLeft);
       },
       /**
        * `clientWidth` is full width of list section, and we need to
@@ -148,6 +159,11 @@
     :style="tbodyStyles"
     @scroll="handleScroll"
   >
+    <tr
+      v-if="showBottomShadow"
+      class="bottom-shadow-cell"
+      :style="shadowCellStyles"
+    ></tr>
     <epic-item
       v-for="(epic, index) in epics"
       :key="index"

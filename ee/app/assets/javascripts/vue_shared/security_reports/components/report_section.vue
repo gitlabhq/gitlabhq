@@ -96,7 +96,9 @@
         return this.status === 'success';
       },
       statusIconName() {
-        if (this.loadingFailed || this.unresolvedIssues.length) {
+        if (this.loadingFailed ||
+          this.unresolvedIssues.length ||
+          this.neutralIssues.length) {
           return 'warning';
         }
         return 'success';
@@ -221,7 +223,7 @@
       <button
         v-if="allIssues.length && !isFullReportVisible"
         type="button"
-        class="btn-link btn-blank prepend-left-10 js-expand-full-list"
+        class="btn-link btn-blank prepend-left-10 js-expand-full-list break-link"
         @click="openFullReport"
       >
         {{ s__("ciReport|Show complete code vulnerabilities report") }}

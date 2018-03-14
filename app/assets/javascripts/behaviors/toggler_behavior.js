@@ -1,3 +1,6 @@
+import $ from 'jquery';
+import { getLocationHash } from '../lib/utils/url_utility';
+
 // Toggle button. Show/hide content inside parent container.
 // Button does not change visibility. If button has icon - it changes chevron style.
 //
@@ -5,14 +8,13 @@
 //   %button.js-toggle-button
 //   %div.js-toggle-content
 //
-import { getLocationHash } from '../lib/utils/url_utility';
 
 $(() => {
   function toggleContainer(container, toggleState) {
     const $container = $(container);
 
     $container
-      .find('.js-toggle-button .fa')
+      .find('.js-toggle-button .fa-chevron-up, .js-toggle-button .fa-chevron-down')
       .toggleClass('fa-chevron-up', toggleState)
       .toggleClass('fa-chevron-down', toggleState !== undefined ? !toggleState : undefined);
 
@@ -22,7 +24,7 @@ $(() => {
   }
 
   $('body').on('click', '.js-toggle-button', function toggleButton(e) {
-    e.target.classList.toggle('open');
+    e.currentTarget.classList.toggle(e.currentTarget.dataset.toggleOpenClass || 'open');
     toggleContainer($(this).closest('.js-toggle-container'));
 
     const targetTag = e.currentTarget.tagName.toLowerCase();

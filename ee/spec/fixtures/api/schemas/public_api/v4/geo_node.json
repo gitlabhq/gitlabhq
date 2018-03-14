@@ -20,11 +20,13 @@
     "files_max_capacity": { "type": "integer" },
     "repos_max_capacity": { "type": "integer" },
     "clone_protocol": { "type": ["string"] },
+    "web_edit_url": { "type": "string" },
     "_links": {
       "type": "object",
       "required": ["self", "repair"],
       "properties" : {
         "self": { "type": "string" },
+        "status": { "type": "string" },
         "repair": { "type": "string" }
       },
       "additionalProperties": false

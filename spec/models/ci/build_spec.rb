@@ -1386,7 +1386,8 @@ describe Ci::Build do
       end
 
       context 'use from gitlab-ci.yml' do
-        let(:pipeline) { create(:ci_pipeline) }
+        let(:project) { create(:project, :repository) }
+        let(:pipeline) { create(:ci_pipeline, project: project) }
 
         before do
           stub_ci_pipeline_yaml_file(config)

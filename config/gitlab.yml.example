@@ -149,6 +149,7 @@ production: &base
     #   enabled: false
     #   remote_directory: artifacts # The bucket name
     #   background_upload: false # Temporary option to limit automatic upload (Default: true)
+    #   proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
     #   connection:
     #     provider: AWS # Only AWS supported at the moment
     #     aws_access_key_id: AWS_ACCESS_KEY_ID
@@ -164,6 +165,7 @@ production: &base
       enabled: false
       remote_directory: lfs-objects # Bucket name
       # background_upload: false # Temporary option to limit automatic upload (Default: true)
+      # proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
       connection:
         provider: AWS
         aws_access_key_id: AWS_ACCESS_KEY_ID
@@ -183,6 +185,7 @@ production: &base
       enabled: true
       remote_directory: uploads # Bucket name
       # background_upload: false # Temporary option to limit automatic upload (Default: true)
+      # proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
       connection:
         provider: AWS
         aws_access_key_id: AWS_ACCESS_KEY_ID
@@ -791,7 +794,7 @@ test:
         provider: AWS # Only AWS supported at the moment
         aws_access_key_id: AWS_ACCESS_KEY_ID
         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
-        region: eu-central-1
+        region: us-east-1
   artifacts:
     path: tmp/tests/artifacts
     enabled: true
@@ -805,7 +808,7 @@ test:
         provider: AWS # Only AWS supported at the moment
         aws_access_key_id: AWS_ACCESS_KEY_ID
         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
-        region: eu-central-1
+        region: us-east-1
   uploads:
     storage_path: tmp/tests/public
     enabled: true
@@ -815,7 +818,7 @@ test:
         provider: AWS # Only AWS supported at the moment
         aws_access_key_id: AWS_ACCESS_KEY_ID
         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
-        region: eu-central-1
+        region: us-east-1
   gitlab:
     host: localhost
     port: 80

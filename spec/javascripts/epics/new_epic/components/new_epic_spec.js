@@ -1,31 +1,27 @@
 import Vue from 'vue';
-import _ from 'underscore';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import newEpic from 'ee/epics/new_epic/components/new_epic.vue';
 import * as urlUtility from '~/lib/utils/url_utility';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('newEpic', () => {
   let vm;
-
-  const interceptor = (request, next) => {
-    next(request.respondWith(JSON.stringify({
-      web_url: gl.TEST_HOST,
-    }), {
-      status: 200,
-    }));
-  };
+  let mock;
 
   beforeEach(() => {
-    Vue.http.interceptors.push(interceptor);
-
     const NewEpic = Vue.extend(newEpic);
+
+    mock = new MockAdapter(axios);
+    mock.onPost(gl.TEST_HOST).reply(200, { web_url: gl.TEST_HOST });
     vm = mountComponent(NewEpic, {
       endpoint: gl.TEST_HOST,
     });
   });
 
   afterEach(() => {
-    Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+    mock.restore();
+    vm.$destroy();
   });
 
   describe('alignRight', () => {

@@ -66,7 +66,7 @@ be set on the primary database. In GitLab 9.4, we have made this setting
 default to 1. You may need to increase this value if you have more Geo
 secondary nodes. Be sure to restart PostgreSQL for this to take
 effect. See the [PostgreSQL replication
-setup](database.md#postgresql-replication) guide for more details.
+setup][database-pg-replication] guide for more details.
 
 #### How do I fix the message, "FATAL:  could not start WAL streaming: ERROR:  replication slot "geo_secondary_my_domain_com" does not exist"?
 
@@ -76,8 +76,8 @@ process](database.md) on the secondary.
 
 #### How do I fix the message, "Command exceeded allowed execution time" when setting up replication?
 
-This may happen while [initiating the replication process](database.md#step-4-initiate-the-replication-process) on the Geo secondary, and indicates that your
-initial dataset is too large to be replicated in the default timeout (30 minutes).
+This may happen while [initiating the replication process][database-start-replication] on the Geo secondary, 
+and indicates that your initial dataset is too large to be replicated in the default timeout (30 minutes).
 
 Re-run `gitlab-ctl replicate-geo-database`, but include a larger value for
 `--backup-timeout`:
@@ -91,8 +91,8 @@ the default thirty minutes. Adjust as required for your installation.
 
 #### How do I fix the message, "PANIC: could not write to file 'pg_xlog/xlogtemp.123': No space left on device"
 
-Determine if you have any unused replication slots in the primary database.  This can cause large amounts of log data to build up in `pg_xlog`.
-Removing the unused slots can reduce the amount of space used in the `pg_xlog`.
+Determine if you have any unused replication slots in the primary database.  This can cause large amounts of 
+log data to build up in `pg_xlog`. Removing the unused slots can reduce the amount of space used in the `pg_xlog`.
 
 1. Start a PostgreSQL console session:
 
@@ -100,7 +100,8 @@ Removing the unused slots can reduce the amount of space used in the `pg_xlog`.
     sudo gitlab-psql gitlabhq_production
     ```
 
-    Note that using `gitlab-rails dbconsole` will not work, because managing replication slots requires superuser permissions.
+    > Note that using `gitlab-rails dbconsole` will not work, because managing replication slots requires 
+      superuser permissions.
 
 2. View your replication slots with
 
@@ -111,9 +112,10 @@ Removing the unused slots can reduce the amount of space used in the `pg_xlog`.
 Slots where `active` is `f` are not active.
 
 - When this slot should be active, because you have a secondary configured using that slot,
-log in to that secondary and check the PostgreSQL logs why the replication is not running.
+  log in to that secondary and check the PostgreSQL logs why the replication is not running.
 
-- If you are no longer using the slot (e.g. you no longer have Geo enabled), you can remove it with in the PostgreSQL console session:
+- If you are no longer using the slot (e.g. you no longer have Geo enabled), you can remove it with in the 
+  PostgreSQL console session:
 
     ```sql
     SELECT pg_drop_replication_slot('name_of_extra_slot');
@@ -138,4 +140,91 @@ sudo gitlab-ctl reconfigure
 ```
 
 This will increase the timeout to three hours (10800 seconds). Choose a time
-long enough to accomodate a full clone of your largest repositories.
+long enough to accommodate a full clone of your largest repositories.
+
+#### How to reset Geo secondary replication
+
+If you get a secondary node in a broken state and want to reset the replication state,
+to start again from scratch, there are a few steps that can help you:
+
+1. Stop Sidekiq and the Geo LogCursor
+
+    It's possible to make Sidekiq stop gracefully, but making it stop getting new jobs and
+    wait until the current jobs to finish processing.
+    
+    You need to send a **SIGTSTP** kill signal for the first phase and them a **SIGTERM**
+    when all jobs have finished. Otherwise just use the `gitlab-ctl stop` commands.
+    
+    ```bash
+    gitlab-ctl status sidekiq
+    # run: sidekiq: (pid 10180) <- this is the PID you will use
+    kill -TSTP 10180 # change to the correct PID
+    
+    gitlab-ctl stop sidekiq
+    gitlab-ctl stop geo-logcursor
+    ```
+    
+    You can watch sidekiq logs to know when sidekiq jobs processing have finished:
+    
+    ```bash
+    gitlab-ctl tail sidekiq
+    ```
+
+1. Rename repository storage folders and create new ones
+
+    ```bash
+    mv /var/opt/gitlab/git-data/repositories /var/opt/gitlab/git-data/repositories.old
+    mkdir -p /var/opt/gitlab/git-data/repositories
+    chown git:git /var/opt/gitlab/git-data/repositories
+    ```
+    
+    TIP: **Tip**
+    You may want to remove the `/var/opt/gitlab/git-data/repositories.old` in the future
+    as soon as you confirmed that you don't need it anymore, to save disk space.
+    
+1. _(Optional)_ Rename other data folders and create new ones
+
+    CAUTION: **Caution**:
+    You may still have files on the secondary that have been removed from primary but 
+    removal have not been reflected. If you skip this step, they will never be removed
+    from this Geo node.
+    
+    Any uploaded content like file attachments, avatars or LFS objects are stored in a
+    subfolder in one of the two paths below:
+    
+    1. /var/opt/gitlab/gitlab-rails/shared
+    1. /var/opt/gitlab/gitlab-rails/uploads
+    
+    To rename all of them:
+    
+    ```bash
+    gitlab-ctl stop
+ 
+    mv /var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-rails/shared.old
+    mkdir -p /var/opt/gitlab/gitlab-rails/shared
+ 
+    mv /var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/uploads.old
+    mkdir -p /var/opt/gitlab/gitlab-rails/uploads
+    ```
+    
+    Reconfigure in order to recreate the folders and make sure permissions and ownership
+    are correctly
+    
+    ```bash
+    gitlab-ctl reconfigure
+    ```
+
+1. Reset the Tracking Database
+
+    ```bash
+    gitlab-rake geo:db:reset
+    ```
+
+1. Restart previously stopped services
+
+    ```bash
+    gitlab-ctl start
+    ```
+
+[database-start-replication]: database.md#step-3-initiate-the-replication-process
+[database-pg-replication]: database.md#postgresql-replication

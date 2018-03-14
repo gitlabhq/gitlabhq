@@ -59,7 +59,7 @@ module EE
       def render_approvals_json
         respond_to do |format|
           format.json do
-            entity = ::API::Entities::MergeRequestApprovals.new(merge_request, current_user: current_user)
+            entity = EE::API::Entities::MergeRequestApprovals.new(merge_request, current_user: current_user)
             render json: entity
           end
         end

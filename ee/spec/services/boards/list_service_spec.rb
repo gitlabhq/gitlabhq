@@ -8,14 +8,18 @@ describe Boards::ListService do
     end
 
     describe '#execute' do
-      it 'returns all issue boards when `multiple_issue_boards` is enabled' do
-        stub_licensed_features(multiple_issue_boards: true)
+      it 'returns all issue boards when multiple issue boards is enabled' do
+        if parent.is_a?(Group)
+          stub_licensed_features(multiple_group_issue_boards: true)
+        end
 
         expect(service.execute.size).to eq(2)
       end
 
-      it 'returns the first issue board when `multiple_issue_boards` is disabled' do
-        stub_licensed_features(multiple_issue_boards: false)
+      it 'returns the first issue board when multiple issue boards is disabled' do
+        if parent.is_a?(Project)
+          stub_licensed_features(multiple_project_issue_boards: false)
+        end
 
         expect(service.execute.size).to eq(1)
       end

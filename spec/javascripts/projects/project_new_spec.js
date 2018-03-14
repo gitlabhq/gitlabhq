@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import projectNew from '~/projects/project_new';
 
 describe('New Project', () => {

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import '~/behaviors/quick_submit';
 
 describe('Quick Submit behavior', () => {

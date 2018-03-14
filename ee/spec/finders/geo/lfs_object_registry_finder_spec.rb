@@ -20,8 +20,8 @@ describe Geo::LfsObjectRegistryFinder, :geo do
   end
 
   describe '#count_synced_lfs_objects' do
-    it 'delegates to #find_synced_lfs_objects_registries' do
-      expect(subject).to receive(:find_synced_lfs_objects_registries).and_call_original
+    it 'delegates to #legacy_find_synced_lfs_objects' do
+      expect(subject).to receive(:legacy_find_synced_lfs_objects).and_call_original
 
       subject.count_synced_lfs_objects
     end
@@ -34,8 +34,23 @@ describe Geo::LfsObjectRegistryFinder, :geo do
       expect(subject.count_synced_lfs_objects).to eq 2
     end
 
+    it 'ignores remote LFS objects' do
+      create(:geo_file_registry, :lfs, file_id: lfs_object_1.id)
+      create(:geo_file_registry, :lfs, file_id: lfs_object_2.id)
+      create(:geo_file_registry, :lfs, file_id: lfs_object_3.id)
+      lfs_object_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
+
+      expect(subject.count_synced_lfs_objects).to eq 2
+    end
+
     context 'with selective sync' do
       before do
+        allow_any_instance_of(LfsObjectsProject).to receive(:update_project_statistics).and_return(nil)
+
+        create(:lfs_objects_project, project: synced_project, lfs_object: lfs_object_1)
+        create(:lfs_objects_project, project: synced_project, lfs_object: lfs_object_2)
+        create(:lfs_objects_project, project: unsynced_project, lfs_object: lfs_object_3)
+
         secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
       end
 
@@ -46,15 +61,18 @@ describe Geo::LfsObjectRegistryFinder, :geo do
       end
 
       it 'counts LFS objects that has been synced' do
-        allow_any_instance_of(LfsObjectsProject).to receive(:update_project_statistics).and_return(nil)
-
-        create(:lfs_objects_project, project: synced_project, lfs_object: lfs_object_1)
-        create(:lfs_objects_project, project: synced_project, lfs_object: lfs_object_2)
-        create(:lfs_objects_project, project: unsynced_project, lfs_object: lfs_object_3)
-
         create(:geo_file_registry, :lfs, file_id: lfs_object_1.id, success: false)
         create(:geo_file_registry, :lfs, file_id: lfs_object_2.id)
         create(:geo_file_registry, :lfs, file_id: lfs_object_3.id)
+
+        expect(subject.count_synced_lfs_objects).to eq 1
+      end
+
+      it 'ignores remote LFS objects' do
+        create(:geo_file_registry, :lfs, file_id: lfs_object_1.id)
+        create(:geo_file_registry, :lfs, file_id: lfs_object_2.id)
+        create(:geo_file_registry, :lfs, file_id: lfs_object_3.id)
+        lfs_object_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
 
         expect(subject.count_synced_lfs_objects).to eq 1
       end
@@ -62,8 +80,8 @@ describe Geo::LfsObjectRegistryFinder, :geo do
   end
 
   describe '#count_failed_lfs_objects' do
-    it 'delegates to #find_failed_lfs_objects_registries' do
-      expect(subject).to receive(:find_failed_lfs_objects_registries).and_call_original
+    it 'delegates to #legacy_find_failed_lfs_objects' do
+      expect(subject).to receive(:legacy_find_failed_lfs_objects).and_call_original
 
       subject.count_failed_lfs_objects
     end
@@ -76,8 +94,23 @@ describe Geo::LfsObjectRegistryFinder, :geo do
       expect(subject.count_failed_lfs_objects).to eq 2
     end
 
+    it 'ignores remote LFS objects' do
+      create(:geo_file_registry, :lfs, file_id: lfs_object_1.id, success: false)
+      create(:geo_file_registry, :lfs, file_id: lfs_object_2.id, success: false)
+      create(:geo_file_registry, :lfs, file_id: lfs_object_3.id, success: false)
+      lfs_object_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
+
+      expect(subject.count_failed_lfs_objects).to eq 2
+    end
+
     context 'with selective sync' do
       before do
+        allow_any_instance_of(LfsObjectsProject).to receive(:update_project_statistics).and_return(nil)
+
+        create(:lfs_objects_project, project: synced_project, lfs_object: lfs_object_1)
+        create(:lfs_objects_project, project: synced_project, lfs_object: lfs_object_2)
+        create(:lfs_objects_project, project: unsynced_project, lfs_object: lfs_object_3)
+
         secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
       end
 
@@ -88,17 +121,48 @@ describe Geo::LfsObjectRegistryFinder, :geo do
       end
 
       it 'counts LFS objects that sync has failed' do
-        allow_any_instance_of(LfsObjectsProject).to receive(:update_project_statistics).and_return(nil)
-
-        create(:lfs_objects_project, project: synced_project, lfs_object: lfs_object_1)
-        create(:lfs_objects_project, project: synced_project, lfs_object: lfs_object_2)
-        create(:lfs_objects_project, project: unsynced_project, lfs_object: lfs_object_3)
-
         create(:geo_file_registry, :lfs, file_id: lfs_object_1.id, success: false)
         create(:geo_file_registry, :lfs, file_id: lfs_object_2.id)
         create(:geo_file_registry, :lfs, file_id: lfs_object_3.id, success: false)
 
         expect(subject.count_failed_lfs_objects).to eq 1
+      end
+
+      it 'ignores remote LFS objects' do
+        create(:geo_file_registry, :lfs, file_id: lfs_object_1.id, success: false)
+        create(:geo_file_registry, :lfs, file_id: lfs_object_2.id, success: false)
+        create(:geo_file_registry, :lfs, file_id: lfs_object_3.id, success: false)
+        lfs_object_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
+
+        expect(subject.count_failed_lfs_objects).to eq 1
+      end
+    end
+  end
+
+  shared_examples 'finds all the things' do
+    describe '#find_unsynced_lfs_objects' do
+      it 'delegates to the correct method' do
+        expect(subject).to receive("#{method_prefix}_find_unsynced_lfs_objects".to_sym).and_call_original
+
+        subject.find_unsynced_lfs_objects(batch_size: 10)
+      end
+
+      it 'returns LFS objects without an entry on the tracking database' do
+        create(:geo_file_registry, :lfs, file_id: lfs_object_1.id, success: true)
+        create(:geo_file_registry, :lfs, file_id: lfs_object_3.id, success: false)
+
+        lfs_objects = subject.find_unsynced_lfs_objects(batch_size: 10)
+
+        expect(lfs_objects).to match_ids(lfs_object_2, lfs_object_4)
+      end
+
+      it 'excludes LFS objects without an entry on the tracking database' do
+        create(:geo_file_registry, :lfs, file_id: lfs_object_1.id, success: true)
+        create(:geo_file_registry, :lfs, file_id: lfs_object_3.id, success: false)
+
+        lfs_objects = subject.find_unsynced_lfs_objects(batch_size: 10, except_file_ids: [lfs_object_2.id])
+
+        expect(lfs_objects).to match_ids(lfs_object_4)
       end
     end
   end
@@ -110,30 +174,8 @@ describe Geo::LfsObjectRegistryFinder, :geo do
       skip('FDW is not configured') if Gitlab::Database.postgresql? && !Gitlab::Geo::Fdw.enabled?
     end
 
-    describe '#find_unsynced_lfs_objects' do
-      it 'delegates to #fdw_find_unsynced_lfs_objects' do
-        expect(subject).to receive(:fdw_find_unsynced_lfs_objects).and_call_original
-
-        subject.find_unsynced_lfs_objects(batch_size: 10)
-      end
-
-      it 'returns LFS objects without an entry on the tracking database' do
-        create(:geo_file_registry, :lfs, file_id: lfs_object_1.id, success: true)
-        create(:geo_file_registry, :lfs, file_id: lfs_object_3.id, success: false)
-
-        lfs_objects = subject.find_unsynced_lfs_objects(batch_size: 10)
-
-        expect(lfs_objects.map(&:id)).to match_array([lfs_object_2.id, lfs_object_4.id])
-      end
-
-      it 'excludes LFS objects without an entry on the tracking database' do
-        create(:geo_file_registry, :lfs, file_id: lfs_object_1.id, success: true)
-        create(:geo_file_registry, :lfs, file_id: lfs_object_3.id, success: false)
-
-        lfs_objects = subject.find_unsynced_lfs_objects(batch_size: 10, except_registry_ids: [lfs_object_2.id])
-
-        expect(lfs_objects.map(&:id)).to match_array([lfs_object_4.id])
-      end
+    include_examples 'finds all the things' do
+      let(:method_prefix) { 'fdw' }
     end
   end
 
@@ -142,30 +184,8 @@ describe Geo::LfsObjectRegistryFinder, :geo do
       allow(Gitlab::Geo::Fdw).to receive(:enabled?).and_return(false)
     end
 
-    describe '#find_unsynced_lfs_objects' do
-      it 'delegates to #legacy_find_unsynced_lfs_objects' do
-        expect(subject).to receive(:legacy_find_unsynced_lfs_objects).and_call_original
-
-        subject.find_unsynced_lfs_objects(batch_size: 10)
-      end
-
-      it 'returns LFS objects without an entry on the tracking database' do
-        create(:geo_file_registry, :lfs, file_id: lfs_object_1.id, success: true)
-        create(:geo_file_registry, :lfs, file_id: lfs_object_3.id, success: false)
-
-        lfs_objects = subject.find_unsynced_lfs_objects(batch_size: 10)
-
-        expect(lfs_objects).to match_array([lfs_object_2, lfs_object_4])
-      end
-
-      it 'excludes LFS objects without an entry on the tracking database' do
-        create(:geo_file_registry, :lfs, file_id: lfs_object_1.id, success: true)
-        create(:geo_file_registry, :lfs, file_id: lfs_object_3.id, success: false)
-
-        lfs_objects = subject.find_unsynced_lfs_objects(batch_size: 10, except_registry_ids: [lfs_object_2.id])
-
-        expect(lfs_objects).to match_array([lfs_object_4])
-      end
+    include_examples 'finds all the things' do
+      let(:method_prefix) { 'legacy' }
     end
   end
 end

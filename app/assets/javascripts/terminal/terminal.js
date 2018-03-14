@@ -1,13 +1,21 @@
 /* global Terminal */
 
+import $ from 'jquery';
+
 (() => {
   class GLTerminal {
 
     constructor(options) {
       this.options = options || {};
 
-      this.options.cursorBlink = options.cursorBlink || true;
-      this.options.screenKeys = options.screenKeys || true;
+      if (!Object.prototype.hasOwnProperty.call(this.options, 'cursorBlink')) {
+        this.options.cursorBlink = true;
+      }
+
+      if (!Object.prototype.hasOwnProperty.call(this.options, 'screenKeys')) {
+        this.options.screenKeys = true;
+      }
+
       this.container = document.querySelector(options.selector);
 
       this.setSocketUrl();

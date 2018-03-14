@@ -1,0 +1,5 @@
+---
+title: Fix broken loading state for close issue button
+merge_request:
+author:
+type: fixed

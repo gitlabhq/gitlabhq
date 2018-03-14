@@ -1,0 +1,31 @@
+- return unless ci_cd_projects_available?
+
+.tab-pane.js-toggle-container{ id: 'ci-cd-project-pane', class: active_when(active_tab == 'ci_cd_only'), role: 'tabpanel' }
+  = form_for @project, html: { class: 'new_project' } do |f|
+    .project-import.row
+      .col-lg-12
+        %h4
+          = _('Run CI/CD pipelines for external repositories')
+        %p
+          = _('Connect your external repositories, and CI/CD pipelines will run for new commits. A GitLab project will be created with only CI/CD features enabled.')
+        %p
+          - more_info_link = link_to _('More info'), help_page_path('user/project/integrations/github')
+          = _('If using GitHub, you’ll see pipeline statuses on GitHub for your commits and pull requests. %{more_info_link}').html_safe % { more_info_link: more_info_link }
+
+        .form-group.import-btn-container.prepend-top-20.clearfix
+          = f.label :visibility_level, class: 'label-light' do
+            = s_('ImportButtons|Connect repositories from')
+          .import-buttons
+            %div
+              - if github_import_enabled?
+                = link_to new_import_github_path(ci_cd_only: true), class: 'btn js-import-github' do
+                  = icon('github', text: 'GitHub')
+            %div
+              - if git_import_enabled?
+                %button.btn.js-toggle-button.js-import-git-toggle-button{ type: "button", data: { toggle_open_class: 'active' } }
+                  = icon('git', text: _('Repo by URL'))
+      .col-lg-12
+        .js-toggle-content.toggle-import-form{ class: ('hide' if active_tab != 'ci_cd_only') }
+          %hr
+            = render "shared/import_form", f: f, ci_cd_only: true
+            = render 'new_project_fields', f: f, project_name_id: "import-url-name", ci_cd_only: true

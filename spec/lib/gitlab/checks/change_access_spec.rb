@@ -30,9 +30,10 @@ describe Gitlab::Checks::ChangeAccess do
       end
     end
 
-    context 'when the user is not allowed to push code' do
+    context 'when the user is not allowed to push to the repo' do
       it 'raises an error' do
         expect(user_access).to receive(:can_do_action?).with(:push_code).and_return(false)
+        expect(user_access).to receive(:can_push_to_branch?).with('master').and_return(false)
 
         expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to push code to this project.')
       end
@@ -168,14 +169,14 @@ describe Gitlab::Checks::ChangeAccess do
       let(:blob_object) { project.repository.blob_at_branch('lfs', 'files/lfs/lfs_object.iso') }
 
       before do
-        allow_any_instance_of(Gitlab::Git::RevList).to receive(:new_objects) do |&lazy_block|
-          lazy_block.call([blob_object.id])
+        allow_any_instance_of(Gitlab::Git::LfsChanges).to receive(:new_pointers) do
+          [blob_object]
         end
       end
 
       context 'with LFS not enabled' do
         it 'skips integrity check' do
-          expect_any_instance_of(Gitlab::Git::RevList).not_to receive(:new_objects)
+          expect_any_instance_of(Gitlab::Git::LfsChanges).not_to receive(:new_pointers)
 
           subject.exec
         end

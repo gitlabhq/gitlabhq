@@ -781,4 +781,44 @@ describe('ee merge request widget options', () => {
       });
     });
   });
+
+  describe('rendering source branch removal status', () => {
+    beforeEach(() => {
+      vm = mountComponent(Component, {
+        mrData: {
+          ...mockData,
+        },
+      });
+    });
+
+    it('renders when user cannot remove branch and branch should be removed', (done) => {
+      vm.mr.canRemoveSourceBranch = false;
+      vm.mr.shouldRemoveSourceBranch = true;
+      vm.mr.state = 'readyToMerge';
+
+      vm.$nextTick(() => {
+        const tooltip = vm.$el.querySelector('.fa-question-circle');
+
+        expect(vm.$el.textContent).toContain('Removes source branch');
+        expect(tooltip.getAttribute('data-original-title')).toBe(
+          'A user with write access to the source branch selected this option',
+        );
+
+        done();
+      });
+    });
+
+    it('does not render in merged state', (done) => {
+      vm.mr.canRemoveSourceBranch = false;
+      vm.mr.shouldRemoveSourceBranch = true;
+      vm.mr.state = 'merged';
+
+      vm.$nextTick(() => {
+        expect(vm.$el.textContent).toContain('The source branch has been removed');
+        expect(vm.$el.textContent).not.toContain('Removes source branch');
+
+        done();
+      });
+    });
+  });
 });

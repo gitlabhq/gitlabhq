@@ -11,7 +11,7 @@ module NotesHelper
   end
 
   def note_supports_quick_actions?(note)
-    Notes::QuickActionsService.supported?(note, current_user)
+    Notes::QuickActionsService.supported?(note)
   end
 
   def noteable_json(noteable)
@@ -169,7 +169,7 @@ module NotesHelper
       reopenPath: reopen_issuable_path(issuable),
       notesPath: notes_url,
       totalNotes: issuable.discussions.length,
-      lastFetchedAt: Time.now
+      lastFetchedAt: Time.now.to_i
 
     }.to_json
   end

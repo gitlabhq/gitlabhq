@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::ImportExport::ProjectTreeSaver do
   describe 'saves the project tree into a json object' do
-    let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: project.full_path) }
+    let(:shared) { project.import_export_shared }
     let(:project_tree_saver) { described_class.new(project: project, current_user: user, shared: shared) }
     let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
     let(:user) { create(:user) }
@@ -184,6 +184,10 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         expect(saved_project_json['custom_attributes'].count).to eq(2)
       end
 
+      it 'has badges' do
+        expect(saved_project_json['project_badges'].count).to eq(2)
+      end
+
       it 'does not complain about non UTF-8 characters in MR diff files' do
         ActiveRecord::Base.connection.execute("UPDATE merge_request_diff_files SET diff = '---\n- :diff: !binary |-\n    LS0tIC9kZXYvbnVsbAorKysgYi9pbWFnZXMvbnVjb3IucGRmCkBAIC0wLDAg\n    KzEsMTY3OSBAQAorJVBERi0xLjUNJeLjz9MNCisxIDAgb2JqDTw8L01ldGFk\n    YXR'")
 
@@ -292,6 +296,9 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
 
     create(:project_custom_attribute, project: project)
     create(:project_custom_attribute, project: project)
+
+    create(:project_badge, project: project)
+    create(:project_badge, project: project)
 
     project
   end

@@ -2,6 +2,34 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.5.4 (2018-03-08)
+
+### Fixed (11 changes)
+
+- Encode branch name as binary before creating a RPC request to copy attributes. !17291
+- Restart Unicorn and Sidekiq when GRPC throws 14:Endpoint read failed. !17293
+- Ensure group issues and merge requests pages show results from subgroups when there are no results from the current group. !17312
+- Prevent trace artifact migration to incur data loss. !17313
+- Return a 404 instead of 403 if the repository does not exist on disk. !17341
+- Allow Prometheus application to be installed from Cluster applications. !17372
+- Fixes Prometheus admin configuration page. !17377
+- Fix code and wiki search results pages when non-ASCII text is displayed. !17413
+- Fix pages flaky failure by reloading stale object. !17522
+- Fixed issue edit shortcut not opening edit form.
+- Revert Project.public_or_visible_to_user changes and only apply to snippets.
+
+### Performance (1 change)
+
+- Don't use ProjectsFinder in TodosFinder.
+
+
+## 10.5.3 (2018-03-01)
+
+### Security (1 change)
+
+- Ensure that OTP backup codes are always invalidated.
+
+
 ## 10.5.2 (2018-02-25)
 
 ### Fixed (7 changes)
@@ -217,6 +245,13 @@ entry.
 - Upgrade GitLab Workhorse to v3.6.0.
 - Improve readability of underlined links for dyslexic users.
 - Adds empty state illustration for pending job.
+
+
+## 10.4.5 (2018-03-01)
+
+### Security (1 change)
+
+- Ensure that OTP backup codes are always invalidated.
 
 
 ## 10.4.4 (2018-02-16)
@@ -441,6 +476,13 @@ entry.
 - Update Browse file to Choose file in all occurences.
 - Bump mysql2 gem version from 0.4.5 to 0.4.10. (asaparov)
 - Use a background migration for issues.closed_at.
+
+
+## 10.3.8 (2018-03-01)
+
+### Security (1 change)
+
+- Ensure that OTP backup codes are always invalidated.
 
 
 ## 10.3.7 (2018-02-05)

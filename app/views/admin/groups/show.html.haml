@@ -62,7 +62,7 @@
 
         = render partial: "namespaces/shared_runner_status", locals: { namespace: @group }
 
-    - if Gitlab::LDAP::Config.group_sync_enabled? && @group.ldap_synced?
+    - if Gitlab::Auth::LDAP::Config.group_sync_enabled? && @group.ldap_synced?
       .panel.panel-default
         .panel-heading Active synchronizations
         %ul.well-list
@@ -82,7 +82,7 @@
         - @projects.each do |project|
           %li
             %strong
-              = link_to project.name_with_namespace, [:admin, project.namespace.becomes(Namespace), project]
+              = link_to project.full_name, [:admin, project.namespace.becomes(Namespace), project]
               %span.badge
                 = storage_counter(project.statistics.storage_size)
             %span.pull-right.light
@@ -100,7 +100,7 @@
           - @group.shared_projects.sort_by(&:name).each do |project|
             %li
               %strong
-                = link_to project.name_with_namespace, [:admin, project.namespace.becomes(Namespace), project]
+                = link_to project.full_name, [:admin, project.namespace.becomes(Namespace), project]
                 %span.badge
                   = storage_counter(project.statistics.storage_size)
               %span.pull-right.light

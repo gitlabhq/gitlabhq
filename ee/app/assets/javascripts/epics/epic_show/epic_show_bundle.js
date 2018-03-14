@@ -1,12 +1,13 @@
 import Vue from 'vue';
+import '~/vue_shared/models/label';
 import EpicShowApp from './components/epic_show_app.vue';
 
-document.addEventListener('DOMContentLoaded', () => {
+export default () => {
   const el = document.querySelector('#epic-show-app');
   const metaData = JSON.parse(el.dataset.meta);
   const initialData = JSON.parse(el.dataset.initial);
 
-  const props = Object.assign({}, initialData, metaData);
+  const props = Object.assign({}, initialData, metaData, el.dataset);
 
   // Convert backend casing to match frontend style guide
   props.startDate = props.start_date;
@@ -21,4 +22,4 @@ document.addEventListener('DOMContentLoaded', () => {
       props,
     }),
   });
-});
+};

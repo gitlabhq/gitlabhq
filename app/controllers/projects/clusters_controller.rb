@@ -4,6 +4,7 @@ class Projects::ClustersController < Projects::ApplicationController
   before_action :authorize_create_cluster!, only: [:new]
   before_action :authorize_update_cluster!, only: [:update]
   before_action :authorize_admin_cluster!, only: [:destroy]
+  before_action :update_applications_status, only: [:status]
 
   STATUS_POLLING_INTERVAL = 10_000
 
@@ -63,11 +64,33 @@ class Projects::ClustersController < Projects::ApplicationController
     end
   end
 
+  def metrics
+    return render_404 unless prometheus_adapter&.can_query?
+
+    respond_to do |format|
+      format.json do
+        metrics = prometheus_adapter.query(:cluster) || {}
+
+        if metrics.any?
+          render json: metrics
+        else
+          head :no_content
+        end
+      end
+    end
+  end
+
   private
 
   def cluster
     @cluster ||= project.clusters.find(params[:id])
                                  .present(current_user: current_user)
+  end
+
+  def prometheus_adapter
+    return unless cluster&.application_prometheus&.installed?
+
+    cluster.application_prometheus
   end
 
   def update_params
@@ -100,5 +123,9 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def authorize_admin_cluster!
     access_denied! unless can?(current_user, :admin_cluster, cluster)
+  end
+
+  def update_applications_status
+    @cluster.applications.each(&:schedule_status_update)
   end
 end

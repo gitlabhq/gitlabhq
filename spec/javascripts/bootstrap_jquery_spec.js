@@ -1,5 +1,6 @@
 /* eslint-disable space-before-function-paren, no-var */
 
+import $ from 'jquery';
 import '~/commons/bootstrap';
 
 (function() {

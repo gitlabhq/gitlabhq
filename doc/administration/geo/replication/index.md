@@ -7,7 +7,7 @@
   basic Geo features, or latest version for a better experience.
 - You should make sure that all nodes run the same GitLab version.
 - Geo requires PostgreSQL 9.6 and Git 2.9 in addition to GitLab's usual
-  [minimum requirements](../../../install/requirements.md)
+  [minimum requirements][install-requirements]
 - Using Geo in combination with High Availability is considered **GA** in GitLab Enterprise Edition 10.4
 
 >**Note:**
@@ -51,14 +51,13 @@ to reading any data available in the GitLab web interface (see [current limitati
 improving speed for distributed teams
 - Helps reducing the loading time for automated tasks,
 custom integrations and internal workflows
-- Quickly failover to a Geo secondary in a
-[Disaster Recovery](../disaster_recovery/index.md) scenario
-- Allows [planned failover](../disaster_recovery/planned_failover.md) to a Geo secondary
+- Quickly failover to a Geo secondary in a [Disaster Recovery][disaster-recovery] scenario
+- Allows [planned failover] to a Geo secondary
 
 ## Architecture
 
 The following diagram illustrates the underlying architecture of Geo
-([source diagram](https://docs.google.com/drawings/d/1Abw0P_H0Ew1-2Lj_xPDRWP87clGIke-1fil7_KQqrtE/edit)).
+([source diagram]).
 
 ![Geo architecture](img/geo_architecture.png)
 
@@ -88,7 +87,7 @@ current version of OpenSSH:
 
 Note that CentOS 6 and 7.0 ship with an old version of OpenSSH that do not
 support a feature that Geo requires. See the [documentation on Geo SSH
-access](../../operations/fast_ssh_key_lookup.md) for more details.
+access][fast-ssh-lookup] for more details.
 
 ### LDAP
 
@@ -100,7 +99,7 @@ tokens will still work.
 
 Check with your LDAP provider for instructions on on how to set up
 replication. For example, OpenLDAP provides [these
-instructions](https://www.openldap.org/doc/admin24/replication.html).
+instructions][ldap-replication].
 
 ### Geo Tracking Database
 
@@ -143,18 +142,16 @@ If you installed GitLab using the Omnibus packages (highly recommended):
 1. [Install GitLab Enterprise Edition][install-ee] on the server that will serve
    as the **secondary** Geo node. Do not create an account or login to the new
    secondary node.
-1. [Upload the GitLab License](../../../user/admin_area/license.md) on the **primary**
+1. [Upload the GitLab License][upload-license] on the **primary**
    Geo node to unlock Geo.
-1. [Setup the database replication](database.md) (`primary (read-write) <->
+1. [Setup the database replication][database] (`primary (read-write) <->
    secondary (read-only)` topology).
-1. [Configure fast lookup of authorized SSH keys in the database](../../operations/fast_ssh_key_lookup.md),
+1. [Configure fast lookup of authorized SSH keys in the database][fast-ssh-lookup],
    this step is required and needs to be done on both the primary AND secondary nodes.
-1. [Configure GitLab](configuration.md) to set the primary and secondary nodes.
-1. Optional: [Configure a secondary LDAP server](../../auth/ldap.md)
+1. [Configure GitLab][configuration] to set the primary and secondary nodes.
+1. Optional: [Configure a secondary LDAP server][config-ldap]
    for the secondary. See [notes on LDAP](#ldap).
-1. [Follow the "Using a Geo Server" guide](using_a_geo_server.md).
-
-[install-ee]: https://about.gitlab.com/downloads-ee/ "GitLab Enterprise Edition Omnibus packages downloads page"
+1. [Follow the "Using a Geo Server" guide][using-geo].
 
 ### Using GitLab installed from source
 
@@ -163,50 +160,60 @@ If you installed GitLab from source:
 1. [Install GitLab Enterprise Edition][install-ee-source] on the server that
    will serve as the **secondary** Geo node. Do not create an account or login
    to the new secondary node.
-1. [Upload the GitLab License](../../../user/admin_area/license.md) on the **primary**
+1. [Upload the GitLab License][upload-license] on the **primary**
    Geo node to unlock Geo.
-1. [Setup the database replication](database_source.md) (`primary (read-write)
+1. [Setup the database replication][database-source] (`primary (read-write)
    <-> secondary (read-only)` topology).
-1. [Configure fast lookup of authorized SSH keys in the database](../../operations/fast_ssh_key_lookup.md),
+1. [Configure fast lookup of authorized SSH keys in the database][fast-ssh-lookup],
    do this step for both primary AND secondary nodes.
-1. [Configure GitLab](configuration_source.md) to set the primary and secondary
+1. [Configure GitLab][configuration-source] to set the primary and secondary
    nodes.
-1. [Follow the "Using a Geo Server" guide](using_a_geo_server.md).
-
-[install-ee-source]: https://docs.gitlab.com/ee/install/installation.html "GitLab Enterprise Edition installation from source"
+1. [Follow the "Using a Geo Server" guide][using-geo].
 
 ## Configuring Geo
 
-Read through the [Geo configuration](configuration.md) documentation.
+Read through the [Geo configuration][configuration] documentation.
 
 ## Updating the Geo nodes
 
-Read how to [update your Geo nodes to the latest GitLab version](updating_the_geo_nodes.md).
+Read how to [update your Geo nodes to the latest GitLab version][updating-geo].
 
 ## Configuring Geo HA
 
-Read through the [Geo High Availability documentation](high_availability.md).
+Read through the [Geo High Availability documentation][ha].
 
 ## Configuring Geo with Object storage
 
 When you have object storage enabled, please consult the
-[Geo with Object Storage](object_storage.md) documentation.
+[Geo with Object Storage][object-storage] documentation.
 
-## Replicating the Container Registry
+## Disaster Recovery
 
-Read how to [replicate the Container Registry](docker_registry.md).
+Read through the [Disaster Recovery documentation][disaster-recovery] how to use Geo to mitigate data-loss and 
+restore services in a disaster scenario.
+
+### Replicating the Container Registry
+
+Read how to [replicate the Container Registry][docker-registry].
 
 ## Current limitations
 
-- You cannot push code to secondary nodes, see [3912](https://gitlab.com/gitlab-org/gitlab-ee/issues/3912) for details.
+> **IMPORTANT**: This list of limitations tracks only the latest version. If you are in an older version, 
+extra limitations may be in place. 
+
+- You cannot push code to secondary nodes, see [gitlab-org/gitlab-ee#3912] for details.
 - The primary node has to be online for OAuth login to happen (existing sessions and Git are not affected)
-- It works for repos, wikis, issues, and merge requests, but it does not work for job logs, artifacts, GitLab Pages, and Docker images of the Container
-  Registry (by default, but you can configure it separately, see [replicate the Container Registry](docker_registry.md) for details)
-- The installation takes multiple manual steps that together can take about an hour depending on circumstances; we are working on improving this experience, see [#2978](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2978) for details.
+- It works for repos, wikis, issues, merge requests, file attachments, artifacts and job logs but it does not work for, 
+  GitLab Pages, and Docker images of the Container Registry (by default, but you can configure it separately, 
+  see [replicate the Container Registry][docker-registry] for details).  
+- The installation takes multiple manual steps that together can take about an hour depending on circumstances; we are 
+  working on improving this experience, see [gitlab-org/omnibus-gitlab#2978] for details.
+- Real-time updates of issues/merge requests (e.g. via long polling) doesn't work on the secondary
+- Broadcast messages set on the primary won't be seen on the secondary without a cache flush (e.g. gitlab-rake cache:clear)
 
 ## Frequently Asked Questions
 
-Read more in the [Geo FAQ](faq.md).
+Read more in the [Geo FAQ][faq].
 
 ## Log files
 
@@ -225,16 +232,39 @@ This message shows that Geo detected that a repository update was needed for pro
 
 ## Security of Geo
 
-Read the [security review](security_review.md) page.
+Read the [security review][security-review] page.
 
 ## Tuning Geo
 
-Read the [Geo tuning](tuning.md) documentation.
+Read the [Geo tuning][tunning] documentation.
 
 ## Troubleshooting
 
-Read the [troubleshooting document](troubleshooting.md).
+Read the [troubleshooting document][troubleshooting].
 
 [ee]: https://about.gitlab.com/products/ "GitLab Enterprise Edition landing page"
+[install-requirements]: ../../../install/requirements.md
 [install-ee]: https://about.gitlab.com/downloads-ee/ "GitLab Enterprise Edition Omnibus packages downloads page"
 [install-ee-source]: https://docs.gitlab.com/ee/install/installation.html "GitLab Enterprise Edition installation from source"
+[disaster-recovery]: ../disaster_recovery/index.md
+[planned failover]: ../disaster_recovery/planned_failover.md
+[fast-ssh-lookup]: ../../operations/fast_ssh_key_lookup.md
+[upload-license]: ../../../user/admin_area/license.md
+[database]: database.md
+[database-source]: database_source.md
+[configuration]: configuration.md
+[configuration-source]: configuration_source.md
+[config-ldap]: ../../auth/ldap.md
+[using-geo]: using_a_geo_server.md
+[updating-geo]: updating_the_geo_nodes.md
+[ha]: high_availability.md
+[object-storage]: object_storage.md
+[docker-registry]: docker_registry.md
+[faq]: faq.md
+[security-review]: security_review.md
+[tunning]: tuning.md
+[troubleshooting]: troubleshooting.md
+[source diagram]: https://docs.google.com/drawings/d/1Abw0P_H0Ew1-2Lj_xPDRWP87clGIke-1fil7_KQqrtE/edit
+[ldap-replication]: https://www.openldap.org/doc/admin24/replication.html
+[gitlab-org/gitlab-ee#3912]: https://gitlab.com/gitlab-org/gitlab-ee/issues/3912
+[gitlab-org/omnibus-gitlab#2978]: https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2978

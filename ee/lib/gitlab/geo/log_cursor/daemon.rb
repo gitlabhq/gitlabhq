@@ -34,7 +34,11 @@ module Gitlab
         end
 
         def run_once!
-          LogCursor::Events.fetch_in_batches { |batch| handle_events(batch) }
+          # Wrap this with the connection to make it possible to reconnect if
+          # PGbouncer dies: https://github.com/rails/rails/issues/29189
+          ActiveRecord::Base.connection_pool.with_connection do
+            LogCursor::Events.fetch_in_batches { |batch| handle_events(batch) }
+          end
         end
 
         def handle_events(batch)

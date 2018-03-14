@@ -9,6 +9,39 @@ describe Projects::CreateService, '#execute' do
     }
   end
 
+  context 'with a CI/CD only project' do
+    before do
+      opts.merge!(
+        ci_cd_only: true,
+        import_url: 'http://foo.com'
+      )
+    end
+
+    context 'when CI/CD projects feature is available' do
+      before do
+        stub_licensed_features(ci_cd_projects: true)
+      end
+
+      it 'calls the service to setup CI/CD on the project' do
+        expect(CiCd::SetupProject).to receive_message_chain(:new, :execute)
+
+        create_project(user, opts)
+      end
+    end
+
+    context 'when CI/CD projects feature is not available' do
+      before do
+        stub_licensed_features(ci_cd_projects: false)
+      end
+
+      it "doesn't call the service to setup CI/CD on the project" do
+        expect(CiCd::SetupProject).not_to receive(:new)
+
+        create_project(user, opts)
+      end
+    end
+  end
+
   context 'repository_size_limit assignment as Bytes' do
     let(:admin_user) { create(:user, admin: true) }
 

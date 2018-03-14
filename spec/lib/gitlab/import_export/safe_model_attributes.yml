@@ -172,6 +172,7 @@ MergeRequest:
 - last_edited_by_id
 - head_pipeline_id
 - discussion_locked
+- allow_maintainer_to_push
 MergeRequestDiff:
 - id
 - state
@@ -474,6 +475,7 @@ Project:
 - merge_requests_rebase_enabled
 - jobs_cache_index
 - external_authorization_classification_label
+- external_webhook_token
 Author:
 - name
 ProjectFeature:
@@ -551,9 +553,29 @@ ProjectCustomAttribute:
 - project_id
 - key
 - value
+PrometheusMetric:
+- id
+- created_at
+- updated_at
+- project_id
+- y_label
+- unit
+- legend
+- title
+- query
+- group
 LfsFileLock:
 - id
 - path
 - user_id
 - project_id
 - created_at
+Badge:
+- id
+- link_url
+- image_url
+- project_id
+- group_id
+- created_at
+- updated_at
+- type

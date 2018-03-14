@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import { pluralize } from './lib/utils/text_utility';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import Pager from './pager';

@@ -348,9 +348,9 @@ module QuickActions
       "#{verb} this #{noun} as Work In Progress."
     end
     condition do
-      issuable.persisted? &&
-        issuable.respond_to?(:work_in_progress?) &&
-        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+      issuable.respond_to?(:work_in_progress?) &&
+        # Allow it to mark as WIP on MR creation page _or_ through MR notes.
+        (issuable.new_record? || current_user.can?(:"update_#{issuable.to_ability_name}", issuable))
     end
     command :wip do
       @updates[:wip_event] = issuable.work_in_progress? ? 'unwip' : 'wip'

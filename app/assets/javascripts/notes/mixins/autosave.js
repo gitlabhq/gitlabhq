@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Autosave from '../../autosave';
 import { capitalizeFirstCharacter } from '../../lib/utils/text_utility';
 

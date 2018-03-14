@@ -34,6 +34,12 @@ module MergeRequests
       super
     end
 
+    # Override from IssuableBaseService
+    def handle_quick_actions_on_create(merge_request)
+      super
+      handle_wip_event(merge_request)
+    end
+
     private
 
     def update_merge_requests_head_pipeline(merge_request)

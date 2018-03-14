@@ -1,7 +1,7 @@
 desc "GITLAB | migrate provider names to multiple ldap setup"
 namespace :gitlab do
   task migrate_ldap_providers: :environment do
-    config = Gitlab::LDAP::Config
+    config = Gitlab::Auth::LDAP::Config
     raise 'No LDAP server hash defined. See config/gitlab.yml.example for an example' unless config.servers.any?
 
     provider = config.servers.first['provider_name']

@@ -134,7 +134,8 @@ module Gitlab
       def commit_count(ref, options = {})
         request = Gitaly::CountCommitsRequest.new(
           repository: @gitaly_repo,
-          revision: encode_binary(ref)
+          revision: encode_binary(ref),
+          all: !!options[:all]
         )
         request.after = Google::Protobuf::Timestamp.new(seconds: options[:after].to_i) if options[:after].present?
         request.before = Google::Protobuf::Timestamp.new(seconds: options[:before].to_i) if options[:before].present?
@@ -269,6 +270,7 @@ module Gitlab
           offset:       options[:offset],
           follow:       options[:follow],
           skip_merges:  options[:skip_merges],
+          all:          !!options[:all],
           disable_walk: true # This option is deprecated. The 'walk' implementation is being removed.
         )
         request.after    = GitalyClient.timestamp(options[:after]) if options[:after]
@@ -317,6 +319,23 @@ module Gitlab
         return if signature.blank? && signed_text.blank?
 
         [signature, signed_text]
+      end
+
+      def get_commit_signatures(commit_ids)
+        request = Gitaly::GetCommitSignaturesRequest.new(repository: @gitaly_repo, commit_ids: commit_ids)
+        response = GitalyClient.call(@repository.storage, :commit_service, :get_commit_signatures, request)
+
+        signatures = Hash.new { |h, k| h[k] = [''.b, ''.b] }
+        current_commit_id = nil
+
+        response.each do |message|
+          current_commit_id = message.commit_id if message.commit_id.present?
+
+          signatures[current_commit_id].first << message.signature
+          signatures[current_commit_id].last << message.signed_text
+        end
+
+        signatures
       end
 
       private

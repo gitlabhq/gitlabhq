@@ -1,0 +1,5 @@
+---
+title: Add partial indexes on todos to handle users with many todos
+merge_request:
+author:
+type: performance

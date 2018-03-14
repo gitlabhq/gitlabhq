@@ -1,6 +1,7 @@
 $item-height: 50px;
 $column-shadow: 15px 0 15px -15px rgba(0, 0, 0, 0.12) inset;
-$scroll-top-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.12);
+$scroll-top-gradient: linear-gradient(to bottom, rgba(0, 0, 0, 0.15) 0%, rgba(255, 255, 255, 0.001) 100%);
+$scroll-bottom-gradient: linear-gradient(to bottom, rgba(255, 255, 255, 0.001) 0%, rgba(0, 0, 0, 0.15) 100%);
 $border-style: 1px solid $border-gray-normal;
 $details-cell-width: 320px;
 
@@ -27,11 +28,22 @@ $details-cell-width: 320px;
     position: relative;
   }
 
+  .epics-list-section .bottom-shadow-cell {
+    position: fixed;
+    bottom: 0;
+    height: 10px;
+    width: $details-cell-width;
+    pointer-events: none;
+    background: $scroll-bottom-gradient;
+    z-index: 3;
+  }
+
   .epics-list-section .epic-details-cell:after,
   .roadmap-timeline-section .timeline-header-blank:after,
   .roadmap-timeline-section.scrolled-ahead .timeline-header-blank:before {
     content: '';
     position: absolute;
+    pointer-events: none;
   }
 
   .epics-list-section .epic-details-cell:after,
@@ -41,20 +53,19 @@ $details-cell-width: 320px;
     height: 100%;
     width: 14px;
     box-shadow: $column-shadow;
-    pointer-events: none;
   }
 
   .roadmap-timeline-section .timeline-header-blank:after {
     top: -2px;
-    height: 60px;
+    height: 62px;
   }
 
   .roadmap-timeline-section.scrolled-ahead .timeline-header-blank:before {
-    bottom: -1px;
+    bottom: -10px;
     left: 0;
-    height: 15px;
+    height: 10px;
     width: 100%;
-    box-shadow: $scroll-top-shadow;
+    background: $scroll-top-gradient;
   }
 
   .roadmap-timeline-section {
@@ -86,6 +97,7 @@ $details-cell-width: 320px;
     display: block;
     top: 2px;
     height: 60px;
+    margin-top: -2px;
     width: $details-cell-width;
     background-color: $white-light;
     border-right: $border-style;
@@ -122,7 +134,7 @@ $details-cell-width: 320px;
       border-bottom: $border-style;
 
       &.label-bold {
-        font-weight: 700;
+        font-weight: 600;
       }
     }
 
@@ -178,7 +190,6 @@ $details-cell-width: 320px;
     .epic-details-cell {
       position: relative;
       display: block;
-      top: 1px; /* Remove cell spacing */
       width: $details-cell-width;
       padding: $gl-padding-8 $gl-padding;
       font-size: $code_font_size;
@@ -194,7 +205,7 @@ $details-cell-width: 320px;
       .epic-title .epic-url {
         display: table-cell;
         color: $theme-gray-900;
-        font-weight: bold;
+        font-weight: 600;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -245,11 +256,11 @@ $details-cell-width: 320px;
         }
 
         &.start-date-undefined {
-          background: linear-gradient(to right, transparent 0%, $blue-200 50%, $blue-500 100%);
+          background: linear-gradient(to right, rgba(255, 255, 255, 0.001) 0%, $blue-200 50%, $blue-500 100%);
         }
 
         &.end-date-undefined {
-          background: linear-gradient(to right, $blue-500 0%, $blue-200 50%, transparent 100%);
+          background: linear-gradient(to right, $blue-500 0%, $blue-200 50%, rgba(255, 255, 255, 0.001) 100%);
         }
 
         &.start-date-outside {

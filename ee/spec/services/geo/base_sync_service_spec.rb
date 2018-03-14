@@ -5,8 +5,6 @@ describe Geo::BaseSyncService do
 
   subject { described_class.new(project) }
 
-  it_behaves_like 'geo base sync execution'
-
   describe '#lease_key' do
     it 'returns a key in the correct pattern' do
       allow(described_class).to receive(:type) { :wiki }

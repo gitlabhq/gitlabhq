@@ -99,8 +99,8 @@ class Environment < ActiveRecord::Base
     folder_name == "production"
   end
 
-  def first_deployment_for(commit)
-    ref = project.repository.ref_name_for_sha(ref_path, commit.sha)
+  def first_deployment_for(commit_sha)
+    ref = project.repository.ref_name_for_sha(ref_path, commit_sha)
 
     return nil unless ref
 
@@ -137,10 +137,6 @@ class Environment < ActiveRecord::Base
     end
   end
 
-  def deployment_platform
-    project.deployment_platform(environment: self)
-  end
-
   def has_terminals?
     deployment_platform.present? && available? && last_deployment.present?
   end
@@ -154,21 +150,19 @@ class Environment < ActiveRecord::Base
   end
 
   def has_metrics?
-    project.monitoring_service.present? && available? && last_deployment.present?
+    prometheus_adapter&.can_query? && available? && last_deployment.present?
   end
 
   def metrics
-    project.monitoring_service.environment_metrics(self) if has_metrics?
-  end
-
-  def has_additional_metrics?
-    project.prometheus_service.present? && available? && last_deployment.present?
+    prometheus_adapter.query(:environment, self) if has_metrics?
   end
 
   def additional_metrics
-    if has_additional_metrics?
-      project.prometheus_service.additional_environment_metrics(self)
-    end
+    prometheus_adapter.query(:additional_metrics_environment, self) if has_metrics?
+  end
+
+  def prometheus_adapter
+    @prometheus_adapter ||= Prometheus::AdapterService.new(project, deployment_platform).prometheus_adapter
   end
 
   def slug
@@ -232,6 +226,10 @@ class Environment < ActiveRecord::Base
 
   def folder_name
     self.environment_type || self.name
+  end
+
+  def deployment_platform
+    project.deployment_platform(environment: self)
   end
 
   private

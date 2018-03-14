@@ -1,5 +1,6 @@
 /* eslint-disable comma-dangle, no-param-reassign, no-unused-expressions, max-len */
 
+import $ from 'jquery';
 import '~/gl_dropdown';
 import '~/lib/utils/common_utils';
 import * as urlUtils from '~/lib/utils/url_utility';

@@ -1,5 +1,5 @@
 module Geo
-  class FileDownloadDispatchWorker < Geo::BaseSchedulerWorker
+  class FileDownloadDispatchWorker < Geo::Scheduler::SecondaryWorker
     include CronjobQueue
 
     private
@@ -53,19 +53,19 @@ module Geo
     end
 
     def find_unsynced_lfs_objects_ids(batch_size:)
-      lfs_objects_finder.find_unsynced_lfs_objects(batch_size: batch_size, except_registry_ids: scheduled_file_ids(:lfs))
+      lfs_objects_finder.find_unsynced_lfs_objects(batch_size: batch_size, except_file_ids: scheduled_file_ids(:lfs))
                         .pluck(:id)
                         .map { |id| [id, :lfs] }
     end
 
     def find_unsynced_attachments_ids(batch_size:)
-      attachments_finder.find_unsynced_attachments(batch_size: batch_size, except_registry_ids: scheduled_file_ids(Geo::FileService::DEFAULT_OBJECT_TYPES))
+      attachments_finder.find_unsynced_attachments(batch_size: batch_size, except_file_ids: scheduled_file_ids(Geo::FileService::DEFAULT_OBJECT_TYPES))
                         .pluck(:id, :uploader)
                         .map { |id, uploader| [id, uploader.sub(/Uploader\z/, '').underscore] }
     end
 
     def find_unsynced_job_artifacts_ids(batch_size:)
-      job_artifacts_finder.find_unsynced_job_artifacts(batch_size: batch_size, except_registry_ids: scheduled_file_ids(:job_artifact))
+      job_artifacts_finder.find_unsynced_job_artifacts(batch_size: batch_size, except_file_ids: scheduled_file_ids(:job_artifact))
                         .pluck(:id)
                         .map { |id| [id, :job_artifact] }
     end

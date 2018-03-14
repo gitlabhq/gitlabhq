@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 const defaults = {
   // Buttons that will show the `suggestionSections`
   // has `data-fork-path`, and `data-action`

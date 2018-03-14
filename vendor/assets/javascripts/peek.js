@@ -1,14 +1,14 @@
 /*
- * This is a modified version of https://github.com/peek/peek/blob/master/app/assets/javascripts/peek.js
+ * this is a modified version of https://github.com/peek/peek/blob/master/app/assets/javascripts/peek.js
  *
  * - Removed the dependency on jquery.tipsy
  * - Removed the initializeTipsy and toggleBar functions
- * - Customized updatePerformanceBar to handle SQL queries report specificities
+ * - Customized updatePerformanceBar to handle SQL query and Gitaly call lists
  * - Changed /peek/results to /-/peek/results
  * - Removed the keypress, pjax:end, page:change, and turbolinks:load handlers
  */
 (function($) {
-  var fetchRequestResults, getRequestId, peekEnabled, updatePerformanceBar;
+  var fetchRequestResults, getRequestId, peekEnabled, updatePerformanceBar, createTable, createTableRow;
   getRequestId = function() {
     return $('#peek').data('requestId');
   };
@@ -16,39 +16,55 @@
     return $('#peek').length;
   };
   updatePerformanceBar = function(results) {
-    var key, label, data, table, html, tr, duration_td, sql_td, strong;
-
     Object.keys(results.data).forEach(function(key) {
       Object.keys(results.data[key]).forEach(function(label) {
-        data = results.data[key][label];
+        var data = results.data[key][label];
+        var table = createTable(key, label, data);
+        var target = $('[data-defer-to="' + key + '-' + label + '"]');
 
-        if (label == 'queries') {
-          table = document.createElement('table');
-
-          for (var i = 0; i < data.length; i += 1) {
-            tr = document.createElement('tr');
-            duration_td = document.createElement('td');
-            sql_td = document.createElement('td');
-            strong = document.createElement('strong');
-
-            strong.append(data[i]['duration'] + 'ms');
-            duration_td.appendChild(strong);
-            tr.appendChild(duration_td);
-
-            sql_td.appendChild(document.createTextNode(data[i]['sql']));
-            tr.appendChild(sql_td);
-
-            table.appendChild(tr);
-          }
-
-          table.className = 'table';
-          $("[data-defer-to=" + key + "-" + label + "]").html(table);
+        if (table) {
+          target.html(table);
         } else {
-          $("[data-defer-to=" + key + "-" + label + "]").text(results.data[key][label]);
+          target.text(data);
         }
       });
     });
     return $(document).trigger('peek:render', [getRequestId(), results]);
+  };
+  createTable = function(key, label, data) {
+    if (label !== 'queries' && label !== 'details') {
+      return;
+    }
+
+    var table = document.createElement('table');
+
+    for (var i = 0; i < data.length; i += 1) {
+      table.appendChild(createTableRow(data[i]));
+    }
+
+    table.className = 'table';
+
+    return table;
+  };
+  createTableRow = function(row) {
+    var tr = document.createElement('tr');
+    var durationTd = document.createElement('td');
+    var strong = document.createElement('strong');
+
+    strong.append(row['duration'] + 'ms');
+    durationTd.appendChild(strong);
+    tr.appendChild(durationTd);
+
+    ['sql', 'feature', 'enabled', 'request'].forEach(function(key) {
+      if (!row[key]) { return; }
+
+      var td = document.createElement('td');
+
+      td.appendChild(document.createTextNode(row[key]));
+      tr.appendChild(td);
+    });
+
+    return tr;
   };
   fetchRequestResults = function() {
     return $.ajax('/-/peek/results', {

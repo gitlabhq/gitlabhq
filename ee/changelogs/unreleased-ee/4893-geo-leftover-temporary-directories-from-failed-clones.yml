@@ -1,0 +1,5 @@
+---
+title: 'Fix Geo: Leftover temporary directories from failed clones'
+merge_request:
+author:
+type: fixed

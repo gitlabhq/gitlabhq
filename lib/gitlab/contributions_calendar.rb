@@ -23,7 +23,7 @@ module Gitlab
       mr_events = event_counts(date_from, :merge_requests)
         .having(action: [Event::MERGED, Event::CREATED, Event::CLOSED], target_type: "MergeRequest")
       note_events = event_counts(date_from, :merge_requests)
-        .having(action: [Event::COMMENTED], target_type: "Note")
+        .having(action: [Event::COMMENTED])
 
       union = Gitlab::SQL::Union.new([repo_events, issue_events, mr_events, note_events])
       events = Event.find_by_sql(union.to_sql).map(&:attributes)

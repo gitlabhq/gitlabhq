@@ -70,6 +70,14 @@ describe RemoteMirror do
         config = repo.raw_repository.rugged.config
         expect(config["remote.#{mirror.remote_name}.url"]).to eq('http://foo:baz@test.com')
       end
+
+      it 'removes previous remote' do
+        mirror = create_mirror(url: 'http://foo:bar@test.com')
+
+        expect(RepositoryRemoveRemoteWorker).to receive(:perform_async).with(mirror.project.id, mirror.remote_name).and_call_original
+
+        mirror.update_attributes(url: 'http://test.com')
+      end
     end
   end
 
@@ -117,6 +125,16 @@ describe RemoteMirror do
 
         expect(mirror.safe_url).to eq('http://test.com')
       end
+    end
+  end
+
+  context 'when remote mirror gets destroyed' do
+    it 'removes remote' do
+      mirror = create_mirror(url: 'http://foo:bar@test.com')
+
+      expect(RepositoryRemoveRemoteWorker).to receive(:perform_async).with(mirror.project.id, mirror.remote_name).and_call_original
+
+      mirror.destroy!
     end
   end
 

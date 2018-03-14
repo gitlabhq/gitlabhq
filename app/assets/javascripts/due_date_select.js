@@ -1,5 +1,6 @@
 /* global dateFormat */
 
+import $ from 'jquery';
 import Pikaday from 'pikaday';
 import axios from './lib/utils/axios_utils';
 import { parsePikadayDate, pikadayToString } from './lib/utils/datefix';

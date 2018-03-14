@@ -45,6 +45,54 @@ describe Geo::ProjectRegistry do
     end
   end
 
+  describe '.verified_repos' do
+    it 'returns projects that verified' do
+      create(:geo_project_registry, :repository_verification_failed)
+      create(:geo_project_registry, :wiki_verified)
+      create(:geo_project_registry, :wiki_verification_failed)
+
+      repository_verified = create(:geo_project_registry, :repository_verified)
+
+      expect(described_class.verified_repos).to match_array([repository_verified])
+    end
+  end
+
+  describe '.verification_failed_repos' do
+    it 'returns projects where last attempt to verify failed' do
+      create(:geo_project_registry, :repository_verified)
+      create(:geo_project_registry, :wiki_verified)
+      create(:geo_project_registry, :wiki_verification_failed)
+
+      repository_verification_failed = create(:geo_project_registry, :repository_verification_failed)
+
+      expect(described_class.verification_failed_repos).to match_array([repository_verification_failed])
+    end
+  end
+
+  describe '.verified_wikis' do
+    it 'returns projects that verified' do
+      create(:geo_project_registry, :repository_verification_failed)
+      create(:geo_project_registry, :repository_verified)
+      create(:geo_project_registry, :wiki_verification_failed)
+
+      wiki_verified = create(:geo_project_registry, :wiki_verified)
+
+      expect(described_class.verified_wikis).to match_array([wiki_verified])
+    end
+  end
+
+  describe '.verification_failed_wikis' do
+    it 'returns projects where last attempt to verify failed' do
+      create(:geo_project_registry, :repository_verified)
+      create(:geo_project_registry, :wiki_verified)
+      create(:geo_project_registry, :repository_verification_failed)
+
+      wiki_verification_failed = create(:geo_project_registry, :wiki_verification_failed)
+
+      expect(described_class.verification_failed_wikis).to match_array([wiki_verification_failed])
+    end
+  end
+
   describe '.retry_due' do
     it 'returns projects that should be synced' do
       create(:geo_project_registry, repository_retry_at: Date.yesterday, wiki_retry_at: Date.yesterday)

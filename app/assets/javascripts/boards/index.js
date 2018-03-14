@@ -1,18 +1,20 @@
 /* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren */
 
+import $ from 'jquery';
 import _ from 'underscore';
 import Vue from 'vue';
 
 import Flash from '~/flash';
 import { __ } from '~/locale';
+import '~/vue_shared/models/label';
 
 import FilteredSearchBoards from './filtered_search_boards';
 import eventHub from './eventhub';
 import sidebarEventHub from '~/sidebar/event_hub'; // eslint-disable-line import/first
 import './models/issue';
-import './models/label';
 import './models/list';
 import './models/milestone';
+import './models/project';
 import './models/assignee';
 import './stores/boards_store';
 import './stores/modal_store';

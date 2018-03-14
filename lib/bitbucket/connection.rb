@@ -57,7 +57,7 @@ module Bitbucket
     end
 
     def provider
-      Gitlab::OAuth::Provider.config_for('bitbucket')
+      Gitlab::Auth::OAuth::Provider.config_for('bitbucket')
     end
 
     def options

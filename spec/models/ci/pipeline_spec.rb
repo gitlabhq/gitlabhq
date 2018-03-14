@@ -248,8 +248,9 @@ describe Ci::Pipeline, :mailer do
     end
 
     describe '#stage_seeds' do
+      let(:project) { create(:project, :repository) }
       let(:pipeline) do
-        build(:ci_pipeline, config: { rspec: { script: 'rake' } })
+        build(:ci_pipeline, project: project, config: { rspec: { script: 'rake' } })
       end
 
       it 'returns preseeded stage seeds object' do
@@ -259,7 +260,8 @@ describe Ci::Pipeline, :mailer do
     end
 
     describe '#seeds_size' do
-      let(:pipeline) { build(:ci_pipeline_with_one_job) }
+      let(:project) { create(:project, :repository) }
+      let(:pipeline) { build(:ci_pipeline_with_one_job, project: project) }
 
       it 'returns number of jobs in stage seeds' do
         expect(pipeline.seeds_size).to eq 1
@@ -597,7 +599,8 @@ describe Ci::Pipeline, :mailer do
 
   describe '#has_stage_seeds?' do
     context 'when pipeline has stage seeds' do
-      subject { build(:ci_pipeline_with_one_job) }
+      let(:project) { create(:project, :repository) }
+      subject { build(:ci_pipeline_with_one_job, project: project) }
 
       it { is_expected.to have_stage_seeds }
     end
@@ -1430,8 +1433,9 @@ describe Ci::Pipeline, :mailer do
     end
 
     context 'when pipeline does not have errors' do
+      let(:project) { create(:project, :repository) }
       let(:pipeline) do
-        create(:ci_pipeline, config: { rspec: { script: 'rake test' } })
+        create(:ci_pipeline, project: project, config: { rspec: { script: 'rake test' } })
       end
 
       it 'does not contain yaml errors' do

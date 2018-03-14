@@ -1,0 +1,12 @@
+- @body_class = 'ide'
+- page_title 'IDE'
+
+- content_for :page_specific_javascripts do
+  = webpack_bundle_tag 'ide', force_same_domain: true
+
+#ide.ide-loading{ data: {"empty-state-svg-path" => image_path('illustrations/multi_file_editor_empty.svg'),
+  "no-changes-state-svg-path" => image_path('illustrations/multi-editor_no_changes_empty.svg'),
+  "committed-state-svg-path" => image_path('illustrations/multi-editor_all_changes_committed_empty.svg') } }
+  .text-center
+    = icon('spinner spin 2x')
+    %h2.clgray= _('Loading the GitLab IDE...')

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Vue from 'vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 

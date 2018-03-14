@@ -2,6 +2,7 @@
 /* global DiscussionMixins */
 /* global CommentsStore */
 
+import $ from 'jquery';
 import Vue from 'vue';
 
 import '../mixins/discussion';

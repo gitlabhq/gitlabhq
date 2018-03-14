@@ -15,8 +15,8 @@ describe MergeRequests::BuildService do
   let(:target_branch) { 'master' }
   let(:merge_request) { service.execute }
   let(:compare) { double(:compare, commits: commits) }
-  let(:commit_1) { double(:commit_1, safe_message: "Initial commit\n\nCreate the app") }
-  let(:commit_2) { double(:commit_2, safe_message: 'This is a bad commit message!') }
+  let(:commit_1) { double(:commit_1, sha: 'f00ba7', safe_message: "Initial commit\n\nCreate the app") }
+  let(:commit_2) { double(:commit_2, sha: 'f00ba7', safe_message: 'This is a bad commit message!') }
   let(:commits) { nil }
 
   let(:service) do

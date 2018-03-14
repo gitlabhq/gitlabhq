@@ -7,9 +7,6 @@
 
 - can_update_issue = can?(current_user, :update_issue, @issue)
 - can_report_spam = @issue.submittable_as_spam_by?(current_user)
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag('common_vue')
-  = webpack_bundle_tag('issuable')
 
 .detail-page-header
   .detail-page-header-body
@@ -58,6 +55,7 @@
 
 .issue-details.issuable-details
   .detail-page-description.content-block
+    -# haml-lint:disable InlineJavaScript
     %script#js-issuable-app-initial-data{ type: "application/json" }= issuable_initial_data(@issue).to_json
     #js-issuable-app
       %h2.title= markdown_field(@issue, :title)

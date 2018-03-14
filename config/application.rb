@@ -28,6 +28,7 @@ module Gitlab
     # This is a nice reference article on autoloading/eager loading:
     # http://blog.arkency.com/2014/11/dont-forget-about-eager-load-when-extending-autoload
     config.eager_load_paths.push(*%W[#{config.root}/lib
+                                     #{config.root}/app/models/badges
                                      #{config.root}/app/models/hooks
                                      #{config.root}/app/models/members
                                      #{config.root}/app/models/project_services
@@ -83,7 +84,6 @@ module Gitlab
     # - Webhook URLs (:hook)
     # - Sentry DSN (:sentry_dsn)
     # - Deploy keys (:key)
-    # - Secret variable values (:value)
     config.filter_parameters += [/token$/, /password/, /secret/]
     config.filter_parameters += %i(
       certificate
@@ -95,7 +95,6 @@ module Gitlab
       sentry_dsn
       trace
       variables
-      value
     )
 
     # Enable escaping HTML in JSON.
@@ -129,6 +128,12 @@ module Gitlab
     config.assets.precompile << "lib/ace.js"
     config.assets.precompile << "test.css"
     config.assets.precompile << "locale/**/app.js"
+
+    # Import gitlab-svgs directly from vendored directory
+    config.assets.paths << "#{config.root}/node_modules/@gitlab-org/gitlab-svgs/dist"
+    config.assets.precompile << "icons.svg"
+    config.assets.precompile << "icons.json"
+    config.assets.precompile << "illustrations/*.svg"
 
     ## EE-specific assets config START
     %w[images javascripts stylesheets].each do |path|
@@ -220,5 +225,11 @@ module Gitlab
       Gitlab::Routing.add_helpers(project_url_helpers)
       Gitlab::Routing.add_helpers(MilestonesRoutingHelper)
     end
+  end
+
+  # This method is used for smooth upgrading from the current Rails 4.x to Rails 5.0.
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/14286
+  def self.rails5?
+    ENV["RAILS5"].in?(%w[1 true])
   end
 end

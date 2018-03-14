@@ -385,15 +385,27 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_start_sha
-    diff_start_commit.try(:sha)
+    if persisted?
+      merge_request_diff.start_commit_sha
+    else
+      target_branch_head.try(:sha)
+    end
   end
 
   def diff_base_sha
-    diff_base_commit.try(:sha)
+    if persisted?
+      merge_request_diff.base_commit_sha
+    else
+      branch_merge_base_commit.try(:sha)
+    end
   end
 
   def diff_head_sha
-    diff_head_commit.try(:sha)
+    if persisted?
+      merge_request_diff.head_commit_sha
+    else
+      source_branch_head.try(:sha)
+    end
   end
 
   # When importing a pull request from GitHub, the old and new branches may no
@@ -673,7 +685,7 @@ class MergeRequest < ActiveRecord::Base
     !ProtectedBranch.protected?(source_project, source_branch) &&
       !source_project.root_ref?(source_branch) &&
       Ability.allowed?(current_user, :push_code, source_project) &&
-      diff_head_commit == source_branch_head
+      diff_head_sha == source_branch_head.try(:sha)
   end
 
   def should_remove_source_branch?
@@ -880,7 +892,7 @@ class MergeRequest < ActiveRecord::Base
 
   def can_be_merged_by?(user)
     access = ::Gitlab::UserAccess.new(user, project: project)
-    access.can_push_to_branch?(target_branch) || access.can_merge_to_branch?(target_branch)
+    access.can_update_branch?(target_branch)
   end
 
   def can_be_merged_via_command_line_by?(user)
@@ -1105,5 +1117,23 @@ class MergeRequest < ActiveRecord::Base
     return false if project.team.max_member_access(author_id) > Gitlab::Access::GUEST
 
     project.merge_requests.merged.where(author_id: author_id).empty?
+  end
+
+  def allow_maintainer_to_push
+    maintainer_push_possible? && super
+  end
+
+  alias_method :allow_maintainer_to_push?, :allow_maintainer_to_push
+
+  def maintainer_push_possible?
+    source_project.present? && for_fork? &&
+      target_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE &&
+      source_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE &&
+      !ProtectedBranch.protected?(source_project, source_branch)
+  end
+
+  def can_allow_maintainer_to_push?(user)
+    maintainer_push_possible? &&
+      Ability.allowed?(user, :push_code, source_project)
   end
 end

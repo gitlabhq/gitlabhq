@@ -14,6 +14,8 @@ describe Project do
     it { is_expected.to delegate_method(:shared_runners_minutes_used?).to(:shared_runners_limit_namespace) }
 
     it { is_expected.to have_one(:mirror_data).class_name('ProjectMirrorData') }
+    it { is_expected.to have_one(:repository_state).class_name('ProjectRepositoryState').inverse_of(:project) }
+
     it { is_expected.to have_many(:path_locks) }
     it { is_expected.to have_many(:sourced_pipelines) }
     it { is_expected.to have_many(:source_pipelines) }
@@ -99,6 +101,29 @@ describe Project do
           expect(described_class.mirrors_to_sync(timestamp)).to be_empty
         end
       end
+    end
+  end
+
+  describe '#ensure_external_webhook_token' do
+    let(:project) { create(:project, :repository) }
+
+    it "sets external_webhook_token when it's missing" do
+      project.update_attribute(:external_webhook_token, nil)
+      expect(project.external_webhook_token).to be_blank
+
+      project.ensure_external_webhook_token
+      expect(project.external_webhook_token).to be_present
+    end
+  end
+
+  describe 'hard failing a mirror' do
+    it 'sends a notification' do
+      project = create(:project, :mirror, :import_started)
+      project.mirror_data.update_attributes(retry_count: Gitlab::Mirror::MAX_RETRY)
+
+      expect_any_instance_of(EE::NotificationService).to receive(:mirror_was_hard_failed).with(project)
+
+      project.import_fail
     end
   end
 
@@ -325,6 +350,16 @@ describe Project do
 
         project.fetch_mirror
       end
+    end
+  end
+
+  describe 'updating import_url' do
+    it 'removes previous remote' do
+      project = create(:project, :repository, :mirror)
+
+      expect(RepositoryRemoveRemoteWorker).to receive(:perform_async).with(project.id, ::Repository::MIRROR_REMOTE).and_call_original
+
+      project.update_attributes(import_url: "http://test.com")
     end
   end
 
@@ -1074,7 +1109,7 @@ describe Project do
   describe '#disabled_services' do
     let(:namespace) { create(:group, :private) }
     let(:project) { create(:project, :private, namespace: namespace) }
-    let(:disabled_services) { %w(jenkins jenkins_deprecated) }
+    let(:disabled_services) { %w(jenkins jenkins_deprecated github) }
 
     context 'without a license key' do
       before do
@@ -1085,6 +1120,10 @@ describe Project do
     end
 
     context 'with a license key' do
+      before do
+        allow_any_instance_of(License).to receive(:plan).and_return(License::PREMIUM_PLAN)
+      end
+
       context 'when checking of namespace plan is enabled' do
         before do
           stub_application_setting_on_object(project, should_check_namespace_plan: true)
@@ -1095,7 +1134,7 @@ describe Project do
         end
 
         context 'and namespace has a plan' do
-          let(:namespace) { create(:group, :private, plan: :bronze_plan) }
+          let(:namespace) { create(:group, :private, plan: :silver_plan) }
 
           it_behaves_like 'project without disabled services'
         end
@@ -1252,6 +1291,14 @@ describe Project do
 
       expect(project.external_authorization_classification_label)
         .to eq('hello')
+    end
+
+    it 'does not break when not stubbing the license check' do
+      enable_external_authorization_service
+      enable_namespace_license_check!
+      project = build(:project)
+
+      expect { project.external_authorization_classification_label }.not_to raise_error
     end
   end
 

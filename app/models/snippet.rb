@@ -169,5 +169,9 @@ class Snippet < ActiveRecord::Base
     def search_code(query)
       fuzzy_search(query, [:content])
     end
+
+    def parent_class
+      ::Project
+    end
   end
 end

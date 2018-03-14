@@ -1,4 +1,4 @@
-import jQuery from 'jquery';
+import $ from 'jquery';
 import Cookies from 'js-cookie';
 import axios from './axios_utils';
 import { getLocationHash } from './url_utility';
@@ -142,7 +142,7 @@ export const isMetaClick = e => e.metaKey || e.ctrlKey || e.which === 2;
 
 export const scrollToElement = (element) => {
   let $el = element;
-  if (!(element instanceof jQuery)) {
+  if (!(element instanceof $)) {
     $el = $(element);
   }
   const top = $el.offset().top;
@@ -301,6 +301,14 @@ export const parseQueryStringIntoObject = (query = '') => {
       return acc;
     }, {});
 };
+
+/**
+ * Converts object with key-value pairs
+ * into query-param string
+ *
+ * @param {Object} params
+ */
+export const objectToQueryString = (params = {}) => Object.keys(params).map(param => `${param}=${params[param]}`).join('&');
 
 export const buildUrlWithCurrentLocation = param => (param ? `${window.location.pathname}${param}` : window.location.pathname);
 

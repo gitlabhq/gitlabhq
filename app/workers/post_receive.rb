@@ -56,7 +56,7 @@ class PostReceive
   end
 
   def process_wiki_changes(post_received)
-    # Nothing defined here yet.
+    post_received.project.touch(:last_activity_at, :last_repository_updated_at)
   end
 
   def log(message)

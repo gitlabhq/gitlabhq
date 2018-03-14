@@ -13,7 +13,7 @@ feature 'Edit group settings' do
     context 'with LDAP enabled' do
       before do
         allow_any_instance_of(Group).to receive(:ldap_synced?).and_return(true)
-        allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
+        allow(Gitlab::Auth::LDAP::Config).to receive(:enabled?).and_return(true)
       end
 
       scenario 'is able to navigate to LDAP group section' do

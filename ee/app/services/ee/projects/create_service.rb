@@ -9,6 +9,7 @@ module EE
         mirror = params.delete(:mirror)
         mirror_user_id = params.delete(:mirror_user_id)
         mirror_trigger_builds = params.delete(:mirror_trigger_builds)
+        ci_cd_only = ::Gitlab::Utils.to_boolean(params.delete(:ci_cd_only))
 
         project = super do |project|
           # Repository size limit comes as MB from the view
@@ -22,6 +23,8 @@ module EE
         end
 
         if project&.persisted?
+          setup_ci_cd_project if ci_cd_only
+
           log_geo_event(project)
           log_audit_event(project)
         end
@@ -53,6 +56,12 @@ module EE
           push_rule = predefined_push_rule.dup.tap { |gh| gh.is_sample = false }
           project.push_rule = push_rule
         end
+      end
+
+      def setup_ci_cd_project
+        return unless ::License.feature_available?(:ci_cd_projects)
+
+        ::CiCd::SetupProject.new(project, current_user).execute
       end
 
       def log_audit_event(project)

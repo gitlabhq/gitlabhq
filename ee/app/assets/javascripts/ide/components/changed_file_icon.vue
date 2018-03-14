@@ -26,6 +26,6 @@
   <icon
     :name="changedIcon"
     :size="12"
-    :css-classes="`multi-file-changed-icon ${changedIconClass}`"
+    :css-classes="`ide-file-changed-icon ${changedIconClass}`"
   />
 </template>

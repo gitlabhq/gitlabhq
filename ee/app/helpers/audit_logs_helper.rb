@@ -18,7 +18,7 @@ module AuditLogsHelper
 
   def admin_project_dropdown_label(default_label)
     if @entity
-      @entity.name_with_namespace
+      @entity.full_name
     else
       default_label
     end

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Flash from '../../flash';
 import { handleLocationHash } from '../../lib/utils/common_utils';
 import axios from '../../lib/utils/axios_utils';
@@ -5,6 +6,7 @@ import axios from '../../lib/utils/axios_utils';
 export default class BlobViewer {
   constructor() {
     BlobViewer.initAuxiliaryViewer();
+    BlobViewer.initRichViewer();
 
     this.initMainViewers();
   }
@@ -14,6 +16,38 @@ export default class BlobViewer {
     if (!auxiliaryViewer) return;
 
     BlobViewer.loadViewer(auxiliaryViewer);
+  }
+
+  static initRichViewer() {
+    const viewer = document.querySelector('.blob-viewer[data-type="rich"]');
+    if (!viewer || !viewer.dataset.richType) return;
+
+    const initViewer = promise => promise
+      .then(module => module.default(viewer))
+      .catch((error) => {
+        Flash('Error loading file viewer.');
+        throw error;
+      });
+
+    switch (viewer.dataset.richType) {
+      case 'balsamiq':
+        initViewer(import(/* webpackChunkName: 'balsamiq_viewer' */ '../balsamiq_viewer'));
+        break;
+      case 'notebook':
+        initViewer(import(/* webpackChunkName: 'notebook_viewer' */ '../notebook_viewer'));
+        break;
+      case 'pdf':
+        initViewer(import(/* webpackChunkName: 'pdf_viewer' */ '../pdf_viewer'));
+        break;
+      case 'sketch':
+        initViewer(import(/* webpackChunkName: 'sketch_viewer' */ '../sketch_viewer'));
+        break;
+      case 'stl':
+        initViewer(import(/* webpackChunkName: 'stl_viewer' */ '../stl_viewer'));
+        break;
+      default:
+        break;
+    }
   }
 
   initMainViewers() {

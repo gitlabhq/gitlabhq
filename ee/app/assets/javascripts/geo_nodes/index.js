@@ -10,15 +10,14 @@ import geoNodesApp from './components/app.vue';
 
 Vue.use(Translate);
 
-document.addEventListener('DOMContentLoaded', () => {
+export default () => {
   const el = document.getElementById('js-geo-nodes');
 
   if (!el) {
-    return;
+    return false;
   }
 
-  // eslint-disable-next-line no-new
-  new Vue({
+  return new Vue({
     el,
     components: {
       geoNodesApp,
@@ -28,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const nodeActionsAllowed = convertPermissionToBoolean(dataset.nodeActionsAllowed);
       const nodeEditAllowed = convertPermissionToBoolean(dataset.nodeEditAllowed);
       const store = new GeoNodesStore(dataset.primaryVersion, dataset.primaryRevision);
-      const service = new GeoNodesService(dataset.nodeDetailsPath);
+      const service = new GeoNodesService();
 
       return {
         store,
@@ -48,4 +47,4 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     },
   });
-});
+};
