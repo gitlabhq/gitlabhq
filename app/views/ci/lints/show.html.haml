@@ -1,5 +1,9 @@
-.ci-linter-container
-  .ci-linter-inner
-    = image_tag 'illustrations/feature_moved.svg'
-    %h3 GitLab CI Linter has been moved
-    %p.ci-linter-description To validate your GitLab CI configurations, go to 'CI/CD → Pipelines' inside your project, and click on the 'CI Lint' button.
+.row.empty-state
+  .col-xs-12
+    .svg-content
+      = image_tag 'illustrations/feature_moved.svg'
+  .col-xs-12
+    .text-content.text-center
+      %h4= _("GitLab CI Linter has been moved")
+      %p.ci-linter-description
+        = _("To validate your GitLab CI configurations, go to 'CI/CD → Pipelines' inside your project, and click on the 'CI Lint' button.")
