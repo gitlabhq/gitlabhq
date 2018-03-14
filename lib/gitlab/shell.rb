@@ -69,9 +69,9 @@ module Gitlab
     # name - project disk path
     #
     # Ex.
-    #   add_repository("/path/to/storage", "gitlab/gitlab-ci")
+    #   create_repository("/path/to/storage", "gitlab/gitlab-ci")
     #
-    def add_repository(storage, name)
+    def create_repository(storage, name)
       relative_path = name.dup
       relative_path << '.git' unless relative_path.end_with?('.git')
 
