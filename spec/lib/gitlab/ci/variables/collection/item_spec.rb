@@ -14,12 +14,11 @@ describe Gitlab::Ci::Variables::Collection::Item do
     end
 
     it 'supports using an active record resource' do
-      resource = described_class.fabricate(create(:ci_variable))
+      variable = create(:ci_variable, key: 'CI_VAR', value: '123')
+      resource = described_class.fabricate(variable)
 
       expect(resource).to be_a(described_class)
-      expect(resource).to eq(key: 'VARIABLE_1',
-                             value: 'VARIABLE_VALUE',
-                             public: false)
+      expect(resource).to eq(key: 'CI_VAR', value: '123', public: false)
     end
 
     it 'supports using another collection item' do
