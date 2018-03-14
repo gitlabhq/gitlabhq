@@ -171,7 +171,7 @@ describe Ci::Pipeline, :mailer do
     subject { pipeline.predefined_variables }
 
     it 'includes all predefined variables in a valid order' do
-      keys = subject.map { |variable| variable.fetch(:key) }
+      keys = subject.map { |variable| variable[:key] }
 
       expect(keys).to eq %w[CI_PIPELINE_ID CI_CONFIG_PATH CI_PIPELINE_SOURCE]
     end
