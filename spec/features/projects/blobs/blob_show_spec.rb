@@ -511,18 +511,27 @@ feature 'File blob', :js do
   end
 
   context 'realtime pipelines' do
-    let(:user) { create(:user) }
-    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'feature', sha: project.commit.id, user: user, status: :success) }
-
     before do
-      project.add_master(user)
-      sign_in(user)
-      visit_blob('files/ruby/popen.rb', ref: 'feature')
+      Files::CreateService.new(
+        project,
+        project.creator,
+        start_branch: 'feature',
+        branch_name: 'feature',
+        commit_message: "Add ruby file",
+        file_path: 'files/ruby/test.rb',
+        file_content: "# Awesome content"
+      ).execute
+
+      create(:ci_pipeline, status: 'running', project: project, ref: 'feature', sha: project.commit('feature').sha)
+      visit_blob('files/ruby/test.rb', ref: 'feature')
     end
-    
+
     it 'should show the realtime pipeline status' do
-      wait_for_requests
-      expect(find('.js-commit-pipeline-status')).not_to be nil
+      page.within('.commit-actions') do
+        expect(page).to have_css('.ci-status-icon')
+        expect(page).to have_css('.ci-status-icon-running')
+        expect(page).to have_css('.js-ci-status-icon-running')
+      end
     end
   end
 end
