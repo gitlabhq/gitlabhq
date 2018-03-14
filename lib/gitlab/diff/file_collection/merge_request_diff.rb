@@ -29,6 +29,14 @@ module Gitlab
           @merge_request_diff.real_size
         end
 
+        def clear_cache!
+          Rails.cache.delete(cache_key)
+        end
+
+        def cache_key
+          [@merge_request_diff, 'highlighted-diff-files', diff_options]
+        end
+
         private
 
         def highlight_diff_file_from_cache!(diff_file, cache_diff_lines)
@@ -69,10 +77,6 @@ module Gitlab
 
         def cacheable?(diff_file)
           @merge_request_diff.present? && diff_file.text? && diff_file.diffable?
-        end
-
-        def cache_key
-          [@merge_request_diff, 'highlighted-diff-files', diff_options]
         end
       end
     end
