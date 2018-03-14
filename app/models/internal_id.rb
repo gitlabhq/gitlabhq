@@ -67,16 +67,17 @@ class InternalId < ActiveRecord::Base
     # usage: Symbol to define the usage of the internal id, see InternalId.usages
     # init: Block that gets called to initialize InternalId record if not present
     attr_reader :subject, :scope, :init, :scope_attrs, :usage
+
     def initialize(subject, scope, usage, init)
       @subject = subject
       @scope = scope
       @init = init
       @usage = usage
 
-      raise 'scope is not well-defined, need at least one column for scope (given: 0)' if scope.empty?
+      raise ArgumentError, 'scope is not well-defined, need at least one column for scope (given: 0)' if scope.empty?
 
       unless InternalId.usages.keys.include?(usage.to_s)
-        raise "Usage '#{usage}' is unknown. Supported values are #{InternalId.usages.keys} from InternalId.usages"
+        raise ArgumentError, "Usage '#{usage}' is unknown. Supported values are #{InternalId.usages.keys} from InternalId.usages"
       end
     end
 

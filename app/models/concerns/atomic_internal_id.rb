@@ -24,24 +24,21 @@
 module AtomicInternalId
   extend ActiveSupport::Concern
 
-  included do
-    class << self
-      def has_internal_id(on, scope:, usage: nil, init:) # rubocop:disable Naming/PredicateName
-        before_validation(on: :create) do
-          if self.public_send(on).blank? # rubocop:disable GitlabSecurity/PublicSend
-
-            scope_attrs = [scope].flatten.compact.each_with_object({}) do |e, h|
-              h[e] = self.public_send(e) # rubocop:disable GitlabSecurity/PublicSend
-            end
-
-            usage = (usage || self.class.name.tableize).to_sym
-            new_iid = InternalId.generate_next(self, scope_attrs, usage, init)
-            self.public_send("#{on}=", new_iid) # rubocop:disable GitlabSecurity/PublicSend
+  module ClassMethods
+    def has_internal_id(on, scope:, usage: nil, init:) # rubocop:disable Naming/PredicateName
+      before_validation(on: :create) do
+        if self.public_send(on).blank? # rubocop:disable GitlabSecurity/PublicSend
+          scope_attrs = [scope].flatten.compact.each_with_object({}) do |e, h|
+            h[e] = self.public_send(e) # rubocop:disable GitlabSecurity/PublicSend
           end
-        end
 
-        validates on, presence: true, numericality: true
+          usage = (usage || self.class.table_name).to_sym
+          new_iid = InternalId.generate_next(self, scope_attrs, usage, init)
+          self.public_send("#{on}=", new_iid) # rubocop:disable GitlabSecurity/PublicSend
+        end
       end
+
+      validates on, presence: true, numericality: true
     end
   end
 
