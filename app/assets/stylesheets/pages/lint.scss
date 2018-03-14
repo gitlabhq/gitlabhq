@@ -1,16 +1,3 @@
-.ci-linter-container {
-  align-items: center;
-  display: flex;
-  height: calc(100vh - #{$header-height + $performance-bar-height});
-  justify-content: center;
-  text-align: center;
-}
-
-.ci-linter-inner {
-  width: auto;
-}
-
 .ci-linter-description {
   color: $common-gray-light;
-  width: 500px;
 }
