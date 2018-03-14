@@ -35,6 +35,11 @@ describe Gitlab::Ci::Variables::Collection do
 
       expect(subject).to be_one
     end
+
+    it 'returns self' do
+      expect(subject.append(key: 'VAR', value: 'test'))
+        .to eq subject
+    end
   end
 
   describe '#concat' do
@@ -59,6 +64,11 @@ describe Gitlab::Ci::Variables::Collection do
       expect(collection).to include(key: 'VAR_1', value: '1', public: true)
       expect(collection).to include(key: 'VAR_2', value: '2', public: true)
       expect(collection).to include(key: 'VAR_3', value: '3', public: true)
+    end
+
+    it 'returns self' do
+      expect(subject.concat([key: 'VAR', value: 'test']))
+        .to eq subject
     end
   end
 

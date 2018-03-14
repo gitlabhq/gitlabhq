@@ -11,11 +11,11 @@ module Gitlab
         end
 
         def append(resource)
-          @variables.append(Collection::Item.fabricate(resource))
+          tap { @variables.append(Collection::Item.fabricate(resource)) }
         end
 
         def concat(resources)
-          resources.each { |variable| self.append(variable) }
+          tap { resources.each { |variable| self.append(variable) } }
         end
 
         def each
