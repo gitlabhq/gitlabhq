@@ -534,17 +534,5 @@ describe Projects::JobsController do
         expect(subject).to redirect_to(job.job_artifacts_trace.file.url)
       end
     end
-
-    context 'when the trace artifact is in ObjectStorage' do
-      let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
-
-      before do
-        allow_any_instance_of(JobArtifactUploader).to receive(:file_storage?) { false }
-      end
-
-      it 'redirect to the trace file url' do
-        expect(subject).to redirect_to(job.job_artifacts_trace.file.url)
-      end
-    end
   end
 end
