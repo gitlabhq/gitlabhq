@@ -10,7 +10,7 @@ module Gitlab
 
       def exists?
         @client.get_namespace(name)
-      rescue ::KubeException => ke
+      rescue ::Kubeclient::HttpError => ke
         raise ke unless ke.error_code == 404
 
         false
