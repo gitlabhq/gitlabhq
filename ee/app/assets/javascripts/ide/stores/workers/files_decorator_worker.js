@@ -4,7 +4,7 @@ import {
 } from '../utils';
 
 self.addEventListener('message', (e) => {
-  const { data, projectId, branchId, tempFile = false } = e.data;
+  const { data, projectId, branchId, tempFile = false, content = '', base64 = false } = e.data;
 
   const treeList = [];
   let file;
@@ -65,6 +65,8 @@ self.addEventListener('message', (e) => {
         parentTreeUrl: fileFolder ? fileFolder.url : `/${projectId}/blob/${branchId}`,
         tempFile,
         changed: tempFile,
+        content,
+        base64,
       });
 
       Object.assign(acc, {

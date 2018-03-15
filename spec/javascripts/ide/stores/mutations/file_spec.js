@@ -124,20 +124,6 @@ describe('Multi-file store file mutations', () => {
     });
   });
 
-  describe('CREATE_TMP_FILE', () => {
-    it('adds file into parent tree', () => {
-      const f = file('tmpFile');
-
-      mutations.CREATE_TMP_FILE(localState, {
-        file: f,
-        parent: localFile,
-      });
-
-      expect(localFile.tree.length).toBe(1);
-      expect(localFile.tree[0].name).toBe(f.name);
-    });
-  });
-
   describe('ADD_FILE_TO_CHANGED', () => {
     it('adds file into changed files array', () => {
       const f = file();

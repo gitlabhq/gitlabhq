@@ -1,22 +1,14 @@
 <script>
-  import { mapActions, mapState } from 'vuex';
-
   export default {
     props: {
       branchId: {
         type: String,
         required: true,
       },
-      parent: {
-        type: Object,
-        default: null,
+      path: {
+        type: String,
+        default: '',
       },
-    },
-    computed: {
-      ...mapState([
-        'trees',
-        'currentProjectId',
-      ]),
     },
     mounted() {
       this.$refs.fileUpload.addEventListener('change', this.openFile);
@@ -25,9 +17,6 @@
       this.$refs.fileUpload.removeEventListener('change', this.openFile);
     },
     methods: {
-      ...mapActions([
-        'createTempEntry',
-      ]),
       createFile(target, file, isText) {
         const { name } = file;
         let { result } = target;
@@ -36,11 +25,9 @@
           result = result.split('base64,')[1];
         }
 
-        this.createTempEntry({
-          name,
-          projectId: this.currentProjectId,
+        this.$emit('create', {
+          name: `${(this.path ? `${this.path}/` : '')}${name}`,
           branchId: this.branchId,
-          parent: this.parent,
           type: 'blob',
           content: result,
           base64: !isText,

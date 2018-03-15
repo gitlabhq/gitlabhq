@@ -31,7 +31,7 @@ export const handleTreeEntryAction = ({ commit, dispatch }, row) => {
 
 export const createTempTree = (
   { state, commit, dispatch },
-  { projectId, branchId, name },
+  { branchId, name },
 ) => new Promise((resolve) => {
   const dirName = name.replace(new RegExp(`^${state.path}/`), '');
   const worker = new FilesDecoratorWorker();
@@ -39,9 +39,9 @@ export const createTempTree = (
   worker.addEventListener('message', ({ data }) => {
     worker.terminate();
 
-    commit(types.CREATE_TMP_TREE, {
+    commit(types.CREATE_TMP_ENTRY, {
       data,
-      projectId,
+      projectId: state.currentProjectId,
       branchId,
     });
 
@@ -50,7 +50,7 @@ export const createTempTree = (
 
   worker.postMessage({
     data: [`${dirName}/`],
-    projectId,
+    projectId: state.currentProjectId,
     branchId,
     tempFile: true,
   });

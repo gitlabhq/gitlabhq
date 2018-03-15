@@ -105,14 +105,12 @@ export const setEditorPosition = ({ getters, commit }, { editorRow, editorColumn
   }
 };
 
-export const createTempFile = ({ state, commit, dispatch }, { projectId, branchId, parent, name, content = '', base64 = '' }) =>
+export const createTempFile = ({ state, commit, dispatch }, { branchId, name, content = '', base64 = '' }) =>
   new Promise((resolve) => {
     const worker = new FilesDecoratorWorker();
-    const path = parent.path !== undefined ? `${parent.path}/` : '';
-    const entryPath = path ? `${path}/${name}` : name;
 
-    if (state.entries[entryPath]) {
-      return flash(`The name "${name}" is already taken in this directory.`, 'alert', document, null, false, true);
+    if (state.entries[name]) {
+      return flash(`The name "${name.split('/').pop()}" is already taken in this directory.`, 'alert', document, null, false, true);
     }
 
     worker.addEventListener('message', ({ data }) => {
@@ -120,9 +118,9 @@ export const createTempFile = ({ state, commit, dispatch }, { projectId, branchI
 
       worker.terminate();
 
-      commit(types.CREATE_TMP_FILE, {
+      commit(types.CREATE_TMP_ENTRY, {
         data,
-        projectId,
+        projectId: state.currentProjectId,
         branchId,
       });
       commit(types.TOGGLE_FILE_OPEN, file.path);
@@ -133,8 +131,8 @@ export const createTempFile = ({ state, commit, dispatch }, { projectId, branchI
     });
 
     worker.postMessage({
-      data: [entryPath],
-      projectId,
+      data: [name],
+      projectId: state.currentProjectId,
       branchId,
       tempFile: true,
       content,

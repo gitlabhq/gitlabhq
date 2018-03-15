@@ -37,20 +37,16 @@ export const setResizingStatus = ({ commit }, resizing) => {
 
 export const createTempEntry = (
   { state, dispatch },
-  { projectId, branchId, parent, name, type, content = '', base64 = false },
+  { branchId, name, type, content = '', base64 = false },
 ) => {
-  const selectedParent = parent || state.trees[`${projectId}/${branchId}`];
   if (type === 'tree') {
     dispatch('createTempTree', {
-      projectId,
       branchId,
       name,
     });
   } else if (type === 'blob') {
     dispatch('createTempFile', {
-      projectId,
       branchId,
-      parent: selectedParent,
       name,
       base64,
       content,

@@ -47,20 +47,6 @@ describe('Multi-file store tree mutations', () => {
     });
   });
 
-  describe('CREATE_TMP_TREE', () => {
-    it('adds tree into parent tree', () => {
-      const tmpEntry = file('tmpTree');
-
-      mutations.CREATE_TMP_TREE(localState, {
-        tmpEntry,
-        parent: localTree,
-      });
-
-      expect(localTree.tree.length).toBe(1);
-      expect(localTree.tree[0].name).toBe(tmpEntry.name);
-    });
-  });
-
   describe('REMOVE_ALL_CHANGES_FILES', () => {
     it('removes all files from changedFiles state', () => {
       localState.changedFiles.push(file('REMOVE_ALL_CHANGES_FILES'));

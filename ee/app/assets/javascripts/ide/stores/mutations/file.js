@@ -65,34 +65,6 @@ export default {
       changed: false,
     });
   },
-  [types.CREATE_TMP_FILE](state, { data, projectId, branchId }) {
-    Object.keys(data.entries).forEach((key) => {
-      const entry = data.entries[key];
-
-      Object.assign(state.entries, {
-        [key]: entry,
-      });
-    });
-
-    Object.assign(state.trees[`${projectId}/${branchId}`], {
-      tree: state.trees[`${projectId}/${branchId}`].tree.concat(data.treeList),
-    });
-    // Object.assign(state.entries, {
-    //   [file.path]: file,
-    // });
-
-    // if (parent.path) {
-    //   // Add it as a child of the parent
-    //   Object.assign(state.entries[parent.path], {
-    //     tree: parent.tree.concat(file),
-    //   });
-    // } else {
-    //   // Add it the root
-    //   Object.assign(parent, {
-    //     tree: parent.tree.concat(file),
-    //   });
-    // }
-  },
   [types.ADD_FILE_TO_CHANGED](state, path) {
     Object.assign(state, {
       changedFiles: state.changedFiles.concat(state.entries[path]),

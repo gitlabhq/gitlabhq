@@ -101,7 +101,6 @@
           :project-id="file.projectId"
           :branch="file.branchId"
           :path="file.path"
-          :parent="file"
         />
         <changed-file-icon
           :file="file"

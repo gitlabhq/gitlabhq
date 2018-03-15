@@ -1,4 +1,5 @@
 <script>
+  import { mapActions } from 'vuex';
   import icon from '~/vue_shared/components/icon.vue';
   import newModal from './modal.vue';
   import upload from './upload.vue';
@@ -18,10 +19,6 @@
         type: String,
         required: true,
       },
-      parent: {
-        type: Object,
-        default: null,
-      },
     },
     data() {
       return {
@@ -31,6 +28,9 @@
       };
     },
     methods: {
+      ...mapActions([
+        'createTempEntry',
+      ]),
       createNewItem(type) {
         this.modalType = type;
         this.openModal = true;
@@ -85,7 +85,7 @@
           <upload
             :branch-id="branch"
             :path="path"
-            :parent="parent"
+            @create="createTempEntry"
           />
         </li>
         <li>
@@ -104,8 +104,8 @@
       :type="modalType"
       :branch-id="branch"
       :path="path"
-      :parent="parent"
       @hide="hideModal"
+      @create="createTempEntry"
     />
   </div>
 </template>

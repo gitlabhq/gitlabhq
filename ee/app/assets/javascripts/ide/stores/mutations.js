@@ -53,6 +53,35 @@ export default {
       entries,
     });
   },
+  [types.CREATE_TMP_ENTRY](state, { data, projectId, branchId }) {
+    Object.keys(data.entries).reduce((acc, key) => {
+      const entry = data.entries[key];
+      const foundEntry = state.entries[key];
+
+      if (!foundEntry) {
+        Object.assign(state.entries, {
+          [key]: entry,
+        });
+      } else {
+        const tree = entry.tree.filter(f =>
+          foundEntry.tree.find(e => e.path === f.path) === undefined,
+        );
+        Object.assign(foundEntry, {
+          tree: foundEntry.tree.concat(tree),
+        });
+      }
+
+      return acc.concat(key);
+    }, []);
+
+    const foundEntry = state.trees[`${projectId}/${branchId}`].tree.find(e => e.path === data.treeList[0].path);
+
+    if (!foundEntry) {
+      Object.assign(state.trees[`${projectId}/${branchId}`], {
+        tree: state.trees[`${projectId}/${branchId}`].tree.concat(data.treeList),
+      });
+    }
+  },
   ...projectMutations,
   ...fileMutations,
   ...treeMutations,
