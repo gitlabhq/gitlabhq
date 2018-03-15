@@ -94,12 +94,10 @@ module Projects
       raise FailedToExtractError, 'missing artifacts metadata' unless build.artifacts_metadata?
 
       # Calculate page size after extract
-      build.artifacts_metadata.use_file do |metadata_path|
-        public_entry = Gitlab::Ci::Build::Artifacts::Metadata.new(metadata_path, SITE_PATH, recursive: true).to_entry
+      public_entry = build.artifacts_metadata_entry(SITE_PATH, recursive: true)
 
-        if public_entry.total_size > max_size
-          raise FailedToExtractError, "artifacts for pages are too large: #{public_entry.total_size}"
-        end
+      if public_entry.total_size > max_size
+        raise FailedToExtractError, "artifacts for pages are too large: #{public_entry.total_size}"
       end
 
       # Requires UnZip at least 6.00 Info-ZIP.

@@ -8,40 +8,34 @@ class Projects::ArtifactsController < Projects::ApplicationController
   before_action :authorize_update_build!, only: [:keep]
   before_action :extract_ref_name_and_path
   before_action :validate_artifacts!
+  before_action :entry, only: [:file]
 
   def download
     send_upload(artifacts_file, attachment: artifacts_file.filename)
   end
 
   def browse
-    build.artifacts_metadata.use_file do |metadata_path|
-      @path = params[:path]
-      directory = @path ? "#{@path}/" : ''
-      @entry = Gitlab::Ci::Build::Artifacts::Metadata.new(metadata_path, directory).to_entry
+    @path = params[:path]
+    directory = @path ? "#{@path}/" : ''
+    @entry = build.artifacts_metadata_entry(directory)
 
-      render_404 unless @entry.exists?
-    end
+    render_404 unless @entry.exists?
   end
 
   def file
-    build.artifacts_metadata.use_file do |metadata_path|
-      @entry = Gitlab::Ci::Build::Artifacts::Metadata.new(metadata_path, params[:path]).to_entry
-      render_404 unless @entry.exists?
+    blob = @entry.blob
+    conditionally_expand_blob(blob)
 
-      blob = @entry.blob
-      conditionally_expand_blob(blob)
+    if blob.external_link?(build)
+      redirect_to blob.external_url(@project, build)
+    else
+      respond_to do |format|
+        format.html do
+          render 'file'
+        end
 
-      if blob.external_link?(build)
-        redirect_to blob.external_url(@project, build)
-      else
-        respond_to do |format|
-          format.html do
-            render 'file'
-          end
-
-          format.json do
-            render_blob_json(blob)
-          end
+        format.json do
+          render_blob_json(blob)
         end
       end
     end
@@ -100,5 +94,11 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   def artifacts_file
     @artifacts_file ||= build.artifacts_file
+  end
+
+  def entry
+    @entry = build.artifacts_metadata_entry(params[:path])
+
+    render_404 unless @entry.exists?
   end
 end
