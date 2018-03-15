@@ -1813,48 +1813,6 @@ describe Repository do
     end
   end
 
-  describe "Elastic search", :elastic do
-    before do
-      stub_ee_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
-      Gitlab::Elastic::Helper.create_empty_index
-    end
-
-    after do
-      Gitlab::Elastic::Helper.delete_index
-      stub_ee_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
-    end
-
-    describe "class method find_commits_by_message_with_elastic" do
-      it "returns commits" do
-        project = create :project, :repository
-        project1 = create :project, :repository
-
-        project.repository.index_commits
-        project1.repository.index_commits
-
-        Gitlab::Elastic::Helper.refresh_index
-
-        expect(described_class.find_commits_by_message_with_elastic('initial').first).to be_a(Commit)
-        expect(described_class.find_commits_by_message_with_elastic('initial').count).to eq(2)
-        expect(described_class.find_commits_by_message_with_elastic('initial').total_count).to eq(2)
-      end
-    end
-
-    describe "find_commits_by_message_with_elastic" do
-      it "returns commits" do
-        project = create :project, :repository
-
-        project.repository.index_commits
-
-        Gitlab::Elastic::Helper.refresh_index
-
-        expect(project.repository.find_commits_by_message_with_elastic('initial').first).to be_a(Commit)
-        expect(project.repository.find_commits_by_message_with_elastic('initial').count).to eq(1)
-        expect(project.repository.find_commits_by_message_with_elastic('initial').total_count).to eq(1)
-      end
-    end
-  end
-
   describe '#after_create' do
     it 'flushes the exists cache' do
       expect(repository).to receive(:expire_exists_cache)
