@@ -1,5 +1,5 @@
 module Lfs
-  class FileModificationHandler
+  class FileTransformer
     attr_reader :project, :branch_name
 
     delegate :repository, to: :project
