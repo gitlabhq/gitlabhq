@@ -4,10 +4,9 @@ import service from '../../services';
 import * as types from '../mutation_types';
 import router from '../../ide_router';
 import {
-  findEntry,
   setPageTitle,
-  createTemp,
 } from '../utils';
+import FilesDecoratorWorker from '../workers/files_decorator_worker';
 
 export const closeFile = ({ commit, state, getters, dispatch }, path) => {
   const indexOfClosedFile = state.openFiles.indexOf(path);
@@ -106,37 +105,44 @@ export const setEditorPosition = ({ getters, commit }, { editorRow, editorColumn
   }
 };
 
-export const createTempFile = ({ state, commit, dispatch }, { projectId, branchId, parent, name, content = '', base64 = '' }) => {
-  const path = parent.path !== undefined ? parent.path : '';
-  // We need to do the replacement otherwise the web_url + file.url duplicate
-  const newUrl = `/${projectId}/blob/${branchId}/${path}${path ? '/' : ''}${name}`;
-  const file = createTemp({
-    projectId,
-    branchId,
-    name: name.replace(`${path}/`, ''),
-    path,
-    type: 'blob',
-    level: parent.level !== undefined ? parent.level + 1 : 0,
-    changed: true,
-    content,
-    base64,
-    url: newUrl,
+export const createTempFile = ({ state, commit, dispatch }, { projectId, branchId, parent, name, content = '', base64 = '' }) =>
+  new Promise((resolve) => {
+    const worker = new FilesDecoratorWorker();
+    const path = parent.path !== undefined ? `${parent.path}/` : '';
+    const entryPath = path ? `${path}/${name}` : name;
+
+    if (state.entries[entryPath]) {
+      return flash(`The name "${name}" is already taken in this directory.`, 'alert', document, null, false, true);
+    }
+
+    worker.addEventListener('message', ({ data }) => {
+      const { file } = data;
+
+      worker.terminate();
+
+      commit(types.CREATE_TMP_FILE, {
+        data,
+        projectId,
+        branchId,
+      });
+      commit(types.TOGGLE_FILE_OPEN, file.path);
+      commit(types.ADD_FILE_TO_CHANGED, file.path);
+      dispatch('setFileActive', file.path);
+
+      resolve();
+    });
+
+    worker.postMessage({
+      data: [entryPath],
+      projectId,
+      branchId,
+      tempFile: true,
+      content,
+      base64,
+    });
+
+    return null;
   });
-
-  if (findEntry(parent.tree, 'blob', file.name)) return flash(`The name "${file.name}" is already taken in this directory.`, 'alert', document, null, false, true);
-
-  commit(types.CREATE_TMP_FILE, {
-    parent,
-    file,
-  });
-  commit(types.TOGGLE_FILE_OPEN, file.path);
-  commit(types.ADD_FILE_TO_CHANGED, file.path);
-  dispatch('setFileActive', file.path);
-
-  router.push(`/project${file.url}`);
-
-  return Promise.resolve(file);
-};
 
 export const discardFileChanges = ({ state, commit }, path) => {
   const file = state.entries[path];

@@ -30,8 +30,18 @@ export default {
       lastCommitPath: url,
     });
   },
-  [types.CREATE_TMP_TREE](state, { parent, tmpEntry }) {
-    parent.tree.push(tmpEntry);
+  [types.CREATE_TMP_TREE](state, { data, projectId, branchId }) {
+    Object.keys(data.entries).forEach((key) => {
+      const entry = data.entries[key];
+
+      Object.assign(state.entries, {
+        [key]: entry,
+      });
+    });
+
+    Object.assign(state.trees[`${projectId}/${branchId}`], {
+      tree: state.trees[`${projectId}/${branchId}`].tree.concat(data.treeList),
+    });
   },
   [types.REMOVE_ALL_CHANGES_FILES](state) {
     Object.assign(state, {

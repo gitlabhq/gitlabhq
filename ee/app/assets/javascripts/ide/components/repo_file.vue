@@ -1,4 +1,5 @@
 <script>
+  import { mapActions } from 'vuex';
   import timeAgoMixin from '~/vue_shared/mixins/timeago';
   import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
   import fileIcon from '~/vue_shared/components/file_icon.vue';
@@ -23,6 +24,10 @@
         type: Object,
         required: true,
       },
+      level: {
+        type: Number,
+        required: true,
+      },
     },
     computed: {
       isTree() {
@@ -33,14 +38,14 @@
       },
       levelIndentation() {
         return {
-          marginLeft: `${this.file.level * 16}px`,
+          marginLeft: `${this.level * 16}px`,
         };
       },
       fileClass() {
         return {
           'file-open': this.isBlob && this.file.opened,
           'file-active': this.isBlob && this.file.active,
-          'folder': this.isTree,
+          folder: this.isTree,
         };
       },
     },
@@ -50,15 +55,15 @@
       }
     },
     methods: {
-      clickFile(row) {
+      ...mapActions([
+        'toggleTreeOpen',
+      ]),
+      clickFile() {
         // Manual Action if a tree is selected/opened
-        if (this.file.type === 'tree' && this.$router.currentRoute.path === `/project${row.url}`) {
-          this.$store.dispatch('toggleTreeOpen', {
-            endpoint: this.file.url,
-            tree: this.file,
-          });
+        if (this.isTree && this.$router.currentRoute.path === `/project${this.file.url}`) {
+          this.toggleTreeOpen(this.file.path);
         }
-        this.$router.push(`/project${row.url}`);
+        this.$router.push(`/project${this.file.url}`);
       },
     },
   };
@@ -72,7 +77,7 @@
     >
       <div
         class="file-name"
-        @click="clickFile(file)"
+        @click="clickFile"
         role="button"
       >
         <span
@@ -110,6 +115,7 @@
         v-for="childFile in file.tree"
         :key="childFile.key"
         :file="childFile"
+        :level="level + 1"
       />
     </template>
   </div>

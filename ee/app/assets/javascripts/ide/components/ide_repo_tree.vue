@@ -33,6 +33,7 @@ export default {
       v-for="file in tree.tree"
       :key="file.key"
       :file="file"
+      :level="0"
     />
   </div>
 </template>

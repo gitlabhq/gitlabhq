@@ -44,7 +44,6 @@ export const createTempEntry = (
     dispatch('createTempTree', {
       projectId,
       branchId,
-      parent: selectedParent,
       name,
     });
   } else if (type === 'blob') {

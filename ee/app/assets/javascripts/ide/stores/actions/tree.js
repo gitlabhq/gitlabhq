@@ -3,10 +3,8 @@ import { normalizeHeaders } from '~/lib/utils/common_utils';
 import flash from '~/flash';
 import service from '../../services';
 import * as types from '../mutation_types';
-import router from '../../ide_router';
 import {
   findEntry,
-  createTemp,
 } from '../utils';
 import FilesDecoratorWorker from '../workers/files_decorator_worker';
 
@@ -33,41 +31,30 @@ export const handleTreeEntryAction = ({ commit, dispatch }, row) => {
 
 export const createTempTree = (
   { state, commit, dispatch },
-  { projectId, branchId, parent, name },
-) => {
-  let selectedTree = parent;
-  const dirNames = name.replace(new RegExp(`^${state.path}/`), '').split('/');
+  { projectId, branchId, name },
+) => new Promise((resolve) => {
+  const dirName = name.replace(new RegExp(`^${state.path}/`), '');
+  const worker = new FilesDecoratorWorker();
 
-  dirNames.forEach((dirName) => {
-    const foundEntry = findEntry(selectedTree.tree, 'tree', dirName);
+  worker.addEventListener('message', ({ data }) => {
+    worker.terminate();
 
-    if (!foundEntry) {
-      const path = selectedTree.path !== undefined ? selectedTree.path : '';
-      const tmpEntry = createTemp({
-        projectId,
-        branchId,
-        name: dirName,
-        path,
-        type: 'tree',
-        level: selectedTree.level !== undefined ? selectedTree.level + 1 : 0,
-        tree: [],
-        url: `/${projectId}/blob/${branchId}/${path}${path ? '/' : ''}${dirName}`,
-      });
+    commit(types.CREATE_TMP_TREE, {
+      data,
+      projectId,
+      branchId,
+    });
 
-      commit(types.CREATE_TMP_TREE, {
-        parent: selectedTree,
-        tmpEntry,
-      });
-      commit(types.TOGGLE_TREE_OPEN, tmpEntry);
-
-      router.push(`/project${tmpEntry.url}`);
-
-      selectedTree = tmpEntry;
-    } else {
-      selectedTree = foundEntry;
-    }
+    resolve();
   });
-};
+
+  worker.postMessage({
+    data: [`${dirName}/`],
+    projectId,
+    branchId,
+    tempFile: true,
+  });
+});
 
 export const getLastCommitData = ({ state, commit, dispatch, getters }, tree = state) => {
   if (!tree || tree.lastCommitPath === null || !tree.lastCommitPath) return;

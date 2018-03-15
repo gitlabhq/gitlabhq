@@ -4,15 +4,16 @@ import {
 } from '../utils';
 
 self.addEventListener('message', (e) => {
-  const { data, projectId, branchId } = e.data;
+  const { data, projectId, branchId, tempFile = false } = e.data;
 
   const treeList = [];
+  let file;
   const entries = data.reduce((acc, path) => {
     const pathSplit = path.split('/');
-    const blobName = pathSplit.pop();
+    const blobName = pathSplit.pop().trim();
 
     if (pathSplit.length > 0) {
-      pathSplit.reduce((pathAcc, folderName, folderLevel) => {
+      pathSplit.reduce((pathAcc, folderName) => {
         const parentFolder = acc[pathAcc[pathAcc.length - 1]];
         const folderPath = `${(parentFolder ? `${parentFolder.path}/` : '')}${folderName}`;
         const foundEntry = acc[folderPath];
@@ -25,9 +26,11 @@ self.addEventListener('message', (e) => {
             name: folderName,
             path: folderPath,
             url: `/${projectId}/tree/${branchId}/${folderPath}`,
-            level: parentFolder ? parentFolder.level + 1 : folderLevel,
             type: 'tree',
             parentTreeUrl: parentFolder ? parentFolder.url : `/${projectId}/tree/${branchId}/`,
+            tempFile,
+            changed: tempFile,
+            opened: tempFile,
           });
 
           Object.assign(acc, {
@@ -49,27 +52,30 @@ self.addEventListener('message', (e) => {
       }, []);
     }
 
-    const fileFolder = acc[pathSplit.join('/')];
-    const file = decorateData({
-      projectId,
-      branchId,
-      id: path,
-      name: blobName,
-      path,
-      url: `/${projectId}/blob/${branchId}/${path}`,
-      level: fileFolder ? fileFolder.level + 1 : 0,
-      type: 'blob',
-      parentTreeUrl: fileFolder ? fileFolder.url : `/${projectId}/blob/${branchId}`,
-    });
+    if (blobName !== '') {
+      const fileFolder = acc[pathSplit.join('/')];
+      file = decorateData({
+        projectId,
+        branchId,
+        id: path,
+        name: blobName,
+        path,
+        url: `/${projectId}/blob/${branchId}/${path}`,
+        type: 'blob',
+        parentTreeUrl: fileFolder ? fileFolder.url : `/${projectId}/blob/${branchId}`,
+        tempFile,
+        changed: tempFile,
+      });
 
-    Object.assign(acc, {
-      [path]: file,
-    });
+      Object.assign(acc, {
+        [path]: file,
+      });
 
-    if (fileFolder) {
-      fileFolder.tree.push(file);
-    } else {
-      treeList.push(file);
+      if (fileFolder) {
+        fileFolder.tree.push(file);
+      } else {
+        treeList.push(file);
+      }
     }
 
     return acc;
@@ -78,5 +84,6 @@ self.addEventListener('message', (e) => {
   self.postMessage({
     entries,
     treeList: sortTree(treeList),
+    file,
   });
 });

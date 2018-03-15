@@ -1,5 +1,3 @@
-import _ from 'underscore';
-
 export const dataStructure = () => ({
   id: '',
   key: '',
@@ -9,7 +7,6 @@ export const dataStructure = () => ({
   name: '',
   url: '',
   path: '',
-  level: 0,
   tempFile: false,
   tree: [],
   loading: false,
@@ -24,7 +21,6 @@ export const dataStructure = () => ({
     updatedAt: '',
     author: '',
   },
-  tree_url: '',
   blamePath: '',
   commitsPath: '',
   permalink: '',
@@ -50,7 +46,6 @@ export const decorateData = (entity) => {
     type,
     url,
     name,
-    tree_url,
     path,
     renderError,
     content = '',
@@ -59,7 +54,6 @@ export const decorateData = (entity) => {
     opened = false,
     changed = false,
     parentTreeUrl = '',
-    level = 0,
     base64 = false,
 
     file_lock,
@@ -75,9 +69,7 @@ export const decorateData = (entity) => {
     type,
     name,
     url,
-    tree_url,
     path,
-    level,
     tempFile,
     opened,
     active,
@@ -90,32 +82,6 @@ export const decorateData = (entity) => {
     file_lock,
 
   };
-};
-
-/*
-  Takes the multi-dimensional tree and returns a flattened array.
-  This allows for the table to recursively render the table rows but keeps the data
-  structure nested to make it easier to add new files/directories.
-*/
-export const treeList = (state, treeId) => {
-  const baseTree = state.trees[treeId];
-  if (baseTree) {
-    const mapTree = arr => (!arr.tree || !arr.tree.length ?
-                            [] : _.map(arr.tree, a => [a, mapTree(a)]));
-
-    return _.chain(baseTree.tree)
-      .map(arr => [arr, mapTree(arr)])
-      .flatten()
-      .value();
-  }
-  return [];
-};
-
-export const getTree = state => (namespace, projectId, branch) => state.trees[`${namespace}/${projectId}/${branch}`];
-
-export const getTreeEntry = (store, treeId, path) => {
-  const fileList = treeList(store.state, treeId);
-  return fileList ? fileList.find(file => file.path === path) : null;
 };
 
 export const findEntry = (tree, type, name, prop = 'name') => tree.find(
@@ -151,39 +117,6 @@ export const createTemp = ({
   });
 };
 
-export const createOrMergeEntry = ({ projectId,
-                                     branchId,
-                                     entry,
-                                     type,
-                                     parentTreeUrl,
-                                     level,
-                                     state }) => {
-  if (state.changedFiles.length) {
-    const foundChangedFile = findEntry(state.changedFiles, type, entry.path, 'path');
-
-    if (foundChangedFile) {
-      return foundChangedFile;
-    }
-  }
-
-  if (state.openFiles.length) {
-    const foundOpenFile = findEntry(state.openFiles, type, entry.path, 'path');
-
-    if (foundOpenFile) {
-      return foundOpenFile;
-    }
-  }
-
-  return decorateData({
-    ...entry,
-    projectId,
-    branchId,
-    type,
-    parentTreeUrl,
-    level,
-  });
-};
-
 export const createCommitPayload = (branch, newBranch, state, rootState) => ({
   branch,
   commit_message: state.commitMessage,
@@ -210,11 +143,6 @@ const sortTreesByTypeAndName = (a, b) => {
   return 0;
 };
 
-export const sortTree = (sortedTree) => {
-  sortedTree.forEach((el) => {
-    Object.assign(el, {
-      tree: el && el.tree ? sortTree(el.tree) : [],
-    });
-  });
-  return sortedTree.sort(sortTreesByTypeAndName);
-};
+export const sortTree = sortedTree => sortedTree.map(entity => Object.assign(entity, {
+  tree: entity.tree.length ? sortTree(entity.tree) : [],
+})).sort(sortTreesByTypeAndName);
