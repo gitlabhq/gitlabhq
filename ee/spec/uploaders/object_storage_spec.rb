@@ -481,6 +481,29 @@ describe ObjectStorage do
             end
           end
         end
+
+        context 'uses GDK/minio' do
+          before do
+            expect(uploader_class).to receive(:object_store_credentials) do
+              { provider: "AWS",
+                aws_access_key_id: "AWS_ACCESS_KEY_ID",
+                aws_secret_access_key: "AWS_SECRET_ACCESS_KEY",
+                endpoint: 'http://127.0.0.1:9000',
+                path_style: true,
+                region: "gdk" }
+            end
+          end
+
+          it_behaves_like 'uses remote storage' do
+            let(:storage_url) { "http://127.0.0.1:9000/uploads/" }
+
+            it 'returns links for S3' do
+              expect(subject[:RemoteObject][:GetURL]).to start_with(storage_url)
+              expect(subject[:RemoteObject][:DeleteURL]).to start_with(storage_url)
+              expect(subject[:RemoteObject][:StoreURL]).to start_with(storage_url)
+            end
+          end
+        end
       end
 
       context 'when direct upload is disabled' do
