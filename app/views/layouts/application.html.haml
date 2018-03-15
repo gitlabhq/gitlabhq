@@ -4,9 +4,9 @@
   %body{ class: "#{user_application_theme} #{@body_class}", data: { page: body_data_page, project: "#{@project.path if @project}", group: "#{@group.path if @group}", find_file: find_file_path } }
     = render "layouts/init_auto_complete" if @gfm_form
     = render 'peek/bar'
-    = render "layouts/header_message"
+    = render "admin/appearances/ee/header_message"
     = render "layouts/header/default"
     = render 'layouts/page', sidebar: sidebar, nav: nav
-    = render "layouts/footer_message"
+    = render "admin/appearances/ee/footer_message"
 
     = yield :scripts_body
