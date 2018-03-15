@@ -1389,7 +1389,7 @@ module Gitlab
         offset = 2
         args = %W(grep -i -I -n -z --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
 
-        run_git(args).first.scrub.split(/^--$/)
+        run_git(args).first.scrub.split(/^--\n/)
       end
 
       def can_be_merged?(source_sha, target_branch)
