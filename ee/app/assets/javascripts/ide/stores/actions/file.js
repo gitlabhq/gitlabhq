@@ -6,7 +6,6 @@ import router from '../../ide_router';
 import {
   setPageTitle,
 } from '../utils';
-import FilesDecoratorWorker from '../workers/files_decorator_worker';
 
 export const closeFile = ({ commit, state, getters, dispatch }, path) => {
   const indexOfClosedFile = state.openFiles.indexOf(path);
@@ -104,43 +103,6 @@ export const setEditorPosition = ({ getters, commit }, { editorRow, editorColumn
     commit(types.SET_FILE_POSITION, { file: getters.activeFile, editorRow, editorColumn });
   }
 };
-
-export const createTempFile = ({ state, commit, dispatch }, { branchId, name, content = '', base64 = '' }) =>
-  new Promise((resolve) => {
-    const worker = new FilesDecoratorWorker();
-
-    if (state.entries[name]) {
-      return flash(`The name "${name.split('/').pop()}" is already taken in this directory.`, 'alert', document, null, false, true);
-    }
-
-    worker.addEventListener('message', ({ data }) => {
-      const { file } = data;
-
-      worker.terminate();
-
-      commit(types.CREATE_TMP_ENTRY, {
-        data,
-        projectId: state.currentProjectId,
-        branchId,
-      });
-      commit(types.TOGGLE_FILE_OPEN, file.path);
-      commit(types.ADD_FILE_TO_CHANGED, file.path);
-      dispatch('setFileActive', file.path);
-
-      resolve();
-    });
-
-    worker.postMessage({
-      data: [name],
-      projectId: state.currentProjectId,
-      branchId,
-      tempFile: true,
-      content,
-      base64,
-    });
-
-    return null;
-  });
 
 export const discardFileChanges = ({ state, commit }, path) => {
   const file = state.entries[path];

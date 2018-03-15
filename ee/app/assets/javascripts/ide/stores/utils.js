@@ -94,29 +94,6 @@ export const setPageTitle = (title) => {
   document.title = title;
 };
 
-export const createTemp = ({
-  projectId, branchId, name, path, type, level, changed, content, base64, url,
-}) => {
-  const treePath = path ? `${path}/${name}` : name;
-
-  return decorateData({
-    id: new Date().getTime().toString(),
-    projectId,
-    branchId,
-    name,
-    type,
-    tempFile: true,
-    path: treePath,
-    changed,
-    content,
-    parentTreeUrl: '',
-    level,
-    base64,
-    renderError: base64,
-    url,
-  });
-};
-
 export const createCommitPayload = (branch, newBranch, state, rootState) => ({
   branch,
   commit_message: state.commitMessage,

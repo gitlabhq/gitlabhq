@@ -85,6 +85,11 @@ describe('Multi-file store actions', () => {
 
   describe('createTempEntry', () => {
     beforeEach(() => {
+      document.body.innerHTML += '<div class="flash-container"></div>';
+
+      store.state.currentProjectId = 'abcproject';
+      store.state.currentBranchId = 'mybranch';
+
       store.state.trees['abcproject/mybranch'] = {
         tree: [],
       };
@@ -93,46 +98,142 @@ describe('Multi-file store actions', () => {
       };
     });
 
-    it('creates a temp tree', (done) => {
-      const projectTree = store.state.trees['abcproject/mybranch'];
-
-      store.dispatch('createTempEntry', {
-        projectId: 'abcproject',
-        branchId: 'mybranch',
-        parent: projectTree,
-        name: 'test',
-        type: 'tree',
-      })
-      .then(() => {
-        const baseTree = projectTree.tree;
-        expect(baseTree.length).toBe(1);
-        expect(baseTree[0].tempFile).toBeTruthy();
-        expect(baseTree[0].type).toBe('tree');
-
-        done();
-      })
-      .catch(done.fail);
+    afterEach(() => {
+      document.querySelector('.flash-container').remove();
     });
 
-    it('creates temp file', (done) => {
-      const projectTree = store.state.trees['abcproject/mybranch'];
+    describe('tree', () => {
+      it('creates temp tree', (done) => {
+        store.dispatch('createTempEntry', {
+          branchId: store.state.currentBranchId,
+          name: 'test',
+          type: 'tree',
+        })
+        .then(() => {
+          const entry = store.state.entries.test;
 
-      store.dispatch('createTempEntry', {
-        projectId: 'abcproject',
-        branchId: 'mybranch',
-        parent: projectTree,
-        name: 'test',
-        type: 'blob',
-      })
-      .then(() => {
-        const baseTree = projectTree.tree;
-        expect(baseTree.length).toBe(1);
-        expect(baseTree[0].tempFile).toBeTruthy();
-        expect(baseTree[0].type).toBe('blob');
+          expect(entry).not.toBeNull();
+          expect(entry.type).toBe('tree');
 
-        done();
-      })
-      .catch(done.fail);
+          done();
+        }).catch(done.fail);
+      });
+
+      it('creates new folder inside another tree', (done) => {
+        const tree = {
+          type: 'tree',
+          name: 'testing',
+          path: 'testing',
+          tree: [],
+        };
+
+        store.state.entries[tree.path] = tree;
+
+        store.dispatch('createTempEntry', {
+          branchId: store.state.currentBranchId,
+          name: 'testing/test',
+          type: 'tree',
+        })
+        .then(() => {
+          expect(tree.tree[0].tempFile).toBeTruthy();
+          expect(tree.tree[0].name).toBe('test');
+          expect(tree.tree[0].type).toBe('tree');
+
+          done();
+        }).catch(done.fail);
+      });
+
+      it('does not create new tree if already exists', (done) => {
+        const tree = {
+          type: 'tree',
+          path: 'testing',
+          tempFile: false,
+          tree: [],
+        };
+
+        store.state.entries[tree.path] = tree;
+
+        store.dispatch('createTempEntry', {
+          branchId: store.state.currentBranchId,
+          name: 'testing',
+          type: 'tree',
+        })
+        .then(() => {
+          expect(store.state.entries[tree.path].tempFile).toEqual(false);
+          expect(document.querySelector('.flash-alert')).not.toBeNull();
+
+          done();
+        }).catch(done.fail);
+      });
+    });
+
+    describe('blob', () => {
+      it('creates temp file', (done) => {
+        store.dispatch('createTempEntry', {
+          name: 'test',
+          branchId: 'mybranch',
+          type: 'blob',
+        }).then((f) => {
+          expect(f.tempFile).toBeTruthy();
+          expect(store.state.trees['abcproject/mybranch'].tree.length).toBe(1);
+
+          done();
+        }).catch(done.fail);
+      });
+
+      it('adds tmp file to open files', (done) => {
+        store.dispatch('createTempEntry', {
+          name: 'test',
+          branchId: 'mybranch',
+          type: 'blob',
+        }).then((f) => {
+          expect(store.state.openFiles.length).toBe(1);
+          expect(store.state.openFiles[0].name).toBe(f.name);
+
+          done();
+        }).catch(done.fail);
+      });
+
+      it('adds tmp file to changed files', (done) => {
+        store.dispatch('createTempEntry', {
+          name: 'test',
+          branchId: 'mybranch',
+          type: 'blob',
+        }).then((f) => {
+          expect(store.state.changedFiles.length).toBe(1);
+          expect(store.state.changedFiles[0].name).toBe(f.name);
+
+          done();
+        }).catch(done.fail);
+      });
+
+      it('sets tmp file as active', (done) => {
+        store.dispatch('createTempEntry', {
+          name: 'test',
+          branchId: 'mybranch',
+          type: 'blob',
+        }).then((f) => {
+          expect(f.active).toBeTruthy();
+
+          done();
+        }).catch(done.fail);
+      });
+
+      it('creates flash message if file already exists', (done) => {
+        const f = file('test', '1', 'blob');
+        store.state.trees['abcproject/mybranch'].tree = [f];
+        store.state.entries[f.path] = f;
+
+        store.dispatch('createTempEntry', {
+          name: 'test',
+          branchId: 'mybranch',
+          type: 'blob',
+        }).then(() => {
+          expect(document.querySelector('.flash-alert')).not.toBeNull();
+
+          done();
+        }).catch(done.fail);
+      });
     });
   });
 

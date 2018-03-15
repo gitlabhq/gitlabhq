@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import { visitUrl } from '~/lib/utils/url_utility';
+import flash from '~/flash';
 import * as types from './mutation_types';
+import FilesDecoratorWorker from './workers/files_decorator_worker';
 
 export const redirectToUrl = (_, url) => visitUrl(url);
 
@@ -36,23 +38,52 @@ export const setResizingStatus = ({ commit }, resizing) => {
 };
 
 export const createTempEntry = (
-  { state, dispatch },
+  { state, commit, dispatch },
   { branchId, name, type, content = '', base64 = false },
-) => {
-  if (type === 'tree') {
-    dispatch('createTempTree', {
-      branchId,
-      name,
-    });
-  } else if (type === 'blob') {
-    dispatch('createTempFile', {
-      branchId,
-      name,
-      base64,
-      content,
-    });
+) => new Promise((resolve) => {
+  const worker = new FilesDecoratorWorker();
+  const fullName = name.slice(-1) !== '/' && type === 'tree' ? `${name}/` : name;
+
+  if (state.entries[name]) {
+    flash(`The name "${name.split('/').pop()}" is already taken in this directory.`, 'alert', document, null, false, true);
+
+    resolve();
+
+    return null;
   }
-};
+
+  worker.addEventListener('message', ({ data }) => {
+    const { file } = data;
+
+    worker.terminate();
+
+    commit(types.CREATE_TMP_ENTRY, {
+      data,
+      projectId: state.currentProjectId,
+      branchId,
+    });
+
+    if (type === 'blob') {
+      commit(types.TOGGLE_FILE_OPEN, file.path);
+      commit(types.ADD_FILE_TO_CHANGED, file.path);
+      dispatch('setFileActive', file.path);
+    }
+
+    resolve(file);
+  });
+
+  worker.postMessage({
+    data: [fullName],
+    projectId: state.currentProjectId,
+    branchId,
+    type,
+    tempFile: true,
+    base64,
+    content,
+  });
+
+  return null;
+});
 
 export const scrollToTab = () => {
   Vue.nextTick(() => {

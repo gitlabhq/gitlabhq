@@ -29,33 +29,6 @@ export const handleTreeEntryAction = ({ commit, dispatch }, row) => {
   }
 };
 
-export const createTempTree = (
-  { state, commit, dispatch },
-  { branchId, name },
-) => new Promise((resolve) => {
-  const dirName = name.replace(new RegExp(`^${state.path}/`), '');
-  const worker = new FilesDecoratorWorker();
-
-  worker.addEventListener('message', ({ data }) => {
-    worker.terminate();
-
-    commit(types.CREATE_TMP_ENTRY, {
-      data,
-      projectId: state.currentProjectId,
-      branchId,
-    });
-
-    resolve();
-  });
-
-  worker.postMessage({
-    data: [`${dirName}/`],
-    projectId: state.currentProjectId,
-    branchId,
-    tempFile: true,
-  });
-});
-
 export const getLastCommitData = ({ state, commit, dispatch, getters }, tree = state) => {
   if (!tree || tree.lastCommitPath === null || !tree.lastCommitPath) return;
 
