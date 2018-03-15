@@ -1098,7 +1098,7 @@ class Project < ActiveRecord::Base
     # Forked import is handled asynchronously
     return if forked? && !force
 
-    if gitlab_shell.add_repository(repository_storage, disk_path)
+    if gitlab_shell.create_repository(repository_storage, disk_path)
       repository.after_create
       true
     else
