@@ -1,4 +1,4 @@
-# Geo database replication (omnibus)
+# Geo database replication (GitLab Omnibus)
 
 >**Note:**
 This is the documentation for the Omnibus GitLab packages. For installations
