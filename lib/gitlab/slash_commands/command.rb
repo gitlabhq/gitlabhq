@@ -5,8 +5,13 @@ module Gitlab
         Gitlab::SlashCommands::IssueShow,
         Gitlab::SlashCommands::IssueNew,
         Gitlab::SlashCommands::IssueSearch,
+<<<<<<< HEAD
         Gitlab::SlashCommands::Deploy,
         Gitlab::SlashCommands::Run
+=======
+        Gitlab::SlashCommands::IssueMove,
+        Gitlab::SlashCommands::Deploy
+>>>>>>> upstream/master
       ].freeze
 
       def execute

@@ -576,9 +576,15 @@ module Ci
     def persisted_environment_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         return variables unless persisted_environment
+<<<<<<< HEAD
 
         variables.concat(persisted_environment.predefined_variables)
 
+=======
+
+        variables.concat(persisted_environment.predefined_variables)
+
+>>>>>>> upstream/master
         # Here we're passing unexpanded environment_url for runner to expand,
         # and we need to make sure that CI_ENVIRONMENT_NAME and
         # CI_ENVIRONMENT_SLUG so on are available for the URL be expanded.
