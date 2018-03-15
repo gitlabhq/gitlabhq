@@ -168,61 +168,47 @@ describe Namespace do
   end
 
   describe '#move_dir', :request_store do
-    let(:namespace) { create(:namespace) }
-    let!(:project) { create(:project_empty_repo, namespace: namespace) }
-
-    it "raises error when directory exists" do
-      expect { namespace.move_dir }.to raise_error("namespace directory cannot be moved")
-    end
-
-    it "moves dir if path changed" do
-      namespace.update_attributes(path: namespace.full_path + '_new')
-
-      expect(gitlab_shell.exists?(project.repository_storage_path, "#{namespace.path}/#{project.path}.git")).to be_truthy
-    end
-
-    context "when any project has container images" do
-      let(:container_repository) { create(:container_repository) }
-
-      before do
-        stub_container_registry_config(enabled: true)
-        stub_container_registry_tags(repository: :any, tags: ['tag'])
-
-        create(:project, namespace: namespace, container_repositories: [container_repository])
-
-        allow(namespace).to receive(:path_was).and_return(namespace.path)
-        allow(namespace).to receive(:path).and_return('new_path')
-      end
-
-<<<<<<< HEAD
-      it 'raises an error about not movable project' do
-        expect { namespace.move_dir }.to raise_error(/Namespace cannot be moved/)
-      end
-    end
-||||||| parent of 3fab8dac18... Merge branch 'mk/fix-move-upload-files-on-group-transfer' into 'master'
-      context 'with subgroups' do
-        let(:parent) { create(:group, name: 'parent', path: 'parent') }
-        let(:child) { create(:group, name: 'child', path: 'child', parent: parent) }
-        let!(:project) { create(:project_empty_repo, :legacy_storage, path: 'the-project', namespace: child, skip_disk_validation: true) }
-        let(:uploads_dir) { FileUploader.root }
-        let(:pages_dir) { File.join(TestEnv.pages_path) }
+    shared_examples "namespace restrictions" do
+      context "when any project has container images" do
+        let(:container_repository) { create(:container_repository) }
 
         before do
-          FileUtils.mkdir_p(File.join(uploads_dir, project.full_path))
-          FileUtils.mkdir_p(File.join(pages_dir, project.full_path))
+          stub_container_registry_config(enabled: true)
+          stub_container_registry_tags(repository: :any, tags: ['tag'])
+
+          create(:project, :hashed, namespace: namespace, container_repositories: [container_repository])
+
+          allow(namespace).to receive(:path_was).and_return(namespace.path)
+          allow(namespace).to receive(:path).and_return('new_path')
         end
 
-        context 'renaming child' do
-          it 'correctly moves the repository, uploads and pages' do
-            expected_repository_path = File.join(TestEnv.repos_path, 'parent', 'renamed', 'the-project.git')
-            expected_upload_path = File.join(uploads_dir, 'parent', 'renamed', 'the-project')
-            expected_pages_path = File.join(pages_dir, 'parent', 'renamed', 'the-project')
-=======
+        it 'raises an error about not movable project' do
+          expect { namespace.move_dir }.to raise_error(/Namespace cannot be moved/)
+        end
+      end
+    end
+
+    context 'legacy storage' do
+      let(:namespace) { create(:namespace) }
+      let!(:project) { create(:project_empty_repo, namespace: namespace) }
+
+      it_behaves_like 'namespace restrictions'
+
+      it "raises error when directory exists" do
+        expect { namespace.move_dir }.to raise_error("namespace directory cannot be moved")
+      end
+
+      it "moves dir if path changed" do
+        namespace.update_attributes(path: namespace.full_path + '_new')
+
+        expect(gitlab_shell.exists?(project.repository_storage_path, "#{namespace.path}/#{project.path}.git")).to be_truthy
+      end
+
       context 'with subgroups', :nested_groups do
         let(:parent) { create(:group, name: 'parent', path: 'parent') }
         let(:new_parent) { create(:group, name: 'new_parent', path: 'new_parent') }
         let(:child) { create(:group, name: 'child', path: 'child', parent: parent) }
-        let!(:project) { create(:project_empty_repo, :legacy_storage, path: 'the-project', namespace: child, skip_disk_validation: true) }
+        let!(:project) { create(:project_empty_repo, path: 'the-project', namespace: child, skip_disk_validation: true) }
         let(:uploads_dir) { FileUploader.root }
         let(:pages_dir) { File.join(TestEnv.pages_path) }
 
@@ -245,47 +231,11 @@ describe Namespace do
         context 'renaming child' do
           it 'correctly moves the repository, uploads and pages' do
             child.update!(path: 'renamed')
->>>>>>> 3fab8dac18... Merge branch 'mk/fix-move-upload-files-on-group-transfer' into 'master'
 
-<<<<<<< HEAD
-    context 'with subgroups' do
-      let(:parent) { create(:group, name: 'parent', path: 'parent') }
-      let(:child) { create(:group, name: 'child', path: 'child', parent: parent) }
-      let!(:project) { create(:project_empty_repo, path: 'the-project', namespace: child, skip_disk_validation: true) }
-      let(:uploads_dir) { FileUploader.root }
-      let(:pages_dir) { File.join(TestEnv.pages_path) }
-
-      before do
-        FileUtils.mkdir_p(File.join(uploads_dir, 'parent', 'child', 'the-project'))
-        FileUtils.mkdir_p(File.join(pages_dir, 'parent', 'child', 'the-project'))
-      end
-||||||| parent of 3fab8dac18... Merge branch 'mk/fix-move-upload-files-on-group-transfer' into 'master'
-            child.update_attributes!(path: 'renamed')
-
-            expect(File.directory?(expected_repository_path)).to be(true)
-            expect(File.directory?(expected_upload_path)).to be(true)
-            expect(File.directory?(expected_pages_path)).to be(true)
-          end
-        end
-=======
             expect_project_directories_at('parent/renamed')
           end
         end
->>>>>>> 3fab8dac18... Merge branch 'mk/fix-move-upload-files-on-group-transfer' into 'master'
 
-<<<<<<< HEAD
-      context 'renaming child' do
-        it 'correctly moves the repository, uploads and pages' do
-          expected_repository_path = File.join(TestEnv.repos_path, 'parent', 'renamed', 'the-project.git')
-          expected_upload_path = File.join(uploads_dir, 'parent', 'renamed', 'the-project')
-          expected_pages_path = File.join(pages_dir, 'parent', 'renamed', 'the-project')
-||||||| parent of 3fab8dac18... Merge branch 'mk/fix-move-upload-files-on-group-transfer' into 'master'
-        context 'renaming parent' do
-          it 'correctly moves the repository, uploads and pages' do
-            expected_repository_path = File.join(TestEnv.repos_path, 'renamed', 'child', 'the-project.git')
-            expected_upload_path = File.join(uploads_dir, 'renamed', 'child', 'the-project')
-            expected_pages_path = File.join(pages_dir, 'renamed', 'child', 'the-project')
-=======
         context 'renaming parent' do
           it 'correctly moves the repository, uploads and pages' do
             parent.update!(path: 'renamed')
@@ -297,13 +247,7 @@ describe Namespace do
         context 'moving from one parent to another' do
           it 'correctly moves the repository, uploads and pages' do
             child.update!(parent: new_parent)
->>>>>>> 3fab8dac18... Merge branch 'mk/fix-move-upload-files-on-group-transfer' into 'master'
 
-<<<<<<< HEAD
-          child.update_attributes!(path: 'renamed')
-||||||| parent of 3fab8dac18... Merge branch 'mk/fix-move-upload-files-on-group-transfer' into 'master'
-            parent.update_attributes!(path: 'renamed')
-=======
             expect_project_directories_at('new_parent/child')
           end
         end
@@ -319,36 +263,25 @@ describe Namespace do
         context 'moving from root to having a parent' do
           it 'correctly moves the repository, uploads and pages' do
             parent.update!(parent: new_parent)
->>>>>>> 3fab8dac18... Merge branch 'mk/fix-move-upload-files-on-group-transfer' into 'master'
 
-<<<<<<< HEAD
-          expect(File.directory?(expected_repository_path)).to be(true)
-          expect(File.directory?(expected_upload_path)).to be(true)
-          expect(File.directory?(expected_pages_path)).to be(true)
-||||||| parent of 3fab8dac18... Merge branch 'mk/fix-move-upload-files-on-group-transfer' into 'master'
-            expect(File.directory?(expected_repository_path)).to be(true)
-            expect(File.directory?(expected_upload_path)).to be(true)
-            expect(File.directory?(expected_pages_path)).to be(true)
-          end
-=======
             expect_project_directories_at('new_parent/parent/child')
           end
->>>>>>> 3fab8dac18... Merge branch 'mk/fix-move-upload-files-on-group-transfer' into 'master'
         end
       end
+    end
 
-      context 'renaming parent' do
-        it 'correctly moves the repository, uploads and pages' do
-          expected_repository_path = File.join(TestEnv.repos_path, 'renamed', 'child', 'the-project.git')
-          expected_upload_path = File.join(uploads_dir, 'renamed', 'child', 'the-project')
-          expected_pages_path = File.join(pages_dir, 'renamed', 'child', 'the-project')
+    context 'hashed storage' do
+      let(:namespace) { create(:namespace) }
+      let!(:project) { create(:project_empty_repo, :hashed, namespace: namespace) }
 
-          parent.update_attributes!(path: 'renamed')
+      it_behaves_like 'namespace restrictions'
 
-          expect(File.directory?(expected_repository_path)).to be(true)
-          expect(File.directory?(expected_upload_path)).to be(true)
-          expect(File.directory?(expected_pages_path)).to be(true)
-        end
+      it "repository directory remains unchanged if path changed" do
+        before_disk_path = project.disk_path
+        namespace.update_attributes(path: namespace.full_path + '_new')
+
+        expect(before_disk_path).to eq(project.disk_path)
+        expect(gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_truthy
       end
     end
 
@@ -356,7 +289,7 @@ describe Namespace do
       parent = create(:group, name: 'mygroup', path: 'mygroup')
       subgroup = create(:group, name: 'mysubgroup', path: 'mysubgroup', parent: parent)
       project_in_parent_group = create(:project, :repository, namespace: parent, name: 'foo1')
-      hashed_project_in_subgroup = create(:project, :repository, :hashed, namespace: subgroup, name: 'foo2')
+      hashed_project_in_subgroup = create(:project, :hashed, :repository, namespace: subgroup, name: 'foo2')
       legacy_project_in_subgroup = create(:project, :repository, namespace: subgroup, name: 'foo3')
 
       parent.update(path: 'mygroup_new')
