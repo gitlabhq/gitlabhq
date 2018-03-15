@@ -119,6 +119,12 @@ GitLab monitors its own internal service metrics, and makes them available at th
 
 [➔ Read more about the GitLab Metrics.](gitlab_metrics.md)
 
+## Prometheus Alertmanager
+
+The Prometheus Alertmanager is used to route notifications from alerting rules to users.
+
+[➔ Read more about the Alertmanager.](alertmanager.md)
+
 ## Prometheus exporters
 
 There are a number of libraries and servers which help in exporting existing
