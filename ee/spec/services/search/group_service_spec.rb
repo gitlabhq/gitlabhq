@@ -34,7 +34,24 @@ describe Search::GroupService do
     end
   end
 
-  describe 'basic search' do
+  describe 'elasticsearch' do
+    before do
+      stub_ee_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+      Gitlab::Elastic::Helper.create_empty_index
+
+      # Ensure these are present when the index is refreshed
+      _ = [
+        outside_project, private_project, other_project,
+        project1, project2, project3
+      ]
+
+      Gitlab::Elastic::Helper.refresh_index
+    end
+
+    after do
+      Gitlab::Elastic::Helper.delete_index
+    end
+
     include_examples 'group search'
   end
 end
