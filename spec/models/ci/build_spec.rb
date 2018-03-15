@@ -1905,10 +1905,10 @@ describe Ci::Build do
 
     describe 'variables ordering' do
       context 'when variables hierarchy is stubbed' do
-        let(:build_pre_var) { { key: 'build', value: 'value' } }
-        let(:project_pre_var) { { key: 'project', value: 'value' } }
-        let(:pipeline_pre_var) { { key: 'pipeline', value: 'value' } }
-        let(:build_yaml_var) { { key: 'yaml', value: 'value' } }
+        let(:build_pre_var) { { key: 'build', value: 'value', public: true } }
+        let(:project_pre_var) { { key: 'project', value: 'value', public: true } }
+        let(:pipeline_pre_var) { { key: 'pipeline', value: 'value', public: true } }
+        let(:build_yaml_var) { { key: 'yaml', value: 'value', public: true } }
 
         before do
           allow(build).to receive(:predefined_variables) { [build_pre_var] }

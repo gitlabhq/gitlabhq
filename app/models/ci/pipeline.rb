@@ -491,11 +491,10 @@ module Ci
     end
 
     def predefined_variables
-      [
-        { key: 'CI_PIPELINE_ID', value: id.to_s, public: true },
-        { key: 'CI_CONFIG_PATH', value: ci_yaml_file_path, public: true },
-        { key: 'CI_PIPELINE_SOURCE', value: source.to_s, public: true }
-      ]
+      Gitlab::Ci::Variables::Collection.new
+        .append(key: 'CI_PIPELINE_ID', value: id.to_s)
+        .append(key: 'CI_CONFIG_PATH', value: ci_yaml_file_path)
+        .append(key: 'CI_PIPELINE_SOURCE', value: source.to_s)
     end
 
     def queued_duration
