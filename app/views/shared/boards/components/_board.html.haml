@@ -4,7 +4,7 @@
     %header.board-header{ ":class" => '{ "has-border": list.label && list.label.color }', ":style" => "{ borderTopColor: (list.label && list.label.color ? list.label.color : null) }", "@click" => "toggleExpanded($event)" }
       %h3.board-title.js-board-handle{ ":class" => '{ "user-can-drag": (!disabled && !list.preset) }' }
         %i.fa.fa-fw.board-title-expandable-toggle{ "v-if": "list.isExpandable",
-          ":class": "{ \"fa-caret-down\": list.isExpanded, \"fa-caret-right\": !list.isExpanded && list.position === -1, \"fa-caret-left\": !list.isExpanded && list.position !== -1 }",
+          ":class": "{ \"fa-caret-down\": list.isExpanded, \"fa-caret-right\": !list.isExpanded }",
           "aria-hidden": "true" }
 
         %span.board-title-text.has-tooltip{ "v-if": "list.type !== \"label\"",
