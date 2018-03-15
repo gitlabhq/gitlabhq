@@ -27,5 +27,11 @@ module EE
     def epic_path(entity, *args)
       group_epic_path(entity.group, entity, *args)
     end
+
+    def sast_artifact_url(pipeline)
+      raw_project_build_artifacts_url(pipeline.project,
+                                      pipeline.sast_artifact,
+                                      path: Ci::Build::SAST_FILE)
+    end
   end
 end
