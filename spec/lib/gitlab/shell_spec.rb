@@ -20,7 +20,7 @@ describe Gitlab::Shell do
 
   it { is_expected.to respond_to :add_key }
   it { is_expected.to respond_to :remove_key }
-  it { is_expected.to respond_to :add_repository }
+  it { is_expected.to respond_to :create_repository }
   it { is_expected.to respond_to :remove_repository }
   it { is_expected.to respond_to :fork_repository }
 
@@ -402,8 +402,8 @@ describe Gitlab::Shell do
       allow(Gitlab.config.gitlab_shell).to receive(:git_timeout).and_return(800)
     end
 
-    describe '#add_repository' do
-      shared_examples '#add_repository' do
+    describe '#create_repository' do
+      shared_examples '#create_repository' do
         let(:repository_storage) { 'default' }
         let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
         let(:repo_name) { 'project/path' }
@@ -414,7 +414,7 @@ describe Gitlab::Shell do
         end
 
         it 'creates a repository' do
-          expect(gitlab_shell.add_repository(repository_storage, repo_name)).to be_truthy
+          expect(gitlab_shell.create_repository(repository_storage, repo_name)).to be_truthy
 
           expect(File.stat(created_path).mode & 0o777).to eq(0o770)
 
@@ -426,19 +426,19 @@ describe Gitlab::Shell do
         it 'returns false when the command fails' do
           FileUtils.mkdir_p(File.dirname(created_path))
           # This file will block the creation of the repo's .git directory. That
-          # should cause #add_repository to fail.
+          # should cause #create_repository to fail.
           FileUtils.touch(created_path)
 
-          expect(gitlab_shell.add_repository(repository_storage, repo_name)).to be_falsy
+          expect(gitlab_shell.create_repository(repository_storage, repo_name)).to be_falsy
         end
       end
 
       context 'with gitaly' do
-        it_behaves_like '#add_repository'
+        it_behaves_like '#create_repository'
       end
 
       context 'without gitaly', :skip_gitaly_mock do
-        it_behaves_like '#add_repository'
+        it_behaves_like '#create_repository'
       end
     end
 

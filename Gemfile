@@ -34,7 +34,7 @@ gem 'omniauth-gitlab', '~> 1.0.2'
 gem 'omniauth-google-oauth2', '~> 0.5.2'
 gem 'omniauth-kerberos', '~> 0.3.0', group: :kerberos
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
-gem 'omniauth-saml', '~> 1.7.0'
+gem 'omniauth-saml', '~> 1.10.0'
 gem 'omniauth-shibboleth', '~> 1.2.0'
 gem 'omniauth-twitter', '~> 1.2.0'
 gem 'omniauth_crowd', '~> 2.2.0'
@@ -104,7 +104,7 @@ gem 'carrierwave', '~> 1.2'
 gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for backups
-gem 'fog-aws', '~> 1.4'
+gem 'fog-aws', '~> 2.0'
 gem 'fog-core', '~> 1.44'
 gem 'fog-google', '~> 0.5'
 gem 'fog-local', '~> 0.3'
@@ -152,7 +152,7 @@ end
 gem 'state_machines-activerecord', '~> 0.4.0'
 
 # Issue tags
-gem 'acts-as-taggable-on', '~> 4.0'
+gem 'acts-as-taggable-on', '~> 5.0'
 
 # Background jobs
 gem 'sidekiq', '~> 5.0'
@@ -164,7 +164,7 @@ gem 'sidekiq-limit_fetch', '~> 3.4', require: false
 gem 'rufus-scheduler', '~> 3.4'
 
 # HTTP requests
-gem 'httparty', '~> 0.13.3'
+gem 'httparty', '~> 0.15.6'
 
 # Colored output to console
 gem 'rainbow', '~> 2.2'
@@ -264,7 +264,7 @@ gem 'virtus', '~> 1.0.1'
 gem 'base32', '~> 0.3.0'
 
 # Sentry integration
-gem 'sentry-raven', '~> 2.5.3'
+gem 'sentry-raven', '~> 2.7'
 
 gem 'premailer-rails', '~> 1.9.7'
 
@@ -300,7 +300,7 @@ group :metrics do
 end
 
 group :development do
-  gem 'foreman', '~> 0.78.0'
+  gem 'foreman', '~> 0.84.0'
   gem 'brakeman', '~> 3.6.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
@@ -381,14 +381,14 @@ group :test do
   gem 'test-prof', '~> 0.2.5'
 end
 
-gem 'octokit', '~> 4.6.2'
+gem 'octokit', '~> 4.8'
 
 gem 'mail_room', '~> 0.9.1'
 
 gem 'email_reply_trimmer', '~> 0.1'
 gem 'html2text'
 
-gem 'ruby-prof', '~> 0.16.2'
+gem 'ruby-prof', '~> 0.17.0'
 
 # OAuth
 gem 'oauth2', '~> 1.4'
@@ -401,7 +401,7 @@ gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
 # SSH host key support
-gem 'net-ssh', '~> 4.1.0'
+gem 'net-ssh', '~> 4.2.0'
 gem 'sshkey', '~> 1.9.0'
 
 # Required for ED25519 SSH host key support
