@@ -315,6 +315,44 @@ describe Projects::UpdateService do
     end
   end
 
+  describe '#auto_devops_conflicts_custom_yml?' do
+    subject { described_class.new(project, user).auto_devops_conflicts_custom_yml? }
+
+    before do
+      project.create_auto_devops!(enabled: nil)
+    end
+
+    context 'when auto_devops was enabled' do
+      before do
+        allow(project.auto_devops).to receive(:previous_changes).and_return('enabled' => true)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when auto_devops is not enabled' do
+      before do
+        allow(project.auto_devops).to receive(:enabled?).and_return(false)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when auto_devops is enabled' do
+      before do
+        allow(project.auto_devops).to receive(:enabled?).and_return(true)
+      end
+
+      context 'when custom CI path is set' do
+        before do
+          allow(project).to receive_message_chain(:ci_config_path, :present?).and_return(true)
+        end
+
+        it { is_expected.to eq(true) }
+      end
+    end
+  end
+
   def update_project(project, user, opts)
     described_class.new(project, user, opts).execute
   end

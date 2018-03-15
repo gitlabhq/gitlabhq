@@ -41,6 +41,12 @@ module Projects
       project.auto_devops.enabled? || (project.auto_devops.enabled.nil? && Gitlab::CurrentSettings.auto_devops_enabled?)
     end
 
+    def auto_devops_conflicts_custom_yml?
+      return false if project.auto_devops.previous_changes.include?('enabled')
+
+      project.auto_devops.enabled? && project.ci_config_path.present?
+    end
+
     private
 
     def renaming_project_with_container_registry_tags?

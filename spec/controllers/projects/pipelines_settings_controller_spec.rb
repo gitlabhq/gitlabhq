@@ -87,6 +87,26 @@ describe Projects::PipelinesSettingsController do
           subject
         end
       end
+
+      context 'when auto_devops_conflicts_custom_yml is true' do
+        before do
+          expect_any_instance_of(Projects::UpdateService).to receive(:auto_devops_conflicts_custom_yml?).and_return(true)
+        end
+
+        it 'sets a warning flash' do
+          expect(subject).to set_flash[:warning]
+        end
+      end
+
+      context 'when auto_devops_conflicts_custom_yml is not true' do
+        before do
+          expect_any_instance_of(Projects::UpdateService).to receive(:auto_devops_conflicts_custom_yml?).and_return(false)
+        end
+
+        it 'does not set a warning flash' do
+          expect(subject).not_to set_flash[:warning]
+        end
+      end
     end
   end
 end
