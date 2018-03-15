@@ -32,6 +32,7 @@ contains some settings that are common for all providers.
 - [Auth0](auth0.md)
 - [Authentiq](../administration/auth/authentiq.md)
 - [OAuth2Generic](oauth2_generic.md)
+- [JWT](jwt.md)
 
 ## Initial OmniAuth Configuration
 
