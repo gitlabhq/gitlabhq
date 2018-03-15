@@ -49,7 +49,7 @@
     <button
       type="button"
       class="btn btn-blank multi-file-discard-btn"
-      @click="discardFileChanges(file)"
+      @click="discardFileChanges(file.path)"
     >
       Discard
     </button>

@@ -11,10 +11,21 @@ export const addedFiles = state => state.changedFiles.filter(f => f.tempFile);
 
 export const modifiedFiles = state => state.changedFiles.filter(f => !f.tempFile);
 
-export const treeList = (state) => {
-  const tree = state.trees[`${state.currentProjectId}/master`];
+export const projectsWithTrees = state => Object.keys(state.projects).map((projectId) => {
+  const project = state.projects[projectId];
 
-  if (!tree) return [];
+  return {
+    ...project,
+    branches: Object.keys(project.branches).map((branchId) => {
+      const branch = project.branches[branchId];
 
-  return tree.tree;
-};
+      return {
+        ...branch,
+        tree: state.trees[branch.treeId],
+      };
+    }),
+  };
+});
+
+export const currentIcon = state =>
+  (state.rightPanelCollapsed ? 'angle-double-left' : 'angle-double-right');

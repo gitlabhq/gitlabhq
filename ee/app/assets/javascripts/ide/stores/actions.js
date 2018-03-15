@@ -9,10 +9,10 @@ export const setInitialData = ({ commit }, data) =>
 
 export const discardAllChanges = ({ state, commit, dispatch }) => {
   state.changedFiles.forEach((file) => {
-    commit(types.DISCARD_FILE_CHANGES, file);
+    commit(types.DISCARD_FILE_CHANGES, file.path);
 
     if (file.tempFile) {
-      dispatch('closeFile', file);
+      dispatch('closeFile', file.path);
     }
   });
 
@@ -74,4 +74,3 @@ export const scrollToTab = () => {
 export * from './actions/tree';
 export * from './actions/file';
 export * from './actions/project';
-export * from './actions/branch';

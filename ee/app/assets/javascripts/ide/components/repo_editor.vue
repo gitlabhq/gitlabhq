@@ -6,22 +6,24 @@ import monacoLoader from '../monaco_loader';
 import Editor from '../lib/editor';
 
 export default {
+  props: {
+    file: {
+      type: Object,
+      required: true,
+    },
+  },
   computed: {
-    ...mapGetters([
-      'activeFile',
-    ]),
     ...mapState([
       'leftPanelCollapsed',
       'rightPanelCollapsed',
-      'panelResizing',
     ]),
     shouldHideEditor() {
-      return this.activeFile && this.activeFile.binary && !this.activeFile.raw;
+      return this.file && this.file.binary && !this.file.raw;
     },
   },
   watch: {
-    activeFile(oldVal, newVal) {
-      if (newVal.path !== this.activeFile.path) {
+    file(oldVal, newVal) {
+      if (newVal.path !== this.file.path) {
         this.initMonaco();
       }
     },
@@ -30,11 +32,6 @@ export default {
     },
     rightPanelCollapsed() {
       this.editor.updateDimensions();
-    },
-    panelResizing(isResizing) {
-      if (isResizing === false) {
-        this.editor.updateDimensions();
-      }
     },
   },
   beforeDestroy() {
@@ -64,7 +61,7 @@ export default {
 
       this.editor.clearEditor();
 
-      this.getRawFileData(this.activeFile)
+      this.getRawFileData(this.file)
         .then(() => {
           this.editor.createInstance(this.$refs.editor);
         })
@@ -75,9 +72,9 @@ export default {
         });
     },
     setupEditor() {
-      if (!this.activeFile) return;
+      if (!this.file) return;
 
-      this.model = this.editor.createModel(this.activeFile);
+      this.model = this.editor.createModel(this.file);
 
       this.editor.attachModel(this.model);
 
@@ -101,8 +98,8 @@ export default {
       });
 
       this.editor.setPosition({
-        lineNumber: this.activeFile.editorRow,
-        column: this.activeFile.editorColumn,
+        lineNumber: this.file.editorRow,
+        column: this.file.editorColumn,
       });
 
       // Handle File Language

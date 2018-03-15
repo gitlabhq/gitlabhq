@@ -42,9 +42,6 @@ export const setFileActive = ({ commit, state, getters, dispatch }, path) => {
   commit(types.SET_FILE_ACTIVE, { path, active: true });
   dispatch('scrollToTab');
 
-  // reset hash for line highlighting
-  location.hash = '';
-
   commit(types.SET_CURRENT_PROJECT, file.projectId);
   commit(types.SET_CURRENT_BRANCH, file.branchId);
 };
@@ -141,11 +138,13 @@ export const createTempFile = ({ state, commit, dispatch }, { projectId, branchI
   return Promise.resolve(file);
 };
 
-export const discardFileChanges = ({ commit }, file) => {
-  commit(types.DISCARD_FILE_CHANGES, file);
-  commit(types.REMOVE_FILE_FROM_CHANGED, file);
+export const discardFileChanges = ({ state, commit }, path) => {
+  const file = state.entries[path];
+
+  commit(types.DISCARD_FILE_CHANGES, path);
+  commit(types.REMOVE_FILE_FROM_CHANGED, path);
 
   if (file.tempFile && file.opened) {
-    commit(types.TOGGLE_FILE_OPEN, file.path);
+    commit(types.TOGGLE_FILE_OPEN, path);
   }
 };

@@ -3,9 +3,8 @@
   import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
   import fileIcon from '~/vue_shared/components/file_icon.vue';
   import newDropdown from './new_dropdown/index.vue';
-
-  import fileStatusIcon from 'ee/ide/components/repo_file_status_icon.vue'; // eslint-disable-line import/first
-  import changedFileIcon from 'ee/ide/components/changed_file_icon.vue'; // eslint-disable-line import/first
+  import fileStatusIcon from './repo_file_status_icon.vue';
+  import changedFileIcon from './changed_file_icon.vue';
 
   export default {
     name: 'RepoFile',
@@ -24,39 +23,25 @@
         type: Object,
         required: true,
       },
-      showExtraColumns: {
-        type: Boolean,
-        default: false,
-      },
     },
     computed: {
-      isSubmodule() {
-        return this.file.type === 'submodule';
-      },
       isTree() {
         return this.file.type === 'tree';
       },
-      levelIndentation() {
-        if (this.file.level > 0) {
-          return {
-            marginLeft: `${this.file.level * 16}px`,
-          };
-        }
-        return {};
+      isBlob() {
+        return this.file.type === 'blob';
       },
-      shortId() {
-        return this.file.id.substr(0, 8);
+      levelIndentation() {
+        return {
+          marginLeft: `${this.file.level * 16}px`,
+        };
       },
       fileClass() {
-        if (this.file.type === 'blob') {
-          if (this.file.active) {
-            return 'file-open file-active';
-          }
-          return this.file.opened ? 'file-open' : '';
-        } else if (this.file.type === 'tree') {
-          return 'folder';
-        }
-        return '';
+        return {
+          'file-open': this.isBlob && this.file.opened,
+          'file-active': this.isBlob && this.file.active,
+          'folder': this.isTree,
+        };
       },
     },
     updated() {
@@ -88,21 +73,24 @@
       <div
         class="file-name"
         @click="clickFile(file)"
+        role="button"
       >
-        <a
+        <span
           class="ide-file-name str-truncated"
+          :style="levelIndentation"
         >
           <file-icon
             :file-name="file.name"
             :loading="file.loading"
-            :folder="file.type === 'tree'"
+            :folder="isTree"
             :opened="file.opened"
-            :style="levelIndentation"
             :size="16"
           />
           {{ file.name }}
-          <file-status-icon :file="file" />
-        </a>
+          <file-status-icon
+            :file="file"
+          />
+        </span>
         <new-dropdown
           v-if="isTree"
           :project-id="file.projectId"
@@ -115,17 +103,6 @@
           v-if="file.changed || file.tempFile"
           class="prepend-top-5"
         />
-        <template v-if="isSubmodule && file.id">
-          @
-          <span class="commit-sha">
-            <a
-              @click.stop
-              :href="file.tree_url"
-            >
-              {{ shortId }}
-            </a>
-          </span>
-        </template>
       </div>
     </div>
     <template v-if="file.opened">

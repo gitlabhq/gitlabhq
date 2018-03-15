@@ -59,9 +59,9 @@ export default {
       editorColumn,
     });
   },
-  [types.DISCARD_FILE_CHANGES](state, file) {
-    Object.assign(state.entries[file.path], {
-      content: state.entries[file.path].raw,
+  [types.DISCARD_FILE_CHANGES](state, path) {
+    Object.assign(state.entries[path], {
+      content: state.entries[path].raw,
       changed: false,
     });
   },

@@ -1,5 +1,5 @@
 <script>
-  import { mapState } from 'vuex';
+  import { mapState, mapGetters } from 'vuex';
   import icon from '~/vue_shared/components/icon.vue';
   import panelResizer from '~/vue_shared/components/panel_resizer.vue';
   import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
@@ -17,7 +17,9 @@
     computed: {
       ...mapState([
         'loading',
-        'projects',
+      ]),
+      ...mapGetters([
+        'projectsWithTrees',
       ]),
     },
   };
@@ -40,7 +42,7 @@
         </div>
       </template>
       <project-tree
-        v-for="project in projects"
+        v-for="project in projectsWithTrees"
         :key="project.id"
         :project="project"
       />

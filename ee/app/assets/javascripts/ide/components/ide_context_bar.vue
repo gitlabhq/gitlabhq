@@ -1,5 +1,5 @@
 <script>
-  import { mapState } from 'vuex';
+  import { mapGetters, mapState } from 'vuex';
   import icon from '~/vue_shared/components/icon.vue';
   import panelResizer from '~/vue_shared/components/panel_resizer.vue';
   import repoCommitSection from './repo_commit_section.vue';
@@ -27,9 +27,9 @@
         'changedFiles',
         'rightPanelCollapsed',
       ]),
-      currentIcon() {
-        return this.rightPanelCollapsed ? 'angle-double-left' : 'angle-double-right';
-      },
+      ...mapGetters([
+        'currentIcon',
+      ]),
     },
   };
 </script>

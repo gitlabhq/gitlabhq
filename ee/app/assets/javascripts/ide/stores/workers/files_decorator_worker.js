@@ -27,6 +27,7 @@ self.addEventListener('message', (e) => {
             url: `/${projectId}/tree/${branchId}/${folderPath}`,
             level: parentFolder ? parentFolder.level + 1 : folderLevel,
             type: 'tree',
+            parentTreeUrl: parentFolder ? parentFolder.url : `/${projectId}/tree/${branchId}/`,
           });
 
           Object.assign(acc, {
@@ -58,6 +59,7 @@ self.addEventListener('message', (e) => {
       url: `/${projectId}/blob/${branchId}/${path}`,
       level: fileFolder ? fileFolder.level + 1 : 0,
       type: 'blob',
+      parentTreeUrl: fileFolder ? fileFolder.url : `/${projectId}/blob/${branchId}`,
     });
 
     Object.assign(acc, {

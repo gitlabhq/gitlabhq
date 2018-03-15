@@ -69,6 +69,7 @@
         />
         <repo-editor
           class="multi-file-edit-pane-content"
+          :file="activeFile"
         />
         <repo-file-buttons
           :file="activeFile"

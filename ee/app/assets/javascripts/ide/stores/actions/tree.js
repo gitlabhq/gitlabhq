@@ -10,16 +10,13 @@ import {
 } from '../utils';
 import FilesDecoratorWorker from '../workers/files_decorator_worker';
 
-export const toggleTreeOpen = ({ commit, dispatch }, { tree }) => {
-  commit(types.TOGGLE_TREE_OPEN, tree);
+export const toggleTreeOpen = ({ commit, dispatch }, path) => {
+  commit(types.TOGGLE_TREE_OPEN, path);
 };
 
 export const handleTreeEntryAction = ({ commit, dispatch }, row) => {
   if (row.type === 'tree') {
-    dispatch('toggleTreeOpen', {
-      endpoint: row.url,
-      tree: row,
-    });
+    dispatch('toggleTreeOpen', row.path);
   } else if (row.type === 'submodule') {
     commit(types.TOGGLE_LOADING, { entry: row });
     visitUrl(row.url);
@@ -115,7 +112,7 @@ export const getFiles = (
           const selectedTree = state.trees[`${projectId}/${branchId}`];
 
           commit(types.SET_ENTRIES, entries);
-          commit(types.SET_DIRECTORY_DATA, { tree: selectedTree, data: treeList });
+          commit(types.SET_DIRECTORY_DATA, { treePath: `${projectId}/${branchId}`, data: treeList });
           commit(types.TOGGLE_LOADING, { entry: selectedTree, forceValue: false });
 
           worker.terminate();

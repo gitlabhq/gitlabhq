@@ -40,8 +40,10 @@ export default {
         />
       </div>
     </div>
-    <div>
-      <repo-tree :tree-id="branch.treeId" />
-    </div>
+    <template v-if="branch.tree">
+      <repo-tree
+        :tree="branch.tree"
+      />
+    </template>
   </div>
 </template>
