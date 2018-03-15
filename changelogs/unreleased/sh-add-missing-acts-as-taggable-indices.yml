@@ -1,5 +1,0 @@
----
-title: Adding missing indexes on taggings table
-merge_request:
-author:
-type: performance

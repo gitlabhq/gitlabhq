@@ -2,6 +2,20 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.5.5 (2018-03-15)
+
+### Fixed (3 changes)
+
+- Fix missing uploads after group transfer. !17658
+- Fix code and wiki search results when filename is non-ASCII.
+- Remove double caching of Repository#empty?.
+
+### Performance (2 changes)
+
+- Adding missing indexes on taggings table.
+- Add index on section_name_id on ci_build_trace_sections table.
+
+
 ## 10.5.4 (2018-03-08)
 
 ### Fixed (11 changes)
