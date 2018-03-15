@@ -133,11 +133,11 @@ module EE
     end
 
     def elasticsearch_indexing_column_exists?
-      ActiveRecord::Base.connection.column_exists?(:application_settings, :elasticsearch_indexing)
+      ::Gitlab::Database.cached_column_exists?(:application_settings, :elasticsearch_indexing)
     end
 
     def elasticsearch_search_column_exists?
-      ActiveRecord::Base.connection.column_exists?(:application_settings, :elasticsearch_search)
+      ::Gitlab::Database.cached_column_exists?(:application_settings, :elasticsearch_search)
     end
   end
 end
