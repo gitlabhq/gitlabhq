@@ -95,6 +95,14 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     handle_omniauth
   end
 
+  def auth0
+    if oauth['uid'].blank?
+      fail_auth0_login
+    else
+      handle_omniauth
+    end
+  end
+
   private
 
   def handle_omniauth
@@ -166,6 +174,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def fail_ldap_login
     flash[:alert] = 'Access denied for your LDAP account.'
+
+    redirect_to new_user_session_path
+  end
+
+  def fail_auth0_login
+    flash[:alert] = 'Wrong extern UID provided. Make sure Auth0 is configured correctly.'
 
     redirect_to new_user_session_path
   end
