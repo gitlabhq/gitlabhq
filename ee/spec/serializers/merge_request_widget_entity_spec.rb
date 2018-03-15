@@ -38,7 +38,7 @@ describe MergeRequestWidgetEntity do
     build = create(:ci_build, name: 'sast', pipeline: pipeline)
 
     allow(merge_request).to receive(:expose_sast_data?).and_return(true)
-    allow(merge_request).to receive(:has_base_sast_data?).and_return(true)
+    allow(merge_request).to receive(:base_has_sast_data?).and_return(true)
     allow(merge_request).to receive(:base_sast_artifact).and_return(build)
     allow(merge_request).to receive(:head_sast_artifact).and_return(build)
 

@@ -4,7 +4,7 @@ module Gitlab
       class Config
         class << self
           def options
-            Gitlab.config.omniauth.providers.find { |provider| provider.name == 'saml' }
+            Gitlab::Auth::OAuth::Provider.config_for('saml')
           end
 
           def groups

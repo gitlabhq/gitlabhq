@@ -1,4 +1,5 @@
 <script>
+  import $ from 'jquery';
   import { mapState, mapActions } from 'vuex';
   import flash, { hideFlash } from '~/flash';
   import loadingIcon from '~/vue_shared/components/loading_icon.vue';

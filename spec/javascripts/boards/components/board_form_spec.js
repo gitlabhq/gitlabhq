@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Vue from 'vue';
 
 import boardForm from 'ee/boards/components/board_form.vue';

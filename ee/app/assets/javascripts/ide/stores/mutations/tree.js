@@ -11,6 +11,7 @@ export default {
       trees: Object.assign({}, state.trees, {
         [treePath]: {
           tree: [],
+          loading: true,
         },
       }),
     });

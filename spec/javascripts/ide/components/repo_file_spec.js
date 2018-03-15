@@ -31,7 +31,7 @@ describe('RepoFile', () => {
     spyOn(vm, 'timeFormated').and.returnValue(updated);
     vm.$mount();
 
-    const name = vm.$el.querySelector('.repo-file-name');
+    const name = vm.$el.querySelector('.ide-file-name');
 
     expect(name.href).toMatch('');
     expect(name.textContent.trim()).toEqual(vm.file.name);
@@ -66,7 +66,7 @@ describe('RepoFile', () => {
 
     spyOn(vm, 'clickFile');
 
-    vm.$el.querySelector('td').click();
+    vm.$el.querySelector('.file-name').click();
 
     expect(vm.clickFile).toHaveBeenCalledWith(vm.file);
   });
@@ -89,10 +89,6 @@ describe('RepoFile', () => {
 
     it('renders submodule short ID', () => {
       expect(vm.$el.querySelector('.commit-sha').textContent.trim()).toBe('12345678');
-    });
-
-    it('renders ID next to submodule name', () => {
-      expect(vm.$el.querySelector('td').textContent.replace(/\s+/g, ' ')).toContain('submodule name @ 12345678');
     });
   });
 
@@ -122,7 +118,7 @@ describe('RepoFile', () => {
     });
 
     it('renders a tooltip', () => {
-      expect(vm.$el.querySelector('.repo-file-name span:nth-child(2)').dataset.originalTitle).toContain('Locked by testuser');
+      expect(vm.$el.querySelector('.ide-file-name span:nth-child(2)').dataset.originalTitle).toContain('Locked by testuser');
     });
   });
 });

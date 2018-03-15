@@ -13,7 +13,16 @@ module Gitlab
         end
 
         def diff_files
-          super.tap { |_| store_highlight_cache }
+          # Make sure to _not_ send any method call to Gitlab::Diff::File
+          # _before_ all of them were collected (`super`). Premature method calls will
+          # trigger N+1 RPCs to Gitaly through BatchLoader records (Blob.lazy).
+          #
+          diff_files = super
+
+          diff_files.each { |diff_file| cache_highlight!(diff_file) if cacheable?(diff_file) }
+          store_highlight_cache
+
+          diff_files
         end
 
         def real_size
@@ -21,13 +30,6 @@ module Gitlab
         end
 
         private
-
-        # Extracted method to highlight in the same iteration to the diff_collection.
-        def decorate_diff!(diff)
-          diff_file = super
-          cache_highlight!(diff_file) if cacheable?(diff_file)
-          diff_file
-        end
 
         def highlight_diff_file_from_cache!(diff_file, cache_diff_lines)
           diff_file.highlighted_diff_lines = cache_diff_lines.map do |line|

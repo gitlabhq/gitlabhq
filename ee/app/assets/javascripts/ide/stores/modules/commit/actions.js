@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import { sprintf, __ } from '~/locale';
 import * as rootTypes from 'ee/ide/stores/mutation_types';
 import { createCommitPayload, createNewMergeRequestUrl } from 'ee/ide/stores/utils';

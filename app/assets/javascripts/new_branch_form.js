@@ -1,4 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, one-var, prefer-rest-params, max-len, vars-on-top, wrap-iife, consistent-return, comma-dangle, one-var-declaration-per-line, quotes, no-return-assign, prefer-arrow-callback, prefer-template, no-shadow, no-else-return, max-len, object-shorthand */
+
+import $ from 'jquery';
 import RefSelectDropdown from './ref_select_dropdown';
 
 export default class NewBranchForm {

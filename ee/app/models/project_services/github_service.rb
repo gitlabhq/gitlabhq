@@ -4,6 +4,8 @@ class GithubService < Service
 
   prop_accessor :token, :repository_url
 
+  delegate :api_url, :owner, :repository_name, to: :remote_project
+
   validates :token, presence: true, if: :activated?
   validates :repository_url, url: true, allow_blank: true
 
@@ -76,30 +78,10 @@ class GithubService < Service
     { success: true, result: result }
   end
 
-  def api_url
-    if github_host == 'github.com'
-      'https://api.github.com'
-    else
-      "#{repository_uri.scheme}://#{github_host}/api/v3"
-    end
-  end
-
-  def owner
-    repository_uri.path.split('/')[1]
-  end
-
-  def repository_name
-    repository_uri.path.split('/')[2]
-  end
-
   private
 
-  def github_host
-    repository_uri.host
-  end
-
-  def repository_uri
-    URI.parse(repository_url)
+  def remote_project
+    RemoteProject.new(repository_url)
   end
 
   def disabled?

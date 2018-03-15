@@ -14,7 +14,7 @@ called `dast`:
 
 ```yaml
 dast:
-  image: owasp/zap2docker-stable
+  image: registry.gitlab.com/gitlab-org/security-products/zaproxy
   variables:
     website: "https://example.com"
   script:
@@ -29,6 +29,27 @@ The above example will create a `dast` job in your CI/CD pipeline which will run
 the tests on the URL defined in the `website` variable (change it to use your
 own) and finally write the results in the `gl-dast-report.json` file. You can
 then download and analyze the report artifact in JSON format.
+
+It's also possible to authenticate the user before performing DAST checks:
+
+```yaml
+dast:
+  image: registry.gitlab.com/gitlab-org/security-products/zaproxy
+  variables:
+    website: "https://example.com"
+    login_url: "https://example.com/sign-in"
+  script:
+    - mkdir /zap/wrk/
+    - /zap/zap-baseline.py -J gl-dast-report.json -t $website \
+        --auth-url $login_url \
+        --auth-username "john.doe@example.com" \
+        --auth-password "john-doe-password" || true
+    - cp /zap/wrk/gl-dast-report.json .
+  artifacts:
+    paths: [gl-dast-report.json]
+```
+See [zaproxy documentation](https://gitlab.com/gitlab-org/security-products/zaproxy)
+to learn more about authentication settings.
 
 TIP: **Tip:**
 Starting with [GitLab Ultimate][ee] 10.4, this information will

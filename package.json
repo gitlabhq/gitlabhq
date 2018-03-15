@@ -8,11 +8,11 @@
     "karma": "karma start config/karma.config.js --single-run",
     "karma-coverage": "BABEL_ENV=coverage karma start config/karma.config.js --single-run",
     "karma-start": "karma start config/karma.config.js",
-    "svg": "node config/svg.config.js",
     "webpack": "webpack --config config/webpack.config.js",
     "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js"
   },
   "dependencies": {
+    "@gitlab-org/gitlab-svgs": "^1.14.0",
     "autosize": "^4.0.0",
     "axios": "^0.17.1",
     "babel-core": "^6.26.0",
@@ -93,7 +93,6 @@
     "worker-loader": "^1.1.0"
   },
   "devDependencies": {
-    "@gitlab-org/gitlab-svgs": "^1.8.0",
     "axios-mock-adapter": "^1.10.0",
     "babel-eslint": "^8.0.2",
     "babel-plugin-istanbul": "^4.1.5",

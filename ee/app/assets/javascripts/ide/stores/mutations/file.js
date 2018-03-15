@@ -24,12 +24,12 @@ export default {
   },
   [types.SET_FILE_DATA](state, { data, file }) {
     Object.assign(file, {
+      id: data.id,
       blamePath: data.blame_path,
       commitsPath: data.commits_path,
       permalink: data.permalink,
       rawPath: data.raw_path,
       binary: data.binary,
-      html: data.html,
       renderError: data.render_error,
     });
   },

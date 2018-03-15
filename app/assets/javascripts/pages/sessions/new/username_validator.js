@@ -1,5 +1,6 @@
 /* eslint-disable comma-dangle, consistent-return, class-methods-use-this, arrow-parens, no-param-reassign, max-len */
 
+import $ from 'jquery';
 import _ from 'underscore';
 import axios from '~/lib/utils/axios_utils';
 import flash from '~/flash';

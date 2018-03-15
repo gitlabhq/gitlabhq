@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import U2FRegister from '~/u2f/register';
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Vue from 'vue';
 import SidebarTimeTracking from './components/time_tracking/sidebar_time_tracking';
 import SidebarAssignees from './components/assignees/sidebar_assignees.vue';

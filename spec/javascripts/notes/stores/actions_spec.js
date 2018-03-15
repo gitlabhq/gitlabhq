@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import _ from 'underscore';
+import { headersInterceptor } from 'spec/helpers/vue_resource_helper';
 import * as actions from '~/notes/stores/actions';
 import store from '~/notes/stores';
 import testAction from '../../helpers/vuex_action_helper';
@@ -87,6 +88,7 @@ describe('Actions Notes Store', () => {
         store.dispatch('closeIssue', { notesData: { closeIssuePath: '' } })
           .then(() => {
             expect(store.state.noteableData.state).toEqual('closed');
+            expect(store.state.isToggleStateButtonLoading).toEqual(false);
             done();
           })
           .catch(done.fail);
@@ -98,6 +100,7 @@ describe('Actions Notes Store', () => {
         store.dispatch('reopenIssue', { notesData: { reopenIssuePath: '' } })
           .then(() => {
             expect(store.state.noteableData.state).toEqual('reopened');
+            expect(store.state.isToggleStateButtonLoading).toEqual(false);
             done();
           })
           .catch(done.fail);
@@ -116,6 +119,20 @@ describe('Actions Notes Store', () => {
     });
   });
 
+  describe('toggleStateButtonLoading', () => {
+    it('should set loading as true', (done) => {
+      testAction(actions.toggleStateButtonLoading, true, {}, [
+        { type: 'TOGGLE_STATE_BUTTON_LOADING', payload: true },
+      ], done);
+    });
+
+    it('should set loading as false', (done) => {
+      testAction(actions.toggleStateButtonLoading, false, {}, [
+        { type: 'TOGGLE_STATE_BUTTON_LOADING', payload: false },
+      ], done);
+    });
+  });
+
   describe('toggleIssueLocalState', () => {
     it('sets issue state as closed', (done) => {
       testAction(actions.toggleIssueLocalState, 'closed', {}, [
@@ -127,6 +144,70 @@ describe('Actions Notes Store', () => {
       testAction(actions.toggleIssueLocalState, 'reopened', {}, [
         { type: 'REOPEN_ISSUE', payload: 'reopened' },
       ], done);
+    });
+  });
+
+  describe('poll', () => {
+    beforeEach((done) => {
+      jasmine.clock().install();
+
+      spyOn(Vue.http, 'get').and.callThrough();
+
+      store.dispatch('setNotesData', notesDataMock)
+        .then(done)
+        .catch(done.fail);
+    });
+
+    afterEach(() => {
+      jasmine.clock().uninstall();
+    });
+
+    it('calls service with last fetched state', (done) => {
+      const interceptor = (request, next) => {
+        next(request.respondWith(JSON.stringify({
+          notes: [],
+          last_fetched_at: '123456',
+        }), {
+          status: 200,
+          headers: {
+            'poll-interval': '1000',
+          },
+        }));
+      };
+
+      Vue.http.interceptors.push(interceptor);
+      Vue.http.interceptors.push(headersInterceptor);
+
+      store.dispatch('poll')
+        .then(() => new Promise(resolve => requestAnimationFrame(resolve)))
+        .then(() => {
+          expect(Vue.http.get).toHaveBeenCalledWith(jasmine.anything(), {
+            url: jasmine.anything(),
+            method: 'get',
+            headers: {
+              'X-Last-Fetched-At': undefined,
+            },
+          });
+          expect(store.state.lastFetchedAt).toBe('123456');
+
+          jasmine.clock().tick(1500);
+        })
+        .then(() => new Promise((resolve) => {
+          requestAnimationFrame(resolve);
+        }))
+        .then(() => {
+          expect(Vue.http.get.calls.count()).toBe(2);
+          expect(Vue.http.get.calls.mostRecent().args[1].headers).toEqual({
+            'X-Last-Fetched-At': '123456',
+          });
+        })
+        .then(() => store.dispatch('stopPolling'))
+        .then(() => {
+          Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+          Vue.http.interceptors = _.without(Vue.http.interceptors, headersInterceptor);
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 });

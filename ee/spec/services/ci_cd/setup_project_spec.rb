@@ -25,8 +25,6 @@ describe CiCd::SetupProject do
 
     project_feature = project.project_feature
 
-    expect(project.container_registry_enabled).to be_falsey
-
     expect(project_feature).not_to be_issues_enabled
     expect(project_feature).not_to be_merge_requests_enabled
     expect(project_feature).not_to be_wiki_enabled

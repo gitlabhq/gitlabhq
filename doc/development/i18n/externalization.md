@@ -45,7 +45,7 @@ We basically have 4 types of files:
 1. Ruby files: basically Models and Controllers.
 1. HAML files: these are the view files.
 1. ERB files: used for email templates.
-1. JavaScript files: we mostly need to work with VUE JS templates.
+1. JavaScript files: we mostly need to work with Vue templates.
 
 ### Ruby files
 

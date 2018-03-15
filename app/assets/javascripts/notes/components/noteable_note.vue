@@ -1,4 +1,5 @@
 <script>
+  import $ from 'jquery';
   import { mapGetters, mapActions } from 'vuex';
   import { escape } from 'underscore';
   import Flash from '../../flash';

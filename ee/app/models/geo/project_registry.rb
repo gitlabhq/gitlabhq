@@ -81,24 +81,24 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
   private
 
   def never_synced_repository?
-    last_repository_successful_sync_at.nil?
+    last_repository_synced_at.nil?
   end
 
   def never_synced_wiki?
-    last_wiki_successful_sync_at.nil?
+    last_wiki_synced_at.nil?
   end
 
   def repository_sync_needed?(timestamp)
     return false unless resync_repository?
     return false if repository_retry_at && timestamp < repository_retry_at
 
-    last_repository_synced_at.nil? || timestamp > last_repository_synced_at
+    last_repository_synced_at && timestamp > last_repository_synced_at
   end
 
   def wiki_sync_needed?(timestamp)
     return false unless resync_wiki?
     return false if wiki_retry_at && timestamp < wiki_retry_at
 
-    last_wiki_synced_at.nil? || timestamp > last_wiki_synced_at
+    last_wiki_synced_at && timestamp > last_wiki_synced_at
   end
 end

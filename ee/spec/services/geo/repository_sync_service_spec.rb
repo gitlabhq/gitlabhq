@@ -309,6 +309,9 @@ describe Geo::RepositorySyncService do
             force_to_redownload_repository: true
           )
 
+          expect(project.repository).to receive(:expire_exists_cache).twice.and_call_original
+          expect(subject).not_to receive(:fail_registry!)
+
           subject.execute
         end
       end

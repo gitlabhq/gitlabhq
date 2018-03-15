@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Cookies from 'js-cookie';
 import _ from 'underscore';
 import bp from './breakpoints';

@@ -202,3 +202,23 @@ export const createCommitPayload = (branch, newBranch, state, rootState) => ({
 
 export const createNewMergeRequestUrl = (projectUrl, source, target) =>
   `${projectUrl}/merge_requests/new?merge_request[source_branch]=${source}&merge_request[target_branch]=${target}`;
+
+const sortTreesByTypeAndName = (a, b) => {
+  if (a.type === 'tree' && b.type === 'blob') {
+    return -1;
+  } else if (a.type === 'blob' && b.type === 'tree') {
+    return 1;
+  }
+  if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+  if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+  return 0;
+};
+
+export const sortTree = (sortedTree) => {
+  sortedTree.forEach((el) => {
+    Object.assign(el, {
+      tree: el && el.tree ? sortTree(el.tree) : [],
+    });
+  });
+  return sortedTree.sort(sortTreesByTypeAndName);
+};

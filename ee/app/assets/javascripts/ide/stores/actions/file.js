@@ -49,7 +49,7 @@ export const setFileActive = ({ commit, state, getters, dispatch }, file) => {
 };
 
 export const getFileData = ({ state, commit, dispatch }, file) => {
-  commit(types.TOGGLE_LOADING, file);
+  commit(types.TOGGLE_LOADING, { entry: file });
 
   service.getFileData(file.url)
     .then((res) => {
@@ -63,10 +63,10 @@ export const getFileData = ({ state, commit, dispatch }, file) => {
       commit(types.SET_FILE_DATA, { data, file });
       commit(types.TOGGLE_FILE_OPEN, file);
       dispatch('setFileActive', file);
-      commit(types.TOGGLE_LOADING, file);
+      commit(types.TOGGLE_LOADING, { entry: file });
     })
     .catch(() => {
-      commit(types.TOGGLE_LOADING, file);
+      commit(types.TOGGLE_LOADING, { entry: file });
       flash('Error loading file data. Please try again.', 'alert', document, null, false, true);
     });
 };

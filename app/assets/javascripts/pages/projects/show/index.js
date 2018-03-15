@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import ShortcutsNavigation from '~/shortcuts_navigation';
 import NotificationsForm from '~/notifications_form';
 import UserCallout from '~/user_callout';

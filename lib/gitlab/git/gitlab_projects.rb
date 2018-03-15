@@ -67,7 +67,7 @@ module Gitlab
         tags_option = tags ? '--tags' : '--no-tags'
 
         logger.info "Fetching remote #{name} for repository #{repository_absolute_path}."
-        cmd = %W(git fetch #{name} --quiet)
+        cmd = %W(#{git_fetch_binary} fetch #{name} --quiet)
         cmd << '--prune' if prune
         cmd << '--force' if force
         cmd << tags_option
@@ -83,9 +83,19 @@ module Gitlab
         end
       end
 
+      # This is a workaround for Geo until we can ship git 2.16
+      # See https://gitlab.com/gitlab-org/gitlab-ee/issues/5214
+      def git_fetch_binary
+        if ENV['USE_SYSTEM_GIT_FOR_FETCH'] == '1'
+          '/usr/bin/git'
+        else
+          Gitlab.config.git.bin_path
+        end
+      end
+
       def push_branches(remote_name, timeout, force, branch_names)
         logger.info "Pushing branches from #{repository_absolute_path} to remote #{remote_name}: #{branch_names}"
-        cmd = %w(git push)
+        cmd = %W(#{Gitlab.config.git.bin_path} push)
         cmd << '--force' if force
         cmd += %W(-- #{remote_name}).concat(branch_names)
 
@@ -102,7 +112,7 @@ module Gitlab
         branches = branch_names.map { |branch_name| ":#{branch_name}" }
 
         logger.info "Pushing deleted branches from #{repository_absolute_path} to remote #{remote_name}: #{branch_names}"
-        cmd = %W(git push -- #{remote_name}).concat(branches)
+        cmd = %W(#{Gitlab.config.git.bin_path} push -- #{remote_name}).concat(branches)
 
         success = run(cmd, repository_absolute_path)
 
@@ -143,7 +153,7 @@ module Gitlab
       end
 
       def remove_origin_in_repo
-        cmd = %w(git remote rm origin)
+        cmd = %W(#{Gitlab.config.git.bin_path} remote rm origin)
         run(cmd, repository_absolute_path)
       end
 
@@ -223,7 +233,7 @@ module Gitlab
         masked_source = mask_password_in_url(source)
 
         logger.info "Importing project from <#{masked_source}> to <#{repository_absolute_path}>."
-        cmd = %W(git clone --bare -- #{source} #{repository_absolute_path})
+        cmd = %W(#{Gitlab.config.git.bin_path} clone --bare -- #{source} #{repository_absolute_path})
 
         success = run_with_timeout(cmd, timeout, nil)
 
@@ -266,7 +276,7 @@ module Gitlab
         FileUtils.mkdir_p(File.dirname(to_path), mode: 0770)
 
         logger.info "Forking repository from <#{from_path}> to <#{to_path}>."
-        cmd = %W(git clone --bare --no-local -- #{from_path} #{to_path})
+        cmd = %W(#{Gitlab.config.git.bin_path} clone --bare --no-local -- #{from_path} #{to_path})
 
         run(cmd, nil) && Gitlab::Git::Repository.create_hooks(to_path, global_hooks_path)
       end

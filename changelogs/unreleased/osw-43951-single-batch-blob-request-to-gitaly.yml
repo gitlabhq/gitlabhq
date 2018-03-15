@@ -1,0 +1,5 @@
+---
+title: Submit a single batch blob RPC to Gitaly per HTTP request when viewing diffs
+merge_request:
+author:
+type: performance

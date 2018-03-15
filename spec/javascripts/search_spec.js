@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Api from '~/api';
 import Search from '~/pages/search/show/search';
 

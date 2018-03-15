@@ -1,5 +1,6 @@
 /* global CommentsStore */
 
+import $ from 'jquery';
 import Vue from 'vue';
 import collapseIcon from '../icons/collapse_icon.svg';
 import Notes from '../../notes';

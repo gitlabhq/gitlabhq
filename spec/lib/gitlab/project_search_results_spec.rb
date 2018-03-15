@@ -108,14 +108,26 @@ describe Gitlab::ProjectSearchResults do
 
       context 'when the search returns non-ASCII data' do
         context 'with UTF-8' do
-          let(:results) { project.repository.search_files_by_content("файл", 'master') }
+          let(:results) { project.repository.search_files_by_content('файл', 'master') }
 
           it 'returns results as UTF-8' do
             expect(subject.filename).to eq('encoding/russian.rb')
             expect(subject.basename).to eq('encoding/russian')
             expect(subject.ref).to eq('master')
             expect(subject.startline).to eq(1)
-            expect(subject.data).to eq("Хороший файл")
+            expect(subject.data).to eq('Хороший файл')
+          end
+        end
+
+        context 'with UTF-8 in the filename' do
+          let(:results) { project.repository.search_files_by_content('webhook', 'master') }
+
+          it 'returns results as UTF-8' do
+            expect(subject.filename).to eq('encoding/テスト.txt')
+            expect(subject.basename).to eq('encoding/テスト')
+            expect(subject.ref).to eq('master')
+            expect(subject.startline).to eq(3)
+            expect(subject.data).to include('WebHookの確認')
           end
         end
 

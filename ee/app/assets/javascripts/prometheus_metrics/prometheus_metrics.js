@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import _ from 'underscore';
 import PrometheusMetrics from '~/prometheus_metrics/prometheus_metrics';
 import PANEL_STATE from '~/prometheus_metrics/constants';

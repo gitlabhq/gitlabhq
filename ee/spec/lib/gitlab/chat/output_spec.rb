@@ -71,6 +71,14 @@ describe Gitlab::Chat::Output do
       expect(output.without_executed_command_line("hello\nworld"))
         .to eq('world')
     end
+
+    it 'returns an empty String when the input is empty' do
+      expect(output.without_executed_command_line('')).to eq('')
+    end
+
+    it 'returns an empty String when the input consits of a single newline' do
+      expect(output.without_executed_command_line("\n")).to eq('')
+    end
   end
 
   describe '#find_build_trace_section' do

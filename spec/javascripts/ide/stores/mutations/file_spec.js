@@ -49,7 +49,6 @@ describe('Multi-file store file mutations', () => {
           permalink: 'permalink',
           raw_path: 'raw',
           binary: true,
-          html: 'html',
           render_error: 'render_error',
         },
         file: localFile,
@@ -60,7 +59,6 @@ describe('Multi-file store file mutations', () => {
       expect(localFile.permalink).toBe('permalink');
       expect(localFile.rawPath).toBe('raw');
       expect(localFile.binary).toBeTruthy();
-      expect(localFile.html).toBe('html');
       expect(localFile.renderError).toBe('render_error');
     });
   });

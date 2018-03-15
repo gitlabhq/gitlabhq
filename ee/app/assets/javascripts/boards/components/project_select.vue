@@ -1,5 +1,7 @@
 <script>
   /* global ListIssue */
+
+  import $ from 'jquery';
   import _ from 'underscore';
   import eventHub from '~/boards/eventhub';
   import loadingIcon from '~/vue_shared/components/loading_icon.vue';

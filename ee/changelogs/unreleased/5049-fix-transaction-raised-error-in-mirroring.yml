@@ -1,6 +1,0 @@
----
-title: Supresses error being raised due to async remote removal being run outside
-  a transaction
-merge_request: 4747
-author:
-type: fixed

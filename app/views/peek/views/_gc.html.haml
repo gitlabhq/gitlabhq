@@ -1,0 +1,7 @@
+- local_assigns.fetch(:view)
+
+%span.bold
+  %span{ title: 'Invoke Time', data: { defer_to: "#{view.defer_key}-gc_time" } }...
+  \/
+  %span{ title: 'Invoke Count', data: { defer_to: "#{view.defer_key}-invokes" } }...
+gc

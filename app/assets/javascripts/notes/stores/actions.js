@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Visibility from 'visibilityjs';
 import Flash from '../../flash';
 import Poll from '../../lib/utils/poll';
@@ -70,21 +71,32 @@ export const toggleResolveNote = ({ commit }, { endpoint, isResolved, discussion
     commit(mutationType, res);
   });
 
-export const closeIssue = ({ commit, dispatch, state }) => service
+export const closeIssue = ({ commit, dispatch, state }) => {
+  dispatch('toggleStateButtonLoading', true);
+  return service
   .toggleIssueState(state.notesData.closePath)
   .then(res => res.json())
   .then((data) => {
     commit(types.CLOSE_ISSUE);
     dispatch('emitStateChangedEvent', data);
+    dispatch('toggleStateButtonLoading', false);
   });
+};
 
-export const reopenIssue = ({ commit, dispatch, state }) => service
+export const reopenIssue = ({ commit, dispatch, state }) => {
+  dispatch('toggleStateButtonLoading', true);
+  return service
   .toggleIssueState(state.notesData.reopenPath)
   .then(res => res.json())
   .then((data) => {
     commit(types.REOPEN_ISSUE);
     dispatch('emitStateChangedEvent', data);
+    dispatch('toggleStateButtonLoading', false);
   });
+};
+
+export const toggleStateButtonLoading = ({ commit }, value) =>
+  commit(types.TOGGLE_STATE_BUTTON_LOADING, value);
 
 export const emitStateChangedEvent = ({ commit, getters }, data) => {
   const event = new CustomEvent('issuable_vue_app:change', { detail: {
@@ -197,18 +209,16 @@ const pollSuccessCallBack = (resp, commit, state, getters) => {
     });
   }
 
-  commit(types.SET_LAST_FETCHED_AT, resp.lastFetchedAt);
+  commit(types.SET_LAST_FETCHED_AT, resp.last_fetched_at);
 
   return resp;
 };
 
 export const poll = ({ commit, state, getters }) => {
-  const requestData = { endpoint: state.notesData.notesPath, lastFetchedAt: state.lastFetchedAt };
-
   eTagPoll = new Poll({
     resource: service,
     method: 'poll',
-    data: requestData,
+    data: state,
     successCallback: resp => resp.json()
       .then(data => pollSuccessCallBack(data, commit, state, getters)),
     errorCallback: () => Flash('Something went wrong while fetching latest comments.'),
@@ -217,7 +227,7 @@ export const poll = ({ commit, state, getters }) => {
   if (!Visibility.hidden()) {
     eTagPoll.makeRequest();
   } else {
-    service.poll(requestData);
+    service.poll(state);
   }
 
   Visibility.change(() => {

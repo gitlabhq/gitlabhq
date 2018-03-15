@@ -125,7 +125,7 @@ The following guide assumes that:
     ##
     ## Public address
     ##
-    echo "External address: $(curl ipinfo.io/ip)"
+    echo "External address: $(curl --silent ipinfo.io/ip)"
     ```
 
     In most cases, the following addresses will be used to configure GitLab

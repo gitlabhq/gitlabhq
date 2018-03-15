@@ -1,4 +1,6 @@
 /* eslint-disable class-methods-use-this */
+
+import $ from 'jquery';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
 import { __ } from './locale';

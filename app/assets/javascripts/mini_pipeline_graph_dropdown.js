@@ -1,4 +1,6 @@
 /* eslint-disable no-new */
+
+import $ from 'jquery';
 import flash from './flash';
 import axios from './lib/utils/axios_utils';
 

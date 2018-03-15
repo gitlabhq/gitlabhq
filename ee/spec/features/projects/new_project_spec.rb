@@ -139,6 +139,12 @@ feature 'New project' do
         expect(created_project.project_feature).not_to be_issues_enabled
       end
 
+      it 'new GitHub CI/CD project page has link to status page with ?ci_cd_only=true param' do
+        visit new_import_github_path(ci_cd_only: true)
+
+        expect(page).to have_link('List your GitHub repositories', href: status_import_github_path(ci_cd_only: true))
+      end
+
       it 'stays on GitHub import page after access token failure' do
         visit new_project_path
         find('#ci-cd-project-tab').click

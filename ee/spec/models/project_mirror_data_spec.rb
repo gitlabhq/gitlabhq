@@ -50,12 +50,12 @@ describe ProjectMirrorData, type: :model do
 
     context 'when base delay is lower than mirror_max_delay' do
       before do
-        mirror_data.last_update_started_at = timestamp - 1.minute
+        mirror_data.last_update_started_at = timestamp - 2.minutes
       end
 
       context 'when retry count is 0' do
         it 'applies transition successfully' do
-          expect_next_execution_timestamp(mirror_data, timestamp + 26.minutes)
+          expect_next_execution_timestamp(mirror_data, timestamp + 52.minutes)
         end
       end
 
@@ -64,7 +64,7 @@ describe ProjectMirrorData, type: :model do
           mirror_data.retry_count = 2
           mirror_data.increment_retry_count
 
-          expect_next_execution_timestamp(mirror_data, timestamp + 78.minutes)
+          expect_next_execution_timestamp(mirror_data, timestamp + 156.minutes)
         end
       end
     end
@@ -76,6 +76,12 @@ describe ProjectMirrorData, type: :model do
         allow(Gitlab::Mirror).to receive(:rand).and_return(mirror_jitter)
       end
 
+      context 'when last_update_started_at is nil' do
+        it 'applies transition successfully' do
+          expect_next_execution_timestamp(mirror_data, timestamp + 30.minutes + mirror_jitter)
+        end
+      end
+
       context 'when base delay is lower than mirror min_delay' do
         before do
           mirror_data.last_update_started_at = timestamp - 1.second
@@ -83,7 +89,7 @@ describe ProjectMirrorData, type: :model do
 
         context 'when resetting retry count' do
           it 'applies transition successfully' do
-            expect_next_execution_timestamp(mirror_data, timestamp + 15.minutes + mirror_jitter)
+            expect_next_execution_timestamp(mirror_data, timestamp + 30.minutes + mirror_jitter)
           end
         end
 
@@ -92,7 +98,7 @@ describe ProjectMirrorData, type: :model do
             mirror_data.retry_count = 3
             mirror_data.increment_retry_count
 
-            expect_next_execution_timestamp(mirror_data, timestamp + 62.minutes)
+            expect_next_execution_timestamp(mirror_data, timestamp + 122.minutes)
           end
         end
       end

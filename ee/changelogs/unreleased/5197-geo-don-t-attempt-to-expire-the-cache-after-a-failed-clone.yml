@@ -1,0 +1,5 @@
+---
+title: 'Fix ''Geo: Don''t attempt to expire the cache after a failed clone'''
+merge_request:
+author:
+type: fixed

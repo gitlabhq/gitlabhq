@@ -138,7 +138,7 @@ sast:container:
 dast:
   stage: dast
   allow_failure: true
-  image: owasp/zap2docker-stable
+  image: registry.gitlab.com/gitlab-org/security-products/zaproxy
   variables:
     POSTGRES_DB: "false"
   script:
