@@ -18,28 +18,7 @@
       .hint
         Maximum file size is 1MB. Pages are optimized for a 28px tall header logo
 
-  %fieldset.system_header_footer
-    %legend
-      System header and footer:
-    .form-group
-      = f.label :header_message, 'Header message', class: 'control-label'
-      .col-sm-10
-        = f.text_area :header_message, placeholder: 'State your message to activate', class: "form-control js-autosize"
-    .form-group
-      = f.label :footer_message, 'Footer message', class: 'control-label'
-      .col-sm-10
-        = f.text_area :footer_message, placeholder: 'State your message to activate', class: "form-control js-autosize"
-    .form-group.js-toggle-colors-container
-      .col-sm-10.col-sm-offset-2
-        = link_to 'Customize colors', '#', class: 'js-toggle-colors-link'
-    .form-group.js-toggle-colors-container.hide
-      = f.label :background_color, "Background Color", class: 'control-label'
-      .col-sm-10
-        = f.color_field :background_color, class: "form-control"
-    .form-group.js-toggle-colors-container.hide
-      = f.label :font_color, "Font Color", class: 'control-label'
-      .col-sm-10
-        = f.color_field :font_color, class: "form-control"
+  = render partial: 'admin/appearances/ee/form', locals: { form: f }
 
   %fieldset.sign-in
     %legend

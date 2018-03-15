@@ -1,4 +1,6 @@
 class Admin::AppearancesController < Admin::ApplicationController
+  prepend EE::Admin::AppearancesController
+
   before_action :set_appearance, except: :create
 
   def show
@@ -50,7 +52,11 @@ class Admin::AppearancesController < Admin::ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def appearance_params
-    params.require(:appearance).permit(%i(
+    params.require(:appearance).permit(appearance_params_attributes)
+  end
+
+  def appearance_params_attributes
+    %i[
       title
       description
       logo
@@ -59,10 +65,6 @@ class Admin::AppearancesController < Admin::ApplicationController
       header_logo_cache
       new_project_guidelines
       updated_by
-      header_message
-      footer_message
-      background_color
-      font_color
-    ))
+    ]
   end
 end
