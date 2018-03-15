@@ -69,13 +69,14 @@ module Gitlab
     # name - project disk path
     #
     # Ex.
-    #   add_repository("/path/to/storage", "gitlab/gitlab-ci")
+    #   create_repository("/path/to/storage", "gitlab/gitlab-ci")
     #
-    def add_repository(storage, name)
+    def create_repository(storage, name)
       relative_path = name.dup
       relative_path << '.git' unless relative_path.end_with?('.git')
 
-      gitaly_migrate(:create_repository) do |is_enabled|
+      gitaly_migrate(:create_repository,
+                     status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
         if is_enabled
           repository = Gitlab::Git::Repository.new(storage, relative_path, '')
           repository.gitaly_repository_client.create_repository
@@ -85,7 +86,7 @@ module Gitlab
           Gitlab::Git::Repository.create(repo_path, bare: true, symlink_hooks_to: gitlab_shell_hooks_path)
         end
       end
-    rescue => err
+    rescue => err # Once the Rugged codes gets removes this can be improved
       Rails.logger.error("Failed to add repository #{storage}/#{name}: #{err}")
       false
     end
@@ -487,8 +488,8 @@ module Gitlab
       Gitlab.config.gitlab_shell.git_timeout
     end
 
-    def gitaly_migrate(method, &block)
-      Gitlab::GitalyClient.migrate(method, &block)
+    def gitaly_migrate(method, status: Gitlab::GitalyClient::MigrationStatus::OPT_IN, &block)
+      Gitlab::GitalyClient.migrate(method, status: status, &block)
     rescue GRPC::NotFound, GRPC::BadStatus => e
       # Old Popen code returns [Error, output] to the caller, so we
       # need to do the same here...

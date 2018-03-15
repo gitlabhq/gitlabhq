@@ -173,7 +173,7 @@ module Geo
     end
 
     def build_temporary_repository
-      unless gitlab_shell.add_repository(project.repository_storage, disk_path_temp)
+      unless gitlab_shell.create_repository(project.repository_storage, disk_path_temp)
         raise Gitlab::Shell::Error, 'Can not create a temporary repository'
       end
 

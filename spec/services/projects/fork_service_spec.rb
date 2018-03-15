@@ -108,7 +108,7 @@ describe Projects::ForkService do
         let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
 
         before do
-          gitlab_shell.add_repository(repository_storage, "#{@to_user.namespace.full_path}/#{@from_project.path}")
+          gitlab_shell.create_repository(repository_storage, "#{@to_user.namespace.full_path}/#{@from_project.path}")
         end
 
         after do
