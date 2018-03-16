@@ -1,67 +1,69 @@
 <script>
-  import { mapGetters } from 'vuex';
-  import resolveSvg from 'icons/_icon_resolve_discussion.svg';
-  import resolvedSvg from 'icons/_icon_status_success_solid.svg';
-  import mrIssueSvg from 'icons/_icon_mr_issue.svg';
-  import nextDiscussionSvg from 'icons/_next_discussion.svg';
-  import { pluralize } from '../../lib/utils/text_utility';
-  import { scrollToElement } from '../../lib/utils/common_utils';
-  import tooltip from '../../vue_shared/directives/tooltip';
+import { mapGetters } from 'vuex';
+import resolveSvg from 'icons/_icon_resolve_discussion.svg';
+import resolvedSvg from 'icons/_icon_status_success_solid.svg';
+import mrIssueSvg from 'icons/_icon_mr_issue.svg';
+import nextDiscussionSvg from 'icons/_next_discussion.svg';
+import { pluralize } from '../../lib/utils/text_utility';
+import { scrollToElement } from '../../lib/utils/common_utils';
+import tooltip from '../../vue_shared/directives/tooltip';
 
-  export default {
-    directives: {
-      tooltip,
+export default {
+  directives: {
+    tooltip,
+  },
+  computed: {
+    ...mapGetters([
+      'getUserData',
+      'getNoteableData',
+      'discussionCount',
+      'unresolvedDiscussions',
+      'resolvedDiscussionCount',
+    ]),
+    isLoggedIn() {
+      return this.getUserData.id;
     },
-    computed: {
-      ...mapGetters([
-        'getUserData',
-        'getNoteableData',
-        'discussionCount',
-        'unresolvedDiscussions',
-        'resolvedDiscussionCount',
-      ]),
-      isLoggedIn() {
-        return this.getUserData.id;
-      },
-      hasNextButton() {
-        return this.isLoggedIn && !this.allResolved;
-      },
-      countText() {
-        return pluralize('discussion', this.discussionCount);
-      },
-      allResolved() {
-        return this.resolvedDiscussionCount === this.discussionCount;
-      },
-      resolveAllDiscussionsIssuePath() {
-        return this.getNoteableData.create_issue_to_resolve_discussions_path;
-      },
-      firstUnresolvedDiscussionId() {
-        const item = this.unresolvedDiscussions[0] || {};
+    hasNextButton() {
+      return this.isLoggedIn && !this.allResolved;
+    },
+    countText() {
+      return pluralize('discussion', this.discussionCount);
+    },
+    allResolved() {
+      return this.resolvedDiscussionCount === this.discussionCount;
+    },
+    resolveAllDiscussionsIssuePath() {
+      return this.getNoteableData.create_issue_to_resolve_discussions_path;
+    },
+    firstUnresolvedDiscussionId() {
+      const item = this.unresolvedDiscussions[0] || {};
 
-        return item.id;
-      },
+      return item.id;
     },
-    created() {
-      this.resolveSvg = resolveSvg;
-      this.resolvedSvg = resolvedSvg;
-      this.mrIssueSvg = mrIssueSvg;
-      this.nextDiscussionSvg = nextDiscussionSvg;
-    },
-    methods: {
-      jumpToFirstDiscussion() {
-        const el = document.querySelector(`[data-discussion-id="${this.firstUnresolvedDiscussionId}"]`);
-        const activeTab = window.mrTabs.currentAction;
+  },
+  created() {
+    this.resolveSvg = resolveSvg;
+    this.resolvedSvg = resolvedSvg;
+    this.mrIssueSvg = mrIssueSvg;
+    this.nextDiscussionSvg = nextDiscussionSvg;
+  },
+  methods: {
+    jumpToFirstDiscussion() {
+      const el = document.querySelector(
+        `[data-discussion-id="${this.firstUnresolvedDiscussionId}"]`,
+      );
+      const activeTab = window.mrTabs.currentAction;
 
-        if (activeTab === 'commits' || activeTab === 'pipelines') {
-          window.mrTabs.activateTab('show');
-        }
+      if (activeTab === 'commits' || activeTab === 'pipelines') {
+        window.mrTabs.activateTab('show');
+      }
 
-        if (el) {
-          scrollToElement(el);
-        }
-      },
+      if (el) {
+        scrollToElement(el);
+      }
     },
-  };
+  },
+};
 </script>
 
 <template>
