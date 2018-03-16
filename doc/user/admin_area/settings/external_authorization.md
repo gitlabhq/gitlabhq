@@ -1,15 +1,17 @@
 # External authorization service
 
- > [Introduced][ee-3709] GitLab Enterprise Edition 10.6.
+> [Introduced][ee-3709] GitLab Enterprise Edition 10.6.
 
- To provide more granular access control GitLab provides a way to check project
- authorization with an external service.
+In highly controlled environments, it may be necessary for access policy to be
+controlled by an external service that permits access based on project
+classification and user access. GitLab provides a way to check project
+authorization with an external service.
 
 When a project is accessed, a request is made to the external service with the
 user information and project classification label assigned to the project. When
 the service replies with a known response, the result is cached for 6 hours.
 
-Enabeling this feature disables all cross project features in GitLab: This is to
+Enabling this feature disables all cross project features in GitLab: This is to
 prevent performing to many requests at once to the external authorization
 service.
 
