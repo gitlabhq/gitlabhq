@@ -1,3 +1,4 @@
+require_relative 'cop/gitlab/httparty'
 require_relative 'cop/active_record_dependent'
 require_relative 'cop/active_record_serialize'
 require_relative 'cop/custom_error_class'

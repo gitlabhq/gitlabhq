@@ -56,7 +56,8 @@ for initial settings.
           "name" => "auth0",
           "args" => { client_id: 'YOUR_AUTH0_CLIENT_ID',
                       client_secret: 'YOUR_AUTH0_CLIENT_SECRET',
-                      namespace: 'YOUR_AUTH0_DOMAIN'
+                      domain: 'YOUR_AUTH0_DOMAIN',
+                      scope: 'openid profile email'
                     }
         }
       ]
@@ -69,8 +70,8 @@ for initial settings.
           args: {
             client_id: 'YOUR_AUTH0_CLIENT_ID',
             client_secret: 'YOUR_AUTH0_CLIENT_SECRET',
-            namespace: 'YOUR_AUTH0_DOMAIN'
-            }
+            domain: 'YOUR_AUTH0_DOMAIN',
+            scope: 'openid profile email' }
         }
     ```
 
