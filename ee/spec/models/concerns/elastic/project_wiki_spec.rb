@@ -1,14 +1,8 @@
 require 'spec_helper'
 
-describe ProjectWiki, elastic: true do
+describe ProjectWiki, :elastic do
   before do
     stub_ee_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
-    Gitlab::Elastic::Helper.create_empty_index
-  end
-
-  after do
-    Gitlab::Elastic::Helper.delete_index
-    stub_ee_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
   it "searches wiki page" do

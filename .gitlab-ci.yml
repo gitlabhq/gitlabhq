@@ -77,19 +77,32 @@ stages:
     # (as many users are still using 9.2).
     - postgres:9.2
     - redis:alpine
-    - docker.elastic.co/elasticsearch/elasticsearch:5.5.2
-
-.use-pg-9-6-no-elasticsearch: &use-pg-9-6-no-elasticsearch
-  services:
-    - postgres:9.6
-    - redis:alpine
 
 .use-mysql: &use-mysql
   services:
     - mysql:latest
     - redis:alpine
+
+# BEGIN EE-only service helpers
+
+.use-pg-9-6: &use-pg-9-6
+  services:
+    - postgres:9.6
+    - redis:alpine
+
+.use-pg-with-elasticsearch: &use-pg-with-elasticsearch
+  services:
+    - postgres:9.2
+    - redis:alpine
     - docker.elastic.co/elasticsearch/elasticsearch:5.5.2
 
+.use-mysql-with-elasticsearch: &use-mysql-with-elasticsearch
+  services:
+    - mysql:latest
+    - redis:alpine
+    - docker.elastic.co/elasticsearch/elasticsearch:5.5.2
+
+# END EE-only service helpers
 
 # Skip all jobs except the ones that begin with 'docs/'.
 # Used for commits including ONLY documentation changes.
@@ -179,15 +192,15 @@ stages:
 
 .rspec-ee-pg: &rspec-ee-pg
   <<: *rspec-metadata-ee
-  <<: *use-pg
+  <<: *use-pg-with-elasticsearch
 
 .rspec-ee-mysql: &rspec-ee-mysql
   <<: *rspec-metadata-ee
-  <<: *use-mysql
+  <<: *use-mysql-with-elasticsearch
 
 .rspec-geo-pg-9-6: &rspec-metadata-pg-geo
   <<: *rspec-metadata
-  <<: *use-pg-9-6-no-elasticsearch
+  <<: *use-pg-9-6
   stage: test
   script:
     - export NO_KNAPSACK=1

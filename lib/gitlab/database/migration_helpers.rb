@@ -859,6 +859,19 @@ into similar problems in the future (e.g. when new tables are created).
           BackgroundMigrationWorker.perform_in(delay_interval * index, job_class_name, [start_id, end_id])
         end
       end
+
+      def foreign_key_exists?(table, column)
+        foreign_keys(table).any? do |key|
+          key.options[:column] == column.to_s
+        end
+      end
+
+      # Rails' index_exists? doesn't work when you only give it a table and index
+      # name. As such we have to use some extra code to check if an index exists for
+      # a given name.
+      def index_exists_by_name?(table, index)
+        indexes(table).map(&:name).include?(index)
+      end
     end
   end
 end

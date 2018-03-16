@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.5.5 (2018-03-15)
+
+### Fixed (1 change)
+
+- Geo: Fix Wiki resync when Wiki repository does not exist.
+
+
 ## 10.5.4 (2018-03-08)
 
 ### Fixed (4 changes)

@@ -1,14 +1,8 @@
 require 'spec_helper'
 
-describe Snippet, elastic: true do
+describe Snippet, :elastic do
   before do
     stub_ee_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
-    Gitlab::Elastic::Helper.create_empty_index
-  end
-
-  after do
-    Gitlab::Elastic::Helper.delete_index
-    stub_ee_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
   context 'searching snippets by code' do
