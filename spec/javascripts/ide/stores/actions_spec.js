@@ -293,8 +293,9 @@ describe('Multi-file store actions', () => {
   });
 
   describe('updateViewer', () => {
-    it('updates viewer state', (done) => {
-      store.dispatch('updateViewer', 'diff')
+    it('updates viewer state', done => {
+      store
+        .dispatch('updateViewer', 'diff')
         .then(() => {
           expect(store.state.viewer).toBe('diff');
         })

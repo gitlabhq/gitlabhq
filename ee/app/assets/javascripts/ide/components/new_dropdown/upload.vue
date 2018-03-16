@@ -7,6 +7,7 @@
       },
       path: {
         type: String,
+        required: false,
         default: '',
       },
     },

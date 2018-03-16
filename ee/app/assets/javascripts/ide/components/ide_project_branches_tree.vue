@@ -1,25 +1,25 @@
 <script>
-import icon from '~/vue_shared/components/icon.vue';
-import repoTree from './ide_repo_tree.vue';
-import newDropdown from './new_dropdown/index.vue';
+  import icon from '~/vue_shared/components/icon.vue';
+  import repoTree from './ide_repo_tree.vue';
+  import newDropdown from './new_dropdown/index.vue';
 
-export default {
-  components: {
-    repoTree,
-    icon,
-    newDropdown,
-  },
-  props: {
-    projectId: {
-      type: String,
-      required: true,
+  export default {
+    components: {
+      repoTree,
+      icon,
+      newDropdown,
     },
-    branch: {
-      type: Object,
-      required: true,
+    props: {
+      projectId: {
+        type: String,
+        required: true,
+      },
+      branch: {
+        type: Object,
+        required: true,
+      },
     },
-  },
-};
+  };
 </script>
 
 <template>
@@ -40,7 +40,7 @@ export default {
         />
       </div>
     </div>
-    <template v-if="branch.tree">
+    <template v-if="branch.tree.length">
       <repo-tree
         :tree="branch.tree"
       />

@@ -29,11 +29,13 @@ export default {
         <skeleton-loading-container />
       </div>
     </template>
-    <repo-file
-      v-for="file in tree.tree"
-      :key="file.key"
-      :file="file"
-      :level="0"
-    />
+    <template v-else>
+      <repo-file
+        v-for="file in tree.tree"
+        :key="file.key"
+        :file="file"
+        :level="0"
+      />
+    </template>
   </div>
 </template>
