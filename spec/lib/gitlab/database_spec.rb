@@ -287,6 +287,17 @@ describe Gitlab::Database do
     end
   end
 
+  describe '.cached_column_exists?' do
+    it 'only retrieves data once' do
+      expect(ActiveRecord::Base.connection).to receive(:columns).once.and_call_original
+
+      2.times do
+        expect(described_class.cached_column_exists?(:projects, :id)).to be_truthy
+        expect(described_class.cached_column_exists?(:projects, :bogus_column)).to be_falsey
+      end
+    end
+  end
+
   describe '#true_value' do
     it 'returns correct value for PostgreSQL' do
       expect(described_class).to receive(:postgresql?).and_return(true)
