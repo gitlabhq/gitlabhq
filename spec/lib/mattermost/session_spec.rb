@@ -15,7 +15,7 @@ describe Mattermost::Session, type: :request do
   it { is_expected.to respond_to(:strategy) }
 
   before do
-    described_class.base_uri(mattermost_url)
+    subject.base_uri = mattermost_url
   end
 
   describe '#with session' do

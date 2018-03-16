@@ -16,10 +16,6 @@ import Autosize from 'autosize';
 import 'vendor/jquery.caret'; // required by jquery.atwho
 import 'vendor/jquery.atwho';
 import AjaxCache from '~/lib/utils/ajax_cache';
-import Vue from 'vue';
-import syntaxHighlight from '~/syntax_highlight';
-import SkeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
-import { __ } from '~/locale';
 import axios from './lib/utils/axios_utils';
 import { getLocationHash } from './lib/utils/url_utility';
 import Flash from './flash';
@@ -103,13 +99,6 @@ export default class Notes {
       $('.note-edit-form').clone()
         .addClass('mr-note-edit-form').insertAfter('.note-edit-form');
     }
-
-    const hash = getLocationHash();
-    const $anchor = hash && document.getElementById(hash);
-
-    if ($anchor) {
-      this.loadLazyDiff({ currentTarget: $anchor });
-    }
   }
 
   setViewType(view) {
@@ -146,8 +135,6 @@ export default class Notes {
     this.$wrapperEl.on('click', '.js-close-discussion-note-form', this.cancelDiscussionForm);
     // toggle commit list
     this.$wrapperEl.on('click', '.system-note-commit-list-toggler', this.toggleCommitList);
-
-    this.$wrapperEl.on('click', '.js-toggle-lazy-diff', this.loadLazyDiff);
     // fetch notes when tab becomes visible
     this.$wrapperEl.on('visibilitychange', this.visibilityChange);
     // when issue status changes, we need to refresh data
@@ -186,7 +173,6 @@ export default class Notes {
     this.$wrapperEl.off('keydown', '.js-note-text');
     this.$wrapperEl.off('click', '.js-comment-resolve-button');
     this.$wrapperEl.off('click', '.system-note-commit-list-toggler');
-    this.$wrapperEl.off('click', '.js-toggle-lazy-diff');
     this.$wrapperEl.off('ajax:success', '.js-main-target-form');
     this.$wrapperEl.off('ajax:success', '.js-discussion-note-form');
     this.$wrapperEl.off('ajax:complete', '.js-main-target-form');
@@ -1219,60 +1205,6 @@ export default class Notes {
 
   updateNotesCount(updateCount) {
     return this.notesCountBadge.text(parseInt(this.notesCountBadge.text(), 10) + updateCount);
-  }
-
-  static renderPlaceholderComponent($container) {
-    const el = $container.find('.js-code-placeholder').get(0);
-    new Vue({ // eslint-disable-line no-new
-      el,
-      components: {
-        SkeletonLoadingContainer,
-      },
-      render(createElement) {
-        return createElement('skeleton-loading-container');
-      },
-    });
-  }
-
-  static renderDiffContent($container, data) {
-    const { discussion_html } = data;
-    const lines = $(discussion_html).find('.line_holder');
-    lines.addClass('fade-in');
-    $container.find('tbody').prepend(lines);
-    const fileHolder = $container.find('.file-holder');
-    $container.find('.line-holder-placeholder').remove();
-    syntaxHighlight(fileHolder);
-  }
-
-  static renderDiffError($container) {
-    $container.find('.line_content').html(
-      $(`
-        <div class="nothing-here-block">
-          ${__('Unable to load the diff.')} <a class="js-toggle-lazy-diff" href="javascript:void(0)">Try again</a>?
-        </div>
-      `),
-    );
-  }
-
-  loadLazyDiff(e) {
-    const $container = $(e.currentTarget).closest('.js-toggle-container');
-    Notes.renderPlaceholderComponent($container);
-
-    $container.find('.js-toggle-lazy-diff').removeClass('js-toggle-lazy-diff');
-
-    const tableEl = $container.find('tbody');
-    if (tableEl.length === 0) return;
-
-    const fileHolder = $container.find('.file-holder');
-    const url = fileHolder.data('linesPath');
-
-    axios.get(url)
-      .then(({ data }) => {
-        Notes.renderDiffContent($container, data);
-      })
-      .catch(() => {
-        Notes.renderDiffError($container);
-      });
   }
 
   toggleCommitList(e) {
