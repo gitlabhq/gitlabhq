@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.3.9 (2018-03-16)
+
+### Security (3 changes)
+
+- Fixed some SSRF vulnerabilities in services, hooks and integrations. !2337
+- Update nokogiri to 1.8.2. !16807
+- Fix GitLab Auth0 integration signing in the wrong user.
+
+
 ## 10.3.8 (2018-03-01)
 
 ### Security (1 change)
