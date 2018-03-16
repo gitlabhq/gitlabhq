@@ -131,6 +131,10 @@ export default class Editor {
       this.instance = null;
     } catch (e) {
       this.instance = null;
+
+      if (process.env.NODE_ENV !== 'test') {
+        console.error(e);
+      }
     }
   }
 
