@@ -55,6 +55,7 @@ module ObjectStorage
 
       def schedule_background_upload(*args)
         return unless schedule_background_upload?
+        return unless upload
 
         ObjectStorage::BackgroundMoveWorker.perform_async(self.class.name,
                                                 upload.class.to_s,
