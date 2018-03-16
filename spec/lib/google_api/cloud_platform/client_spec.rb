@@ -74,6 +74,30 @@ describe GoogleApi::CloudPlatform::Client do
     it { is_expected.to eq(billing_info) }
   end
 
+  describe '#projects_zones_list' do
+    subject { client.projects_zones_list('project') }
+    let(:zones) { double }
+
+    before do
+      allow_any_instance_of(Google::Apis::ComputeV1::ComputeService)
+        .to receive(:fetch_all).and_return(zones)
+    end
+
+    it { is_expected.to eq(zones) }
+  end
+
+  describe '#projects_zones_machine_types_list' do
+    subject { client.projects_zones_machine_types_list('project', 'zone') }
+    let(:machine_types) { double }
+
+    before do
+      allow_any_instance_of(Google::Apis::ComputeV1::ComputeService)
+        .to receive(:fetch_all).and_return(machine_types)
+    end
+
+    it { is_expected.to eq(machine_types) }
+  end
+
   describe '#projects_zones_clusters_get' do
     subject { client.projects_zones_clusters_get(spy, spy, spy) }
     let(:gke_cluster) { double }
