@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.5.6 (2018-03-16)
+
+### Security (2 changes)
+
+- Fixed some SSRF vulnerabilities in services, hooks and integrations. !2337
+- Fix GitLab Auth0 integration signing in the wrong user.
+
+
 ## 10.5.5 (2018-03-15)
 
 ### Fixed (3 changes)
