@@ -200,6 +200,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
             get '/gcp/new', to: 'clusters/gcp#new'
             get '/gcp/login', to: 'clusters/gcp#login'
+            get '/gcp/list_projects', to: 'clusters/gcp#list_projects'
             post '/gcp', to: 'clusters/gcp#create'
           end
         end

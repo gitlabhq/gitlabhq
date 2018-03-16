@@ -1,6 +1,6 @@
 class Projects::Clusters::GcpController < Projects::ApplicationController
   before_action :authorize_read_cluster!
-  before_action :authorize_google_api, except: [:login]
+  before_action :authorize_google_api, except: [:login, :list_projects]
   before_action :authorize_google_project_billing, only: [:new, :create]
   before_action :authorize_create_cluster!, only: [:new, :create]
   before_action :verify_billing, only: [:create]
@@ -32,6 +32,13 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
       redirect_to project_cluster_path(project, @cluster)
     else
       render :new
+    end
+  end
+
+  def list_projects
+    projects = GoogleApi::CloudPlatform::Client.new(token_in_session, nil).projects_list
+    respond_to do |format|
+      format.json { render status: :ok, json: { projects: projects } }
     end
   end
 

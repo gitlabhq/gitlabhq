@@ -199,4 +199,34 @@ describe Projects::Clusters::GcpController do
       post :create, params.merge(namespace_id: project.namespace, project_id: project)
     end
   end
+
+  describe 'GET list_projects' do
+    describe 'functionality' do
+      let(:user) { create(:user) }
+      let(:api_response) { [project_id: 'test-project-1234'] }
+
+      before do
+        project.add_master(user)
+        sign_in(user)
+
+        allow_any_instance_of(GoogleApi::CloudPlatform::Client).to receive(:projects_list).and_return(api_response)
+      end
+
+      it 'calls the Google Cloud Platform projects_list' do
+        expect_any_instance_of(GoogleApi::CloudPlatform::Client).to receive(:projects_list)
+
+        go
+      end
+
+      it 'renders the response as json' do
+        go
+
+        expect(response.body).to eq({ projects: api_response }.to_json)
+      end
+    end
+
+    def go
+      get :list_projects, namespace_id: project.namespace, project_id: project, format: :json
+    end
+  end
 end
