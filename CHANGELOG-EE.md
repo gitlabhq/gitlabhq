@@ -228,6 +228,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Make scoped issue board specs more reliable.
 
 
+## 10.3.9 (2018-03-16)
+
+- No changes.
+
 ## 10.3.8 (2018-03-01)
 
 ### Security (2 changes)
