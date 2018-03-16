@@ -7,7 +7,7 @@ export default {
   [types.ADD_NEW_NOTE](state, note) {
     const { discussion_id, type } = note;
     const [exists] = state.notes.filter(n => n.id === note.discussion_id);
-    const isDiscussion = (type === constants.DISCUSSION_NOTE);
+    const isDiscussion = type === constants.DISCUSSION_NOTE;
 
     if (!exists) {
       const noteData = {
@@ -63,13 +63,15 @@ export default {
       const note = notes[i];
       const children = note.notes;
 
-      if (children.length && !note.individual_note) { // remove placeholder from discussions
+      if (children.length && !note.individual_note) {
+        // remove placeholder from discussions
         for (let j = children.length - 1; j >= 0; j -= 1) {
           if (children[j].isPlaceholderNote) {
             children.splice(j, 1);
           }
         }
-      } else if (note.isPlaceholderNote) { // remove placeholders from state root
+      } else if (note.isPlaceholderNote) {
+        // remove placeholders from state root
         notes.splice(i, 1);
       }
     }
@@ -89,10 +91,10 @@ export default {
   [types.SET_INITIAL_NOTES](state, notesData) {
     const notes = [];
 
-    notesData.forEach((note) => {
+    notesData.forEach(note => {
       // To support legacy notes, should be very rare case.
       if (note.individual_note && note.notes.length > 1) {
-        note.notes.forEach((n) => {
+        note.notes.forEach(n => {
           notes.push({
             ...note,
             notes: [n], // override notes array to only have one item to mimick individual_note
@@ -103,7 +105,7 @@ export default {
 
         notes.push({
           ...note,
-          expanded: (oldNote ? oldNote.expanded : note.expanded),
+          expanded: oldNote ? oldNote.expanded : note.expanded,
         });
       }
     });
@@ -128,7 +130,9 @@ export default {
     notesArr.push({
       individual_note: true,
       isPlaceholderNote: true,
-      placeholderType: data.isSystemNote ? constants.SYSTEM_NOTE : constants.NOTE,
+      placeholderType: data.isSystemNote
+        ? constants.SYSTEM_NOTE
+        : constants.NOTE,
       notes: [
         {
           body: data.noteBody,
@@ -141,12 +145,16 @@ export default {
     const { awardName, note } = data;
     const { id, name, username } = state.userData;
 
-    const hasEmojiAwardedByCurrentUser = note.award_emoji
-      .filter(emoji => emoji.name === data.awardName && emoji.user.id === id);
+    const hasEmojiAwardedByCurrentUser = note.award_emoji.filter(
+      emoji => emoji.name === data.awardName && emoji.user.id === id,
+    );
 
     if (hasEmojiAwardedByCurrentUser.length) {
       // If current user has awarded this emoji, remove it.
-      note.award_emoji.splice(note.award_emoji.indexOf(hasEmojiAwardedByCurrentUser[0]), 1);
+      note.award_emoji.splice(
+        note.award_emoji.indexOf(hasEmojiAwardedByCurrentUser[0]),
+        1,
+      );
     } else {
       note.award_emoji.push({
         name: awardName,

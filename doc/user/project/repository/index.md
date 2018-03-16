@@ -53,6 +53,22 @@ To get started with the command line, please read through the
 
 Use GitLab's [file finder](../../../workflow/file_finder.md) to search for files in a repository.
 
+### Jupyter Notebook files
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/2508) in GitLab 9.1
+
+[Jupyter][jupyter] Notebook (previously IPython Notebook) files are used for
+interactive computing in many fields and contain a complete record of the
+user's sessions and include code, narrative text, equations and rich output.
+
+When added to a repository, Jupyter Notebooks with a `.ipynb` extension will be
+rendered to HTML when viewed.
+
+![Jupyter Notebook Rich Output](img/jupyter_notebook.png)
+
+Interactive features, including JavaScript plots, will not work when viewed in
+GitLab.
+
 ## Branches
 
 When you submit changes in a new [branch](branches/index.md), you create a new version
@@ -158,3 +174,5 @@ Lock your files to prevent any conflicting changes.
 ## Repository's API
 
 You can access your repos via [repository API](../../../api/repositories.md).
+
+[jupyter]: https://jupyter.org

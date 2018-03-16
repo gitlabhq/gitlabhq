@@ -12,7 +12,8 @@ export default {
     discussionResolved() {
       const { notes, resolved } = this.note;
 
-      if (notes) { // Decide resolved state using store. Only valid for discussions.
+      if (notes) {
+        // Decide resolved state using store. Only valid for discussions.
         return notes.every(note => note.resolved && !note.system);
       }
 
@@ -26,7 +27,9 @@ export default {
 
         return __('Comment and resolve discussion');
       }
-      return this.discussionResolved ? __('Unresolve discussion') : __('Resolve discussion');
+      return this.discussionResolved
+        ? __('Unresolve discussion')
+        : __('Resolve discussion');
     },
   },
   methods: {
@@ -42,7 +45,9 @@ export default {
         })
         .catch(() => {
           this.isResolving = false;
-          const msg = __('Something went wrong while resolving this discussion. Please try again.');
+          const msg = __(
+            'Something went wrong while resolving this discussion. Please try again.',
+          );
           Flash(msg, 'alert', this.$el);
         });
     },

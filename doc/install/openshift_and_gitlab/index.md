@@ -464,7 +464,9 @@ bother us. In any case, it is something to keep in mind when deploying GitLab
 on a production cluster.
 
 In order to deploy GitLab on a production cluster, you will need to assign the
-GitLab service account  to the `anyuid` Security Context.
+GitLab service account to the `anyuid` [Security Context Constraints][scc].
+
+For OpenShift v3.0, you will need to do this manually:
 
 1. Edit the Security Context:
    ```sh
@@ -476,6 +478,12 @@ GitLab service account  to the `anyuid` Security Context.
      will be `<app-name>-user` instead of `gitlab-ce-user`
 
 1. Save and exit the editor
+
+For OpenShift v3.1 and above, you can do:
+
+```sh
+oc adm policy add-scc-to-user anyuid system:serviceaccount:gitlab:gitlab-ce-user
+```
 
 ## Conclusion
 
@@ -513,3 +521,4 @@ PaaS and managing your applications with the ease of containers.
 [autoscaling]: https://docs.openshift.org/latest/dev_guide/pod_autoscaling.html "Documentation - Autoscale"
 [basic-cli]: https://docs.openshift.org/latest/cli_reference/basic_cli_operations.html "Documentation - Basic CLI operations"
 [openshift-docs]: https://docs.openshift.org "OpenShift documentation"
+[scc]: https://docs.openshift.org/latest/admin_guide/manage_scc.html "Documentation - Managing Security Context Constraints"
