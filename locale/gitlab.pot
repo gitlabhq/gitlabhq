@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-23 20:21+0100\n"
-"PO-Revision-Date: 2018-03-23 20:21+0100\n"
+"POT-Creation-Date: 2018-03-26 15:11+0200\n"
+"PO-Revision-Date: 2018-03-26 15:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -862,6 +862,15 @@ msgid "Click the button below to begin the install process by navigating to the 
 msgstr ""
 
 msgid "Click to expand text"
+msgstr ""
+
+msgid "Client authentication certificate"
+msgstr ""
+
+msgid "Client authentication key"
+msgstr ""
+
+msgid "Client authentication key password"
 msgstr ""
 
 msgid "Clone repository"
@@ -4710,6 +4719,15 @@ msgstr[1] ""
 msgid "mrWidget| Please restore it or use a different %{missingBranchName} branch"
 msgstr ""
 
+msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage %{emphasisStart} decreased %{emphasisEnd} from %{memoryFrom}MB to %{memoryTo}MB"
+msgstr ""
+
+msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage %{emphasisStart} increased %{emphasisEnd} from %{memoryFrom}MB to %{memoryTo}MB"
+msgstr ""
+
+msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage is %{emphasisStart} unchanged %{emphasisEnd} at %{memoryFrom}MB"
+msgstr ""
+
 msgid "mrWidget|Add approval"
 msgstr ""
 
@@ -4755,16 +4773,25 @@ msgstr ""
 msgid "mrWidget|Closes"
 msgstr ""
 
+msgid "mrWidget|Deployment statistics are not available currently"
+msgstr ""
+
 msgid "mrWidget|Did not close"
 msgstr ""
 
 msgid "mrWidget|Email patches"
 msgstr ""
 
+msgid "mrWidget|Failed to load deployment statistics"
+msgstr ""
+
 msgid "mrWidget|If the %{branch} branch exists in your local repository, you can merge this merge request manually using the"
 msgstr ""
 
 msgid "mrWidget|If the %{missingBranchName} branch exists in your local repository, you can merge this merge request manually using the command line"
+msgstr ""
+
+msgid "mrWidget|Loading deployment statistics"
 msgstr ""
 
 msgid "mrWidget|Mentions"

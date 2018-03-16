@@ -3,7 +3,7 @@ require 'spec_helper'
 describe EE::Gitlab::ExternalAuthorization::Client do
   let(:user) { build(:user, email: 'dummy_user@example.com') }
   let(:dummy_url) { 'https://dummy.net/' }
-  subject(:client) { described_class.build(user, 'dummy_label') }
+  subject(:client) { described_class.new(user, 'dummy_label') }
 
   before do
     stub_application_setting(external_authorization_service_url: dummy_url)
@@ -28,7 +28,9 @@ describe EE::Gitlab::ExternalAuthorization::Client do
     end
 
     it 'respects the the timeout' do
-      allow(EE::Gitlab::ExternalAuthorization).to receive(:timeout).and_return(3)
+      stub_application_setting(
+        external_authorization_service_timeout: 3
+      )
 
       expect(Excon).to receive(:post).with(dummy_url,
                                            hash_including(
@@ -36,6 +38,23 @@ describe EE::Gitlab::ExternalAuthorization::Client do
                                              read_timeout: 3,
                                              write_timeout: 3
                                            ))
+
+      client.request_access
+    end
+
+    it 'adds the mutual tls params when they are present' do
+      stub_application_setting(
+        external_auth_client_cert: 'the certificate data',
+        external_auth_client_key: 'the key data',
+        external_auth_client_key_pass: 'open sesame'
+      )
+      expected_params = {
+        client_cert_data: 'the certificate data',
+        client_key_data: 'the key data',
+        client_key_pass: 'open sesame'
+      }
+
+      expect(Excon).to receive(:post).with(dummy_url, hash_including(expected_params))
 
       client.request_access
     end

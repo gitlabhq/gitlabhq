@@ -36,6 +36,12 @@ describe ApplicationSetting do
       it { is_expected.not_to allow_value(nil).for(:external_authorization_service_default_label) }
       it { is_expected.not_to allow_value(11).for(:external_authorization_service_timeout) }
       it { is_expected.not_to allow_value(0).for(:external_authorization_service_timeout) }
+
+      it 'requires a client key when a certificate is set' do
+        setting.external_auth_client_cert = 'certificate'
+
+        expect(setting).not_to allow_value(nil).for(:external_auth_client_key)
+      end
     end
   end
 

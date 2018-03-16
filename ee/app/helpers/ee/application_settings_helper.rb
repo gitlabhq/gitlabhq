@@ -57,7 +57,10 @@ module EE
         :external_authorization_service_enabled,
         :external_authorization_service_url,
         :external_authorization_service_default_label,
-        :external_authorization_service_timeout
+        :external_authorization_service_timeout,
+        :external_auth_client_cert,
+        :external_auth_client_key,
+        :external_auth_client_key_pass
       ]
     end
 

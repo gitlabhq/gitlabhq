@@ -51,6 +51,20 @@ module EE
       validates :external_authorization_service_timeout,
                 numericality: { greater_than: 0, less_than_or_equal_to: 10 },
                 if: :external_authorization_service_enabled?
+
+      validates :external_auth_client_key,
+                presence: true,
+                if: ->(setting) { setting.external_auth_client_cert.present? }
+
+      attr_encrypted :external_auth_client_key,
+                     mode: :per_attribute_iv,
+                     key: ::Gitlab::Application.secrets.db_key_base,
+                     algorithm: 'aes-256-gcm'
+
+      attr_encrypted :external_auth_client_key_pass,
+                     mode: :per_attribute_iv,
+                     key: ::Gitlab::Application.secrets.db_key_base,
+                     algorithm: 'aes-256-gcm'
     end
 
     module ClassMethods
