@@ -1,4 +1,4 @@
-# Style
+# Style guides
 
 ## [HTML style guide](html.md)
 
