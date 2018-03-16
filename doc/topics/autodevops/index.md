@@ -20,7 +20,7 @@ project in an easy and automatic way:
 1. [Auto Test](#auto-test)
 1. [Auto Code Quality](#auto-code-quality)
 1. [Auto SAST (Static Application Security Testing)](#auto-sast)
-1. [Auto SAST for Docker images](#auto-sast-for-docker-images)
+1. [Auto Container Scanning](#auto-container-scanning)
 1. [Auto Review Apps](#auto-review-apps)
 1. [Auto DAST (Dynamic Application Security Testing)](#auto-dast)
 1. [Auto Deploy](#auto-deploy)
@@ -95,7 +95,7 @@ Auto Deploy, and Auto Monitoring will be silently skipped.
 
 The Auto DevOps base domain is required if you want to make use of [Auto
 Review Apps](#auto-review-apps) and [Auto Deploy](#auto-deploy). It is defined
-either under the project's CI/CD settings while 
+either under the project's CI/CD settings while
 [enabling Auto DevOps](#enabling-auto-devops) or in instance-wide settings in
 the CI/CD section.
 It can also be set at the project or group level as a variable, `AUTO_DEVOPS_DOMAIN`.
@@ -217,7 +217,7 @@ check out.
 In GitLab Ultimate, any security warnings are also
 [shown in the merge request widget](../../user/project/merge_requests/sast.md).
 
-### Auto SAST for Docker images
+### Auto Container Scanning
 
 > Introduced in GitLab 10.4.
 
@@ -228,7 +228,7 @@ created, it's uploaded as an artifact which you can later download and
 check out.
 
 In GitLab Ultimate, any security warnings are also
-[shown in the merge request widget](../../user/project/merge_requests/sast_docker.md).
+[shown in the merge request widget](../../user/project/merge_requests/container_scanning.md).
 
 ### Auto Review Apps
 

@@ -228,7 +228,7 @@ merge request widget area.
 
 [Read more about Static Application Security Testing reports.](sast.md)
 
-## Static Application Security Testing for Docker containers
+## Container Scanning
 
 > Introduced in [GitLab Ultimate][products] 10.4.
 
@@ -237,7 +237,7 @@ vulnerabilities.
 Going a step further, GitLab can show the vulnerability report right in the
 merge request widget area.
 
-[Read more about SAST Docker images reports.](sast_docker.md)
+[Read more about Container Scanning reports.](container_scanning.md)
 
 ## Dynamic Application Security Testing
 
