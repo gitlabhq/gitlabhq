@@ -21,6 +21,8 @@ describe('RepoTab', () => {
   });
 
   afterEach(() => {
+    vm.$destroy();
+
     resetStore(vm.$store);
   });
 
@@ -57,7 +59,7 @@ describe('RepoTab', () => {
 
     vm.$el.querySelector('.multi-file-tab-close').click();
 
-    expect(vm.closeFile).toHaveBeenCalledWith(vm.tab);
+    expect(vm.closeFile).toHaveBeenCalledWith(vm.tab.path);
   });
 
   it('changes icon on hover', (done) => {
@@ -125,7 +127,8 @@ describe('RepoTab', () => {
         });
         vm.$store.state.openFiles.push(tab);
         vm.$store.state.changedFiles.push(tab);
-        vm.$store.dispatch('setFileActive', tab);
+        vm.$store.state.entries[tab.path] = tab;
+        vm.$store.dispatch('setFileActive', tab.path);
 
         vm.$el.querySelector('.multi-file-tab-close').click();
 
@@ -144,7 +147,8 @@ describe('RepoTab', () => {
           tab,
         });
         vm.$store.state.openFiles.push(tab);
-        vm.$store.dispatch('setFileActive', tab);
+        vm.$store.state.entries[tab.path] = tab;
+        vm.$store.dispatch('setFileActive', tab.path);
 
         vm.$el.querySelector('.multi-file-tab-close').click();
 

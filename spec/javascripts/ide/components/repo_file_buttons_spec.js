@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import store from 'ee/ide/stores';
 import repoFileButtons from 'ee/ide/components/repo_file_buttons.vue';
-import { file, resetStore } from '../helpers';
+import createVueComponent from '../../helpers/vue_mount_component_helper';
+import { file } from '../helpers';
 
 describe('RepoFileButtons', () => {
   const activeFile = file();
@@ -13,18 +13,14 @@ describe('RepoFileButtons', () => {
     activeFile.rawPath = 'test';
     activeFile.blamePath = 'test';
     activeFile.commitsPath = 'test';
-    activeFile.active = true;
-    store.state.openFiles.push(activeFile);
 
-    return new RepoFileButtons({
-      store,
-    }).$mount();
+    return createVueComponent(RepoFileButtons, {
+      file: activeFile,
+    });
   }
 
   afterEach(() => {
     vm.$destroy();
-
-    resetStore(vm.$store);
   });
 
   it('renders Raw, Blame, History, Permalink and Preview toggle', (done) => {

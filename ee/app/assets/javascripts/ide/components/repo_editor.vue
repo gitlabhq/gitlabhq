@@ -123,7 +123,7 @@ export default {
   >
     <div
       v-if="shouldHideEditor"
-      v-html="activeFile.html"
+      v-html="file.html"
     >
     </div>
     <div

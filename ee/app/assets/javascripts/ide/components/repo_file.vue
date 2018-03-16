@@ -1,8 +1,8 @@
 <script>
   import { mapActions } from 'vuex';
-  import timeAgoMixin from '~/vue_shared/mixins/timeago';
   import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
   import fileIcon from '~/vue_shared/components/file_icon.vue';
+  import router from '../ide_router';
   import newDropdown from './new_dropdown/index.vue';
   import fileStatusIcon from './repo_file_status_icon.vue';
   import changedFileIcon from './changed_file_icon.vue';
@@ -16,9 +16,6 @@
       fileIcon,
       changedFileIcon,
     },
-    mixins: [
-      timeAgoMixin,
-    ],
     props: {
       file: {
         type: Object,
@@ -63,7 +60,7 @@
         if (this.isTree && this.$router.currentRoute.path === `/project${this.file.url}`) {
           this.toggleTreeOpen(this.file.path);
         }
-        this.$router.push(`/project${this.file.url}`);
+        router.push(`/project${this.file.url}`);
       },
     },
   };
