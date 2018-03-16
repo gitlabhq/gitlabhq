@@ -126,7 +126,7 @@ describe Files::MultiService do
 
         blob = repository.blob_at('lfs', new_file_path)
 
-        expect(blob.data).to start_with('version https://git-lfs.github.com/spec/v1')
+        expect(blob.data).to start_with(Gitlab::Git::LfsPointerFile::VERSION_LINE)
       end
 
       it "creates an LfsObject with the file's content" do
@@ -145,7 +145,7 @@ describe Files::MultiService do
 
           blob = repository.blob_at('lfs', new_file_path)
 
-          expect(blob.data).to start_with('version https://git-lfs.github.com/spec/v1')
+          expect(blob.data).to start_with(Gitlab::Git::LfsPointerFile::VERSION_LINE)
         end
 
         it "creates an LfsObject with the file's content" do

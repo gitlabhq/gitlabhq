@@ -53,7 +53,7 @@ describe Lfs::FileTransformer do
       it 'returns an LFS pointer' do
         result = subject.new_file(file_path, file_content)
 
-        expect(result.content).to start_with('version https://git-lfs.github.com/spec/v1')
+        expect(result.content).to start_with(Gitlab::Git::LfsPointerFile::VERSION_LINE)
       end
 
       it 'returns LFS pointer encoding as text' do
@@ -68,7 +68,7 @@ describe Lfs::FileTransformer do
         it "doesn't create LFS pointers" do
           new_content = subject.new_file(file_path, file_content).content
 
-          expect(new_content).not_to start_with('version https://git-lfs.github.com/spec/v1')
+          expect(new_content).not_to start_with(Gitlab::Git::LfsPointerFile::VERSION_LINE)
           expect(new_content).to eq(file_content)
         end
       end

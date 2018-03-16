@@ -1,13 +1,16 @@
 module Gitlab
   module Git
     class LfsPointerFile
+      VERSION = "https://git-lfs.github.com/spec/v1".freeze
+      VERSION_LINE = "version #{VERSION}".freeze
+
       def initialize(data)
         @data = data
       end
 
       def pointer
         @pointer ||= <<~FILE
-          version https://git-lfs.github.com/spec/v1
+          #{VERSION_LINE}
           oid sha256:#{sha256}
           size #{size}
         FILE
