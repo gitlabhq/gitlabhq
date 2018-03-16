@@ -17,7 +17,6 @@ module QA
     module Key
       autoload :Base, 'qa/runtime/key/base'
       autoload :RSA, 'qa/runtime/key/rsa'
-      autoload :DSA, 'qa/runtime/key/dsa'
       autoload :ECDSA, 'qa/runtime/key/ecdsa'
       autoload :ED25519, 'qa/runtime/key/ed25519'
     end

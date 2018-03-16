@@ -18,7 +18,6 @@ module QA
       Runtime::Key::RSA.new(2048),
       Runtime::Key::RSA.new(4096),
       Runtime::Key::RSA.new(8192),
-      Runtime::Key::DSA.new,
       Runtime::Key::ECDSA.new(256),
       Runtime::Key::ECDSA.new(384),
       Runtime::Key::ECDSA.new(521),
