@@ -83,7 +83,7 @@ class TeamcityService < CiService
 
     branch = Gitlab::Git.ref_name(data[:ref])
 
-    HTTParty.post(
+    Gitlab::HTTP.post(
       build_url('httpAuth/app/rest/buildQueue'),
       body: "<build branchName=\"#{branch}\">"\
             "<buildType id=\"#{build_type}\"/>"\
@@ -134,10 +134,10 @@ class TeamcityService < CiService
   end
 
   def get_path(path)
-    HTTParty.get(build_url(path), verify: false,
-                                  basic_auth: {
-                                    username: username,
-                                    password: password
-                                  })
+    Gitlab::HTTP.get(build_url(path), verify: false,
+                                      basic_auth: {
+                                        username: username,
+                                        password: password
+                                      })
   end
 end

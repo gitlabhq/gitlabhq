@@ -57,12 +57,12 @@ module Gitlab
     end
 
     def get(url)
-      handle_response(HTTParty.get(url))
+      handle_response(Gitlab::HTTP.get(url, allow_local_requests: true))
     rescue SocketError
       raise PrometheusError, "Can't connect to #{url}"
     rescue OpenSSL::SSL::SSLError
       raise PrometheusError, "#{url} contains invalid SSL data"
-    rescue HTTParty::Error
+    rescue Gitlab::HTTP::Error
       raise PrometheusError, "Network connection error"
     end
 
