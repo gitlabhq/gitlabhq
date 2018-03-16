@@ -371,7 +371,7 @@ group :development, :test do
   gem 'benchmark-ips', '~> 2.3.0', require: false
 
   gem 'license_finder', '~> 3.1', require: false
-  gem 'knapsack', '~> 1.11.0'
+  gem 'knapsack', '~> 1.16'
 
   gem 'activerecord_sane_schema_dumper', '0.2'
 
@@ -435,9 +435,9 @@ gem 'google-protobuf', '= 3.5.1'
 gem 'toml-rb', '~> 1.0.0', require: false
 
 # Feature toggles
-gem 'flipper', '~> 0.11.0'
-gem 'flipper-active_record', '~> 0.11.0'
-gem 'flipper-active_support_cache_store', '~> 0.11.0'
+gem 'flipper', '~> 0.13.0'
+gem 'flipper-active_record', '~> 0.13.0'
+gem 'flipper-active_support_cache_store', '~> 0.13.0'
 
 # Structured logging
 gem 'lograge', '~> 0.5'

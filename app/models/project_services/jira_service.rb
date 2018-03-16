@@ -161,11 +161,6 @@ class JiraService < IssueTrackerService
     add_comment(data, jira_issue)
   end
 
-  # reason why service cannot be tested
-  def disabled_title
-    "Please fill in Password and Username."
-  end
-
   def test(_)
     result = test_settings
     success = result.present?
