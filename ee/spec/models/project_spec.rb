@@ -1312,4 +1312,48 @@ describe Project do
       expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
     end
   end
+
+  describe 'project import state transitions' do
+    context 'state transition: [:started] => [:finished]' do
+      context 'elasticsearch indexing disabled' do
+        before do
+          stub_ee_application_setting(elasticsearch_indexing: false)
+        end
+
+        it 'does not index the repository' do
+          project = create(:project, :import_started, import_type: :github)
+
+          expect(ElasticCommitIndexerWorker).not_to receive(:perform_async)
+
+          project.import_finish
+        end
+      end
+
+      context 'elasticsearch indexing enabled' do
+        let(:project) { create(:project, :import_started, import_type: :github) }
+
+        before do
+          stub_ee_application_setting(elasticsearch_indexing: true)
+        end
+
+        context 'no index status' do
+          it 'schedules a full index of the repository' do
+            expect(ElasticCommitIndexerWorker).to receive(:perform_async).with(project.id, nil)
+
+            project.import_finish
+          end
+        end
+
+        context 'with index status' do
+          let!(:index_status) { project.create_index_status!(indexed_at: Time.now, last_commit: 'foo') }
+
+          it 'schedules a progressive index of the repository' do
+            expect(ElasticCommitIndexerWorker).to receive(:perform_async).with(project.id, index_status.last_commit)
+
+            project.import_finish
+          end
+        end
+      end
+    end
+  end
 end
