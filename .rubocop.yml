@@ -33,3 +33,6 @@ Gitlab/ModuleWithInstanceVariables:
     # We ignore spec helpers because it usually doesn't matter
     - spec/support/**/*.rb
     - features/steps/**/*.rb
+
+Gitlab/HTTParty:
+  Enabled: true

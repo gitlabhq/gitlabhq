@@ -28,7 +28,7 @@ module Projects
 
     def add_repository_to_project
       if project.external_import? && !unknown_url?
-        raise Error, 'Blocked import URL.' if Gitlab::UrlBlocker.blocked_url?(project.import_url)
+        raise Error, 'Blocked import URL.' if Gitlab::UrlBlocker.blocked_url?(project.import_url, valid_ports: Project::VALID_IMPORT_PORTS)
       end
 
       # We should skip the repository for a GitHub import or GitLab project import,
