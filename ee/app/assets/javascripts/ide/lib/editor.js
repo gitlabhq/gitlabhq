@@ -3,11 +3,10 @@ import DecorationsController from './decorations/controller';
 import DirtyDiffController from './diff/controller';
 import Disposable from './common/disposable';
 import ModelManager from './common/model_manager';
-import editorOptions from './editor_options';
+import editorOptions, { defaultEditorOptions } from './editor_options';
+import gitlabTheme from './themes/gl_theme';
 
-import gitlabTheme from 'ee/ide/lib/themes/gl_theme'; // eslint-disable-line import/first
-
-export const clearDomElement = (el) => {
+export const clearDomElement = el => {
   if (!el || !el.firstChild) return;
 
   while (el.firstChild) {
@@ -45,18 +44,13 @@ export default class Editor {
       clearDomElement(domElement);
 
       this.disposable.add(
-        this.instance = this.monaco.editor.create(domElement, {
-          model: null,
-          readOnly: false,
-          contextmenu: true,
-          scrollBeyondLastLine: false,
-          minimap: {
-            enabled: false,
-          },
-        }),
-        this.dirtyDiffController = new DirtyDiffController(
-          this.modelManager, this.decorationsController,
-        ),
+        (this.instance = this.monaco.editor.create(domElement, {
+          ...defaultEditorOptions,
+        })),
+        (this.dirtyDiffController = new DirtyDiffController(
+          this.modelManager,
+          this.decorationsController,
+        )),
       );
 
       window.addEventListener('resize', this.debouncedUpdate, false);
@@ -68,10 +62,10 @@ export default class Editor {
       clearDomElement(domElement);
 
       this.disposable.add(
-        this.instance = this.monaco.editor.createDiffEditor(domElement, {
+        (this.instance = this.monaco.editor.createDiffEditor(domElement, {
+          ...defaultEditorOptions,
           readOnly: true,
-          scrollBeyondLastLine: false,
-        }),
+        })),
       );
 
       window.addEventListener('resize', this.debouncedUpdate, false);
@@ -97,20 +91,25 @@ export default class Editor {
 
     this.currentModel = model;
 
-    this.instance.updateOptions(editorOptions.reduce((acc, obj) => {
-      Object.keys(obj).forEach((key) => {
-        Object.assign(acc, {
-          [key]: obj[key](model),
+    this.instance.updateOptions(
+      editorOptions.reduce((acc, obj) => {
+        Object.keys(obj).forEach(key => {
+          Object.assign(acc, {
+            [key]: obj[key](model),
+          });
         });
-      });
-      return acc;
-    }, {}));
+        return acc;
+      }, {}),
+    );
 
     if (this.dirtyDiffController) this.dirtyDiffController.reDecorate(model);
   }
 
   setupMonacoTheme() {
-    this.monaco.editor.defineTheme(gitlabTheme.themeName, gitlabTheme.monacoTheme);
+    this.monaco.editor.defineTheme(
+      gitlabTheme.themeName,
+      gitlabTheme.monacoTheme,
+    );
 
     this.monaco.editor.setTheme('gitlab');
   }
