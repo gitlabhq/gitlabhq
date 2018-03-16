@@ -27,3 +27,7 @@ Learn how to keep our frontend performant.
 ## [Testing](testing.md)
 
 Learn how to keep our frontend tested.
+
+## [Merge Request Review](merge_request_review.md)
+
+Learn how our frontend maintainers review merge requests.
