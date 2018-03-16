@@ -43,7 +43,7 @@ describe Files::CreateService do
 
           blob = repository.blob_at('lfs', file_path)
 
-          expect(blob.data).not_to start_with('version https://git-lfs.github.com/spec/v1')
+          expect(blob.data).not_to start_with(Gitlab::Git::LfsPointerFile::VERSION_LINE)
           expect(blob.data).to eq(file_content)
         end
       end
@@ -58,7 +58,7 @@ describe Files::CreateService do
 
           blob = repository.blob_at('lfs', file_path)
 
-          expect(blob.data).to start_with('version https://git-lfs.github.com/spec/v1')
+          expect(blob.data).to start_with(Gitlab::Git::LfsPointerFile::VERSION_LINE)
         end
 
         it "creates an LfsObject with the file's content" do
