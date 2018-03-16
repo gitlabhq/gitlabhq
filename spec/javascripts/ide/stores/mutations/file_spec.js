@@ -9,12 +9,14 @@ describe('Multi-file store file mutations', () => {
   beforeEach(() => {
     localState = state();
     localFile = file();
+
+    localState.entries[localFile.path] = localFile;
   });
 
   describe('SET_FILE_ACTIVE', () => {
     it('sets the file active', () => {
       mutations.SET_FILE_ACTIVE(localState, {
-        file: localFile,
+        path: localFile.path,
         active: true,
       });
 
@@ -24,7 +26,7 @@ describe('Multi-file store file mutations', () => {
 
   describe('TOGGLE_FILE_OPEN', () => {
     beforeEach(() => {
-      mutations.TOGGLE_FILE_OPEN(localState, localFile);
+      mutations.TOGGLE_FILE_OPEN(localState, localFile.path);
     });
 
     it('adds into opened files', () => {
@@ -33,7 +35,7 @@ describe('Multi-file store file mutations', () => {
     });
 
     it('removes from opened files', () => {
-      mutations.TOGGLE_FILE_OPEN(localState, localFile);
+      mutations.TOGGLE_FILE_OPEN(localState, localFile.path);
 
       expect(localFile.opened).toBeFalsy();
       expect(localState.openFiles.length).toBe(0);
@@ -81,7 +83,7 @@ describe('Multi-file store file mutations', () => {
 
     it('sets content', () => {
       mutations.UPDATE_FILE_CONTENT(localState, {
-        file: localFile,
+        path: localFile.path,
         content: 'test',
       });
 
@@ -90,7 +92,7 @@ describe('Multi-file store file mutations', () => {
 
     it('sets changed if content does not match raw', () => {
       mutations.UPDATE_FILE_CONTENT(localState, {
-        file: localFile,
+        path: localFile.path,
         content: 'testing',
       });
 
@@ -102,7 +104,7 @@ describe('Multi-file store file mutations', () => {
       localFile.tempFile = true;
 
       mutations.UPDATE_FILE_CONTENT(localState, {
-        file: localFile,
+        path: localFile.path,
         content: '',
       });
 
@@ -117,7 +119,7 @@ describe('Multi-file store file mutations', () => {
     });
 
     it('resets content and changed', () => {
-      mutations.DISCARD_FILE_CHANGES(localState, localFile);
+      mutations.DISCARD_FILE_CHANGES(localState, localFile.path);
 
       expect(localFile.content).toBe('');
       expect(localFile.changed).toBeFalsy();
@@ -126,9 +128,7 @@ describe('Multi-file store file mutations', () => {
 
   describe('ADD_FILE_TO_CHANGED', () => {
     it('adds file into changed files array', () => {
-      const f = file();
-
-      mutations.ADD_FILE_TO_CHANGED(localState, f);
+      mutations.ADD_FILE_TO_CHANGED(localState, localFile.path);
 
       expect(localState.changedFiles.length).toBe(1);
     });
@@ -136,11 +136,9 @@ describe('Multi-file store file mutations', () => {
 
   describe('REMOVE_FILE_FROM_CHANGED', () => {
     it('removes files from changed files array', () => {
-      const f = file();
+      localState.changedFiles.push(localFile);
 
-      localState.changedFiles.push(f);
-
-      mutations.REMOVE_FILE_FROM_CHANGED(localState, f);
+      mutations.REMOVE_FILE_FROM_CHANGED(localState, localFile.path);
 
       expect(localState.changedFiles.length).toBe(0);
     });
@@ -148,14 +146,12 @@ describe('Multi-file store file mutations', () => {
 
   describe('TOGGLE_FILE_CHANGED', () => {
     it('updates file changed status', () => {
-      const f = file();
-
       mutations.TOGGLE_FILE_CHANGED(localState, {
-        file: f,
+        file: localFile,
         changed: true,
       });
 
-      expect(f.changed).toBeTruthy();
+      expect(localFile.changed).toBeTruthy();
     });
   });
 });

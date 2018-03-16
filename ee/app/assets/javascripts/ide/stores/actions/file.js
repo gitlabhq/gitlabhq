@@ -23,8 +23,6 @@ export const closeFile = ({ commit, state, getters, dispatch }, path) => {
   } else if (!state.openFiles.length) {
     router.push(`/project/${file.projectId}/tree/${file.branchId}/`);
   }
-
-  dispatch('getLastCommitData');
 };
 
 export const setFileActive = ({ commit, state, getters, dispatch }, path) => {
@@ -47,7 +45,7 @@ export const setFileActive = ({ commit, state, getters, dispatch }, path) => {
 export const getFileData = ({ state, commit, dispatch }, file) => {
   commit(types.TOGGLE_LOADING, { entry: file });
 
-  service.getFileData(file.url)
+  return service.getFileData(file.url)
     .then((res) => {
       const pageTitle = decodeURI(normalizeHeaders(res.headers)['PAGE-TITLE']);
 

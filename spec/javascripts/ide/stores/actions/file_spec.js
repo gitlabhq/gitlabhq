@@ -15,28 +15,19 @@ describe('Multi-file store file actions', () => {
 
   describe('closeFile', () => {
     let localFile;
-    let getLastCommitDataSpy;
-    let oldGetLastCommitData;
 
     beforeEach(() => {
-      getLastCommitDataSpy = jasmine.createSpy('getLastCommitData');
-      oldGetLastCommitData = store._actions.getLastCommitData; // eslint-disable-line
-      store._actions.getLastCommitData = [getLastCommitDataSpy]; // eslint-disable-line
-
       localFile = file('testFile');
       localFile.active = true;
       localFile.opened = true;
       localFile.parentTreeUrl = 'parentTreeUrl';
 
       store.state.openFiles.push(localFile);
-    });
-
-    afterEach(() => {
-      store._actions.getLastCommitData = oldGetLastCommitData; // eslint-disable-line
+      store.state.entries[localFile.path] = localFile;
     });
 
     it('closes open files', (done) => {
-      store.dispatch('closeFile', localFile)
+      store.dispatch('closeFile', localFile.path)
         .then(() => {
           expect(localFile.opened).toBeFalsy();
           expect(localFile.active).toBeFalsy();
@@ -49,7 +40,7 @@ describe('Multi-file store file actions', () => {
     it('closes file even if file has changes', (done) => {
       store.state.changedFiles.push(localFile);
 
-      store.dispatch('closeFile', localFile)
+      store.dispatch('closeFile', localFile.path)
         .then(Vue.nextTick)
         .then(() => {
           expect(store.state.openFiles.length).toBe(0);
@@ -59,18 +50,10 @@ describe('Multi-file store file actions', () => {
         })
         .catch(done.fail);
     });
-
-    it('calls getLastCommitData', (done) => {
-      store.dispatch('closeFile', localFile)
-        .then(() => {
-          expect(getLastCommitDataSpy).toHaveBeenCalled();
-
-          done();
-        }).catch(done.fail);
-    });
   });
 
   describe('setFileActive', () => {
+    let localFile;
     let scrollToTabSpy;
     let oldScrollToTab;
 
@@ -78,6 +61,10 @@ describe('Multi-file store file actions', () => {
       scrollToTabSpy = jasmine.createSpy('scrollToTab');
       oldScrollToTab = store._actions.scrollToTab; // eslint-disable-line
       store._actions.scrollToTab = [scrollToTabSpy]; // eslint-disable-line
+
+      localFile = file('setThisActive');
+
+      store.state.entries[localFile.path] = localFile;
     });
 
     afterEach(() => {
@@ -85,7 +72,7 @@ describe('Multi-file store file actions', () => {
     });
 
     it('calls scrollToTab', (done) => {
-      store.dispatch('setFileActive', file('setThisActive'))
+      store.dispatch('setFileActive', localFile.path)
         .then(() => {
           expect(scrollToTabSpy).toHaveBeenCalled();
 
@@ -94,9 +81,7 @@ describe('Multi-file store file actions', () => {
     });
 
     it('sets the file active', (done) => {
-      const localFile = file('activeFile');
-
-      store.dispatch('setFileActive', localFile)
+      store.dispatch('setFileActive', localFile.path)
         .then(() => {
           expect(localFile.active).toBeTruthy();
 
@@ -105,10 +90,9 @@ describe('Multi-file store file actions', () => {
     });
 
     it('returns early if file is already active', (done) => {
-      const localFile = file('earlyActive');
       localFile.active = true;
 
-      store.dispatch('setFileActive', localFile)
+      store.dispatch('setFileActive', localFile.path)
         .then(() => {
           expect(scrollToTabSpy).not.toHaveBeenCalled();
 
@@ -117,11 +101,12 @@ describe('Multi-file store file actions', () => {
     });
 
     it('sets current active file to not active', (done) => {
-      const localFile = file('currentActive');
+      const f = file('newActive');
+      store.state.entries[f.path] = f;
       localFile.active = true;
       store.state.openFiles.push(localFile);
 
-      store.dispatch('setFileActive', file('newActive'))
+      store.dispatch('setFileActive', f.path)
         .then(() => {
           expect(localFile.active).toBeFalsy();
 
@@ -132,7 +117,7 @@ describe('Multi-file store file actions', () => {
     it('resets location.hash for line highlighting', (done) => {
       location.hash = 'test';
 
-      store.dispatch('setFileActive', file('otherActive'))
+      store.dispatch('setFileActive', localFile.path)
         .then(() => {
           expect(location.hash).not.toBe('test');
 
@@ -162,13 +147,7 @@ describe('Multi-file store file actions', () => {
 
       localFile = file(`newCreate-${Math.random()}`);
       localFile.url = 'getFileDataURL';
-    });
-
-    afterEach(() => {
-      store.dispatch('closeFile', {
-        file: localFile,
-        force: true,
-      });
+      store.state.entries[localFile.path] = localFile;
     });
 
     it('calls the service', (done) => {
@@ -182,7 +161,6 @@ describe('Multi-file store file actions', () => {
 
     it('sets the file data', (done) => {
       store.dispatch('getFileData', localFile)
-        .then(Vue.nextTick)
         .then(() => {
           expect(localFile.blamePath).toBe('blame_path');
 
@@ -201,7 +179,6 @@ describe('Multi-file store file actions', () => {
 
     it('sets the file as active', (done) => {
       store.dispatch('getFileData', localFile)
-        .then(Vue.nextTick)
         .then(() => {
           expect(localFile.active).toBeTruthy();
 
@@ -211,24 +188,9 @@ describe('Multi-file store file actions', () => {
 
     it('adds the file to open files', (done) => {
       store.dispatch('getFileData', localFile)
-        .then(Vue.nextTick)
         .then(() => {
           expect(store.state.openFiles.length).toBe(1);
           expect(store.state.openFiles[0].name).toBe(localFile.name);
-
-          done();
-        }).catch(done.fail);
-    });
-
-    it('toggles the file loading', (done) => {
-      store.dispatch('getFileData', localFile)
-        .then(() => {
-          expect(localFile.loading).toBeTruthy();
-
-          return Vue.nextTick();
-        })
-        .then(() => {
-          expect(localFile.loading).toBeFalsy();
 
           done();
         }).catch(done.fail);
@@ -242,6 +204,7 @@ describe('Multi-file store file actions', () => {
       spyOn(service, 'getRawFileData').and.returnValue(Promise.resolve('raw'));
 
       tmpFile = file('tmpFile');
+      store.state.entries[tmpFile.path] = tmpFile;
     });
 
     it('calls getRawFileData service method', (done) => {
@@ -268,11 +231,12 @@ describe('Multi-file store file actions', () => {
 
     beforeEach(() => {
       tmpFile = file('tmpFile');
+      store.state.entries[tmpFile.path] = tmpFile;
     });
 
     it('updates file content', (done) => {
       store.dispatch('changeFileContent', {
-        file: tmpFile,
+        path: tmpFile.path,
         content: 'content',
       })
       .then(() => {
@@ -284,7 +248,7 @@ describe('Multi-file store file actions', () => {
 
     it('adds file into changedFiles array', (done) => {
       store.dispatch('changeFileContent', {
-        file: tmpFile,
+        path: tmpFile.path,
         content: 'content',
       })
       .then(() => {
@@ -296,11 +260,11 @@ describe('Multi-file store file actions', () => {
 
     it('adds file once into changedFiles array', (done) => {
       store.dispatch('changeFileContent', {
-        file: tmpFile,
+        path: tmpFile.path,
         content: 'content',
       })
       .then(() => store.dispatch('changeFileContent', {
-        file: tmpFile,
+        path: tmpFile.path,
         content: 'content 123',
       }))
       .then(() => {
@@ -312,11 +276,11 @@ describe('Multi-file store file actions', () => {
 
     it('removes file from changedFiles array if not changed', (done) => {
       store.dispatch('changeFileContent', {
-        file: tmpFile,
+        path: tmpFile.path,
         content: 'content',
       })
       .then(() => store.dispatch('changeFileContent', {
-        file: tmpFile,
+        path: tmpFile.path,
         content: '',
       }))
       .then(() => {
@@ -335,10 +299,11 @@ describe('Multi-file store file actions', () => {
       tmpFile.content = 'testing';
 
       store.state.changedFiles.push(tmpFile);
+      store.state.entries[tmpFile.path] = tmpFile;
     });
 
     it('resets file content', (done) => {
-      store.dispatch('discardFileChanges', tmpFile)
+      store.dispatch('discardFileChanges', tmpFile.path)
       .then(() => {
         expect(tmpFile.content).not.toBe('testing');
 
@@ -348,7 +313,7 @@ describe('Multi-file store file actions', () => {
     });
 
     it('removes file from changedFiles array', (done) => {
-      store.dispatch('discardFileChanges', tmpFile)
+      store.dispatch('discardFileChanges', tmpFile.path)
       .then(() => {
         expect(store.state.changedFiles.length).toBe(0);
 
@@ -361,7 +326,7 @@ describe('Multi-file store file actions', () => {
       tmpFile.tempFile = true;
       tmpFile.opened = true;
 
-      store.dispatch('discardFileChanges', tmpFile)
+      store.dispatch('discardFileChanges', tmpFile.path)
       .then(() => {
         expect(tmpFile.opened).toBeFalsy();
 
@@ -375,7 +340,7 @@ describe('Multi-file store file actions', () => {
 
       expect(tmpFile.opened).toBeFalsy();
 
-      store.dispatch('discardFileChanges', tmpFile)
+      store.dispatch('discardFileChanges', tmpFile.path)
       .then(() => {
         expect(tmpFile.opened).toBeFalsy();
 

@@ -9,15 +9,17 @@ describe('Multi-file store tree mutations', () => {
   beforeEach(() => {
     localState = state();
     localTree = file();
+
+    localState.entries[localTree.path] = localTree;
   });
 
   describe('TOGGLE_TREE_OPEN', () => {
     it('toggles tree open', () => {
-      mutations.TOGGLE_TREE_OPEN(localState, localTree);
+      mutations.TOGGLE_TREE_OPEN(localState, localTree.path);
 
       expect(localTree.opened).toBeTruthy();
 
-      mutations.TOGGLE_TREE_OPEN(localState, localTree);
+      mutations.TOGGLE_TREE_OPEN(localState, localTree.path);
 
       expect(localTree.opened).toBeFalsy();
     });
@@ -35,15 +37,21 @@ describe('Multi-file store tree mutations', () => {
     }];
 
     it('adds directory data', () => {
+      localState.trees['project/master'] = {
+        tree: [],
+      };
+
       mutations.SET_DIRECTORY_DATA(localState, {
         data,
-        tree: localState,
+        treePath: 'project/master',
       });
 
-      expect(localState.tree.length).toBe(3);
-      expect(localState.tree[0].name).toBe('tree');
-      expect(localState.tree[1].name).toBe('submodule');
-      expect(localState.tree[2].name).toBe('blob');
+      const tree = localState.trees['project/master'];
+
+      expect(tree.tree.length).toBe(3);
+      expect(tree.tree[0].name).toBe('tree');
+      expect(tree.tree[1].name).toBe('submodule');
+      expect(tree.tree[2].name).toBe('blob');
     });
   });
 

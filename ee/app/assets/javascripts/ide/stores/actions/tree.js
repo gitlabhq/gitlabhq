@@ -1,4 +1,3 @@
-import { visitUrl } from '~/lib/utils/url_utility';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
 import flash from '~/flash';
 import service from '../../services';
@@ -15,9 +14,6 @@ export const toggleTreeOpen = ({ commit, dispatch }, path) => {
 export const handleTreeEntryAction = ({ commit, dispatch }, row) => {
   if (row.type === 'tree') {
     dispatch('toggleTreeOpen', row.path);
-  } else if (row.type === 'submodule') {
-    commit(types.TOGGLE_LOADING, { entry: row });
-    visitUrl(row.url);
   } else if (row.type === 'blob' && (row.opened || row.changed)) {
     if (row.changed && !row.opened) {
       commit(types.TOGGLE_FILE_OPEN, row.path);

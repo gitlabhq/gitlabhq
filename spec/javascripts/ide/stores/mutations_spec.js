@@ -9,6 +9,8 @@ describe('Multi-file store mutations', () => {
   beforeEach(() => {
     localState = state();
     entry = file();
+
+    localState.entries[entry.path] = entry;
   });
 
   describe('SET_INITIAL_DATA', () => {

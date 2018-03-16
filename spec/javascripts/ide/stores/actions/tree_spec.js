@@ -70,32 +70,15 @@ describe('Multi-file store tree actions', () => {
   });
 
   describe('toggleTreeOpen', () => {
-    let oldGetTreeData;
-    let getTreeDataSpy;
     let tree;
 
     beforeEach(() => {
-      getTreeDataSpy = jasmine.createSpy('getTreeData');
-
-      oldGetTreeData = store._actions.getTreeData;  // eslint-disable-line
-      store._actions.getTreeData = [getTreeDataSpy]; // eslint-disable-line
-
-      tree = {
-        projectId: 'abcproject',
-        branchId: 'master',
-        opened: false,
-        tree: [],
-      };
-    });
-
-    afterEach(() => {
-      store._actions.getTreeData = oldGetTreeData; // eslint-disable-line
+      tree = file('testing', '1', 'tree');
+      store.state.entries[tree.path] = tree;
     });
 
     it('toggles the tree open', (done) => {
-      store.dispatch('toggleTreeOpen', {
-        tree,
-      }).then(() => {
+      store.dispatch('toggleTreeOpen', tree.path).then(() => {
         expect(tree.opened).toBeTruthy();
 
         done();
