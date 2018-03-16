@@ -29,7 +29,7 @@ in your testing/production environment.
 
 GitLab stores a number of secret values in the `/etc/gitlab/gitlab-secrets.json`
 file which *must* match between the primary and secondary nodes. Until there is
-a means of automatically replicating these between nodes (see issue [gitlab-org/gitlab-ee#3789]), 
+a means of automatically replicating these between nodes (see issue [gitlab-org/gitlab-ee#3789]),
 they must be manually replicated to the secondary.
 
 1. SSH into the **primary** node, and execute the command below:
@@ -127,7 +127,11 @@ keys must be manually replicated to the secondary node.
 1. Restart sshd:
 
     ```bash
-    service ssh restart
+    # Debian or Ubuntu installations
+    sudo service ssh reload
+
+    # CentOS installations
+    sudo service sshd reload
     ```
 
 ### Step 3. Add the secondary GitLab node
@@ -145,13 +149,13 @@ keys must be manually replicated to the secondary node.
    ```
    gitlab-ctl restart
    ```
-   
+
    Check if there are any common issue with your Geo setup by running:
-   
+
    ```
    gitlab-rake gitlab:geo:check
    ```
-   
+
 1. SSH into your GitLab **primary** server and login as root to verify the
    secondary is reachable or there are any common issue with your Geo setup:
 
@@ -164,13 +168,13 @@ replicating missing data from the primary in a process known as **backfill**.
 Meanwhile, the primary node will start to notify the secondary of any changes, so
 that the secondary can act on those notifications immediately.
 
-Make sure the secondary instance is running and accessible. 
+Make sure the secondary instance is running and accessible.
 You can login to the secondary node with the same credentials as used in the primary.
 
 ### Step 4. (Optional) Enabling hashed storage (from GitLab 10.0)
 
 CAUTION: **Warning**:
-Hashed storage is in **Beta**. It is not considered production-ready. See 
+Hashed storage is in **Beta**. It is not considered production-ready. See
 [Hashed Storage] for more detail, and for the latest updates, check
 infrastructure issue [gitlab-com/infrastructure#2821].
 

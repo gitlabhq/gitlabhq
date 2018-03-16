@@ -14,4 +14,6 @@ export default () => ({
   rightPanelCollapsed: false,
   panelResizing: false,
   entries: {},
+  viewer: 'editor',
+  delayViewerUpdated: false,
 });

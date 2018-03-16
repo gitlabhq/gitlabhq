@@ -16,6 +16,8 @@ export default {
     ...mapState([
       'leftPanelCollapsed',
       'rightPanelCollapsed',
+      'viewer',
+      'delayViewerUpdated',
     ]),
     shouldHideEditor() {
       return this.file && this.file.binary && !this.file.raw;
@@ -32,6 +34,9 @@ export default {
     },
     rightPanelCollapsed() {
       this.editor.updateDimensions();
+    },
+    viewer() {
+      this.createEditorInstance();
     },
   },
   beforeDestroy() {
@@ -55,6 +60,8 @@ export default {
       'setFileLanguage',
       'setEditorPosition',
       'setFileEOL',
+      'updateViewer',
+      'updateDelayViewerUpdated',
     ]),
     initMonaco() {
       if (this.shouldHideEditor) return;
@@ -63,16 +70,34 @@ export default {
 
       this.getRawFileData(this.file)
         .then(() => {
-          this.editor.createInstance(this.$refs.editor);
+          const viewerPromise = this.delayViewerUpdated ? this.updateViewer('editor') : Promise.resolve();
+
+          return viewerPromise;
         })
-        .then(() => this.setupEditor())
+        .then(() => {
+          this.updateDelayViewerUpdated(false);
+          this.createEditorInstance();
+        })
         .catch((err) => {
           flash('Error setting up monaco. Please try again.', 'alert', document, null, false, true);
           throw err;
         });
     },
+    createEditorInstance() {
+      this.editor.dispose();
+
+      this.$nextTick(() => {
+        if (this.viewer === 'editor') {
+          this.editor.createInstance(this.$refs.editor);
+        } else {
+          this.editor.createDiffInstance(this.$refs.editor);
+        }
+
+        this.setupEditor();
+      });
+    },
     setupEditor() {
-      if (!this.file) return;
+      if (!this.file || !this.editor.instance) return;
 
       this.model = this.editor.createModel(this.file);
 

@@ -31,17 +31,12 @@
       },
     },
     computed: {
-      ...mapState([
-        'changedFiles',
-        'openFiles',
-      ]),
-      ...mapGetters([
-        'activeFile',
-      ]),
+      ...mapState(['changedFiles', 'openFiles', 'viewer']),
+      ...mapGetters(['activeFile', 'hasChanges']),
     },
     mounted() {
       const returnValue = 'Are you sure you want to lose unsaved changes?';
-      window.onbeforeunload = (e) => {
+      window.onbeforeunload = e => {
         if (!this.changedFiles.length) return undefined;
 
         Object.assign(e, {
@@ -66,6 +61,8 @@
       >
         <repo-tabs
           :files="openFiles"
+          :viewer="viewer"
+          :has-changes="hasChanges"
         />
         <repo-editor
           class="multi-file-edit-pane-content"

@@ -11,7 +11,10 @@ export default {
   [types.TOGGLE_LOADING](state, { entry, forceValue = undefined }) {
     if (entry.path) {
       Object.assign(state.entries[entry.path], {
-        loading: forceValue !== undefined ? forceValue : !state.entries[entry.path].loading,
+        loading:
+          forceValue !== undefined
+            ? forceValue
+            : !state.entries[entry.path].loading,
       });
     } else {
       Object.assign(entry, {
@@ -63,8 +66,8 @@ export default {
           [key]: entry,
         });
       } else {
-        const tree = entry.tree.filter(f =>
-          foundEntry.tree.find(e => e.path === f.path) === undefined,
+        const tree = entry.tree.filter(
+          f => foundEntry.tree.find(e => e.path === f.path) === undefined,
         );
         Object.assign(foundEntry, {
           tree: foundEntry.tree.concat(tree),
@@ -74,13 +77,27 @@ export default {
       return acc.concat(key);
     }, []);
 
-    const foundEntry = state.trees[`${projectId}/${branchId}`].tree.find(e => e.path === data.treeList[0].path);
+    const foundEntry = state.trees[`${projectId}/${branchId}`].tree.find(
+      e => e.path === data.treeList[0].path,
+    );
 
     if (!foundEntry) {
       Object.assign(state.trees[`${projectId}/${branchId}`], {
-        tree: state.trees[`${projectId}/${branchId}`].tree.concat(data.treeList),
+        tree: state.trees[`${projectId}/${branchId}`].tree.concat(
+          data.treeList,
+        ),
       });
     }
+  },
+  [types.UPDATE_VIEWER](state, viewer) {
+    Object.assign(state, {
+      viewer,
+    });
+  },
+  [types.UPDATE_DELAY_VIEWER_CHANGE](state, delayViewerUpdated) {
+    Object.assign(state, {
+      delayViewerUpdated,
+    });
   },
   ...projectMutations,
   ...fileMutations,

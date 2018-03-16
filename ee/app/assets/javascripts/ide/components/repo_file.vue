@@ -52,15 +52,23 @@
       }
     },
     methods: {
-      ...mapActions([
-        'toggleTreeOpen',
-      ]),
+      ...mapActions(['toggleTreeOpen', 'updateDelayViewerUpdated']),
       clickFile() {
         // Manual Action if a tree is selected/opened
-        if (this.isTree && this.$router.currentRoute.path === `/project${this.file.url}`) {
+        if (
+          this.isTree &&
+          this.$router.currentRoute.path === `/project${this.file.url}`
+        ) {
           this.toggleTreeOpen(this.file.path);
         }
-        router.push(`/project${this.file.url}`);
+
+        const delayPromise = this.file.changed
+          ? Promise.resolve()
+          : this.updateDelayViewerUpdated(true);
+
+        return delayPromise.then(() => {
+          router.push(`/project${this.file.url}`);
+        });
       },
     },
   };
