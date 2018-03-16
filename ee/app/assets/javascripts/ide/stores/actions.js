@@ -10,7 +10,7 @@ export const setInitialData = ({ commit }, data) =>
   commit(types.SET_INITIAL_DATA, data);
 
 export const discardAllChanges = ({ state, commit, dispatch }) => {
-  state.changedFiles.forEach((file) => {
+  state.changedFiles.forEach(file => {
     commit(types.DISCARD_FILE_CHANGES, file.path);
 
     if (file.tempFile) {
@@ -22,7 +22,7 @@ export const discardAllChanges = ({ state, commit, dispatch }) => {
 };
 
 export const closeAllFiles = ({ state, dispatch }) => {
-  state.openFiles.forEach(file => dispatch('closeFile', file));
+  state.openFiles.forEach(file => dispatch('closeFile', file.path));
 };
 
 export const setPanelCollapsedStatus = ({ commit }, { side, collapsed }) => {
@@ -40,50 +40,61 @@ export const setResizingStatus = ({ commit }, resizing) => {
 export const createTempEntry = (
   { state, commit, dispatch },
   { branchId, name, type, content = '', base64 = false },
-) => new Promise((resolve) => {
-  const worker = new FilesDecoratorWorker();
-  const fullName = name.slice(-1) !== '/' && type === 'tree' ? `${name}/` : name;
+) =>
+  new Promise(resolve => {
+    const worker = new FilesDecoratorWorker();
+    const fullName =
+      name.slice(-1) !== '/' && type === 'tree' ? `${name}/` : name;
 
-  if (state.entries[name]) {
-    flash(`The name "${name.split('/').pop()}" is already taken in this directory.`, 'alert', document, null, false, true);
+    if (state.entries[name]) {
+      flash(
+        `The name "${name
+          .split('/')
+          .pop()}" is already taken in this directory.`,
+        'alert',
+        document,
+        null,
+        false,
+        true,
+      );
 
-    resolve();
+      resolve();
 
-    return null;
-  }
-
-  worker.addEventListener('message', ({ data }) => {
-    const { file } = data;
-
-    worker.terminate();
-
-    commit(types.CREATE_TMP_ENTRY, {
-      data,
-      projectId: state.currentProjectId,
-      branchId,
-    });
-
-    if (type === 'blob') {
-      commit(types.TOGGLE_FILE_OPEN, file.path);
-      commit(types.ADD_FILE_TO_CHANGED, file.path);
-      dispatch('setFileActive', file.path);
+      return null;
     }
 
-    resolve(file);
-  });
+    worker.addEventListener('message', ({ data }) => {
+      const { file } = data;
 
-  worker.postMessage({
-    data: [fullName],
-    projectId: state.currentProjectId,
-    branchId,
-    type,
-    tempFile: true,
-    base64,
-    content,
-  });
+      worker.terminate();
 
-  return null;
-});
+      commit(types.CREATE_TMP_ENTRY, {
+        data,
+        projectId: state.currentProjectId,
+        branchId,
+      });
+
+      if (type === 'blob') {
+        commit(types.TOGGLE_FILE_OPEN, file.path);
+        commit(types.ADD_FILE_TO_CHANGED, file.path);
+        dispatch('setFileActive', file.path);
+      }
+
+      resolve(file);
+    });
+
+    worker.postMessage({
+      data: [fullName],
+      projectId: state.currentProjectId,
+      branchId,
+      type,
+      tempFile: true,
+      base64,
+      content,
+    });
+
+    return null;
+  });
 
 export const scrollToTab = () => {
   Vue.nextTick(() => {
