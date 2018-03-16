@@ -35,7 +35,7 @@ Starting with [GitLab Starter][ee] 9.3, this information will
 be automatically extracted and shown right in the merge request widget. To do
 so, the CI/CD job must be named `codequality` and the artifact path must be
 `codeclimate.json`.
-[Learn more on code quality diffs in merge requests](../../user/project/merge_requests/code_quality_diff.md).
+[Learn more on code quality diffs in merge requests](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html).
 
 [cli]: https://github.com/codeclimate/codeclimate
 [dind]: ../docker/using_docker_build.md#use-docker-in-docker-executor
