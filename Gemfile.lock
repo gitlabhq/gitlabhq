@@ -266,7 +266,7 @@ GEM
       builder
       excon (~> 0.58)
       formatador (~> 0.2)
-    fog-google (1.3.2)
+    fog-google (1.3.3)
       fog-core
       fog-json
       fog-xml
@@ -1081,7 +1081,7 @@ DEPENDENCIES
   fog-aliyun (~> 0.2.0)
   fog-aws (~> 2.0)
   fog-core (~> 1.44)
-  fog-google (~> 1.3.2)
+  fog-google (~> 1.3.3)
   fog-local (~> 0.3)
   fog-openstack (~> 0.1)
   fog-rackspace (~> 0.1.1)
