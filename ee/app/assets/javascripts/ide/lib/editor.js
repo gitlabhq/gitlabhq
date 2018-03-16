@@ -3,9 +3,16 @@ import DecorationsController from './decorations/controller';
 import DirtyDiffController from './diff/controller';
 import Disposable from './common/disposable';
 import ModelManager from './common/model_manager';
-import editorOptions from './editor_options';
+import editorOptions, { defaultEditorOptions } from './editor_options';
+import gitlabTheme from './themes/gl_theme';
 
-import gitlabTheme from 'ee/ide/lib/themes/gl_theme'; // eslint-disable-line import/first
+export const clearDomElement = el => {
+  if (!el || !el.firstChild) return;
+
+  while (el.firstChild) {
+    el.removeChild(el.firstChild);
+  }
+};
 
 export default class Editor {
   static create(monaco) {
@@ -34,19 +41,31 @@ export default class Editor {
 
   createInstance(domElement) {
     if (!this.instance) {
+      clearDomElement(domElement);
+
       this.disposable.add(
-        this.instance = this.monaco.editor.create(domElement, {
-          model: null,
-          readOnly: false,
-          contextmenu: true,
-          scrollBeyondLastLine: false,
-          minimap: {
-            enabled: false,
-          },
-        }),
-        this.dirtyDiffController = new DirtyDiffController(
-          this.modelManager, this.decorationsController,
-        ),
+        (this.instance = this.monaco.editor.create(domElement, {
+          ...defaultEditorOptions,
+        })),
+        (this.dirtyDiffController = new DirtyDiffController(
+          this.modelManager,
+          this.decorationsController,
+        )),
+      );
+
+      window.addEventListener('resize', this.debouncedUpdate, false);
+    }
+  }
+
+  createDiffInstance(domElement) {
+    if (!this.instance) {
+      clearDomElement(domElement);
+
+      this.disposable.add(
+        (this.instance = this.monaco.editor.createDiffEditor(domElement, {
+          ...defaultEditorOptions,
+          readOnly: true,
+        })),
       );
 
       window.addEventListener('resize', this.debouncedUpdate, false);
@@ -58,25 +77,39 @@ export default class Editor {
   }
 
   attachModel(model) {
+    if (this.instance.getEditorType() === 'vs.editor.IDiffEditor') {
+      this.instance.setModel({
+        original: model.getOriginalModel(),
+        modified: model.getModel(),
+      });
+
+      return;
+    }
+
     this.instance.setModel(model.getModel());
     if (this.dirtyDiffController) this.dirtyDiffController.attachModel(model);
 
     this.currentModel = model;
 
-    this.instance.updateOptions(editorOptions.reduce((acc, obj) => {
-      Object.keys(obj).forEach((key) => {
-        Object.assign(acc, {
-          [key]: obj[key](model),
+    this.instance.updateOptions(
+      editorOptions.reduce((acc, obj) => {
+        Object.keys(obj).forEach(key => {
+          Object.assign(acc, {
+            [key]: obj[key](model),
+          });
         });
-      });
-      return acc;
-    }, {}));
+        return acc;
+      }, {}),
+    );
 
     if (this.dirtyDiffController) this.dirtyDiffController.reDecorate(model);
   }
 
   setupMonacoTheme() {
-    this.monaco.editor.defineTheme(gitlabTheme.themeName, gitlabTheme.monacoTheme);
+    this.monaco.editor.defineTheme(
+      gitlabTheme.themeName,
+      gitlabTheme.monacoTheme,
+    );
 
     this.monaco.editor.setTheme('gitlab');
   }
@@ -88,12 +121,21 @@ export default class Editor {
   }
 
   dispose() {
-    this.disposable.dispose();
     window.removeEventListener('resize', this.debouncedUpdate);
 
-    // dispose main monaco instance
-    if (this.instance) {
+    // catch any potential errors with disposing the error
+    // this is mainly for tests caused by elements not existing
+    try {
+      this.disposable.dispose();
+
       this.instance = null;
+    } catch (e) {
+      this.instance = null;
+
+      if (process.env.NODE_ENV !== 'test') {
+        // eslint-disable-next-line no-console
+        console.error(e);
+      }
     }
   }
 
@@ -113,6 +155,8 @@ export default class Editor {
   }
 
   onPositionChange(cb) {
+    if (!this.instance.onDidChangeCursorPosition) return;
+
     this.disposable.add(
       this.instance.onDidChangeCursorPosition(e => cb(this.instance, e)),
     );

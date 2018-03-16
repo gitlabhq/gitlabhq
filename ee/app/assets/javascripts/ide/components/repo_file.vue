@@ -1,5 +1,5 @@
 <script>
-  import { mapState } from 'vuex';
+  import { mapActions, mapState } from 'vuex';
 
   import timeAgoMixin from '~/vue_shared/mixins/timeago';
   import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
@@ -70,6 +70,9 @@
       }
     },
     methods: {
+      ...mapActions([
+        'updateDelayViewerUpdated',
+      ]),
       clickFile(row) {
         // Manual Action if a tree is selected/opened
         if (this.file.type === 'tree' && this.$router.currentRoute.path === `/project${row.url}`) {
@@ -78,7 +81,13 @@
             tree: this.file,
           });
         }
-        this.$router.push(`/project${row.url}`);
+
+        const delayPromise = this.file.changed ?
+          Promise.resolve() : this.updateDelayViewerUpdated(true);
+
+        return delayPromise.then(() => {
+          this.$router.push(`/project${row.url}`);
+        });
       },
     },
   };

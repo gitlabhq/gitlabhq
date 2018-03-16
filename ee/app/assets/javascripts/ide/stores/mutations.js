@@ -57,6 +57,16 @@ export default {
       lastCommitMsg,
     });
   },
+  [types.UPDATE_VIEWER](state, viewer) {
+    Object.assign(state, {
+      viewer,
+    });
+  },
+  [types.UPDATE_DELAY_VIEWER_CHANGE](state, delayViewerUpdated) {
+    Object.assign(state, {
+      delayViewerUpdated,
+    });
+  },
   ...projectMutations,
   ...fileMutations,
   ...treeMutations,
