@@ -12,5 +12,13 @@ module EE
       default_value_for :background_color, '#E75E40'
       default_value_for :font_color,  '#FFFFFF'
     end
+
+    def show_header?
+      self.header_message.present?
+    end
+
+    def show_footer?
+      self.footer_message.present?
+    end
   end
 end
