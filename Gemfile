@@ -109,7 +109,7 @@ gem 'dropzonejs-rails', '~> 0.7.1'
 # for backups
 gem 'fog-aws', '~> 2.0'
 gem 'fog-core', '~> 1.44'
-gem 'fog-google', '~> 1.3.2'
+gem 'fog-google', '~> 1.3.3'
 gem 'fog-local', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
