@@ -2,6 +2,7 @@
 %html.devise-layout-html
   = render "layouts/head"
   %body.ui_indigo.login-page.application.navless{ data: { page: body_data_page } }
+    = header_message(@appearance)
     .page-wrap
       = render "layouts/header/empty"
       .login-page-broadcast
@@ -40,3 +41,4 @@
           = link_to "Explore", explore_root_path
           = link_to "Help", help_path
           = link_to "About GitLab", "https://about.gitlab.com/"
+      = footer_message(@appearance)
