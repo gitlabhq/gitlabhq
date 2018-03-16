@@ -228,7 +228,11 @@ created, it's uploaded as an artifact which you can later download and
 check out.
 
 In GitLab Ultimate, any security warnings are also
+<<<<<<< HEAD
 [shown in the merge request widget](../../user/project/merge_requests/container_scanning.md).
+=======
+[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/container_scanning.html).
+>>>>>>> upstream/master
 
 ### Auto Review Apps
 
