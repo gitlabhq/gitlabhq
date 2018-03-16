@@ -66,6 +66,7 @@ class InternalId < ActiveRecord::Base
     # scope: Attributes that define the scope for id generation.
     # usage: Symbol to define the usage of the internal id, see InternalId.usages
     # init: Block that gets called to initialize InternalId record if not present
+    #       Make sure to not throw exceptions in the absence of records (if this is expected).
     attr_reader :subject, :scope, :init, :scope_attrs, :usage
 
     def initialize(subject, scope, usage, init)
@@ -74,9 +75,9 @@ class InternalId < ActiveRecord::Base
       @init = init
       @usage = usage
 
-      raise ArgumentError, 'scope is not well-defined, need at least one column for scope (given: 0)' if scope.empty?
+      raise ArgumentError, 'Scope is not well-defined, need at least one column for scope (given: 0)' if scope.empty?
 
-      unless InternalId.usages.keys.include?(usage.to_s)
+      unless InternalId.usages.has_key?(usage.to_s)
         raise ArgumentError, "Usage '#{usage}' is unknown. Supported values are #{InternalId.usages.keys} from InternalId.usages"
       end
     end
@@ -85,7 +86,7 @@ class InternalId < ActiveRecord::Base
     def generate
       subject.transaction do
         # Create a record in internal_ids if one does not yet exist
-        # and increment it's last value
+        # and increment its last value
         #
         # Note this will acquire a ROW SHARE lock on the InternalId record
         (lookup || create_record).increment_and_save!
