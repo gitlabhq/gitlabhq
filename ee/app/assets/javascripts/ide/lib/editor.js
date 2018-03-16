@@ -133,6 +133,7 @@ export default class Editor {
       this.instance = null;
 
       if (process.env.NODE_ENV !== 'test') {
+        // eslint-disable-next-line no-console
         console.error(e);
       }
     }
