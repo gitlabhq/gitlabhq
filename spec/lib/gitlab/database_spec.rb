@@ -298,8 +298,6 @@ describe Gitlab::Database do
     end
   end
 
-<<<<<<< HEAD
-=======
   describe '.cached_table_exists?' do
     it 'only retrieves data once per table' do
       expect(ActiveRecord::Base.connection).to receive(:table_exists?).with(:projects).once.and_call_original
@@ -312,7 +310,6 @@ describe Gitlab::Database do
     end
   end
 
->>>>>>> upstream/master
   describe '#true_value' do
     it 'returns correct value for PostgreSQL' do
       expect(described_class).to receive(:postgresql?).and_return(true)

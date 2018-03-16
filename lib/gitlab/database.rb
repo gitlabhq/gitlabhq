@@ -203,14 +203,11 @@ module Gitlab
       connection.schema_cache.columns_hash(table_name).has_key?(column_name.to_s)
     end
 
-<<<<<<< HEAD
-=======
     def self.cached_table_exists?(table_name)
       # Rails 5 uses data_source_exists? instead of table_exists?
       connection.schema_cache.table_exists?(table_name)
     end
 
->>>>>>> upstream/master
     private_class_method :connection
 
     def self.database_version
