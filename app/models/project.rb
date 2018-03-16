@@ -1533,8 +1533,8 @@ class Project < ActiveRecord::Base
     @errors = original_errors
   end
 
-  def add_export_job(current_user:)
-    job_id = ProjectExportWorker.perform_async(current_user.id, self.id)
+  def add_export_job(current_user:, params: {})
+    job_id = ProjectExportWorker.perform_async(current_user.id, self.id, params)
 
     if job_id
       Rails.logger.info "Export job started for project ID #{self.id} with job ID #{job_id}"

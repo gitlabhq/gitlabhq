@@ -1,65 +1,63 @@
 <script>
-  import { mapActions } from 'vuex';
-  import timeAgoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
+import { mapActions } from 'vuex';
+import timeAgoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
 
-  export default {
-    components: {
-      timeAgoTooltip,
+export default {
+  components: {
+    timeAgoTooltip,
+  },
+  props: {
+    author: {
+      type: Object,
+      required: true,
     },
-    props: {
-      author: {
-        type: Object,
-        required: true,
-      },
-      createdAt: {
-        type: String,
-        required: true,
-      },
-      actionText: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      actionTextHtml: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      noteId: {
-        type: Number,
-        required: true,
-      },
-      includeToggle: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      expanded: {
-        type: Boolean,
-        required: false,
-        default: true,
-      },
+    createdAt: {
+      type: String,
+      required: true,
     },
-    computed: {
-      toggleChevronClass() {
-        return this.expanded ? 'fa-chevron-up' : 'fa-chevron-down';
-      },
-      noteTimestampLink() {
-        return `#note_${this.noteId}`;
-      },
+    actionText: {
+      type: String,
+      required: false,
+      default: '',
     },
-    methods: {
-      ...mapActions([
-        'setTargetNoteHash',
-      ]),
-      handleToggle() {
-        this.$emit('toggleHandler');
-      },
-      updateTargetNoteHash() {
-        this.setTargetNoteHash(this.noteTimestampLink);
-      },
+    actionTextHtml: {
+      type: String,
+      required: false,
+      default: '',
     },
-  };
+    noteId: {
+      type: Number,
+      required: true,
+    },
+    includeToggle: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    expanded: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
+  computed: {
+    toggleChevronClass() {
+      return this.expanded ? 'fa-chevron-up' : 'fa-chevron-down';
+    },
+    noteTimestampLink() {
+      return `#note_${this.noteId}`;
+    },
+  },
+  methods: {
+    ...mapActions(['setTargetNoteHash']),
+    handleToggle() {
+      this.$emit('toggleHandler');
+    },
+    updateTargetNoteHash() {
+      this.setTargetNoteHash(this.noteTimestampLink);
+    },
+  },
+};
 </script>
 
 <template>
