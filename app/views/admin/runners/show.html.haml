@@ -9,6 +9,10 @@
         %span.runner-state.runner-state-specific
           Specific
 
+- add_to_breadcrumbs _("Runners"), admin_runners_path
+- breadcrumb_title "##{@runner.id}"
+- @no_container = true
+
 - if @runner.shared?
   .bs-callout.bs-callout-success
     %h4 This Runner will process jobs from ALL UNASSIGNED projects

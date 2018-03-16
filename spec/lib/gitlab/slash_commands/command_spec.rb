@@ -108,5 +108,10 @@ describe Gitlab::SlashCommands::Command do
 
       it { is_expected.to eq(Gitlab::SlashCommands::IssueSearch) }
     end
+
+    context 'IssueMove is triggered' do
+      let(:params) { { text: 'issue move #78291 to gitlab/gitlab-ci' } }
+      it { is_expected.to eq(Gitlab::SlashCommands::IssueMove) }
+    end
   end
 end

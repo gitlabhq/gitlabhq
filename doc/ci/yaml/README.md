@@ -966,7 +966,7 @@ tag including only the files that are untracked by Git:
 ```yaml
 job:
   artifacts:
-    name: "${CI_JOB_NAME}_${CI_COMMIT_REF_NAME}"
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
     untracked: true
 ```
 
@@ -975,7 +975,7 @@ To create an archive with a name of the current [stage](#stages) and branch name
 ```yaml
 job:
   artifacts:
-    name: "${CI_JOB_STAGE}_${CI_COMMIT_REF_NAME}"
+    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"
     untracked: true
 ```
 
@@ -987,7 +987,7 @@ If you use **Windows Batch** to run your shell scripts you need to replace
 ```yaml
 job:
   artifacts:
-    name: "%CI_JOB_STAGE%_%CI_COMMIT_REF_NAME%"
+    name: "%CI_JOB_STAGE%-%CI_COMMIT_REF_NAME%"
     untracked: true
 ```
 
@@ -997,7 +997,7 @@ If you use **Windows PowerShell** to run your shell scripts you need to replace
 ```yaml
 job:
   artifacts:
-    name: "$env:CI_JOB_STAGE_$env:CI_COMMIT_REF_NAME"
+    name: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_NAME"
     untracked: true
 ```
 

@@ -698,21 +698,21 @@ describe Ci::Build do
 
         describe '#erase' do
           before do
-            build.erase(erased_by: user)
+            build.erase(erased_by: erased_by)
           end
 
           context 'erased by user' do
-            let!(:user) { create(:user, username: 'eraser') }
+            let!(:erased_by) { create(:user, username: 'eraser') }
 
             include_examples 'erasable'
 
             it 'records user who erased a build' do
-              expect(build.erased_by).to eq user
+              expect(build.erased_by).to eq erased_by
             end
           end
 
           context 'erased by system' do
-            let(:user) { nil }
+            let(:erased_by) { nil }
 
             include_examples 'erasable'
 
@@ -767,21 +767,21 @@ describe Ci::Build do
 
           describe '#erase' do
             before do
-              build.erase(erased_by: user)
+              build.erase(erased_by: erased_by)
             end
 
             context 'erased by user' do
-              let!(:user) { create(:user, username: 'eraser') }
+              let!(:erased_by) { create(:user, username: 'eraser') }
 
               include_examples 'erasable'
 
               it 'records user who erased a build' do
-                expect(build.erased_by).to eq user
+                expect(build.erased_by).to eq erased_by
               end
             end
 
             context 'erased by system' do
-              let(:user) { nil }
+              let(:erased_by) { nil }
 
               include_examples 'erasable'
 
@@ -1978,7 +1978,7 @@ describe Ci::Build do
       context 'when depended job has not been completed yet' do
         let!(:pre_stage_job) { create(:ci_build, :manual, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
-        it { expect { job.run! }.not_to raise_error(Ci::Build::MissingDependenciesError) }
+        it { expect { job.run! }.not_to raise_error }
       end
 
       context 'when artifacts of depended job has been expired' do
