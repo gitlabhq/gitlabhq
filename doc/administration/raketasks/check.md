@@ -84,9 +84,9 @@ checks using those checksums can be run. These checks also detect missing files.
 
 Currently, integrity checks are supported for the following types of file:
 
-* CI artifacts
-* LFS objects
-* User uploads
+* CI artifacts (Available from version 10.7.0)
+* LFS objects (Available from version 10.6.0)
+* User uploads (Available from version 10.6.0)
 
 **Omnibus Installation**
 
