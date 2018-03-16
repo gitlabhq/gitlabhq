@@ -1,6 +1,6 @@
 # Include atomic internal id generation scheme for a model
 #
-# This allows to atomically generate internal ids that are
+# This allows us to atomically generate internal ids that are
 # unique within a given scope.
 #
 # For example, let's generate internal ids for Issue per Project:
@@ -25,18 +25,18 @@ module AtomicInternalId
   extend ActiveSupport::Concern
 
   module ClassMethods
-    def has_internal_id(on, scope:, usage: nil, init:) # rubocop:disable Naming/PredicateName
+    def has_internal_id(column, scope:, init:) # rubocop:disable Naming/PredicateName
       before_validation(on: :create) do
-        if self.public_send(on).blank? # rubocop:disable GitlabSecurity/PublicSend
+        if self.public_send(column).blank? # rubocop:disable GitlabSecurity/PublicSend
           scope_attrs = { scope => self.public_send(scope) } # rubocop:disable GitlabSecurity/PublicSend
-          usage = (usage || self.class.table_name).to_sym
+          usage = self.class.table_name.to_sym
 
           new_iid = InternalId.generate_next(self, scope_attrs, usage, init)
-          self.public_send("#{on}=", new_iid) # rubocop:disable GitlabSecurity/PublicSend
+          self.public_send("#{column}=", new_iid) # rubocop:disable GitlabSecurity/PublicSend
         end
       end
 
-      validates on, presence: true, numericality: true
+      validates column, presence: true, numericality: true
     end
   end
 

@@ -24,14 +24,16 @@ shared_examples_for 'AtomicInternalId' do
 
       it 'calls InternalId.generate_next and sets internal id attribute' do
         iid = rand(1..1000)
+
         expect(InternalId).to receive(:generate_next).with(instance, scope_attrs, usage, any_args).and_return(iid)
         subject
-        expect(instance.public_send(internal_id_attribute)).to eq(iid) # rubocop:disable GitlabSecurity/PublicSend
+        expect(instance.public_send(internal_id_attribute)).to eq(iid)
       end
 
       it 'does not overwrite an existing internal id' do
-        instance.public_send("#{internal_id_attribute}=", 4711) # rubocop:disable GitlabSecurity/PublicSend
-        expect { subject }.not_to change { instance.public_send(internal_id_attribute) } # rubocop:disable GitlabSecurity/PublicSend
+        instance.public_send("#{internal_id_attribute}=", 4711)
+
+        expect { subject }.not_to change { instance.public_send(internal_id_attribute) }
       end
     end
   end

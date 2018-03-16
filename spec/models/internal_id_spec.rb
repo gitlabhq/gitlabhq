@@ -41,10 +41,11 @@ describe InternalId do
     end
 
     it 'generates a strictly monotone, gapless sequence' do
-      seq = (0..rand(1000)).map do
+      seq = (0..rand(100)).map do
         described_class.generate_next(issue, scope, usage, init)
       end
       normalized = seq.map { |i| i - seq.min }
+
       expect(normalized).to eq((0..seq.size - 1).to_a)
     end
 
@@ -58,6 +59,7 @@ describe InternalId do
 
       it 'calculates next internal ids on the fly' do
         val = rand(1..100)
+
         expect(init).to receive(:call).with(issue).and_return(val)
         expect(subject).to eq(val + 1)
       end
@@ -70,11 +72,13 @@ describe InternalId do
 
     it 'returns incremented iid' do
       value = id.last_value
+
       expect(subject).to eq(value + 1)
     end
 
     it 'saves the record' do
       subject
+
       expect(id.changed?).to be_falsey
     end
 

@@ -3,7 +3,7 @@ class CreateInternalIdsTable < ActiveRecord::Migration
 
   DOWNTIME = false
 
-  def up
+  def change
     create_table :internal_ids, id: :bigserial do |t|
       t.references :project, null: false, foreign_key: { on_delete: :cascade }
       t.integer :usage, null: false
@@ -11,9 +11,5 @@ class CreateInternalIdsTable < ActiveRecord::Migration
 
       t.index [:usage, :project_id], unique: true
     end
-  end
-
-  def down
-    drop_table :internal_ids
   end
 end
