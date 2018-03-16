@@ -41,33 +41,28 @@ module EE
         end
       end
 
-      expose :sast, if: -> (mr, _) { mr.expose_sast_data? } do
-        expose :head_path, if: -> (mr, _) { can?(current_user, :read_build, mr.head_sast_artifact) } do |merge_request|
-          raw_project_build_artifacts_url(merge_request.source_project,
-                                          merge_request.head_sast_artifact,
-                                          path: Ci::Build::SAST_FILE)
-        end
+      expose_artifact(:sast, Ci::Build::SAST_FILE)
+      expose_artifact(:sast_container, Ci::Build::SAST_CONTAINER_FILE)
+      expose_artifact(:dast, Ci::Build::DAST_FILE)
+    end
 
-        expose :base_path, if: -> (mr, _) { mr.base_has_sast_data? && can?(current_user, :read_build, mr.base_sast_artifact)} do |merge_request|
-          raw_project_build_artifacts_url(merge_request.target_project,
-                                          merge_request.base_sast_artifact,
-                                          path: Ci::Build::SAST_FILE)
-        end
-      end
+    class_methods do
+      def expose_artifact(name, file)
+        expose name, if: -> (mr, _) { mr.send(:"expose_#{name}_data?") } do
+          base_artifact_method = :"base_#{name}_artifact"
+          head_artifact_method = :"head_#{name}_artifact"
 
-      expose :sast_container, if: -> (mr, _) { mr.expose_sast_container_data? } do
-        expose :path, if: -> (mr, _) { can?(current_user, :read_build, mr.sast_container_artifact) } do |merge_request|
-          raw_project_build_artifacts_url(merge_request.source_project,
-                                          merge_request.sast_container_artifact,
-                                          path: Ci::Build::SAST_CONTAINER_FILE)
-        end
-      end
+          expose :head_path, if: -> (mr, _) { can?(current_user, :read_build, mr.send(head_artifact_method)) } do |merge_request|
+            raw_project_build_artifacts_url(merge_request.source_project,
+                                            merge_request.send(head_artifact_method),
+                                            path: file)
+          end
 
-      expose :dast, if: -> (mr, _) { mr.expose_dast_data? } do
-        expose :path, if: -> (mr, _) { can?(current_user, :read_build, mr.dast_artifact) } do |merge_request|
-          raw_project_build_artifacts_url(merge_request.source_project,
-                                          merge_request.dast_artifact,
-                                          path: Ci::Build::DAST_FILE)
+          expose :base_path, if: -> (mr, _) { mr.send(:"base_has_#{name}_data?") && can?(current_user, :read_build, mr.send(base_artifact_method)) } do |merge_request|
+            raw_project_build_artifacts_url(merge_request.target_project,
+                                            merge_request.send(base_artifact_method),
+                                            path: file)
+          end
         end
       end
     end
