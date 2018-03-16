@@ -47,11 +47,7 @@ There's also a collection of repositories with [example projects](https://gitlab
 
 ## Static Application Security Testing (SAST)
 
-<<<<<<< HEAD
 **(Ultimate)** [Scan your code for vulnerabilities](sast.md)
-=======
-**(Ultimate)** [Scan your code for vulnerabilities](https://docs.gitlab.com/ee/ci/examples/sast.html)
->>>>>>> upstream/master
 
 ## Container Scanning
 
