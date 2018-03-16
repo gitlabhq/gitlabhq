@@ -20,7 +20,7 @@ project in an easy and automatic way:
 1. [Auto Test](#auto-test)
 1. [Auto Code Quality](#auto-code-quality)
 1. [Auto SAST (Static Application Security Testing)](#auto-sast)
-1. [Auto SAST for Docker images](#auto-sast-for-docker-images)
+1. [Auto Container Scanning](#auto-container-scanning)
 1. [Auto Review Apps](#auto-review-apps)
 1. [Auto DAST (Dynamic Application Security Testing)](#auto-dast)
 1. [Auto Deploy](#auto-deploy)
@@ -217,7 +217,7 @@ check out.
 In GitLab Ultimate, any security warnings are also
 [shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/sast.html).
 
-### Auto SAST for Docker images
+### Auto Container Scanning
 
 > Introduced in GitLab 10.4.
 
@@ -228,7 +228,7 @@ created, it's uploaded as an artifact which you can later download and
 check out.
 
 In GitLab Ultimate, any security warnings are also
-[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/sast_docker.html).
+[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/container_scanning.html).
 
 ### Auto Review Apps
 
