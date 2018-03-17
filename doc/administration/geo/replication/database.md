@@ -155,6 +155,10 @@ The following guide assumes that:
     addresses with addresses appropriate to your network configuration:
 
     ```ruby
+    ##
+    ## Geo Primary role
+    ## - configure dependent flags automatically to enable Geo
+    ##
     geo_primary_role['enable'] = true
 
     ##
@@ -164,7 +168,7 @@ The following guide assumes that:
     postgresql['listen_address'] = '1.2.3.4'
     
     ##
-    # Secondary addresses
+    # Primary and Secondary addresses
     # - replace '1.2.3.4' with the primary public or VPC address
     # - replace '5.6.7.8' with the secondary public or VPC address
     ##
@@ -188,7 +192,7 @@ The following guide assumes that:
 1. Optional: If you want to add another secondary, the relevant setting would look like:
 
     ```ruby
-    postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32','9.10.11.12/32']
+    postgresql['md5_auth_cidr_addresses'] = ['1.2.3.4/32', '5.6.7.8/32','9.10.11.12/32']
     ```
 
     You may also want to edit the `wal_keep_segments` and `max_wal_senders` to
@@ -313,19 +317,30 @@ The following guide assumes that:
     addresses with addresses appropriate to your network configuration:
 
     ```ruby
-    # Secondary addresses
-    # - replace '5.6.7.8' with the secondary public or VPC address
+    ##
+    ## Geo Secondary role
+    ## - configure dependent flags automatically to enable Geo
+    ##
+    geo_secondary_role['enable'] = true 
+  
+    ##
+    ## Secondary address
+    ## - replace '5.6.7.8' with the secondary public or VPC address
+    ##
     postgresql['listen_address'] = '5.6.7.8'
     postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
 
-    # gitlab database user's password (defined previously)
+    ##
+    ## Database credentials password (defined previously in primary node)
+    ## - replicate same values here as defined in primary node 
+    ##
+    postgresql['sql_user_password'] = 'fca0b89a972d69f00eb3ec98a5838484'
     gitlab_rails['db_password'] = 'mypassword'
 
-    # enable fdw for the geo tracking database
+    ##
+    ## Enable FDW support for the Geo Tracking Database (improves performance)
+    ##
     geo_secondary['db_fdw'] = true
-
-    # make this a secondary Geo node
-    geo_secondary_role['enable'] = true
     ```
 
     For external PostgreSQL instances, [see additional instructions][external postgresql].
