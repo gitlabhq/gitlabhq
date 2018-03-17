@@ -151,7 +151,7 @@ describe Projects::TransferService do
     before do
       group.add_owner(user)
 
-      unless gitlab_shell.add_repository(repository_storage, "#{group.full_path}/#{project.path}")
+      unless gitlab_shell.create_repository(repository_storage, "#{group.full_path}/#{project.path}")
         raise 'failed to add repository'
       end
 

@@ -35,15 +35,22 @@
     "import/no-commonjs": "error",
     "no-multiple-empty-lines": ["error", { "max": 1 }],
     "promise/catch-or-return": "error",
-    "no-underscore-dangle": ["error", { "allow": ["__", "_links"]}],
-    "vue/html-self-closing": ["error", {
-      "html": {
-        "void": "always",
-        "normal": "never",
-        "component": "always"
-      },
-      "svg": "always",
-      "math": "always"
-    }]
+    "no-underscore-dangle": ["error", { "allow": ["__", "_links"] }],
+    "no-mixed-operators": 0,
+    "space-before-function-paren": 0,
+    "curly": 0,
+    "arrow-parens": 0,
+    "vue/html-self-closing": [
+      "error",
+      {
+        "html": {
+          "void": "always",
+          "normal": "never",
+          "component": "always"
+        },
+        "svg": "always",
+        "math": "always"
+      }
+    ]
   }
 }

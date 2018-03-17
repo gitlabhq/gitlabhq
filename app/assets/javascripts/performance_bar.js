@@ -14,8 +14,6 @@ export default class PerformanceBar {
 
   init(opts) {
     const $container = $(opts.container);
-    this.$sqlProfileLink = $container.find('.js-toggle-modal-peek-sql');
-    this.$sqlProfileModal = $container.find('#modal-peek-pg-queries');
     this.$lineProfileLink = $container.find('.js-toggle-modal-peek-line-profile');
     this.$lineProfileModal = $('#modal-peek-line-profile');
     this.initEventListeners();
@@ -23,7 +21,6 @@ export default class PerformanceBar {
   }
 
   initEventListeners() {
-    this.$sqlProfileLink.on('click', () => this.handleSQLProfileLink());
     this.$lineProfileLink.on('click', e => this.handleLineProfileLink(e));
     $(document).on('click', '.js-lineprof-file', PerformanceBar.toggleLineProfileFile);
   }
@@ -34,10 +31,6 @@ export default class PerformanceBar {
     if (/lineprofiler/.test(window.location.search)) {
       PerformanceBar.toggleModal(this.$lineProfileModal);
     }
-  }
-
-  handleSQLProfileLink() {
-    PerformanceBar.toggleModal(this.$sqlProfileModal);
   }
 
   handleLineProfileLink(e) {

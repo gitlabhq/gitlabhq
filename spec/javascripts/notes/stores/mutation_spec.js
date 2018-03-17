@@ -228,4 +228,70 @@ describe('Notes Store mutations', () => {
       expect(state.notes[0].notes[0].note).toEqual('Foo');
     });
   });
+
+  describe('CLOSE_ISSUE', () => {
+    it('should set issue as closed', () => {
+      const state = {
+        notes: [],
+        targetNoteHash: null,
+        lastFetchedAt: null,
+        isToggleStateButtonLoading: false,
+        notesData: {},
+        userData: {},
+        noteableData: {},
+      };
+
+      mutations.CLOSE_ISSUE(state);
+      expect(state.noteableData.state).toEqual('closed');
+    });
+  });
+
+  describe('REOPEN_ISSUE', () => {
+    it('should set issue as closed', () => {
+      const state = {
+        notes: [],
+        targetNoteHash: null,
+        lastFetchedAt: null,
+        isToggleStateButtonLoading: false,
+        notesData: {},
+        userData: {},
+        noteableData: {},
+      };
+
+      mutations.REOPEN_ISSUE(state);
+      expect(state.noteableData.state).toEqual('reopened');
+    });
+  });
+
+  describe('TOGGLE_STATE_BUTTON_LOADING', () => {
+    it('should set isToggleStateButtonLoading as true', () => {
+      const state = {
+        notes: [],
+        targetNoteHash: null,
+        lastFetchedAt: null,
+        isToggleStateButtonLoading: false,
+        notesData: {},
+        userData: {},
+        noteableData: {},
+      };
+
+      mutations.TOGGLE_STATE_BUTTON_LOADING(state, true);
+      expect(state.isToggleStateButtonLoading).toEqual(true);
+    });
+
+    it('should set isToggleStateButtonLoading as false', () => {
+      const state = {
+        notes: [],
+        targetNoteHash: null,
+        lastFetchedAt: null,
+        isToggleStateButtonLoading: true,
+        notesData: {},
+        userData: {},
+        noteableData: {},
+      };
+
+      mutations.TOGGLE_STATE_BUTTON_LOADING(state, false);
+      expect(state.isToggleStateButtonLoading).toEqual(false);
+    });
+  });
 });

@@ -579,9 +579,10 @@ class MergeRequest < ActiveRecord::Base
     return unless open?
 
     old_diff_refs = self.diff_refs
+    new_diff = create_merge_request_diff
 
-    create_merge_request_diff
-    MergeRequests::MergeRequestDiffCacheService.new.execute(self)
+    MergeRequests::MergeRequestDiffCacheService.new.execute(self, new_diff)
+
     new_diff_refs = self.diff_refs
 
     update_diff_discussion_positions(

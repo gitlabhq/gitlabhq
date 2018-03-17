@@ -132,11 +132,10 @@ module Ci
     end
 
     def predefined_variables
-      [
-        { key: 'CI_RUNNER_ID', value: id.to_s, public: true },
-        { key: 'CI_RUNNER_DESCRIPTION', value: description, public: true },
-        { key: 'CI_RUNNER_TAGS', value: tag_list.to_s, public: true }
-      ]
+      Gitlab::Ci::Variables::Collection.new
+        .append(key: 'CI_RUNNER_ID', value: id.to_s)
+        .append(key: 'CI_RUNNER_DESCRIPTION', value: description)
+        .append(key: 'CI_RUNNER_TAGS', value: tag_list.to_s)
     end
 
     def tick_runner_queue

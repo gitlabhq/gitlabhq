@@ -14,9 +14,12 @@ class ProjectAutoDevops < ActiveRecord::Base
     domain.present? || instance_domain.present?
   end
 
-  def variables
-    variables = []
-    variables << { key: 'AUTO_DEVOPS_DOMAIN', value: domain.presence || instance_domain, public: true } if has_domain?
-    variables
+  def predefined_variables
+    Gitlab::Ci::Variables::Collection.new.tap do |variables|
+      if has_domain?
+        variables.append(key: 'AUTO_DEVOPS_DOMAIN',
+                         value: domain.presence || instance_domain)
+      end
+    end
   end
 end

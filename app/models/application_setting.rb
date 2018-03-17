@@ -347,15 +347,15 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def home_page_url_column_exists?
-    ActiveRecord::Base.connection.column_exists?(:application_settings, :home_page_url)
+    ::Gitlab::Database.cached_column_exists?(:application_settings, :home_page_url)
   end
 
   def help_page_support_url_column_exists?
-    ActiveRecord::Base.connection.column_exists?(:application_settings, :help_page_support_url)
+    ::Gitlab::Database.cached_column_exists?(:application_settings, :help_page_support_url)
   end
 
   def sidekiq_throttling_column_exists?
-    ActiveRecord::Base.connection.column_exists?(:application_settings, :sidekiq_throttling_enabled)
+    ::Gitlab::Database.cached_column_exists?(:application_settings, :sidekiq_throttling_enabled)
   end
 
   def domain_whitelist_raw
