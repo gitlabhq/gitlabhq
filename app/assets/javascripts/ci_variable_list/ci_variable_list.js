@@ -29,11 +29,11 @@ export default class VariableList {
         selector: '.js-ci-variable-input-id',
         default: '',
       },
-      key: {
+      secret_key: {
         selector: '.js-ci-variable-input-key',
         default: '',
       },
-      value: {
+      secret_value: {
         selector: '.js-ci-variable-input-value',
         default: '',
       },
@@ -105,7 +105,7 @@ export default class VariableList {
     setupToggleButtons($row[0]);
 
     // Reset the resizable textarea
-    $row.find(this.inputMap.value.selector).css('height', '');
+    $row.find(this.inputMap.secret_value.selector).css('height', '');
 
     const $environmentSelect = $row.find('.js-variable-environment-toggle');
     if ($environmentSelect.length) {
@@ -174,7 +174,7 @@ export default class VariableList {
   }
 
   toggleEnableRow(isEnabled = true) {
-    this.$container.find(this.inputMap.key.selector).attr('disabled', !isEnabled);
+    this.$container.find(this.inputMap.secret_key.selector).attr('disabled', !isEnabled);
     this.$container.find('.js-row-remove-button').attr('disabled', !isEnabled);
   }
 
