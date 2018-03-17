@@ -35,12 +35,7 @@ module Groups
     end
 
     def group_variables_params
-      filtered_params = params.permit(variables_attributes: [*variable_params_attributes])
-      filtered_params["variables_attributes"].each do |variable|
-        variable["key"] = variable.delete("secret_key")
-        variable["value"] = variable.delete("secret_value")
-      end
-      filtered_params
+      params.permit(variables_attributes: [*variable_params_attributes])
     end
 
     def variable_params_attributes
