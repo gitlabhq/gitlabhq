@@ -501,10 +501,8 @@
           -moz-osx-font-smoothing: grayscale;
         }
 
-        &.dropdown-menu-user-link {
-          &::before {
-            top: 50%;
-          }
+        &.dropdown-menu-user-link::before {
+          top: 50%;
         }
       }
 
