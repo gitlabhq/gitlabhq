@@ -74,4 +74,14 @@ describe Projects::DestroyService do
       end
     end
   end
+
+  context 'system hooks exception' do
+    before do
+      allow_any_instance_of(SystemHooksService).to receive(:execute_hooks_for).and_raise('something went wrong')
+    end
+
+    it 'logs an audit event' do
+      expect { subject.execute }.to change(AuditEvent, :count)
+    end
+  end
 end
