@@ -27,12 +27,12 @@ module AtomicInternalId
   module ClassMethods
     def has_internal_id(column, scope:, init:) # rubocop:disable Naming/PredicateName
       before_validation(on: :create) do
-        if self.public_send(column).blank? # rubocop:disable GitlabSecurity/PublicSend
-          scope_attrs = { scope => self.public_send(scope) } # rubocop:disable GitlabSecurity/PublicSend
+        if read_attribute(column).blank?
+          scope_attrs = { scope => association(scope).reader }
           usage = self.class.table_name.to_sym
 
           new_iid = InternalId.generate_next(self, scope_attrs, usage, init)
-          self.public_send("#{column}=", new_iid) # rubocop:disable GitlabSecurity/PublicSend
+          write_attribute(column, new_iid)
         end
       end
 
