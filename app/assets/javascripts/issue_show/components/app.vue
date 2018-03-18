@@ -244,7 +244,7 @@
 
               var errorMessage = `Error updating ${this.issuableType}`;
 
-              if (error && error.response && error.response.status && error.response.status === 409 && error.response.data && error.response.data.errors) {
+              if (error && error.response && error.response.status === 409 && error.response.data && error.response.data.errors) {
                 errorMessage = error.response.data.errors;
               }
 
