@@ -349,6 +349,18 @@ describe 'Pipelines', :js do
 
           it { expect(page).not_to have_selector('.build-artifacts') }
         end
+
+        context 'with trace artifact' do
+          before do
+            create(:ci_build, :success, :trace_artifact, pipeline: pipeline)
+
+            visit_project_pipelines
+          end
+
+          it 'does not show trace artifact as artifacts' do
+            expect(page).not_to have_selector('.build-artifacts')
+          end
+        end
       end
 
       context 'mini pipeline graph' do
