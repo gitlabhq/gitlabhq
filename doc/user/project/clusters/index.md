@@ -167,6 +167,19 @@ external IP address with the following procedure. It can be deployed using the
 In order to publish your web application, you first need to find the external IP
 address associated to your load balancer.
 
+### GitLab can automatically determine the IP address for you
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17052) in GitLab 10.6.
+
+If you installed the Ingress [via the
+**Applications**](#installing-applications) you should see the Ingress IP address on
+this same page within a few minutes. There may be some
+instances in which GitLab cannot determine the IP address of your ingress
+application in which case you can read on for other ways of manually
+determining the IP address.
+
+### Manually determining the IP address
+
 If the cluster is on GKE, click on the **Google Kubernetes Engine** link in the
 **Advanced settings**, or go directly to the
 [Google Kubernetes Engine dashboard](https://console.cloud.google.com/kubernetes/)
