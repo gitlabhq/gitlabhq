@@ -298,8 +298,8 @@ describe('Issuable output', () => {
   it('shows when a conflict has been detected', (done) => {
     spyOn(window, 'Flash').and.callThrough();
     spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve, reject) => {
-      reject({ response: { status: 409, data: { errors: 'there was a conflict' } }});
-    }))
+      reject({ response: { status: 409, data: { errors: 'there was a conflict' } } });
+    }));
 
     vm.updateIssuable();
 

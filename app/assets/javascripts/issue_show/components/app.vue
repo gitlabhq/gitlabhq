@@ -242,9 +242,11 @@
             } else {
               eventHub.$emit('close.form');
 
-              var errorMessage = `Error updating ${this.issuableType}`;
+              let errorMessage = `Error updating ${this.issuableType}`;
 
-              if (error && error.response && error.response.status === 409 && error.response.data && error.response.data.errors) {
+              // A 409 Conflict means multiple users attempted to edit
+              if (error && error.response && error.response.status === 409 &&
+                  error.response.data && error.response.data.errors) {
                 errorMessage = error.response.data.errors;
               }
 
