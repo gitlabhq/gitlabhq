@@ -38,6 +38,19 @@ describe InternalId do
           expect(subject).to eq(project.issues.size + 1)
         end
       end
+
+      context 'with concurrent inserts on table' do
+        it 'looks up the record if it was created concurrently' do
+          args = { **scope, usage: described_class.usages[usage.to_s] }
+          record = double
+          expect(described_class).to receive(:find_by).with(args).and_return(nil)    # first call, record not present
+          expect(described_class).to receive(:find_by).with(args).and_return(record) # second call, record was created by another process
+          expect(described_class).to receive(:create!).and_raise(ActiveRecord::RecordNotUnique, 'record not unique')
+          expect(record).to receive(:increment_and_save!)
+
+          subject
+        end
+      end
     end
 
     it 'generates a strictly monotone, gapless sequence' do
