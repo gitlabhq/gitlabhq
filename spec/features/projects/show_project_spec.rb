@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'Project show page', :feature do
+  include DropzoneHelper
+
   context 'when project pending delete' do
     let(:project) { create(:project, :empty_repo, pending_delete: true) }
 
@@ -332,6 +334,26 @@ describe 'Project show page', :feature do
           end
         end
       end
+    end
+  end
+
+  describe 'dropzone', :js do
+    let(:project) { create(:project, :repository) }
+    let(:user) { create(:user) }
+
+    before do
+      project.add_master(user)
+      sign_in(user)
+
+      visit project_path(project)
+    end
+
+    it 'can upload files' do
+      find('.add-to-tree').click
+      click_link 'Upload file'
+      drop_in_dropzone(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
+
+      expect(find('.dz-filename')).to have_content('doc_sample.txt')
     end
   end
 end
