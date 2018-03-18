@@ -242,11 +242,13 @@
             } else {
               eventHub.$emit('close.form');
 
-              if (error.response.status == 409 && error.response.data.errors) {
-                window.Flash(error.response.data.errors);
-              } else {
-                window.Flash(`Error updating ${this.issuableType}`);
+              var errorMessage = `Error updating ${this.issuableType}`;
+
+              if (error && error.response && error.response.status && error.response.status === 409 && error.response.data && error.response.data.errors) {
+                errorMessage = error.response.data.errors;
               }
+
+              window.Flash(errorMessage);
             }
           });
       },

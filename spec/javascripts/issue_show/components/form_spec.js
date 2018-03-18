@@ -12,7 +12,7 @@ describe('Inline edit form component', () => {
         canDestroy: true,
         formState: {
           title: 'b',
-          description: 'a'
+          description: 'a',
         },
         markdownPreviewPath: '/',
         markdownDocsPath: '/',
