@@ -21,7 +21,7 @@ module EE
         scope :sast, -> { where(name: 'sast') }
         scope :sast_container, -> { where(name: 'sast:container') }
         scope :dast, -> { where(name: 'dast') }
-        scope :with_artifacts_stored_locally, -> { with_artifacts.where(artifacts_file_store: [nil, LegacyArtifactUploader::Store::LOCAL]) }
+        scope :with_artifacts_stored_locally, -> { with_artifacts_archive.where(artifacts_file_store: [nil, LegacyArtifactUploader::Store::LOCAL]) }
 
         after_save :stick_build_if_status_changed
       end
