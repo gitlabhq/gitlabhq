@@ -1,0 +1,5 @@
+---
+title: Fix false "someone edited the issue at the same time" warnings
+merge_request:
+author:
+type: fixed

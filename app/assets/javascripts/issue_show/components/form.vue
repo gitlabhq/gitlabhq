@@ -1,5 +1,4 @@
 <script>
-  import lockedWarning from './locked_warning.vue';
   import titleField from './fields/title.vue';
   import descriptionField from './fields/description.vue';
   import editActions from './edit_actions.vue';
@@ -7,7 +6,6 @@
 
   export default {
     components: {
-      lockedWarning,
       titleField,
       descriptionField,
       descriptionTemplate,
@@ -69,7 +67,6 @@
 
 <template>
   <form>
-    <locked-warning v-if="formState.lockedWarningVisible" />
     <div class="row">
       <div
         class="col-sm-4 col-lg-3"

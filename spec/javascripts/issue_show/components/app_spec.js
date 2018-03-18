@@ -404,29 +404,6 @@ describe('Issuable output', () => {
     });
   });
 
-  describe('open form', () => {
-    it('shows locked warning if form is open & data is different', (done) => {
-      vm.$nextTick()
-        .then(() => {
-          vm.openForm();
-
-          vm.poll.makeRequest();
-        })
-        // Wait for the request
-        .then(vm.$nextTick)
-        // Wait for the successCallback to update the store state
-        .then(vm.$nextTick)
-        // Wait for the new state to flow to the Vue components
-        .then(vm.$nextTick)
-        .then(() => {
-          expect(vm.formState.lockedWarningVisible).toEqual(true);
-          expect(vm.$el.querySelector('.alert')).not.toBeNull();
-        })
-        .then(done)
-        .catch(done.fail);
-    });
-  });
-
   describe('show inline edit button', () => {
     it('should not render by default', () => {
       expect(vm.$el.querySelector('.title-container .note-action-button')).toBeDefined();

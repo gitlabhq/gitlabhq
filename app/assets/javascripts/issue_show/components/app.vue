@@ -212,7 +212,6 @@
           this.store.setFormState({
             title: this.state.titleText,
             description: this.state.descriptionText,
-            lockedWarningVisible: false,
             updateLoading: false,
           });
         }
@@ -242,7 +241,12 @@
               this.openRecaptcha();
             } else {
               eventHub.$emit('close.form');
-              window.Flash(`Error updating ${this.issuableType}`);
+
+              if (error.response.status == 409 && error.response.data.errors) {
+                window.Flash(error.response.data.errors);
+              } else {
+                window.Flash(`Error updating ${this.issuableType}`);
+              }
             }
           });
       },

@@ -12,8 +12,7 @@ describe('Inline edit form component', () => {
         canDestroy: true,
         formState: {
           title: 'b',
-          description: 'a',
-          lockedWarningVisible: false,
+          description: 'a'
         },
         markdownPreviewPath: '/',
         markdownDocsPath: '/',
@@ -47,17 +46,5 @@ describe('Inline edit form component', () => {
     expect(
       vm.$el.querySelector('.alert'),
     ).toBeNull();
-  });
-
-  it('shows locked warning if formState is different', (done) => {
-    vm.formState.lockedWarningVisible = true;
-
-    Vue.nextTick(() => {
-      expect(
-        vm.$el.querySelector('.alert'),
-      ).not.toBeNull();
-
-      done();
-    });
   });
 });
