@@ -29,7 +29,7 @@ export { default as MissingBranchState } from './components/states/mr_widget_mis
 export { default as NotAllowedState } from './components/states/mr_widget_not_allowed.vue';
 export { default as ReadyToMergeState } from 'ee/vue_merge_request_widget/components/states/mr_widget_ready_to_merge';
 export { default as SHAMismatchState } from './components/states/mr_widget_sha_mismatch';
-export { default as UnresolvedDiscussionsState } from './components/states/mr_widget_unresolved_discussions';
+export { default as UnresolvedDiscussionsState } from './components/states/unresolved_discussions.vue';
 export { default as PipelineBlockedState } from './components/states/mr_widget_pipeline_blocked.vue';
 export { default as PipelineFailedState } from './components/states/mr_widget_pipeline_failed';
 export { default as MergeWhenPipelineSucceedsState } from './components/states/mr_widget_merge_when_pipeline_succeeds.vue';
