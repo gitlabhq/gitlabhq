@@ -377,6 +377,7 @@ ee-files-location-check:
   stage: test
   before_script: []
   cache: {}
+  retry: 0
   script:
     - scripts/ee-files-location-check
   only:
