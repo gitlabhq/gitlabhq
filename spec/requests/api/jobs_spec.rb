@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe API::Jobs do
+  include HttpIOHelpers
+
   set(:project) do
     create(:project, :repository, public_builds: false)
   end

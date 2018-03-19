@@ -64,10 +64,12 @@ describe SendFileUpload do
         end
 
         it 'sends a file' do
-          subject
+          headers = double
+          expect(headers).to receive(:store).with(Gitlab::Workhorse::SEND_DATA_HEADER, /^send-url:/)
+          expect(controller).to receive(:headers) { headers }
+          expect(controller).to receive(:head).with(:ok)
 
-          is_expected.to start_with(Gitlab::Workhorse::SEND_DATA_HEADER)
-          is_expected.to end_with(/^send-url:/)
+          subject
         end
       end
 
