@@ -1,30 +1,29 @@
 require 'spec_helper'
 
 describe 'Embedded Snippets' do
-  include RSpec::Rails::RequestExampleGroup
-
   let(:project) { create(:project, :repository) }
   let(:snippet) { create(:personal_snippet, :public, file_name: 'popen.rb', content: content) }
   let(:content) { project.repository.blob_at('master', 'files/ruby/popen.rb').data }
 
-  after do
-    FileUtils.rm_f([File.join(File.dirname(__FILE__), 'embedded_snippet.html'), File.join(File.dirname(__FILE__), 'snippet.js')])
-  end
-
   it 'loads snippet', :js do
-    get "#{snippet_path(snippet)}.js"
+    script_url = "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}/#{snippet_path(snippet, format: 'js')}"
+    embed_body = "<html><body><script src=\"#{script_url}\"></script></body></html>"
 
-    File.write(File.join(File.dirname(__FILE__), 'snippet.js'), response.body)
+    rack_app = proc do
+      ['200', { 'Content-Type' => 'text/html' }, [embed_body]]
+    end
 
-    script_tag = "<html><body><script src=\"snippet.js\"></script></body></html>"
-    File.write(File.join(File.dirname(__FILE__), 'embedded_snippet.html'), script_tag)
+    server = Capybara::Server.new(rack_app)
+    server.boot
 
-    Capybara.app = Rack::File.new File.dirname __FILE__
-
-    visit('embedded_snippet.html')
+    visit("http://#{server.host}:#{server.port}/embedded_snippet.html")
 
     expect(page).to have_content("popen.rb")
 
     expect(page).to have_content("require 'fileutils'")
+
+    expect(page).to have_link('Open raw')
+
+    expect(page).to have_link('Download')
   end
 end
