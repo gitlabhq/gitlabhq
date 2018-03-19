@@ -93,6 +93,7 @@ module Projects
       # hook failed and caused us to end up here. A destroyed model will be a frozen hash,
       # which cannot be altered.
       project.update_attributes(delete_error: message, pending_delete: false) unless project.destroyed?
+
       log_error("Deletion failed on #{project.full_path} with the following message: #{message}")
     end
 
