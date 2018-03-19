@@ -37,7 +37,7 @@ By offering individual containers and charts, we will be able to provide a numbe
 
 This is a large project and will be worked on over the span of multiple releases. For the most up-to-date status and release information, please see our [tracking issue](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2420). We are planning to launch this chart in beta by the end of 2017.
 
-Learn more about the [cloud native GitLab chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md).
+Learn more about the [cloud native GitLab chart here ](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) and [here [Video]](https://youtu.be/Z6jWR8Z8dv8).
 
 ## Other Charts
 
