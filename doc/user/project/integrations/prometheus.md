@@ -12,7 +12,11 @@ There are two ways to setup Prometheus integration, depending on where your apps
 * For deployments on Kubernetes, GitLab can automatically [deploy and manage Prometheus](#managed-prometheus-on-kubernetes)
 * For other deployment targets, simply [specify the Prometheus server](#manual-configuration-of-prometheus).
 
+<<<<<<< HEAD
 Once enabled, GitLab will automatically detect metrics from known services in the [metric library](#monitoring-ci-cd-environments). You are also able to [add your own metrics](#adding-additional-metrics) as well.
+=======
+Once enabled, GitLab will automatically detect metrics from known services in the [metric library](#monitoring-ci-cd-environments).
+>>>>>>> upstream/master
 
 ## Enabling Prometheus Integration
 
@@ -88,6 +92,7 @@ Once configured, GitLab will attempt to retrieve performance metrics for any
 environment which has had a successful deployment.
 
 GitLab will automatically scan the Prometheus server for metrics from known serves like Kubernetes and NGINX, and attempt to identify individual environment. The supported metrics and scan process is detailed in our [Prometheus Metric Library documentation](prometheus_library/metrics.html). 
+<<<<<<< HEAD
 
 You can view the performance dashboard for an environment by [clicking on the monitoring button](../../../ci/environments.md#monitoring-environments).
 
@@ -114,6 +119,10 @@ GitLab supports a limited set of [CI variables] in the Prometheus query. This is
 * KUBE_NAMESPACE
 
 To specify a variable in a query, enclose it in curly braces with a leading percent. For example: `%{ci_environment_slug}`.
+=======
+
+You can view the performance dashboard for an environment by [clicking on the monitoring button](../../../ci/environments.md#monitoring-environments).
+>>>>>>> upstream/master
 
 ## Determining the performance impact of a merge
 

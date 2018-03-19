@@ -116,7 +116,11 @@ gem 'fog-rackspace', '~> 0.1.1'
 gem 'fog-aliyun', '~> 0.2.0'
 
 # for Google storage
+<<<<<<< HEAD
 gem 'google-api-client', '~> 0.19'
+=======
+gem 'google-api-client', '~> 0.19.8'
+>>>>>>> upstream/master
 
 # for aws storage
 gem 'unf', '~> 0.1.4'
