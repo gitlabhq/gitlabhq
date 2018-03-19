@@ -162,11 +162,6 @@ class Service < ActiveRecord::Base
     true
   end
 
-  # reason why service cannot be tested
-  def disabled_title
-    "Please setup a project repository."
-  end
-
   # Provide convenient accessor methods
   # for each serialized property.
   # Also keep track of updated properties in a similar way as ActiveModel::Dirty

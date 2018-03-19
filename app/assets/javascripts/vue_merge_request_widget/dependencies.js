@@ -14,7 +14,7 @@ export { default as SmartInterval } from '~/smart_interval';
 export { default as WidgetHeader } from './components/mr_widget_header.vue';
 export { default as WidgetMergeHelp } from './components/mr_widget_merge_help.vue';
 export { default as WidgetPipeline } from './components/mr_widget_pipeline.vue';
-export { default as WidgetDeployment } from './components/mr_widget_deployment';
+export { default as Deployment } from './components/deployment.vue';
 export { default as WidgetMaintainerEdit } from './components/mr_widget_maintainer_edit.vue';
 export { default as WidgetRelatedLinks } from './components/mr_widget_related_links.vue';
 export { default as MergedState } from './components/states/mr_widget_merged.vue';
@@ -29,7 +29,7 @@ export { default as MissingBranchState } from './components/states/mr_widget_mis
 export { default as NotAllowedState } from './components/states/mr_widget_not_allowed.vue';
 export { default as ReadyToMergeState } from './components/states/mr_widget_ready_to_merge';
 export { default as SHAMismatchState } from './components/states/mr_widget_sha_mismatch';
-export { default as UnresolvedDiscussionsState } from './components/states/mr_widget_unresolved_discussions';
+export { default as UnresolvedDiscussionsState } from './components/states/unresolved_discussions.vue';
 export { default as PipelineBlockedState } from './components/states/mr_widget_pipeline_blocked.vue';
 export { default as PipelineFailedState } from './components/states/mr_widget_pipeline_failed';
 export { default as MergeWhenPipelineSucceedsState } from './components/states/mr_widget_merge_when_pipeline_succeeds.vue';

@@ -7,28 +7,23 @@ module Storage
         raise Gitlab::UpdatePathError.new('Namespace cannot be moved, because at least one project has tags in container registry')
       end
 
+      parent_was = if parent_changed? && parent_id_was.present?
+                     Namespace.find(parent_id_was) # raise NotFound early if needed
+                   end
+
       expires_full_path_cache
 
-      # Move the namespace directory in all storage paths used by member projects
-      repository_storage_paths.each do |repository_storage_path|
-        # Ensure old directory exists before moving it
-        gitlab_shell.add_namespace(repository_storage_path, full_path_was)
+      move_repositories
 
-        # Ensure new directory exists before moving it (if there's a parent)
-        gitlab_shell.add_namespace(repository_storage_path, parent.full_path) if parent
-
-        unless gitlab_shell.mv_namespace(repository_storage_path, full_path_was, full_path)
-
-          Rails.logger.error "Exception moving path #{repository_storage_path} from #{full_path_was} to #{full_path}"
-
-          # if we cannot move namespace directory we should rollback
-          # db changes in order to prevent out of sync between db and fs
-          raise Gitlab::UpdatePathError.new('namespace directory cannot be moved')
-        end
+      if parent_changed?
+        former_parent_full_path = parent_was&.full_path
+        parent_full_path = parent&.full_path
+        Gitlab::UploadsTransfer.new.move_namespace(path, former_parent_full_path, parent_full_path)
+        Gitlab::PagesTransfer.new.move_namespace(path, former_parent_full_path, parent_full_path)
+      else
+        Gitlab::UploadsTransfer.new.rename_namespace(full_path_was, full_path)
+        Gitlab::PagesTransfer.new.rename_namespace(full_path_was, full_path)
       end
-
-      Gitlab::UploadsTransfer.new.rename_namespace(full_path_was, full_path)
-      Gitlab::PagesTransfer.new.rename_namespace(full_path_was, full_path)
 
       remove_exports!
 
@@ -56,6 +51,26 @@ module Storage
     end
 
     private
+
+    def move_repositories
+      # Move the namespace directory in all storage paths used by member projects
+      repository_storage_paths.each do |repository_storage_path|
+        # Ensure old directory exists before moving it
+        gitlab_shell.add_namespace(repository_storage_path, full_path_was)
+
+        # Ensure new directory exists before moving it (if there's a parent)
+        gitlab_shell.add_namespace(repository_storage_path, parent.full_path) if parent
+
+        unless gitlab_shell.mv_namespace(repository_storage_path, full_path_was, full_path)
+
+          Rails.logger.error "Exception moving path #{repository_storage_path} from #{full_path_was} to #{full_path}"
+
+          # if we cannot move namespace directory we should rollback
+          # db changes in order to prevent out of sync between db and fs
+          raise Gitlab::UpdatePathError.new('namespace directory cannot be moved')
+        end
+      end
+    end
 
     def old_repository_storage_paths
       @old_repository_storage_paths ||= repository_storage_paths

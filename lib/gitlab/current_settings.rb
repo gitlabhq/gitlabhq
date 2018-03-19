@@ -70,7 +70,7 @@ module Gitlab
         active_db_connection = ActiveRecord::Base.connection.active? rescue false
 
         active_db_connection &&
-          ActiveRecord::Base.connection.table_exists?('application_settings')
+          Gitlab::Database.cached_table_exists?('application_settings')
       rescue ActiveRecord::NoDatabaseError
         false
       end

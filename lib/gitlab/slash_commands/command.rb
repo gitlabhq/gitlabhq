@@ -5,6 +5,7 @@ module Gitlab
         Gitlab::SlashCommands::IssueShow,
         Gitlab::SlashCommands::IssueNew,
         Gitlab::SlashCommands::IssueSearch,
+        Gitlab::SlashCommands::IssueMove,
         Gitlab::SlashCommands::Deploy
       ].freeze
 

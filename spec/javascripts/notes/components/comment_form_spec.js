@@ -200,6 +200,20 @@ describe('issue_comment_form component', () => {
           done();
         });
       });
+
+      describe('when clicking close/reopen button', () => {
+        it('should disable button and show a loading spinner', (done) => {
+          const toggleStateButton = vm.$el.querySelector('.js-action-button');
+
+          toggleStateButton.click();
+          Vue.nextTick(() => {
+            expect(toggleStateButton.disabled).toEqual(true);
+            expect(toggleStateButton.querySelector('.js-loading-button-icon')).not.toBeNull();
+
+            done();
+          });
+        });
+      });
     });
 
     describe('issue is confidential', () => {

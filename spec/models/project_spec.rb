@@ -1378,7 +1378,7 @@ describe Project do
 
     context 'using a regular repository' do
       it 'creates the repository' do
-        expect(shell).to receive(:add_repository)
+        expect(shell).to receive(:create_repository)
           .with(project.repository_storage, project.disk_path)
           .and_return(true)
 
@@ -1388,7 +1388,7 @@ describe Project do
       end
 
       it 'adds an error if the repository could not be created' do
-        expect(shell).to receive(:add_repository)
+        expect(shell).to receive(:create_repository)
           .with(project.repository_storage, project.disk_path)
           .and_return(false)
 
@@ -1402,7 +1402,7 @@ describe Project do
     context 'using a forked repository' do
       it 'does nothing' do
         expect(project).to receive(:forked?).and_return(true)
-        expect(shell).not_to receive(:add_repository)
+        expect(shell).not_to receive(:create_repository)
 
         project.create_repository
       end
@@ -1421,7 +1421,7 @@ describe Project do
       allow(project).to receive(:repository_exists?)
         .and_return(false)
 
-      allow(shell).to receive(:add_repository)
+      allow(shell).to receive(:create_repository)
         .with(project.repository_storage_path, project.disk_path)
         .and_return(true)
 
@@ -1445,7 +1445,7 @@ describe Project do
       allow(project).to receive(:repository_exists?)
         .and_return(false)
 
-      expect(shell).to receive(:add_repository)
+      expect(shell).to receive(:create_repository)
         .with(project.repository_storage, project.disk_path)
         .and_return(true)
 

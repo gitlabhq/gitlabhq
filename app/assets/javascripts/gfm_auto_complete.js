@@ -132,9 +132,8 @@ class GfmAutoComplete {
       callbacks: {
         ...this.getDefaultCallbacks(),
         matcher(flag, subtext) {
-          const relevantText = subtext.trim().split(/\s/).pop();
           const regexp = new RegExp(`(?:[^${glRegexp.unicodeLetters}0-9:]|\n|^):([^:]*)$`, 'gi');
-          const match = regexp.exec(relevantText);
+          const match = regexp.exec(subtext);
 
           return match && match.length ? match[1] : null;
         },

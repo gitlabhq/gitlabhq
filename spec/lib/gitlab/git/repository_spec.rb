@@ -681,7 +681,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     subject { new_repository.fetch_repository_as_mirror(repository) }
 
     before do
-      Gitlab::Shell.new.add_repository('default', 'my_project')
+      Gitlab::Shell.new.create_repository('default', 'my_project')
     end
 
     after do

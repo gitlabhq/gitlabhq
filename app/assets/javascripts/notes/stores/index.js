@@ -12,6 +12,9 @@ export default new Vuex.Store({
     targetNoteHash: null,
     lastFetchedAt: null,
 
+    // View layer
+    isToggleStateButtonLoading: false,
+
     // holds endpoints and permissions provided through haml
     notesData: {},
     userData: {},

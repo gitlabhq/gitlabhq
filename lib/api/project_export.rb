@@ -31,8 +31,13 @@ module API
       desc 'Start export' do
         detail 'This feature was introduced in GitLab 10.6.'
       end
+      params do
+        optional :description, type: String, desc: 'Override the project description'
+      end
       post ':id/export' do
-        user_project.add_export_job(current_user: current_user)
+        project_export_params = declared_params(include_missing: false)
+
+        user_project.add_export_job(current_user: current_user, params: project_export_params)
 
         accepted!
       end

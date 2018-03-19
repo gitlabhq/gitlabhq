@@ -28,12 +28,10 @@ describe ImportHelper do
   describe '#provider_project_link' do
     context 'when provider is "github"' do
       let(:github_server_url) { nil }
+      let(:provider) { OpenStruct.new(name: 'github', url: github_server_url) }
 
       before do
-        setting = Settingslogic.new('name' => 'github')
-        setting['url'] = github_server_url if github_server_url
-
-        allow(Gitlab.config.omniauth).to receive(:providers).and_return([setting])
+        stub_omniauth_setting(providers: [provider])
       end
 
       context 'when provider does not specify a custom URL' do

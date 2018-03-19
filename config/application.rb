@@ -70,7 +70,6 @@ module Gitlab
     # - Webhook URLs (:hook)
     # - Sentry DSN (:sentry_dsn)
     # - Deploy keys (:key)
-    # - Secret variable values (:value)
     config.filter_parameters += [/token$/, /password/, /secret/]
     config.filter_parameters += %i(
       certificate
@@ -82,7 +81,6 @@ module Gitlab
       sentry_dsn
       trace
       variables
-      value
     )
 
     # Enable escaping HTML in JSON.

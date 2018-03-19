@@ -47,8 +47,11 @@ There's also a collection of repositories with [example projects](https://gitlab
 
 ## Static Application Security Testing (SAST)
 
-- **(Ultimate)** [Scan your code for vulnerabilities](https://docs.gitlab.com/ee/ci/examples/sast.html)
-- [Scan your Docker images for vulnerabilities](sast_docker.md)
+**(Ultimate)** [Scan your code for vulnerabilities](https://docs.gitlab.com/ee/ci/examples/sast.html)
+
+## Container Scanning
+
+[Scan your Docker images for vulnerabilities](container_scanning.md)
 
 ## Dynamic Application Security Testing (DAST)
 

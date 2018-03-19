@@ -88,6 +88,7 @@ describe('Actions Notes Store', () => {
         store.dispatch('closeIssue', { notesData: { closeIssuePath: '' } })
           .then(() => {
             expect(store.state.noteableData.state).toEqual('closed');
+            expect(store.state.isToggleStateButtonLoading).toEqual(false);
             done();
           })
           .catch(done.fail);
@@ -99,6 +100,7 @@ describe('Actions Notes Store', () => {
         store.dispatch('reopenIssue', { notesData: { reopenIssuePath: '' } })
           .then(() => {
             expect(store.state.noteableData.state).toEqual('reopened');
+            expect(store.state.isToggleStateButtonLoading).toEqual(false);
             done();
           })
           .catch(done.fail);
@@ -114,6 +116,20 @@ describe('Actions Notes Store', () => {
       });
 
       store.dispatch('emitStateChangedEvent', { id: '1', state: 'closed' });
+    });
+  });
+
+  describe('toggleStateButtonLoading', () => {
+    it('should set loading as true', (done) => {
+      testAction(actions.toggleStateButtonLoading, true, {}, [
+        { type: 'TOGGLE_STATE_BUTTON_LOADING', payload: true },
+      ], done);
+    });
+
+    it('should set loading as false', (done) => {
+      testAction(actions.toggleStateButtonLoading, false, {}, [
+        { type: 'TOGGLE_STATE_BUTTON_LOADING', payload: false },
+      ], done);
     });
   });
 
