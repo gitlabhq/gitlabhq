@@ -30,10 +30,6 @@ class Gitlab::Seeder::Pipelines
       queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
     { name: 'spinach:osx', stage: 'test', status: :failed, allow_failure: true,
       queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
-    { name: 'spinach:osx1', stage: 'test', status: :canceled,
-      queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
-    { name: 'spinach:osx1', stage: 'test', status: :running,
-      queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
 
     # deploy stage
     { name: 'staging', stage: 'deploy', environment: 'staging', status_event: :success,
