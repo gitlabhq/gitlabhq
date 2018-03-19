@@ -17,20 +17,20 @@ describe Gitlab::Ci::Stage::Seed do
     end
   end
 
-  describe '#stage' do
+  describe '#stage_attributes' do
     it 'returns hash attributes of a stage' do
-      expect(subject.stage).to be_a Hash
-      expect(subject.stage).to include(:name, :project)
+      expect(subject.stage_attributes).to be_a Hash
+      expect(subject.stage_attributes).to include(:name, :project)
     end
   end
 
-  describe '#builds' do
+  describe '#builds_attributes' do
     it 'returns hash attributes of all builds' do
-      expect(subject.builds.size).to eq 2
-      expect(subject.builds).to all(include(ref: 'master'))
-      expect(subject.builds).to all(include(tag: false))
-      expect(subject.builds).to all(include(project: pipeline.project))
-      expect(subject.builds)
+      expect(subject.builds_attributes.size).to eq 2
+      expect(subject.builds_attributes).to all(include(ref: 'master'))
+      expect(subject.builds_attributes).to all(include(tag: false))
+      expect(subject.builds_attributes).to all(include(project: pipeline.project))
+      expect(subject.builds_attributes)
         .to all(include(trigger_request: pipeline.trigger_requests.first))
     end
 
@@ -40,7 +40,7 @@ describe Gitlab::Ci::Stage::Seed do
       end
 
       it 'returns protected builds' do
-        expect(subject.builds).to all(include(protected: true))
+        expect(subject.builds_attributes).to all(include(protected: true))
       end
     end
 
@@ -50,7 +50,7 @@ describe Gitlab::Ci::Stage::Seed do
       end
 
       it 'returns unprotected builds' do
-        expect(subject.builds).to all(include(protected: false))
+        expect(subject.builds_attributes).to all(include(protected: false))
       end
     end
   end
@@ -61,7 +61,7 @@ describe Gitlab::Ci::Stage::Seed do
     it 'assignes relevant pipeline attributes' do
       subject.user = user
 
-      expect(subject.builds).to all(include(user: user))
+      expect(subject.builds_attributes).to all(include(user: user))
     end
   end
 

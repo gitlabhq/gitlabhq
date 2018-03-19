@@ -7,28 +7,28 @@ module Gitlab
         attr_reader :pipeline
 
         delegate :project, to: :pipeline
-        delegate :size, to: :@jobs
+        delegate :size, to: :@builds
 
-        def initialize(pipeline, stage, jobs)
+        def initialize(pipeline, stage, builds)
           @pipeline = pipeline
-          @stage = { name: stage }
-          @jobs = jobs.to_a.dup
+          @stage = stage            # stage name
+          @builds = builds.to_a.dup # builds array of hashes
         end
 
         def user=(current_user)
-          @jobs.map! do |attributes|
+          @builds.map! do |attributes|
             attributes.merge(user: current_user)
           end
         end
 
-        def stage
-          @stage.merge(project: project)
+        def stage_attributes
+          { name: @stage, project: project }
         end
 
-        def builds
+        def builds_attributes
           trigger = pipeline.trigger_requests.first
 
-          @jobs.map do |attributes|
+          @builds.map do |attributes|
             attributes.merge(project: project,
                              ref: pipeline.ref,
                              tag: pipeline.tag,
@@ -38,12 +38,16 @@ module Gitlab
         end
 
         def create!
-          pipeline.stages.create!(stage).tap do |stage|
-            builds_attributes = builds.map do |attributes|
-              attributes.merge(stage_id: stage.id)
+          pipeline.stages.build(stage_attributes).tap do |stage|
+            builds_attributes.each do |build_attributes|
+              stage.builds.build(build_attributes).tap do |build|
+                build.pipeline = pipeline
+              end
             end
 
-            pipeline.builds.create!(builds_attributes).each do |build|
+            stage.save!
+
+            stage.builds.each do |build|
               yield build if block_given?
             end
           end
