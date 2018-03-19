@@ -84,6 +84,14 @@ export const scrollToTab = () => {
   });
 };
 
+export const updateViewer = ({ commit }, viewer) => {
+  commit(types.UPDATE_VIEWER, viewer);
+};
+
+export const updateDelayViewerUpdated = ({ commit }, delay) => {
+  commit(types.UPDATE_DELAY_VIEWER_CHANGE, delay);
+};
+
 export * from './actions/tree';
 export * from './actions/file';
 export * from './actions/project';

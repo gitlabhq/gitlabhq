@@ -554,7 +554,7 @@ class Project < ActiveRecord::Base
     latest_pipeline = pipelines.latest_successful_for(ref)
 
     if latest_pipeline
-      latest_pipeline.builds.latest.with_artifacts
+      latest_pipeline.builds.latest.with_artifacts_archive
     else
       builds.none
     end
@@ -1534,8 +1534,8 @@ class Project < ActiveRecord::Base
     @errors = original_errors
   end
 
-  def add_export_job(current_user:)
-    job_id = ProjectExportWorker.perform_async(current_user.id, self.id)
+  def add_export_job(current_user:, params: {})
+    job_id = ProjectExportWorker.perform_async(current_user.id, self.id, params)
 
     if job_id
       Rails.logger.info "Export job started for project ID #{self.id} with job ID #{job_id}"

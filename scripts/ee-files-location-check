@@ -32,7 +32,7 @@ branch_to_fetch = 'master'
 
 if ls_remote_output.include?(minimal_ce_branch_name)
   remote_to_fetch = ce_repo_url
-  branch_to_fetch = ls_remote_output.split("refs/heads/").last.strip
+  branch_to_fetch = ls_remote_output.scan(%r{(?<=refs/heads/).+}).sort_by(&:size).first
   puts
   puts "💪 We found the branch '#{branch_to_fetch}' in the #{ce_repo_url} repository. We will fetch it."
 else

@@ -1,3 +1,4 @@
+import eventHub from 'ee/ide/eventhub';
 import Disposable from './disposable';
 import Model from './model';
 
@@ -25,7 +26,15 @@ export default class ModelManager {
     this.models.set(model.path, model);
     this.disposable.add(model);
 
+    eventHub.$on(`editor.update.model.dispose.${file.path}`, this.removeCachedModel.bind(this, file));
+
     return model;
+  }
+
+  removeCachedModel(file) {
+    this.models.delete(file.path);
+
+    eventHub.$off(`editor.update.model.dispose.${file.path}`, this.removeCachedModel);
   }
 
   dispose() {

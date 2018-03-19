@@ -199,7 +199,7 @@ class KubernetesService < DeploymentService
     kubeclient = build_kubeclient!
 
     kubeclient.get_pods(namespace: actual_namespace).as_json
-  rescue KubeException => err
+  rescue Kubeclient::HttpError => err
     raise err unless err.error_code == 404
 
     []

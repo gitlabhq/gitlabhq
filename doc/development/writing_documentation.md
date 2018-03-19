@@ -303,7 +303,10 @@ a couple more commits to the EE branch, but ask the reviewer to review the EE me
 additionally to the CE MR. If there are many EE-only changes though, start a new MR
 to EE only.
 
-### Previewing the changes live
+## Previewing the changes live
+
+To preview your changes to documentation locally, please follow
+this [development guide](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/README.md#development).
 
 To preview your changes to documentation locally, please follow
 this [development guide](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/README.md#development).

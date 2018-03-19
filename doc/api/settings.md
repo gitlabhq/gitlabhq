@@ -170,6 +170,9 @@ PUT /application/settings
 | `user_default_external`                  | boolean          | no                                            | Newly registered users will by default be external                                                                                                                                                                                                                                                                                                                                                                                                        |
 | `user_oauth_applications`                | boolean          | no                                            | Allow users to register any application to use GitLab as an OAuth provider                                                                                                                                                                                                                                                                                                                                                                                |
 | `version_check_enabled`                  | boolean          | no                                            | Let GitLab inform you when an update is available.                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `external_authorization_service_enabled` | boolean | no | Enable using an external authorization service for accessing projects |
+| `external_authorization_service_url` | string | no | URL to which authorization requests will be directed |
+| `external_authorization_service_default_label` | string | no | The default classification label to use when requesting authorization and no classification label has been specified on the project |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/application/settings?signup_enabled=false&default_project_visibility=internal
@@ -207,6 +210,9 @@ Example response:
   "plantuml_enabled": false,
   "plantuml_url": null,
   "terminal_max_session_time": 0,
-  "polling_interval_multiplier": 1.0
+  "polling_interval_multiplier": 1.0,
+  "external_authorization_service_enabled": true,
+  "external_authorization_service_url": "https://authorize.me",
+  "external_authorization_service_default_label": "default"
 }
 ```

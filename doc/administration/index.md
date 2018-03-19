@@ -47,6 +47,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 [source installations](../install/installation.md#installation-from-source).
 - [Environment variables](environment_variables.md): Supported environment variables that can be used to override their defaults values in order to configure GitLab.
 - **(Starter/Premium)** [Elasticsearch](../integration/elasticsearch.md): Enable Elasticsearch to empower GitLab's Advanced Global Search. Useful when you deal with a huge amount of data.
+- **(Premium)** [External Classification Policy Authorization](../user/admin_area/settings/external_authorization.md)
 
 #### Customizing GitLab's appearance
 

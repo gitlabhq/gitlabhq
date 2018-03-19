@@ -26,7 +26,7 @@ module Projects
       end
 
       def project_tree_saver
-        Gitlab::ImportExport::ProjectTreeSaver.new(project: project, current_user: @current_user, shared: @shared)
+        Gitlab::ImportExport::ProjectTreeSaver.new(project: project, current_user: @current_user, shared: @shared, params: @params)
       end
 
       def uploads_saver
