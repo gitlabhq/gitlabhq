@@ -68,7 +68,7 @@
   white-space: nowrap;
 }
 
-@media (min-width: $screen-sm-min) {
+@media (min-width: $screen-md-min) {
   .issue-boards-content.is-focused {
     position: fixed;
     width: 100%;
@@ -79,7 +79,8 @@
     z-index: 9000;
 
     .boards-list {
-      height: calc(100vh - 50px);
+      height: calc(100vh - #{$issue-boards-filter-height});
+      overflow-x: scroll;
     }
 
     .issue-boards-sidebar {
@@ -690,7 +691,6 @@
   font-size: 9px;
   line-height: 15px;
   border-radius: 50%;
-
 }
 
 .modal-filters {
