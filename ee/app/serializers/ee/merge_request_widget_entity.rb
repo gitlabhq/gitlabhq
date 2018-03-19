@@ -41,28 +41,45 @@ module EE
         end
       end
 
-      expose_artifact(:sast, Ci::Build::SAST_FILE)
-      expose_artifact(:sast_container, Ci::Build::SAST_CONTAINER_FILE)
-      expose_artifact(:dast, Ci::Build::DAST_FILE)
-    end
+      expose :sast, if: -> (mr, _) { mr.expose_sast_data? } do
+        expose :head_path, if: -> (mr, _) { can?(current_user, :read_build, mr.head_sast_artifact) } do |merge_request|
+          raw_project_build_artifacts_url(merge_request.source_project,
+                                          merge_request.head_sast_artifact,
+                                          path: Ci::Build::SAST_FILE)
+        end
 
-    class_methods do
-      def expose_artifact(name, file)
-        expose name, if: -> (mr, _) { mr.send(:"expose_#{name}_data?") } do
-          base_artifact_method = :"base_#{name}_artifact"
-          head_artifact_method = :"head_#{name}_artifact"
+        expose :base_path, if: -> (mr, _) { mr.base_has_sast_data? && can?(current_user, :read_build, mr.base_sast_artifact) } do |merge_request|
+          raw_project_build_artifacts_url(merge_request.target_project,
+                                          merge_request.base_sast_artifact,
+                                          path: Ci::Build::SAST_FILE)
+        end
+      end
 
-          expose :head_path, if: -> (mr, _) { can?(current_user, :read_build, mr.send(head_artifact_method)) } do |merge_request|
-            raw_project_build_artifacts_url(merge_request.source_project,
-                                            merge_request.send(head_artifact_method),
-                                            path: file)
-          end
+      expose :sast_container, if: -> (mr, _) { mr.expose_sast_container_data? } do
+        expose :head_path, if: -> (mr, _) { can?(current_user, :read_build, mr.head_sast_container_artifact) } do |merge_request|
+          raw_project_build_artifacts_url(merge_request.source_project,
+                                          merge_request.head_sast_container_artifact,
+                                          path: Ci::Build::SAST_CONTAINER_FILE)
+        end
 
-          expose :base_path, if: -> (mr, _) { mr.send(:"base_has_#{name}_data?") && can?(current_user, :read_build, mr.send(base_artifact_method)) } do |merge_request|
-            raw_project_build_artifacts_url(merge_request.target_project,
-                                            merge_request.send(base_artifact_method),
-                                            path: file)
-          end
+        expose :base_path, if: -> (mr, _) { mr.base_has_sast_container_data? && can?(current_user, :read_build, mr.base_sast_container_artifact) } do |merge_request|
+          raw_project_build_artifacts_url(merge_request.target_project,
+                                          merge_request.base_sast_container_artifact,
+                                          path: Ci::Build::SAST_CONTAINER_FILE)
+        end
+      end
+
+      expose :dast, if: -> (mr, _) { mr.expose_dast_data? } do
+        expose :head_path, if: -> (mr, _) { can?(current_user, :read_build, mr.head_dast_artifact) } do |merge_request|
+          raw_project_build_artifacts_url(merge_request.source_project,
+                                          merge_request.head_dast_artifact,
+                                          path: Ci::Build::DAST_FILE)
+        end
+
+        expose :base_path, if: -> (mr, _) { mr.base_has_dast_data? && can?(current_user, :read_build, mr.base_dast_artifact) } do |merge_request|
+          raw_project_build_artifacts_url(merge_request.target_project,
+                                          merge_request.base_dast_artifact,
+                                          path: Ci::Build::DAST_FILE)
         end
       end
     end
