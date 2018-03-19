@@ -1,38 +1,50 @@
-# External authorization service
+# External authorization control
 
-> [Introduced][ee-3709] GitLab Enterprise Edition 10.6.
+>
+[Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/4216) in
+[GitLab Premium](https://about.gitlab.com/pricing) 10.6.
 
 In highly controlled environments, it may be necessary for access policy to be
 controlled by an external service that permits access based on project
 classification and user access. GitLab provides a way to check project
-authorization with an external service.
+authorization with your own defined service.
 
-When a project is accessed, a request is made to the external service with the
-user information and project classification label assigned to the project. When
-the service replies with a known response, the result is cached for 6 hours.
+## Overview
 
-Enabling this feature disables all cross project features in GitLab: This is to
-prevent performing to many requests at once to the external authorization
-service.
+Once the external service is configured and enabled, when a project is accessed,
+a request is made to the external service with the user information and project
+classification label assigned to the project. When the service replies with a
+known response, the result is cached for 6 hours.
 
-## Enabling external authorization service
+If the external authorization is enabled, GitLab will further block pages and
+functionality that render cross-project data. That includes:
 
-The external authorization service can be enabled by an admin on the settings
-page:
+- most pages under Dashboard (Activity, Milestones, Snippets, Assigned merge
+  requests, Assigned issues, Todos)
+- under a specific group (Activity, Contribution analytics, Issues, Issue boards,
+  Labels, Milestones, Merge requests)
+- Global and Group search will be disabled
+
+This is to prevent performing to many requests at once to the external
+authorization service.
+
+## Configuration
+
+The external authorization service can be enabled by an admin on the GitLab's
+admin area under the settings page:
 
 ![Enable external authorization service](img/external_authorization_service_settings.png)
 
-The available properties are:
+The available required properties are:
 
-- Service URL: The URL to make authorization requests to
-- Default classification label: The classification label to use when requesting
-  authorization if no specific label is defined on the project.
+- **Service URL**: The URL to make authorization requests to
+- **Default classification label**: The classification label to use when
+  requesting authorization if no specific label is defined on the project
 
-## The external authorization service
+## How it works
 
-### The request
-
-When GitLab requests access, it will send a JSON POST request with this body:
+When GitLab requests access, it will send a JSON POST request to the external
+service with this body:
 
 ```json
 {
@@ -42,22 +54,14 @@ When GitLab requests access, it will send a JSON POST request with this body:
 }
 ```
 
-The `user_ldap_dn` is optional, it is only sent when the user is logged in
+The `user_ldap_dn` is optional and is only sent when the user is logged in
 through LDAP.
 
-### The response
-
-#### Access allowed
-
 When the external authorization service responds with a status code 200, the
-user is granted access and the result is cached for 6 hours.
+user is granted access. When the external service responds with a status code
+401, the user is denied access. In any case, the request is cached for 6 hours.
 
-#### Denying access
-
-When the external service responds with a status code 401, the user is denied
-access and the request is cached for 6 hours.
-
-Optionally a reason can be specified in the JSON body:
+When denying access, a `reason` can be optionally specified in the JSON body:
 
 ```json
 {
@@ -68,18 +72,16 @@ Optionally a reason can be specified in the JSON body:
 Any other status code than 401 or 200 will also deny access to the user, but the
 response will not be cached.
 
+If the service times out (after 500ms), a message "External Policy Server did
+not respond" will be displayed.
+
 ## Classification labels
 
-The classification label used for a project will be shown on all project pages:
+You can use your own classification label in the project's
+**Settings > General > General project settings** page in the "Classification
+label" box. When no classification label is specified on a project, the default
+label defined in the [global settings](#configuration) will be used.
+
+The label will be shown on all project pages in the upper right corner.
 
 ![classification label on project page](img/classification_label_on_project_page.png)
-
-When the external authorization service is enabled, a classification label can
-be specified for a project on the project settings page
-
-![classification label project setting](img/classification_label_project_setting.png)
-
-When no classification label is specified on a project, the default label
-defined in the global settings is used.
-
-[ee-3709]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3709
