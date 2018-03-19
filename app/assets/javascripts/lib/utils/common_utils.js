@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 import axios from './axios_utils';
 import { getLocationHash } from './url_utility';
 import { convertToCamelCase } from './text_utility';
+import { isObject } from './type_utility';
 
 export const getPagePath = (index = 0) => $('body').attr('data-page').split(':')[index];
 
@@ -78,7 +79,7 @@ export const handleLocationHash = () => {
 
   const target = document.getElementById(hash) || document.getElementById(`user-content-${hash}`);
   const fixedTabs = document.querySelector('.js-tabs-affix');
-  const fixedDiffStats = document.querySelector('.js-diff-files-changed.is-stuck');
+  const fixedDiffStats = document.querySelector('.js-diff-files-changed');
   const fixedNav = document.querySelector('.navbar-gitlab');
 
   let adjustment = 0;
@@ -422,17 +423,24 @@ export const spriteIcon = (icon, className = '') => {
  * Reasoning for this method is to ensure consistent property
  * naming conventions across JS code.
  */
-export const convertObjectPropsToCamelCase = (obj = {}) => {
+export const convertObjectPropsToCamelCase = (obj = {}, options = {}) => {
   if (obj === null) {
     return {};
   }
 
+  const initial = Array.isArray(obj) ? [] : {};
+
   return Object.keys(obj).reduce((acc, prop) => {
     const result = acc;
+    const val = obj[prop];
 
-    result[convertToCamelCase(prop)] = obj[prop];
+    if (options.deep && (isObject(val) || Array.isArray(val))) {
+      result[convertToCamelCase(prop)] = convertObjectPropsToCamelCase(val, options);
+    } else {
+      result[convertToCamelCase(prop)] = obj[prop];
+    }
     return acc;
-  }, {});
+  }, initial);
 };
 
 export const imagePath = imgUrl => `${gon.asset_host || ''}${gon.relative_url_root || ''}/assets/${imgUrl}`;

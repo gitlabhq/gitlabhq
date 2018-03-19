@@ -31,7 +31,9 @@ export default class Autosave {
     // https://github.com/vuejs/vue/issues/2804#issuecomment-216968137
     const event = new Event('change', { bubbles: true, cancelable: false });
     const field = this.field.get(0);
-    field.dispatchEvent(event);
+    if (field) {
+      field.dispatchEvent(event);
+    }
   }
 
   save() {
