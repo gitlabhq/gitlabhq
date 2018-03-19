@@ -207,9 +207,10 @@ extra limitations may be in place.
   working on improving this experience, see [gitlab-org/omnibus-gitlab#2978] for details.
 - Real-time updates of issues/merge requests (e.g. via long polling) doesn't work on the secondary
 - Broadcast messages set on the primary won't be seen on the secondary without a cache flush (e.g. gitlab-rake cache:clear)
-- [Selective replication](configuration.md#selective-replication) applies only
-  to files and repositories. Other datasets are replicated to the secondary in
-  full, making it inappropriate for use as an access control mechanism.
+- [Selective synchronization](configuration.md#selective-synchronization)
+  applies only to files and repositories. Other datasets are replicated to the
+  secondary in full, making it inappropriate for use as an access control
+  mechanism.
 
 ### Limitations on replication
 
