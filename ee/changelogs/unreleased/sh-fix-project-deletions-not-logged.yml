@@ -1,0 +1,5 @@
+---
+title: Fix audit and Geo project deletion events not being logged under certain conditions
+merge_request:
+author:
+type: fixed
