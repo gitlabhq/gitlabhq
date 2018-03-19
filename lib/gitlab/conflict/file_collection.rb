@@ -1,14 +1,18 @@
 module Gitlab
   module Conflict
     class FileCollection
+      include Gitlab::RepositoryCacheAdapter
+
       attr_reader :merge_request, :resolver
 
       def initialize(merge_request)
         our_commit = merge_request.source_branch_head.raw
         their_commit = merge_request.target_branch_head.raw
-        target_repo = merge_request.target_project.repository.raw
+        @target_repo = merge_request.target_project.repository
         @source_repo = merge_request.source_project.repository.raw
-        @resolver = Gitlab::Git::Conflict::Resolver.new(target_repo, our_commit.id, their_commit.id)
+        @our_commit_id = our_commit.id
+        @their_commit_id = their_commit.id
+        @resolver = Gitlab::Git::Conflict::Resolver.new(@target_repo.raw, @our_commit_id, @their_commit_id)
         @merge_request = merge_request
       end
 
@@ -29,6 +33,17 @@ module Gitlab
           Gitlab::Conflict::File.new(conflict_file, merge_request: merge_request)
         end
       end
+
+      def can_be_resolved_in_ui?
+        # Try to parse each conflict. If the MR's mergeable status hasn't been
+        # updated, ensure that we don't say there are conflicts to resolve
+        # when there are no conflict files.
+        files.each(&:lines)
+        files.any?
+      rescue Gitlab::Git::CommandError, Gitlab::Git::Conflict::Parser::UnresolvableError, Gitlab::Git::Conflict::Resolver::ConflictSideMissing
+        false
+      end
+      cache_method :can_be_resolved_in_ui?
 
       def file_for_path(old_path, new_path)
         files.find { |file| file.their_path == old_path && file.our_path == new_path }
@@ -55,6 +70,19 @@ Merge branch '#{merge_request.target_branch}' into '#{merge_request.source_branc
 # Conflicts:
 #{conflict_filenames.join("\n")}
 EOM
+      end
+
+      private
+
+      def cache
+        @cache ||= begin
+          # Use the commit ids as a namespace so if the MR branches get
+          # updated we instantiate the cache under a different namespace. That
+          # way don't have to worry about explicitly invalidating the cache
+          namespace = "#{@our_commit_id}:#{@their_commit_id}"
+
+          Gitlab::RepositoryCache.new(@target_repo, extra_namespace: namespace)
+        end
       end
     end
   end
