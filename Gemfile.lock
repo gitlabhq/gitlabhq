@@ -1118,7 +1118,7 @@ DEPENDENCIES
   omniauth-google-oauth2 (~> 0.5.2)
   omniauth-kerberos (~> 0.3.0)
   omniauth-oauth2-generic (~> 0.2.2)
-  omniauth-saml (~> 1.10.0)
+  omniauth-saml (~> 1.10)
   omniauth-shibboleth (~> 1.2.0)
   omniauth-twitter (~> 1.2.0)
   omniauth_crowd (~> 2.2.0)
