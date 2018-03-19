@@ -235,9 +235,6 @@ gem 'mousetrap-rails', '~> 1.4.6'
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.5'
 
-# Faster JSON
-gem 'oj', '~> 2.17.4'
-
 # Faster blank
 gem 'fast_blank'
 
