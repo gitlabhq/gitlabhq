@@ -225,7 +225,6 @@ export default class Notes {
     // When the URL fragment/hash has changed, `#note_xxx`
     $(window).on('hashchange', this.onHashChange);
     this.boundGetContent = this.getContent.bind(this);
-    document.addEventListener('refreshLegacyNotes', this.boundGetContent);
     this.eventsBound = true;
   }
 
@@ -253,7 +252,6 @@ export default class Notes {
     this.$wrapperEl.off('ajax:success', '.js-main-target-form');
     this.$wrapperEl.off('ajax:success', '.js-discussion-note-form');
     this.$wrapperEl.off('ajax:complete', '.js-main-target-form');
-    document.removeEventListener('refreshLegacyNotes', this.boundGetContent);
     $(window).off('hashchange', this.onHashChange);
   }
 
@@ -537,8 +535,6 @@ export default class Notes {
         this.setupNewNote($updatedNote);
       }
     }
-
-    Notes.refreshVueNotes();
   }
 
   isParallelView() {
@@ -1021,7 +1017,6 @@ export default class Notes {
       })(this),
     );
 
-    Notes.refreshVueNotes();
     Notes.checkMergeRequestStatus();
     return this.updateNotesCount(-1);
   }
@@ -1037,7 +1032,7 @@ export default class Notes {
     $note.find('.note-attachment').remove();
     $note.find('.note-body > .note-text').show();
     $note.find('.note-header').show();
-    return $note.find('.current-note-edit-form').remove();
+    return $note.find('.diffs .current-note-edit-form').remove();
   }
 
   /**
@@ -1581,10 +1576,6 @@ export default class Notes {
     return $updatedNote;
   }
 
-  static refreshVueNotes() {
-    document.dispatchEvent(new CustomEvent('refreshVueNotes'));
-  }
-
   /**
    * Get data from Form attributes to use for saving/submitting comment.
    */
@@ -1887,8 +1878,6 @@ export default class Notes {
               '<div class="flash-container" style="display: none;"></div>',
             );
           }
-
-          Notes.refreshVueNotes();
         } else if (isMainForm) {
           // Check if this was main thread comment
           // Show final note element on UI and perform form and action buttons cleanup
