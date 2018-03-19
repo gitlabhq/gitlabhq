@@ -137,6 +137,7 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState }) =
     }
 
     dispatch('setLastCommitMessage', data);
+    dispatch('updateCommitMessage', '');
 
     if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH_MR) {
       dispatch(

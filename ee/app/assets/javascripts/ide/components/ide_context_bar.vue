@@ -1,37 +1,35 @@
 <script>
-  import { mapGetters, mapState } from 'vuex';
-  import icon from '~/vue_shared/components/icon.vue';
-  import panelResizer from '~/vue_shared/components/panel_resizer.vue';
-  import repoCommitSection from './repo_commit_section.vue';
-  import ResizablePanel from './resizable_panel.vue';
+import { mapActions, mapGetters, mapState } from 'vuex';
+import icon from '~/vue_shared/components/icon.vue';
+import panelResizer from '~/vue_shared/components/panel_resizer.vue';
+import repoCommitSection from './repo_commit_section.vue';
+import ResizablePanel from './resizable_panel.vue';
 
-  export default {
-    components: {
-      repoCommitSection,
-      icon,
-      panelResizer,
-      ResizablePanel,
+export default {
+  components: {
+    repoCommitSection,
+    icon,
+    panelResizer,
+    ResizablePanel,
+  },
+  props: {
+    noChangesStateSvgPath: {
+      type: String,
+      required: true,
     },
-    props: {
-      noChangesStateSvgPath: {
-        type: String,
-        required: true,
-      },
-      committedStateSvgPath: {
-        type: String,
-        required: true,
-      },
+    committedStateSvgPath: {
+      type: String,
+      required: true,
     },
-    computed: {
-      ...mapState([
-        'changedFiles',
-        'rightPanelCollapsed',
-      ]),
-      ...mapGetters([
-        'currentIcon',
-      ]),
-    },
-  };
+  },
+  computed: {
+    ...mapState(['changedFiles', 'rightPanelCollapsed']),
+    ...mapGetters(['currentIcon']),
+  },
+  methods: {
+    ...mapActions(['setPanelCollapsedStatus']),
+  },
+};
 </script>
 
 <template>
@@ -66,7 +64,10 @@
         <button
           type="button"
           class="btn btn-transparent multi-file-commit-panel-collapse-btn"
-          @click.stop="toggleCollapsed"
+          @click.stop="setPanelCollapsedStatus({
+            side: 'right',
+            collapsed: !rightPanelCollapsed,
+          })"
         >
           <icon
             :name="currentIcon"

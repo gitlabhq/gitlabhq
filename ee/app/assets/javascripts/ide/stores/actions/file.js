@@ -7,7 +7,7 @@ import router from '../../ide_router';
 import { setPageTitle } from '../utils';
 
 export const closeFile = ({ commit, state, getters, dispatch }, path) => {
-  const indexOfClosedFile = state.openFiles.indexOf(path);
+  const indexOfClosedFile = state.openFiles.findIndex(f => f.path === path);
   const file = state.entries[path];
   const fileWasActive = file.active;
 
@@ -16,7 +16,7 @@ export const closeFile = ({ commit, state, getters, dispatch }, path) => {
 
   if (state.openFiles.length > 0 && fileWasActive) {
     const nextIndexToOpen = indexOfClosedFile === 0 ? 0 : indexOfClosedFile - 1;
-    const nextFileToOpen = state.entries[state.openFiles[nextIndexToOpen]];
+    const nextFileToOpen = state.entries[state.openFiles[nextIndexToOpen].path];
 
     router.push(`/project${nextFileToOpen.url}`);
   } else if (!state.openFiles.length) {

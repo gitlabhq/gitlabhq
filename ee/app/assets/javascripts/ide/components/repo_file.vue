@@ -1,77 +1,77 @@
 <script>
-  import { mapActions } from 'vuex';
-  import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
-  import fileIcon from '~/vue_shared/components/file_icon.vue';
-  import router from '../ide_router';
-  import newDropdown from './new_dropdown/index.vue';
-  import fileStatusIcon from './repo_file_status_icon.vue';
-  import changedFileIcon from './changed_file_icon.vue';
+import { mapActions } from 'vuex';
+import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
+import fileIcon from '~/vue_shared/components/file_icon.vue';
+import router from '../ide_router';
+import newDropdown from './new_dropdown/index.vue';
+import fileStatusIcon from './repo_file_status_icon.vue';
+import changedFileIcon from './changed_file_icon.vue';
 
-  export default {
-    name: 'RepoFile',
-    components: {
-      skeletonLoadingContainer,
-      newDropdown,
-      fileStatusIcon,
-      fileIcon,
-      changedFileIcon,
+export default {
+  name: 'RepoFile',
+  components: {
+    skeletonLoadingContainer,
+    newDropdown,
+    fileStatusIcon,
+    fileIcon,
+    changedFileIcon,
+  },
+  props: {
+    file: {
+      type: Object,
+      required: true,
     },
-    props: {
-      file: {
-        type: Object,
-        required: true,
-      },
-      level: {
-        type: Number,
-        required: true,
-      },
+    level: {
+      type: Number,
+      required: true,
     },
-    computed: {
-      isTree() {
-        return this.file.type === 'tree';
-      },
-      isBlob() {
-        return this.file.type === 'blob';
-      },
-      levelIndentation() {
-        return {
-          marginLeft: `${this.level * 16}px`,
-        };
-      },
-      fileClass() {
-        return {
-          'file-open': this.isBlob && this.file.opened,
-          'file-active': this.isBlob && this.file.active,
-          folder: this.isTree,
-        };
-      },
+  },
+  computed: {
+    isTree() {
+      return this.file.type === 'tree';
     },
-    updated() {
-      if (this.file.type === 'blob' && this.file.active) {
-        this.$el.scrollIntoView();
+    isBlob() {
+      return this.file.type === 'blob';
+    },
+    levelIndentation() {
+      return {
+        marginLeft: `${this.level * 16}px`,
+      };
+    },
+    fileClass() {
+      return {
+        'file-open': this.isBlob && this.file.opened,
+        'file-active': this.isBlob && this.file.active,
+        folder: this.isTree,
+      };
+    },
+  },
+  updated() {
+    if (this.file.type === 'blob' && this.file.active) {
+      this.$el.scrollIntoView();
+    }
+  },
+  methods: {
+    ...mapActions(['toggleTreeOpen', 'updateDelayViewerUpdated']),
+    clickFile() {
+      // Manual Action if a tree is selected/opened
+      if (
+        this.isTree &&
+        this.$router.currentRoute.path === `/project${this.file.url}`
+      ) {
+        this.toggleTreeOpen(this.file.path);
       }
-    },
-    methods: {
-      ...mapActions(['toggleTreeOpen', 'updateDelayViewerUpdated']),
-      clickFile() {
-        // Manual Action if a tree is selected/opened
-        if (
-          this.isTree &&
-          this.$router.currentRoute.path === `/project${this.file.url}`
-        ) {
-          this.toggleTreeOpen(this.file.path);
-        }
 
-        const delayPromise = this.file.changed
-          ? Promise.resolve()
-          : this.updateDelayViewerUpdated(true);
+      const delayPromise = this.file.changed
+        ? Promise.resolve()
+        : this.updateDelayViewerUpdated(true);
 
-        return delayPromise.then(() => {
-          router.push(`/project${this.file.url}`);
-        });
-      },
+      return delayPromise.then(() => {
+        router.push(`/project${this.file.url}`);
+      });
     },
-  };
+  },
+};
 </script>
 
 <template>
@@ -101,16 +101,17 @@
             :file="file"
           />
         </span>
+        <changed-file-icon
+          :file="file"
+          v-if="file.changed || file.tempFile"
+          class="prepend-top-5 pull-right"
+        />
         <new-dropdown
           v-if="isTree"
           :project-id="file.projectId"
           :branch="file.branchId"
           :path="file.path"
-        />
-        <changed-file-icon
-          :file="file"
-          v-if="file.changed || file.tempFile"
-          class="prepend-top-5"
+          class="pull-right prepend-left-8"
         />
       </div>
     </div>
