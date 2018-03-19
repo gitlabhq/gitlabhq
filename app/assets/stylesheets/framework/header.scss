@@ -184,7 +184,6 @@
   }
 
   .container-fluid {
-
     .navbar-nav {
       @media (max-width: $screen-xs-max) {
         display: -webkit-flex;
@@ -337,7 +336,7 @@
 .breadcrumbs {
   display: -webkit-flex;
   display: flex;
-  min-height: 48px;
+  min-height: $breadcrumb-min-height;
   color: $gl-text-color;
 }
 
@@ -470,7 +469,7 @@
       padding: 0 5px;
       line-height: 12px;
       border-radius: 7px;
-      box-shadow: 0 1px 0 rgba($gl-header-color, .2);
+      box-shadow: 0 1px 0 rgba($gl-header-color, 0.2);
 
       &.issues-count {
         background-color: $green-500;
