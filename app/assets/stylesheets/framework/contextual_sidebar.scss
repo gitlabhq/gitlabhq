@@ -9,7 +9,8 @@
     padding-left: $contextual-sidebar-width;
   }
 
-  .issues-bulk-update.right-sidebar.right-sidebar-expanded .issuable-sidebar-header {
+  .issues-bulk-update.right-sidebar.right-sidebar-expanded
+    .issuable-sidebar-header {
     padding: 10px 0 15px;
   }
 }
@@ -61,7 +62,8 @@
 }
 
 .nav-sidebar {
-  transition: width $sidebar-transition-duration, left $sidebar-transition-duration;
+  transition: width $sidebar-transition-duration,
+    left $sidebar-transition-duration;
   position: fixed;
   z-index: 400;
   width: $contextual-sidebar-width;
@@ -75,7 +77,7 @@
   &:not(.sidebar-collapsed-desktop) {
     @media (min-width: $screen-sm-min) and (max-width: $screen-md-max) {
       box-shadow: inset -2px 0 0 $border-color,
-                  2px 1px 3px $dropdown-shadow-color;
+        2px 1px 3px $dropdown-shadow-color;
     }
   }
 
@@ -234,7 +236,7 @@
           border-radius: 0 3px 3px 0;
 
           &::before {
-            content: "";
+            content: '';
             position: absolute;
             top: -30px;
             bottom: -30px;
@@ -304,7 +306,6 @@
     }
   }
 }
-
 
 // Collapsed nav
 
@@ -453,19 +454,4 @@
     width: 100%;
     z-index: 300;
   }
-}
-
-
-// Make issue boards full-height now that sub-nav is gone
-
-.boards-list {
-  height: calc(100vh - #{$header-height});
-
-  @media (min-width: $screen-sm-min) {
-    height: calc(100vh - 180px);
-  }
-}
-
-.with-performance-bar .boards-list {
-  height: calc(100vh - #{$header-height} - #{$performance-bar-height});
 }

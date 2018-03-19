@@ -29,8 +29,17 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         project_json(project_tree_saver.full_path)
       end
 
+      context 'with description override' do
+        let(:params) { { description: 'Foo Bar' } }
+        let(:project_tree_saver) { described_class.new(project: project, current_user: user, shared: shared, params: params) }
+
+        it 'overrides the project description' do
+          expect(saved_project_json).to include({ 'description' => params[:description] })
+        end
+      end
+
       it 'saves the correct json' do
-        expect(saved_project_json).to include({ "visibility_level" => 20 })
+        expect(saved_project_json).to include({ 'description' => 'description', 'visibility_level' => 20 })
       end
 
       it 'has approvals_before_merge set' do
@@ -263,6 +272,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
                      :issues_disabled,
                      :wiki_enabled,
                      :builds_private,
+                     description: 'description',
                      issues: [issue],
                      snippets: [snippet],
                      releases: [release],

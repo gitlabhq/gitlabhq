@@ -164,30 +164,11 @@ describe MergeRequest do
     end
   end
 
-  describe '#head_sast_artifact' do
-    it { is_expected.to delegate_method(:sast_artifact).to(:head_pipeline).with_prefix(:head) }
-  end
-
-  describe '#base_sast_artifact' do
-    it { is_expected.to delegate_method(:sast_artifact).to(:base_pipeline).with_prefix(:base) }
-  end
-
-  describe '#sast_container_artifact' do
-    it { is_expected.to delegate_method(:sast_container_artifact).to(:head_pipeline) }
-  end
-
-  describe '#dast_artifact' do
-    it { is_expected.to delegate_method(:dast_artifact).to(:head_pipeline) }
-  end
-
-  describe '#base_has_sast_data?' do
-    it { is_expected.to delegate_method(:has_sast_data?).to(:base_pipeline).with_prefix(:base) }
-  end
-
   %w(sast dast sast_container).each do |type|
-    method = "expose_#{type}_data?"
-
-    it { is_expected.to delegate_method(method.to_sym).to(:head_pipeline) }
+    it { is_expected.to delegate_method(:"expose_#{type}_data?").to(:head_pipeline) }
+    it { is_expected.to delegate_method(:"has_#{type}_data?").to(:base_pipeline).with_prefix(:base) }
+    it { is_expected.to delegate_method(:"#{type}_artifact").to(:head_pipeline).with_prefix(:head) }
+    it { is_expected.to delegate_method(:"#{type}_artifact").to(:base_pipeline).with_prefix(:base) }
   end
 
   describe '#expose_codeclimate_data?' do

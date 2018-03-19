@@ -22,7 +22,7 @@ You can find these nightly pipelines at [GitLab QA pipelines page][gitlab-qa-pip
 
 It is possible to run end-to-end tests (eventually being run within a
 [GitLab QA pipeline][gitlab-qa-pipelines]) for a merge request by triggering
-the `package-qa` manual action, that should be present in a merge request
+the `package-and-qa` manual action, that should be present in a merge request
 widget.
 
 Manual action that starts end-to-end tests is also available in merge requests

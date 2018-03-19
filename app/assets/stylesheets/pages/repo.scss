@@ -679,11 +679,6 @@
       padding-bottom: 0;
     }
 
-    .multi-file-commit-panel .multi-file-commit-panel-inner-scroll {
-      max-height: calc(100vh - #{$header-height + $context-header-height});
-      min-height: calc(100vh - #{$header-height + $context-header-height});
-    }
-
     &.flash-shown {
       .content-wrapper {
         margin-top: 0;
@@ -692,14 +687,11 @@
       .ide-view {
         height: calc(100vh - #{$header-height + $flash-height});
       }
+    }
 
-      .multi-file-commit-panel .multi-file-commit-panel-inner-scroll {
-        max-height: calc(
-          100vh - #{$header-height + $flash-height + $context-header-height}
-        );
-        min-height: calc(
-          100vh - #{$header-height + $flash-height + $context-header-height}
-        );
+    .projects-sidebar {
+      .multi-file-commit-panel-inner-scroll {
+        flex: 1;
       }
     }
   }
@@ -719,11 +711,6 @@
     height: calc(100vh - #{$header-height + $performance-bar-height});
   }
 
-  .multi-file-commit-panel .multi-file-commit-panel-inner-scroll {
-    max-height: calc(100vh - #{$header-height + $performance-bar-height + 60});
-    min-height: calc(100vh - #{$header-height + $performance-bar-height + 60});
-  }
-
   &.flash-shown {
     .content-wrapper {
       margin-top: 0;
@@ -732,17 +719,6 @@
     .ide-view {
       height: calc(
         100vh - #{$header-height + $performance-bar-height + $flash-height}
-      );
-    }
-
-    .multi-file-commit-panel .multi-file-commit-panel-inner-scroll {
-      max-height: calc(
-        100vh - #{$header-height + $performance-bar-height + $flash-height +
-          $context-header-height}
-      );
-      min-height: calc(
-        100vh - #{$header-height + $performance-bar-height + $flash-height +
-          $context-header-height}
       );
     }
   }
@@ -777,4 +753,30 @@
 
 .ide-commit-new-branch {
   margin-left: 25px;
+}
+
+.ide-external-links {
+  p {
+    margin: 0;
+  }
+}
+
+.ide-sidebar-link {
+  padding: $gl-padding-8 $gl-padding;
+  background: $indigo-700;
+  color: $white-light;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+
+  &:focus,
+  &:hover {
+    color: $white-light;
+    text-decoration: underline;
+    background: $indigo-500;
+  }
+
+  &:active {
+    background: $indigo-800;
+  }
 }
