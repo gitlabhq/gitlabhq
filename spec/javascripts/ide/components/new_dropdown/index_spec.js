@@ -2,7 +2,7 @@ import Vue from 'vue';
 import store from 'ee/ide/stores';
 import newDropdown from 'ee/ide/components/new_dropdown/index.vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
-import { file, resetStore } from '../../helpers';
+import { resetStore } from '../../helpers';
 
 describe('new dropdown component', () => {
   let vm;

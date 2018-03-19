@@ -32,7 +32,7 @@ describe('RepoFile', () => {
     expect(name.textContent.trim()).toEqual(vm.file.name);
   });
 
-  it('fires clickFile when the link is clicked', () => {
+  it('fires clickFile when the link is clicked', done => {
     spyOn(router, 'push');
     createComponent({
       file: file('t3'),
@@ -41,7 +41,11 @@ describe('RepoFile', () => {
 
     vm.$el.querySelector('.file-name').click();
 
-    expect(router.push).toHaveBeenCalledWith(`/project${vm.file.url}`);
+    setTimeout(() => {
+      expect(router.push).toHaveBeenCalledWith(`/project${vm.file.url}`);
+
+      done();
+    });
   });
 
   describe('locked file', () => {
@@ -67,7 +71,10 @@ describe('RepoFile', () => {
     });
 
     it('renders a tooltip', () => {
-      expect(vm.$el.querySelector('.ide-file-name span:nth-child(2)').dataset.originalTitle).toContain('Locked by testuser');
+      expect(
+        vm.$el.querySelector('.ide-file-name span:nth-child(2)').dataset
+          .originalTitle,
+      ).toContain('Locked by testuser');
     });
   });
 });

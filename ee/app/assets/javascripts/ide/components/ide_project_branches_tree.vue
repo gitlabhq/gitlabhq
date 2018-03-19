@@ -40,10 +40,8 @@
         />
       </div>
     </div>
-    <template v-if="branch.tree.length">
-      <repo-tree
-        :tree="branch.tree"
-      />
-    </template>
+    <repo-tree
+      :tree="branch.tree"
+    />
   </div>
 </template>
