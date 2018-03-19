@@ -374,7 +374,7 @@ Search within the specified group.
 If a user is not a member of a group and the group is private, a `GET` request on that group will result to a `404` status code.
 
 ```
-GET /groups/:id/-/search
+GET /groups/:id/search
 ```
 
 | Attribute     | Type     | Required   | Description            |
@@ -392,7 +392,7 @@ The response depends on the requested scope.
 ### Scope: projects
 
 ```bash
-curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/3/-/search?scope=projects&search=flight
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/3/search?scope=projects&search=flight
 ```
 
 Example response:
@@ -423,7 +423,7 @@ Example response:
 ### Scope: issues
 
 ```bash
-curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/3/-/search?scope=issues&search=file
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/3/search?scope=issues&search=file
 ```
 
 Example response:
@@ -488,7 +488,7 @@ Example response:
 ### Scope: merge_requests
 
 ```bash
-curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/3/-/search?scope=merge_requests&search=file
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/3/search?scope=merge_requests&search=file
 ```
 
 Example response:
@@ -565,7 +565,7 @@ Example response:
 ### Scope: milestones
 
 ```bash
-curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/3/-/search?scope=milestones&search=release
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/3/search?scope=milestones&search=release
 ```
 
 Example response:
@@ -592,7 +592,7 @@ Example response:
 This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 
 ```bash
-curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/6/-/search?scope=wiki_blobs&search=bye
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/6/search?scope=wiki_blobs&search=bye
 ```
 
 Example response:
@@ -617,7 +617,7 @@ Example response:
 This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 
 ```bash
-curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/6/-/search?scope=commits&search=bye
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/6/search?scope=commits&search=bye
 ```
 
 Example response:
@@ -650,7 +650,7 @@ Example response:
 This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 
 ```bash
-curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/6/-/search?scope=blobs&search=installation
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/6/search?scope=blobs&search=installation
 ```
 
 Example response:
@@ -677,7 +677,7 @@ Search within the specified project.
 If a user is not a member of a project and the project is private, a `GET` request on that project will result to a `404` status code.
 
 ```
-GET /projects/:id/-/search
+GET /projects/:id/search
 ```
 
 | Attribute     | Type     | Required   | Description            |
@@ -694,7 +694,7 @@ The response depends on the requested scope.
 ### Scope: issues
 
 ```bash
-curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/12/-/search?scope=issues&search=file
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/12/search?scope=issues&search=file
 ```
 
 Example response:
@@ -759,7 +759,7 @@ Example response:
 ### Scope: merge_requests
 
 ```bash
-curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/6/-/search?scope=merge_requests&search=file
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/6/search?scope=merge_requests&search=file
 ```
 
 Example response:
@@ -836,7 +836,7 @@ Example response:
 ### Scope: milestones
 
 ```bash
-curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/12/-/search?scope=milestones&search=release
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/12/search?scope=milestones&search=release
 ```
 
 Example response:
@@ -861,7 +861,7 @@ Example response:
 ### Scope: notes
 
 ```bash
-curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/6/-/search?scope=notes&search=maxime
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/6/search?scope=notes&search=maxime
 ```
 
 Example response:
@@ -893,7 +893,7 @@ Example response:
 ### Scope: wiki_blobs
 
 ```bash
-curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/6/-/search?scope=wiki_blobs&search=bye
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/6/search?scope=wiki_blobs&search=bye
 ```
 
 Example response:
@@ -916,7 +916,7 @@ Example response:
 ### Scope: commits
 
 ```bash
-curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/6/-/search?scope=commits&search=bye
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/6/search?scope=commits&search=bye
 ```
 
 Example response:
@@ -947,7 +947,7 @@ Example response:
 ### Scope: blobs
 
 ```bash
-curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/6/-/search?scope=blobs&search=installation
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/6/search?scope=blobs&search=installation
 ```
 
 Example response:

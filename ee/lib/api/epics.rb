@@ -57,7 +57,7 @@ module API
         optional :author_id, type: Integer, desc: 'Return epics which are authored by the user with the given ID'
         optional :labels, type: String, desc: 'Comma-separated list of label names'
       end
-      get ':id/-/epics' do
+      get ':id/(-/)epics' do
         present find_epics(group_id: user_group.id), with: EE::API::Entities::Epic
       end
 
@@ -67,7 +67,7 @@ module API
       params do
         requires :epic_iid, type: Integer, desc: 'The internal ID of an epic'
       end
-      get ':id/-/epics/:epic_iid' do
+      get ':id/(-/)epics/:epic_iid' do
         authorize_can_read!
 
         present epic, with: EE::API::Entities::Epic
@@ -83,7 +83,7 @@ module API
         optional :end_date, type: String, desc: 'The end date of an epic'
         optional :labels, type: String, desc: 'Comma-separated list of label names'
       end
-      post ':id/-/epics' do
+      post ':id/(-/)epics' do
         authorize_can_create!
 
         epic = ::Epics::CreateService.new(user_group, current_user, declared_params(include_missing: false)).execute
@@ -106,7 +106,7 @@ module API
         optional :labels, type: String, desc: 'Comma-separated list of label names'
         at_least_one_of :title, :description, :start_date, :end_date, :labels
       end
-      put ':id/-/epics/:epic_iid' do
+      put ':id/(-/)epics/:epic_iid' do
         authorize_can_admin!
         update_params = declared_params(include_missing: false)
         update_params.delete(:epic_iid)
@@ -126,7 +126,7 @@ module API
       params do
         requires :epic_iid, type: Integer, desc: 'The internal ID of an epic'
       end
-      delete ':id/-/epics/:epic_iid' do
+      delete ':id/(-/)epics/:epic_iid' do
         authorize_can_destroy!
 
         Issuable::DestroyService.new(nil, current_user).execute(epic)
