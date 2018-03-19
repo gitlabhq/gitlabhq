@@ -167,16 +167,14 @@ external IP address with the following procedure. It can be deployed using the
 In order to publish your web application, you first need to find the external IP
 address associated to your load balancer.
 
-### GitLab can automatically determine the IP address for you
+### Let GitLab fetch the IP address
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17052) in GitLab 10.6.
 
-If you installed the Ingress [via the
-**Applications**](#installing-applications) you should see the Ingress IP address on
-this same page within a few minutes. There may be some
-instances in which GitLab cannot determine the IP address of your ingress
-application in which case you can read on for other ways of manually
-determining the IP address.
+If you installed the Ingress [via the **Applications**](#installing-applications),
+you should see the Ingress IP address on this same page within a few minutes.
+If you don't see this, GitLab might not be able to determine the IP address of
+your ingress application in which case you should manually determine it.
 
 ### Manually determining the IP address
 
@@ -205,6 +203,24 @@ kubectl get svc --all-namespaces -o jsonpath='{range.items[?(@.status.loadBalanc
 The output is the external IP address of your cluster. This information can then
 be used to set up DNS entries and forwarding rules that allow external access to
 your deployed applications.
+
+### Using a static IP
+
+By default, an ephemeral external IP address is associated to the cluster's load
+balancer. If you associate the ephemeral IP with your DNS and the IP changes,
+your apps will not be able to be reached, and you'd have to change the DNS
+record again. In order to avoid that, you should change it into a static
+reserved IP.
+
+[Read how to promote an ephemeral external IP address in GKE.](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address#promote_ephemeral_ip)
+
+### Pointing your DNS at the cluster IP
+
+Once you've set up the static IP, you should associate it to a [wildcard DNS
+record](https://en.wikipedia.org/wiki/Wildcard_DNS_record), in order to be able
+to reach your apps. This heavily depends on your domain provider, but in case
+you aren't sure, just create an A record with a wildcard host like
+`*.example.com.`.
 
 ## Setting the environment scope
 
