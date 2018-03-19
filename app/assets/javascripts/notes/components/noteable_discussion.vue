@@ -40,6 +40,21 @@ export default {
       type: Object,
       required: true,
     },
+    renderHeader: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    renderDiffFile: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    alwaysExpanded: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -95,12 +110,17 @@ export default {
       return this.unresolvedDiscussions.length > 0;
     },
     wrapperComponent() {
-      return this.discussion.diffDiscussion && this.discussion.diffFile
-        ? diffWithNote
-        : 'div';
+      const shouldRenderDiffs =
+        this.discussion.diffDiscussion &&
+        this.discussion.diffFile &&
+        this.renderDiffFile;
+
+      return shouldRenderDiffs ? diffWithNote : 'div';
     },
     wrapperClass() {
-      return this.isDiffDiscussion ? '' : 'panel panel-default';
+      return this.isDiffDiscussion
+        ? ''
+        : 'panel panel-default discussion-wrapper';
     },
   },
   mounted() {
@@ -222,7 +242,10 @@ Please check your network connection and try again.`;
       </div>
       <div class="timeline-content">
         <div class="discussion">
-          <div class="discussion-header">
+          <div
+            v-if="renderHeader"
+            class="discussion-header"
+          >
             <note-header
               :author="author"
               :created-at="discussion.created_at"
@@ -242,7 +265,7 @@ Please check your network connection and try again.`;
             />
           </div>
           <div
-            v-if="note.expanded"
+            v-if="note.expanded || alwaysExpanded"
             class="discussion-body">
             <component
               :is="wrapperComponent"
