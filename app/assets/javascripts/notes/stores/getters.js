@@ -1,16 +1,22 @@
 import _ from 'underscore';
+import * as constants from '../constants';
 
 export const notes = state => state.notes;
+
 export const targetNoteHash = state => state.targetNoteHash;
 
 export const getNotesData = state => state.notesData;
+
 export const getNotesDataByProp = state => prop => state.notesData[prop];
 
 export const getNoteableData = state => state.noteableData;
+
 export const getNoteableDataByProp = state => prop => state.noteableData[prop];
+
 export const openState = state => state.noteableData.state;
 
 export const getUserData = state => state.userData || {};
+
 export const getUserDataByProp = state => prop =>
   state.userData && state.userData[prop];
 
@@ -20,7 +26,28 @@ export const notesById = state =>
     return acc;
   }, {});
 
+export const discussionsByLineCode = state =>
+  state.notes.reduce((acc, note) => {
+    if (note.diff_discussion) {
+      // For context line notes, there might be multiple notes with the same line code
+      const items = acc[note.line_code] || [];
+      items.push(note);
+
+      Object.assign(acc, { [note.line_code]: items });
+    }
+    return acc;
+  }, {});
+
+export const noteableType = state => {
+  const { ISSUE_NOTEABLE_TYPE, MERGE_REQUEST_NOTEABLE_TYPE } = constants;
+
+  return state.noteableData.merge_params
+    ? MERGE_REQUEST_NOTEABLE_TYPE
+    : ISSUE_NOTEABLE_TYPE;
+};
+
 const reverseNotes = array => array.slice(0).reverse();
+
 const isLastNote = (note, state) =>
   !note.system &&
   state.userData &&

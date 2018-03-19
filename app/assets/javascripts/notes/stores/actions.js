@@ -14,16 +14,22 @@ let eTagPoll;
 
 export const setNotesData = ({ commit }, data) =>
   commit(types.SET_NOTES_DATA, data);
+
 export const setNoteableData = ({ commit }, data) =>
   commit(types.SET_NOTEABLE_DATA, data);
+
 export const setUserData = ({ commit }, data) =>
   commit(types.SET_USER_DATA, data);
+
 export const setLastFetchedAt = ({ commit }, data) =>
   commit(types.SET_LAST_FETCHED_AT, data);
+
 export const setInitialNotes = ({ commit }, data) =>
   commit(types.SET_INITIAL_NOTES, data);
+
 export const setTargetNoteHash = ({ commit }, data) =>
   commit(types.SET_TARGET_NOTE_HASH, data);
+
 export const toggleDiscussion = ({ commit }, data) =>
   commit(types.TOGGLE_DISCUSSION, data);
 
@@ -134,7 +140,7 @@ export const toggleIssueLocalState = ({ commit }, newState) => {
 };
 
 export const saveNote = ({ commit, dispatch }, noteData) => {
-  const { note } = noteData.data.note;
+  const note = noteData.data['note[note]'] || noteData.data.note.note;
   let placeholderText = note;
   const hasQuickActions = utils.hasQuickActions(placeholderText);
   const replyId = noteData.data.in_reply_to_discussion_id;
