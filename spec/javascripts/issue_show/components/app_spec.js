@@ -23,7 +23,7 @@ describe('Issuable output', () => {
   let realtimeRequestCount = 0;
   let vm;
 
-  document.body.innerHTML = '<span id="task_status"></span>';
+  document.body.innerHTML = '<div class="flash-container"></div><span id="task_status"></span>';
 
   beforeEach((done) => {
     spyOn(eventHub, '$emit');
@@ -304,12 +304,12 @@ describe('Issuable output', () => {
     vm.updateIssuable();
 
     setTimeout(() => {
+      expect(vm.$el.querySelector('form')).toBe(null);
       expect(
-        eventHub.$emit,
-      ).toHaveBeenCalledWith('close.form');
-      expect(
-        window.Flash,
-      ).toHaveBeenCalledWith('there was a conflict');
+        document.querySelector('.flash-container').innerText,
+      ).toContain(
+        'there was a conflict',
+      );
 
       done();
     });
