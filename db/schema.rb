@@ -683,6 +683,20 @@ ActiveRecord::Schema.define(version: 20180405101928) do
 
   add_index "deploy_keys_projects", ["project_id"], name: "index_deploy_keys_projects_on_project_id", using: :btree
 
+  create_table "deploy_tokens", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.string "name", null: false
+    t.string "token", null: false
+    t.string "scopes"
+    t.boolean "revoked", default: false
+    t.datetime "expires_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "deploy_tokens", ["project_id"], name: "index_deploy_tokens_on_project_id", using: :btree
+  add_index "deploy_tokens", ["token"], name: "index_deploy_tokens_on_token", unique: true, using: :btree
+
   create_table "deployments", force: :cascade do |t|
     t.integer "iid", null: false
     t.integer "project_id", null: false
@@ -2072,6 +2086,7 @@ ActiveRecord::Schema.define(version: 20180405101928) do
   add_foreign_key "clusters_applications_runners", "clusters", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
+  add_foreign_key "deploy_tokens", "projects"
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade
   add_foreign_key "environments", "projects", name: "fk_d1c8c1da6a", on_delete: :cascade
   add_foreign_key "events", "projects", on_delete: :cascade

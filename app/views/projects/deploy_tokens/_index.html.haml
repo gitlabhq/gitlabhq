@@ -1,0 +1,19 @@
+- expanded = Rails.env.test?
+
+%section.settings.no-animate{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      Deploy Tokens
+    %button.btn.js-settings-toggle.qa-expand-deploy-keys
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      Deploy tokens allow read-only access to your repository and registry images.
+  .settings-content
+    - if @deploy_tokens.new_deploy_token
+      = render 'projects/deploy_tokens/new_deploy_token', new_token: @deploy_tokens.new_deploy_token
+
+    %h5.prepend-top-0
+      Add a deploy token
+    = render 'projects/deploy_tokens/form', project: @project, token: @deploy_token, presenter: @deploy_tokens
+    %hr
+    = render 'projects/deploy_tokens/table', project: @project, active_tokens: @deploy_tokens

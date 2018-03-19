@@ -5,7 +5,9 @@ module Projects
 
       def show
         @deploy_keys = DeployKeysPresenter.new(@project, current_user: current_user)
+        @deploy_tokens = DeployTokensPresenter.new(@project.deploy_tokens.active, current_user: current_user, project: project)
 
+        define_deploy_token
         define_protected_refs
       end
 
@@ -50,6 +52,14 @@ module Projects
         gon.push(protectable_tags_for_dropdown)
         gon.push(protectable_branches_for_dropdown)
         gon.push(access_levels_options)
+      end
+
+      def define_deploy_token
+        @deploy_token = @project.deploy_tokens.build(deploy_token_attributes)
+      end
+
+      def deploy_token_attributes
+        params.fetch(:deploy_token, {}).permit(:name, :expires_at, scopes: [])
       end
     end
   end

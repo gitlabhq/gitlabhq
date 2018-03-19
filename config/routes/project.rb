@@ -88,6 +88,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      resources :deploy_tokens, constraints: { id: /\d+/ }, only: :create do
+        member do
+          put :revoke
+        end
+      end
+
       resources :forks, only: [:index, :new, :create]
       resource :import, only: [:new, :create, :show]
 

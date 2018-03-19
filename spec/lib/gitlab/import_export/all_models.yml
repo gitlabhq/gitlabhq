@@ -281,6 +281,7 @@ project:
 - project_badges
 - source_of_merge_requests
 - internal_ids
+- deploy_tokens
 award_emoji:
 - awardable
 - user
