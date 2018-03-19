@@ -1,9 +1,8 @@
 require 'spec_helper'
 
 describe 'Embedded Snippets' do
-  let(:project) { create(:project, :repository) }
-  let(:snippet) { create(:personal_snippet, :public, file_name: 'popen.rb', content: content) }
-  let(:content) { project.repository.blob_at('master', 'files/ruby/popen.rb').data }
+  let(:snippet) { create(:personal_snippet, :public, file_name: 'random_dir.rb', content: content) }
+  let(:content) { "require 'fileutils'\nFileUtils.mkdir_p 'some/random_dir'\n" }
 
   it 'loads snippet', :js do
     script_url = "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}/#{snippet_path(snippet, format: 'js')}"
@@ -18,7 +17,7 @@ describe 'Embedded Snippets' do
 
     visit("http://#{server.host}:#{server.port}/embedded_snippet.html")
 
-    expect(page).to have_content("popen.rb")
+    expect(page).to have_content("random_dir.rb")
 
     expect(page).to have_content("require 'fileutils'")
 
