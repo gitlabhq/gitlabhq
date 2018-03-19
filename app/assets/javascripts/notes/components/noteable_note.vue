@@ -154,7 +154,8 @@ export default {
     class="note timeline-entry"
     :id="noteAnchorId"
     :class="classNameBindings"
-    :data-award-url="note.toggle_award_path">
+    :data-award-url="note.toggle_award_path"
+  >
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
         <user-avatar-link
@@ -194,7 +195,7 @@ export default {
           :can-edit="note.current_user.can_edit"
           :is-editing="isEditing"
           @handleFormUpdate="formUpdateHandler"
-          @cancelFormEdition="formCancelHandler"
+          @cancelForm="formCancelHandler"
           ref="noteBody"
         />
       </div>

@@ -149,10 +149,10 @@ export default {
     },
     cancelReplyForm(shouldConfirm) {
       if (shouldConfirm && this.$refs.noteForm.isDirty) {
-        const msg = 'Are you sure you want to cancel creating this comment?';
-
         // eslint-disable-next-line no-alert
-        if (!confirm(msg)) {
+        if (
+          !confirm('Are you sure you want to cancel creating this comment?')
+        ) {
           return;
         }
       }
@@ -332,7 +332,7 @@ Please check your network connection and try again.`;
                     :note="note"
                     :is-editing="false"
                     @handleFormUpdate="saveReply"
-                    @cancelFormEdition="cancelReplyForm"
+                    @cancelForm="cancelReplyForm"
                     ref="noteForm" />
                   <note-signed-out-widget v-if="!canReply" />
                 </div>

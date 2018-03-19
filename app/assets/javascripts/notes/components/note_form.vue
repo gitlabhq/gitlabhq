@@ -124,7 +124,7 @@ export default {
     cancelHandler(shouldConfirm = false) {
       // Sends information about confirm message and if the textarea has changed
       this.$emit(
-        'cancelFormEdition',
+        'cancelForm',
         shouldConfirm,
         this.noteBody !== this.updatedNoteBody,
       );
