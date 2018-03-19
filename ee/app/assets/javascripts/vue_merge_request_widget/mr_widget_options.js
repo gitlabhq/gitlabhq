@@ -240,10 +240,10 @@ export default {
     },
 
     fetchDockerReport() {
-      const { path } = this.mr.sastContainer;
+      const { head_path } = this.mr.sastContainer;
       this.isLoadingDocker = true;
 
-      this.service.fetchReport(path)
+      this.service.fetchReport(head_path)
         .then((data) => {
           this.mr.setDockerReport(data);
           this.isLoadingDocker = false;
@@ -257,7 +257,7 @@ export default {
     fetchDastReport() {
       this.isLoadingDast = true;
 
-      this.service.fetchReport(this.mr.dast.path)
+      this.service.fetchReport(this.mr.dast.head_path)
         .then((data) => {
           this.mr.setDastReport(data);
           this.isLoadingDast = false;

@@ -406,7 +406,7 @@ describe('ee merge request widget options', () => {
       gl.mrWidgetData = {
         ...mockData,
         sast_container: {
-          path: 'gl-sast-container.json',
+          head_path: 'gl-sast-container.json',
         },
       };
 
@@ -492,7 +492,7 @@ describe('ee merge request widget options', () => {
       gl.mrWidgetData = {
         ...mockData,
         dast: {
-          path: 'dast.json',
+          head_path: 'dast.json',
         },
       };
 
