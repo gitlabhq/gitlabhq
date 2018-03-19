@@ -58,7 +58,7 @@ your job and is linked to the Docker image that the `image` keyword defines.
 This allows you to access the service image during build time.
 
 The service image can run any application, but the most common use case is to
-run a database container, eg. `mysql`. It's easier and faster to use an
+run a database container, e.g., `mysql`. It's easier and faster to use an
 existing image and run it as an additional container than install `mysql` every
 time the project is built.
 
@@ -83,42 +83,46 @@ So, in order to access your database service you have to connect to the host
 named `mysql` instead of a socket or `localhost`. Read more in [accessing the
 services](#accessing-the-services).
 
-### How service health check works
+### How the health check of services works
 
 Services are designed to provide additional functionality which is **network accessible**.
-It may be a database (like mysql, but also like redis), this may be docker:dind (which
-allows you to use Docker). This may be anything else that is required for the CI/CD job
-to proceed and what is accessed by network.
+It may be a database like MySQL, or Redis, and even `docker:dind` which
+allows you to use Docker in Docker. It can be practically anything that is
+required for the CI/CD job to proceed and is accessed by network.
 
-To make sure this works, Runner is:
+To make sure this works, the Runner:
 
-1. checking which ports are exposed from the container by default,
-1. starts a special container that waits for these ports to be accessible.
+1. checks which ports are exposed from the container by default
+1. starts a special container that waits for these ports to be accessible
 
-When the second stage of the check fails (either because there is no opened port in the
-service, or service was not started properly before the timeout and the port is not
-responding), it prints the warning: `*** WARNING: Service XYZ probably didn't start properly`.
+When the second stage of the check fails, either because there is no opened port in the
+service, or the service was not started properly before the timeout and the port is not
+responding, it prints the warning: `*** WARNING: Service XYZ probably didn't start properly`.
 
-In most cases it will affect the job, but there may be situations when job still succeeds
-even if such warning was printed, e.g.:
+In most cases it will affect the job, but there may be situations when the job
+will still succeed even if that warning was printed. For example:
 
-- service was started a little after the warning was raised, and the job is using it not
-  from the very beginning - in that case when the job (e.g. tests) needed to access the
-  service, it may be already there waiting for connections,
-- service container is not providing any networking service, but doing something with job's
-  directory (all services have the job directory mounted as a volume under `/builds`) - in
-  that case the service will do its job, and since tje job is not trying to connect to it,
-  it doesn't fail.
+- The service was started a little after the warning was raised, and the job is
+  not using the linked service from the very beginning. In that case, when the
+  job needed to access the service, it may have been already there waiting for
+  connections.
+- The service container is not providing any networking service, but it's doing
+  something with the job's directory (all services have the job directory mounted
+  as a volume under `/builds`). In that case, the service will do its job, and
+  since the job is not trying to connect to it, it won't fail.
 
 ### What services are not for
 
 As it was mentioned before, this feature is designed to provide **network accessible**
-services. A database is the easiest example of such service.
+services. A database is the simplest example of such a service.
 
-**Services feature is not designed to, and will not add any software from defined
-service image to job's container.**
+NOTE: **Note:**
+The services feature is not designed to, and will not add any software from the
+defined `services` image(s) to the job's container.
 
-For example, such definition:
+For example, if you have the following `services` defined in your job, the `php`,
+`node` or `go` commands will **not** be available for your script, and thus
+the job will fail:
 
 ```yaml
 job:
@@ -133,39 +137,12 @@ job:
   - go version
 ```
 
-will not make `php`, `node` or `go` commands available for your script. So each of the
-commands defined in `script:` section will fail.
+If you need to have `php`, `node` and `go` available for your script, you should
+either:
 
-If you need to have `php`, `node` and `go` available for your script, you should either:
-
-- choose existing Docker image that contain all required tools, or
-- choose the best existing Docker image that fits into your requirements and create
-  your own one, adding all missing tools on top of it.
-
-Looking at the example above, to make the job working as expected we should first
-create an image, let's call it `my-php-node-go-image`, basing on Dockerfile like:
-
-```Dockerfile
-FROM alpine:3.7
-
-RUN command-to-install-php
-RUN command-to-install-node
-RUN command-to-install-golang
-```
-
-and then change the definition in `.gitlab-ci.yml` file to:
-
-```yaml
-job:
-  image: my-php-node-go-image
-  script:
-  - php -v
-  - node -v
-  - go version
-```
-
-This time all required tools are available in job's container, so each of the
-commands defined in `script:` section will eventualy succeed.
+- choose an existing Docker image that contains all required tools, or
+- create your own Docker image, which will have all the required tools included
+  and use that in your job
 
 ### Accessing the services
 
