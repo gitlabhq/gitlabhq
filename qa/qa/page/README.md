@@ -40,7 +40,7 @@ the time it would take to build packages and test everything.
 That is why when someone changes `t.text_field :login` to
 `t.text_field :username` in the _new session_ view we won't know about this
 change until our GitLab QA nightly pipeline fails, or until someone triggers
-`package-qa` action in their merge request.
+`package-and-qa` action in their merge request.
 
 Obviously such a change would break all tests. We call this problem a _fragile
 tests problem_.
