@@ -117,7 +117,7 @@ are trusted, so **only trusted users should be allowed to control your clusters*
 
 The default cluster configuration grants access to a wide set of
 functionalities needed to successfully build and deploy a containerized
-application. Bare in mind that the same credentials are used for all the
+application. Bear in mind that the same credentials are used for all the
 applications running on the cluster.
 
 When GitLab creates the cluster, it enables and uses the legacy
@@ -278,6 +278,14 @@ GitLab CI/CD build environment.
 | `KUBE_CA_PEM_FILE` | Only present if a custom CA bundle was specified. Path to a file containing PEM data. |
 | `KUBE_CA_PEM` | (**deprecated**) Only if a custom CA bundle was specified. Raw PEM data. |
 | `KUBECONFIG` | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified. |
+
+## Monitoring your Kubernetes cluster
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/4701) in [GitLab Ultimate][ee] 10.6.
+
+When [Prometheus is deployed](#installing-applications), GitLab will automatically monitor the cluster's health. At the top of the cluster settings page, CPU and Memory utilization is displayed, along with the total amount available. If the cluster runs out of memory, pods will become to be shutdown or fail to start. 
+
+![Cluster Monitoring](img/k8s_cluster_monitoring.png)
 
 ## Enabling or disabling the Kubernetes cluster integration
 
