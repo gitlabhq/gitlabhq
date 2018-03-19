@@ -401,6 +401,8 @@ describe('IDE commit module actions', () => {
       });
 
       it('redirects to new merge request page', (done) => {
+        spyOn(eventHub, '$on');
+
         store.state.commit.commitAction = '3';
 
         store.dispatch('commit/commitChanges')

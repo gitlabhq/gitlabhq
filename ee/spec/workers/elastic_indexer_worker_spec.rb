@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ElasticIndexerWorker, elastic: true do
+describe ElasticIndexerWorker, :elastic do
   subject { described_class.new }
 
   before do
@@ -8,12 +8,6 @@ describe ElasticIndexerWorker, elastic: true do
 
     Elasticsearch::Model.client =
       Gitlab::Elastic::Client.build(Gitlab::CurrentSettings.elasticsearch_config)
-
-    Gitlab::Elastic::Helper.create_empty_index
-  end
-
-  after do
-    Gitlab::Elastic::Helper.delete_index
   end
 
   it 'returns true if ES disabled' do

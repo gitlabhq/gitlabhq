@@ -1,10 +1,12 @@
 <script>
 import projectAvatarImage from '~/vue_shared/components/project_avatar/image.vue';
 import branchesTree from './ide_project_branches_tree.vue';
+import externalLinks from './ide_external_links.vue';
 
 export default {
   components: {
     branchesTree,
+    externalLinks,
     projectAvatarImage,
   },
   props: {
@@ -37,6 +39,9 @@ export default {
         </div>
       </a>
     </div>
+    <external-links
+      :project-url="project.web_url"
+    />
     <div class="multi-file-commit-panel-inner-scroll">
       <branches-tree
         v-for="branch in project.branches"

@@ -36,12 +36,23 @@ describe('Multi-file editor commit sidebar list item', () => {
 
   it('opens a closed file in the editor when clicking the file path', () => {
     spyOn(vm, 'openFileInEditor').and.callThrough();
+    spyOn(vm, 'updateViewer');
     spyOn(router, 'push');
 
     vm.$el.querySelector('.multi-file-commit-list-path').click();
 
     expect(vm.openFileInEditor).toHaveBeenCalled();
     expect(router.push).toHaveBeenCalled();
+  });
+
+  it('calls updateViewer with diff when clicking file', () => {
+    spyOn(vm, 'openFileInEditor').and.callThrough();
+    spyOn(vm, 'updateViewer');
+    spyOn(router, 'push');
+
+    vm.$el.querySelector('.multi-file-commit-list-path').click();
+
+    expect(vm.updateViewer).toHaveBeenCalledWith('diff');
   });
 
   describe('computed', () => {

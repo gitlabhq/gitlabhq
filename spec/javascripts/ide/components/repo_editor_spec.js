@@ -61,6 +61,34 @@ describe('RepoEditor', () => {
     });
   });
 
+  describe('createEditorInstance', () => {
+    it('calls createInstance when viewer is editor', (done) => {
+      spyOn(vm.editor, 'createInstance');
+
+      vm.createEditorInstance();
+
+      vm.$nextTick(() => {
+        expect(vm.editor.createInstance).toHaveBeenCalled();
+
+        done();
+      });
+    });
+
+    it('calls createDiffInstance when viewer is diff', (done) => {
+      vm.$store.state.viewer = 'diff';
+
+      spyOn(vm.editor, 'createDiffInstance');
+
+      vm.createEditorInstance();
+
+      vm.$nextTick(() => {
+        expect(vm.editor.createDiffInstance).toHaveBeenCalled();
+
+        done();
+      });
+    });
+  });
+
   describe('setupEditor', () => {
     it('creates new model', () => {
       spyOn(vm.editor, 'createModel').and.callThrough();

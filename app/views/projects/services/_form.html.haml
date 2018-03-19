@@ -15,11 +15,6 @@
         .footer-block.row-content-block
           = service_save_button(@service)
           &nbsp;
-          - if @service.valid? && @service.activated?
-            - unless @service.can_test?
-              - disabled_class = 'disabled'
-              - disabled_title = @service.disabled_title
-
           = link_to 'Cancel', project_settings_integrations_path(@project), class: 'btn btn-cancel'
 
 - if lookup_context.template_exists?('show', "projects/services/#{@service.to_param}", true)
