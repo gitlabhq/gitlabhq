@@ -18,7 +18,12 @@ For LFS, follow the documentation to
 For CI job artifacts, there is similar documentation to configure
 [jobs artifact object storage](../../job_artifacts.md#using-object-storage)
 
-Complete these steps on all nodes, primary **and** secondary.
+For user uploads, there is similar documentation to configure [upload object storage](../../uploads.md#using-object-storage)
+
+You should enable and configure object storage on both **primary** and **secondary**
+nodes. Migrating existing data to object storage should be performed on the
+**primary** node only; secondaries will automatically notice that the migrated
+files are now in object storage.
 
 ## Replication
 
