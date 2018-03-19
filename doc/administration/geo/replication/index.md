@@ -203,13 +203,37 @@ extra limitations may be in place.
 
 - You cannot push code to secondary nodes, see [gitlab-org/gitlab-ee#3912] for details.
 - The primary node has to be online for OAuth login to happen (existing sessions and Git are not affected)
-- It works for repos, wikis, issues, merge requests, file attachments, artifacts and job logs but it does not work for, 
-  GitLab Pages, and Docker images of the Container Registry (by default, but you can configure it separately, 
-  see [replicate the Container Registry][docker-registry] for details).  
 - The installation takes multiple manual steps that together can take about an hour depending on circumstances; we are 
   working on improving this experience, see [gitlab-org/omnibus-gitlab#2978] for details.
 - Real-time updates of issues/merge requests (e.g. via long polling) doesn't work on the secondary
 - Broadcast messages set on the primary won't be seen on the secondary without a cache flush (e.g. gitlab-rake cache:clear)
+- [Selective replication](configuration.md#selective-replication) applies only
+  to files and repositories. Other datasets are replicated to the secondary in
+  full, making it inappropriate for use as an access control mechanism.
+
+### Limitations on replication
+
+Only the following items are replicated to the secondary. Any data not on this
+list will not be available on the secondary, and failing over without manually
+replicating it will cause the data to be **lost**:
+
+- All database content (e.g., snippets, epics, issues, merge requests, groups, project metadata, etc)
+- Project repositories
+- Project wiki repositories
+- User uploads (e.g. attachments to issues, merge requests and epics, avatars, etc)
+- CI job artifacts and traces
+
+### Examples of unreplicated data
+
+Take special note that these GitLab features are both commonly used, and **not**
+replicated by Geo at present. If you wish to use them on the secondary, or to
+execute a failover successfully, you will need to replicate their data using
+some other means.
+
+- [Elasticsearch integration](../../../integration/elasticsearch.md)
+- [Container Registry](../../container_registry.md) ([Object Storage][docker-registry] can mitigate this)
+- [GitLab Pages](../../pages/index.md)
+- [Mattermost integration](https://docs.gitlab.com/omnibus/gitlab-mattermost/)
 
 ## Frequently Asked Questions
 
