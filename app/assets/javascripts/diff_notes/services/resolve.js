@@ -8,8 +8,12 @@ window.gl = window.gl || {};
 
 class ResolveServiceClass {
   constructor(root) {
-    this.noteResource = Vue.resource(`${root}/notes{/noteId}/resolve?html=true`);
-    this.discussionResource = Vue.resource(`${root}/merge_requests{/mergeRequestId}/discussions{/discussionId}/resolve?html=true`);
+    this.noteResource = Vue.resource(
+      `${root}/notes{/noteId}/resolve?html=true`,
+    );
+    this.discussionResource = Vue.resource(
+      `${root}/merge_requests{/mergeRequestId}/discussions{/discussionId}/resolve?html=true`,
+    );
   }
 
   resolve(noteId) {
@@ -33,7 +37,7 @@ class ResolveServiceClass {
 
     promise
       .then(resp => resp.json())
-      .then((data) => {
+      .then(data => {
         discussion.loading = false;
         const resolvedBy = data ? data.resolved_by : null;
 
@@ -45,9 +49,13 @@ class ResolveServiceClass {
 
         if (gl.mrWidget) gl.mrWidget.checkStatus();
         discussion.updateHeadline(data);
-        document.dispatchEvent(new CustomEvent('refreshVueNotes'));
       })
-      .catch(() => new Flash('An error occurred when trying to resolve a discussion. Please try again.'));
+      .catch(
+        () =>
+          new Flash(
+            'An error occurred when trying to resolve a discussion. Please try again.',
+          ),
+      );
   }
 
   resolveAll(mergeRequestId, discussionId) {
@@ -55,10 +63,13 @@ class ResolveServiceClass {
 
     discussion.loading = true;
 
-    return this.discussionResource.save({
-      mergeRequestId,
-      discussionId,
-    }, {});
+    return this.discussionResource.save(
+      {
+        mergeRequestId,
+        discussionId,
+      },
+      {},
+    );
   }
 
   unResolveAll(mergeRequestId, discussionId) {
@@ -66,10 +77,13 @@ class ResolveServiceClass {
 
     discussion.loading = true;
 
-    return this.discussionResource.delete({
-      mergeRequestId,
-      discussionId,
-    }, {});
+    return this.discussionResource.delete(
+      {
+        mergeRequestId,
+        discussionId,
+      },
+      {},
+    );
   }
 }
 

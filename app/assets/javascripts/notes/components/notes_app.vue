@@ -86,10 +86,6 @@ export default {
         this.actionToggleAward({ awardName, noteId });
       });
     }
-    document.addEventListener('refreshVueNotes', this.fetchNotes);
-  },
-  beforeDestroy() {
-    document.removeEventListener('refreshVueNotes', this.fetchNotes);
   },
   methods: {
     ...mapActions({
