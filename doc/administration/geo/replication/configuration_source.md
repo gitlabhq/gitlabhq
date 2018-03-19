@@ -1,4 +1,4 @@
-# Geo configuration
+# Geo configuration (source)
 
 >**Note:**
 This is the documentation for installations from source. For installations
@@ -69,6 +69,12 @@ be manually replicated to the secondary.
     chown git:git /home/git/gitlab/config/secrets.yml
     chmod 0600 /home/git/gitlab/config/secrets.yml
     ```
+    
+1. Restart GitLab
+
+    ```bash
+    service gitlab restart
+    ```
 
 Once restarted, the secondary will automatically start replicating missing data
 from the primary in a process known as backfill. Meanwhile, the primary node
@@ -98,11 +104,11 @@ Read [Manually replicate primary SSH host keys][configuration-replicate-ssh]
     service gitlab restart
     ```
    
-   Check if there are any common issue with your Geo setup by running:
+    Check if there are any common issue with your Geo setup by running:
    
-   ```bash
-   bundle exec rake gitlab:geo:check
-   ```
+    ```bash
+    bundle exec rake gitlab:geo:check
+    ```
    
 1. SSH into your GitLab **primary** server and login as root to verify the
    secondary is reachable or there are any common issue with your Geo setup:

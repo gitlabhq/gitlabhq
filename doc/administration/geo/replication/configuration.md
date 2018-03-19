@@ -1,4 +1,4 @@
-# Geo configuration
+# Geo configuration (GitLab Omnibus)
 
 >**Note:**
 This is the documentation for the Omnibus GitLab packages. For installations
@@ -73,6 +73,7 @@ they must be manually replicated to the secondary.
 
     ```
     gitlab-ctl reconfigure
+    gitlab-ctl restart
     ```
 
 ### Step 2. Manually replicate primary SSH host keys
@@ -146,20 +147,20 @@ keys must be manually replicated to the secondary node.
 1. Click the **Add node** button.
 1. SSH into your GitLab **secondary** server and restart the services:
 
-   ```
-   gitlab-ctl restart
-   ```
+    ```bash
+    gitlab-ctl restart
+    ```
 
-   Check if there are any common issue with your Geo setup by running:
+    Check if there are any common issue with your Geo setup by running:
 
-   ```
-   gitlab-rake gitlab:geo:check
-   ```
+    ```bash
+    gitlab-rake gitlab:geo:check
+    ```
 
 1. SSH into your GitLab **primary** server and login as root to verify the
    secondary is reachable or there are any common issue with your Geo setup:
 
-    ```
+    ```bash
     gitlab-rake gitlab:geo:check
     ```
 
