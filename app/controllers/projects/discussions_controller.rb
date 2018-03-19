@@ -19,12 +19,6 @@ class Projects::DiscussionsController < Projects::ApplicationController
     render_discussion
   end
 
-  def show
-    render json: {
-      discussion_html: view_to_html_string('discussions/_diff_with_notes', discussion: discussion, expanded: true)
-    }
-  end
-
   private
 
   def render_discussion

@@ -117,14 +117,14 @@ class BambooService < CiService
     url = build_url(path)
 
     if username.blank? && password.blank?
-      HTTParty.get(url, verify: false)
+      Gitlab::HTTP.get(url, verify: false)
     else
       url << '&os_authType=basic'
-      HTTParty.get(url, verify: false,
-                        basic_auth: {
-                          username: username,
-                          password: password
-                        })
+      Gitlab::HTTP.get(url, verify: false,
+                            basic_auth: {
+                              username: username,
+                              password: password
+                            })
     end
   end
 end
