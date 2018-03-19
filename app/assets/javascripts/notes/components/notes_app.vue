@@ -3,7 +3,6 @@ import $ from 'jquery';
 import { mapGetters, mapActions } from 'vuex';
 import { getLocationHash } from '../../lib/utils/url_utility';
 import Flash from '../../flash';
-import store from '../stores/';
 import * as constants from '../constants';
 import noteableNote from './noteable_note.vue';
 import noteableDiscussion from './noteable_discussion.vue';
@@ -39,23 +38,24 @@ export default {
       required: false,
       default: () => ({}),
     },
+    shouldShow: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
-  store,
   data() {
     return {
       isLoading: true,
     };
   },
   computed: {
-    ...mapGetters(['notes', 'getNotesDataByProp', 'discussionCount']),
-    noteableType() {
-      // FIXME -- @fatihacet Get this from JSON data.
-      const { ISSUE_NOTEABLE_TYPE, MERGE_REQUEST_NOTEABLE_TYPE } = constants;
-
-      return this.noteableData.merge_params
-        ? MERGE_REQUEST_NOTEABLE_TYPE
-        : ISSUE_NOTEABLE_TYPE;
-    },
+    ...mapGetters([
+      'notes',
+      'getNotesDataByProp',
+      'discussionCount',
+      'noteableType',
+    ]),
     allNotes() {
       if (this.isLoading) {
         const totalNotes = parseInt(this.notesData.totalNotes, 10) || 0;
@@ -156,7 +156,9 @@ export default {
 </script>
 
 <template>
-  <div id="notes">
+  <div
+    v-if="shouldShow"
+    id="notes">
     <ul
       id="notes-list"
       class="notes main-notes-list timeline">

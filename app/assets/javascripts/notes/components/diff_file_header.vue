@@ -12,17 +12,48 @@ export default {
       type: Object,
       required: true,
     },
+    collapsible: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    addMergeRequestButtons: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     titleTag() {
-      return this.diffFile.discussionPath ? 'a' : 'span';
+      return this.diffFile.fileHash ? 'a' : 'span';
     },
+  },
+  methods: {
+    handleToggle(e, checkTarget) {
+      if (checkTarget) {
+        if (e.target === this.$refs.header) {
+          this.$emit('toggleFile');
+        }
+      } else {
+        this.$emit('toggleFile');
+      }
+    },
+    noop() {},
   },
 };
 </script>
 
 <template>
-  <div class="file-header-content">
+  <div
+    @click="handleToggle($event, true)"
+    ref="header"
+    class="file-header-content"
+  >
+    <i
+      v-if="collapsible"
+      @click.stop="handleToggle"
+      class="fa diff-toggle-caret fa-fw fa-caret-down"
+    ></i>
     <div
       v-if="diffFile.submodule"
     >
@@ -33,8 +64,8 @@ export default {
           class="file-title-name"
         ></strong>
         <clipboard-button
-          title="Copy file path to clipboard"
           :text="diffFile.submoduleLink"
+          title="Copy file path to clipboard"
           css-class="btn-default btn-transparent btn-clipboard"
         />
       </span>
@@ -43,7 +74,7 @@ export default {
       <component
         ref="titleWrapper"
         :is="titleTag"
-        :href="diffFile.discussionPath"
+        :href="`#${diffFile.fileHash}`"
       >
         <span v-html="diffFile.blobIcon"></span>
         <span v-if="diffFile.renamedFile">
