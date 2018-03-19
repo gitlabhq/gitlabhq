@@ -82,6 +82,9 @@ export default class Notes {
     this.basePollingInterval = 15000;
     this.maxPollingSteps = 4;
 
+    this.$wrapperEl = hasVueMRDiscussionsCookie()
+      ? $(document).find('.diffs')
+      : $(document);
     this.cleanBinding();
     this.addBinding();
     this.setPollingInterval();
@@ -106,8 +109,6 @@ export default class Notes {
   }
 
   addBinding() {
-    this.$wrapperEl = hasVueMRDiscussionsCookie() ? $(document).find('.diffs') : $(document);
-
     // Edit note link
     this.$wrapperEl.on('click', '.js-note-edit', this.showEditForm.bind(this));
     this.$wrapperEl.on('click', '.note-edit-cancel', this.cancelEdit);
@@ -150,14 +151,9 @@ export default class Notes {
     $(window).on('hashchange', this.onHashChange);
     this.boundGetContent = this.getContent.bind(this);
     document.addEventListener('refreshLegacyNotes', this.boundGetContent);
-    this.eventsBound = true;
   }
 
   cleanBinding() {
-    if (!this.eventsBound) {
-      return;
-    }
-
     this.$wrapperEl.off('click', '.js-note-edit');
     this.$wrapperEl.off('click', '.note-edit-cancel');
     this.$wrapperEl.off('click', '.js-note-delete');
