@@ -328,8 +328,7 @@ module Ci
     end
 
     def erase_old_trace!
-      write_attribute(:trace, nil)
-      save
+      update_column(:trace, nil)
     end
 
     def needs_touch?
