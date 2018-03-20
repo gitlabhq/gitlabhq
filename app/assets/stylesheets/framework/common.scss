@@ -446,6 +446,11 @@ img.emoji {
   opacity: .5;
 }
 
+.break-all {
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
 /** COMMON CLASSES **/
 .prepend-top-0 { margin-top: 0; }
 .prepend-top-5 { margin-top: 5px; }
