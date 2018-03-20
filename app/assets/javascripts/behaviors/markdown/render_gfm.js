@@ -1,7 +1,7 @@
 import $ from 'jquery';
+import syntaxHighlight from '~/syntax_highlight';
 import renderMath from './render_math';
 import renderMermaid from './render_mermaid';
-import syntaxHighlight from './syntax_highlight';
 
 // Render Gitlab flavoured Markdown
 //
