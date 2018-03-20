@@ -1,9 +1,15 @@
 <script>
   import $ from 'jquery';
-  import { s__ } from '~/locale';
   import Icon from '~/vue_shared/components/icon.vue';
   import Modal from '~/vue_shared/components/gl_modal.vue';
   import ExpandButton from '~/vue_shared/components/expand_button.vue';
+  import PerformanceIssue from 'ee/vue_merge_request_widget/components/performance_issue_body.vue';
+  import CodequalityIssue from 'ee/vue_merge_request_widget/components/codequality_issue_body.vue';
+  import SastIssue from './sast_issue_body.vue';
+  import SastContainerIssue from './sast_container_issue_body.vue';
+  import DastIssue from './dast_issue_body.vue';
+
+  import { SAST, DAST, SAST_CONTAINER } from '../helpers/constants';
 
   const modalDefaultData = {
     modalId: 'modal-mrwidget-issue',
@@ -19,6 +25,11 @@
       Modal,
       Icon,
       ExpandButton,
+      SastIssue,
+      SastContainerIssue,
+      DastIssue,
+      PerformanceIssue,
+      CodequalityIssue,
     },
     props: {
       issues: {
@@ -35,19 +46,11 @@
         type: String,
         required: true,
       },
-      hasPriority: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
     },
     data() {
       return modalDefaultData;
     },
     computed: {
-      fixedLabel() {
-        return s__('ciReport|Fixed:');
-      },
       iconName() {
         if (this.isStatusFailed) {
           return 'status_failed_borderless';
@@ -66,20 +69,20 @@
       isStatusNeutral() {
         return this.status === 'neutral';
       },
-      isTypeQuality() {
+      isTypeCodequality() {
         return this.type === 'codequality';
       },
       isTypePerformance() {
         return this.type === 'performance';
       },
-      isTypeSecurity() {
-        return this.type === 'security';
+      isTypeSast() {
+        return this.type === SAST;
       },
-      isTypeDocker() {
-        return this.type === 'docker';
+      isTypeSastContainer() {
+        return this.type === SAST_CONTAINER;
       },
       isTypeDast() {
-        return this.type === 'dast';
+        return this.type === DAST;
       },
     },
     mounted() {
@@ -88,20 +91,11 @@
       });
     },
     methods: {
-      shouldRenderPriority(issue) {
-        return this.hasPriority && issue.priority;
-      },
       getmodalId(index) {
         return `modal-mrwidget-issue-${index}`;
       },
       modalIdTarget(index) {
         return `#${this.getmodalId(index)}`;
-      },
-      formatScore(value) {
-        if (Math.floor(value) !== value) {
-          return parseFloat(value).toFixed(2);
-        }
-        return value;
       },
       openDastModal(issue, index) {
         this.modalId = this.getmodalId(index);
@@ -145,61 +139,35 @@
             :size="32"
           />
         </div>
-        <div class="report-block-list-issue-description prepend-top-5 append-bottom-5">
-          <div class="report-block-list-issue-description-text append-right-5">
-            <template v-if="isStatusSuccess && isTypeQuality">{{ fixedLabel }}</template>
-            <template v-if="shouldRenderPriority(issue)">{{ issue.priority }}:</template>
 
-            <template v-if="isTypeDocker">
-              <a
-                v-if="issue.nameLink"
-                :href="issue.nameLink"
-                target="_blank"
-                rel="noopener noreferrer nofollow"
-              >{{ issue.name }}</a>
-              <template v-else>
-                {{ issue.name }}
-              </template>
-            </template>
-            <template v-else-if="isTypeDast">
-              <button
-                type="button"
-                @click="openDastModal(issue, index)"
-                data-toggle="modal"
-                class="js-modal-dast btn-link btn-blank text-left break-link"
-                :data-target="modalTargetId"
-              >
-                {{ issue.name }}
-              </button>
-            </template>
-            <template v-else>
-              {{ issue.name }}<template v-if="issue.score">:
-              <strong>{{ formatScore(issue.score) }}</strong></template>
-            </template>
+        <sast-issue
+          v-if="isTypeSast"
+          :issue="issue"
+        />
 
-            <template v-if="isTypePerformance && issue.delta != null">
-              ({{ issue.delta >= 0 ? '+' : '' }}{{ formatScore(issue.delta) }})
-            </template>
-          </div>
-          <div class="report-block-list-issue-description-link">
-            <template v-if="issue.path">
-              in
+        <dast-issue
+          v-else-if="isTypeDast"
+          :issue="issue"
+          :issue-index="index"
+          :modal-target-id="modalTargetId"
+          @openDastModal="openDastModal"
+        />
 
-              <a
-                v-if="issue.urlPath"
-                :href="issue.urlPath"
-                target="_blank"
-                rel="noopener noreferrer nofollow"
-                class="break-link"
-              >
-                {{ issue.path }}<template v-if="issue.line">:{{ issue.line }}</template>
-              </a>
-              <template v-else>
-                {{ issue.path }}<template v-if="issue.line">:{{ issue.line }}</template>
-              </template>
-            </template>
-          </div>
-        </div>
+        <sast-container-issue
+          v-else-if="isTypeSastContainer"
+          :issue="issue"
+        />
+
+        <codequality-issue
+          v-else-if="isTypeCodequality"
+          :is-status-success="isStatusSuccess"
+          :issue="issue"
+        />
+
+        <performance-issue
+          v-else-if="isTypePerformance"
+          :issue="issue"
+        />
       </li>
     </ul>
 

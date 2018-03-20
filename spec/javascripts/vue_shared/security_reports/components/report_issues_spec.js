@@ -67,18 +67,13 @@ describe('Report issues', () => {
     beforeEach(() => {
       vm = mountComponent(ReportIssues, {
         issues: sastParsedIssues,
-        type: 'security',
+        type: 'SAST',
         status: 'failed',
-        hasPriority: true,
       });
     });
 
     it('should render a list of unresolved issues', () => {
       expect(vm.$el.querySelectorAll('.report-block-list li').length).toEqual(sastParsedIssues.length);
-    });
-
-    it('should render priority', () => {
-      expect(vm.$el.querySelector('.report-block-list li').textContent).toContain(sastParsedIssues[0].priority);
     });
   });
 
@@ -86,7 +81,7 @@ describe('Report issues', () => {
     it('should render location', () => {
       vm = mountComponent(ReportIssues, {
         issues: sastParsedIssues,
-        type: 'security',
+        type: 'SAST',
         status: 'failed',
       });
 
@@ -101,7 +96,7 @@ describe('Report issues', () => {
         issues: [{
           name: 'foo',
         }],
-        type: 'security',
+        type: 'SAST',
         status: 'failed',
       });
 
@@ -114,9 +109,8 @@ describe('Report issues', () => {
     beforeEach(() => {
       vm = mountComponent(ReportIssues, {
         issues: dockerReportParsed.unapproved,
-        type: 'docker',
+        type: 'SAST_CONTAINER',
         status: 'failed',
-        hasPriority: true,
       });
     });
 
@@ -149,9 +143,8 @@ describe('Report issues', () => {
     beforeEach(() => {
       vm = mountComponent(ReportIssues, {
         issues: parsedDast,
-        type: 'dast',
+        type: 'DAST',
         status: 'failed',
-        hasPriority: true,
       });
     });
 

@@ -104,7 +104,7 @@ describe('Report section', () => {
       vm = mountComponent(ReportSection, {
         status: 'success',
         successText: 'SAST improved on 1 security vulnerability and degraded on 1 security vulnerability',
-        type: 'security',
+        type: 'SAST',
         errorText: 'Failed to load security report',
         hasPriority: true,
         loadingText: 'Loading security report',
