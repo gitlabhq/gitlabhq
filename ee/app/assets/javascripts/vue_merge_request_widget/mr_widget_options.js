@@ -4,6 +4,11 @@ import WidgetApprovals from './components/approvals/mr_widget_approvals';
 import GeoSecondaryNode from './components/states/mr_widget_secondary_geo_node';
 import ReportSection from '../vue_shared/security_reports/components/report_section.vue';
 import securityMixin from '../vue_shared/security_reports/mixins/security_report_mixin';
+import {
+  SAST,
+  DAST,
+  SAST_CONTAINER,
+} from '../vue_shared/security_reports/helpers/constants';
 
 export default {
   extends: CEWidgetOptions,
@@ -15,6 +20,9 @@ export default {
   mixins: [
     securityMixin,
   ],
+  dast: DAST,
+  sast: SAST,
+  sastContainer: SAST_CONTAINER,
   data() {
     return {
       isLoadingCodequality: false,
@@ -318,7 +326,7 @@ export default {
         :success-text="codequalityText"
         :unresolved-issues="mr.codeclimateMetrics.newIssues"
         :resolved-issues="mr.codeclimateMetrics.resolvedIssues"
-        />
+      />
       <report-section
         class="js-performance-widget"
         v-if="shouldRenderPerformance"
@@ -330,11 +338,11 @@ export default {
         :unresolved-issues="mr.performanceMetrics.degraded"
         :resolved-issues="mr.performanceMetrics.improved"
         :neutral-issues="mr.performanceMetrics.neutral"
-        />
+      />
       <report-section
         class="js-sast-widget"
         v-if="shouldRenderSecurityReport"
-        type="security"
+        :type="$options.sast"
         :status="securityStatus"
         :loading-text="translateText('security').loading"
         :error-text="translateText('security').error"
@@ -342,12 +350,11 @@ export default {
         :unresolved-issues="mr.securityReport.newIssues"
         :resolved-issues="mr.securityReport.resolvedIssues"
         :all-issues="mr.securityReport.allIssues"
-        :has-priority="true"
         />
       <report-section
         class="js-docker-widget"
         v-if="shouldRenderDockerReport"
-        type="docker"
+        :type="$options.sastContainer"
         :status="dockerStatus"
         :loading-text="translateText('sast:container').loading"
         :error-text="translateText('sast:container').error"
@@ -355,19 +362,17 @@ export default {
         :unresolved-issues="mr.dockerReport.unapproved"
         :neutral-issues="mr.dockerReport.approved"
         :info-text="sastContainerInformationText()"
-        :has-priority="true"
-        />
+      />
       <report-section
         class="js-dast-widget"
         v-if="shouldRenderDastReport"
-        type="dast"
+        :type="$options.dast"
         :status="dastStatus"
         :loading-text="translateText('DAST').loading"
         :error-text="translateText('DAST').error"
         :success-text="getDastText"
         :unresolved-issues="mr.dastReport"
-        :has-priority="true"
-        />
+      />
       <div class="mr-widget-section">
         <component
           :is="componentName"
