@@ -155,6 +155,13 @@ module Gitlab
         # of PostgreSQL's "VALIDATE CONSTRAINT". As a result we'll just fall
         # back to the normal foreign key procedure.
         if Database.mysql?
+          if foreign_key_exists?(source, target, column: column)
+            Rails.logger.warn "Foreign key not created because it exists already " \
+              "(this may be due to an aborted migration or similar): " \
+              "source: #{source}, target: #{target}, column: #{column}"
+            return
+          end
+
           return add_foreign_key(source, target,
                                  column: column,
                                  on_delete: on_delete)
@@ -166,23 +173,41 @@ module Gitlab
 
         key_name = concurrent_foreign_key_name(source, column)
 
-        # Using NOT VALID allows us to create a key without immediately
-        # validating it. This means we keep the ALTER TABLE lock only for a
-        # short period of time. The key _is_ enforced for any newly created
-        # data.
-        execute <<-EOF.strip_heredoc
-        ALTER TABLE #{source}
-        ADD CONSTRAINT #{key_name}
-        FOREIGN KEY (#{column})
-        REFERENCES #{target} (id)
-        #{on_delete ? "ON DELETE #{on_delete.upcase}" : ''}
-        NOT VALID;
-        EOF
+        unless foreign_key_exists?(source, target, column: column)
+          Rails.logger.warn "Foreign key not created because it exists already " \
+            "(this may be due to an aborted migration or similar): " \
+            "source: #{source}, target: #{target}, column: #{column}"
+
+          # Using NOT VALID allows us to create a key without immediately
+          # validating it. This means we keep the ALTER TABLE lock only for a
+          # short period of time. The key _is_ enforced for any newly created
+          # data.
+          execute <<-EOF.strip_heredoc
+          ALTER TABLE #{source}
+          ADD CONSTRAINT #{key_name}
+          FOREIGN KEY (#{column})
+          REFERENCES #{target} (id)
+          #{on_delete ? "ON DELETE #{on_delete.upcase}" : ''}
+          NOT VALID;
+          EOF
+        end
 
         # Validate the existing constraint. This can potentially take a very
         # long time to complete, but fortunately does not lock the source table
         # while running.
+        #
+        # Note this is a no-op in case the constraint is VALID already
         execute("ALTER TABLE #{source} VALIDATE CONSTRAINT #{key_name};")
+      end
+
+      def foreign_key_exists?(source, target = nil, column: nil)
+        foreign_keys(source).any? do |key|
+          if column
+            key.options[:column].to_s == column.to_s
+          else
+            key.to_table.to_s == target.to_s
+          end
+        end
       end
 
       # Returns the name for a concurrent foreign key.
@@ -872,12 +897,6 @@ into similar problems in the future (e.g. when new tables are created).
           # the same time, which is not helpful in most cases where we wish to
           # spread the work over time.
           BackgroundMigrationWorker.perform_in(delay_interval * index, job_class_name, [start_id, end_id])
-        end
-      end
-
-      def foreign_key_exists?(table, column)
-        foreign_keys(table).any? do |key|
-          key.options[:column] == column.to_s
         end
       end
 

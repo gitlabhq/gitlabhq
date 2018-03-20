@@ -183,6 +183,10 @@ describe Gitlab::Database::MigrationHelpers do
   end
 
   describe '#add_concurrent_foreign_key' do
+    before do
+      allow(model).to receive(:foreign_key_exists?).and_return(false)
+    end
+
     context 'inside a transaction' do
       it 'raises an error' do
         expect(model).to receive(:transaction_open?).and_return(true)
@@ -199,11 +203,20 @@ describe Gitlab::Database::MigrationHelpers do
       end
 
       context 'using MySQL' do
-        it 'creates a regular foreign key' do
+        before do
           allow(Gitlab::Database).to receive(:mysql?).and_return(true)
+        end
 
+        it 'creates a regular foreign key' do
           expect(model).to receive(:add_foreign_key)
             .with(:projects, :users, column: :user_id, on_delete: :cascade)
+
+          model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
+        end
+
+        it 'does not create a foreign key if it exists already' do
+          expect(model).to receive(:foreign_key_exists?).with(:projects, :users, column: :user_id).and_return(true)
+          expect(model).not_to receive(:add_foreign_key)
 
           model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
         end
@@ -231,6 +244,14 @@ describe Gitlab::Database::MigrationHelpers do
                                            column: :user_id,
                                            on_delete: :nullify)
         end
+
+        it 'does not create a foreign key if it exists already' do
+          expect(model).to receive(:foreign_key_exists?).with(:projects, :users, column: :user_id).and_return(true)
+          expect(model).not_to receive(:execute).with(/ADD CONSTRAINT/)
+          expect(model).to receive(:execute).with(/VALIDATE CONSTRAINT/)
+
+          model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
+        end
       end
     end
   end
@@ -242,6 +263,29 @@ describe Gitlab::Database::MigrationHelpers do
 
       expect(name).to be_an_instance_of(String)
       expect(name.length).to eq(13)
+    end
+  end
+
+  describe '#foreign_key_exists?' do
+    before do
+      key = ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(:projects, :users, { column: :non_standard_id })
+      allow(model).to receive(:foreign_keys).with(:projects).and_return([key])
+    end
+
+    it 'finds existing foreign keys by column' do
+      expect(model.foreign_key_exists?(:projects, :users, column: :non_standard_id)).to be_truthy
+    end
+
+    it 'finds existing foreign keys by target table only' do
+      expect(model.foreign_key_exists?(:projects, :users)).to be_truthy
+    end
+
+    it 'compares by column name if given' do
+      expect(model.foreign_key_exists?(:projects, :users, column: :user_id)).to be_falsey
+    end
+
+    it 'compares by target if no column given' do
+      expect(model.foreign_key_exists?(:projects, :other_table)).to be_falsey
     end
   end
 
