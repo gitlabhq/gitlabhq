@@ -68,6 +68,7 @@ that of Issues and Merge requests) based on following parameters:
 
 - Title or description
 - Author name / username
+- Labels
 
 ![epics search](img/epics_search.png)
 
