@@ -67,16 +67,34 @@ describe Gitlab::Database::MigrationHelpers do
 
           model.add_concurrent_index(:users, :foo, unique: true)
         end
+
+        it 'does nothing if the index exists already' do
+          expect(model).to receive(:index_exists?)
+            .with(:users, :foo, { algorithm: :concurrently, unique: true }).and_return(true)
+          expect(model).not_to receive(:add_index)
+
+          model.add_concurrent_index(:users, :foo, unique: true)
+        end
       end
 
       context 'using MySQL' do
-        it 'creates a regular index' do
-          expect(Gitlab::Database).to receive(:postgresql?).and_return(false)
+        before do
+          allow(Gitlab::Database).to receive(:postgresql?).and_return(false)
+        end
 
+        it 'creates a regular index' do
           expect(model).to receive(:add_index)
             .with(:users, :foo, {})
 
           model.add_concurrent_index(:users, :foo)
+        end
+
+        it 'does nothing if the index exists already' do
+          expect(model).to receive(:index_exists?)
+            .with(:users, :foo, { unique: true }).and_return(true)
+          expect(model).not_to receive(:add_index)
+
+          model.add_concurrent_index(:users, :foo, unique: true)
         end
       end
     end
@@ -95,6 +113,7 @@ describe Gitlab::Database::MigrationHelpers do
     context 'outside a transaction' do
       before do
         allow(model).to receive(:transaction_open?).and_return(false)
+        allow(model).to receive(:index_exists?).and_return(true)
       end
 
       context 'using PostgreSQL' do
@@ -103,18 +122,41 @@ describe Gitlab::Database::MigrationHelpers do
           allow(model).to receive(:disable_statement_timeout)
         end
 
-        it 'removes the index concurrently by column name' do
-          expect(model).to receive(:remove_index)
-            .with(:users, { algorithm: :concurrently, column: :foo })
+        describe 'by column name' do
+          it 'removes the index concurrently' do
+            expect(model).to receive(:remove_index)
+              .with(:users, { algorithm: :concurrently, column: :foo })
 
-          model.remove_concurrent_index(:users, :foo)
+            model.remove_concurrent_index(:users, :foo)
+          end
+
+          it 'does nothing if the index does not exist' do
+            expect(model).to receive(:index_exists?)
+              .with(:users, :foo, { algorithm: :concurrently, unique: true }).and_return(false)
+            expect(model).not_to receive(:remove_index)
+
+            model.remove_concurrent_index(:users, :foo, unique: true)
+          end
         end
 
-        it 'removes the index concurrently by index name' do
-          expect(model).to receive(:remove_index)
-            .with(:users, { algorithm: :concurrently, name: "index_x_by_y" })
+        describe 'by index name' do
+          before do
+            allow(model).to receive(:index_exists_by_name?).with(:users, "index_x_by_y").and_return(true)
+          end
 
-          model.remove_concurrent_index_by_name(:users, "index_x_by_y")
+          it 'removes the index concurrently by index name' do
+            expect(model).to receive(:remove_index)
+              .with(:users, { algorithm: :concurrently, name: "index_x_by_y" })
+
+            model.remove_concurrent_index_by_name(:users, "index_x_by_y")
+          end
+
+          it 'does nothing if the index does not exist' do
+            expect(model).to receive(:index_exists_by_name?).with(:users, "index_x_by_y").and_return(false)
+            expect(model).not_to receive(:remove_index)
+
+            model.remove_concurrent_index_by_name(:users, "index_x_by_y")
+          end
         end
       end
 

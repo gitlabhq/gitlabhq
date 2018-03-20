@@ -136,10 +136,13 @@ class MyMigration < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    remove_concurrent_index :table_name, :column_name if index_exists?(:table_name, :column_name)
+    remove_concurrent_index :table_name, :column_name
   end
 end
 ```
+
+Note that it is not necessary to check if the index exists prior to
+removing it.
 
 ## Adding indexes
 

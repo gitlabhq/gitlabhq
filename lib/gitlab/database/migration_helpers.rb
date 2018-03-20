@@ -59,6 +59,11 @@ module Gitlab
           disable_statement_timeout
         end
 
+        if index_exists?(table_name, column_name, options)
+          Rails.logger.warn "Index not created because it already exists (this may be due to an aborted migration or similar): table_name: #{table_name}, column_name: #{column_name}"
+          return
+        end
+
         add_index(table_name, column_name, options)
       end
 
@@ -83,6 +88,11 @@ module Gitlab
           disable_statement_timeout
         end
 
+        unless index_exists?(table_name, column_name, options)
+          Rails.logger.warn "Index not removed because it does not exist (this may be due to an aborted migration or similar): table_name: #{table_name}, column_name: #{column_name}"
+          return
+        end
+
         remove_index(table_name, options.merge({ column: column_name }))
       end
 
@@ -105,6 +115,11 @@ module Gitlab
         if supports_drop_index_concurrently?
           options = options.merge({ algorithm: :concurrently })
           disable_statement_timeout
+        end
+
+        unless index_exists_by_name?(table_name, index_name)
+          Rails.logger.warn "Index not removed because it does not exist (this may be due to an aborted migration or similar): table_name: #{table_name}, index_name: #{index_name}"
+          return
         end
 
         remove_index(table_name, options.merge({ name: index_name }))
