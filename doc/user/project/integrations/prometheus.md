@@ -87,7 +87,7 @@ to integrate with.
 Once configured, GitLab will attempt to retrieve performance metrics for any
 environment which has had a successful deployment.
 
-GitLab will automatically scan the Prometheus server for metrics from known serves like Kubernetes and NGINX, and attempt to identify individual environment. The supported metrics and scan process is detailed in our [Prometheus Metric Library documentation](prometheus_library/metrics.html). 
+GitLab will automatically scan the Prometheus server for metrics from known serves like Kubernetes and NGINX, and attempt to identify individual environment. The supported metrics and scan process is detailed in our [Prometheus Metric Library documentation](prometheus_library/metrics.html).
 
 You can view the performance dashboard for an environment by [clicking on the monitoring button](../../../ci/environments.md#monitoring-environments).
 
