@@ -5,7 +5,7 @@ class GeoNodeStatus < ActiveRecord::Base
 
   # Whether we were successful in reaching this node
   attr_accessor :success
-  attr_writer :health_status
+  attr_writer   :health_status
   attr_accessor :storage_shards
 
   # Prometheus metrics, no need to store them in the database
@@ -131,6 +131,7 @@ class GeoNodeStatus < ActiveRecord::Base
 
     load_primary_data
     load_secondary_data
+    load_verification_data
 
     self
   end
@@ -140,10 +141,6 @@ class GeoNodeStatus < ActiveRecord::Base
       self.replication_slots_count = geo_node.replication_slots_count
       self.replication_slots_used_count = geo_node.replication_slots_used_count
       self.replication_slots_max_retained_wal_bytes = geo_node.replication_slots_max_retained_wal_bytes
-      self.repositories_verified_count = repository_verification_finder.count_verified_repositories
-      self.repositories_verification_failed_count = repository_verification_finder.count_verification_failed_repositories
-      self.wikis_verified_count = repository_verification_finder.count_verified_wikis
-      self.wikis_verification_failed_count = repository_verification_finder.count_verification_failed_wikis
     end
   end
 
@@ -156,16 +153,26 @@ class GeoNodeStatus < ActiveRecord::Base
       self.repositories_failed_count = projects_finder.count_failed_repositories
       self.wikis_synced_count = projects_finder.count_synced_wikis
       self.wikis_failed_count = projects_finder.count_failed_wikis
-      self.repositories_verified_count = projects_finder.count_verified_repositories
-      self.repositories_verification_failed_count = projects_finder.count_verification_failed_repositories
-      self.wikis_verified_count = projects_finder.count_verified_wikis
-      self.wikis_verification_failed_count = projects_finder.count_verification_failed_wikis
       self.lfs_objects_synced_count = lfs_objects_finder.count_synced_lfs_objects
       self.lfs_objects_failed_count = lfs_objects_finder.count_failed_lfs_objects
       self.job_artifacts_synced_count = job_artifacts_finder.count_synced_job_artifacts
       self.job_artifacts_failed_count = job_artifacts_finder.count_failed_job_artifacts
       self.attachments_synced_count = attachments_finder.count_synced_attachments
       self.attachments_failed_count = attachments_finder.count_failed_attachments
+    end
+  end
+
+  def load_verification_data
+    if Feature.enabled?('geo_repository_verification')
+      finder = Gitlab::Geo.primary? ? repository_verification_finder : projects_finder
+
+      self.repositories_verified_count = finder.count_verified_repositories
+      self.repositories_verification_failed_count = finder.count_verification_failed_repositories
+      self.wikis_verified_count = finder.count_verified_wikis
+      self.wikis_verification_failed_count = finder.count_verification_failed_wikis
+    else
+      self.repositories_verified_count = self.repositories_verification_failed_count = nil
+      self.wikis_verified_count = self.wikis_verification_failed_count = nil
     end
   end
 

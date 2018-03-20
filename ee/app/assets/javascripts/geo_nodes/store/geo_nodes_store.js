@@ -87,6 +87,7 @@ export default class GeoNodesStore {
         successCount: rawNodeDetails.wikis_synced_count || 0,
         failureCount: rawNodeDetails.wikis_failed_count || 0,
       },
+      repository_verification_enabled: rawNodeDetails.repositories_verified_count != null,
       verifiedRepositories: {
         totalCount: rawNodeDetails.repositories_count || 0,
         successCount: rawNodeDetails.repositories_verified_count || 0,
