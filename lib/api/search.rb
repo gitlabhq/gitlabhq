@@ -108,11 +108,8 @@ module API
         use :pagination
       end
       get ':id/(-/)search' do
-<<<<<<< HEAD
         check_elasticsearch_scope!
 
-=======
->>>>>>> upstream/master
         present search(group_id: user_group.id), with: entity
       end
     end
