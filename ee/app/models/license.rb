@@ -59,6 +59,7 @@ class License < ActiveRecord::Base
   ].freeze
 
   EEU_FEATURES = EEP_FEATURES + %i[
+    dependency_scanning
     sast
     sast_container
     cluster_health

@@ -8,6 +8,7 @@ module EE
       extend ActiveSupport::Concern
 
       CODEQUALITY_FILE = 'codeclimate.json'.freeze
+      DEPENDENCY_SCANNING_FILE = 'gl-dependency-scanning-report.json'.freeze
       SAST_FILE = 'gl-sast-report.json'.freeze
       PERFORMANCE_FILE = 'performance.json'.freeze
       SAST_CONTAINER_FILE = 'gl-sast-container-report.json'.freeze
@@ -19,6 +20,7 @@ module EE
         scope :codequality, -> { where(name: %w[codequality codeclimate]) }
         scope :performance, -> { where(name: %w[performance deploy]) }
         scope :sast, -> { where(name: 'sast') }
+        scope :dependency_scanning, -> { where(name: 'dependency-scanning') }
         scope :sast_container, -> { where(name: 'sast:container') }
         scope :dast, -> { where(name: 'dast') }
         scope :with_artifacts_stored_locally, -> { with_artifacts_archive.where(artifacts_file_store: [nil, LegacyArtifactUploader::Store::LOCAL]) }
@@ -53,6 +55,10 @@ module EE
 
       def has_sast_json?
         has_artifact?(SAST_FILE)
+      end
+
+      def has_dependency_scanning_json?
+        has_artifact?(DEPENDENCY_SCANNING_FILE)
       end
 
       def has_sast_container_json?

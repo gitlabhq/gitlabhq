@@ -47,6 +47,19 @@ describe MergeRequestWidgetEntity do
     expect(subject.as_json[:sast]).to include(:base_path)
   end
 
+  it 'has dependency_scanning data' do
+    build = create(:ci_build, name: 'dependency_scanning', pipeline: pipeline)
+
+    allow(merge_request).to receive(:expose_dependency_scanning_data?).and_return(true)
+    allow(merge_request).to receive(:base_has_dependency_scanning_data?).and_return(true)
+    allow(merge_request).to receive(:base_dependency_scanning_artifact).and_return(build)
+    allow(merge_request).to receive(:head_dependency_scanning_artifact).and_return(build)
+
+    expect(subject.as_json).to include(:dependency_scanning)
+    expect(subject.as_json[:dependency_scanning]).to include(:head_path)
+    expect(subject.as_json[:dependency_scanning]).to include(:base_path)
+  end
+
   it 'has sast_container data' do
     build = create(:ci_build, name: 'sast:image', pipeline: pipeline)
 

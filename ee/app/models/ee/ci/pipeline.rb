@@ -24,6 +24,10 @@ module EE
         artifacts.sast.find(&:has_sast_json?)
       end
 
+      def dependency_scanning_artifact
+        @dependency_scanning_artifact ||= artifacts.dependency_scanning.find(&:has_dependency_scanning_json?)
+      end
+
       def sast_container_artifact
         artifacts.sast_container.find(&:has_sast_container_json?)
       end
@@ -38,6 +42,10 @@ module EE
 
       def has_sast_data?
         sast_artifact&.success?
+      end
+
+      def has_dependency_scanning_data?
+        dependency_scanning_artifact&.success?
       end
 
       def has_sast_container_data?
@@ -59,6 +67,11 @@ module EE
       def expose_sast_data?
         project.feature_available?(:sast) &&
           has_sast_data?
+      end
+
+      def expose_dependency_scanning_data?
+        project.feature_available?(:dependency_scanning) &&
+          has_dependency_scanning_data?
       end
 
       def expose_sast_container_data?

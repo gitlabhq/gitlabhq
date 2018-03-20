@@ -17,15 +17,16 @@ describe Ci::Pipeline do
     end
   end
 
-  ARTIFACTS_METHODS = {
+  PIPELINE_ARTIFACTS_METHODS = {
     codeclimate_artifact: [Ci::Build::CODEQUALITY_FILE, 'codequality'],
     performance_artifact: [Ci::Build::PERFORMANCE_FILE, 'performance'],
     sast_artifact: [Ci::Build::SAST_FILE, 'sast'],
+    dependency_scanning_artifact: [Ci::Build::DEPENDENCY_SCANNING_FILE, 'dependency-scanning'],
     sast_container_artifact: [Ci::Build::SAST_CONTAINER_FILE, 'sast:container'],
     dast_artifact: [Ci::Build::DAST_FILE, 'dast']
   }.freeze
 
-  ARTIFACTS_METHODS.each do |method, options|
+  PIPELINE_ARTIFACTS_METHODS.each do |method, options|
     describe method.to_s do
       context 'has corresponding job' do
         let!(:build) do
