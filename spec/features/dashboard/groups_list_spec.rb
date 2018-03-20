@@ -40,7 +40,7 @@ feature 'Dashboard Groups page', :js do
     expect(page).to have_content(nested_group.name)
   end
 
-  describe 'when filtering groups', :nested_groups do
+  context 'when filtering groups', :nested_groups do
     before do
       group.add_owner(user)
       nested_group.add_owner(user)
@@ -75,7 +75,7 @@ feature 'Dashboard Groups page', :js do
     end
   end
 
-  describe 'group with subgroups', :nested_groups do
+  context 'with subgroups', :nested_groups do
     let!(:subgroup) { create(:group, :public, parent: group) }
 
     before do
@@ -106,7 +106,7 @@ feature 'Dashboard Groups page', :js do
     end
   end
 
-  describe 'when using pagination' do
+  context 'when using pagination' do
     let(:group)  { create(:group, created_at: 5.days.ago) }
     let(:group2) { create(:group, created_at: 2.days.ago) }
 
@@ -139,6 +139,24 @@ feature 'Dashboard Groups page', :js do
       expect(page).to have_selector("#group-#{group.id}")
       expect(page).not_to have_content(group2.full_name)
       expect(page).not_to have_selector("#group-#{group2.id}")
+    end
+  end
+
+  context 'when signed in as admin' do
+    let(:admin) { create(:admin) }
+
+    it 'shows only groups admin is member of' do
+      group.add_owner(admin)
+      nested_group.add_owner(admin)
+      expect(another_group).to be_persisted
+
+      sign_in(admin)
+      visit dashboard_groups_path
+      wait_for_requests
+
+      expect(page).to have_content(group.name)
+
+      expect(page).not_to have_content(another_group.name)
     end
   end
 end
