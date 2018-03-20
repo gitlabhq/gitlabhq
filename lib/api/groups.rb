@@ -109,8 +109,11 @@ module API
         else
           authorize! :create_group
         end
+        
+        opts = declared_params(include_missing: false)
+        opts[:visibility_level] = Gitlab::VisibilityLevel.level_value opts[:visibility]
 
-        group = ::Groups::CreateService.new(current_user, declared_params(include_missing: false)).execute
+        group = ::Groups::CreateService.new(current_user, opts).execute
 
         if group.persisted?
           present group, with: Entities::GroupDetail, current_user: current_user
@@ -135,8 +138,11 @@ module API
       put ':id' do
         group = find_group!(params[:id])
         authorize! :admin_group, group
+        
+        opts = declared_params(include_missing: false)
+        opts[:visibility_level] = Gitlab::VisibilityLevel.level_value opts[:visibility]
 
-        if ::Groups::UpdateService.new(group, current_user, declared_params(include_missing: false)).execute
+        if ::Groups::UpdateService.new(group, current_user, opts).execute
           present group, with: Entities::GroupDetail, current_user: current_user
         else
           render_validation_error!(group)
