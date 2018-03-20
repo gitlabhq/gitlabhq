@@ -6,10 +6,10 @@
       = _('Use group milestones to manage issues from multiple projects in the same milestone.')
       %br
       = button_tag _('Promote these project milestones into a group milestone.'), class: 'btn-link popover-link'
-    %div= link_to _('Learn more'), help_page_url('user/project/milestones/index', anchor: 'promoting-project-milestones-to-group-milestones'), class: 'btn btn-default'
+    %div= link_to _('Learn more'), help_page_url('user/project/milestones/index', anchor: 'promoting-project-milestones-to-group-milestones'), class: 'btn btn-default', target: '_blank'
   
   %script.milestone-deprecation-message-template{ type: 'text/template' }
     %ol.instructions-list.append-bottom-0
-      %li= _('Click any <strong>project name</strong> in the project list below to navigate to the project milestone.')
-      %li= _('Click the <strong>Promote</strong> button in the top right corner to promote it to a group milestone.')
-    .footer= link_to _('Learn more'), help_page_url('user/project/milestones/index', anchor: 'promoting-project-milestones-to-group-milestones'), class: 'btn-link'
+      %li= _('Click any <strong>project name</strong> in the project list below to navigate to the project milestone.').html_safe
+      %li= _('Click the <strong>Promote</strong> button in the top right corner to promote it to a group milestone.').html_safe
+    .footer= link_to _('Learn more'), help_page_url('user/project/milestones/index', anchor: 'promoting-project-milestones-to-group-milestones'), class: 'btn-link', target: '_blank'
