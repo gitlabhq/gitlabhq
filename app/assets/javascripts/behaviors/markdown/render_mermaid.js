@@ -1,3 +1,5 @@
+import flash from '~/flash';
+
 // Renders diagrams and flowcharts from text using Mermaid in any element with the
 // `js-render-mermaid` class.
 //
@@ -11,8 +13,6 @@
 //    C-- > D;
 // </pre>
 //
-
-import Flash from './flash';
 
 export default function renderMermaid($els) {
   if (!$els.length) return;
@@ -52,6 +52,6 @@ export default function renderMermaid($els) {
       });
     });
   }).catch((err) => {
-    Flash(`Can't load mermaid module: ${err}`);
+    flash(`Can't load mermaid module: ${err}`);
   });
 }

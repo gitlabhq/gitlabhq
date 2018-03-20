@@ -7,7 +7,7 @@ import * as urlUtils from '~/lib/utils/url_utility';
 import 'autosize';
 import '~/gl_form';
 import '~/lib/utils/text_utility';
-import '~/render_gfm';
+import '~/behaviors/markdown/render_gfm';
 import Notes from '~/notes';
 import timeoutPromise from './helpers/set_timeout_promise_helper';
 
