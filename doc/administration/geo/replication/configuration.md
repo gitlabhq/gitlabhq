@@ -143,7 +143,7 @@ keys must be manually replicated to the secondary node.
    'This is a primary node'.
 1. Optionally, choose which namespaces should be replicated by the
    secondary node. Leave blank to replicate all. Read more in
-   [selective replication](#selective-replication).
+   [selective synchronization](#selective-synchronization).
 1. Click the **Add node** button.
 1. SSH into your GitLab **secondary** server and restart the services:
 
