@@ -1,9 +1,6 @@
 module ServicesHelper
-<<<<<<< HEAD
   prepend EE::ServicesHelper
 
-=======
->>>>>>> upstream/master
   def service_event_field_name(event)
     event = event.pluralize if %w[merge_request issue confidential_issue].include?(event)
     "#{event}_events"
