@@ -13,11 +13,15 @@ It allows you to see (from left to right):
 ![SQL profiling using the Performance Bar](img/performance_bar_sql_queries.png)
 - time taken and number of [Gitaly] calls, click through for details of these calls
 ![Gitaly profiling using the Performance Bar](img/performance_bar_gitaly_calls.png)
-- profile of the code used to generate the page, line by line for either _all_, _app & lib_ , or _views_. In the profile view, the numbers in the left panel represent wall time, cpu time, and number of calls (based on [rblineprof](https://github.com/tmm1/rblineprof)).
+- profile of the code used to generate the page, line by line. In the profile view, the numbers in the left panel represent wall time, cpu time, and number of calls (based on [rblineprof](https://github.com/tmm1/rblineprof)).
 ![Line profiling using the Performance Bar](img/performance_bar_line_profiling.png)
 - time taken and number of calls to Redis
 - time taken and number of background jobs created by Sidekiq
 - time taken and number of Ruby GC calls
+
+On the far right is a request selector that allows you to view the same metrics
+(excluding the page timing and line profiler) for any requests made while the
+page was open. Only the first two requests per unique URL are captured.
 
 ## Enable the Performance Bar via the Admin panel
 
