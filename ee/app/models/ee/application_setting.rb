@@ -42,11 +42,16 @@ module EE
 
       validates :external_authorization_service_url,
                 :external_authorization_service_default_label,
+                :external_authorization_service_timeout,
                 presence: true,
                 if: :external_authorization_service_enabled?
 
       validates :external_authorization_service_url,
                 url: true,
+                if: :external_authorization_service_enabled?
+
+      validates :external_authorization_service_timeout,
+                numericality: { greater_than: 0, less_than_or_equal_to: 10 },
                 if: :external_authorization_service_enabled?
     end
 

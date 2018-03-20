@@ -2,8 +2,8 @@
 
 import $ from 'jquery';
 import _ from 'underscore';
-import { insertText, getSelectedFragment, nodeMatchesSelector } from '../lib/utils/common_utils';
-import { placeholderImage } from '../lazy_loader';
+import { insertText, getSelectedFragment, nodeMatchesSelector } from '~/lib/utils/common_utils';
+import { placeholderImage } from '~/lazy_loader';
 
 const gfmRules = {
   // The filters referenced in lib/banzai/pipeline/gfm_pipeline.rb convert

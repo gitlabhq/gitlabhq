@@ -22,8 +22,8 @@ gem 'faraday', '~> 0.12'
 
 # Authentication libraries
 gem 'devise', '~> 4.2'
-gem 'doorkeeper', '~> 4.2.0'
-gem 'doorkeeper-openid_connect', '~> 1.2.0'
+gem 'doorkeeper', '~> 4.3'
+gem 'doorkeeper-openid_connect', '~> 1.3'
 gem 'omniauth', '~> 1.4.2'
 gem 'omniauth-auth0', '~> 1.4.1'
 gem 'omniauth-azure-oauth2', '~> 0.0.9'
@@ -34,7 +34,7 @@ gem 'omniauth-gitlab', '~> 1.0.2'
 gem 'omniauth-google-oauth2', '~> 0.5.2'
 gem 'omniauth-kerberos', '~> 0.3.0', group: :kerberos
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
-gem 'omniauth-saml', '~> 1.10.0'
+gem 'omniauth-saml', '~> 1.10'
 gem 'omniauth-shibboleth', '~> 1.2.0'
 gem 'omniauth-twitter', '~> 1.2.0'
 gem 'omniauth_crowd', '~> 2.2.0'
@@ -116,7 +116,7 @@ gem 'fog-rackspace', '~> 0.1.1'
 gem 'fog-aliyun', '~> 0.2.0'
 
 # for Google storage
-gem 'google-api-client', '~> 0.19'
+gem 'google-api-client', '~> 0.19.8'
 
 # for aws storage
 gem 'unf', '~> 0.1.4'
@@ -245,9 +245,6 @@ gem 'mousetrap-rails', '~> 1.4.6'
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.5'
 
-# Faster JSON
-gem 'oj', '~> 2.17.4'
-
 # Faster blank
 gem 'fast_blank'
 
@@ -291,7 +288,6 @@ gem 'batch-loader', '~> 1.2.1'
 # Perf bar
 gem 'peek', '~> 1.0.1'
 gem 'peek-gc', '~> 0.0.2'
-gem 'peek-host', '~> 1.0.0'
 gem 'peek-mysql2', '~> 1.1.0', group: :mysql
 gem 'peek-performance_bar', '~> 1.3.0'
 gem 'peek-pg', '~> 1.3.0', group: :postgres

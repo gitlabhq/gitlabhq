@@ -189,6 +189,18 @@ describe ObjectStorage do
           it "calls a cache path" do
             expect { |b| uploader.use_file(&b) }.to yield_with_args(%r[tmp/cache])
           end
+
+          it "cleans up the cached file" do
+            cached_path = ''
+
+            uploader.use_file do |path|
+              cached_path = path
+
+              expect(File.exist?(cached_path)).to be_truthy
+            end
+
+            expect(File.exist?(cached_path)).to be_falsey
+          end
         end
       end
 

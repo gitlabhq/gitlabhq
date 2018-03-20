@@ -61,6 +61,13 @@ feature 'Groups > Members > Master/Owner can override LDAP access levels' do
     within "#group_member_#{ldap_member.id}" do
       expect(page).not_to have_button 'Edit permissions'
       expect(page).to have_button 'Guest', disabled: false
+    end
+
+    refresh # controls should still be enabled after a refresh
+
+    within "#group_member_#{ldap_member.id}" do
+      expect(page).not_to have_button 'Edit permissions'
+      expect(page).to have_button 'Guest', disabled: false
 
       click_button 'Guest'
 

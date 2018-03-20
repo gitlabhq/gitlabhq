@@ -1,5 +1,5 @@
 <script>
-  import { mapActions, mapGetters, mapState } from 'vuex';
+  import { mapActions } from 'vuex';
   import RepoTab from './repo_tab.vue';
   import EditorMode from './editor_mode_dropdown.vue';
 
@@ -8,29 +8,33 @@
       RepoTab,
       EditorMode,
     },
+    props: {
+      files: {
+        type: Array,
+        required: true,
+      },
+      viewer: {
+        type: String,
+        required: true,
+      },
+      hasChanges: {
+        type: Boolean,
+        required: true,
+      },
+    },
     data() {
       return {
         showShadow: false,
       };
     },
-    computed: {
-      ...mapGetters([
-        'hasChanges',
-      ]),
-      ...mapState([
-        'openFiles',
-        'viewer',
-      ]),
-    },
     updated() {
       if (!this.$refs.tabsScroller) return;
 
-      this.showShadow = this.$refs.tabsScroller.scrollWidth > this.$refs.tabsScroller.offsetWidth;
+      this.showShadow =
+        this.$refs.tabsScroller.scrollWidth > this.$refs.tabsScroller.offsetWidth;
     },
     methods: {
-      ...mapActions([
-        'updateViewer',
-      ]),
+      ...mapActions(['updateViewer']),
     },
   };
 </script>
@@ -42,7 +46,7 @@
       ref="tabsScroller"
     >
       <repo-tab
-        v-for="tab in openFiles"
+        v-for="tab in files"
         :key="tab.key"
         :tab="tab"
       />

@@ -6,8 +6,8 @@ describe API::EpicIssues do
   let(:project) { create(:project, :public, group: group) }
   let(:epic) { create(:epic, group: group) }
 
-  describe 'GET /groups/:id/-/epics/:epic_iid/issues' do
-    let(:url) { "/groups/#{group.path}/-/epics/#{epic.iid}/issues" }
+  describe 'GET /groups/:id/epics/:epic_iid/issues' do
+    let(:url) { "/groups/#{group.path}/epics/#{epic.iid}/issues" }
 
     context 'when epics feature is disabled' do
       it 'returns 403 forbidden error' do
@@ -61,9 +61,9 @@ describe API::EpicIssues do
     end
   end
 
-  describe 'POST /groups/:id/-/epics/:epic_iid/issues' do
+  describe 'POST /groups/:id/epics/:epic_iid/issues' do
     let(:issue) { create(:issue, project: project) }
-    let(:url) { "/groups/#{group.path}/-/epics/#{epic.iid}/issues/#{issue.id}" }
+    let(:url) { "/groups/#{group.path}/epics/#{epic.iid}/issues/#{issue.id}" }
 
     context 'when epics feature is disabled' do
       it 'returns 403 forbidden error' do
@@ -145,10 +145,10 @@ describe API::EpicIssues do
     end
   end
 
-  describe 'DELETE /groups/:id/-/epics/:epic_iid/issues/:epic_issue_id"' do
+  describe 'DELETE /groups/:id/epics/:epic_iid/issues/:epic_issue_id"' do
     let(:issue) { create(:issue, project: project) }
     let!(:epic_issue) { create(:epic_issue, epic: epic, issue: issue) }
-    let(:url) { "/groups/#{group.path}/-/epics/#{epic.iid}/issues/#{epic_issue.id}" }
+    let(:url) { "/groups/#{group.path}/epics/#{epic.iid}/issues/#{epic_issue.id}" }
 
     context 'when epics feature is disabled' do
       it 'returns 403 forbidden error' do
@@ -229,12 +229,12 @@ describe API::EpicIssues do
     end
   end
 
-  describe 'PUT /groups/:id/-/epics/:epic_iid/issues/:epic_issue_id' do
+  describe 'PUT /groups/:id/epics/:epic_iid/issues/:epic_issue_id' do
     let(:issues) { create_list(:issue, 2, project: project) }
     let!(:epic_issue1) { create(:epic_issue, epic: epic, issue: issues[0], relative_position: 1) }
     let!(:epic_issue2) { create(:epic_issue, epic: epic, issue: issues[1], relative_position: 2) }
 
-    let(:url) { "/groups/#{group.path}/-/epics/#{epic.iid}/issues/#{epic_issue1.id}?move_after_id=#{epic_issue2.id}" }
+    let(:url) { "/groups/#{group.path}/epics/#{epic.iid}/issues/#{epic_issue1.id}?move_after_id=#{epic_issue2.id}" }
 
     context 'when epics feature is disabled' do
       it 'returns 403 forbidden error' do
@@ -274,7 +274,7 @@ describe API::EpicIssues do
         it 'returns 404 not found error for the link of another epic' do
           group.add_developer(user)
           another_epic = create(:epic, group: group)
-          url = "/groups/#{group.path}/-/epics/#{another_epic.iid}/issues/#{epic_issue1.id}?move_after_id=#{epic_issue2.id}"
+          url = "/groups/#{group.path}/epics/#{another_epic.iid}/issues/#{epic_issue1.id}?move_after_id=#{epic_issue2.id}"
 
           put api(url, user)
 

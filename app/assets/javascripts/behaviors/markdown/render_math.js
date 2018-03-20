@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import { __ } from './locale';
-import flash from './flash';
+import { __ } from '~/locale';
+import flash from '~/flash';
 
 // Renders math using KaTeX in any element with the
 // `js-render-math` class

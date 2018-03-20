@@ -9,6 +9,8 @@ describe('Multi-file store mutations', () => {
   beforeEach(() => {
     localState = state();
     entry = file();
+
+    localState.entries[entry.path] = entry;
   });
 
   describe('SET_INITIAL_DATA', () => {
@@ -18,34 +20,6 @@ describe('Multi-file store mutations', () => {
       });
 
       expect(localState.test).toBe('test');
-    });
-  });
-
-  describe('SET_PREVIEW_MODE', () => {
-    it('sets currentBlobView to repo-preview', () => {
-      mutations.SET_PREVIEW_MODE(localState);
-
-      expect(localState.currentBlobView).toBe('repo-preview');
-
-      localState.currentBlobView = 'testing';
-
-      mutations.SET_PREVIEW_MODE(localState);
-
-      expect(localState.currentBlobView).toBe('repo-preview');
-    });
-  });
-
-  describe('SET_EDIT_MODE', () => {
-    it('sets currentBlobView to repo-editor', () => {
-      mutations.SET_EDIT_MODE(localState);
-
-      expect(localState.currentBlobView).toBe('repo-editor');
-
-      localState.currentBlobView = 'testing';
-
-      mutations.SET_EDIT_MODE(localState);
-
-      expect(localState.currentBlobView).toBe('repo-editor');
     });
   });
 
@@ -68,18 +42,6 @@ describe('Multi-file store mutations', () => {
       mutations.TOGGLE_LOADING(localState, { entry, forceValue: true });
 
       expect(entry.loading).toBeTruthy();
-    });
-  });
-
-  describe('TOGGLE_EDIT_MODE', () => {
-    it('toggles editMode', () => {
-      mutations.TOGGLE_EDIT_MODE(localState);
-
-      expect(localState.editMode).toBeFalsy();
-
-      mutations.TOGGLE_EDIT_MODE(localState);
-
-      expect(localState.editMode).toBeTruthy();
     });
   });
 

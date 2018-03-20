@@ -1,35 +1,30 @@
 import Vue from 'vue';
 import store from 'ee/ide/stores';
 import repoFile from 'ee/ide/components/repo_file.vue';
-import { file, resetStore } from '../helpers';
+import router from 'ee/ide/ide_router';
+import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
+import { file } from '../helpers';
 
 describe('RepoFile', () => {
-  const updated = 'updated';
   let vm;
 
   function createComponent(propsData) {
     const RepoFile = Vue.extend(repoFile);
 
-    return new RepoFile({
-      store,
-      propsData,
-    }).$mount();
+    vm = createComponentWithStore(RepoFile, store, propsData);
+
+    vm.$mount();
   }
 
   afterEach(() => {
-    resetStore(vm.$store);
+    vm.$destroy();
   });
 
   it('renders link, icon and name', () => {
-    const RepoFile = Vue.extend(repoFile);
-    vm = new RepoFile({
-      store,
-      propsData: {
-        file: file('t4'),
-      },
+    createComponent({
+      file: file('t4'),
+      level: 0,
     });
-    spyOn(vm, 'timeFormated').and.returnValue(updated);
-    vm.$mount();
 
     const name = vm.$el.querySelector('.ide-file-name');
 
@@ -37,58 +32,19 @@ describe('RepoFile', () => {
     expect(name.textContent.trim()).toEqual(vm.file.name);
   });
 
-  it('does render if hasFiles is true and is loading tree', () => {
-    vm = createComponent({
-      file: file('t1'),
-    });
-
-    expect(vm.$el.querySelector('.fa-spin.fa-spinner')).toBeFalsy();
-  });
-
-  it('does not render commit message and datetime if mini', (done) => {
-    vm = createComponent({
-      file: file('t2'),
-    });
-    vm.$store.state.openFiles.push(vm.file);
-
-    vm.$nextTick(() => {
-      expect(vm.$el.querySelector('.commit-message')).toBeFalsy();
-      expect(vm.$el.querySelector('.commit-update')).toBeFalsy();
-
-      done();
-    });
-  });
-
-  it('fires clickFile when the link is clicked', () => {
-    vm = createComponent({
+  it('fires clickFile when the link is clicked', done => {
+    spyOn(router, 'push');
+    createComponent({
       file: file('t3'),
+      level: 0,
     });
-
-    spyOn(vm, 'clickFile');
 
     vm.$el.querySelector('.file-name').click();
 
-    expect(vm.clickFile).toHaveBeenCalledWith(vm.file);
-  });
+    setTimeout(() => {
+      expect(router.push).toHaveBeenCalledWith(`/project${vm.file.url}`);
 
-  describe('submodule', () => {
-    let f;
-
-    beforeEach(() => {
-      f = file('submodule name', '123456789');
-      f.type = 'submodule';
-
-      vm = createComponent({
-        file: f,
-      });
-    });
-
-    afterEach(() => {
-      vm.$destroy();
-    });
-
-    it('renders submodule short ID', () => {
-      expect(vm.$el.querySelector('.commit-sha').textContent.trim()).toBe('12345678');
+      done();
     });
   });
 
@@ -104,13 +60,10 @@ describe('RepoFile', () => {
         },
       };
 
-      vm = createComponent({
+      createComponent({
         file: f,
+        level: 0,
       });
-    });
-
-    afterEach(() => {
-      vm.$destroy();
     });
 
     it('renders lock icon', () => {
@@ -118,7 +71,10 @@ describe('RepoFile', () => {
     });
 
     it('renders a tooltip', () => {
-      expect(vm.$el.querySelector('.ide-file-name span:nth-child(2)').dataset.originalTitle).toContain('Locked by testuser');
+      expect(
+        vm.$el.querySelector('.ide-file-name span:nth-child(2)').dataset
+          .originalTitle,
+      ).toContain('Locked by testuser');
     });
   });
 });

@@ -1,30 +1,31 @@
 <script>
 /* global monaco */
-import { mapState, mapGetters, mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import flash from '~/flash';
 import monacoLoader from '../monaco_loader';
 import Editor from '../lib/editor';
 
 export default {
+  props: {
+    file: {
+      type: Object,
+      required: true,
+    },
+  },
   computed: {
-    ...mapGetters([
-      'activeFile',
-      'activeFileExtension',
-    ]),
     ...mapState([
       'leftPanelCollapsed',
       'rightPanelCollapsed',
-      'panelResizing',
       'viewer',
       'delayViewerUpdated',
     ]),
     shouldHideEditor() {
-      return this.activeFile && this.activeFile.binary && !this.activeFile.raw;
+      return this.file && this.file.binary && !this.file.raw;
     },
   },
   watch: {
-    activeFile(oldVal, newVal) {
-      if (newVal && !newVal.active) {
+    file(oldVal, newVal) {
+      if (newVal.path !== this.file.path) {
         this.initMonaco();
       }
     },
@@ -33,11 +34,6 @@ export default {
     },
     rightPanelCollapsed() {
       this.editor.updateDimensions();
-    },
-    panelResizing(isResizing) {
-      if (isResizing === false) {
-        this.editor.updateDimensions();
-      }
     },
     viewer() {
       this.createEditorInstance();
@@ -72,7 +68,7 @@ export default {
 
       this.editor.clearEditor();
 
-      this.getRawFileData(this.activeFile)
+      this.getRawFileData(this.file)
         .then(() => {
           const viewerPromise = this.delayViewerUpdated ? this.updateViewer('editor') : Promise.resolve();
 
@@ -101,9 +97,9 @@ export default {
       });
     },
     setupEditor() {
-      if (!this.activeFile || !this.editor.instance) return;
+      if (!this.file || !this.editor.instance) return;
 
-      this.model = this.editor.createModel(this.activeFile);
+      this.model = this.editor.createModel(this.file);
 
       this.editor.attachModel(this.model);
 
@@ -112,7 +108,7 @@ export default {
 
         if (file.active) {
           this.changeFileContent({
-            file,
+            path: file.path,
             content: model.getModel().getValue(),
           });
         }
@@ -127,8 +123,8 @@ export default {
       });
 
       this.editor.setPosition({
-        lineNumber: this.activeFile.editorRow,
-        column: this.activeFile.editorColumn,
+        lineNumber: this.file.editorRow,
+        column: this.file.editorColumn,
       });
 
       // Handle File Language
@@ -152,7 +148,7 @@ export default {
   >
     <div
       v-if="shouldHideEditor"
-      v-html="activeFile.html"
+      v-html="file.html"
     >
     </div>
     <div

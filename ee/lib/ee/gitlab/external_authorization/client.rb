@@ -6,18 +6,18 @@ module EE
           'Content-Type' => 'application/json',
           'Accept' => 'application/json'
         }.freeze
-        TIMEOUT = 0.5
 
         def self.build(user, label)
           new(
             ::EE::Gitlab::ExternalAuthorization.service_url,
+            ::EE::Gitlab::ExternalAuthorization.timeout,
             user,
             label
           )
         end
 
-        def initialize(url, user, label)
-          @url, @user, @label = url, user, label
+        def initialize(url, timeout, user, label)
+          @url, @timeout, @user, @label = url, timeout, user, label
         end
 
         def request_access
@@ -25,9 +25,9 @@ module EE
             @url,
             headers: REQUEST_HEADERS,
             body: body.to_json,
-            connect_timeout: TIMEOUT,
-            read_timeout: TIMEOUT,
-            write_timeout: TIMEOUT
+            connect_timeout: @timeout,
+            read_timeout: @timeout,
+            write_timeout: @timeout
           )
           EE::Gitlab::ExternalAuthorization::Response.new(response)
         rescue Excon::Error => e
