@@ -197,6 +197,10 @@ class MergeRequestDiff < ActiveRecord::Base
     CompareService.new(project, head_commit_sha).execute(project, sha, straight: true)
   end
 
+  def commits_count
+    super || merge_request_diff_commits.size
+  end
+
   private
 
   def create_merge_request_diff_files(diffs)
