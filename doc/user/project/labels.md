@@ -34,6 +34,9 @@ GitLab will add the following default labels to the project:
 ### New group label
 
 To create a **group label**, follow similar steps from above to project labels. Navigate to **Issues > Labels** in the group and create it from there.
+Alternatively, you can create group labels also from Epic sidebar. Please note that the created label will belong to the immediate group to which epic belongs.
+
+![Create Labels from Epic](img/labels_epic_sidebar.png) 
 
 Group labels appear in every label list page of the group's child projects.
 
@@ -70,13 +73,15 @@ Every issue and merge request can be assigned any number of labels. The labels a
 |:---:|:---:|
 | ![Labels sidebar](img/labels_sidebar.png) | ![Labels sidebar assign](img/labels_sidebar_assign.png) |
 
-## Filtering issues and merge requests by label
+## Filtering issues, merge requests and epics by label
 
 ### Filtering in list pages
 
 From the project issue list page and the project merge request list page, you can [filter](../search/index.md#issues-and-merge-requests) by both group labels and project labels.
 
 From the group issue list page and the group merge request list page, you can [filter](../search/index.md#issues-and-merge-requests) by both group labels and project labels.
+
+From the group epic list page, you can [filter](../search/index.md#issues-and-merge-requests) by both current group labels as well as decendent group labels.
 
 ![Labels group issues](img/labels_group_issues.png)
 
