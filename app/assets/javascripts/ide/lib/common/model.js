@@ -1,7 +1,6 @@
 /* global monaco */
 import Disposable from './disposable';
-
-import eventHub from 'ee/ide/eventhub'; // eslint-disable-line import/first
+import eventHub from '../../eventhub';
 
 export default class Model {
   constructor(monaco, file) {
@@ -11,16 +10,16 @@ export default class Model {
     this.content = file.content !== '' ? file.content : file.raw;
 
     this.disposable.add(
-      this.originalModel = this.monaco.editor.createModel(
+      (this.originalModel = this.monaco.editor.createModel(
         this.file.raw,
         undefined,
         new this.monaco.Uri(null, null, `original/${this.file.path}`),
-      ),
-      this.model = this.monaco.editor.createModel(
+      )),
+      (this.model = this.monaco.editor.createModel(
         this.content,
         undefined,
         new this.monaco.Uri(null, null, this.file.path),
-      ),
+      )),
     );
 
     this.events = new Map();
@@ -29,7 +28,10 @@ export default class Model {
     this.dispose = this.dispose.bind(this);
 
     eventHub.$on(`editor.update.model.dispose.${this.file.path}`, this.dispose);
-    eventHub.$on(`editor.update.model.content.${this.file.path}`, this.updateContent);
+    eventHub.$on(
+      `editor.update.model.content.${this.file.path}`,
+      this.updateContent,
+    );
   }
 
   get url() {
@@ -63,9 +65,7 @@ export default class Model {
   onChange(cb) {
     this.events.set(
       this.path,
-      this.disposable.add(
-        this.model.onDidChangeContent(e => cb(this, e)),
-      ),
+      this.disposable.add(this.model.onDidChangeContent(e => cb(this, e))),
     );
   }
 
@@ -78,7 +78,13 @@ export default class Model {
     this.disposable.dispose();
     this.events.clear();
 
-    eventHub.$off(`editor.update.model.dispose.${this.file.path}`, this.dispose);
-    eventHub.$off(`editor.update.model.content.${this.file.path}`, this.updateContent);
+    eventHub.$off(
+      `editor.update.model.dispose.${this.file.path}`,
+      this.dispose,
+    );
+    eventHub.$off(
+      `editor.update.model.content.${this.file.path}`,
+      this.updateContent,
+    );
   }
 }

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import ideRepoTree from 'ee/ide/components/ide_repo_tree.vue';
+import ideRepoTree from '~/ide/components/ide_repo_tree.vue';
 import createComponent from '../../helpers/vue_mount_component_helper';
 import { file } from '../helpers';
 
@@ -29,11 +29,13 @@ describe('IdeRepoTree', () => {
     expect(vm.$el.querySelector('.file')).not.toBeNull();
   });
 
-  it('renders 3 loading files if tree is loading', (done) => {
+  it('renders 3 loading files if tree is loading', done => {
     tree.loading = true;
 
     vm.$nextTick(() => {
-      expect(vm.$el.querySelectorAll('.multi-file-loading-container').length).toEqual(3);
+      expect(
+        vm.$el.querySelectorAll('.multi-file-loading-container').length,
+      ).toEqual(3);
 
       done();
     });

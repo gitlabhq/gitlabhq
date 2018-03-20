@@ -1,4 +1,4 @@
-import editorOptions from 'ee/ide/lib/editor_options';
+import editorOptions from '~/ide/lib/editor_options';
 
 describe('Multi-file editor library editor options', () => {
   it('returns an array', () => {

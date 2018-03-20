@@ -1,7 +1,7 @@
 <script>
   import { mapState } from 'vuex';
   import { sprintf, __ } from '~/locale';
-  import * as consts from 'ee/ide/stores/modules/commit/constants';
+  import * as consts from '../../stores/modules/commit/constants';
   import RadioGroup from './radio_group.vue';
 
   export default {

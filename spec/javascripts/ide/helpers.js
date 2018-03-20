@@ -1,8 +1,8 @@
-import { decorateData } from 'ee/ide/stores/utils';
-import state from 'ee/ide/stores/state';
-import commitState from 'ee/ide/stores/modules/commit/state';
+import { decorateData } from '~/ide/stores/utils';
+import state from '~/ide/stores/state';
+import commitState from '~/ide/stores/modules/commit/state';
 
-export const resetStore = (store) => {
+export const resetStore = store => {
   const newState = {
     ...state(),
     commit: commitState(),
@@ -10,12 +10,13 @@ export const resetStore = (store) => {
   store.replaceState(newState);
 };
 
-export const file = (name = 'name', id = name, type = '') => decorateData({
-  id,
-  type,
-  icon: 'icon',
-  url: 'url',
-  name,
-  path: name,
-  lastCommit: {},
-});
+export const file = (name = 'name', id = name, type = '') =>
+  decorateData({
+    id,
+    type,
+    icon: 'icon',
+    url: 'url',
+    name,
+    path: name,
+    lastCommit: {},
+  });

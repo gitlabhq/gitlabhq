@@ -3,9 +3,8 @@
 
   import fileIcon from '~/vue_shared/components/file_icon.vue';
   import icon from '~/vue_shared/components/icon.vue';
-
-  import fileStatusIcon from 'ee/ide/components/repo_file_status_icon.vue';
-  import changedFileIcon from 'ee/ide/components/changed_file_icon.vue';
+  import fileStatusIcon from './repo_file_status_icon.vue';
+  import changedFileIcon from './changed_file_icon.vue';
 
   export default {
     components: {

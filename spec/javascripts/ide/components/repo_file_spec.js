@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import store from 'ee/ide/stores';
-import repoFile from 'ee/ide/components/repo_file.vue';
-import router from 'ee/ide/ide_router';
+import store from '~/ide/stores';
+import repoFile from '~/ide/components/repo_file.vue';
+import router from '~/ide/ide_router';
 import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import { file } from '../helpers';
 

@@ -1,5 +1,5 @@
-import * as getters from 'ee/ide/stores/getters';
-import state from 'ee/ide/stores/state';
+import * as getters from '~/ide/stores/getters';
+import state from '~/ide/stores/state';
 import { file } from '../helpers';
 
 describe('Multi-file store getters', () => {
