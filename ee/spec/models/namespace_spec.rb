@@ -195,12 +195,13 @@ describe Namespace do
   describe '#feature_available?' do
     let(:plan_license) { :bronze_plan }
     let(:group) { create(:group, plan: plan_license) }
-    let(:feature) { :service_desk }
+    let(:licensed_feature) { :service_desk }
+    let(:feature) { licensed_feature }
 
     subject { group.feature_available?(feature) }
 
     before do
-      stub_licensed_features(feature => true)
+      stub_licensed_features(licensed_feature => true)
     end
 
     it 'uses the global setting when running on premise' do
@@ -251,6 +252,25 @@ describe Namespace do
         it 'returns false' do
           is_expected.to be_falsy
         end
+      end
+    end
+
+    context 'when the feature is temporarily available on the entire instance' do
+      let(:license_plan) { :free_plan }
+      let(:feature) { :ci_cd_projects }
+
+      before do
+        stub_application_setting_on_object(group, should_check_namespace_plan: true)
+      end
+
+      it 'returns true when the feature is available globally' do
+        stub_licensed_features(feature => true)
+
+        is_expected.to be_truthy
+      end
+
+      it 'returns `false` when the feature is not included in the global license' do
+        is_expected.to be_falsy
       end
     end
   end

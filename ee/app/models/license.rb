@@ -124,6 +124,13 @@ class License < ActiveRecord::Base
     'GitLab_ServiceDesk' => :service_desk
   }.freeze
 
+  # Features added here are available for all namespaces.
+  ANY_PLAN_FEATURES = %i[
+    ci_cd_projects
+    repository_mirrors
+    github_project_service_integration
+  ].freeze
+
   # Global features that cannot be restricted to only a subset of projects or namespaces.
   # Use `License.feature_available?(:feature)` to check if these features are available.
   # For all other features, use `project.feature_available?` or `namespace.feature_available?` when possible.
