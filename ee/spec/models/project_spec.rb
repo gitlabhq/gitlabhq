@@ -1096,6 +1096,8 @@ describe Project do
 
   shared_examples 'project with disabled services' do
     it 'has some disabled services' do
+      stub_const('License::ANY_PLAN_FEATURES', [])
+
       expect(project.disabled_services).to match_array(disabled_services)
     end
   end

@@ -74,6 +74,7 @@ describe UpdateAllMirrorsWorker do
         stub_licensed_features(repository_mirrors: true)
         stub_application_setting(check_namespace_plan: true)
         allow(Gitlab).to receive_messages(com?: true)
+        stub_const('License::ANY_PLAN_FEATURES', [])
       end
 
       let!(:unlicensed_project1) { scheduled_mirror(at: 8.weeks.ago, licensed: false) }
