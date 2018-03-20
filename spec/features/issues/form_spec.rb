@@ -214,6 +214,23 @@ describe 'New/edit issue', :js do
 
       expect(page).to have_selector('.atwho-view')
     end
+
+    describe 'milestone' do
+      let!(:milestone) { create(:milestone, title: '">&lt;img src=x onerror=alert(document.domain)&gt;', project: project) }
+
+      it 'escapes milestone' do
+        click_button 'Milestone'
+
+        page.within '.issue-milestone' do
+          click_link milestone.title
+        end
+
+        page.within '.js-milestone-select' do
+          expect(page).to have_content milestone.title
+          expect(page).not_to have_selector 'img'
+        end
+      end
+    end
   end
 
   context 'edit issue' do
