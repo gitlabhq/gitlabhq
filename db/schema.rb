@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180309160427) do
+ActiveRecord::Schema.define(version: 20180314100728) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -184,6 +184,7 @@ ActiveRecord::Schema.define(version: 20180309160427) do
     t.string "external_authorization_service_url"
     t.string "external_authorization_service_default_label"
     t.boolean "pages_domain_verification_enabled", default: true, null: false
+    t.float "external_authorization_service_timeout", default: 0.5, null: false
   end
 
   create_table "approvals", force: :cascade do |t|

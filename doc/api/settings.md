@@ -173,6 +173,7 @@ PUT /application/settings
 | `external_authorization_service_enabled` | boolean | no | Enable using an external authorization service for accessing projects |
 | `external_authorization_service_url` | string | no | URL to which authorization requests will be directed |
 | `external_authorization_service_default_label` | string | no | The default classification label to use when requesting authorization and no classification label has been specified on the project |
+| `external_authorization_service_timeout` | float | no | The timeout to enforce when performing requests to the external authorization service |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/application/settings?signup_enabled=false&default_project_visibility=internal
@@ -213,6 +214,7 @@ Example response:
   "polling_interval_multiplier": 1.0,
   "external_authorization_service_enabled": true,
   "external_authorization_service_url": "https://authorize.me",
-  "external_authorization_service_default_label": "default"
+  "external_authorization_service_default_label": "default",
+  "external_authorization_service_timeout": 0.5
 }
 ```
