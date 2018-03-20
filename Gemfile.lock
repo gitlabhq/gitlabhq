@@ -1103,11 +1103,7 @@ DEPENDENCIES
   gollum-lib (~> 4.2)
   gollum-rugged_adapter (~> 0.4.4)
   gon (~> 6.1.0)
-<<<<<<< HEAD
-  google-api-client (~> 0.19)
-=======
   google-api-client (~> 0.19.8)
->>>>>>> upstream/master
   google-protobuf (= 3.5.1)
   gpgme
   grape (~> 1.0)
