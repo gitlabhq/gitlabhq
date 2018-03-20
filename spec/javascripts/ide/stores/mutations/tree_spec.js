@@ -1,5 +1,5 @@
-import mutations from 'ee/ide/stores/mutations/tree';
-import state from 'ee/ide/stores/state';
+import mutations from '~/ide/stores/mutations/tree';
+import state from '~/ide/stores/state';
 import { file } from '../../helpers';
 
 describe('Multi-file store tree mutations', () => {
@@ -26,15 +26,17 @@ describe('Multi-file store tree mutations', () => {
   });
 
   describe('SET_DIRECTORY_DATA', () => {
-    const data = [{
-      name: 'tree',
-    },
-    {
-      name: 'submodule',
-    },
-    {
-      name: 'blob',
-    }];
+    const data = [
+      {
+        name: 'tree',
+      },
+      {
+        name: 'submodule',
+      },
+      {
+        name: 'blob',
+      },
+    ];
 
     it('adds directory data', () => {
       localState.trees['project/master'] = {

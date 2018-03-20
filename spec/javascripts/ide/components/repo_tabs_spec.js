@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import repoTabs from 'ee/ide/components/repo_tabs.vue';
+import repoTabs from '~/ide/components/repo_tabs.vue';
 import createComponent from '../../helpers/vue_mount_component_helper';
 import { file } from '../helpers';
 

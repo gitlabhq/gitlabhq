@@ -30,9 +30,9 @@ export const setLastCommitMessage = ({ rootState, commit }, data) => {
   const currentProject = rootState.projects[rootState.currentProjectId];
   const commitStats = data.stats
     ? sprintf(__('with %{additions} additions, %{deletions} deletions.'), {
-        additions: data.stats.additions,
-        deletions: data.stats.deletions,
-      })
+        additions: data.stats.additions, // eslint-disable-line indent
+        deletions: data.stats.deletions, // eslint-disable-line indent
+      }) // eslint-disable-line indent
     : '';
   const commitMsg = sprintf(
     __('Your changes have been committed. Commit %{commitId} %{commitStats}'),

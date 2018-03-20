@@ -1,8 +1,8 @@
 /* global monaco */
-import monacoLoader from 'ee/ide/monaco_loader';
-import editor from 'ee/ide/lib/editor';
-import DecorationsController from 'ee/ide/lib/decorations/controller';
-import Model from 'ee/ide/lib/common/model';
+import monacoLoader from '~/ide/monaco_loader';
+import editor from '~/ide/lib/editor';
+import DecorationsController from '~/ide/lib/decorations/controller';
+import Model from '~/ide/lib/common/model';
 import { file } from '../../helpers';
 
 describe('Multi-file editor library decorations controller', () => {
@@ -10,7 +10,7 @@ describe('Multi-file editor library decorations controller', () => {
   let controller;
   let model;
 
-  beforeEach((done) => {
+  beforeEach(done => {
     monacoLoader(['vs/editor/editor.main'], () => {
       editorInstance = editor.create(monaco);
       editorInstance.createInstance(document.createElement('div'));
@@ -36,7 +36,9 @@ describe('Multi-file editor library decorations controller', () => {
     });
 
     it('returns decorations by model URL', () => {
-      controller.addDecorations(model, 'key', [{ decoration: 'decorationValue' }]);
+      controller.addDecorations(model, 'key', [
+        { decoration: 'decorationValue' },
+      ]);
 
       const decorations = controller.getAllDecorationsForModel(model);
 
@@ -46,20 +48,28 @@ describe('Multi-file editor library decorations controller', () => {
 
   describe('addDecorations', () => {
     it('caches decorations in a new map', () => {
-      controller.addDecorations(model, 'key', [{ decoration: 'decorationValue' }]);
+      controller.addDecorations(model, 'key', [
+        { decoration: 'decorationValue' },
+      ]);
 
       expect(controller.decorations.size).toBe(1);
     });
 
     it('does not create new cache model', () => {
-      controller.addDecorations(model, 'key', [{ decoration: 'decorationValue' }]);
-      controller.addDecorations(model, 'key', [{ decoration: 'decorationValue2' }]);
+      controller.addDecorations(model, 'key', [
+        { decoration: 'decorationValue' },
+      ]);
+      controller.addDecorations(model, 'key', [
+        { decoration: 'decorationValue2' },
+      ]);
 
       expect(controller.decorations.size).toBe(1);
     });
 
     it('caches decorations by model URL', () => {
-      controller.addDecorations(model, 'key', [{ decoration: 'decorationValue' }]);
+      controller.addDecorations(model, 'key', [
+        { decoration: 'decorationValue' },
+      ]);
 
       expect(controller.decorations.size).toBe(1);
       expect(controller.decorations.keys().next().value).toBe('path');
@@ -68,7 +78,9 @@ describe('Multi-file editor library decorations controller', () => {
     it('calls decorate method', () => {
       spyOn(controller, 'decorate');
 
-      controller.addDecorations(model, 'key', [{ decoration: 'decorationValue' }]);
+      controller.addDecorations(model, 'key', [
+        { decoration: 'decorationValue' },
+      ]);
 
       expect(controller.decorate).toHaveBeenCalled();
     });
@@ -80,7 +92,10 @@ describe('Multi-file editor library decorations controller', () => {
 
       controller.decorate(model);
 
-      expect(controller.editor.instance.deltaDecorations).toHaveBeenCalledWith([], []);
+      expect(controller.editor.instance.deltaDecorations).toHaveBeenCalledWith(
+        [],
+        [],
+      );
     });
 
     it('caches decorations', () => {
@@ -102,7 +117,9 @@ describe('Multi-file editor library decorations controller', () => {
 
   describe('dispose', () => {
     it('clears cached decorations', () => {
-      controller.addDecorations(model, 'key', [{ decoration: 'decorationValue' }]);
+      controller.addDecorations(model, 'key', [
+        { decoration: 'decorationValue' },
+      ]);
 
       controller.dispose();
 
@@ -110,7 +127,9 @@ describe('Multi-file editor library decorations controller', () => {
     });
 
     it('clears cached editorDecorations', () => {
-      controller.addDecorations(model, 'key', [{ decoration: 'decorationValue' }]);
+      controller.addDecorations(model, 'key', [
+        { decoration: 'decorationValue' },
+      ]);
 
       controller.dispose();
 

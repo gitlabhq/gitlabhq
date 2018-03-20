@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import ideExternalLinks from 'ee/ide/components/ide_external_links.vue';
+import ideExternalLinks from '~/ide/components/ide_external_links.vue';
 import createComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('ide external links component', () => {

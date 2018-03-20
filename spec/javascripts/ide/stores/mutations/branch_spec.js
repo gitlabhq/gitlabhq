@@ -1,5 +1,5 @@
-import mutations from 'ee/ide/stores/mutations/branch';
-import state from 'ee/ide/stores/state';
+import mutations from '~/ide/stores/mutations/branch';
+import state from '~/ide/stores/state';
 
 describe('Multi-file store branch mutations', () => {
   let localState;

@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import store from 'ee/ide/stores';
-import service from 'ee/ide/services';
-import repoCommitSection from 'ee/ide/components/repo_commit_section.vue';
+import store from '~/ide/stores';
+import service from '~/ide/services';
+import repoCommitSection from '~/ide/components/repo_commit_section.vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 import { file, resetStore } from '../helpers';
@@ -31,30 +31,35 @@ describe('RepoCommitSection', () => {
     vm.$store.state.rightPanelCollapsed = false;
     vm.$store.state.currentBranch = 'master';
     vm.$store.state.changedFiles = [file('file1'), file('file2')];
-    vm.$store.state.changedFiles.forEach(f => Object.assign(f, {
-      changed: true,
-      content: 'testing',
-    }));
+    vm.$store.state.changedFiles.forEach(f =>
+      Object.assign(f, {
+        changed: true,
+        content: 'testing',
+      }),
+    );
 
     return vm.$mount();
   }
 
-  beforeEach((done) => {
+  beforeEach(done => {
     vm = createComponent();
 
-    spyOn(service, 'getTreeData').and.returnValue(Promise.resolve({
-      headers: {
-        'page-title': 'test',
-      },
-      json: () => Promise.resolve({
-        last_commit_path: 'last_commit_path',
-        parent_tree_url: 'parent_tree_url',
-        path: '/',
-        trees: [{ name: 'tree' }],
-        blobs: [{ name: 'blob' }],
-        submodules: [{ name: 'submodule' }],
+    spyOn(service, 'getTreeData').and.returnValue(
+      Promise.resolve({
+        headers: {
+          'page-title': 'test',
+        },
+        json: () =>
+          Promise.resolve({
+            last_commit_path: 'last_commit_path',
+            parent_tree_url: 'parent_tree_url',
+            path: '/',
+            trees: [{ name: 'tree' }],
+            blobs: [{ name: 'blob' }],
+            submodules: [{ name: 'submodule' }],
+          }),
       }),
-    }));
+    );
 
     Vue.nextTick(done);
   });
@@ -75,27 +80,35 @@ describe('RepoCommitSection', () => {
         committedStateSvgPath: 'svg',
       }).$mount();
 
-      expect(vm.$el.querySelector('.js-empty-state').textContent.trim()).toContain('No changes');
-      expect(vm.$el.querySelector('.js-empty-state img').getAttribute('src')).toBe('nochangessvg');
+      expect(
+        vm.$el.querySelector('.js-empty-state').textContent.trim(),
+      ).toContain('No changes');
+      expect(
+        vm.$el.querySelector('.js-empty-state img').getAttribute('src'),
+      ).toBe('nochangessvg');
     });
   });
 
   it('renders a commit section', () => {
-    const changedFileElements = [...vm.$el.querySelectorAll('.multi-file-commit-list li')];
+    const changedFileElements = [
+      ...vm.$el.querySelectorAll('.multi-file-commit-list li'),
+    ];
     const submitCommit = vm.$el.querySelector('form .btn');
 
     expect(vm.$el.querySelector('.multi-file-commit-form')).not.toBeNull();
     expect(changedFileElements.length).toEqual(2);
 
     changedFileElements.forEach((changedFile, i) => {
-      expect(changedFile.textContent.trim()).toContain(vm.$store.state.changedFiles[i].path);
+      expect(changedFile.textContent.trim()).toContain(
+        vm.$store.state.changedFiles[i].path,
+      );
     });
 
     expect(submitCommit.disabled).toBeTruthy();
     expect(submitCommit.querySelector('.fa-spinner.fa-spin')).toBeNull();
   });
 
-  it('updates commitMessage in store on input', (done) => {
+  it('updates commitMessage in store on input', done => {
     const textarea = vm.$el.querySelector('textarea');
 
     textarea.value = 'testing commit message';
@@ -104,7 +117,9 @@ describe('RepoCommitSection', () => {
 
     getSetTimeoutPromise()
       .then(() => {
-        expect(vm.$store.state.commit.commitMessage).toBe('testing commit message');
+        expect(vm.$store.state.commit.commitMessage).toBe(
+          'testing commit message',
+        );
       })
       .then(done)
       .catch(done.fail);
@@ -112,10 +127,12 @@ describe('RepoCommitSection', () => {
 
   describe('discard draft button', () => {
     it('hidden when commitMessage is empty', () => {
-      expect(vm.$el.querySelector('.multi-file-commit-form .btn-default')).toBeNull();
+      expect(
+        vm.$el.querySelector('.multi-file-commit-form .btn-default'),
+      ).toBeNull();
     });
 
-    it('resets commitMessage when clicking discard button', (done) => {
+    it('resets commitMessage when clicking discard button', done => {
       vm.$store.state.commit.commitMessage = 'testing commit message';
 
       getSetTimeoutPromise()
@@ -124,7 +141,9 @@ describe('RepoCommitSection', () => {
         })
         .then(Vue.nextTick)
         .then(() => {
-          expect(vm.$store.state.commit.commitMessage).not.toBe('testing commit message');
+          expect(vm.$store.state.commit.commitMessage).not.toBe(
+            'testing commit message',
+          );
         })
         .then(done)
         .catch(done.fail);
@@ -136,7 +155,7 @@ describe('RepoCommitSection', () => {
       spyOn(vm, 'commitChanges');
     });
 
-    it('calls commitChanges', (done) => {
+    it('calls commitChanges', done => {
       vm.$store.state.commit.commitMessage = 'testing commit message';
 
       getSetTimeoutPromise()

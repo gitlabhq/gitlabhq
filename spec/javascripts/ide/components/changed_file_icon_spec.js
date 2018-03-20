@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import changedFileIcon from 'ee/ide/components/changed_file_icon.vue';
+import changedFileIcon from '~/ide/components/changed_file_icon.vue';
 import createComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('IDE changed file icon', () => {

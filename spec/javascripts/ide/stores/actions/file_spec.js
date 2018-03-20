@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import store from 'ee/ide/stores';
-import service from 'ee/ide/services';
-import router from 'ee/ide/ide_router';
-import eventHub from 'ee/ide/eventhub';
+import store from '~/ide/stores';
+import service from '~/ide/services';
+import router from '~/ide/ide_router';
+import eventHub from '~/ide/eventhub';
 import { file, resetStore } from '../../helpers';
 
 describe('Multi-file store file actions', () => {
