@@ -20,7 +20,6 @@ import './behaviors/';
 // everything else
 import loadAwardsHandler from './awards_handler';
 import bp from './breakpoints';
-import initConfirmDangerModal from './confirm_danger_modal';
 import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
 import initTodoToggle from './header';
@@ -211,14 +210,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     $(document).trigger('toggle.comments');
-  });
-
-  $document.on('click', '.js-confirm-danger', (e) => {
-    e.preventDefault();
-    const $btn = $(e.target);
-    const $form = $btn.closest('form');
-    const text = $btn.data('confirmDangerMessage');
-    initConfirmDangerModal($form, text);
   });
 
   $document.on('breakpoint:change', (e, breakpoint) => {
