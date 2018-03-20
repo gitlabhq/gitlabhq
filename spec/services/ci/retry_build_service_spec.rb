@@ -30,7 +30,7 @@ describe Ci::RetryBuildService do
        runner_id tag_taggings taggings tags trigger_request_id
        user_id auto_canceled_by_id retried failure_reason
        artifacts_file_store artifacts_metadata_store
-       build_metadata].freeze
+       metadata].freeze
 
   shared_examples 'build duplication' do
     let(:another_pipeline) { create(:ci_empty_pipeline, project: project) }

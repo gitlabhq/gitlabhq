@@ -24,7 +24,7 @@ module Ci
     has_one :job_artifacts_metadata, -> { where(file_type: Ci::JobArtifact.file_types[:metadata]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
     has_one :job_artifacts_trace, -> { where(file_type: Ci::JobArtifact.file_types[:trace]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
 
-    has_one :build_metadata, class_name: 'Ci::BuildMetadata'
+    has_one :metadata, class_name: 'Ci::BuildMetadata'
 
     # The "environment" field for builds is a String, and is the unexpanded name
     def persisted_environment
@@ -157,12 +157,12 @@ module Ci
       end
 
       before_transition pending: :running do |build|
-        build.metadata.save_timeout_state!
+        build.ensure_metadata.save_timeout_state!
       end
     end
 
-    def metadata
-      self.build_metadata ||= Ci::BuildMetadata.new
+    def ensure_metadata
+      metadata || build_metadata
     end
 
     def detailed_status(current_user)
@@ -242,7 +242,7 @@ module Ci
     end
 
     def timeout
-      metadata.timeout
+      ensure_metadata.timeout
     end
 
     def triggered_by?(current_user)

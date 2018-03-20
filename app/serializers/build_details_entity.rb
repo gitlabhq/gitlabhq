@@ -5,7 +5,9 @@ class BuildDetailsEntity < JobEntity
   expose :runner, using: RunnerEntity
   expose :pipeline, using: PipelineEntity
 
-  expose :metadata, using: BuildMetadataEntity
+  expose :metadata, using: BuildMetadataEntity do |build|
+    build.ensure_metadata
+  end
 
   expose :erased_by, if: -> (*) { build.erased? }, using: UserEntity
   expose :erase_path, if: -> (*) { build.erasable? && can?(current_user, :erase_build, build) } do |build|
