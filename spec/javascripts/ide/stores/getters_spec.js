@@ -26,52 +26,6 @@ describe('Multi-file store getters', () => {
     });
   });
 
-  describe('activeFileExtension', () => {
-    it('returns the file extension for the current active file', () => {
-      localState.openFiles.push(file('active'));
-      localState.openFiles[0].active = true;
-      localState.openFiles[0].path = 'test.js';
-
-      expect(getters.activeFileExtension(localState)).toBe('.js');
-
-      localState.openFiles[0].path = 'test.es6.js';
-
-      expect(getters.activeFileExtension(localState)).toBe('.js');
-    });
-  });
-
-  describe('canEditFile', () => {
-    beforeEach(() => {
-      localState.onTopOfBranch = true;
-      localState.canCommit = true;
-
-      localState.openFiles.push(file());
-      localState.openFiles[0].active = true;
-    });
-
-    it('returns true if user can commit and has open files', () => {
-      expect(getters.canEditFile(localState)).toBeTruthy();
-    });
-
-    it('returns false if user can commit and has no open files', () => {
-      localState.openFiles = [];
-
-      expect(getters.canEditFile(localState)).toBeFalsy();
-    });
-
-    it('returns false if user can commit and active file is binary', () => {
-      localState.openFiles[0].binary = true;
-
-      expect(getters.canEditFile(localState)).toBeFalsy();
-    });
-
-    it('returns false if user cant commit', () => {
-      localState.canCommit = false;
-
-      expect(getters.canEditFile(localState)).toBeFalsy();
-    });
-  });
-
   describe('modifiedFiles', () => {
     it('returns a list of modified files', () => {
       localState.openFiles.push(file());

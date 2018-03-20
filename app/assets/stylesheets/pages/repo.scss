@@ -68,7 +68,6 @@
 
     .ide-new-btn {
       display: none;
-      margin-top: -4px;
       margin-bottom: -4px;
       margin-right: -8px;
     }
@@ -84,7 +83,6 @@
         fill: $gl-text-color-secondary;
       }
     }
-
   }
 
   a {
@@ -290,7 +288,7 @@
 
     .margin-view-overlays .insert-sign,
     .margin-view-overlays .delete-sign {
-      opacity: .4;
+      opacity: 0.4;
     }
   }
 }
@@ -548,7 +546,6 @@
     height: 10px;
     margin-left: 3px;
   }
-
 }
 
 .multi-file-commit-list-path {
@@ -626,7 +623,7 @@
       top: 0;
       width: 100px;
       height: 1px;
-      background-color: rgba($red-500, .5);
+      background-color: rgba($red-500, 0.5);
     }
   }
 }
@@ -720,11 +717,12 @@
     }
 
     .ide-view {
-      height: calc(100vh - #{$header-height + $performance-bar-height + $flash-height});
+      height: calc(
+        100vh - #{$header-height + $performance-bar-height + $flash-height}
+      );
     }
   }
 }
-
 
 .dragHandle {
   position: absolute;

@@ -197,6 +197,10 @@ describe('IDE commit module actions', () => {
         changed: true,
       });
       store.state.openFiles = store.state.changedFiles;
+
+      store.state.changedFiles.forEach((changedFile) => {
+        store.state.entries[changedFile.path] = changedFile;
+      });
     });
 
     it('updates stores working reference', (done) => {
@@ -325,6 +329,10 @@ describe('IDE commit module actions', () => {
       store.state.changedFiles.push(file('changed'));
       store.state.changedFiles[0].active = true;
       store.state.openFiles = store.state.changedFiles;
+
+      store.state.openFiles.forEach((f) => {
+        store.state.entries[f.path] = f;
+      });
 
       store.state.commit.commitAction = '2';
       store.state.commit.commitMessage = 'testing 123';

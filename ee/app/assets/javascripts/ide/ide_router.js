@@ -2,9 +2,6 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import flash from '~/flash';
 import store from './stores';
-import {
-  getTreeEntry,
-} from './stores/utils';
 
 Vue.use(VueRouter);
 
@@ -76,7 +73,7 @@ router.beforeEach((to, from, next) => {
         })
         .then(() => {
           if (to.params[0]) {
-            const treeEntry = getTreeEntry(store, `${to.params.namespace}/${to.params.project}/${to.params.branch}`, to.params[0]);
+            const treeEntry = store.state.entries[to.params[0]];
             if (treeEntry) {
               store.dispatch('handleTreeEntryAction', treeEntry);
             }
