@@ -14,7 +14,6 @@ export default class PerformanceBarService {
       next(response => {
         const requestId = response.headers['x-request-id'];
         const requestUrl = response.url;
-        console.log(requestUrl);
 
         if (requestUrl !== peekUrl && requestId) {
           callback(requestId, requestUrl);
