@@ -4,51 +4,49 @@ module Gitlab
       @devise_config = devise_config
     end
 
-    def config
-      @devise_config
-    end
-
     def execute(providers)
-      initialize_providers(providers)
+      providers.each do |provider|
+        add_provider(provider['name'].to_sym, *arguments_for(provider))
+      end
     end
 
     private
 
-    def initialize_providers(providers)
-      providers.each do |provider|
-        provider_arguments = []
-
-        %w[app_id app_secret].each do |argument|
-          provider_arguments << provider[argument] if provider[argument]
-        end
-
-        case provider['args']
-        when Array
-          # An Array from the configuration will be expanded.
-          provider_arguments.concat provider['args']
-        when Hash
-          set_provider_specific_defaults(provider)
-
-          # A Hash from the configuration will be passed as is.
-          provider_arguments << provider['args'].symbolize_keys
-        end
-
-        config.omniauth provider['name'].to_sym, *provider_arguments
-      end
+    def add_provider(*args)
+      @devise_config.omniauth(*args)
     end
 
-    def set_provider_specific_defaults(provider)
-      # Add procs for handling SLO
-      if provider['name'] == 'cas3'
-        provider['args'][:on_single_sign_out] = cas3_signout_handler
+    def arguments_for(provider)
+      provider_arguments = []
+
+      %w[app_id app_secret].each do |argument|
+        provider_arguments << provider[argument] if provider[argument]
       end
 
-      if provider['name'] == 'authentiq'
-        provider['args'][:remote_sign_out_handler] = authentiq_signout_handler
+      case provider['args']
+      when Array
+        # An Array from the configuration will be expanded.
+        provider_arguments.concat provider['args']
+      when Hash
+        hash_arguments = provider['args'].merge(provider_defaults(provider))
+
+        # A Hash from the configuration will be passed as is.
+        provider_arguments << hash_arguments.symbolize_keys
       end
 
-      if provider['name'] == 'shibboleth'
-        provider['args'][:fail_with_empty_uid] = true
+      provider_arguments
+    end
+
+    def provider_defaults(provider)
+      case provider['name']
+      when 'cas3'
+        { on_single_sign_out: cas3_signout_handler }
+      when 'authentiq'
+        { remote_sign_out_handler: authentiq_signout_handler }
+      when 'shibboleth'
+        { fail_with_empty_uid: true }
+      else
+        {}
       end
     end
 
