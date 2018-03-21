@@ -159,10 +159,11 @@ GitLab.com is hosted, managed, and administered by GitLab, Inc., with
 [free and paid subscriptions](https://about.gitlab.com/gitlab-com/) for individuals
 and teams: Free, Bronze, Silver, and Gold.
 
-GitLab.com subscriptions grants access
-to the same features available in GitLab self-hosted, **expect
-[administration](administration/index.md) tools and settings**:
+GitLab.com subscriptions generally grant access
+to the same features available in GitLab self-hosted, with some exceptions such as
+[administration](administration/index.md) tools and settings.
 
+Generally:
 - GitLab.com Free includes the same features available in GitLab Libre
 - GitLab.com Bronze includes the same features available in GitLab Starter
 - GitLab.com Silver includes the same features available in GitLab Premium
