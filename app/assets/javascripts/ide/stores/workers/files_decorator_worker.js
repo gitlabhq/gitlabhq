@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {
   decorateData,
   sortTree,
@@ -5,6 +6,19 @@ import {
 
 self.addEventListener('message', (e) => {
   const { data, projectId, branchId, tempFile = false, content = '', base64 = false } = e.data;
+=======
+import { decorateData, sortTree } from '../utils';
+
+self.addEventListener('message', e => {
+  const {
+    data,
+    projectId,
+    branchId,
+    tempFile = false,
+    content = '',
+    base64 = false,
+  } = e.data;
+>>>>>>> upstream/master
 
   const treeList = [];
   let file;
@@ -15,7 +29,13 @@ self.addEventListener('message', (e) => {
     if (pathSplit.length > 0) {
       pathSplit.reduce((pathAcc, folderName) => {
         const parentFolder = acc[pathAcc[pathAcc.length - 1]];
+<<<<<<< HEAD
         const folderPath = `${(parentFolder ? `${parentFolder.path}/` : '')}${folderName}`;
+=======
+        const folderPath = `${
+          parentFolder ? `${parentFolder.path}/` : ''
+        }${folderName}`;
+>>>>>>> upstream/master
         const foundEntry = acc[folderPath];
 
         if (!foundEntry) {
@@ -25,9 +45,17 @@ self.addEventListener('message', (e) => {
             id: folderPath,
             name: folderName,
             path: folderPath,
+<<<<<<< HEAD
             url: `/${projectId}/tree/${branchId}/${folderPath}`,
             type: 'tree',
             parentTreeUrl: parentFolder ? parentFolder.url : `/${projectId}/tree/${branchId}/`,
+=======
+            url: `/${projectId}/tree/${branchId}/${folderPath}/`,
+            type: 'tree',
+            parentTreeUrl: parentFolder
+              ? parentFolder.url
+              : `/${projectId}/tree/${branchId}/`,
+>>>>>>> upstream/master
             tempFile,
             changed: tempFile,
             opened: tempFile,
@@ -62,7 +90,13 @@ self.addEventListener('message', (e) => {
         path,
         url: `/${projectId}/blob/${branchId}/${path}`,
         type: 'blob',
+<<<<<<< HEAD
         parentTreeUrl: fileFolder ? fileFolder.url : `/${projectId}/blob/${branchId}`,
+=======
+        parentTreeUrl: fileFolder
+          ? fileFolder.url
+          : `/${projectId}/blob/${branchId}`,
+>>>>>>> upstream/master
         tempFile,
         changed: tempFile,
         content,

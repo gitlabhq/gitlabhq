@@ -54,6 +54,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.params.namespace && to.params.project) {
+<<<<<<< HEAD
     store.dispatch('getProjectData', {
       namespace: to.params.namespace,
       projectId: to.params.project,
@@ -89,6 +90,63 @@ router.beforeEach((to, from, next) => {
       flash('Error while loading the project data. Please try again.', 'alert', document, null, false, true);
       throw e;
     });
+=======
+    store
+      .dispatch('getProjectData', {
+        namespace: to.params.namespace,
+        projectId: to.params.project,
+      })
+      .then(() => {
+        const fullProjectId = `${to.params.namespace}/${to.params.project}`;
+
+        if (to.params.branch) {
+          store.dispatch('getBranchData', {
+            projectId: fullProjectId,
+            branchId: to.params.branch,
+          });
+
+          store
+            .dispatch('getFiles', {
+              projectId: fullProjectId,
+              branchId: to.params.branch,
+            })
+            .then(() => {
+              if (to.params[0]) {
+                const path =
+                  to.params[0].slice(-1) === '/'
+                    ? to.params[0].slice(0, -1)
+                    : to.params[0];
+                const treeEntry = store.state.entries[path];
+                if (treeEntry) {
+                  store.dispatch('handleTreeEntryAction', treeEntry);
+                }
+              }
+            })
+            .catch(e => {
+              flash(
+                'Error while loading the branch files. Please try again.',
+                'alert',
+                document,
+                null,
+                false,
+                true,
+              );
+              throw e;
+            });
+        }
+      })
+      .catch(e => {
+        flash(
+          'Error while loading the project data. Please try again.',
+          'alert',
+          document,
+          null,
+          false,
+          true,
+        );
+        throw e;
+      });
+>>>>>>> upstream/master
   }
 
   next();

@@ -26,11 +26,11 @@ class BuildUserInteractedProjectsTable < ActiveRecord::Migration
   def down
     execute "TRUNCATE user_interacted_projects"
 
-    if foreign_key_exists?(:user_interacted_projects, :user_id)
+    if foreign_key_exists?(:user_interacted_projects, :users)
       remove_foreign_key :user_interacted_projects, :users
     end
 
-    if foreign_key_exists?(:user_interacted_projects, :project_id)
+    if foreign_key_exists?(:user_interacted_projects, :projects)
       remove_foreign_key :user_interacted_projects, :projects
     end
 
@@ -115,7 +115,7 @@ class BuildUserInteractedProjectsTable < ActiveRecord::Migration
     end
 
     def create_fk(table, target, column)
-      return if foreign_key_exists?(table, column)
+      return if foreign_key_exists?(table, target, column: column)
 
       add_foreign_key table, target, column: column, on_delete: :cascade
     end
@@ -158,11 +158,11 @@ class BuildUserInteractedProjectsTable < ActiveRecord::Migration
         add_concurrent_index :user_interacted_projects, [:project_id, :user_id], unique: true, name: UNIQUE_INDEX_NAME
       end
 
-      unless foreign_key_exists?(:user_interacted_projects, :user_id)
+      unless foreign_key_exists?(:user_interacted_projects, :users, column: :user_id)
         add_concurrent_foreign_key :user_interacted_projects, :users, column: :user_id, on_delete: :cascade
       end
 
-      unless foreign_key_exists?(:user_interacted_projects, :project_id)
+      unless foreign_key_exists?(:user_interacted_projects, :projects, column: :project_id)
         add_concurrent_foreign_key :user_interacted_projects, :projects, column: :project_id, on_delete: :cascade
       end
     end
