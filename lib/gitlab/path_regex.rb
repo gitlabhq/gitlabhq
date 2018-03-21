@@ -33,8 +33,6 @@ module Gitlab
       favicon.ico
       files
       groups
-      header_logo_dark.png
-      header_logo_light.png
       health_check
       help
       import
