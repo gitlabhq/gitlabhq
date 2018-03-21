@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import store from 'ee/ide/stores';
-import repoFileButtons from 'ee/ide/components/repo_file_buttons.vue';
-import { file, resetStore } from '../helpers';
+import repoFileButtons from '~/ide/components/repo_file_buttons.vue';
+import createVueComponent from '../../helpers/vue_mount_component_helper';
+import { file } from '../helpers';
 
 describe('RepoFileButtons', () => {
   const activeFile = file();
@@ -13,21 +13,17 @@ describe('RepoFileButtons', () => {
     activeFile.rawPath = 'test';
     activeFile.blamePath = 'test';
     activeFile.commitsPath = 'test';
-    activeFile.active = true;
-    store.state.openFiles.push(activeFile);
 
-    return new RepoFileButtons({
-      store,
-    }).$mount();
+    return createVueComponent(RepoFileButtons, {
+      file: activeFile,
+    });
   }
 
   afterEach(() => {
     vm.$destroy();
-
-    resetStore(vm.$store);
   });
 
-  it('renders Raw, Blame, History, Permalink and Preview toggle', (done) => {
+  it('renders Raw, Blame, History, Permalink and Preview toggle', done => {
     vm = createComponent();
 
     vm.$nextTick(() => {
@@ -41,7 +37,9 @@ describe('RepoFileButtons', () => {
       expect(blame.textContent.trim()).toEqual('Blame');
       expect(history.href).toMatch(`/${activeFile.commitsPath}`);
       expect(history.textContent.trim()).toEqual('History');
-      expect(vm.$el.querySelector('.permalink').textContent.trim()).toEqual('Permalink');
+      expect(vm.$el.querySelector('.permalink').textContent.trim()).toEqual(
+        'Permalink',
+      );
 
       done();
     });

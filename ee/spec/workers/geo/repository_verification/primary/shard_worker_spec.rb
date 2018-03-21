@@ -37,11 +37,11 @@ describe Geo::RepositoryVerification::Primary::ShardWorker, :postgresql, :clean_
       create(:repository_state, :wiki_outdated, project: wiki_outdated)
 
       expect(Geo::RepositoryVerification::Primary::SingleWorker)
-        .not_to receive(:perform_async).with(verified_project.id, instance_of(Time))
+        .not_to receive(:perform_async).with(verified_project.id)
       expect(Geo::RepositoryVerification::Primary::SingleWorker)
-        .to receive(:perform_async).with(repository_outdated.id, instance_of(Time))
+        .to receive(:perform_async).with(repository_outdated.id)
       expect(Geo::RepositoryVerification::Primary::SingleWorker)
-        .to receive(:perform_async).with(wiki_outdated.id, instance_of(Time))
+        .to receive(:perform_async).with(wiki_outdated.id)
 
       subject.perform(shard_name)
     end
@@ -52,7 +52,7 @@ describe Geo::RepositoryVerification::Primary::ShardWorker, :postgresql, :clean_
       create(:repository_state, :wiki_verified, project: missing_repository_verification)
 
       expect(Geo::RepositoryVerification::Primary::SingleWorker)
-        .to receive(:perform_async).with(missing_repository_verification.id, instance_of(Time))
+        .to receive(:perform_async).with(missing_repository_verification.id)
 
       subject.perform(shard_name)
     end
@@ -63,7 +63,7 @@ describe Geo::RepositoryVerification::Primary::ShardWorker, :postgresql, :clean_
       create(:repository_state, :repository_verified, project: missing_wiki_verification)
 
       expect(Geo::RepositoryVerification::Primary::SingleWorker)
-        .to receive(:perform_async).with(missing_wiki_verification.id, instance_of(Time))
+        .to receive(:perform_async).with(missing_wiki_verification.id)
 
       subject.perform(shard_name)
     end
@@ -107,11 +107,11 @@ describe Geo::RepositoryVerification::Primary::ShardWorker, :postgresql, :clean_
       create(:repository_state, :repository_outdated, project: missing_outdated)
 
       expect(Geo::RepositoryVerification::Primary::SingleWorker)
-        .to receive(:perform_async).with(healthy_unverified.id, instance_of(Time))
+        .to receive(:perform_async).with(healthy_unverified.id)
       expect(Geo::RepositoryVerification::Primary::SingleWorker)
-        .not_to receive(:perform_async).with(missing_not_verified.id, instance_of(Time))
+        .not_to receive(:perform_async).with(missing_not_verified.id)
       expect(Geo::RepositoryVerification::Primary::SingleWorker)
-      .not_to receive(:perform_async).with(missing_outdated.id, instance_of(Time))
+      .not_to receive(:perform_async).with(missing_outdated.id)
 
       Sidekiq::Testing.inline! { subject.perform(shard_name) }
     end

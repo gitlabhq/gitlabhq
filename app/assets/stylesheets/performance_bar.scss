@@ -1,8 +1,8 @@
-@import "framework/variables";
-@import "peek/views/performance_bar";
-@import "peek/views/rblineprof";
+@import 'framework/variables';
+@import 'peek/views/performance_bar';
+@import 'peek/views/rblineprof';
 
-#peek {
+#js-peek {
   position: fixed;
   left: 0;
   top: 0;
@@ -21,14 +21,26 @@
 
   &.production {
     background-color: $perf-bar-production;
+
+    select {
+      background: $perf-bar-production;
+    }
   }
 
   &.staging {
     background-color: $perf-bar-staging;
+
+    select {
+      background: $perf-bar-staging;
+    }
   }
 
   &.development {
     background-color: $perf-bar-development;
+
+    select {
+      background: $perf-bar-development;
+    }
   }
 
   .wrapper {
@@ -42,11 +54,12 @@
     background: $perf-bar-bucket-bg;
     display: inline-block;
     padding: 4px 6px;
-    font-family: Consolas, "Liberation Mono", Courier, monospace;
+    font-family: Consolas, 'Liberation Mono', Courier, monospace;
     line-height: 1;
     color: $perf-bar-bucket-color;
     border-radius: 3px;
-    box-shadow: 0 1px 0 $perf-bar-bucket-box-shadow-from, inset 0 1px 2px $perf-bar-bucket-box-shadow-to;
+    box-shadow: 0 1px 0 $perf-bar-bucket-box-shadow-from,
+      inset 0 1px 2px $perf-bar-bucket-box-shadow-to;
 
     .hidden {
       display: none;
@@ -93,6 +106,10 @@
     &.expandable:hover.css-truncate-target {
       max-width: 10000px !important;
     }
+  }
+
+  .performance-bar-modal .modal-footer {
+    display: none;
   }
 }
 

@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import store from 'ee/ide/stores';
-import repoTab from 'ee/ide/components/repo_tab.vue';
-import router from 'ee/ide/ide_router';
+import store from '~/ide/stores';
+import repoTab from '~/ide/components/repo_tab.vue';
+import router from '~/ide/ide_router';
 import { file, resetStore } from '../helpers';
 
 describe('RepoTab', () => {
@@ -21,6 +21,8 @@ describe('RepoTab', () => {
   });
 
   afterEach(() => {
+    vm.$destroy();
+
     resetStore(vm.$store);
   });
 
@@ -57,10 +59,10 @@ describe('RepoTab', () => {
 
     vm.$el.querySelector('.multi-file-tab-close').click();
 
-    expect(vm.closeFile).toHaveBeenCalledWith(vm.tab);
+    expect(vm.closeFile).toHaveBeenCalledWith(vm.tab.path);
   });
 
-  it('changes icon on hover', (done) => {
+  it('changes icon on hover', done => {
     const tab = file();
     tab.changed = true;
     vm = createComponent({
@@ -110,13 +112,15 @@ describe('RepoTab', () => {
     });
 
     it('renders a tooltip', () => {
-      expect(vm.$el.querySelector('span:nth-child(2)').dataset.originalTitle).toContain('Locked by testuser');
+      expect(
+        vm.$el.querySelector('span:nth-child(2)').dataset.originalTitle,
+      ).toContain('Locked by testuser');
     });
   });
 
   describe('methods', () => {
     describe('closeTab', () => {
-      it('closes tab if file has changed', (done) => {
+      it('closes tab if file has changed', done => {
         const tab = file();
         tab.changed = true;
         tab.opened = true;
@@ -125,7 +129,8 @@ describe('RepoTab', () => {
         });
         vm.$store.state.openFiles.push(tab);
         vm.$store.state.changedFiles.push(tab);
-        vm.$store.dispatch('setFileActive', tab);
+        vm.$store.state.entries[tab.path] = tab;
+        vm.$store.dispatch('setFileActive', tab.path);
 
         vm.$el.querySelector('.multi-file-tab-close').click();
 
@@ -137,14 +142,15 @@ describe('RepoTab', () => {
         });
       });
 
-      it('closes tab when clicking close btn', (done) => {
+      it('closes tab when clicking close btn', done => {
         const tab = file('lose');
         tab.opened = true;
         vm = createComponent({
           tab,
         });
         vm.$store.state.openFiles.push(tab);
-        vm.$store.dispatch('setFileActive', tab);
+        vm.$store.state.entries[tab.path] = tab;
+        vm.$store.dispatch('setFileActive', tab.path);
 
         vm.$el.querySelector('.multi-file-tab-close').click();
 

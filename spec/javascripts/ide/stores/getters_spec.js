@@ -1,5 +1,5 @@
-import * as getters from 'ee/ide/stores/getters';
-import state from 'ee/ide/stores/state';
+import * as getters from '~/ide/stores/getters';
+import state from '~/ide/stores/state';
 import { file } from '../helpers';
 
 describe('Multi-file store getters', () => {
@@ -23,52 +23,6 @@ describe('Multi-file store getters', () => {
       localState.openFiles.push(file('active'));
 
       expect(getters.activeFile(localState)).toBeNull();
-    });
-  });
-
-  describe('activeFileExtension', () => {
-    it('returns the file extension for the current active file', () => {
-      localState.openFiles.push(file('active'));
-      localState.openFiles[0].active = true;
-      localState.openFiles[0].path = 'test.js';
-
-      expect(getters.activeFileExtension(localState)).toBe('.js');
-
-      localState.openFiles[0].path = 'test.es6.js';
-
-      expect(getters.activeFileExtension(localState)).toBe('.js');
-    });
-  });
-
-  describe('canEditFile', () => {
-    beforeEach(() => {
-      localState.onTopOfBranch = true;
-      localState.canCommit = true;
-
-      localState.openFiles.push(file());
-      localState.openFiles[0].active = true;
-    });
-
-    it('returns true if user can commit and has open files', () => {
-      expect(getters.canEditFile(localState)).toBeTruthy();
-    });
-
-    it('returns false if user can commit and has no open files', () => {
-      localState.openFiles = [];
-
-      expect(getters.canEditFile(localState)).toBeFalsy();
-    });
-
-    it('returns false if user can commit and active file is binary', () => {
-      localState.openFiles[0].binary = true;
-
-      expect(getters.canEditFile(localState)).toBeFalsy();
-    });
-
-    it('returns false if user cant commit', () => {
-      localState.canCommit = false;
-
-      expect(getters.canEditFile(localState)).toBeFalsy();
     });
   });
 

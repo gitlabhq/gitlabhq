@@ -1,7 +1,6 @@
-import Vue from 'vue';
 import * as urlUtils from '~/lib/utils/url_utility';
-import store from 'ee/ide/stores';
-import router from 'ee/ide/ide_router';
+import store from '~/ide/stores';
+import router from '~/ide/ide_router';
 import { resetStore, file } from '../helpers';
 
 describe('Multi-file store actions', () => {
@@ -14,10 +13,11 @@ describe('Multi-file store actions', () => {
   });
 
   describe('redirectToUrl', () => {
-    it('calls visitUrl', (done) => {
+    it('calls visitUrl', done => {
       spyOn(urlUtils, 'visitUrl');
 
-      store.dispatch('redirectToUrl', 'test')
+      store
+        .dispatch('redirectToUrl', 'test')
         .then(() => {
           expect(urlUtils.visitUrl).toHaveBeenCalledWith('test');
 
@@ -28,8 +28,9 @@ describe('Multi-file store actions', () => {
   });
 
   describe('setInitialData', () => {
-    it('commits initial data', (done) => {
-      store.dispatch('setInitialData', { canCommit: true })
+    it('commits initial data', done => {
+      store
+        .dispatch('setInitialData', { canCommit: true })
         .then(() => {
           expect(store.state.canCommit).toBeTruthy();
           done();
@@ -45,10 +46,12 @@ describe('Multi-file store actions', () => {
 
       store.state.openFiles.push(f);
       store.state.changedFiles.push(f);
+      store.state.entries[f.path] = f;
     });
 
-    it('discards changes in file', (done) => {
-      store.dispatch('discardAllChanges')
+    it('discards changes in file', done => {
+      store
+        .dispatch('discardAllChanges')
         .then(() => {
           expect(store.state.openFiles.changed).toBeFalsy();
         })
@@ -56,8 +59,9 @@ describe('Multi-file store actions', () => {
         .catch(done.fail);
     });
 
-    it('removes all files from changedFiles state', (done) => {
-      store.dispatch('discardAllChanges')
+    it('removes all files from changedFiles state', done => {
+      store
+        .dispatch('discardAllChanges')
         .then(() => {
           expect(store.state.changedFiles.length).toBe(0);
           expect(store.state.openFiles.length).toBe(1);
@@ -69,12 +73,15 @@ describe('Multi-file store actions', () => {
 
   describe('closeAllFiles', () => {
     beforeEach(() => {
-      store.state.openFiles.push(file('closeAll'));
+      const f = file('closeAll');
+      store.state.openFiles.push(f);
       store.state.openFiles[0].opened = true;
+      store.state.entries[f.path] = f;
     });
 
-    it('closes all open files', (done) => {
-      store.dispatch('closeAllFiles')
+    it('closes all open files', done => {
+      store
+        .dispatch('closeAllFiles')
         .then(() => {
           expect(store.state.openFiles.length).toBe(0);
 
@@ -84,58 +91,13 @@ describe('Multi-file store actions', () => {
     });
   });
 
-  describe('toggleEditMode', () => {
-    it('toggles edit mode', (done) => {
-      store.state.editMode = true;
-
-      store.dispatch('toggleEditMode')
-        .then(() => {
-          expect(store.state.editMode).toBeFalsy();
-
-          done();
-        }).catch(done.fail);
-    });
-
-    it('sets preview mode', (done) => {
-      store.state.currentBlobView = 'repo-editor';
-      store.state.editMode = true;
-
-      store.dispatch('toggleEditMode')
-        .then(Vue.nextTick)
-        .then(() => {
-          expect(store.state.currentBlobView).toBe('repo-preview');
-
-          done();
-        }).catch(done.fail);
-    });
-  });
-
-  describe('toggleBlobView', () => {
-    it('sets edit mode view if in edit mode', (done) => {
-      store.dispatch('toggleBlobView')
-        .then(() => {
-          expect(store.state.currentBlobView).toBe('repo-editor');
-
-          done();
-        })
-        .catch(done.fail);
-    });
-
-    it('sets preview mode view if not in edit mode', (done) => {
-      store.state.editMode = false;
-
-      store.dispatch('toggleBlobView')
-      .then(() => {
-        expect(store.state.currentBlobView).toBe('repo-preview');
-
-        done();
-      })
-      .catch(done.fail);
-    });
-  });
-
   describe('createTempEntry', () => {
     beforeEach(() => {
+      document.body.innerHTML += '<div class="flash-container"></div>';
+
+      store.state.currentProjectId = 'abcproject';
+      store.state.currentBranchId = 'mybranch';
+
       store.state.trees['abcproject/mybranch'] = {
         tree: [],
       };
@@ -144,60 +106,179 @@ describe('Multi-file store actions', () => {
       };
     });
 
-    it('creates a temp tree', (done) => {
-      const projectTree = store.state.trees['abcproject/mybranch'];
-
-      store.dispatch('createTempEntry', {
-        projectId: 'abcproject',
-        branchId: 'mybranch',
-        parent: projectTree,
-        name: 'test',
-        type: 'tree',
-      })
-      .then(() => {
-        const baseTree = projectTree.tree;
-        expect(baseTree.length).toBe(1);
-        expect(baseTree[0].tempFile).toBeTruthy();
-        expect(baseTree[0].type).toBe('tree');
-
-        done();
-      })
-      .catch(done.fail);
+    afterEach(() => {
+      document.querySelector('.flash-container').remove();
     });
 
-    it('creates temp file', (done) => {
-      const projectTree = store.state.trees['abcproject/mybranch'];
+    describe('tree', () => {
+      it('creates temp tree', done => {
+        store
+          .dispatch('createTempEntry', {
+            branchId: store.state.currentBranchId,
+            name: 'test',
+            type: 'tree',
+          })
+          .then(() => {
+            const entry = store.state.entries.test;
 
-      store.dispatch('createTempEntry', {
-        projectId: 'abcproject',
-        branchId: 'mybranch',
-        parent: projectTree,
-        name: 'test',
-        type: 'blob',
-      })
-      .then(() => {
-        const baseTree = projectTree.tree;
-        expect(baseTree.length).toBe(1);
-        expect(baseTree[0].tempFile).toBeTruthy();
-        expect(baseTree[0].type).toBe('blob');
+            expect(entry).not.toBeNull();
+            expect(entry.type).toBe('tree');
 
-        done();
-      })
-      .catch(done.fail);
+            done();
+          })
+          .catch(done.fail);
+      });
+
+      it('creates new folder inside another tree', done => {
+        const tree = {
+          type: 'tree',
+          name: 'testing',
+          path: 'testing',
+          tree: [],
+        };
+
+        store.state.entries[tree.path] = tree;
+
+        store
+          .dispatch('createTempEntry', {
+            branchId: store.state.currentBranchId,
+            name: 'testing/test',
+            type: 'tree',
+          })
+          .then(() => {
+            expect(tree.tree[0].tempFile).toBeTruthy();
+            expect(tree.tree[0].name).toBe('test');
+            expect(tree.tree[0].type).toBe('tree');
+
+            done();
+          })
+          .catch(done.fail);
+      });
+
+      it('does not create new tree if already exists', done => {
+        const tree = {
+          type: 'tree',
+          path: 'testing',
+          tempFile: false,
+          tree: [],
+        };
+
+        store.state.entries[tree.path] = tree;
+
+        store
+          .dispatch('createTempEntry', {
+            branchId: store.state.currentBranchId,
+            name: 'testing',
+            type: 'tree',
+          })
+          .then(() => {
+            expect(store.state.entries[tree.path].tempFile).toEqual(false);
+            expect(document.querySelector('.flash-alert')).not.toBeNull();
+
+            done();
+          })
+          .catch(done.fail);
+      });
+    });
+
+    describe('blob', () => {
+      it('creates temp file', done => {
+        store
+          .dispatch('createTempEntry', {
+            name: 'test',
+            branchId: 'mybranch',
+            type: 'blob',
+          })
+          .then(f => {
+            expect(f.tempFile).toBeTruthy();
+            expect(store.state.trees['abcproject/mybranch'].tree.length).toBe(
+              1,
+            );
+
+            done();
+          })
+          .catch(done.fail);
+      });
+
+      it('adds tmp file to open files', done => {
+        store
+          .dispatch('createTempEntry', {
+            name: 'test',
+            branchId: 'mybranch',
+            type: 'blob',
+          })
+          .then(f => {
+            expect(store.state.openFiles.length).toBe(1);
+            expect(store.state.openFiles[0].name).toBe(f.name);
+
+            done();
+          })
+          .catch(done.fail);
+      });
+
+      it('adds tmp file to changed files', done => {
+        store
+          .dispatch('createTempEntry', {
+            name: 'test',
+            branchId: 'mybranch',
+            type: 'blob',
+          })
+          .then(f => {
+            expect(store.state.changedFiles.length).toBe(1);
+            expect(store.state.changedFiles[0].name).toBe(f.name);
+
+            done();
+          })
+          .catch(done.fail);
+      });
+
+      it('sets tmp file as active', done => {
+        store
+          .dispatch('createTempEntry', {
+            name: 'test',
+            branchId: 'mybranch',
+            type: 'blob',
+          })
+          .then(f => {
+            expect(f.active).toBeTruthy();
+
+            done();
+          })
+          .catch(done.fail);
+      });
+
+      it('creates flash message if file already exists', done => {
+        const f = file('test', '1', 'blob');
+        store.state.trees['abcproject/mybranch'].tree = [f];
+        store.state.entries[f.path] = f;
+
+        store
+          .dispatch('createTempEntry', {
+            name: 'test',
+            branchId: 'mybranch',
+            type: 'blob',
+          })
+          .then(() => {
+            expect(document.querySelector('.flash-alert')).not.toBeNull();
+
+            done();
+          })
+          .catch(done.fail);
+      });
     });
   });
 
-  describe('popHistoryState', () => {
-
-  });
+  describe('popHistoryState', () => {});
 
   describe('scrollToTab', () => {
-    it('focuses the current active element', (done) => {
-      document.body.innerHTML += '<div id="tabs"><div class="active"><div class="repo-tab"></div></div></div>';
+    it('focuses the current active element', done => {
+      document.body.innerHTML +=
+        '<div id="tabs"><div class="active"><div class="repo-tab"></div></div></div>';
       const el = document.querySelector('.repo-tab');
       spyOn(el, 'focus');
 
-      store.dispatch('scrollToTab')
+      store
+        .dispatch('scrollToTab')
         .then(() => {
           setTimeout(() => {
             expect(el.focus).toHaveBeenCalled();
@@ -212,8 +293,9 @@ describe('Multi-file store actions', () => {
   });
 
   describe('updateViewer', () => {
-    it('updates viewer state', (done) => {
-      store.dispatch('updateViewer', 'diff')
+    it('updates viewer state', done => {
+      store
+        .dispatch('updateViewer', 'diff')
         .then(() => {
           expect(store.state.viewer).toBe('diff');
         })

@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import listItem from 'ee/ide/components/commit_sidebar/list_item.vue';
-import router from 'ee/ide/ide_router';
+import listItem from '~/ide/components/commit_sidebar/list_item.vue';
+import router from '~/ide/ide_router';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { file } from '../../helpers';
 
@@ -23,7 +23,9 @@ describe('Multi-file editor commit sidebar list item', () => {
   });
 
   it('renders file path', () => {
-    expect(vm.$el.querySelector('.multi-file-commit-list-path').textContent.trim()).toBe(f.path);
+    expect(
+      vm.$el.querySelector('.multi-file-commit-list-path').textContent.trim(),
+    ).toBe(f.path);
   });
 
   it('calls discardFileChanges when clicking discard button', () => {

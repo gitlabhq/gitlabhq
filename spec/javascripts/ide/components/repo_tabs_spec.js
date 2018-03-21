@@ -1,44 +1,38 @@
 import Vue from 'vue';
-import store from 'ee/ide/stores';
-import repoTabs from 'ee/ide/components/repo_tabs.vue';
-import { file, resetStore } from '../helpers';
+import repoTabs from '~/ide/components/repo_tabs.vue';
+import createComponent from '../../helpers/vue_mount_component_helper';
+import { file } from '../helpers';
 
 describe('RepoTabs', () => {
   const openedFiles = [file('open1'), file('open2')];
+  const RepoTabs = Vue.extend(repoTabs);
   let vm;
-
-  function createComponent(el = null) {
-    const RepoTabs = Vue.extend(repoTabs);
-
-    return new RepoTabs({
-      store,
-    }).$mount(el);
-  }
 
   afterEach(() => {
     vm.$destroy();
-
-    resetStore(vm.$store);
   });
 
-  it('renders a list of tabs', (done) => {
-    vm = createComponent();
+  it('renders a list of tabs', done => {
+    vm = createComponent(RepoTabs, {
+      files: openedFiles,
+      viewer: 'editor',
+      hasChanges: false,
+    });
     openedFiles[0].active = true;
-    vm.$store.state.openFiles = openedFiles;
 
     vm.$nextTick(() => {
       const tabs = [...vm.$el.querySelectorAll('.multi-file-tab')];
 
       expect(tabs.length).toEqual(2);
-      expect(tabs[0].classList.contains('active')).toBeTruthy();
-      expect(tabs[1].classList.contains('active')).toBeFalsy();
+      expect(tabs[0].classList.contains('active')).toEqual(true);
+      expect(tabs[1].classList.contains('active')).toEqual(false);
 
       done();
     });
   });
 
   describe('updated', () => {
-    it('sets showShadow as true when scroll width is larger than width', (done) => {
+    it('sets showShadow as true when scroll width is larger than width', done => {
       const el = document.createElement('div');
       el.innerHTML = '<div id="test-app"></div>';
       document.body.appendChild(el);
@@ -56,18 +50,26 @@ describe('RepoTabs', () => {
       `;
       document.head.appendChild(style);
 
-      vm = createComponent('#test-app');
-      openedFiles[0].active = true;
+      vm = createComponent(
+        RepoTabs,
+        {
+          files: [],
+          viewer: 'editor',
+          hasChanges: false,
+        },
+        '#test-app',
+      );
 
-      vm.$nextTick()
+      vm
+        .$nextTick()
         .then(() => {
-          expect(vm.showShadow).toBeFalsy();
+          expect(vm.showShadow).toEqual(false);
 
-          vm.$store.state.openFiles = openedFiles;
+          vm.files = openedFiles;
         })
         .then(vm.$nextTick)
         .then(() => {
-          expect(vm.showShadow).toBeTruthy();
+          expect(vm.showShadow).toEqual(true);
 
           style.remove();
           el.remove();

@@ -84,12 +84,12 @@ module Geo
       end
     end
 
-    # find all registries that need a repository or wiki verified
-    def find_registries_to_verify
+    # Find all registries that need a repository or wiki verification
+    def find_registries_to_verify(batch_size:)
       if use_legacy_queries?
-        legacy_find_registries_to_verify
+        legacy_find_registries_to_verify(batch_size: batch_size)
       else
-        fdw_find_registries_to_verify
+        fdw_find_registries_to_verify(batch_size: batch_size)
       end
     end
 
@@ -151,34 +151,6 @@ module Geo
       end
     end
 
-    def conditions_for_verification(type, use_fdw = true)
-      last_verification_failed  = "last_#{type}_verification_failed".to_sym
-      verification_checksum     = "#{type}_verification_checksum".to_sym
-      last_verification_at      = "last_#{type}_verification_at".to_sym
-
-      state_arel = use_fdw ? fdw_repository_state_arel : legacy_repository_state_arel
-
-      # primary verification did not fail
-      primary_verification_not_failed = state_arel[last_verification_failed].eq(false)
-
-      # primary checksum is not NULL
-      primary_has_checksum = state_arel[verification_checksum].not_eq(nil)
-
-      # primary was verified later than the secondary verification
-      primary_recently_verified = state_arel[last_verification_at].gt(registry_arel[last_verification_at])
-                                    .or(registry_arel[last_verification_at].eq(nil))
-
-      # secondary verification failed and the last verification was over 24.hours.ago
-      # this allows us to retry any verification failures if they haven't already corrected themselves
-      secondary_failure_period = registry_arel[last_verification_at].lt(24.hours.ago)
-                                   .and(registry_arel[last_verification_failed].eq(true))
-
-      primary_verification_not_failed
-        .and(primary_has_checksum)
-        .and(primary_recently_verified)
-        .or(secondary_failure_period)
-    end
-
     #
     # FDW accessors
     #
@@ -213,12 +185,28 @@ module Geo
           .merge(Geo::ProjectRegistry.retry_due)
     end
 
-    # find all registries that need a repository or wiki verified
+    # Find all registries that repository or wiki need verification
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of registries that need verification
-    def fdw_find_registries_to_verify
+    def fdw_find_registries_to_verify(batch_size:)
       Geo::ProjectRegistry
-        .joins("LEFT OUTER JOIN #{fdw_repository_state_table} ON #{fdw_repository_state_table}.project_id = project_registry.project_id")
-        .where(conditions_for_verification(:repository, true).or(conditions_for_verification(:wiki, true)))
+        .joins(fdw_inner_join_repository_state)
+        .where(
+          local_registry_table[:repository_verification_checksum].eq(nil).or(
+            local_registry_table[:wiki_verification_checksum].eq(nil)
+          )
+        )
+        .where(
+          fdw_repository_state_table[:repository_verification_checksum].not_eq(nil).or(
+            fdw_repository_state_table[:wiki_verification_checksum].not_eq(nil)
+          )
+        ).limit(batch_size)
+    end
+
+    def fdw_inner_join_repository_state
+      local_registry_table
+        .join(fdw_repository_state_table, Arel::Nodes::InnerJoin)
+        .on(local_registry_table[:project_id].eq(fdw_repository_state_table[:project_id]))
+        .join_sources
     end
 
     #
@@ -311,44 +299,42 @@ module Geo
     end
 
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of registries that need verification
-    def legacy_find_registries_to_verify
-      registries = Geo::ProjectRegistry
-        .pluck(:project_id, :last_repository_verification_at, :last_wiki_verification_at,
-               :last_repository_verification_failed, :last_wiki_verification_failed)
+    def legacy_find_registries_to_verify(batch_size:)
+      registries = Geo::ProjectRegistry.where(
+        local_registry_table[:repository_verification_checksum].eq(nil).or(
+          local_registry_table[:wiki_verification_checksum].eq(nil)
+        )
+      ).pluck(:project_id)
 
       return Geo::ProjectRegistry.none if registries.empty?
 
-      id_and_values = registries.map do |project_id, repo_at, wiki_at, repo_failed, wiki_failed|
-        "(#{project_id}, to_timestamp(#{repo_at.to_i}), to_timestamp(#{wiki_at.to_i}),
-          #{quote_value(repo_failed)}, #{quote_value(wiki_failed)})"
-      end
+      id_and_want_to_sync = registries.map { |project_id| "(#{project_id}, #{quote_value(true)})" }
 
-      joined_relation = ProjectRepositoryState.joins(<<~SQL)
-        INNER JOIN
-        (VALUES #{id_and_values.join(',')})
-        project_registry(project_id, last_repository_verification_at, last_wiki_verification_at,
-                         last_repository_verification_failed, last_wiki_verification_failed)
-        ON #{ProjectRepositoryState.table_name}.project_id = project_registry.project_id
-      SQL
+      joined_relation =
+        ProjectRepositoryState.joins(<<~SQL)
+          INNER JOIN
+          (VALUES #{id_and_want_to_sync.join(',')})
+          project_registry(project_id, want_to_sync)
+          ON #{legacy_repository_state_table.name}.project_id = project_registry.project_id
+        SQL
 
       project_ids = joined_relation
-        .where(conditions_for_verification(:repository, false).or(conditions_for_verification(:wiki, false)))
-        .pluck(:project_id)
+        .where(
+          legacy_repository_state_table[:repository_verification_checksum].not_eq(nil).or(
+            legacy_repository_state_table[:wiki_verification_checksum].not_eq(nil)
+          )
+        ).where(
+          project_registry: { want_to_sync: true }
+        ).limit(batch_size).pluck(:project_id)
 
-      ::Geo::ProjectRegistry.where(project_id: project_ids)
+      Geo::ProjectRegistry.where(project_id: project_ids)
     end
 
-    private
-
-    def registry_arel
+    def local_registry_table
       Geo::ProjectRegistry.arel_table
     end
 
-    def fdw_repository_state_arel
-      Geo::Fdw::ProjectRepositoryState.arel_table
-    end
-
-    def legacy_repository_state_arel
+    def legacy_repository_state_table
       ::ProjectRepositoryState.arel_table
     end
 
@@ -357,7 +343,7 @@ module Geo
     end
 
     def fdw_repository_state_table
-      Geo::Fdw::ProjectRepositoryState.table_name
+      Geo::Fdw::ProjectRepositoryState.arel_table
     end
   end
 end

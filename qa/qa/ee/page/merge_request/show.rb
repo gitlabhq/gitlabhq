@@ -5,7 +5,7 @@ module QA
         module Show
           def self.prepended(page)
             page.module_eval do
-              view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_sha_mismatch.js' do
+              view 'app/assets/javascripts/vue_merge_request_widget/components/states/sha_mismatch.vue' do
                 element :head_mismatch, "The source branch HEAD has recently changed."
               end
 

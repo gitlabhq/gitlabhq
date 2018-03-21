@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-13 20:43+0100\n"
-"PO-Revision-Date: 2018-03-13 20:43+0100\n"
+"POT-Creation-Date: 2018-03-14 16:41+0100\n"
+"PO-Revision-Date: 2018-03-14 16:41+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -1602,6 +1602,9 @@ msgstr ""
 msgid "Enable Auto DevOps"
 msgstr ""
 
+msgid "Enable classification control using an external service"
+msgstr ""
+
 msgid "Environments|An error occurred while fetching the environments."
 msgstr ""
 
@@ -1738,6 +1741,9 @@ msgid "External Classification Policy Authorization"
 msgstr ""
 
 msgid "External authorization denied access to this project"
+msgstr ""
+
+msgid "External authorization request timeout"
 msgstr ""
 
 msgid "ExternalAuthorizationService|Classification Label"
@@ -2144,6 +2150,9 @@ msgid "History"
 msgstr ""
 
 msgid "Housekeeping successfully started"
+msgstr ""
+
+msgid "If enabled, access to projects will be validated on an external service using their classification label."
 msgstr ""
 
 msgid "If using GitHub, you’ll see pipeline statuses on GitHub for your commits and pull requests. %{more_info_link}"
@@ -3977,6 +3986,9 @@ msgid "Time before an issue starts implementation"
 msgstr ""
 
 msgid "Time between merge request creation and merge/close"
+msgstr ""
+
+msgid "Time in seconds GitLab will wait for a response from the external service. When the service does not respond in time, access will be denied."
 msgstr ""
 
 msgid "Time tracking"

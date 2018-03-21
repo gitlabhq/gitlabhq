@@ -1,6 +1,4 @@
-import * as utils from 'ee/ide/stores/utils';
-import state from 'ee/ide/stores/state';
-import { file } from '../helpers';
+import * as utils from '~/ide/stores/utils';
 
 describe('Multi-file store utils', () => {
   describe('setPageTitle', () => {
@@ -11,72 +9,18 @@ describe('Multi-file store utils', () => {
     });
   });
 
-  describe('treeList', () => {
-    let localState;
-
-    beforeEach(() => {
-      localState = state();
-    });
-
-    it('returns flat tree list', () => {
-      localState.trees = [];
-      localState.trees['abcproject/mybranch'] = {
-        tree: [],
-      };
-      const baseTree = localState.trees['abcproject/mybranch'].tree;
-      baseTree.push(file('1'));
-      baseTree[0].tree.push(file('2'));
-      baseTree[0].tree[0].tree.push(file('3'));
-
-      const treeList = utils.treeList(localState, 'abcproject/mybranch');
-
-      expect(treeList.length).toBe(3);
-      expect(treeList[1].name).toBe(baseTree[0].tree[0].name);
-      expect(treeList[2].name).toBe(baseTree[0].tree[0].tree[0].name);
-    });
-  });
-
-  describe('createTemp', () => {
-    it('creates temp tree', () => {
-      const tmp = utils.createTemp({
-        name: 'test',
-        path: 'test',
-        type: 'tree',
-        level: 0,
-        changed: false,
-        content: '',
-        base64: '',
-      });
-
-      expect(tmp.tempFile).toBeTruthy();
-      expect(tmp.icon).toBe('fa-folder');
-    });
-
-    it('creates temp file', () => {
-      const tmp = utils.createTemp({
-        name: 'test',
-        path: 'test',
-        type: 'blob',
-        level: 0,
-        changed: false,
-        content: '',
-        base64: '',
-      });
-
-      expect(tmp.tempFile).toBeTruthy();
-      expect(tmp.icon).toBe('fa-file-text-o');
-    });
-  });
-
   describe('findIndexOfFile', () => {
     let localState;
 
     beforeEach(() => {
-      localState = [{
-        path: '1',
-      }, {
-        path: '2',
-      }];
+      localState = [
+        {
+          path: '1',
+        },
+        {
+          path: '2',
+        },
+      ];
     });
 
     it('finds in the index of an entry by path', () => {
@@ -93,13 +37,16 @@ describe('Multi-file store utils', () => {
 
     beforeEach(() => {
       localState = {
-        tree: [{
-          type: 'tree',
-          name: 'test',
-        }, {
-          type: 'blob',
-          name: 'file',
-        }],
+        tree: [
+          {
+            type: 'tree',
+            name: 'test',
+          },
+          {
+            type: 'blob',
+            name: 'file',
+          },
+        ],
       };
     });
 

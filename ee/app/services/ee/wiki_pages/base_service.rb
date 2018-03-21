@@ -16,8 +16,7 @@ module EE
 
       def process_wiki_repository_update
         if ::Gitlab::Geo.primary?
-          # Create wiki repository updated event on Geo event log
-          ::Geo::RepositoryUpdatedEventStore.new(project, source: ::Geo::RepositoryUpdatedEvent::WIKI).create
+          ::Geo::RepositoryUpdatedService.new(project, source: ::Geo::RepositoryUpdatedEvent::WIKI).execute
         end
       end
     end

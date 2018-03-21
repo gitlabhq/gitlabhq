@@ -1,5 +1,5 @@
-import mutations from 'ee/ide/stores/mutations/tree';
-import state from 'ee/ide/stores/state';
+import mutations from '~/ide/stores/mutations/tree';
+import state from '~/ide/stores/state';
 import { file } from '../../helpers';
 
 describe('Multi-file store tree mutations', () => {
@@ -9,63 +9,51 @@ describe('Multi-file store tree mutations', () => {
   beforeEach(() => {
     localState = state();
     localTree = file();
+
+    localState.entries[localTree.path] = localTree;
   });
 
   describe('TOGGLE_TREE_OPEN', () => {
     it('toggles tree open', () => {
-      mutations.TOGGLE_TREE_OPEN(localState, localTree);
+      mutations.TOGGLE_TREE_OPEN(localState, localTree.path);
 
       expect(localTree.opened).toBeTruthy();
 
-      mutations.TOGGLE_TREE_OPEN(localState, localTree);
+      mutations.TOGGLE_TREE_OPEN(localState, localTree.path);
 
       expect(localTree.opened).toBeFalsy();
     });
   });
 
   describe('SET_DIRECTORY_DATA', () => {
-    const data = [{
-      name: 'tree',
-    },
-    {
-      name: 'submodule',
-    },
-    {
-      name: 'blob',
-    }];
+    const data = [
+      {
+        name: 'tree',
+      },
+      {
+        name: 'submodule',
+      },
+      {
+        name: 'blob',
+      },
+    ];
 
     it('adds directory data', () => {
+      localState.trees['project/master'] = {
+        tree: [],
+      };
+
       mutations.SET_DIRECTORY_DATA(localState, {
         data,
-        tree: localState,
+        treePath: 'project/master',
       });
 
-      expect(localState.tree.length).toBe(3);
-      expect(localState.tree[0].name).toBe('tree');
-      expect(localState.tree[1].name).toBe('submodule');
-      expect(localState.tree[2].name).toBe('blob');
-    });
-  });
+      const tree = localState.trees['project/master'];
 
-  describe('SET_PARENT_TREE_URL', () => {
-    it('sets the parent tree url', () => {
-      mutations.SET_PARENT_TREE_URL(localState, 'test');
-
-      expect(localState.parentTreeUrl).toBe('test');
-    });
-  });
-
-  describe('CREATE_TMP_TREE', () => {
-    it('adds tree into parent tree', () => {
-      const tmpEntry = file('tmpTree');
-
-      mutations.CREATE_TMP_TREE(localState, {
-        tmpEntry,
-        parent: localTree,
-      });
-
-      expect(localTree.tree.length).toBe(1);
-      expect(localTree.tree[0].name).toBe(tmpEntry.name);
+      expect(tree.tree.length).toBe(3);
+      expect(tree.tree[0].name).toBe('tree');
+      expect(tree.tree[1].name).toBe('submodule');
+      expect(tree.tree[2].name).toBe('blob');
     });
   });
 

@@ -3,7 +3,7 @@ import _ from 'underscore';
 import Vue from 'vue';
 import notesApp from '~/notes/components/notes_app.vue';
 import service from '~/notes/services/notes_service';
-import '~/render_gfm';
+import '~/behaviors/markdown/render_gfm';
 import * as mockData from '../mock_data';
 
 const vueMatchers = {

@@ -85,7 +85,8 @@ describe Admin::ApplicationSettingsController do
         {
           external_authorization_service_enabled: true,
           external_authorization_service_url: 'https://custom.service/',
-          external_authorization_service_default_label: 'default'
+          external_authorization_service_default_label: 'default',
+          external_authorization_service_timeout: 3
         }
       end
       let(:feature) { :external_authorization_service }

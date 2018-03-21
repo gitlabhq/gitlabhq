@@ -8,7 +8,7 @@ class Milestone < ActiveRecord::Base
   Started = MilestoneStruct.new('Started', '#started', -3)
 
   include CacheMarkdownField
-  include InternalId
+  include NonatomicInternalId
   include Sortable
   include Referable
   include StripAttribute

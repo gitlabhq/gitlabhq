@@ -34,6 +34,12 @@ describe NotificationService, :mailer do
       should_not_email_anyone
     end
 
+    it 'emails new mentions despite being unsubscribed' do
+      send_notifications(@unsubscribed_mentioned)
+
+      should_only_email(@unsubscribed_mentioned)
+    end
+
     it 'sends the proper notification reason header' do
       send_notifications(@u_watcher)
       should_only_email(@u_watcher)
@@ -122,7 +128,7 @@ describe NotificationService, :mailer do
       let(:project) { create(:project, :private) }
       let(:issue) { create(:issue, project: project, assignees: [assignee]) }
       let(:mentioned_issue) { create(:issue, assignees: issue.assignees) }
-      let(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@mention referenced, @outsider also') }
+      let(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@mention referenced, @unsubscribed_mentioned and @outsider also') }
 
       before do
         build_team(note.project)
@@ -150,7 +156,7 @@ describe NotificationService, :mailer do
           add_users_with_subscription(note.project, issue)
           reset_delivered_emails!
 
-          expect(SentNotification).to receive(:record).with(issue, any_args).exactly(9).times
+          expect(SentNotification).to receive(:record).with(issue, any_args).exactly(10).times
 
           notification.new_note(note)
 
@@ -163,6 +169,7 @@ describe NotificationService, :mailer do
           should_email(@watcher_and_subscriber)
           should_email(@subscribed_participant)
           should_email(@u_custom_off)
+          should_email(@unsubscribed_mentioned)
           should_not_email(@u_guest_custom)
           should_not_email(@u_guest_watcher)
           should_not_email(note.author)
@@ -279,12 +286,16 @@ describe NotificationService, :mailer do
       before do
         build_team(note.project)
         note.project.add_master(note.author)
+        add_users_with_subscription(note.project, issue)
         reset_delivered_emails!
       end
 
       describe '#new_note' do
         it 'notifies the team members' do
           notification.new_note(note)
+
+          # Make sure @unsubscribed_mentioned is part of the team
+          expect(note.project.team.members).to include(@unsubscribed_mentioned)
 
           # Notify all team members
           note.project.team.members.each do |member|
@@ -486,7 +497,7 @@ describe NotificationService, :mailer do
     let(:group) { create(:group) }
     let(:project) { create(:project, :public, namespace: group) }
     let(:another_project) { create(:project, :public, namespace: group) }
-    let(:issue) { create :issue, project: project, assignees: [assignee], description: 'cc @participant' }
+    let(:issue) { create :issue, project: project, assignees: [assignee], description: 'cc @participant @unsubscribed_mentioned' }
 
     before do
       build_team(issue.project)
@@ -510,6 +521,7 @@ describe NotificationService, :mailer do
         should_email(@u_participant_mentioned)
         should_email(@g_global_watcher)
         should_email(@g_watcher)
+        should_email(@unsubscribed_mentioned)
         should_not_email(@u_mentioned)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -1865,6 +1877,7 @@ describe NotificationService, :mailer do
   def add_users_with_subscription(project, issuable)
     @subscriber = create :user
     @unsubscriber = create :user
+    @unsubscribed_mentioned = create :user, username: 'unsubscribed_mentioned'
     @subscribed_participant = create_global_setting_for(create(:user, username: 'subscribed_participant'), :participating)
     @watcher_and_subscriber = create_global_setting_for(create(:user), :watch)
 
@@ -1872,7 +1885,9 @@ describe NotificationService, :mailer do
     project.add_master(@subscriber)
     project.add_master(@unsubscriber)
     project.add_master(@watcher_and_subscriber)
+    project.add_master(@unsubscribed_mentioned)
 
+    issuable.subscriptions.create(user: @unsubscribed_mentioned, project: project, subscribed: false)
     issuable.subscriptions.create(user: @subscriber, project: project, subscribed: true)
     issuable.subscriptions.create(user: @subscribed_participant, project: project, subscribed: true)
     issuable.subscriptions.create(user: @unsubscriber, project: project, subscribed: false)

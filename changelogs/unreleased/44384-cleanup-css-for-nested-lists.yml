@@ -1,0 +1,5 @@
+---
+title: Unify format for nested non-task lists
+merge_request: 17823
+author: Takuya Noguchi
+type: fixed

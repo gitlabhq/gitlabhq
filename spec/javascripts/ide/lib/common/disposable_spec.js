@@ -1,4 +1,4 @@
-import Disposable from 'ee/ide/lib/common/disposable';
+import Disposable from '~/ide/lib/common/disposable';
 
 describe('Multi-file editor library disposable class', () => {
   let instance;

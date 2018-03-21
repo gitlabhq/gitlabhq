@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from 'ee/ide/stores';
-import listCollapsed from 'ee/ide/components/commit_sidebar/list_collapsed.vue';
+import store from '~/ide/stores';
+import listCollapsed from '~/ide/components/commit_sidebar/list_collapsed.vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { file } from '../../helpers';
 

@@ -18,59 +18,39 @@ describe ProjectRepositoryState do
   end
 
   describe '#repository_checksum_outdated?' do
-    where(:repository_verification_checksum, :last_repository_verification_at, :expected) do
-      now = Time.now
-      past = now - 1.year
-      future = now + 1.year
+    it 'returns true when repository_verification_checksum is nil' do
+      repository_state.repository_verification_checksum = nil
 
-      nil   | nil    | true
-      '123' | nil    | true
-      '123' | past   | true
-      '123' | now    | true
-      '123' | future | false
+      expect(repository_state.repository_checksum_outdated?).to eq true
     end
 
-    with_them do
-      before do
-        repository_state.update!(repository_verification_checksum: repository_verification_checksum, last_repository_verification_at: last_repository_verification_at)
-      end
+    it 'returns false when repository_verification_checksum is not nil' do
+      repository_state.repository_verification_checksum = '123'
 
-      subject { repository_state.repository_checksum_outdated?(Time.now) }
-
-      it { is_expected.to eq(expected) }
+      expect(repository_state.repository_checksum_outdated?).to eq false
     end
   end
 
   describe '#wiki_checksum_outdated?' do
-    where(:wiki_verification_checksum, :last_wiki_verification_at, :expected) do
-      now = Time.now
-      past = now - 1.year
-      future = now + 1.year
+    context 'wiki enabled' do
+      it 'returns true when wiki_verification_checksum is nil' do
+        repository_state.wiki_verification_checksum = nil
 
-      nil   | nil    | true
-      '123' | nil    | true
-      '123' | past   | true
-      '123' | now    | true
-      '123' | future | false
+        expect(repository_state.wiki_checksum_outdated?).to eq true
+      end
+
+      it 'returns false when wiki_verification_checksum is not nil' do
+        repository_state.wiki_verification_checksum = '123'
+
+        expect(repository_state.wiki_checksum_outdated?).to eq false
+      end
     end
 
-    with_them do
-      before do
-        repository_state.update!(wiki_verification_checksum: wiki_verification_checksum, last_wiki_verification_at: last_wiki_verification_at)
-      end
+    context 'wiki disabled' do
+      it 'returns false' do
+        project.update!(wiki_enabled: false)
 
-      subject { repository_state.wiki_checksum_outdated?(Time.now) }
-
-      context 'wiki enabled' do
-        it { is_expected.to eq(expected) }
-      end
-
-      context 'wiki disabled' do
-        before do
-          project.update!(wiki_enabled: false)
-        end
-
-        it { is_expected.to be_falsy }
+        expect(repository_state.wiki_checksum_outdated?).to eq false
       end
     end
   end

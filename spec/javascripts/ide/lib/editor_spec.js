@@ -1,6 +1,6 @@
 /* global monaco */
-import monacoLoader from 'ee/ide/monaco_loader';
-import editor from 'ee/ide/lib/editor';
+import monacoLoader from '~/ide/monaco_loader';
+import editor from '~/ide/lib/editor';
 import { file } from '../helpers';
 
 describe('Multi-file editor library', () => {

@@ -55,7 +55,17 @@ this file and show the information inside the merge request.
 
 ![SAST Widget](img/gemnasium.png)
 
+## Security report under pipelines
+
+> [Introduced][ee-3776] in [GitLab Ultimate][ee] 10.6.
+
+Visit any pipeline page which has a `sast` job and you will be able to see
+the security report tab with the listed vulnerabilities (if any).
+
+![Security Report](img/security_report.png)
+
 [ee-3775]: https://gitlab.com/gitlab-org/gitlab-ee/issues/3775
-[ee]: https://about.gitlab.com/products/
+[ee-3776]: https://gitlab.com/gitlab-org/gitlab-ee/issues/3776
+[ee]: https://about.gitlab.com/pricing
 [ci]: ../../../ci/README.md
 [cc-docs]: ../../../ci/examples/sast.md

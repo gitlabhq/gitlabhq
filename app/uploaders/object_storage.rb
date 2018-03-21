@@ -236,6 +236,7 @@ module ObjectStorage
         cache_stored_file!
         yield cache_path
       ensure
+        FileUtils.rm_f(cache_path)
         cache_storage.delete_dir!(cache_path(nil))
       end
     end

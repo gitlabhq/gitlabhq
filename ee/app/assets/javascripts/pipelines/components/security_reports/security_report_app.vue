@@ -2,6 +2,7 @@
   import ReportSection from 'ee/vue_shared/security_reports/components/report_section.vue';
   import securityMixin from 'ee/vue_shared/security_reports/mixins/security_report_mixin';
   import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
+  import { SAST } from 'ee/vue_shared/security_reports/helpers/constants';
 
   export default {
     name: 'SecurityReportTab',
@@ -9,9 +10,8 @@
       LoadingIcon,
       ReportSection,
     },
-    mixins: [
-      securityMixin,
-    ],
+    mixins: [securityMixin],
+    sast: SAST,
     props: {
       securityReports: {
         type: Object,
@@ -24,7 +24,7 @@
   <div class="pipeline-tab-content">
     <report-section
       class="js-sast-widget"
-      type="security"
+      :type="$options.sast"
       :status="checkReportStatus(securityReports.sast.isLoading, securityReports.sast.hasError)"
       :loading-text="translateText('security').loading"
       :error-text="translateText('security').error"
@@ -32,7 +32,6 @@
       :unresolved-issues="securityReports.sast.newIssues"
       :resolved-issues="securityReports.sast.resolvedIssues"
       :all-issues="securityReports.sast.allIssues"
-      :has-priority="true"
       :is-collapsible="false"
     />
   </div>

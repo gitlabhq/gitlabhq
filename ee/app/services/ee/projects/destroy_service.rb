@@ -7,7 +7,10 @@ module EE
       def execute
         succeeded = super
 
-        if succeeded
+        # It's possible that some error occurred, but at the end of the day
+        # if the project is destroyed from the database, we should log events
+        # and clean up where we can.
+        if project&.destroyed?
           mirror_cleanup(project)
           log_geo_event(project)
           log_audit_event(project)

@@ -1,25 +1,27 @@
 import Vue from 'vue';
-import store from 'ee/ide/stores';
-import repoEditor from 'ee/ide/components/repo_editor.vue';
-import monacoLoader from 'ee/ide/monaco_loader';
-import Editor from 'ee/ide/lib/editor';
+import store from '~/ide/stores';
+import repoEditor from '~/ide/components/repo_editor.vue';
+import monacoLoader from '~/ide/monaco_loader';
+import Editor from '~/ide/lib/editor';
+import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import { file, resetStore } from '../helpers';
 
 describe('RepoEditor', () => {
   let vm;
 
-  beforeEach((done) => {
+  beforeEach(done => {
     const f = file();
     const RepoEditor = Vue.extend(repoEditor);
 
-    vm = new RepoEditor({
-      store,
+    vm = createComponentWithStore(RepoEditor, store, {
+      file: f,
     });
 
     f.active = true;
     f.tempFile = true;
+    f.html = 'testing';
     vm.$store.state.openFiles.push(f);
-    vm.$store.getters.activeFile.html = 'testing';
+    vm.$store.state.entries[f.path] = f;
     vm.monaco = true;
 
     vm.$mount();
@@ -37,7 +39,7 @@ describe('RepoEditor', () => {
     Editor.editorInstance.modelManager.dispose();
   });
 
-  it('renders an ide container', (done) => {
+  it('renders an ide container', done => {
     Vue.nextTick(() => {
       expect(vm.shouldHideEditor).toBeFalsy();
 
@@ -46,10 +48,10 @@ describe('RepoEditor', () => {
   });
 
   describe('when open file is binary and not raw', () => {
-    beforeEach((done) => {
-      vm.$store.getters.activeFile.binary = true;
+    beforeEach(done => {
+      vm.file.binary = true;
 
-      Vue.nextTick(done);
+      vm.$nextTick(done);
     });
 
     it('does not render the IDE', () => {
@@ -62,7 +64,7 @@ describe('RepoEditor', () => {
   });
 
   describe('createEditorInstance', () => {
-    it('calls createInstance when viewer is editor', (done) => {
+    it('calls createInstance when viewer is editor', done => {
       spyOn(vm.editor, 'createInstance');
 
       vm.createEditorInstance();
@@ -74,7 +76,7 @@ describe('RepoEditor', () => {
       });
     });
 
-    it('calls createDiffInstance when viewer is diff', (done) => {
+    it('calls createDiffInstance when viewer is diff', done => {
       vm.$store.state.viewer = 'diff';
 
       spyOn(vm.editor, 'createDiffInstance');
@@ -97,7 +99,7 @@ describe('RepoEditor', () => {
 
       vm.setupEditor();
 
-      expect(vm.editor.createModel).toHaveBeenCalledWith(vm.$store.getters.activeFile);
+      expect(vm.editor.createModel).toHaveBeenCalledWith(vm.file);
       expect(vm.model).not.toBeNull();
     });
 
@@ -122,11 +124,11 @@ describe('RepoEditor', () => {
       expect(vm.model.events.size).toBe(1);
     });
 
-    it('updates state when model content changed', (done) => {
+    it('updates state when model content changed', done => {
       vm.model.setValue('testing 123');
 
       setTimeout(() => {
-        expect(vm.$store.getters.activeFile.content).toBe('testing 123');
+        expect(vm.file.content).toBe('testing 123');
 
         done();
       });

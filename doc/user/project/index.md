@@ -120,7 +120,7 @@ Read through the documentation on [project settings](settings/index.md).
 Instead of importing a repository directly to GitLab, you can connect your repository
 as a CI/CD project.
 
-Read through the documentation on [CI/CD for external repositories](ci_cd_for_external_repo.md).
+Read through the documentation on [CI/CD for external repositories](../../ci/ci_cd_for_external_repos/index.md).
 
 ## Project's members
 

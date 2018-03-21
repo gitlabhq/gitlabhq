@@ -35,6 +35,11 @@ module Gitlab
         @db_migrate_path ||= File.join(Rails.root, 'ee', 'db', 'geo', 'migrate')
       end
 
+      def self.db_post_migrate_path
+        # Lazy initialisation so Rails.root will be defined
+        @db_post_migrate_path ||= File.join(Rails.root, 'ee', 'db', 'geo', 'post_migrate')
+      end
+
       def self.get_database_version
         if defined?(ActiveRecord)
           connection = ::Geo::BaseRegistry.connection
@@ -51,7 +56,7 @@ module Gitlab
       def self.get_migration_version
         latest_migration = nil
 
-        Dir[File.join(self.db_migrate_path, "[0-9]*_*.rb")].each do |f|
+        Dir[File.join(self.db_migrate_path, "[0-9]*_*.rb"), File.join(self.db_post_migrate_path, "[0-9]*_*.rb")].each do |f|
           timestamp = f.scan(/0*([0-9]+)_[_.a-zA-Z0-9]*.rb/).first.first rescue -1
 
           if latest_migration.nil? || timestamp.to_i > latest_migration.to_i
