@@ -163,6 +163,42 @@ describe API::Issues do
         expect(first_issue['id']).to eq(issue.id)
       end
 
+      context 'filtering before a specific date' do
+        let!(:issue2) { create(:issue, project: project, author: user, created_at: Date.new(2000, 1, 1), updated_at: Date.new(2000, 1, 1)) }
+
+        it 'returns issues created before a specific date' do
+          get api('/issues?created_before=2000-01-02T00:00:00.060Z', user)
+
+          expect(json_response.size).to eq(1)
+          expect(first_issue['id']).to eq(issue2.id)
+        end
+
+        it 'returns issues updated before a specific date' do
+          get api('/issues?updated_before=2000-01-02T00:00:00.060Z', user)
+
+          expect(json_response.size).to eq(1)
+          expect(first_issue['id']).to eq(issue2.id)
+        end
+      end
+
+      context 'filtering after a specific date' do
+        let!(:issue2) { create(:issue, project: project, author: user, created_at: 1.week.from_now, updated_at: 1.week.from_now) }
+
+        it 'returns issues created after a specific date' do
+          get api("/issues?created_after=#{issue2.created_at}", user)
+
+          expect(json_response.size).to eq(1)
+          expect(first_issue['id']).to eq(issue2.id)
+        end
+
+        it 'returns issues updated after a specific date' do
+          get api("/issues?updated_after=#{issue2.updated_at}", user)
+
+          expect(json_response.size).to eq(1)
+          expect(first_issue['id']).to eq(issue2.id)
+        end
+      end
+
       it 'returns an array of labeled issues' do
         get api("/issues", user), labels: label.title
 
@@ -1417,7 +1453,7 @@ describe API::Issues do
 
     context 'when source project does not exist' do
       it 'returns 404 when trying to move an issue' do
-        post api("/projects/12345/issues/#{issue.iid}/move", user),
+        post api("/projects/0/issues/#{issue.iid}/move", user),
                  to_project_id: target_project.id
 
         expect(response).to have_gitlab_http_status(404)
@@ -1428,7 +1464,7 @@ describe API::Issues do
     context 'when target project does not exist' do
       it 'returns 404 when trying to move an issue' do
         post api("/projects/#{project.id}/issues/#{issue.iid}/move", user),
-                 to_project_id: 12345
+                 to_project_id: 0
 
         expect(response).to have_gitlab_http_status(404)
       end

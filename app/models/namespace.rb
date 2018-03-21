@@ -222,6 +222,11 @@ class Namespace < ActiveRecord::Base
     has_parent?
   end
 
+  # Overridden on EE module
+  def multiple_issue_boards_available?
+    false
+  end
+
   def full_path_was
     if parent_id_was.nil?
       path_was

@@ -65,6 +65,7 @@ project_tree:
     - :create_access_levels
   - :project_feature
   - :custom_attributes
+  - :project_badges
 
 # Only include the following attributes for the models specified.
 included_attributes:
@@ -125,6 +126,8 @@ excluded_attributes:
     - :when
   push_event_payload:
     - :event_id
+  project_badges:
+    - :group_id
 
 methods:
   labels:
@@ -147,3 +150,5 @@ methods:
     - :action
   push_event_payload:
     - :action
+  project_badges:
+    - :type

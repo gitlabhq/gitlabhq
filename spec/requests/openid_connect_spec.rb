@@ -68,10 +68,10 @@ describe 'OpenID Connect requests' do
       let!(:public_email) { build :email, email: 'public@example.com' }
       let!(:private_email) { build :email, email: 'private@example.com' }
 
-      let!(:group1) { create :group, path: 'group1' }
-      let!(:group2) { create :group, path: 'group2' }
-      let!(:group3) { create :group, path: 'group3', parent: group2 }
-      let!(:group4) { create :group, path: 'group4', parent: group3 }
+      let!(:group1) { create :group }
+      let!(:group2) { create :group }
+      let!(:group3) { create :group, parent: group2 }
+      let!(:group4) { create :group, parent: group3 }
 
       before do
         group1.add_user(user, GroupMember::OWNER)
@@ -93,8 +93,8 @@ describe 'OpenID Connect requests' do
           'groups'         => anything
         }))
 
-        expected_groups = %w[group1 group2/group3]
-        expected_groups << 'group2/group3/group4' if Group.supports_nested_groups?
+        expected_groups = [group1.full_path, group3.full_path]
+        expected_groups << group4.full_path if Group.supports_nested_groups?
         expect(json_response['groups']).to match_array(expected_groups)
       end
     end

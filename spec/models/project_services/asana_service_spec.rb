@@ -47,7 +47,7 @@ describe AsanaService do
 
     it 'calls Asana service to create a story' do
       data = create_data_for_commits('Message from commit. related to #123456')
-      expected_message = "#{data[:user_name]} pushed to branch #{data[:ref]} of #{project.name_with_namespace} ( #{data[:commits][0][:url]} ): #{data[:commits][0][:message]}"
+      expected_message = "#{data[:user_name]} pushed to branch #{data[:ref]} of #{project.full_name} ( #{data[:commits][0][:url]} ): #{data[:commits][0][:message]}"
 
       d1 = double('Asana::Task')
       expect(d1).to receive(:add_comment).with(text: expected_message)

@@ -3,12 +3,34 @@ module GroupsHelper
     %w[groups#projects groups#edit ci_cd#show ldap_group_links#index hooks#index audit_events#index pipeline_quota#index]
   end
 
+  def group_sidebar_links
+    @group_sidebar_links ||= get_group_sidebar_links
+  end
+
+  def group_sidebar_link?(link)
+    group_sidebar_links.include?(link)
+  end
+
   def can_change_group_visibility_level?(group)
     can?(current_user, :change_visibility_level, group)
   end
 
   def can_change_share_with_group_lock?(group)
     can?(current_user, :change_share_with_group_lock, group)
+  end
+
+  def group_issues_count(state:)
+    IssuesFinder
+      .new(current_user, group_id: @group.id, state: state, non_archived: true, include_subgroups: true)
+      .execute
+      .count
+  end
+
+  def group_merge_requests_count(state:)
+    MergeRequestsFinder
+      .new(current_user, group_id: @group.id, state: state, non_archived: true, include_subgroups: true)
+      .execute
+      .count
   end
 
   def group_icon(group, options = {})
@@ -69,10 +91,6 @@ module GroupsHelper
     end
   end
 
-  def group_issues(group)
-    IssuesFinder.new(current_user, group_id: group.id).execute
-  end
-
   def remove_group_message(group)
     _("You are going to remove %{group_name}. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?") %
       { group_name: group.name }
@@ -106,6 +124,20 @@ module GroupsHelper
   end
 
   private
+
+  def get_group_sidebar_links
+    links = [:overview, :group_members]
+
+    if can?(current_user, :read_cross_project)
+      links += [:activity, :issues, :boards, :labels, :milestones, :merge_requests]
+    end
+
+    if can?(current_user, :admin_group, @group)
+      links << :settings
+    end
+
+    links
+  end
 
   def group_title_link(group, hidable: false, show_avatar: false, for_dropdown: false)
     link_to(group_path(group), class: "group-path #{'breadcrumb-item-text' unless for_dropdown} js-breadcrumb-item-text #{'hidable' if hidable}") do

@@ -48,9 +48,21 @@ class NotesFinder
   def init_collection
     if target
       notes_on_target
+    elsif target_type
+      notes_of_target_type
     else
       notes_of_any_type
     end
+  end
+
+  def notes_of_target_type
+    notes = notes_for_type(target_type)
+
+    search(notes)
+  end
+
+  def target_type
+    @params[:target_type]
   end
 
   def notes_of_any_type

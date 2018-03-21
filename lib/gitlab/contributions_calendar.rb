@@ -23,7 +23,7 @@ module Gitlab
       mr_events = event_counts(date_from, :merge_requests)
         .having(action: [Event::MERGED, Event::CREATED, Event::CLOSED], target_type: "MergeRequest")
       note_events = event_counts(date_from, :merge_requests)
-        .having(action: [Event::COMMENTED], target_type: "Note")
+        .having(action: [Event::COMMENTED])
 
       union = Gitlab::SQL::Union.new([repo_events, issue_events, mr_events, note_events])
       events = Event.find_by_sql(union.to_sql).map(&:attributes)
@@ -34,6 +34,8 @@ module Gitlab
     end
 
     def events_by_date(date)
+      return Event.none unless can_read_cross_project?
+
       events = Event.contributions.where(author_id: contributor.id)
         .where(created_at: date.beginning_of_day..date.end_of_day)
         .where(project_id: projects)
@@ -52,6 +54,10 @@ module Gitlab
     end
 
     private
+
+    def can_read_cross_project?
+      Ability.allowed?(current_user, :read_cross_project)
+    end
 
     def event_counts(date_from, feature)
       t = Event.arel_table

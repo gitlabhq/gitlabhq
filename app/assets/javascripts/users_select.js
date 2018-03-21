@@ -1,6 +1,8 @@
 /* eslint-disable func-names, space-before-function-paren, one-var, no-var, prefer-rest-params, wrap-iife, quotes, max-len, one-var-declaration-per-line, vars-on-top, prefer-arrow-callback, consistent-return, comma-dangle, object-shorthand, no-shadow, no-unused-vars, no-else-return, no-self-compare, prefer-template, no-unused-expressions, no-lonely-if, yoda, prefer-spread, no-void, camelcase, no-param-reassign */
 /* global Issuable */
 /* global emitSidebarEvent */
+
+import $ from 'jquery';
 import _ from 'underscore';
 import axios from './lib/utils/axios_utils';
 
@@ -39,7 +41,6 @@ function UsersSelect(currentUser, els, options = {}) {
       options.showCurrentUser = $dropdown.data('currentUser');
       options.todoFilter = $dropdown.data('todoFilter');
       options.todoStateFilter = $dropdown.data('todoStateFilter');
-      options.perPage = $dropdown.data('perPage');
       showNullUser = $dropdown.data('nullUser');
       defaultNullUser = $dropdown.data('nullUserDefault');
       showMenuAbove = $dropdown.data('showMenuAbove');
@@ -669,7 +670,6 @@ UsersSelect.prototype.users = function(query, options, callback) {
   const url = this.buildUrl(this.usersPath);
   const params = {
     search: query,
-    per_page: options.perPage || 20,
     active: true,
     project_id: options.projectId || null,
     group_id: options.groupId || null,

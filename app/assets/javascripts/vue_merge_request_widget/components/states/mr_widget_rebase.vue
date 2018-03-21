@@ -111,7 +111,7 @@ js-toggle-container accept-action media space-children"
         >
           <button
             type="button"
-            class="btn btn-sm btn-reopen btn-success"
+            class="btn btn-sm btn-reopen btn-success qa-mr-rebase-button"
             :disabled="isMakingRequest"
             @click="rebase"
           >

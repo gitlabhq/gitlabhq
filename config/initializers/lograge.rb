@@ -1,3 +1,21 @@
+# Monkey patch lograge until https://github.com/roidrage/lograge/pull/241 is released
+module Lograge
+  class RequestLogSubscriber < ActiveSupport::LogSubscriber
+    def strip_query_string(path)
+      index = path.index('?')
+      index ? path[0, index] : path
+    end
+
+    def extract_location
+      location = Thread.current[:lograge_location]
+      return {} unless location
+
+      Thread.current[:lograge_location] = nil
+      { location: strip_query_string(location) }
+    end
+  end
+end
+
 # Only use Lograge for Rails
 unless Sidekiq.server?
   filename = File.join(Rails.root, 'log', "#{Rails.env}_json.log")
@@ -12,9 +30,14 @@ unless Sidekiq.server?
     config.lograge.logger = ActiveSupport::Logger.new(filename)
     # Add request parameters to log output
     config.lograge.custom_options = lambda do |event|
+      params = event.payload[:params]
+        .except(*%w(controller action format))
+        .each_pair
+        .map { |k, v| { key: k, value: v } }
+
       payload = {
         time: event.time.utc.iso8601(3),
-        params: event.payload[:params].except(*%w(controller action format)),
+        params: params,
         remote_ip: event.payload[:remote_ip],
         user_id: event.payload[:user_id],
         username: event.payload[:username]

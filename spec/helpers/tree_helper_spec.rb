@@ -62,4 +62,13 @@ describe TreeHelper do
       end
     end
   end
+
+  describe '#commit_in_single_accessible_branch' do
+    it 'escapes HTML from the branch name' do
+      helper.instance_variable_set(:@branch_name, "<script>alert('escape me!');</script>")
+      escaped_branch_name = '&lt;script&gt;alert(&#39;escape me!&#39;);&lt;/script&gt;'
+
+      expect(helper.commit_in_single_accessible_branch).to include(escaped_branch_name)
+    end
+  end
 end

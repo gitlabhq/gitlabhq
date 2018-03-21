@@ -10,11 +10,13 @@
   install_helm_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :helm),
   install_ingress_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :ingress),
   install_prometheus_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :prometheus),
+  install_runner_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :runner),
   toggle_status: @cluster.enabled? ? 'true': 'false',
   cluster_status: @cluster.status_name,
   cluster_status_reason: @cluster.status_reason,
   help_path: help_page_path('user/project/clusters/index.md', anchor: 'installing-applications'),
   ingress_help_path: help_page_path('user/project/clusters/index.md', anchor: 'getting-the-external-ip-address'),
+  ingress_dns_help_path: help_page_path('topics/autodevops/quick_start_guide.md', anchor: 'point-dns-at-cluster-ip'),
   manage_prometheus_path: edit_project_service_path(@cluster.project, 'prometheus') } }
 
   .js-cluster-application-notice

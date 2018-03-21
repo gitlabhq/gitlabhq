@@ -14,6 +14,9 @@ GET /projects/:id/repository/commits
 | `ref_name` | string | no | The name of a repository branch or tag or if not given the default branch |
 | `since` | string | no | Only commits after or on this date will be returned in ISO 8601 format YYYY-MM-DDTHH:MM:SSZ |
 | `until` | string | no | Only commits before or on this date will be returned in ISO 8601 format YYYY-MM-DDTHH:MM:SSZ |
+| `path` | string | no | The file path |
+| `all` | boolean | no | Retrieve every commit from the repository |
+
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits"

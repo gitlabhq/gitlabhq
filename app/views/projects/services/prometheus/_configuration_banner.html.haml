@@ -1,0 +1,26 @@
+%h4
+  = s_('PrometheusService|Auto configuration')
+
+- if service.manual_configuration?
+  .well
+    = s_('PrometheusService|To enable the installation of Prometheus on your clusters, deactivate the manual configuration below')
+- else
+  .container-fluid
+    .row
+      - if service.prometheus_installed?
+        .col-sm-2
+          .svg-container
+            = image_tag 'illustrations/monitoring/getting_started.svg'
+        .col-sm-10
+          %p.text-success.prepend-top-default
+            = s_('PrometheusService|Prometheus is being automatically managed on your clusters')
+          = link_to s_('PrometheusService|Manage clusters'), project_clusters_path(project), class: 'btn'
+      - else
+        .col-sm-2
+          = image_tag 'illustrations/monitoring/loading.svg'
+        .col-sm-10
+          %p.prepend-top-default
+            = s_('PrometheusService|Automatically deploy and configure Prometheus on your clusters to monitor your project’s environments')
+          = link_to s_('PrometheusService|Install Prometheus on clusters'), project_clusters_path(project), class: 'btn btn-success'
+
+%hr

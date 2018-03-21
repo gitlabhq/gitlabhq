@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import deployKeysApp from './components/app.vue';
 
-document.addEventListener('DOMContentLoaded', () => new Vue({
+export default () => new Vue({
   el: document.getElementById('js-deploy-keys'),
   components: {
     deployKeysApp,
@@ -18,4 +18,4 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
       },
     });
   },
-}));
+});

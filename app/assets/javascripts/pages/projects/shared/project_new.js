@@ -1,5 +1,6 @@
 /* eslint-disable func-names, no-var, no-underscore-dangle, prefer-template, prefer-arrow-callback*/
 
+import $ from 'jquery';
 import VisibilitySelect from '../../../visibility_select';
 
 function highlightChanges($elm) {

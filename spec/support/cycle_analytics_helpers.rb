@@ -26,7 +26,19 @@ module CycleAnalyticsHelpers
                        ref: 'refs/heads/master').execute
   end
 
-  def create_merge_request_closing_issue(issue, message: nil, source_branch: nil, commit_message: 'commit message')
+  def create_cycle(user, project, issue, mr, milestone, pipeline)
+    issue.update(milestone: milestone)
+    pipeline.run
+
+    ci_build = create(:ci_build, pipeline: pipeline, status: :success, author: user)
+
+    merge_merge_requests_closing_issue(user, project, issue)
+    ProcessCommitWorker.new.perform(project.id, user.id, mr.commits.last.to_hash)
+
+    ci_build
+  end
+
+  def create_merge_request_closing_issue(user, project, issue, message: nil, source_branch: nil, commit_message: 'commit message')
     if !source_branch || project.repository.commit(source_branch).blank?
       source_branch = generate(:branch)
       project.repository.add_branch(user, source_branch, 'master')
@@ -52,19 +64,19 @@ module CycleAnalyticsHelpers
     mr
   end
 
-  def merge_merge_requests_closing_issue(issue)
+  def merge_merge_requests_closing_issue(user, project, issue)
     merge_requests = issue.closed_by_merge_requests(user)
 
     merge_requests.each { |merge_request| MergeRequests::MergeService.new(project, user).execute(merge_request) }
   end
 
-  def deploy_master(environment: 'production')
+  def deploy_master(user, project, environment: 'production')
     dummy_job =
       case environment
       when 'production'
-        dummy_production_job
+        dummy_production_job(user, project)
       when 'staging'
-        dummy_staging_job
+        dummy_staging_job(user, project)
       else
         raise ArgumentError
       end
@@ -72,25 +84,24 @@ module CycleAnalyticsHelpers
     CreateDeploymentService.new(dummy_job).execute
   end
 
-  def dummy_production_job
-    @dummy_job ||= new_dummy_job('production')
+  def dummy_production_job(user, project)
+    new_dummy_job(user, project, 'production')
   end
 
-  def dummy_staging_job
-    @dummy_job ||= new_dummy_job('staging')
+  def dummy_staging_job(user, project)
+    new_dummy_job(user, project, 'staging')
   end
 
-  def dummy_pipeline
-    @dummy_pipeline ||=
-      Ci::Pipeline.new(
-        sha: project.repository.commit('master').sha,
-        ref: 'master',
-        source: :push,
-        project: project,
-        protected: false)
+  def dummy_pipeline(project)
+    Ci::Pipeline.new(
+      sha: project.repository.commit('master').sha,
+      ref: 'master',
+      source: :push,
+      project: project,
+      protected: false)
   end
 
-  def new_dummy_job(environment)
+  def new_dummy_job(user, project, environment)
     project.environments.find_or_create_by(name: environment)
 
     Ci::Build.new(
@@ -101,7 +112,7 @@ module CycleAnalyticsHelpers
       tag: false,
       name: 'dummy',
       stage: 'dummy',
-      pipeline: dummy_pipeline,
+      pipeline: dummy_pipeline(project),
       protected: false)
   end
 

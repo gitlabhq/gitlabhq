@@ -86,7 +86,7 @@ describe BlobHelper do
     it 'verifies blob is text' do
       expect(helper).not_to receive(:blob_text_viewable?)
 
-      button = edit_blob_link(project, 'refs/heads/master', 'README.md')
+      button = edit_blob_button(project, 'refs/heads/master', 'README.md')
 
       expect(button).to start_with('<button')
     end
@@ -96,17 +96,17 @@ describe BlobHelper do
 
       expect(project.repository).not_to receive(:blob_at)
 
-      edit_blob_link(project, 'refs/heads/master', 'README.md', blob: blob)
+      edit_blob_button(project, 'refs/heads/master', 'README.md', blob: blob)
     end
 
     it 'returns a link with the proper route' do
-      link = edit_blob_link(project, 'master', 'README.md')
+      link = edit_blob_button(project, 'master', 'README.md')
 
       expect(Capybara.string(link).find_link('Edit')[:href]).to eq("/#{project.full_path}/edit/master/README.md")
     end
 
     it 'returns a link with the passed link_opts on the expected route' do
-      link = edit_blob_link(project, 'master', 'README.md', link_opts: { mr_id: 10 })
+      link = edit_blob_button(project, 'master', 'README.md', link_opts: { mr_id: 10 })
 
       expect(Capybara.string(link).find_link('Edit')[:href]).to eq("/#{project.full_path}/edit/master/README.md?mr_id=10")
     end

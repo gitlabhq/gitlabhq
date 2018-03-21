@@ -99,7 +99,7 @@ module IssuablesHelper
     project = Project.find_by(id: project_id)
 
     if project
-      project.name_with_namespace
+      project.full_name
     else
       default_label
     end
@@ -234,7 +234,7 @@ module IssuablesHelper
 
     data.merge!(updated_at_by(issuable))
 
-    data.to_json
+    data
   end
 
   def updated_at_by(issuable)
@@ -376,5 +376,12 @@ module IssuablesHelper
 
   def parent
     @project || @group
+  end
+
+  def issuable_milestone_tooltip_title(issuable)
+    if issuable.milestone
+      milestone_tooltip = milestone_tooltip_title(issuable.milestone)
+      _('Milestone') + (milestone_tooltip ? ': ' + milestone_tooltip : '')
+    end
   end
 end

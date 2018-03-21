@@ -3,15 +3,26 @@
     .panel-heading
       Domains (#{@domains.count})
     %ul.well-list
+      - verification_enabled = Gitlab::CurrentSettings.pages_domain_verification_enabled?
       - @domains.each do |domain|
         %li
           .pull-right
             = link_to 'Details', project_pages_domain_path(@project, domain), class: "btn btn-sm btn-grouped"
             = link_to 'Remove', project_pages_domain_path(@project, domain), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove btn-sm btn-grouped"
           .clearfix
-            %span= link_to domain.domain, domain.url
+            - if verification_enabled
+              - tooltip, status = domain.unverified? ? ['Unverified', 'failed'] : ['Verified', 'success']
+              = link_to domain.url, title: tooltip, class: 'has-tooltip' do
+                = sprite_icon("status_#{status}", size: 16, css_class: "has-tooltip ci-status-icon ci-status-icon-#{status}")
+                = domain.domain
+            - else
+              = link_to domain.domain, domain.url
           %p
             - if domain.subject
               %span.label.label-gray Certificate: #{domain.subject}
             - if domain.expired?
               %span.label.label-danger Expired
+        - if verification_enabled && domain.unverified?
+          %li.warning-row
+            #{domain.domain} is not verified. To learn how to verify ownership, visit your
+            = link_to 'domain details', project_pages_domain_path(@project, domain)

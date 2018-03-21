@@ -122,6 +122,15 @@ describe API::Runner do
           end
         end
       end
+
+      it "sets the runner's ip_address" do
+        post api('/runners'),
+          { token: registration_token },
+          { 'REMOTE_ADDR' => '123.111.123.111' }
+
+        expect(response).to have_gitlab_http_status 201
+        expect(Ci::Runner.first.ip_address).to eq('123.111.123.111')
+      end
     end
 
     describe 'DELETE /api/v4/runners' do
@@ -422,6 +431,15 @@ describe API::Runner do
             end
           end
 
+          it "sets the runner's ip_address" do
+            post api('/jobs/request'),
+              { token: runner.token },
+              { 'User-Agent' => user_agent, 'REMOTE_ADDR' => '123.222.123.222' }
+
+            expect(response).to have_gitlab_http_status 201
+            expect(runner.reload.ip_address).to eq('123.222.123.222')
+          end
+
           context 'when concurrently updating a job' do
             before do
               expect_any_instance_of(Ci::Build).to receive(:run!)
@@ -680,10 +698,10 @@ describe API::Runner do
         end
       end
 
-      context 'when tace is given' do
+      context 'when trace is given' do
         it 'creates a trace artifact' do
-          allow_any_instance_of(BuildFinishedWorker).to receive(:perform).with(job.id) do
-            CreateTraceArtifactWorker.new.perform(job.id)
+          allow(BuildFinishedWorker).to receive(:perform_async).with(job.id) do
+            ArchiveTraceWorker.new.perform(job.id)
           end
 
           update_job(state: 'success', trace: 'BUILD TRACE UPDATED')
@@ -1082,11 +1100,13 @@ describe API::Runner do
 
           context 'posts artifacts file and metadata file' do
             let!(:artifacts) { file_upload }
+            let!(:artifacts_sha256) { Digest::SHA256.file(artifacts.path).hexdigest }
             let!(:metadata) { file_upload2 }
 
             let(:stored_artifacts_file) { job.reload.artifacts_file.file }
             let(:stored_metadata_file) { job.reload.artifacts_metadata.file }
             let(:stored_artifacts_size) { job.reload.artifacts_size }
+            let(:stored_artifacts_sha256) { job.reload.job_artifacts_archive.file_sha256 }
 
             before do
               post(api("/jobs/#{job.id}/artifacts"), post_data, headers_with_token)
@@ -1096,6 +1116,7 @@ describe API::Runner do
               let(:post_data) do
                 { 'file.path' => artifacts.path,
                   'file.name' => artifacts.original_filename,
+                  'file.sha256' => artifacts_sha256,
                   'metadata.path' => metadata.path,
                   'metadata.name' => metadata.original_filename }
               end
@@ -1105,6 +1126,7 @@ describe API::Runner do
                 expect(stored_artifacts_file.original_filename).to eq(artifacts.original_filename)
                 expect(stored_metadata_file.original_filename).to eq(metadata.original_filename)
                 expect(stored_artifacts_size).to eq(72821)
+                expect(stored_artifacts_sha256).to eq(artifacts_sha256)
               end
             end
 

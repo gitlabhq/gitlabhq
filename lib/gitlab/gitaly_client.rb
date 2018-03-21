@@ -119,12 +119,17 @@ module Gitlab
     #
     def self.call(storage, service, rpc, request, remote_storage: nil, timeout: nil)
       start = Gitlab::Metrics::System.monotonic_time
+      request_hash = request.is_a?(Google::Protobuf::MessageExts) ? request.to_h : {}
+      @current_call_id ||= SecureRandom.uuid
+
       enforce_gitaly_request_limits(:call)
 
       kwargs = request_kwargs(storage, timeout, remote_storage: remote_storage)
       kwargs = yield(kwargs) if block_given?
 
       stub(service, storage).__send__(rpc, request, kwargs) # rubocop:disable GitlabSecurity/PublicSend
+    rescue GRPC::Unavailable => ex
+      handle_grpc_unavailable!(ex)
     ensure
       duration = Gitlab::Metrics::System.monotonic_time - start
 
@@ -133,7 +138,32 @@ module Gitlab
       gitaly_controller_action_duration_seconds.observe(
         current_transaction_labels.merge(gitaly_service: service.to_s, rpc: rpc.to_s),
         duration)
+
+      add_call_details(id: @current_call_id, feature: service, duration: duration, request: request_hash)
+
+      @current_call_id = nil
     end
+
+    def self.handle_grpc_unavailable!(ex)
+      status = ex.to_status
+      raise ex unless status.details == 'Endpoint read failed'
+
+      # There is a bug in grpc 1.8.x that causes a client process to get stuck
+      # always raising '14:Endpoint read failed'. The only thing that we can
+      # do to recover is to restart the process.
+      #
+      # See https://gitlab.com/gitlab-org/gitaly/issues/1029
+
+      if Sidekiq.server?
+        raise Gitlab::SidekiqMiddleware::Shutdown::WantShutdown.new(ex.to_s)
+      else
+        # SIGQUIT requests a Unicorn worker to shut down gracefully after the current request.
+        Process.kill('QUIT', Process.pid)
+      end
+
+      raise ex
+    end
+    private_class_method :handle_grpc_unavailable!
 
     def self.current_transaction_labels
       Gitlab::Metrics::Transaction.current&.labels || {}
@@ -229,12 +259,16 @@ module Gitlab
           feature_stack.unshift(feature)
           begin
             start = Gitlab::Metrics::System.monotonic_time
+            @current_call_id = SecureRandom.uuid
+            call_details = { id: @current_call_id }
             yield is_enabled
           ensure
             total_time = Gitlab::Metrics::System.monotonic_time - start
             gitaly_migrate_call_duration_seconds.observe({ gitaly_enabled: is_enabled, feature: feature }, total_time)
             feature_stack.shift
             Thread.current[:gitaly_feature_stack] = nil if feature_stack.empty?
+
+            add_call_details(call_details.merge(feature: feature, duration: total_time))
           end
         end
       end
@@ -319,6 +353,22 @@ module Gitlab
         RequestStore.store["gitaly_#{call_site}_actual"] = 0
         RequestStore.store["gitaly_#{call_site}_permitted"] = 0
       end
+    end
+
+    def self.add_call_details(details)
+      id = details.delete(:id)
+
+      return unless id && RequestStore.active? && RequestStore.store[:peek_enabled]
+
+      RequestStore.store['gitaly_call_details'] ||= {}
+      RequestStore.store['gitaly_call_details'][id] ||= {}
+      RequestStore.store['gitaly_call_details'][id].merge!(details)
+    end
+
+    def self.list_call_details
+      return {} unless RequestStore.active? && RequestStore.store[:peek_enabled]
+
+      RequestStore.store['gitaly_call_details'] || {}
     end
 
     def self.expected_server_version

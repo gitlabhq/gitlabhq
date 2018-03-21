@@ -1,5 +1,0 @@
----
-title: Increase feature flag cache TTL to one hour
-merge_request:
-author:
-type: performance

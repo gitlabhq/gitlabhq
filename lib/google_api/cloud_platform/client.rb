@@ -76,9 +76,13 @@ module GoogleApi
               "initial_node_count": cluster_size,
               "node_config": {
                 "machine_type": machine_type
+              },
+              "legacy_abac": {
+                "enabled": true
               }
             }
-          } )
+          }
+        )
 
         service.create_cluster(project_id, zone, request_body, options: user_agent_header)
       end

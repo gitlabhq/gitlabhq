@@ -473,11 +473,10 @@ module Ci
     end
 
     def predefined_variables
-      [
-        { key: 'CI_PIPELINE_ID', value: id.to_s, public: true },
-        { key: 'CI_CONFIG_PATH', value: ci_yaml_file_path, public: true },
-        { key: 'CI_PIPELINE_SOURCE', value: source.to_s, public: true }
-      ]
+      Gitlab::Ci::Variables::Collection.new
+        .append(key: 'CI_PIPELINE_ID', value: id.to_s)
+        .append(key: 'CI_CONFIG_PATH', value: ci_yaml_file_path)
+        .append(key: 'CI_PIPELINE_SOURCE', value: source.to_s)
     end
 
     def queued_duration
@@ -514,7 +513,7 @@ module Ci
       # We purposely cast the builds to an Array here. Because we always use the
       # rows if there are more than 0 this prevents us from having to run two
       # queries: one to get the count and one to get the rows.
-      @latest_builds_with_artifacts ||= builds.latest.with_artifacts.to_a
+      @latest_builds_with_artifacts ||= builds.latest.with_artifacts_archive.to_a
     end
 
     private

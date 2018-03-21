@@ -144,7 +144,7 @@ describe 'Merge request > User posts notes', :js do
       end
     end
 
-    describe 'deleting an attachment' do
+    describe 'deleting attachment on legacy diff note' do
       before do
         find('.note').hover
 

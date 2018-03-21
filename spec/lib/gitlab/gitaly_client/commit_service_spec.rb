@@ -113,7 +113,7 @@ describe Gitlab::GitalyClient::CommitService do
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
         .and_return([])
 
-      client.tree_entries(repository, revision, path)
+      client.tree_entries(repository, revision, path, false)
     end
 
     context 'with UTF-8 params strings' do
@@ -126,7 +126,7 @@ describe Gitlab::GitalyClient::CommitService do
           .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
           .and_return([])
 
-        client.tree_entries(repository, revision, path)
+        client.tree_entries(repository, revision, path, false)
       end
     end
   end

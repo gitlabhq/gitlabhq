@@ -1,6 +1,6 @@
 <script>
   import { mapState } from 'vuex';
-  import skeletonLoadingContainer from '../../vue_shared/components/skeleton_loading_container.vue';
+  import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
 
   export default {
     components: {

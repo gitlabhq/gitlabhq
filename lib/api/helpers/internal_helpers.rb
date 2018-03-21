@@ -109,14 +109,7 @@ module API
 
       # Return the Gitaly Address if it is enabled
       def gitaly_payload(action)
-        return unless %w[git-receive-pack git-upload-pack].include?(action)
-
-        if action == 'git-receive-pack'
-          return unless Gitlab::GitalyClient.feature_enabled?(
-            :ssh_receive_pack,
-            status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT
-          )
-        end
+        return unless %w[git-receive-pack git-upload-pack git-upload-archive].include?(action)
 
         {
           repository: repository.gitaly_repository,

@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import autoMergeFailedComponent from '~/vue_merge_request_widget/components/states/mr_widget_auto_merge_failed.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
-import mountComponent from '../../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('MRWidgetAutoMergeFailed', () => {
   let vm;

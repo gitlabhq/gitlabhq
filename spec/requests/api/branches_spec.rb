@@ -39,6 +39,27 @@ describe API::Branches do
       end
     end
 
+    context 'when search parameter is passed' do
+      context 'and branch exists' do
+        it 'returns correct branches' do
+          get api(route, user), per_page: 100, search: branch_name
+
+          searched_branch_names = json_response.map { |branch| branch['name'] }
+          project_branch_names = project.repository.branch_names.grep(/#{branch_name}/)
+
+          expect(searched_branch_names).to match_array(project_branch_names)
+        end
+      end
+
+      context 'and branch does not exist' do
+        it 'returns an empty array' do
+          get api(route, user), per_page: 100, search: 'no_such_branch_name_entropy_of_jabadabadu'
+
+          expect(json_response).to eq []
+        end
+      end
+    end
+
     context 'when unauthenticated', 'and project is public' do
       before do
         project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)

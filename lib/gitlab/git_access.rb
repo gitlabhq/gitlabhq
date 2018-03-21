@@ -199,7 +199,7 @@ module Gitlab
 
     def check_repository_existence!
       unless repository.exists?
-        raise UnauthorizedError, ERROR_MESSAGES[:no_repo]
+        raise NotFoundError, ERROR_MESSAGES[:no_repo]
       end
     end
 

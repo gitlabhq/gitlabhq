@@ -56,6 +56,7 @@ module AuthenticatesWithTwoFactor
       session.delete(:otp_user_id)
 
       remember_me(user) if user_params[:remember_me] == '1'
+      user.save!
       sign_in(user)
     else
       user.increment_failed_attempts!

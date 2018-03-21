@@ -117,22 +117,22 @@ feature 'Issue Sidebar' do
         end
       end
 
-      it 'shows option to create a new label' do
+      it 'shows option to create a project label' do
         page.within('.block.labels') do
-          expect(page).to have_content 'Create new'
+          expect(page).to have_content 'Create project'
         end
       end
 
-      context 'creating a new label', :js do
+      context 'creating a project label', :js do
         before do
           page.within('.block.labels') do
-            click_link 'Create new'
+            click_link 'Create project'
           end
         end
 
         it 'shows dropdown switches to "create label" section' do
           page.within('.block.labels') do
-            expect(page).to have_content 'Create new label'
+            expect(page).to have_content 'Create project label'
           end
         end
 

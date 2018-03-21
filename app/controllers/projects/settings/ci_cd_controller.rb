@@ -13,12 +13,14 @@ module Projects
 
       def reset_cache
         if ResetProjectCacheService.new(@project, current_user).execute
-          flash[:notice] = _("Project cache successfully reset.")
+          respond_to do |format|
+            format.json { head :ok }
+          end
         else
-          flash[:error] = _("Unable to reset project cache.")
+          respond_to do |format|
+            format.json { head :bad_request }
+          end
         end
-
-        redirect_to project_pipelines_path(@project)
       end
 
       private

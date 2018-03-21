@@ -252,6 +252,15 @@ RSpec.shared_examples 'snippet visibility' do
           results = described_class.new(user).execute
           expect(results.include?(snippet)).to eq(outcome)
         end
+
+        it 'returns no snippets when the user cannot read cross project' do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
+
+          snippets = described_class.new(user).execute
+
+          expect(snippets).to be_empty
+        end
       end
     end
   end
@@ -296,6 +305,15 @@ RSpec.shared_examples 'snippet visibility' do
 
         it 'should return proper outcome' do
           results = described_class.new(user).execute
+          expect(results.include?(snippet)).to eq(outcome)
+        end
+
+        it 'should return personal snippets when the user cannot read cross project' do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
+
+          results = described_class.new(user).execute
+
           expect(results.include?(snippet)).to eq(outcome)
         end
       end

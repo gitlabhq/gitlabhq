@@ -7,7 +7,7 @@ require 'gitlab'
 #
 Gitlab.configure do |config|
   config.endpoint       = 'https://gitlab.com/api/v4'
-  config.private_token  = ENV["DOCS_API_TOKEN"]  # GitLab Docs bot access token which has only Developer access to gitlab-docs
+  config.private_token  = ENV["DOCS_API_TOKEN"] # GitLab Docs bot access token with Developer access to gitlab-docs
 end
 
 #
@@ -24,20 +24,40 @@ def docs_branch
   # The maximum string length a file can have on a filesystem (ext4)
   # is 63 characters. Let's use something smaller to be 100% sure.
   max = 42
-  # Prefix the remote branch with 'preview-' in order to avoid
-  # name conflicts in the rare case the branch name already
+  # Prefix the remote branch with the slug of the project in order
+  # to avoid name conflicts in the rare case the branch name already
   # exists in the docs repo and truncate to max length.
   "#{slug}-#{ENV["CI_COMMIT_REF_SLUG"]}"[0...max]
 end
 
 #
-# Create a remote branch in gitlab-docs
+# Create a remote branch in gitlab-docs and immediately cancel the pipeline
+# to avoid race conditions, since a triggered pipeline will also run right
+# after the branch creation. This only happens the very first time a branch
+# is created and will be skipped in subsequent runs. Read more in
+# https://gitlab.com/gitlab-com/gitlab-docs/issues/154.
 #
 def create_remote_branch
   Gitlab.create_branch(GITLAB_DOCS_REPO, docs_branch, 'master')
-  puts "Remote branch '#{docs_branch}' created"
+  puts "=> Remote branch '#{docs_branch}' created"
+
+  pipelines = nil
+
+  # Wait until the pipeline is started
+  loop do
+    sleep 1
+    puts "=> Waiting for pipeline to start..."
+    pipelines = Gitlab.pipelines(GITLAB_DOCS_REPO, { ref: docs_branch })
+    break if pipelines.any?
+  end
+
+  # Get the first pipeline ID which should be the only one for the branch
+  pipeline_id = pipelines.first.id
+
+  # Cancel the pipeline
+  Gitlab.cancel_pipeline(GITLAB_DOCS_REPO, pipeline_id)
 rescue Gitlab::Error::BadRequest
-  puts "Remote branch '#{docs_branch}' already exists"
+  puts "=> Remote branch '#{docs_branch}' already exists"
 end
 
 #
@@ -45,7 +65,7 @@ end
 #
 def remove_remote_branch
   Gitlab.delete_branch(GITLAB_DOCS_REPO, docs_branch)
-  puts "Remote branch '#{docs_branch}' deleted"
+  puts "=> Remote branch '#{docs_branch}' deleted"
 end
 
 #
@@ -78,17 +98,21 @@ def trigger_pipeline
   # The review app URL
   app_url = "http://#{docs_branch}.#{ENV["DOCS_REVIEW_APPS_DOMAIN"]}/#{slug}"
 
-  # Create the pipeline
-  puts "=> Triggering a pipeline..."
+  # Create the cross project pipeline using CI_JOB_TOKEN
   pipeline = Gitlab.run_trigger(GITLAB_DOCS_REPO, ENV["CI_JOB_TOKEN"], docs_branch, { param_name => ENV["CI_COMMIT_REF_NAME"] })
 
-  puts "=> Pipeline created:"
+  puts "=> Follow the status of the triggered pipeline:"
   puts ""
   puts "https://gitlab.com/gitlab-com/gitlab-docs/pipelines/#{pipeline.id}"
   puts ""
-  puts "=> Preview your changes live at:"
+  puts "=> In a few minutes, you will be able to preview your changes under the following URL:"
   puts ""
   puts app_url
+  puts ""
+  puts "=> For more information, read the documentation"
+  puts "=> https://docs.gitlab.com/ee/development/writing_documentation.html#previewing-the-changes-live"
+  puts ""
+  puts "=> If something doesn't work, drop a line in the #docs chat channel."
   puts ""
 end
 

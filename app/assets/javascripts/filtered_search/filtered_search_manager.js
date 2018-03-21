@@ -20,10 +20,15 @@ import DropdownUtils from './dropdown_utils';
 export default class FilteredSearchManager {
   constructor({
     page,
+    isGroup = false,
+    isGroupAncestor = false,
+    isGroupDecendent = false,
     filteredSearchTokenKeys = FilteredSearchTokenKeys,
     stateFiltersSelector = '.issues-state-filters',
   }) {
-    this.isGroup = false;
+    this.isGroup = isGroup;
+    this.isGroupAncestor = isGroupAncestor;
+    this.isGroupDecendent = isGroupDecendent;
     this.states = ['opened', 'closed', 'merged', 'all'];
 
     this.page = page;
@@ -75,13 +80,14 @@ export default class FilteredSearchManager {
 
     if (this.filteredSearchInput) {
       this.tokenizer = FilteredSearchTokenizer;
-      this.dropdownManager = new FilteredSearchDropdownManager(
-        this.filteredSearchInput.getAttribute('data-base-endpoint') || '',
-        this.tokenizer,
-        this.page,
-        this.isGroup,
-        this.filteredSearchTokenKeys,
-      );
+      this.dropdownManager = new FilteredSearchDropdownManager({
+        baseEndpoint: this.filteredSearchInput.getAttribute('data-base-endpoint') || '',
+        tokenizer: this.tokenizer,
+        page: this.page,
+        isGroup: this.isGroup,
+        isGroupAncestor: this.isGroupAncestor,
+        filteredSearchTokenKeys: this.filteredSearchTokenKeys,
+      });
 
       this.recentSearchesRoot = new RecentSearchesRoot(
         this.recentSearchesStore,

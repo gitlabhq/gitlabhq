@@ -1,0 +1,5 @@
+---
+title: Use persisted/memoized value for MRs shas instead of doing git lookups
+merge_request: 17555
+author:
+type: performance

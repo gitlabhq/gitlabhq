@@ -2,37 +2,24 @@ require 'spec_helper'
 
 describe Boards::Lists::DestroyService do
   describe '#execute' do
-    let(:project) { create(:project) }
-    let(:board)   { create(:board, project: project) }
-    let(:user)    { create(:user) }
+    context 'when board parent is a project' do
+      let(:project) { create(:project) }
+      let(:board)   { create(:board, project: project) }
+      let(:user)    { create(:user) }
 
-    context 'when list type is label' do
-      it 'removes list from board' do
-        list = create(:list, board: board)
-        service = described_class.new(project, user)
+      let(:parent) { project }
 
-        expect { service.execute(list) }.to change(board.lists, :count).by(-1)
-      end
-
-      it 'decrements position of higher lists' do
-        development = create(:list, board: board, position: 0)
-        review      = create(:list, board: board, position: 1)
-        staging     = create(:list, board: board, position: 2)
-        closed      = board.closed_list
-
-        described_class.new(project, user).execute(development)
-
-        expect(review.reload.position).to eq 0
-        expect(staging.reload.position).to eq 1
-        expect(closed.reload.position).to be_nil
-      end
+      it_behaves_like 'lists destroy service'
     end
 
-    it 'does not remove list from board when list type is closed' do
-      list = board.closed_list
-      service = described_class.new(project, user)
+    context 'when board parent is a group' do
+      let(:group) { create(:group) }
+      let(:board)   { create(:board, group: group) }
+      let(:user)    { create(:user) }
 
-      expect { service.execute(list) }.not_to change(board.lists, :count)
+      let(:parent) { group }
+
+      it_behaves_like 'lists destroy service'
     end
   end
 end

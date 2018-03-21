@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 /**
  * This class overrides the browser's validation error bubbles, displaying custom
  * error messages for invalid fields instead. To begin validating any form, add the

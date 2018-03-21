@@ -6,7 +6,7 @@ describe Banzai::Filter::RedactorFilter do
 
   it 'ignores non-GFM links' do
     html = %(See <a href="https://google.com/">Google</a>)
-    doc = filter(html, current_user: double)
+    doc = filter(html, current_user: build(:user))
 
     expect(doc.css('a').length).to eq 1
   end

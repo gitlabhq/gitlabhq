@@ -69,13 +69,14 @@ module Gitlab
     # name - project disk path
     #
     # Ex.
-    #   add_repository("/path/to/storage", "gitlab/gitlab-ci")
+    #   create_repository("/path/to/storage", "gitlab/gitlab-ci")
     #
-    def add_repository(storage, name)
+    def create_repository(storage, name)
       relative_path = name.dup
       relative_path << '.git' unless relative_path.end_with?('.git')
 
-      gitaly_migrate(:create_repository) do |is_enabled|
+      gitaly_migrate(:create_repository,
+                     status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
         if is_enabled
           repository = Gitlab::Git::Repository.new(storage, relative_path, '')
           repository.gitaly_repository_client.create_repository
@@ -85,7 +86,7 @@ module Gitlab
           Gitlab::Git::Repository.create(repo_path, bare: true, symlink_hooks_to: gitlab_shell_hooks_path)
         end
       end
-    rescue => err
+    rescue => err # Once the Rugged codes gets removes this can be improved
       Rails.logger.error("Failed to add repository #{storage}/#{name}: #{err}")
       false
     end
@@ -125,13 +126,13 @@ module Gitlab
     # Ex.
     #   fetch_remote(my_repo, "upstream")
     #
-    def fetch_remote(repository, remote, ssh_auth: nil, forced: false, no_tags: false)
+    def fetch_remote(repository, remote, ssh_auth: nil, forced: false, no_tags: false, prune: true)
       gitaly_migrate(:fetch_remote) do |is_enabled|
         if is_enabled
-          repository.gitaly_repository_client.fetch_remote(remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, timeout: git_timeout)
+          repository.gitaly_repository_client.fetch_remote(remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, timeout: git_timeout, prune: prune)
         else
           storage_path = Gitlab.config.repositories.storages[repository.storage]["path"]
-          local_fetch_remote(storage_path, repository.relative_path, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
+          local_fetch_remote(storage_path, repository.relative_path, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, prune: prune)
         end
       end
     end
@@ -428,8 +429,8 @@ module Gitlab
       )
     end
 
-    def local_fetch_remote(storage_path, repository_relative_path, remote, ssh_auth: nil, forced: false, no_tags: false)
-      vars = { force: forced, tags: !no_tags }
+    def local_fetch_remote(storage_path, repository_relative_path, remote, ssh_auth: nil, forced: false, no_tags: false, prune: true)
+      vars = { force: forced, tags: !no_tags, prune: prune }
 
       if ssh_auth&.ssh_import?
         if ssh_auth.ssh_key_auth? && ssh_auth.ssh_private_key.present?
@@ -487,8 +488,8 @@ module Gitlab
       Gitlab.config.gitlab_shell.git_timeout
     end
 
-    def gitaly_migrate(method, &block)
-      Gitlab::GitalyClient.migrate(method, &block)
+    def gitaly_migrate(method, status: Gitlab::GitalyClient::MigrationStatus::OPT_IN, &block)
+      Gitlab::GitalyClient.migrate(method, status: status, &block)
     rescue GRPC::NotFound, GRPC::BadStatus => e
       # Old Popen code returns [Error, output] to the caller, so we
       # need to do the same here...

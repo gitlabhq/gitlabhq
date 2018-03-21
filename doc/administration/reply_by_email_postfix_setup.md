@@ -1,7 +1,7 @@
-# Set up Postfix for Reply by email
+# Set up Postfix for incoming email
 
 This document will take you through the steps of setting up a basic Postfix mail
-server with IMAP authentication on Ubuntu, to be used with [Reply by email].
+server with IMAP authentication on Ubuntu, to be used with [incoming email].
 
 The instructions make the assumption that you will be using the email address `incoming@gitlab.example.com`, that is, username `incoming` on host `gitlab.example.com`. Don't forget to change it to your actual host when executing the example code snippets.
 
@@ -177,12 +177,12 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
     ```sh
     sudo apt-get install courier-imap
     ```
-    
+
     And start `imapd`:
     ```sh
     imapd start
     ```
-    
+
 1. The courier-authdaemon isn't started after installation. Without it, imap authentication will fail:
     ```sh
     sudo service courier-authdaemon start
@@ -329,10 +329,10 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
 
 ## Done!
 
-If all the tests were successful, Postfix is all set up and ready to receive email! Continue with the [Reply by email](./reply_by_email.md) guide to configure GitLab.
+If all the tests were successful, Postfix is all set up and ready to receive email! Continue with the [incoming email] guide to configure GitLab.
 
 ---
 
 _This document was adapted from https://help.ubuntu.com/community/PostfixBasicSetupHowto, by contributors to the Ubuntu documentation wiki._
 
-[reply by email]: reply_by_email.md
+[incoming email]: incoming_email.md

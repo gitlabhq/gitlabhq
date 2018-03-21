@@ -6,14 +6,6 @@
     = link_to 'Close issue', issue_path(@issue, issue: {state_event: :close}, format: 'json'), data: {original_text: "Close issue", alternative_text: "Comment & close issue"}, class: "btn btn-nr btn-close btn-comment js-note-target-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
 
 %section.js-vue-notes-event
-  #js-vue-notes{ data: { discussions_path: discussions_project_issue_path(@project, @issue, format: :json),
-  register_path: new_session_path(:user, redirect_to_referer: 'yes', anchor: 'register-pane'),
-  new_session_path: new_session_path(:user, redirect_to_referer: 'yes'),
-  markdown_docs_path: help_page_path('user/markdown'),
-  quick_actions_docs_path: help_page_path('user/project/quick_actions'),
-  notes_path: notes_url,
-  close_issue_path: issue_path(@issue, issue: { state_event: :close }, format: 'json'),
-  reopen_issue_path: issue_path(@issue, issue: { state_event: :reopen }, format: 'json'),
-  last_fetched_at: Time.now.to_i,
-  noteable_data: serialize_issuable(@issue),
-  current_user_data: UserSerializer.new.represent(current_user, only_path: true).to_json } }
+  #js-vue-notes{ data: { notes_data: notes_data(@issue),
+    noteable_data: serialize_issuable(@issue),
+    current_user_data: UserSerializer.new.represent(current_user, only_path: true).to_json } }

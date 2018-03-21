@@ -35,6 +35,7 @@ module ProtectedRefAccess
   def check_access(user)
     return true if user.admin?
 
-    project.team.max_member_access(user.id) >= access_level
+    user.can?(:push_code, project) &&
+      project.team.max_member_access(user.id) >= access_level
   end
 end

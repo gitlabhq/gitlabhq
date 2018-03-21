@@ -8,7 +8,7 @@ describe MigrateIssuesToGhostUser, :migration do
     let(:users) { table(:users) }
 
     before do
-      project = projects.create!(name: 'gitlab')
+      project = projects.create!(name: 'gitlab', namespace_id: 1)
       user = users.create(email: 'test@example.com')
       issues.create(title: 'Issue 1', author_id: nil, project_id: project.id)
       issues.create(title: 'Issue 2', author_id: user.id, project_id: project.id)

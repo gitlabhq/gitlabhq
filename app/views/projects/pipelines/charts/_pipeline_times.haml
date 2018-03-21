@@ -4,4 +4,5 @@
 
   %canvas#build_timesChart{ height: 200 }
 
+-# haml-lint:disable InlineJavaScript
 %script#pipelinesTimesChartsData{ type: "application/json" }= { :labels => @charts[:pipeline_times].labels, :values => @charts[:pipeline_times].pipeline_times }.to_json.html_safe

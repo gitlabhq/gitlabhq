@@ -23,5 +23,6 @@ warmup do |app|
 end
 
 map ENV['RAILS_RELATIVE_URL_ROOT'] || "/" do
+  use Gitlab::Middleware::ReleaseEnv
   run Gitlab::Application
 end

@@ -1,5 +1,5 @@
 /* eslint-disable import/first */
-/* global ConfirmDangerModal */
+/* global $ */
 
 import jQuery from 'jquery';
 import Cookies from 'js-cookie';
@@ -10,7 +10,7 @@ window.jQuery = jQuery;
 window.$ = jQuery;
 
 // lib/utils
-import { handleLocationHash } from './lib/utils/common_utils';
+import { handleLocationHash, addSelectOnFocusBehaviour } from './lib/utils/common_utils';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 
@@ -20,7 +20,6 @@ import './behaviors/';
 // everything else
 import loadAwardsHandler from './awards_handler';
 import bp from './breakpoints';
-import './confirm_danger_modal';
 import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
 import initTodoToggle from './header';
@@ -31,13 +30,15 @@ import LazyLoader from './lazy_loader';
 import initLogoAnimation from './logo';
 import './milestone_select';
 import './projects_dropdown';
-import './render_gfm';
 import initBreadcrumbs from './breadcrumb';
 
 import initDispatcher from './dispatcher';
 
-// eslint-disable-next-line global-require, import/no-commonjs
-if (process.env.NODE_ENV !== 'production') require('./test_utils/');
+// inject test utilities if necessary
+if (process.env.NODE_ENV !== 'production' && gon && gon.test_env) {
+  $.fx.off = true;
+  import(/* webpackMode: "eager" */ './test_utils/');
+}
 
 svg4everybody();
 
@@ -104,13 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return true;
   });
 
-  // Click a .js-select-on-focus field, select the contents
-  // Prevent a mouseup event from deselecting the input
-  $('.js-select-on-focus').on('focusin', function selectOnFocusCallback() {
-    $(this).select().one('mouseup', (e) => {
-      e.preventDefault();
-    });
-  });
+  addSelectOnFocusBehaviour('.js-select-on-focus');
 
   $('.remove-row').on('ajax:success', function removeRowAjaxSuccessCallback() {
     $(this).tooltip('destroy')
@@ -215,16 +210,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     $(document).trigger('toggle.comments');
-  });
-
-  $document.on('click', '.js-confirm-danger', (e) => {
-    const btn = $(e.target);
-    const form = btn.closest('form');
-    const text = btn.data('confirmDangerMessage');
-    e.preventDefault();
-
-    // eslint-disable-next-line no-new
-    new ConfirmDangerModal(form, text);
   });
 
   $document.on('breakpoint:change', (e, breakpoint) => {

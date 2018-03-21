@@ -35,7 +35,8 @@ class NotificationRecipient
 
     # check this last because it's expensive
     # nobody should receive notifications if they've specifically unsubscribed
-    return false if unsubscribed?
+    # except if they were mentioned.
+    return false if @type != :mention && unsubscribed?
 
     true
   end
@@ -85,6 +86,7 @@ class NotificationRecipient
       return false unless user.can?(:receive_notifications)
       return true if @skip_read_ability
 
+      return false if @target && !user.can?(:read_cross_project)
       return false if @project && !user.can?(:read_project, @project)
 
       return true unless read_ability

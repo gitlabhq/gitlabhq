@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import U2FAuthenticate from '~/u2f/authenticate';
 import 'vendor/u2f';
 import MockU2FDevice from './mock_u2f_device';
@@ -5,7 +6,7 @@ import MockU2FDevice from './mock_u2f_device';
 describe('U2FAuthenticate', () => {
   preloadFixtures('u2f/authenticate.html.raw');
 
-  beforeEach(() => {
+  beforeEach((done) => {
     loadFixtures('u2f/authenticate.html.raw');
     this.u2fDevice = new MockU2FDevice();
     this.container = $('#js-authenticate-u2f');
@@ -22,7 +23,7 @@ describe('U2FAuthenticate', () => {
     // bypass automatic form submission within renderAuthenticated
     spyOn(this.component, 'renderAuthenticated').and.returnValue(true);
 
-    return this.component.start();
+    this.component.start().then(done).catch(done.fail);
   });
 
   it('allows authenticating via a U2F device', () => {
@@ -34,7 +35,7 @@ describe('U2FAuthenticate', () => {
     expect(this.component.renderAuthenticated).toHaveBeenCalledWith('{"deviceData":"this is data from the device"}');
   });
 
-  return describe('errors', () => {
+  describe('errors', () => {
     it('displays an error message', () => {
       const setupButton = this.container.find('#js-login-u2f-device');
       setupButton.trigger('click');

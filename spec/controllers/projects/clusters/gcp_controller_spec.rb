@@ -161,7 +161,7 @@ describe Projects::Clusters::GcpController do
           it 'renders the cluster form with an error' do
             go
 
-            expect(response).to set_flash[:alert]
+            expect(response).to set_flash.now[:alert]
             expect(response).to render_template('new')
           end
         end

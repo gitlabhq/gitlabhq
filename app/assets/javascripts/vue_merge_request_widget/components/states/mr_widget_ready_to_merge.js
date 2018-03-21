@@ -93,7 +93,7 @@ export default {
         || this.mr.preventMerge);
     },
     isRemoveSourceBranchButtonDisabled() {
-      return this.isMergeButtonDisabled || !this.mr.canRemoveSourceBranch;
+      return this.isMergeButtonDisabled;
     },
     shouldShowSquashBeforeMerge() {
       const { commitsCount, enableSquashBeforeMerge } = this.mr;
@@ -227,7 +227,8 @@ export default {
               @click="handleMergeButtonClick()"
               :disabled="isMergeButtonDisabled"
               :class="mergeButtonClass"
-              type="button">
+              type="button"
+              class="qa-merge-button">
               <i
                 v-if="isMakingRequest"
                 class="fa fa-spinner fa-spin"
@@ -281,7 +282,7 @@ export default {
           </span>
           <div class="media-body-wrap space-children">
             <template v-if="shouldShowMergeControls()">
-              <label>
+              <label v-if="mr.canRemoveSourceBranch">
                 <input
                   id="remove-source-branch-input"
                   v-model="removeSourceBranch"

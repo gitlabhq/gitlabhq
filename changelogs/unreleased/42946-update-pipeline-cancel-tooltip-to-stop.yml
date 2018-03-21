@@ -1,0 +1,5 @@
+---
+title: Update tooltip on pipeline cancel to Stop (#42946)
+merge_request: 17444
+author:
+type: fixed

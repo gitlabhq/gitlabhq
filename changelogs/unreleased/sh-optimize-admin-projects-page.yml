@@ -1,0 +1,5 @@
+---
+title: Fix timeouts loading /admin/projects page
+merge_request:
+author:
+type: performance

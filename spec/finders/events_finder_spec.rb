@@ -26,6 +26,14 @@ describe EventsFinder do
 
       expect(events).not_to include(opened_merge_request_event)
     end
+
+    it 'returns nothing when the current user cannot read cross project' do
+      expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
+
+      events = described_class.new(source: user, current_user: user).execute
+
+      expect(events).to be_empty
+    end
   end
 
   context 'when targeting a project' do

@@ -67,6 +67,7 @@
         <clipboard-button
           :text="branchNameClipboardData"
           :title="__('Copy branch name to clipboard')"
+          css-class="btn-default btn-transparent btn-clipboard"
         />
 
         {{ s__("mrWidget|into") }}

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Banzai::CommitRenderer do
   describe '.render' do
     it 'renders a commit description and title' do
-      user = double(:user)
+      user = build(:user)
       project = create(:project, :repository)
 
       expect(Banzai::ObjectRenderer).to receive(:new).with(project, user).and_call_original

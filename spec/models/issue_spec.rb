@@ -9,11 +9,17 @@ describe Issue do
   describe 'modules' do
     subject { described_class }
 
-    it { is_expected.to include_module(InternalId) }
     it { is_expected.to include_module(Issuable) }
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
     it { is_expected.to include_module(Taskable) }
+
+    it_behaves_like 'AtomicInternalId' do
+      let(:internal_id_attribute) { :iid }
+      let(:instance) { build(:issue) }
+      let(:scope_attrs) { { project: instance.project } }
+      let(:usage) { :issues }
+    end
   end
 
   subject { create(:issue) }
@@ -221,27 +227,55 @@ describe Issue do
   end
 
   describe '#referenced_merge_requests' do
+    let(:project) { create(:project, :public) }
+    let(:issue) do
+      create(:issue, description: merge_request.to_reference, project: project)
+    end
+    let!(:merge_request) do
+      create(:merge_request,
+             source_project: project,
+             source_branch:  'master',
+             target_branch:  'feature')
+    end
+
     it 'returns the referenced merge requests' do
-      project = create(:project, :public)
-
-      mr1 = create(:merge_request,
-                   source_project: project,
-                   source_branch:  'master',
-                   target_branch:  'feature')
-
       mr2 = create(:merge_request,
                    source_project: project,
                    source_branch:  'feature',
                    target_branch:  'master')
-
-      issue = create(:issue, description: mr1.to_reference, project: project)
 
       create(:note_on_issue,
              noteable:   issue,
              note:       mr2.to_reference,
              project_id: project.id)
 
-      expect(issue.referenced_merge_requests).to eq([mr1, mr2])
+      expect(issue.referenced_merge_requests).to eq([merge_request, mr2])
+    end
+
+    it 'returns cross project referenced merge requests' do
+      other_project = create(:project, :public)
+      cross_project_merge_request = create(:merge_request, source_project: other_project)
+      create(:note_on_issue,
+             noteable:   issue,
+             note:       cross_project_merge_request.to_reference(issue.project),
+             project_id: issue.project.id)
+
+      expect(issue.referenced_merge_requests).to eq([merge_request, cross_project_merge_request])
+    end
+
+    it 'excludes cross project references if the user cannot read cross project' do
+      user = create(:user)
+      allow(Ability).to receive(:allowed?).and_call_original
+      expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
+
+      other_project = create(:project, :public)
+      cross_project_merge_request = create(:merge_request, source_project: other_project)
+      create(:note_on_issue,
+             noteable:   issue,
+             note:       cross_project_merge_request.to_reference(issue.project),
+             project_id: issue.project.id)
+
+      expect(issue.referenced_merge_requests(user)).to eq([merge_request])
     end
   end
 
@@ -309,7 +343,7 @@ describe Issue do
   end
 
   describe '#related_branches' do
-    let(:user) { build(:admin) }
+    let(:user) { create(:admin) }
 
     before do
       allow(subject.project.repository).to receive(:branch_names)

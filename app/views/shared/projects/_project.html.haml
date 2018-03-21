@@ -6,7 +6,7 @@
 - user = local_assigns[:user]
 - access = user&.max_member_access_for_project(project.id) unless user.nil?
 - css_class = '' unless local_assigns[:css_class]
-- show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true && project.commit
+- show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true && can_show_last_commit_in_list?(project)
 - css_class += " no-description" if project.description.blank? && !show_last_commit_as_description
 - cache_key = project_list_cache_key(project)
 - updated_tooltip = time_ago_with_tooltip(project.last_activity_date)
@@ -47,7 +47,7 @@
       .prepend-top-0
         - if project.archived
           %span.prepend-left-10.label.label-warning archived
-        - if project.pipeline_status.has_status?
+        - if can?(current_user, :read_cross_project) && project.pipeline_status.has_status?
           %span.prepend-left-10
             = render_project_pipeline_status(project.pipeline_status)
         - if forks

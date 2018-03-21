@@ -86,6 +86,7 @@ describe Boards::IssuesController do
 
     context 'with unauthorized user' do
       before do
+        allow(Ability).to receive(:allowed?).and_call_original
         allow(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(true)
         allow(Ability).to receive(:allowed?).with(user, :read_issue, project).and_return(false)
       end

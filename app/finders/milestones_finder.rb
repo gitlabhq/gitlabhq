@@ -8,6 +8,8 @@
 #   state - filters by state.
 
 class MilestonesFinder
+  include FinderMethods
+
   attr_reader :params, :project_ids, :group_ids
 
   def initialize(params = {})

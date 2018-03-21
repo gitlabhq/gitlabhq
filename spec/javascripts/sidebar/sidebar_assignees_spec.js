@@ -1,11 +1,11 @@
 import _ from 'underscore';
 import Vue from 'vue';
-import SidebarAssignees from '~/sidebar/components/assignees/sidebar_assignees';
+import SidebarAssignees from '~/sidebar/components/assignees/sidebar_assignees.vue';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import SidebarService from '~/sidebar/services/sidebar_service';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import Mock from './mock_data';
-import mountComponent from '../helpers/vue_mount_component_helper';
 
 describe('sidebar assignees', () => {
   let vm;

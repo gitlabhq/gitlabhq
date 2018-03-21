@@ -335,21 +335,8 @@ describe API::Internal do
       end
 
       context "git push" do
-        context "gitaly disabled", :disable_gitaly do
-          it "has the correct payload" do
-            push(key, project)
-
-            expect(response).to have_gitlab_http_status(200)
-            expect(json_response["status"]).to be_truthy
-            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
-            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
-            expect(json_response["gitaly"]).to be_nil
-            expect(user).not_to have_an_activity_record
-          end
-        end
-
-        context "gitaly enabled" do
-          it "has the correct payload" do
+        context 'project as namespace/project' do
+          it do
             push(key, project)
 
             expect(response).to have_gitlab_http_status(200)
@@ -363,17 +350,6 @@ describe API::Internal do
             expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
             expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
             expect(user).not_to have_an_activity_record
-          end
-        end
-
-        context 'project as namespace/project' do
-          it do
-            push(key, project)
-
-            expect(response).to have_gitlab_http_status(200)
-            expect(json_response["status"]).to be_truthy
-            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
-            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
           end
         end
       end
@@ -471,6 +447,12 @@ describe API::Internal do
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_truthy
+          expect(json_response["gitaly"]).not_to be_nil
+          expect(json_response["gitaly"]["repository"]).not_to be_nil
+          expect(json_response["gitaly"]["repository"]["storage_name"]).to eq(project.repository.gitaly_repository.storage_name)
+          expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
+          expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
+          expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
         end
       end
 

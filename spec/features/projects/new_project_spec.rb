@@ -140,9 +140,9 @@ feature 'New project' do
       find('#import-project-tab').click
     end
 
-    context 'from git repository url' do
+    context 'from git repository url, "Repo by URL"' do
       before do
-        first('.import_git').click
+        first('.js-import-git-toggle-button').click
       end
 
       it 'does not autocomplete sensitive git repo URL' do
@@ -157,15 +157,27 @@ feature 'New project' do
         expect(git_import_instructions).to be_visible
         expect(git_import_instructions).to have_content 'Git repository URL'
       end
+
+      it 'keeps "Import project" tab open after form validation error' do
+        collision_project = create(:project, name: 'test-name-collision', namespace: user.namespace)
+
+        fill_in 'project_import_url', with: collision_project.http_url_to_repo
+        fill_in 'project_path', with: collision_project.path
+
+        click_on 'Create project'
+
+        expect(page).to have_css('#import-project-pane.active')
+        expect(page).not_to have_css('.toggle-import-form.hide')
+      end
     end
 
     context 'from GitHub' do
       before do
-        first('.import_github').click
+        first('.js-import-github').click
       end
 
       it 'shows import instructions' do
-        expect(page).to have_content('Import Projects from GitHub')
+        expect(page).to have_content('Import repositories from GitHub')
         expect(current_path).to eq new_import_github_path
       end
     end

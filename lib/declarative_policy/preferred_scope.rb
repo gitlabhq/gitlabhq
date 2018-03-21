@@ -1,4 +1,4 @@
-module DeclarativePolicy
+module DeclarativePolicy # rubocop:disable Naming/FileName
   PREFERRED_SCOPE_KEY = :"DeclarativePolicy.preferred_scope"
 
   class << self

@@ -42,7 +42,6 @@
   = webpack_bundle_tag "common"
   = webpack_bundle_tag "main"
   = webpack_bundle_tag "raven" if Gitlab::CurrentSettings.clientside_sentry_enabled
-  = webpack_bundle_tag "test" if Rails.env.test?
 
   - if content_for?(:page_specific_javascripts)
     = yield :page_specific_javascripts

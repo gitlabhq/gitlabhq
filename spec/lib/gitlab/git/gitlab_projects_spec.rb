@@ -28,7 +28,7 @@ describe Gitlab::Git::GitlabProjects do
   describe '#push_branches' do
     let(:remote_name) { 'remote-name' }
     let(:branch_name) { 'master' }
-    let(:cmd) { %W(git push -- #{remote_name} #{branch_name}) }
+    let(:cmd) { %W(#{Gitlab.config.git.bin_path} push -- #{remote_name} #{branch_name}) }
     let(:force) { false }
 
     subject { gl_projects.push_branches(remote_name, 600, force, [branch_name]) }
@@ -46,7 +46,7 @@ describe Gitlab::Git::GitlabProjects do
     end
 
     context 'with --force' do
-      let(:cmd) { %W(git push --force -- #{remote_name} #{branch_name}) }
+      let(:cmd) { %W(#{Gitlab.config.git.bin_path} push --force -- #{remote_name} #{branch_name}) }
       let(:force) { true }
 
       it 'executes the command' do
@@ -61,10 +61,11 @@ describe Gitlab::Git::GitlabProjects do
     let(:remote_name) { 'remote-name' }
     let(:branch_name) { 'master' }
     let(:force) { false }
+    let(:prune) { true }
     let(:tags) { true }
-    let(:args) { { force: force, tags: tags }.merge(extra_args) }
+    let(:args) { { force: force, tags: tags, prune: prune }.merge(extra_args) }
     let(:extra_args) { {} }
-    let(:cmd) { %W(git fetch #{remote_name} --prune --quiet --tags) }
+    let(:cmd) { %W(#{Gitlab.config.git.bin_path} fetch #{remote_name} --quiet --prune --tags) }
 
     subject { gl_projects.fetch_remote(remote_name, 600, args) }
 
@@ -97,7 +98,7 @@ describe Gitlab::Git::GitlabProjects do
 
     context 'with --force' do
       let(:force) { true }
-      let(:cmd) { %W(git fetch #{remote_name} --prune --quiet --force --tags) }
+      let(:cmd) { %W(#{Gitlab.config.git.bin_path} fetch #{remote_name} --quiet --prune --force --tags) }
 
       it 'executes the command with forced option' do
         stub_spawn(cmd, 600, tmp_repo_path, {}, success: true)
@@ -108,7 +109,18 @@ describe Gitlab::Git::GitlabProjects do
 
     context 'with --no-tags' do
       let(:tags) { false }
-      let(:cmd) { %W(git fetch #{remote_name} --prune --quiet --no-tags) }
+      let(:cmd) { %W(#{Gitlab.config.git.bin_path} fetch #{remote_name} --quiet --prune --no-tags) }
+
+      it 'executes the command' do
+        stub_spawn(cmd, 600, tmp_repo_path, {}, success: true)
+
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'with no prune' do
+      let(:prune) { false }
+      let(:cmd) { %W(#{Gitlab.config.git.bin_path} fetch #{remote_name} --quiet --tags) }
 
       it 'executes the command' do
         stub_spawn(cmd, 600, tmp_repo_path, {}, success: true)
@@ -153,7 +165,7 @@ describe Gitlab::Git::GitlabProjects do
   describe '#import_project' do
     let(:project) { create(:project) }
     let(:import_url) { TestEnv.factory_repo_path_bare }
-    let(:cmd) { %W(git clone --bare -- #{import_url} #{tmp_repo_path}) }
+    let(:cmd) { %W(#{Gitlab.config.git.bin_path} clone --bare -- #{import_url} #{tmp_repo_path}) }
     let(:timeout) { 600 }
 
     subject { gl_projects.import_project(import_url, timeout) }

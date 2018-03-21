@@ -9,11 +9,20 @@ module QA
                       :source_branch,
                       :target_branch
 
+        product :project do |factory|
+          factory.project
+        end
+
+        product :source_branch do |factory|
+          factory.source_branch
+        end
+
         dependency Factory::Resource::Project, as: :project do |project|
           project.name = 'project-with-merge-request'
         end
 
         dependency Factory::Repository::Push, as: :target do |push, factory|
+          factory.project.visit!
           push.project = factory.project
           push.branch_name = "master:#{factory.target_branch}"
         end

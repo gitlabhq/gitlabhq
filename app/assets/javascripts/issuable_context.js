@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Cookies from 'js-cookie';
 import bp from './breakpoints';
 import UsersSelect from './users_select';

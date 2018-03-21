@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import RecentSearchesDropdownContent from './components/recent_searches_dropdown_content';
+import RecentSearchesDropdownContent from './components/recent_searches_dropdown_content.vue';
 import eventHub from './event_hub';
 
 class RecentSearchesRoot {
@@ -33,7 +33,7 @@ class RecentSearchesRoot {
     this.vm = new Vue({
       el: this.wrapperElement,
       components: {
-        'recent-searches-dropdown-content': RecentSearchesDropdownContent,
+        RecentSearchesDropdownContent,
       },
       data() { return state; },
       template: `

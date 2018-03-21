@@ -13,7 +13,10 @@ class IssuePolicy < IssuablePolicy
 
   rule { confidential & ~can_read_confidential }.policy do
     prevent :read_issue
+    prevent :read_issue_iid
     prevent :update_issue
     prevent :admin_issue
   end
+
+  rule { can?(:read_issue) | visible_to_user }.enable :read_issue_iid
 end

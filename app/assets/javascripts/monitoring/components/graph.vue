@@ -52,6 +52,16 @@
         type: String,
         required: true,
       },
+      showLegend: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
+      smallGraph: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
     },
 
     data() {
@@ -130,7 +140,7 @@
         const breakpointSize = bp.getBreakpointSize();
         const query = this.graphData.queries[0];
         this.margin = measurements.large.margin;
-        if (breakpointSize === 'xs' || breakpointSize === 'sm') {
+        if (this.smallGraph || breakpointSize === 'xs' || breakpointSize === 'sm') {
           this.graphHeight = 300;
           this.margin = measurements.small.margin;
           this.measurements = measurements.small;
@@ -182,7 +192,9 @@
           this.graphHeightOffset,
         );
 
-        if (this.timeSeries.length > 3) {
+        if (!this.showLegend) {
+          this.baseGraphHeight -= 50;
+        } else if (this.timeSeries.length > 3) {
           this.baseGraphHeight = this.baseGraphHeight += (this.timeSeries.length - 3) * 20;
         }
 
@@ -197,6 +209,7 @@
 
         const xAxis = d3.axisBottom()
           .scale(axisXScale)
+          .ticks(this.graphWidth / 120)
           .tickFormat(timeScaleFormat);
 
         const yAxis = d3.axisLeft()
@@ -255,6 +268,7 @@
           :time-series="timeSeries"
           :unit-of-display="unitOfDisplay"
           :current-data-index="currentDataIndex"
+          :show-legend-group="showLegend"
         />
         <svg
           class="graph-data"

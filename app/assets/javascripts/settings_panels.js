@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 function expandSection($section) {
   $section.find('.js-settings-toggle').text('Collapse');
   $section.find('.settings-content').off('scroll.expandSection').scrollTop(0);

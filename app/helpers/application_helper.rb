@@ -34,7 +34,7 @@ module ApplicationHelper
 
   def project_icon(project_id, options = {})
     project =
-      if project_id.is_a?(Project)
+      if project_id.respond_to?(:avatar_url)
         project_id
       else
         Project.find_by_full_path(project_id)
@@ -300,7 +300,7 @@ module ApplicationHelper
 
   def linkedin_url(user)
     name = user.linkedin
-    if name =~ %r{\Ahttps?:\/\/(www\.)?linkedin\.com\/in\/}
+    if name =~ %r{\Ahttps?://(www\.)?linkedin\.com/in/}
       name
     else
       "https://www.linkedin.com/in/#{name}"
@@ -309,19 +309,15 @@ module ApplicationHelper
 
   def twitter_url(user)
     name = user.twitter
-    if name =~ %r{\Ahttps?:\/\/(www\.)?twitter\.com\/}
+    if name =~ %r{\Ahttps?://(www\.)?twitter\.com/}
       name
     else
-      "https://www.twitter.com/#{name}"
+      "https://twitter.com/#{name}"
     end
   end
 
   def collapsed_sidebar?
     cookies["sidebar_collapsed"] == "true"
-  end
-
-  def show_new_ide?
-    cookies["new_repo"] == "true" && body_data_page != 'projects:show'
   end
 
   def locale_path

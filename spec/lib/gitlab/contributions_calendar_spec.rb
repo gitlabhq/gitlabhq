@@ -11,7 +11,7 @@ describe Gitlab::ContributionsCalendar do
   end
 
   let(:public_project) do
-    create(:project, :public) do |project|
+    create(:project, :public, :repository) do |project|
       create(:project_member, user: contributor, project: project)
     end
   end
@@ -40,13 +40,13 @@ describe Gitlab::ContributionsCalendar do
     described_class.new(contributor, current_user)
   end
 
-  def create_event(project, day, hour = 0)
+  def create_event(project, day, hour = 0, action = Event::CREATED, target_symbol = :issue)
     @targets ||= {}
-    @targets[project] ||= create(:issue, project: project, author: contributor)
+    @targets[project] ||= create(target_symbol, project: project, author: contributor)
 
     Event.create!(
       project: project,
-      action: Event::CREATED,
+      action: action,
       target: @targets[project],
       author: contributor,
       created_at: DateTime.new(day.year, day.month, day.day, hour)
@@ -68,6 +68,19 @@ describe Gitlab::ContributionsCalendar do
 
       expect(calendar.activity_dates[today]).to eq(0)
       expect(calendar(user).activity_dates[today]).to eq(0)
+      expect(calendar(contributor).activity_dates[today]).to eq(2)
+    end
+
+    it "counts the diff notes on merge request" do
+      create_event(public_project, today, 0, Event::COMMENTED, :diff_note_on_merge_request)
+
+      expect(calendar(contributor).activity_dates[today]).to eq(1)
+    end
+
+    it "counts the discussions on merge requests and issues" do
+      create_event(public_project, today, 0, Event::COMMENTED, :discussion_note_on_merge_request)
+      create_event(public_project, today, 2, Event::COMMENTED, :discussion_note_on_issue)
+
       expect(calendar(contributor).activity_dates[today]).to eq(2)
     end
 
@@ -117,6 +130,19 @@ describe Gitlab::ContributionsCalendar do
 
       expect(calendar.events_by_date(today)).to contain_exactly(e1)
       expect(calendar(contributor).events_by_date(today)).to contain_exactly(e1, e2, e3)
+    end
+
+    context 'when the user cannot read read cross project' do
+      before do
+        allow(Ability).to receive(:allowed?).and_call_original
+        expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
+      end
+
+      it 'does not return any events' do
+        create_event(public_project, today)
+
+        expect(calendar(user).events_by_date(today)).to be_empty
+      end
     end
   end
 

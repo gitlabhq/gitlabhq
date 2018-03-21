@@ -1,5 +1,7 @@
 class JiraService < IssueTrackerService
   include Gitlab::Routing
+  include ApplicationHelper
+  include ActionView::Helpers::AssetUrlHelper
 
   validates :url, url: true, presence: true, if: :activated?
   validates :api_url, url: true, allow_blank: true
@@ -12,9 +14,8 @@ class JiraService < IssueTrackerService
 
   alias_method :project_url, :url
 
-  # This is confusing, but JiraService does not really support these events.
-  # The values here are required to display correct options in the service
-  # configuration screen.
+  # When these are false GitLab does not create cross reference
+  # comments on JIRA except when an issue gets transitioned.
   def self.supported_events
     %w(commit merge_request)
   end
@@ -159,11 +160,6 @@ class JiraService < IssueTrackerService
     add_comment(data, jira_issue)
   end
 
-  # reason why service cannot be tested
-  def disabled_title
-    "Please fill in Password and Username."
-  end
-
   def test(_)
     result = test_settings
     success = result.present?
@@ -268,7 +264,9 @@ class JiraService < IssueTrackerService
         url: url,
         title: title,
         status: status,
-        icon: { title: 'GitLab', url16x16: 'https://gitlab.com/favicon.ico' }
+        icon: {
+          title: 'GitLab', url16x16: asset_url('favicon.ico', host: gitlab_config.url)
+        }
       }
     }
   end
@@ -318,5 +316,14 @@ class JiraService < IssueTrackerService
     return false if api_url.present?
 
     url_changed?
+  end
+
+  def self.event_description(event)
+    case event
+    when "merge_request", "merge_request_events"
+      "JIRA comments will be created when an issue gets referenced in a merge request."
+    when "commit", "commit_events"
+      "JIRA comments will be created when an issue gets referenced in a commit."
+    end
   end
 end

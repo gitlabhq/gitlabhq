@@ -1,4 +1,4 @@
-module Gitlab
+module Gitlab # rubocop:disable Naming/FileName
   module Ci
     module Pipeline
       module Chain

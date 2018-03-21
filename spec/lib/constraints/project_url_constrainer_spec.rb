@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ProjectUrlConstrainer do
+describe Constraints::ProjectUrlConstrainer do
   let!(:project) { create(:project) }
   let!(:namespace) { project.namespace }
 

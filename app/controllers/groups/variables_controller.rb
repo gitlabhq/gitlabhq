@@ -2,6 +2,8 @@ module Groups
   class VariablesController < Groups::ApplicationController
     before_action :authorize_admin_build!
 
+    skip_cross_project_access_check :show, :update
+
     def show
       respond_to do |format|
         format.json do

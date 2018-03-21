@@ -1,6 +1,25 @@
 FactoryBot.define do
   factory :pages_domain, class: 'PagesDomain' do
-    domain 'my.domain.com'
+    sequence(:domain) { |n| "my#{n}.domain.com" }
+    verified_at { Time.now }
+    enabled_until { 1.week.from_now }
+
+    trait :disabled do
+      verified_at nil
+      enabled_until nil
+    end
+
+    trait :unverified do
+      verified_at nil
+    end
+
+    trait :reverify do
+      enabled_until { 1.hour.from_now }
+    end
+
+    trait :expired do
+      enabled_until { 1.hour.ago }
+    end
 
     trait :with_certificate do
       certificate '-----BEGIN CERTIFICATE-----

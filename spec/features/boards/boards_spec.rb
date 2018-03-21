@@ -343,7 +343,7 @@ describe 'Issue Boards', :js do
 
           wait_for_requests
 
-          click_link 'Create new label'
+          click_link 'Create project label'
 
           fill_in('new_label_name', with: 'Testing New Label')
 

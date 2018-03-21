@@ -185,6 +185,18 @@ RSpec.configure do |config|
   config.around(:each, :postgresql) do |example|
     example.run if Gitlab::Database.postgresql?
   end
+
+  config.around(:each, :mysql) do |example|
+    example.run if Gitlab::Database.mysql?
+  end
+
+  # This makes sure the `ApplicationController#can?` method is stubbed with the
+  # original implementation for all view specs.
+  config.before(:each, type: :view) do
+    allow(view).to receive(:can?) do |*args|
+      Ability.allowed?(*args)
+    end
+  end
 end
 
 # add simpler way to match asset paths containing digest strings

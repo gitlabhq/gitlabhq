@@ -1,8 +1,8 @@
 <script>
   /* eslint-disable vue/require-default-prop */
-  import pipelineStage from '../../pipelines/components/stage.vue';
-  import ciIcon from '../../vue_shared/components/ci_icon.vue';
-  import icon from '../../vue_shared/components/icon.vue';
+  import pipelineStage from '~/pipelines/components/stage.vue';
+  import ciIcon from '~/vue_shared/components/ci_icon.vue';
+  import icon from '~/vue_shared/components/icon.vue';
 
   export default {
     name: 'MRWidgetPipeline',

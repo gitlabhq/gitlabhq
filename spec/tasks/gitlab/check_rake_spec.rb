@@ -11,8 +11,8 @@ describe 'gitlab:ldap:check rake task' do
 
   context 'when LDAP is not enabled' do
     it 'does not attempt to bind or search for users' do
-      expect(Gitlab::LDAP::Config).not_to receive(:providers)
-      expect(Gitlab::LDAP::Adapter).not_to receive(:open)
+      expect(Gitlab::Auth::LDAP::Config).not_to receive(:providers)
+      expect(Gitlab::Auth::LDAP::Adapter).not_to receive(:open)
 
       run_rake_task('gitlab:ldap:check')
     end
@@ -23,12 +23,12 @@ describe 'gitlab:ldap:check rake task' do
     let(:adapter) { ldap_adapter('ldapmain', ldap) }
 
     before do
-      allow(Gitlab::LDAP::Config)
+      allow(Gitlab::Auth::LDAP::Config)
         .to receive_messages(
           enabled?: true,
           providers: ['ldapmain']
         )
-      allow(Gitlab::LDAP::Adapter).to receive(:open).and_yield(adapter)
+      allow(Gitlab::Auth::LDAP::Adapter).to receive(:open).and_yield(adapter)
       allow(adapter).to receive(:users).and_return([])
     end
 

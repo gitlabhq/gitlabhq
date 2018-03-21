@@ -446,6 +446,19 @@
   }
 }
 
+.btn-missing {
+  color: $notes-light-color;
+  border: 1px dashed $border-gray-normal-dashed;
+  border-radius: $border-radius-default;
+
+  &:hover,
+  &:active,
+  &:focus {
+    color: $notes-light-color;
+    background-color: $white-normal;
+  }
+}
+
 .btn-svg svg {
   @include btn-svg;
 }

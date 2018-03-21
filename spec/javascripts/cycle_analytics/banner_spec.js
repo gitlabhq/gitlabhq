@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import banner from '~/cycle_analytics/components/banner.vue';
-import mountComponent from '../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('Cycle analytics banner', () => {
   let vm;

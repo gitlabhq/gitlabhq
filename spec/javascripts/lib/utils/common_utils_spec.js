@@ -166,6 +166,21 @@ describe('common_utils', () => {
     });
   });
 
+  describe('objectToQueryString', () => {
+    it('returns empty string when `param` is undefined, null or empty string', () => {
+      expect(commonUtils.objectToQueryString()).toBe('');
+      expect(commonUtils.objectToQueryString('')).toBe('');
+    });
+
+    it('returns query string with values of `params`', () => {
+      const singleQueryParams = { foo: true };
+      const multipleQueryParams = { foo: true, bar: true };
+
+      expect(commonUtils.objectToQueryString(singleQueryParams)).toBe('foo=true');
+      expect(commonUtils.objectToQueryString(multipleQueryParams)).toBe('foo=true&bar=true');
+    });
+  });
+
   describe('buildUrlWithCurrentLocation', () => {
     it('should build an url with current location and given parameters', () => {
       expect(commonUtils.buildUrlWithCurrentLocation()).toEqual(window.location.pathname);

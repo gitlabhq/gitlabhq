@@ -6,9 +6,6 @@
 - @content_class = limited_container_width
 - page_title        "#{@commit.title} (#{@commit.short_id})", "Commits"
 - page_description  @commit.description
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag('common_vue')
-  = webpack_bundle_tag('diff_notes')
 
 .container-fluid{ class: [limited_container_width, container_class] }
   = render "commit_box"

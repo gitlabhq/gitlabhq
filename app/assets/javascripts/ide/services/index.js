@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueResource from 'vue-resource';
-import Api from '../../api';
+import Api from '~/api';
 
 Vue.use(VueResource);
 
@@ -39,6 +39,14 @@ export default {
   },
   getTreeLastCommit(endpoint) {
     return Vue.http.get(endpoint, {
+      params: {
+        format: 'json',
+      },
+    });
+  },
+  getFiles(projectUrl, branchId) {
+    const url = `${projectUrl}/files/${branchId}`;
+    return Vue.http.get(url, {
       params: {
         format: 'json',
       },

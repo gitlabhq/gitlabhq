@@ -20,6 +20,14 @@ module Gitlab
       rescue Gitlab::Auth::AuthenticationError
         nil
       end
+
+      def valid_access_token?(scopes: [])
+        validate_access_token!(scopes: scopes)
+
+        true
+      rescue Gitlab::Auth::AuthenticationError
+        false
+      end
     end
   end
 end

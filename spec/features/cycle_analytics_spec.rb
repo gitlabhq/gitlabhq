@@ -6,7 +6,7 @@ feature 'Cycle Analytics', :js do
   let(:project) { create(:project, :repository) }
   let(:issue) { create(:issue, project: project, created_at: 2.days.ago) }
   let(:milestone) { create(:milestone, project: project) }
-  let(:mr) { create_merge_request_closing_issue(issue, commit_message: "References #{issue.to_reference}") }
+  let(:mr) { create_merge_request_closing_issue(user, project, issue, commit_message: "References #{issue.to_reference}") }
   let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: mr.source_branch, sha: mr.source_branch_sha, head_pipeline_of: mr) }
 
   context 'as an allowed user' do
@@ -41,8 +41,8 @@ feature 'Cycle Analytics', :js do
         allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return([issue])
         project.add_master(user)
 
-        create_cycle
-        deploy_master
+        @build = create_cycle(user, project, issue, mr, milestone, pipeline)
+        deploy_master(user, project)
 
         sign_in(user)
         visit project_cycle_analytics_path(project)
@@ -117,8 +117,8 @@ feature 'Cycle Analytics', :js do
       project.add_guest(guest)
 
       allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return([issue])
-      create_cycle
-      deploy_master
+      create_cycle(user, project, issue, mr, milestone, pipeline)
+      deploy_master(user, project)
 
       sign_in(guest)
       visit project_cycle_analytics_path(project)
@@ -164,16 +164,6 @@ feature 'Cycle Analytics', :js do
     expect(find('.stage-events')).to have_content(mr.title)
     expect(find('.stage-events')).to have_content(mr.author.name)
     expect(find('.stage-events')).to have_content("!#{mr.iid}")
-  end
-
-  def create_cycle
-    issue.update(milestone: milestone)
-    pipeline.run
-
-    @build = create(:ci_build, pipeline: pipeline, status: :success, author: user)
-
-    merge_merge_requests_closing_issue(issue)
-    ProcessCommitWorker.new.perform(project.id, user.id, mr.commits.last.to_hash)
   end
 
   def click_stage(stage_name)

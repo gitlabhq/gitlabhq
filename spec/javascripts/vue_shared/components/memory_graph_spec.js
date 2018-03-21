@@ -1,12 +1,12 @@
 import Vue from 'vue';
-import memoryGraphComponent from '~/vue_shared/components/memory_graph';
+import MemoryGraph from '~/vue_shared/components/memory_graph.vue';
 import { mockMetrics, mockMedian, mockMedianIndex } from './mock_data';
 
 const defaultHeight = '25';
 const defaultWidth = '100';
 
 const createComponent = () => {
-  const Component = Vue.extend(memoryGraphComponent);
+  const Component = Vue.extend(MemoryGraph);
 
   return new Component({
     el: document.createElement('div'),
@@ -32,29 +32,9 @@ describe('MemoryGraph', () => {
     el = vm.$el;
   });
 
-  describe('props', () => {
-    it('should have props with defaults', (done) => {
-      const { metrics, deploymentTime, width, height } = memoryGraphComponent.props;
-
-      Vue.nextTick(() => {
-        const typeClassMatcher = (propItem, expectedType) => {
-          const PropItemTypeClass = propItem.type;
-          expect(new PropItemTypeClass() instanceof expectedType).toBeTruthy();
-          expect(propItem.required).toBeTruthy();
-        };
-
-        typeClassMatcher(metrics, Array);
-        typeClassMatcher(deploymentTime, Number);
-        typeClassMatcher(width, String);
-        typeClassMatcher(height, String);
-        done();
-      });
-    });
-  });
-
   describe('data', () => {
     it('should have default data', () => {
-      const data = memoryGraphComponent.data();
+      const data = MemoryGraph.data();
       const dataValidator = (dataItem, expectedType, defaultVal) => {
         expect(typeof dataItem).toBe(expectedType);
         expect(dataItem).toBe(defaultVal);

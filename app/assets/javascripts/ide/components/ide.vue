@@ -5,7 +5,6 @@
   import repoTabs from './repo_tabs.vue';
   import repoFileButtons from './repo_file_buttons.vue';
   import ideStatusBar from './ide_status_bar.vue';
-  import repoPreview from './repo_preview.vue';
   import repoEditor from './repo_editor.vue';
 
   export default {
@@ -16,27 +15,28 @@
       repoFileButtons,
       ideStatusBar,
       repoEditor,
-      repoPreview,
     },
     props: {
       emptyStateSvgPath: {
         type: String,
         required: true,
       },
+      noChangesStateSvgPath: {
+        type: String,
+        required: true,
+      },
+      committedStateSvgPath: {
+        type: String,
+        required: true,
+      },
     },
     computed: {
-      ...mapState([
-        'currentBlobView',
-        'selectedFile',
-      ]),
-      ...mapGetters([
-        'changedFiles',
-        'activeFile',
-      ]),
+      ...mapState(['changedFiles', 'openFiles', 'viewer']),
+      ...mapGetters(['activeFile', 'hasChanges']),
     },
     mounted() {
       const returnValue = 'Are you sure you want to lose unsaved changes?';
-      window.onbeforeunload = (e) => {
+      window.onbeforeunload = e => {
         if (!this.changedFiles.length) return undefined;
 
         Object.assign(e, {
@@ -59,20 +59,29 @@
       <template
         v-if="activeFile"
       >
-        <repo-tabs/>
-        <component
-          class="multi-file-edit-pane-content"
-          :is="currentBlobView"
+        <repo-tabs
+          :files="openFiles"
+          :viewer="viewer"
+          :has-changes="hasChanges"
         />
-        <repo-file-buttons />
+        <repo-editor
+          class="multi-file-edit-pane-content"
+          :file="activeFile"
+        />
+        <repo-file-buttons
+          :file="activeFile"
+        />
         <ide-status-bar
-          :file="selectedFile"
+          :file="activeFile"
         />
       </template>
       <template
         v-else
       >
-        <div class="ide-empty-state">
+        <div
+          v-once
+          class="ide-empty-state"
+        >
           <div class="row js-empty-state">
             <div class="col-xs-12">
               <div class="svg-content svg-250">
@@ -94,6 +103,9 @@
         </div>
       </template>
     </div>
-    <ide-contextbar/>
+    <ide-contextbar
+      :no-changes-state-svg-path="noChangesStateSvgPath"
+      :committed-state-svg-path="committedStateSvgPath"
+    />
   </div>
 </template>

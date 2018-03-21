@@ -1,4 +1,4 @@
-module QA
+module QA # rubocop:disable Naming/FileName
   module Page
     module Project
       module Settings

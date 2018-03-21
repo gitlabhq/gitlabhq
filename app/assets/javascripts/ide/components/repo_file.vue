@@ -1,165 +1,128 @@
 <script>
-  import { mapState } from 'vuex';
-  import timeAgoMixin from '../../vue_shared/mixins/timeago';
-  import skeletonLoadingContainer from '../../vue_shared/components/skeleton_loading_container.vue';
-  import newDropdown from './new_dropdown/index.vue';
-  import fileIcon from '../../vue_shared/components/file_icon.vue';
+import { mapActions } from 'vuex';
+import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
+import fileIcon from '~/vue_shared/components/file_icon.vue';
+import router from '../ide_router';
+import newDropdown from './new_dropdown/index.vue';
+import fileStatusIcon from './repo_file_status_icon.vue';
+import changedFileIcon from './changed_file_icon.vue';
 
-  export default {
-    components: {
-      skeletonLoadingContainer,
-      newDropdown,
-      fileIcon,
+export default {
+  name: 'RepoFile',
+  components: {
+    skeletonLoadingContainer,
+    newDropdown,
+    fileStatusIcon,
+    fileIcon,
+    changedFileIcon,
+  },
+  props: {
+    file: {
+      type: Object,
+      required: true,
     },
-    mixins: [
-      timeAgoMixin,
-    ],
-    props: {
-      file: {
-        type: Object,
-        required: true,
-      },
-      showExtraColumns: {
-        type: Boolean,
-        default: false,
-      },
+    level: {
+      type: Number,
+      required: true,
     },
-    computed: {
-      ...mapState([
-        'leftPanelCollapsed',
-      ]),
-      isSubmodule() {
-        return this.file.type === 'submodule';
-      },
-      isTree() {
-        return this.file.type === 'tree';
-      },
-      levelIndentation() {
-        if (this.file.level > 0) {
-          return {
-            marginLeft: `${this.file.level * 16}px`,
-          };
-        }
-        return {};
-      },
-      shortId() {
-        return this.file.id.substr(0, 8);
-      },
-      submoduleColSpan() {
-        return !this.leftPanelCollapsed && this.isSubmodule ? 3 : 1;
-      },
-      fileClass() {
-        if (this.file.type === 'blob') {
-          if (this.file.active) {
-            return 'file-open file-active';
-          }
-          return this.file.opened ? 'file-open' : '';
-        }
-        return '';
-      },
-      changedClass() {
-        return {
-          'fa-circle unsaved-icon': this.file.changed || this.file.tempFile,
-        };
-      },
+  },
+  computed: {
+    isTree() {
+      return this.file.type === 'tree';
     },
-    updated() {
-      if (this.file.type === 'blob' && this.file.active) {
-        this.$el.scrollIntoView();
+    isBlob() {
+      return this.file.type === 'blob';
+    },
+    levelIndentation() {
+      return {
+        marginLeft: `${this.level * 16}px`,
+      };
+    },
+    fileClass() {
+      return {
+        'file-open': this.isBlob && this.file.opened,
+        'file-active': this.isBlob && this.file.active,
+        folder: this.isTree,
+        'is-open': this.file.opened,
+      };
+    },
+  },
+  updated() {
+    if (this.file.type === 'blob' && this.file.active) {
+      this.$el.scrollIntoView();
+    }
+  },
+  methods: {
+    ...mapActions(['toggleTreeOpen', 'updateDelayViewerUpdated']),
+    clickFile() {
+      // Manual Action if a tree is selected/opened
+      if (
+        this.isTree &&
+        this.$router.currentRoute.path === `/project${this.file.url}`
+      ) {
+        this.toggleTreeOpen(this.file.path);
       }
+
+      const delayPromise = this.file.changed
+        ? Promise.resolve()
+        : this.updateDelayViewerUpdated(true);
+
+      return delayPromise.then(() => {
+        router.push(`/project${this.file.url}`);
+      });
     },
-    methods: {
-      clickFile(row) {
-        // Manual Action if a tree is selected/opened
-        if (this.file.type === 'tree' && this.$router.currentRoute.path === `/project${row.url}`) {
-          this.$store.dispatch('toggleTreeOpen', {
-            endpoint: this.file.url,
-            tree: this.file,
-          });
-        }
-        this.$router.push(`/project${row.url}`);
-      },
-    },
-  };
+  },
+};
 </script>
 
 <template>
-  <tr
-    class="file"
-    :class="fileClass"
-    @click="clickFile(file)">
-    <td
-      class="multi-file-table-name"
-      :colspan="submoduleColSpan"
+  <div>
+    <div
+      class="file"
+      :class="fileClass"
     >
-      <a
-        class="repo-file-name"
+      <div
+        class="file-name"
+        @click="clickFile"
+        role="button"
       >
-        <file-icon
-          :file-name="file.name"
-          :loading="file.loading"
-          :folder="file.type === 'tree'"
-          :opened="file.opened"
-          :style="levelIndentation"
-          :size="16"
-        />
-        {{ file.name }}
-      </a>
-      <new-dropdown
-        v-if="isTree"
-        :project-id="file.projectId"
-        :branch="file.branchId"
-        :path="file.path"
-        :parent="file"
-      />
-      <i
-        class="fa"
-        v-if="file.changed || file.tempFile"
-        :class="changedClass"
-        aria-hidden="true"
-      >
-      </i>
-      <template v-if="isSubmodule && file.id">
-        @
-        <span class="commit-sha">
-          <a
-            @click.stop
-            :href="file.tree_url"
-          >
-            {{ shortId }}
-          </a>
-        </span>
-      </template>
-    </td>
-
-    <template v-if="showExtraColumns && !isSubmodule">
-      <td class="multi-file-table-col-commit-message hidden-sm hidden-xs">
-        <a
-          v-if="file.lastCommit.message"
-          @click.stop
-          :href="file.lastCommit.url"
-        >
-          {{ file.lastCommit.message }}
-        </a>
-        <skeleton-loading-container
-          v-else
-          :small="true"
-        />
-      </td>
-
-      <td class="commit-update hidden-xs text-right">
         <span
-          v-if="file.lastCommit.updatedAt"
-          :title="tooltipTitle(file.lastCommit.updatedAt)"
+          class="ide-file-name str-truncated"
+          :style="levelIndentation"
         >
-          {{ timeFormated(file.lastCommit.updatedAt) }}
+          <file-icon
+            :file-name="file.name"
+            :loading="file.loading"
+            :folder="isTree"
+            :opened="file.opened"
+            :size="16"
+          />
+          {{ file.name }}
+          <file-status-icon
+            :file="file"
+          />
         </span>
-        <skeleton-loading-container
-          v-else
-          class="animation-container-right"
-          :small="true"
+        <changed-file-icon
+          :file="file"
+          v-if="file.changed || file.tempFile"
+          class="prepend-top-5 pull-right"
         />
-      </td>
+        <new-dropdown
+          v-if="isTree"
+          :project-id="file.projectId"
+          :branch="file.branchId"
+          :path="file.path"
+          class="pull-right prepend-left-8"
+        />
+      </div>
+    </div>
+    <template v-if="file.opened">
+      <repo-file
+        v-for="childFile in file.tree"
+        :key="childFile.key"
+        :file="childFile"
+        :level="level + 1"
+      />
     </template>
-  </tr>
+  </div>
 </template>

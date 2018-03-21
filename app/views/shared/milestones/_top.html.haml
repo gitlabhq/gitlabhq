@@ -58,7 +58,7 @@
       - milestone.milestones.each do |ms|
         %tr
           %td
-            - project_name = group ? ms.project.name : ms.project.name_with_namespace
+            - project_name = group ? ms.project.name : ms.project.full_name
             = link_to project_name, project_milestone_path(ms.project, ms)
           %td
             = ms.issues_visible_to_user(current_user).opened.count

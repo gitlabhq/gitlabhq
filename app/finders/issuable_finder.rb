@@ -19,9 +19,17 @@
 #     non_archived: boolean
 #     iids: integer[]
 #     my_reaction_emoji: string
+#     created_after: datetime
+#     created_before: datetime
+#     updated_after: datetime
+#     updated_before: datetime
 #
 class IssuableFinder
+  prepend FinderWithCrossProjectAccess
+  include FinderMethods
   include CreatedAtFilter
+
+  requires_cross_project_access unless: -> { project? }
 
   NONE = '0'.freeze
 
@@ -75,6 +83,7 @@ class IssuableFinder
   def filter_items(items)
     items = by_scope(items)
     items = by_created_at(items)
+    items = by_updated_at(items)
     items = by_state(items)
     items = by_group(items)
     items = by_search(items)
@@ -85,14 +94,6 @@ class IssuableFinder
     items = by_milestone(items)
     items = by_label(items)
     by_my_reaction_emoji(items)
-  end
-
-  def find(*params)
-    execute.find(*params)
-  end
-
-  def find_by(*params)
-    execute.find_by(*params)
   end
 
   def row_count
@@ -122,10 +123,6 @@ class IssuableFinder
     counts[:all] = counts.values.sum
 
     counts
-  end
-
-  def find_by!(*params)
-    execute.find_by!(*params)
   end
 
   def group
@@ -289,6 +286,13 @@ class IssuableFinder
     else
       items
     end
+  end
+
+  def by_updated_at(items)
+    items = items.updated_after(params[:updated_after]) if params[:updated_after].present?
+    items = items.updated_before(params[:updated_before]) if params[:updated_before].present?
+
+    items
   end
 
   def by_state(items)

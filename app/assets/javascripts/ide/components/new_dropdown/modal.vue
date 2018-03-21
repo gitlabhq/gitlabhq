@@ -1,7 +1,6 @@
 <script>
-  import { mapActions, mapState } from 'vuex';
-  import { __ } from '../../../locale';
-  import modal from '../../../vue_shared/components/modal.vue';
+  import { __ } from '~/locale';
+  import modal from '~/vue_shared/components/modal.vue';
 
   export default {
     components: {
@@ -11,10 +10,6 @@
       branchId: {
         type: String,
         required: true,
-      },
-      parent: {
-        type: Object,
-        default: null,
       },
       type: {
         type: String,
@@ -31,9 +26,6 @@
       };
     },
     computed: {
-      ...mapState([
-        'currentProjectId',
-      ]),
       modalTitle() {
         if (this.type === 'tree') {
           return __('Create new directory');
@@ -60,15 +52,10 @@
       this.$refs.fieldName.focus();
     },
     methods: {
-      ...mapActions([
-        'createTempEntry',
-      ]),
       createEntryInStore() {
-        this.createTempEntry({
-          projectId: this.currentProjectId,
+        this.$emit('create', {
           branchId: this.branchId,
-          parent: this.parent,
-          name: this.entryName.replace(new RegExp(`^${this.path}/`), ''),
+          name: this.entryName,
           type: this.type,
         });
 

@@ -25,7 +25,23 @@ module ExploreHelper
     controller.class.name.split("::").first == "Explore"
   end
 
+  def explore_nav_links
+    @explore_nav_links ||= get_explore_nav_links
+  end
+
+  def explore_nav_link?(link)
+    explore_nav_links.include?(link)
+  end
+
+  def any_explore_nav_link?(links)
+    links.any? { |link| explore_nav_link?(link) }
+  end
+
   private
+
+  def get_explore_nav_links
+    [:projects, :groups, :snippets]
+  end
 
   def request_path_with_options(options = {})
     request.path + "?#{options.to_param}"

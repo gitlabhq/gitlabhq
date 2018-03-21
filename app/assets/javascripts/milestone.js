@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import axios from './lib/utils/axios_utils';
 import flash from './flash';
 import Popover from './shared/popover';

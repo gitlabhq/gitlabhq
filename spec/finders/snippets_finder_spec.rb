@@ -162,8 +162,26 @@ describe SnippetsFinder do
     end
   end
 
-  describe "#execute" do
-    # Snippet visibility scenarios are included in more details in spec/support/snippet_visibility.rb
-    include_examples 'snippet visibility', described_class
+  describe '#execute' do
+    let(:project) { create(:project, :public) }
+    let!(:project_snippet) { create(:project_snippet, :public, project: project) }
+    let!(:personal_snippet) { create(:personal_snippet, :public) }
+    let(:user) { create(:user) }
+    subject(:finder) { described_class.new(user) }
+
+    it 'returns project- and personal snippets' do
+      expect(finder.execute).to contain_exactly(project_snippet, personal_snippet)
+    end
+
+    context 'when the user cannot read cross project' do
+      before do
+        allow(Ability).to receive(:allowed?).and_call_original
+        allow(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
+      end
+
+      it 'returns only personal snippets when the user cannot read cross project' do
+        expect(finder.execute).to contain_exactly(personal_snippet)
+      end
+    end
   end
 end

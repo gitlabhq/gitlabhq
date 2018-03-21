@@ -5,38 +5,41 @@
 
 = render "home_panel"
 
-.row-content-block.second-block.center
-  %h4
-    The repository for this project is empty
+.project-empty-note-panel
+  %div{ class: [container_class, ("limit-container-width-sm" unless fluid_layout)] }
+    .prepend-top-20
+    %h4
+      = _('The repository for this project is empty')
 
-  - if can?(current_user, :push_code, @project)
-    %p
-      If you already have files you can push them using command line instructions below.
-    %p
-      Otherwise you can start with adding a
-      = succeed ',' do
-        = link_to "README", add_special_file_path(@project, file_name: 'README.md')
-      a
-      = succeed ',' do
-        = link_to "LICENSE", add_special_file_path(@project, file_name: 'LICENSE')
-      or a
-      = link_to '.gitignore', add_special_file_path(@project, file_name: '.gitignore')
-      to this project.
-    %p
-      You will need to be owner or have the master permission level for the initial push, as the master branch is automatically protected.
-
-    - if show_auto_devops_callout?(@project)
+    - if @project.can_current_user_push_code?
       %p
-        - link = link_to(s_('AutoDevOps|Auto DevOps (Beta)'), project_settings_ci_cd_path(@project, anchor: 'js-general-pipeline-settings'))
-        = s_('AutoDevOps|You can activate %{link_to_settings} for this project.').html_safe % { link_to_settings: link }
-      %p= s_('AutoDevOps|It will automatically build, test, and deploy your application based on a predefined CI/CD configuration.')
-      %p= link_to _('New file'), project_new_blob_path(@project, @project.default_branch || 'master'), class: 'btn btn-new'
+        - link_to_cli = link_to _('command line instructions'), '#repo-command-line-instructions'
+        = _('If you already have files you can push them using the %{link_to_cli} below.').html_safe % { link_to_cli: link_to_cli }
+      %p
+        %em
+          - link_to_protected_branches = link_to _('Learn more about protected branches'), help_page_path('user/project/protected_branches')
+          = _('Note that the master branch is automatically protected. %{link_to_protected_branches}').html_safe % { link_to_protected_branches: link_to_protected_branches }
+
+      %hr
+      %p
+        - link_to_auto_devops_settings = link_to(s_('AutoDevOps|enable Auto DevOps (Beta)'), project_settings_ci_cd_path(@project, anchor: 'js-general-pipeline-settings'))
+        - link_to_add_kubernetes_cluster = link_to(s_('AutoDevOps|add a Kubernetes cluster'), new_project_cluster_path(@project))
+        = s_('AutoDevOps|You can automatically build and test your application if you %{link_to_auto_devops_settings} for this project. You can automatically deploy it as well, if you %{link_to_add_kubernetes_cluster}.').html_safe % { link_to_auto_devops_settings: link_to_auto_devops_settings, link_to_add_kubernetes_cluster: link_to_add_kubernetes_cluster }
+
+      %hr
+      %p
+        = _('Otherwise it is recommended you start with one of the options below.')
+      .prepend-top-20
+
+%nav.project-stats{ class: container_class }
+  = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_anchors
+  = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons
 
 - if can?(current_user, :push_code, @project)
-  %div{ class: container_class }
+  %div{ class: [container_class, ("limit-container-width-sm" unless fluid_layout)] }
     .prepend-top-20
     .empty_wrapper
-      %h3.page-title-empty
+      %h3#repo-command-line-instructions.page-title-empty
         Command line instructions
       .git-empty
         %fieldset

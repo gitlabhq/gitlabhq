@@ -28,6 +28,7 @@ describe MergeRequests::CreateService do
 
       it 'creates an MR' do
         expect(merge_request).to be_valid
+        expect(merge_request.work_in_progress?).to be(false)
         expect(merge_request.title).to eq('Awesome merge_request')
         expect(merge_request.assignee).to be_nil
         expect(merge_request.merge_params['force_remove_source_branch']).to eq('1')
@@ -60,6 +61,40 @@ describe MergeRequests::CreateService do
         }
 
         expect(Event.where(attributes).count).to eq(1)
+      end
+
+      describe 'when marked with /wip' do
+        context 'in title and in description' do
+          let(:opts) do
+            {
+              title: 'WIP: Awesome merge_request',
+              description: "well this is not done yet\n/wip",
+              source_branch: 'feature',
+              target_branch: 'master',
+              assignee: assignee
+            }
+          end
+
+          it 'sets MR to WIP' do
+            expect(merge_request.work_in_progress?).to be(true)
+          end
+        end
+
+        context 'in description only' do
+          let(:opts) do
+            {
+              title: 'Awesome merge_request',
+              description: "well this is not done yet\n/wip",
+              source_branch: 'feature',
+              target_branch: 'master',
+              assignee: assignee
+            }
+          end
+
+          it 'sets MR to WIP' do
+            expect(merge_request.work_in_progress?).to be(true)
+          end
+        end
       end
 
       context 'when merge request is assigned to someone' do

@@ -1,9 +1,9 @@
 import * as types from '../mutation_types';
 
 export default {
-  [types.TOGGLE_TREE_OPEN](state, tree) {
-    Object.assign(tree, {
-      opened: !tree.opened,
+  [types.TOGGLE_TREE_OPEN](state, path) {
+    Object.assign(state.entries[path], {
+      opened: !state.entries[path].opened,
     });
   },
   [types.CREATE_TREE](state, { treePath }) {
@@ -11,18 +11,18 @@ export default {
       trees: Object.assign({}, state.trees, {
         [treePath]: {
           tree: [],
+          loading: true,
         },
       }),
     });
   },
-  [types.SET_DIRECTORY_DATA](state, { data, tree }) {
-    Object.assign(tree, {
-      tree: data,
-    });
-  },
-  [types.SET_PARENT_TREE_URL](state, url) {
+  [types.SET_DIRECTORY_DATA](state, { data, treePath }) {
     Object.assign(state, {
-      parentTreeUrl: url,
+      trees: Object.assign(state.trees, {
+        [treePath]: {
+          tree: data,
+        },
+      }),
     });
   },
   [types.SET_LAST_COMMIT_URL](state, { tree = state, url }) {
@@ -30,7 +30,9 @@ export default {
       lastCommitPath: url,
     });
   },
-  [types.CREATE_TMP_TREE](state, { parent, tmpEntry }) {
-    parent.tree.push(tmpEntry);
+  [types.REMOVE_ALL_CHANGES_FILES](state) {
+    Object.assign(state, {
+      changedFiles: [],
+    });
   },
 };

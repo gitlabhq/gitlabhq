@@ -1,16 +1,28 @@
 <script>
   import { mapActions } from 'vuex';
-  import fileIcon from '../../vue_shared/components/file_icon.vue';
+
+  import fileIcon from '~/vue_shared/components/file_icon.vue';
+  import icon from '~/vue_shared/components/icon.vue';
+  import fileStatusIcon from './repo_file_status_icon.vue';
+  import changedFileIcon from './changed_file_icon.vue';
 
   export default {
     components: {
+      fileStatusIcon,
       fileIcon,
+      icon,
+      changedFileIcon,
     },
     props: {
       tab: {
         type: Object,
         required: true,
       },
+    },
+    data() {
+      return {
+        tabMouseOver: false,
+      };
     },
     computed: {
       closeLabel() {
@@ -19,12 +31,8 @@
         }
         return `Close ${this.tab.name}`;
       },
-      changedClass() {
-        const tabChangedObj = {
-          'fa-times close-icon': !this.tab.changed && !this.tab.tempFile,
-          'fa-circle unsaved-icon': this.tab.changed || this.tab.tempFile,
-        };
-        return tabChangedObj;
+      showChangedIcon() {
+        return this.tab.changed ? !this.tabMouseOver : false;
       },
     },
 
@@ -35,28 +43,41 @@
       clickFile(tab) {
         this.$router.push(`/project${tab.url}`);
       },
+      mouseOverTab() {
+        if (this.tab.changed) {
+          this.tabMouseOver = true;
+        }
+      },
+      mouseOutTab() {
+        if (this.tab.changed) {
+          this.tabMouseOver = false;
+        }
+      },
     },
   };
 </script>
 
 <template>
-  <li @click="clickFile(tab)">
+  <li
+    @click="clickFile(tab)"
+    @mouseover="mouseOverTab"
+    @mouseout="mouseOutTab"
+  >
     <button
       type="button"
       class="multi-file-tab-close"
-      @click.stop.prevent="closeFile({ file: tab })"
+      @click.stop.prevent="closeFile(tab.path)"
       :aria-label="closeLabel"
-      :class="{
-        'modified': tab.changed,
-      }"
-      :disabled="tab.changed"
     >
-      <i
-        class="fa"
-        :class="changedClass"
-        aria-hidden="true"
-      >
-      </i>
+      <icon
+        v-if="!showChangedIcon"
+        name="close"
+        :size="12"
+      />
+      <changed-file-icon
+        v-else
+        :file="tab"
+      />
     </button>
 
     <div
@@ -69,6 +90,9 @@
         :size="16"
       />
       {{ tab.name }}
+      <file-status-icon
+        :file="tab"
+      />
     </div>
   </li>
 </template>

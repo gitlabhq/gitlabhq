@@ -228,7 +228,7 @@ module Gitlab
       end
 
       def has_local_branches?
-        gitaly_migrate(:has_local_branches) do |is_enabled|
+        gitaly_migrate(:has_local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_repository_client.has_local_branches?
           else
@@ -467,7 +467,8 @@ module Gitlab
           follow: false,
           skip_merges: false,
           after: nil,
-          before: nil
+          before: nil,
+          all: false
         }
 
         options = default_options.merge(options)
@@ -489,13 +490,16 @@ module Gitlab
 
       # Used in gitaly-ruby
       def raw_log(options)
-        actual_ref = options[:ref] || root_ref
-        begin
-          sha = sha_from_ref(actual_ref)
-        rescue Rugged::OdbError, Rugged::InvalidError, Rugged::ReferenceError
-          # Return an empty array if the ref wasn't found
-          return []
-        end
+        sha =
+          unless options[:all]
+            actual_ref = options[:ref] || root_ref
+            begin
+              sha_from_ref(actual_ref)
+            rescue Rugged::OdbError, Rugged::InvalidError, Rugged::ReferenceError
+              # Return an empty array if the ref wasn't found
+              return []
+            end
+          end
 
         log_by_shell(sha, options)
       end
@@ -711,7 +715,7 @@ module Gitlab
       end
 
       def add_branch(branch_name, user:, target:)
-        gitaly_migrate(:operation_user_create_branch) do |is_enabled|
+        gitaly_migrate(:operation_user_create_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_add_branch(branch_name, user, target)
           else
@@ -721,7 +725,7 @@ module Gitlab
       end
 
       def add_tag(tag_name, user:, target:, message: nil)
-        gitaly_migrate(:operation_user_add_tag) do |is_enabled|
+        gitaly_migrate(:operation_user_add_tag, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_add_tag(tag_name, user: user, target: target, message: message)
           else
@@ -731,7 +735,7 @@ module Gitlab
       end
 
       def rm_branch(branch_name, user:)
-        gitaly_migrate(:operation_user_delete_branch) do |is_enabled|
+        gitaly_migrate(:operation_user_delete_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_operations_client.user_delete_branch(branch_name, user)
           else
@@ -806,7 +810,7 @@ module Gitlab
       end
 
       def revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
-        gitaly_migrate(:revert) do |is_enabled|
+        gitaly_migrate(:revert, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           args = {
             user: user,
             commit: commit,
@@ -872,7 +876,7 @@ module Gitlab
 
       # Delete the specified branch from the repository
       def delete_branch(branch_name)
-        gitaly_migrate(:delete_branch) do |is_enabled|
+        gitaly_migrate(:delete_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.delete_branch(branch_name)
           else
@@ -899,7 +903,7 @@ module Gitlab
       #   create_branch("feature")
       #   create_branch("other-feature", "master")
       def create_branch(ref, start_point = "HEAD")
-        gitaly_migrate(:create_branch) do |is_enabled|
+        gitaly_migrate(:create_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.create_branch(ref, start_point)
           else
@@ -998,15 +1002,16 @@ module Gitlab
       # This only checks the root .gitattributes file,
       # it does not traverse subfolders to find additional .gitattributes files
       #
-      # This method is around 30 times slower than `attributes`,
-      # which uses `$GIT_DIR/info/attributes`
+      # This method is around 30 times slower than `attributes`, which uses
+      # `$GIT_DIR/info/attributes`. Consider caching AttributesAtRefParser
+      # and reusing that for multiple calls instead of this method.
       def attributes_at(ref, file_path)
         parser = AttributesAtRefParser.new(self, ref)
         parser.attributes(file_path)
       end
 
       def languages(ref = nil)
-        Gitlab::GitalyClient.migrate(:commit_languages) do |is_enabled|
+        gitaly_migrate(:commit_languages, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_commit_client.languages(ref)
           else
@@ -1027,6 +1032,21 @@ module Gitlab
 
             languages.sort do |x, y|
               y[:value] <=> x[:value]
+            end
+          end
+        end
+      end
+
+      def license_short_name
+        gitaly_migrate(:license_short_name) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.license_short_name
+          else
+            begin
+              # The licensee gem creates a Rugged object from the path:
+              # https://github.com/benbalter/licensee/blob/v8.7.0/lib/licensee/projects/git_project.rb
+              Licensee.license(path).try(:key)
+            rescue Rugged::Error
             end
           end
         end
@@ -1170,15 +1190,9 @@ module Gitlab
       end
 
       def fsck
-        gitaly_migrate(:git_fsck) do |is_enabled|
-          msg, status = if is_enabled
-                          gitaly_fsck
-                        else
-                          shell_fsck
-                        end
+        msg, status = gitaly_repository_client.fsck
 
-          raise GitError.new("Could not fsck repository: #{msg}") unless status.zero?
-        end
+        raise GitError.new("Could not fsck repository: #{msg}") unless status.zero?
       end
 
       def create_from_bundle(bundle_path)
@@ -1376,7 +1390,7 @@ module Gitlab
         offset = 2
         args = %W(grep -i -I -n -z --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
 
-        run_git(args).first.scrub.split(/^--$/)
+        run_git(args).first.scrub.split(/^--\n/)
       end
 
       def can_be_merged?(source_sha, target_branch)
@@ -1414,22 +1428,12 @@ module Gitlab
         output
       end
 
-      def can_be_merged?(source_sha, target_branch)
-        gitaly_migrate(:can_be_merged) do |is_enabled|
-          if is_enabled
-            gitaly_can_be_merged?(source_sha, find_branch(target_branch).target)
-          else
-            rugged_can_be_merged?(source_sha, target_branch)
-          end
-        end
-      end
-
-      def last_commit_id_for_path(sha, path)
+      def last_commit_for_path(sha, path)
         gitaly_migrate(:last_commit_for_path) do |is_enabled|
           if is_enabled
-            last_commit_for_path_by_gitaly(sha, path).id
+            last_commit_for_path_by_gitaly(sha, path)
           else
-            last_commit_id_for_path_by_shelling_out(sha, path)
+            last_commit_for_path_by_rugged(sha, path)
           end
         end
       end
@@ -1587,14 +1591,6 @@ module Gitlab
         File.write(File.join(worktree_info_path, 'sparse-checkout'), files)
       end
 
-      def gitaly_fsck
-        gitaly_repository_client.fsck
-      end
-
-      def shell_fsck
-        run_git(%W[--git-dir=#{path} fsck], nice: true)
-      end
-
       def rugged_fetch_source_branch(source_repository, source_branch, local_ref)
         with_repo_branch_commit(source_repository, source_branch) do |commit|
           if commit
@@ -1701,7 +1697,12 @@ module Gitlab
         cmd << '--no-merges' if options[:skip_merges]
         cmd << "--after=#{options[:after].iso8601}" if options[:after]
         cmd << "--before=#{options[:before].iso8601}" if options[:before]
-        cmd << sha
+
+        if options[:all]
+          cmd += %w[--all --reverse]
+        else
+          cmd << sha
+        end
 
         # :path can be a string or an array of strings
         if options[:path].present?
@@ -1872,7 +1873,7 @@ module Gitlab
       end
 
       def last_commit_for_path_by_rugged(sha, path)
-        sha = last_commit_id_for_path(sha, path)
+        sha = last_commit_id_for_path_by_shelling_out(sha, path)
         commit(sha)
       end
 
@@ -1918,7 +1919,16 @@ module Gitlab
         cmd << "--before=#{options[:before].iso8601}" if options[:before]
         cmd << "--max-count=#{options[:max_count]}" if options[:max_count]
         cmd << "--left-right" if options[:left_right]
-        cmd += %W[--count #{options[:ref]}]
+        cmd << '--count'
+
+        cmd << if options[:all]
+                 '--all'
+               elsif options[:ref]
+                 options[:ref]
+               else
+                 raise ArgumentError, "Please specify a valid ref or set the 'all' attribute to true"
+               end
+
         cmd += %W[-- #{options[:path]}] if options[:path].present?
         cmd
       end
@@ -2206,7 +2216,7 @@ module Gitlab
         with_worktree(squash_path, branch, sparse_checkout_files: diff_files, env: env) do
           # Apply diff of the `diff_range` to the worktree
           diff = run_git!(%W(diff --binary #{diff_range}))
-          run_git!(%w(apply --index), chdir: squash_path, env: env) do |stdin|
+          run_git!(%w(apply --index --whitespace=nowarn), chdir: squash_path, env: env) do |stdin|
             stdin.binmode
             stdin.write(diff)
           end
@@ -2369,14 +2379,6 @@ module Gitlab
         gitaly_commit_client
           .commits_by_message(query, revision: ref, path: path, limit: limit, offset: offset)
           .map { |c| commit(c) }
-      end
-
-      def gitaly_can_be_merged?(their_commit, our_commit)
-        !gitaly_conflicts_client(our_commit, their_commit).conflicts?
-      end
-
-      def rugged_can_be_merged?(their_commit, our_commit)
-        !rugged.merge_commits(our_commit, their_commit).conflicts?
       end
 
       def last_commit_for_path_by_gitaly(sha, path)

@@ -1,0 +1,5 @@
+---
+title: Ensure that OTP backup codes are always invalidated
+merge_request:
+author:
+type: security

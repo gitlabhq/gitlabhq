@@ -7,6 +7,20 @@ feature 'Runners' do
     sign_in(user)
   end
 
+  context 'when user opens runners page' do
+    given(:project) { create(:project) }
+
+    background do
+      project.add_master(user)
+    end
+
+    scenario 'user can see a button to install runners on kubernetes clusters' do
+      visit runners_path(project)
+
+      expect(page).to have_link('Install Runner on Kubernetes', href: project_clusters_path(project))
+    end
+  end
+
   context 'when a project has enabled shared_runners' do
     given(:project) { create(:project) }
 

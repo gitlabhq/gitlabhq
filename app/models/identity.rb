@@ -17,12 +17,12 @@ class Identity < ActiveRecord::Base
   end
 
   def ldap?
-    Gitlab::OAuth::Provider.ldap_provider?(provider)
+    Gitlab::Auth::OAuth::Provider.ldap_provider?(provider)
   end
 
   def self.normalize_uid(provider, uid)
-    if Gitlab::OAuth::Provider.ldap_provider?(provider)
-      Gitlab::LDAP::Person.normalize_dn(uid)
+    if Gitlab::Auth::OAuth::Provider.ldap_provider?(provider)
+      Gitlab::Auth::LDAP::Person.normalize_dn(uid)
     else
       uid.to_s
     end

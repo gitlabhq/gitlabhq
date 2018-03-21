@@ -272,7 +272,7 @@
 
   .divider {
     height: 1px;
-    margin: 6px 0;
+    margin: #{$grid-size / 2} 0;
     padding: 0;
     background-color: $dropdown-divider-color;
 
@@ -501,10 +501,8 @@
           -moz-osx-font-smoothing: grayscale;
         }
 
-        &.dropdown-menu-user-link {
-          &::before {
-            top: 50%;
-          }
+        &.dropdown-menu-user-link::before {
+          top: 50%;
         }
       }
 

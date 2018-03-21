@@ -58,7 +58,7 @@ describe "Admin::Projects"  do
       expect(current_path).to eq admin_project_path(project)
       expect(page).to have_content(project.path)
       expect(page).to have_content(project.name)
-      expect(page).to have_content(project.name_with_namespace)
+      expect(page).to have_content(project.full_name)
       expect(page).to have_content(project.creator.name)
     end
   end

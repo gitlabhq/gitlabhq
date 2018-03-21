@@ -99,7 +99,7 @@ class ChatNotificationService < Service
   def get_message(object_kind, data)
     case object_kind
     when "push", "tag_push"
-      ChatMessage::PushMessage.new(data)
+      ChatMessage::PushMessage.new(data) if notify_for_ref?(data)
     when "issue"
       ChatMessage::IssueMessage.new(data) unless update?(data)
     when "merge_request"
@@ -129,7 +129,7 @@ class ChatNotificationService < Service
   end
 
   def project_name
-    project.name_with_namespace.gsub(/\s/, '')
+    project.full_name.gsub(/\s/, '')
   end
 
   def project_url
@@ -145,10 +145,16 @@ class ChatNotificationService < Service
   end
 
   def notify_for_ref?(data)
-    return true if data[:object_attributes][:tag]
+    return true if data.dig(:object_attributes, :tag)
     return true unless notify_only_default_branch?
 
-    data[:object_attributes][:ref] == project.default_branch
+    ref = if data[:ref]
+            Gitlab::Git.ref_name(data[:ref])
+          else
+            data.dig(:object_attributes, :ref)
+          end
+
+    ref == project.default_branch
   end
 
   def notify_for_pipeline?(data)

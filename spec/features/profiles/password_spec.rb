@@ -134,5 +134,15 @@ describe 'Profile > Password' do
 
       expect(current_path).to eq new_user_session_path
     end
+
+    context 'when global require_two_factor_authentication is enabled' do
+      it 'needs change user password' do
+        stub_application_setting(require_two_factor_authentication: true)
+
+        visit profile_path
+
+        expect(current_path).to eq new_profile_password_path
+      end
+    end
   end
 end

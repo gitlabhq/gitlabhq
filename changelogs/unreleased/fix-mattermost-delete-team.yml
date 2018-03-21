@@ -1,0 +1,5 @@
+---
+title: Fixed group deletion linked to Mattermost
+merge_request: 16209
+author: Julien Millau
+type: fixed

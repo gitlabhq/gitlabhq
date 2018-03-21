@@ -11,7 +11,7 @@
 
   %small.pull-right.cgray
     - if snippet_title.project_id?
-      = link_to snippet_title.project.name_with_namespace, project_path(snippet_title.project)
+      = link_to snippet_title.project.full_name, project_path(snippet_title.project)
 
   .snippet-info
     = snippet_title.to_reference

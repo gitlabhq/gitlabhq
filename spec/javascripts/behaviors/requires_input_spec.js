@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import '~/behaviors/requires_input';
 
 describe('requiresInput', () => {

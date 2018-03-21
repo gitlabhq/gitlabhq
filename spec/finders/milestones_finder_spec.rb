@@ -70,4 +70,12 @@ describe MilestonesFinder do
       expect(result.to_a).to contain_exactly(milestone_1)
     end
   end
+
+  describe '#find_by' do
+    it 'finds a single milestone' do
+      finder = described_class.new(project_ids: [project_1.id], state: 'all')
+
+      expect(finder.find_by(iid: milestone_3.iid)).to eq(milestone_3)
+    end
+  end
 end

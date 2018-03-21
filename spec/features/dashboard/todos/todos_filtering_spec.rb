@@ -24,14 +24,14 @@ feature 'Dashboard > User filters todos', :js do
   it 'filters by project' do
     click_button 'Project'
     within '.dropdown-menu-project' do
-      fill_in 'Search projects', with: project_1.name_with_namespace
-      click_link project_1.name_with_namespace
+      fill_in 'Search projects', with: project_1.full_name
+      click_link project_1.full_name
     end
 
     wait_for_requests
 
-    expect(page).to     have_content project_1.name_with_namespace
-    expect(page).not_to have_content project_2.name_with_namespace
+    expect(page).to     have_content project_1.full_name
+    expect(page).not_to have_content project_2.full_name
   end
 
   context 'Author filter' do

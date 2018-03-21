@@ -1,8 +1,89 @@
-# Project import API
+# Project import/export API
 
 [Introduced][ce-41899] in GitLab 10.6
 
 [See also the project import/export documentation](../user/project/settings/import_export.md)
+
+## Schedule an export
+
+Start a new export.
+
+```http
+POST /projects/:id/export
+```
+
+| Attribute | Type           | Required | Description                              |
+| --------- | -------------- | -------- | ---------------------------------------- |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `description`      | string | no | Overrides the project description |
+
+```console
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "description=Foo Bar" https://gitlab.example.com/api/v4/projects/1/export
+```
+
+```json
+{
+  "message": "202 Accepted"
+}
+```
+
+## Export status
+
+Get the status of export.
+
+```http
+GET /projects/:id/export
+```
+
+| Attribute | Type           | Required | Description                              |
+| --------- | -------------- | -------- | ---------------------------------------- |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+
+```console
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/export
+```
+
+Status can be one of `none`, `started`, or `finished`.
+
+`_links` are only present when export has finished.
+
+```json
+{
+  "id": 1,
+  "description": "Itaque perspiciatis minima aspernatur corporis consequatur.",
+  "name": "Gitlab Test",
+  "name_with_namespace": "Gitlab Org / Gitlab Test",
+  "path": "gitlab-test",
+  "path_with_namespace": "gitlab-org/gitlab-test",
+  "created_at": "2017-08-29T04:36:44.383Z",
+  "export_status": "finished",
+  "_links": {
+    "api_url": "https://gitlab.example.com/api/v4/projects/1/export/download",
+    "web_url": "https://gitlab.example.com/gitlab-org/gitlab-test/download_export",
+  }
+}
+```
+
+## Export download
+
+Download the finished export.
+
+```http
+GET /projects/:id/export/download
+```
+
+| Attribute | Type           | Required | Description                              |
+| --------- | -------------- | -------- | ---------------------------------------- |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+
+```console
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --remote-header-name --remote-name https://gitlab.example.com/api/v4/projects/5/export/download
+```
+
+```console
+ls *export.tar.gz
+2017-12-05_22-11-148_namespace_project_export.tar.gz
+```
 
 ## Import a file
 

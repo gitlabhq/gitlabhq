@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import mwpsComponent from '~/vue_merge_request_widget/components/states/mr_widget_merge_when_pipeline_succeeds.vue';
+import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 import eventHub from '~/vue_merge_request_widget/event_hub';
-import mountComponent from '../../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('MRWidgetMergeWhenPipelineSucceeds', () => {
   let vm;
@@ -25,12 +26,7 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
         targetBranchPath,
         targetBranch,
       },
-      service: {
-        cancelAutomaticMerge() {},
-        mergeResource: {
-          save() {},
-        },
-      },
+      service: new MRWidgetService({}),
     });
   });
 
@@ -90,18 +86,16 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
 
     describe('removeSourceBranch', () => {
       it('should set flag and call service then request main component to update the widget', (done) => {
-        spyOn(vm.service.mergeResource, 'save').and.returnValue(new Promise((resolve) => {
-          resolve({
-            data: {
-              status: 'merge_when_pipeline_succeeds',
-            },
-          });
+        spyOn(vm.service, 'merge').and.returnValue(Promise.resolve({
+          data: {
+            status: 'merge_when_pipeline_succeeds',
+          },
         }));
 
         vm.removeSourceBranch();
         setTimeout(() => {
           expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
-          expect(vm.service.mergeResource.save).toHaveBeenCalledWith({
+          expect(vm.service.merge).toHaveBeenCalledWith({
             sha,
             merge_when_pipeline_succeeds: true,
             should_remove_source_branch: true,

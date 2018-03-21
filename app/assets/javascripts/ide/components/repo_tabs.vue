@@ -1,27 +1,61 @@
 <script>
-  import { mapState } from 'vuex';
+  import { mapActions } from 'vuex';
   import RepoTab from './repo_tab.vue';
+  import EditorMode from './editor_mode_dropdown.vue';
 
   export default {
     components: {
-      'repo-tab': RepoTab,
+      RepoTab,
+      EditorMode,
     },
-    computed: {
-      ...mapState([
-        'openFiles',
-      ]),
+    props: {
+      files: {
+        type: Array,
+        required: true,
+      },
+      viewer: {
+        type: String,
+        required: true,
+      },
+      hasChanges: {
+        type: Boolean,
+        required: true,
+      },
+    },
+    data() {
+      return {
+        showShadow: false,
+      };
+    },
+    updated() {
+      if (!this.$refs.tabsScroller) return;
+
+      this.showShadow =
+        this.$refs.tabsScroller.scrollWidth > this.$refs.tabsScroller.offsetWidth;
+    },
+    methods: {
+      ...mapActions(['updateViewer']),
     },
   };
 </script>
 
 <template>
-  <ul
-    class="multi-file-tabs list-unstyled append-bottom-0"
-  >
-    <repo-tab
-      v-for="tab in openFiles"
-      :key="tab.key"
-      :tab="tab"
+  <div class="multi-file-tabs">
+    <ul
+      class="list-unstyled append-bottom-0"
+      ref="tabsScroller"
+    >
+      <repo-tab
+        v-for="tab in files"
+        :key="tab.key"
+        :tab="tab"
+      />
+    </ul>
+    <editor-mode
+      :viewer="viewer"
+      :show-shadow="showShadow"
+      :has-changes="hasChanges"
+      @click="updateViewer"
     />
-  </ul>
+  </div>
 </template>

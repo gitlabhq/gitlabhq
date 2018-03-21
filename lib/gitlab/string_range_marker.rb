@@ -14,7 +14,7 @@ module Gitlab
     end
 
     def mark(marker_ranges)
-      return rich_line unless marker_ranges
+      return rich_line unless marker_ranges&.any?
 
       if html_escaped
         rich_marker_ranges = []

@@ -44,6 +44,10 @@ class GitGarbageCollectWorker
 
     # Refresh the branch cache in case garbage collection caused a ref lookup to fail
     flush_ref_caches(project) if task == :gc
+
+    # In case pack files are deleted, release libgit2 cache and open file
+    # descriptors ASAP instead of waiting for Ruby garbage collection
+    project.cleanup
   ensure
     cancel_lease(lease_key, lease_uuid) if lease_key.present? && lease_uuid.present?
   end

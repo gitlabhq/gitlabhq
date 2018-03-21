@@ -2,7 +2,9 @@
 
 [Gitaly](https://gitlab.com/gitlab-org/gitaly) (introduced in GitLab
 9.0) is a service that provides high-level RPC access to Git
-repositories. Gitaly is a mandatory component in GitLab 9.4 and newer.
+repositories. Gitaly was optional when it was first introduced in
+GitLab, but since GitLab 9.4 it is a mandatory component of the
+application.
 
 GitLab components that access Git repositories (gitlab-rails,
 gitlab-shell, gitlab-workhorse) act as clients to Gitaly. End users do
@@ -184,14 +186,20 @@ Gitaly logs on your Gitaly server (`sudo gitlab-ctl tail gitaly` or
 coming in. One sure way to trigger a Gitaly request is to clone a
 repository from your GitLab server over HTTP.
 
-## Disabling or enabling the Gitaly service
+## Disabling or enabling the Gitaly service in a cluster environment
 
 If you are running Gitaly [as a remote
 service](#running-gitaly-on-its-own-server) you may want to disable
 the local Gitaly service that runs on your Gitlab server by default.
 
-To disable the Gitaly service in your Omnibus installation, add the
-following line to `/etc/gitlab/gitlab.rb`:
+> 'Disabling Gitaly' only makes sense when you run GitLab in a custom
+cluster configuration, where different services run on different
+machines. Disabling Gitaly on all machines in the cluster is not a
+valid configuration.
+
+If you are setting up a GitLab cluster where Gitaly does not need to
+run on all machines, you can disable the Gitaly service in your
+Omnibus installation, add the following line to `/etc/gitlab/gitlab.rb`:
 
 ```ruby
 gitaly['enable'] = false
@@ -200,11 +208,13 @@ gitaly['enable'] = false
 When you run `gitlab-ctl reconfigure` the Gitaly service will be
 disabled.
 
-To disable the Gitaly service in an installation from source, add the
-following to `/etc/default/gitlab`:
+To disable the Gitaly service in a GitLab cluster where you installed
+GitLab from source, add the following to `/etc/default/gitlab` on the
+machine where you want to disable Gitaly.
 
 ```shell
 gitaly_enabled=false
 ```
 
-When you run `service gitlab restart` Gitaly will be disabled.
+When you run `service gitlab restart` Gitaly will be disabled on this
+particular machine.

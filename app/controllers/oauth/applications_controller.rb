@@ -1,5 +1,6 @@
 class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   include Gitlab::GonHelper
+  include Gitlab::Allowable
   include PageLayoutHelper
   include OauthApplications
 
@@ -7,6 +8,8 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   before_action :authenticate_user!
   before_action :add_gon_variables
   before_action :load_scopes, only: [:index, :create, :edit]
+
+  helper_method :can?
 
   layout 'profile'
 

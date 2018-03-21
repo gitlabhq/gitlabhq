@@ -14,9 +14,6 @@
     .col-lg-12
       #js-vue-registry-images{ data: { endpoint: project_container_registry_index_path(@project, format: :json) } }
 
-      = webpack_bundle_tag('common_vue')
-      = webpack_bundle_tag('registry_list')
-
   .row.prepend-top-10
     .col-lg-12
       .panel.panel-default

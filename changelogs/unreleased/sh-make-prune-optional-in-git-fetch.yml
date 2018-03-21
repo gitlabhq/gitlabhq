@@ -1,0 +1,5 @@
+---
+title: Make --prune a configurable parameter in fetching a git remote
+merge_request:
+author:
+type: performance

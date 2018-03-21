@@ -12,75 +12,39 @@ module BlobHelper
 
   def edit_blob_path(project = @project, ref = @ref, path = @path, options = {})
     project_edit_blob_path(project,
-                                     tree_join(ref, path),
-                                     options[:link_opts])
-  end
-
-  def edit_blob_link(project = @project, ref = @ref, path = @path, options = {})
-    blob = options.delete(:blob)
-    blob ||= project.repository.blob_at(ref, path) rescue nil
-
-    return unless blob && blob.readable_text?
-
-    common_classes = "btn js-edit-blob #{options[:extra_class]}"
-
-    if !on_top_of_branch?(project, ref)
-      button_tag 'Edit', class: "#{common_classes} disabled has-tooltip", title: "You can only edit files when you are on a branch", data: { container: 'body' }
-    # This condition applies to anonymous or users who can edit directly
-    elsif !current_user || (current_user && can_modify_blob?(blob, project, ref))
-      link_to 'Edit', edit_blob_path(project, ref, path, options), class: "#{common_classes} btn-sm"
-    elsif current_user && can?(current_user, :fork_project, project)
-      continue_params = {
-        to: edit_blob_path(project, ref, path, options),
-        notice: edit_in_new_fork_notice,
-        notice_now: edit_in_new_fork_notice_now
-      }
-      fork_path = project_forks_path(project, namespace_key: current_user.namespace.id, continue: continue_params)
-
-      button_tag 'Edit',
-        class: "#{common_classes} js-edit-blob-link-fork-toggler",
-        data: { action: 'edit', fork_path: fork_path }
-    end
+                           tree_join(ref, path),
+                           options[:link_opts])
   end
 
   def ide_edit_path(project = @project, ref = @ref, path = @path, options = {})
     "#{ide_path}/project#{edit_blob_path(project, ref, path, options)}"
   end
 
-  def ide_edit_text
-    "#{_('Web IDE')}"
+  def edit_blob_button(project = @project, ref = @ref, path = @path, options = {})
+    return unless blob = readable_blob(options, path, project, ref)
+
+    common_classes = "btn js-edit-blob #{options[:extra_class]}"
+
+    edit_button_tag(blob,
+                    common_classes,
+                    _('Edit'),
+                    edit_blob_path(project, ref, path, options),
+                    project,
+                    ref)
   end
 
-  def ide_blob_link(project = @project, ref = @ref, path = @path, options = {})
-    return unless show_new_ide?
+  def ide_edit_button(project = @project, ref = @ref, path = @path, options = {})
+    return unless blob = readable_blob(options, path, project, ref)
 
-    blob = options.delete(:blob)
-    blob ||= project.repository.blob_at(ref, path) rescue nil
-
-    return unless blob && blob.readable_text?
-
-    common_classes = "btn js-edit-ide #{options[:extra_class]}"
-
-    if !on_top_of_branch?(project, ref)
-      button_tag ide_edit_text, class: "#{common_classes} disabled has-tooltip", title: _('You can only edit files when you are on a branch'), data: { container: 'body' }
-    # This condition applies to anonymous or users who can edit directly
-    elsif current_user && can_modify_blob?(blob, project, ref)
-      link_to ide_edit_text, ide_edit_path(project, ref, path, options), class: "#{common_classes} btn-sm"
-    elsif current_user && can?(current_user, :fork_project, project)
-      continue_params = {
-        to: ide_edit_path(project, ref, path, options),
-        notice: edit_in_new_fork_notice,
-        notice_now: edit_in_new_fork_notice_now
-      }
-      fork_path = project_forks_path(project, namespace_key: current_user.namespace.id, continue: continue_params)
-
-      button_tag ide_edit_text,
-        class: common_classes,
-        data: { fork_path: fork_path }
-    end
+    edit_button_tag(blob,
+                    'btn btn-default',
+                    _('Web IDE'),
+                    ide_edit_path(project, ref, path, options),
+                    project,
+                    ref)
   end
 
-  def modify_file_link(project = @project, ref = @ref, path = @path, label:, action:, btn_class:, modal_type:)
+  def modify_file_button(project = @project, ref = @ref, path = @path, label:, action:, btn_class:, modal_type:)
     return unless current_user
 
     blob = project.repository.blob_at(ref, path) rescue nil
@@ -96,21 +60,12 @@ module BlobHelper
     elsif can_modify_blob?(blob, project, ref)
       button_tag label, class: "#{common_classes}", 'data-target' => "#modal-#{modal_type}-blob", 'data-toggle' => 'modal'
     elsif can?(current_user, :fork_project, project)
-      continue_params = {
-        to: request.fullpath,
-        notice: edit_in_new_fork_notice + " Try to #{action} this file again.",
-        notice_now: edit_in_new_fork_notice_now
-      }
-      fork_path = project_forks_path(project, namespace_key: current_user.namespace.id, continue: continue_params)
-
-      button_tag label,
-        class: "#{common_classes} js-edit-blob-link-fork-toggler",
-        data: { action: action, fork_path: fork_path }
+      edit_fork_button_tag(common_classes, project, label, edit_modify_file_fork_params(action), action)
     end
   end
 
   def replace_blob_link(project = @project, ref = @ref, path = @path)
-    modify_file_link(
+    modify_file_button(
       project,
       ref,
       path,
@@ -122,7 +77,7 @@ module BlobHelper
   end
 
   def delete_blob_link(project = @project, ref = @ref, path = @path)
-    modify_file_link(
+    modify_file_button(
       project,
       ref,
       path,
@@ -331,5 +286,56 @@ module BlobHelper
     end
 
     options
+  end
+
+  def readable_blob(options, path, project, ref)
+    blob = options.delete(:blob)
+    blob ||= project.repository.blob_at(ref, path) rescue nil
+
+    blob if blob&.readable_text?
+  end
+
+  def edit_blob_fork_params(path)
+    {
+      to: path,
+      notice: edit_in_new_fork_notice,
+      notice_now: edit_in_new_fork_notice_now
+    }
+  end
+
+  def edit_modify_file_fork_params(action)
+    {
+      to: request.fullpath,
+      notice: edit_in_new_fork_notice_action(action),
+      notice_now: edit_in_new_fork_notice_now
+    }
+  end
+
+  def edit_fork_button_tag(common_classes, project, label, params, action = 'edit')
+    fork_path = project_forks_path(project, namespace_key: current_user.namespace.id, continue: params)
+
+    button_tag label,
+               class: "#{common_classes} js-edit-blob-link-fork-toggler",
+               data: { action: action, fork_path: fork_path }
+  end
+
+  def edit_disabled_button_tag(button_text, common_classes)
+    button_tag(button_text, class: "#{common_classes} disabled has-tooltip", title: _('You can only edit files when you are on a branch'), data: { container: 'body' })
+  end
+
+  def edit_link_tag(link_text, edit_path, common_classes)
+    link_to link_text, edit_path, class: "#{common_classes} btn-sm"
+  end
+
+  def edit_button_tag(blob, common_classes, text, edit_path, project, ref)
+    if !on_top_of_branch?(project, ref)
+      edit_disabled_button_tag(text, common_classes)
+      # This condition only applies to users who are logged in
+      # Web IDE (Beta) requires the user to have this feature enabled
+    elsif !current_user || (current_user && can_modify_blob?(blob, project, ref))
+      edit_link_tag(text, edit_path, common_classes)
+    elsif current_user && can?(current_user, :fork_project, project)
+      edit_fork_button_tag(common_classes, project, text, edit_blob_fork_params(edit_path))
+    end
   end
 end

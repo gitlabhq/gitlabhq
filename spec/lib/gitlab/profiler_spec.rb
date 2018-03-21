@@ -94,10 +94,12 @@ describe Gitlab::Profiler do
 
       it 'strips out the private token' do
         expect(custom_logger).to receive(:add) do |severity, _progname, message|
+          next if message.include?('spec/')
+
           expect(severity).to eq(Logger::DEBUG)
           expect(message).to include('public').and include(described_class::FILTERED_STRING)
           expect(message).not_to include(private_token)
-        end
+        end.twice
 
         custom_logger.debug("public #{private_token}")
       end

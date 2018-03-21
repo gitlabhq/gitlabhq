@@ -14,13 +14,13 @@ describe ProjectWiki do
   it { is_expected.to delegate_method(:repository_storage_path).to :project }
   it { is_expected.to delegate_method(:hashed_storage?).to :project }
 
-  describe "#path_with_namespace" do
+  describe "#full_path" do
     it "returns the project path with namespace with the .wiki extension" do
-      expect(subject.path_with_namespace).to eq(project.full_path + '.wiki')
+      expect(subject.full_path).to eq(project.full_path + '.wiki')
     end
 
     it 'returns the same value as #full_path' do
-      expect(subject.path_with_namespace).to eq(subject.full_path)
+      expect(subject.full_path).to eq(subject.full_path)
     end
   end
 
@@ -74,7 +74,7 @@ describe ProjectWiki do
       # Create a fresh project which will not have a wiki
       project_wiki = described_class.new(create(:project), user)
       gitlab_shell = double(:gitlab_shell)
-      allow(gitlab_shell).to receive(:add_repository)
+      allow(gitlab_shell).to receive(:create_repository)
       allow(project_wiki).to receive(:gitlab_shell).and_return(gitlab_shell)
 
       expect { project_wiki.send(:wiki) }.to raise_exception(ProjectWiki::CouldNotCreateWikiError)

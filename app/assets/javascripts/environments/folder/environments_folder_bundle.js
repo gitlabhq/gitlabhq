@@ -5,7 +5,7 @@ import Translate from '../../vue_shared/translate';
 
 Vue.use(Translate);
 
-document.addEventListener('DOMContentLoaded', () => new Vue({
+export default () => new Vue({
   el: '#environments-folder-list-view',
   components: {
     environmentsFolderApp,
@@ -32,4 +32,4 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
       },
     });
   },
-}));
+});

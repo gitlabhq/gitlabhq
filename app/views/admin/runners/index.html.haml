@@ -35,9 +35,8 @@
           method: :put, class: 'btn btn-default',
           data: { confirm: _("Are you sure you want to reset registration token?") }
 
-  = render partial: 'ci/runner/how_to_setup_runner',
-           locals: { registration_token: Gitlab::CurrentSettings.runners_registration_token,
-                     type: 'shared' }
+  = render partial: 'ci/runner/how_to_setup_shared_runner',
+           locals: { registration_token: Gitlab::CurrentSettings.runners_registration_token }
 
   .append-bottom-20.clearfix
     .pull-left
@@ -61,6 +60,7 @@
               %th Runner token
               %th Description
               %th Version
+              %th IP Address
               %th Projects
               %th Jobs
               %th Tags

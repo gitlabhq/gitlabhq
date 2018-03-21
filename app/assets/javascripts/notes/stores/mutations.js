@@ -1,22 +1,32 @@
 import * as utils from './utils';
 import * as types from './mutation_types';
 import * as constants from '../constants';
+import { isInMRPage } from '../../lib/utils/common_utils';
 
 export default {
   [types.ADD_NEW_NOTE](state, note) {
     const { discussion_id, type } = note;
     const [exists] = state.notes.filter(n => n.id === note.discussion_id);
+    const isDiscussion = type === constants.DISCUSSION_NOTE;
 
     if (!exists) {
       const noteData = {
         expanded: true,
         id: discussion_id,
-        individual_note: !(type === constants.DISCUSSION_NOTE),
+        individual_note: !isDiscussion,
         notes: [note],
         reply_id: discussion_id,
       };
 
+      if (isDiscussion && isInMRPage()) {
+        noteData.resolvable = note.resolvable;
+        noteData.resolved = false;
+        noteData.resolve_path = note.resolve_path;
+        noteData.resolve_with_issue_path = note.resolve_with_issue_path;
+      }
+
       state.notes.push(noteData);
+      document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
     }
   },
 
@@ -25,6 +35,7 @@ export default {
 
     if (noteObj) {
       noteObj.notes.push(note);
+      document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
     }
   },
 
@@ -41,6 +52,8 @@ export default {
         state.notes.splice(state.notes.indexOf(noteObj), 1);
       }
     }
+
+    document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
   },
 
   [types.REMOVE_PLACEHOLDER_NOTES](state) {
@@ -50,13 +63,15 @@ export default {
       const note = notes[i];
       const children = note.notes;
 
-      if (children.length && !note.individual_note) { // remove placeholder from discussions
+      if (children.length && !note.individual_note) {
+        // remove placeholder from discussions
         for (let j = children.length - 1; j >= 0; j -= 1) {
           if (children[j].isPlaceholderNote) {
             children.splice(j, 1);
           }
         }
-      } else if (note.isPlaceholderNote) { // remove placeholders from state root
+      } else if (note.isPlaceholderNote) {
+        // remove placeholders from state root
         notes.splice(i, 1);
       }
     }
@@ -76,16 +91,22 @@ export default {
   [types.SET_INITIAL_NOTES](state, notesData) {
     const notes = [];
 
-    notesData.forEach((note) => {
+    notesData.forEach(note => {
       // To support legacy notes, should be very rare case.
       if (note.individual_note && note.notes.length > 1) {
-        note.notes.forEach((n) => {
-          const nn = Object.assign({}, note);
-          nn.notes = [n]; // override notes array to only have one item to mimick individual_note
-          notes.push(nn);
+        note.notes.forEach(n => {
+          notes.push({
+            ...note,
+            notes: [n], // override notes array to only have one item to mimick individual_note
+          });
         });
       } else {
-        notes.push(note);
+        const oldNote = utils.findNoteObjectById(state.notes, note.id);
+
+        notes.push({
+          ...note,
+          expanded: oldNote ? oldNote.expanded : note.expanded,
+        });
       }
     });
 
@@ -109,7 +130,9 @@ export default {
     notesArr.push({
       individual_note: true,
       isPlaceholderNote: true,
-      placeholderType: data.isSystemNote ? constants.SYSTEM_NOTE : constants.NOTE,
+      placeholderType: data.isSystemNote
+        ? constants.SYSTEM_NOTE
+        : constants.NOTE,
       notes: [
         {
           body: data.noteBody,
@@ -122,18 +145,24 @@ export default {
     const { awardName, note } = data;
     const { id, name, username } = state.userData;
 
-    const hasEmojiAwardedByCurrentUser = note.award_emoji
-      .filter(emoji => emoji.name === data.awardName && emoji.user.id === id);
+    const hasEmojiAwardedByCurrentUser = note.award_emoji.filter(
+      emoji => emoji.name === data.awardName && emoji.user.id === id,
+    );
 
     if (hasEmojiAwardedByCurrentUser.length) {
       // If current user has awarded this emoji, remove it.
-      note.award_emoji.splice(note.award_emoji.indexOf(hasEmojiAwardedByCurrentUser[0]), 1);
+      note.award_emoji.splice(
+        note.award_emoji.indexOf(hasEmojiAwardedByCurrentUser[0]),
+        1,
+      );
     } else {
       note.award_emoji.push({
         name: awardName,
         user: { id, name, username },
       });
     }
+
+    document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
   },
 
   [types.TOGGLE_DISCUSSION](state, { discussionId }) {
@@ -151,6 +180,24 @@ export default {
       const comment = utils.findNoteObjectById(noteObj.notes, note.id);
       noteObj.notes.splice(noteObj.notes.indexOf(comment), 1, note);
     }
+
+    // document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
+  },
+
+  [types.UPDATE_DISCUSSION](state, noteData) {
+    const note = noteData;
+    let index = 0;
+
+    state.notes.forEach((n, i) => {
+      if (n.id === note.id) {
+        index = i;
+      }
+    });
+
+    note.expanded = true; // override expand flag to prevent collapse
+    state.notes.splice(index, 1, note);
+
+    document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
   },
 
   [types.CLOSE_ISSUE](state) {
@@ -159,5 +206,9 @@ export default {
 
   [types.REOPEN_ISSUE](state) {
     Object.assign(state.noteableData, { state: constants.REOPENED });
+  },
+
+  [types.TOGGLE_STATE_BUTTON_LOADING](state, value) {
+    Object.assign(state, { isToggleStateButtonLoading: value });
   },
 };

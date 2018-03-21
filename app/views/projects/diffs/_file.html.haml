@@ -17,7 +17,7 @@
           \
           - if editable_diff?(diff_file)
             - link_opts = @merge_request.persisted? ? { from_merge_request_iid: @merge_request.iid } : {}
-            = edit_blob_link(@merge_request.source_project, @merge_request.source_branch, diff_file.new_path,
+            = edit_blob_button(@merge_request.source_project, @merge_request.source_branch, diff_file.new_path,
                              blob: blob, link_opts: link_opts)
 
         - if image_diff && image_replaced

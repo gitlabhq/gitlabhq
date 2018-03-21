@@ -7,21 +7,19 @@
       = link_to s_('PrometheusService|More information'), help_page_path('user/project/integrations/prometheus')
 
   .col-lg-9
-    .panel.panel-default.js-panel-monitored-metrics{ data: { "active-metrics" => "#{project_prometheus_active_metrics_path(@project, :json)}" } }
+    .panel.panel-default.js-panel-monitored-metrics{ data: { active_metrics: active_common_project_prometheus_metrics_path(@project, :json), metrics_help_path: help_page_path('user/project/integrations/prometheus_library/metrics') } }
       .panel-heading
         %h3.panel-title
-          = s_('PrometheusService|Monitored')
+          = s_('PrometheusService|Common metrics')
           %span.badge.js-monitored-count 0
       .panel-body
-        .loading-metrics.text-center.js-loading-metrics
-          = icon('spinner spin 3x', class: 'metrics-load-spinner')
-          %p
+        .loading-metrics.js-loading-metrics
+          %p.prepend-top-10.prepend-left-10
+            = icon('spinner spin', class: 'metrics-load-spinner')
             = s_('PrometheusService|Finding and configuring metrics...')
-        .empty-metrics.text-center.hidden.js-empty-metrics
-          = custom_icon('icon_empty_metrics')
-          %p
-            = s_('PrometheusService|No metrics are being monitored. To start monitoring, deploy to an environment.')
-          = link_to s_('PrometheusService|View environments'), project_environments_path(@project), class: 'btn btn-success'
+        .empty-metrics.hidden.js-empty-metrics
+          %p.text-tertiary.prepend-top-10.prepend-left-10
+            = s_('PrometheusService|Waiting for your first deployment to an environment to find common metrics')
         %ul.list-unstyled.metrics-list.hidden.js-metrics-list
 
     .panel.panel-default.hidden.js-panel-missing-env-vars
