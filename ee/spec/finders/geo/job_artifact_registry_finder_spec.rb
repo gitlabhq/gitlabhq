@@ -21,45 +21,76 @@ describe Geo::JobArtifactRegistryFinder, :geo do
 
   describe '#count_synced_job_artifacts' do
     it 'delegates to #legacy_find_synced_job_artifacts' do
+      allow(subject).to receive(:aggregate_pushdown_supported?).and_return(false)
+
       expect(subject).to receive(:legacy_find_synced_job_artifacts).and_call_original
 
       subject.count_synced_job_artifacts
     end
 
-    it 'counts job artifacts that has been synced' do
-      create(:geo_file_registry, :job_artifact, file_id: job_artifact_1.id, success: false)
-      create(:geo_file_registry, :job_artifact, file_id: job_artifact_2.id)
-      create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id)
+    it 'delegates to #find_synced_job_artifacts for PostgreSQL 10' do
+      allow(subject).to receive(:aggregate_pushdown_supported?).and_return(true)
 
-      expect(subject.count_synced_job_artifacts).to eq 2
+      expect(subject).to receive(:find_synced_job_artifacts).and_call_original
+
+      subject.count_synced_job_artifacts
+    end
+  end
+
+  describe '#count_failed_job_artifacts' do
+    it 'delegates to #legacy_find_failed_job_artifacts' do
+      allow(subject).to receive(:aggregate_pushdown_supported?).and_return(false)
+
+      expect(subject).to receive(:legacy_find_failed_job_artifacts).and_call_original
+
+      subject.count_failed_job_artifacts
     end
 
-    it 'ignores remote job artifacts' do
-      create(:geo_file_registry, :job_artifact, file_id: job_artifact_1.id)
-      create(:geo_file_registry, :job_artifact, file_id: job_artifact_2.id)
-      create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id)
-      job_artifact_1.update!(file_store: ObjectStorage::Store::REMOTE)
+    it 'delegates to #find_failed_job_artifacts' do
+      allow(subject).to receive(:aggregate_pushdown_supported?).and_return(true)
 
-      expect(subject.count_synced_job_artifacts).to eq 2
+      expect(subject).to receive(:find_failed_job_artifacts).and_call_original
+
+      subject.count_failed_job_artifacts
+    end
+  end
+
+  shared_examples 'counts all the things' do
+    describe '#count_job_artifacts' do
+      it 'counts job artifacts' do
+        expect(subject.count_job_artifacts).to eq 4
+      end
+
+      it 'ignores remote job artifacts' do
+        job_artifact_1.update!(file_store: ObjectStorage::Store::REMOTE)
+
+        expect(subject.count_job_artifacts).to eq 3
+      end
+
+      context 'with selective sync' do
+        before do
+          secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
+        end
+
+        it 'counts job artifacts' do
+          expect(subject.count_job_artifacts).to eq 2
+        end
+
+        it 'ignores remote job artifacts' do
+          job_artifact_1.update!(file_store: ObjectStorage::Store::REMOTE)
+
+          expect(subject.count_job_artifacts).to eq 1
+        end
+      end
     end
 
-    context 'with selective sync' do
-      before do
-        secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
-      end
-
-      it 'delegates to #legacy_find_synced_job_artifacts' do
-        expect(subject).to receive(:legacy_find_synced_job_artifacts).and_call_original
-
-        subject.count_synced_job_artifacts
-      end
-
-      it 'counts job artifacts that has been synced' do
+    describe '#count_synced_job_artifacts' do
+      it 'counts job artifacts that have been synced' do
         create(:geo_file_registry, :job_artifact, file_id: job_artifact_1.id, success: false)
         create(:geo_file_registry, :job_artifact, file_id: job_artifact_2.id)
         create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id)
 
-        expect(subject.count_synced_job_artifacts).to eq 1
+        expect(subject.count_synced_job_artifacts).to eq 2
       end
 
       it 'ignores remote job artifacts' do
@@ -68,57 +99,46 @@ describe Geo::JobArtifactRegistryFinder, :geo do
         create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id)
         job_artifact_1.update!(file_store: ObjectStorage::Store::REMOTE)
 
-        expect(subject.count_synced_job_artifacts).to eq 1
-      end
-    end
-  end
-
-  describe '#count_failed_job_artifacts' do
-    it 'delegates to #legacy_find_failed_job_artifacts' do
-      expect(subject).to receive(:legacy_find_failed_job_artifacts).and_call_original
-
-      subject.count_failed_job_artifacts
-    end
-
-    it 'counts job artifacts that sync has failed' do
-      create(:geo_file_registry, :job_artifact, file_id: job_artifact_1.id, success: false)
-      create(:geo_file_registry, :job_artifact, file_id: job_artifact_2.id)
-      create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id, success: false)
-
-      expect(subject.count_failed_job_artifacts).to eq 2
-    end
-
-    it 'ignores remote job artifacts' do
-      create(:geo_file_registry, :job_artifact, file_id: job_artifact_1.id, success: false)
-      create(:geo_file_registry, :job_artifact, file_id: job_artifact_2.id, success: false)
-      create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id, success: false)
-      job_artifact_1.update!(file_store: ObjectStorage::Store::REMOTE)
-
-      expect(subject.count_failed_job_artifacts).to eq 2
-    end
-
-    context 'with selective sync' do
-      before do
-        secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
+        expect(subject.count_synced_job_artifacts).to eq 2
       end
 
-      it 'delegates to #legacy_find_failed_job_artifacts' do
-        expect(subject).to receive(:legacy_find_failed_job_artifacts).and_call_original
+      context 'with selective sync' do
+        before do
+          secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
+        end
 
-        subject.count_failed_job_artifacts
+        it 'delegates to #legacy_find_synced_job_artifacts' do
+          expect(subject).to receive(:legacy_find_synced_job_artifacts).and_call_original
+
+          subject.count_synced_job_artifacts
+        end
+
+        it 'counts job artifacts that has been synced' do
+          create(:geo_file_registry, :job_artifact, file_id: job_artifact_1.id, success: false)
+          create(:geo_file_registry, :job_artifact, file_id: job_artifact_2.id)
+          create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id)
+
+          expect(subject.count_synced_job_artifacts).to eq 1
+        end
+
+        it 'ignores remote job artifacts' do
+          create(:geo_file_registry, :job_artifact, file_id: job_artifact_1.id)
+          create(:geo_file_registry, :job_artifact, file_id: job_artifact_2.id)
+          create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id)
+          job_artifact_1.update!(file_store: ObjectStorage::Store::REMOTE)
+
+          expect(subject.count_synced_job_artifacts).to eq 1
+        end
       end
+    end
 
+    describe '#count_failed_job_artifacts' do
       it 'counts job artifacts that sync has failed' do
         create(:geo_file_registry, :job_artifact, file_id: job_artifact_1.id, success: false)
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id)
+        create(:geo_file_registry, :job_artifact, file_id: job_artifact_2.id)
+        create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id, success: false)
 
-        expect(subject.count_failed_job_artifacts).to eq 1
-      end
-
-      it 'does not count job artifacts of unsynced projects' do
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_2.id, success: false)
-
-        expect(subject.count_failed_job_artifacts).to eq 0
+        expect(subject.count_failed_job_artifacts).to eq 2
       end
 
       it 'ignores remote job artifacts' do
@@ -127,7 +147,41 @@ describe Geo::JobArtifactRegistryFinder, :geo do
         create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id, success: false)
         job_artifact_1.update!(file_store: ObjectStorage::Store::REMOTE)
 
-        expect(subject.count_failed_job_artifacts).to eq 1
+        expect(subject.count_failed_job_artifacts).to eq 2
+      end
+
+      context 'with selective sync' do
+        before do
+          secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
+        end
+
+        it 'delegates to #legacy_find_failed_job_artifacts' do
+          expect(subject).to receive(:legacy_find_failed_job_artifacts).and_call_original
+
+          subject.count_failed_job_artifacts
+        end
+
+        it 'counts job artifacts that sync has failed' do
+          create(:geo_file_registry, :job_artifact, file_id: job_artifact_1.id, success: false)
+          create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id)
+
+          expect(subject.count_failed_job_artifacts).to eq 1
+        end
+
+        it 'does not count job artifacts of unsynced projects' do
+          create(:geo_file_registry, :job_artifact, file_id: job_artifact_2.id, success: false)
+
+          expect(subject.count_failed_job_artifacts).to eq 0
+        end
+
+        it 'ignores remote job artifacts' do
+          create(:geo_file_registry, :job_artifact, file_id: job_artifact_1.id, success: false)
+          create(:geo_file_registry, :job_artifact, file_id: job_artifact_2.id, success: false)
+          create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id, success: false)
+          job_artifact_1.update!(file_store: ObjectStorage::Store::REMOTE)
+
+          expect(subject.count_failed_job_artifacts).to eq 1
+        end
       end
     end
   end
@@ -167,6 +221,8 @@ describe Geo::JobArtifactRegistryFinder, :geo do
       skip('FDW is not configured') if Gitlab::Database.postgresql? && !Gitlab::Geo::Fdw.enabled?
     end
 
+    include_examples 'counts all the things'
+
     include_examples 'finds all the things' do
       let(:method_prefix) { 'fdw' }
     end
@@ -176,6 +232,8 @@ describe Geo::JobArtifactRegistryFinder, :geo do
     before do
       allow(Gitlab::Geo::Fdw).to receive(:enabled?).and_return(false)
     end
+
+    include_examples 'counts all the things'
 
     include_examples 'finds all the things' do
       let(:method_prefix) { 'legacy' }
