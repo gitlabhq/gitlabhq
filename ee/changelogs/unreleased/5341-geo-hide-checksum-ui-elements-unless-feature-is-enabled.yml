@@ -1,0 +1,5 @@
+---
+title: Show repository checksum UI elements only when feature is enabled
+merge_request: 5341
+author:
+type: fixed
