@@ -1,47 +1,49 @@
 <script>
-import { mapActions } from 'vuex';
-import icon from '~/vue_shared/components/icon.vue';
-import newModal from './modal.vue';
-import upload from './upload.vue';
+  import { mapActions } from 'vuex';
+  import icon from '~/vue_shared/components/icon.vue';
+  import newModal from './modal.vue';
+  import upload from './upload.vue';
 
-export default {
-  components: {
-    icon,
-    newModal,
-    upload,
-  },
-  props: {
-    branch: {
-      type: String,
-      required: true,
+  export default {
+    components: {
+      icon,
+      newModal,
+      upload,
     },
-    path: {
-      type: String,
-      required: true,
+    props: {
+      branch: {
+        type: String,
+        required: true,
+      },
+      path: {
+        type: String,
+        required: true,
+      },
     },
-  },
-  data() {
-    return {
-      openModal: false,
-      modalType: '',
-      dropdownOpen: false,
-    };
-  },
-  methods: {
-    ...mapActions(['createTempEntry']),
-    createNewItem(type) {
-      this.modalType = type;
-      this.openModal = true;
-      this.dropdownOpen = false;
+    data() {
+      return {
+        openModal: false,
+        modalType: '',
+        dropdownOpen: false,
+      };
     },
-    hideModal() {
-      this.openModal = false;
+    methods: {
+      ...mapActions([
+        'createTempEntry',
+      ]),
+      createNewItem(type) {
+        this.modalType = type;
+        this.openModal = true;
+        this.dropdownOpen = false;
+      },
+      hideModal() {
+        this.openModal = false;
+      },
+      openDropdown() {
+        this.dropdownOpen = !this.dropdownOpen;
+      },
     },
-    openDropdown() {
-      this.dropdownOpen = !this.dropdownOpen;
-    },
-  },
-};
+  };
 </script>
 
 <template>
@@ -57,7 +59,6 @@ export default {
         class="btn btn-sm btn-default dropdown-toggle add-to-tree"
         aria-label="Create new file or directory"
         @click.stop="openDropdown()"
-        @blur="openDropdown"
       >
         <icon
           name="plus"
