@@ -15,11 +15,18 @@ module Gitlab
           end
 
           def attributes
-            @attributes.merge(project: @pipeline.project,
-                              ref: @pipeline.ref,
-                              tag: @pipeline.tag,
-                              trigger_request: @pipeline.legacy_trigger,
-                              protected: @pipeline.protected_ref?)
+            @attributes.merge(
+              pipeline: @pipeline,
+              project: @pipeline.project,
+              ref: @pipeline.ref,
+              tag: @pipeline.tag,
+              trigger_request: @pipeline.legacy_trigger,
+              protected: @pipeline.protected_ref?
+            )
+          end
+
+          def to_resource
+            ::Ci::Build.new(attributes)
           end
         end
       end
