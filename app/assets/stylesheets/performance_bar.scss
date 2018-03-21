@@ -15,6 +15,10 @@
   line-height: $performance-bar-height;
   color: $perf-bar-text;
 
+  select {
+    width: 200px;
+  }
+
   &.disabled {
     display: none;
   }

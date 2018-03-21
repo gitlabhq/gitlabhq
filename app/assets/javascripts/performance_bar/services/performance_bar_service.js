@@ -1,4 +1,8 @@
+import Vue from 'vue';
+import _ from 'underscore';
 import axios from '../../lib/utils/axios_utils';
+
+let vueResourceInterceptor;
 
 export default class PerformanceBarService {
   static fetchRequestDetails(peekUrl, requestId) {
@@ -6,6 +10,20 @@ export default class PerformanceBarService {
   }
 
   static registerInterceptor(peekUrl, callback) {
+    vueResourceInterceptor = (request, next) => {
+      next(response => {
+        const requestId = response.headers['x-request-id'];
+        const requestUrl = response.url;
+        console.log(requestUrl);
+
+        if (requestUrl !== peekUrl && requestId) {
+          callback(requestId, requestUrl);
+        }
+      });
+    };
+
+    Vue.http.interceptors.push(vueResourceInterceptor);
+
     return axios.interceptors.response.use(response => {
       const requestId = response.headers['x-request-id'];
       const requestUrl = response.config.url;
@@ -20,5 +38,9 @@ export default class PerformanceBarService {
 
   static removeInterceptor(interceptor) {
     axios.interceptors.response.eject(interceptor);
+    Vue.http.interceptors = _.without(
+      Vue.http.interceptors,
+      vueResourceInterceptor,
+    );
   }
 }
