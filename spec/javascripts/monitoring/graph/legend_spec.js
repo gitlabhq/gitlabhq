@@ -1,106 +1,85 @@
 import Vue from 'vue';
 import GraphLegend from '~/monitoring/components/graph/legend.vue';
-import measurements from '~/monitoring/utils/measurements';
 import createTimeSeries from '~/monitoring/utils/multiple_time_series';
-import { singleRowMetricsMultipleSeries, convertDatesMultipleSeries } from '../mock_data';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import {
+  singleRowMetricsMultipleSeries,
+  convertDatesMultipleSeries,
+} from '../mock_data';
 
-const createComponent = (propsData) => {
-  const Component = Vue.extend(GraphLegend);
+const convertedMetrics = convertDatesMultipleSeries(
+  singleRowMetricsMultipleSeries,
+);
 
-  return new Component({
-    propsData,
-  }).$mount();
-};
+const defaultValuesComponent = {};
 
-const convertedMetrics = convertDatesMultipleSeries(singleRowMetricsMultipleSeries);
-
-const defaultValuesComponent = {
-  graphWidth: 500,
-  graphHeight: 300,
-  graphHeightOffset: 120,
-  margin: measurements.large.margin,
-  measurements: measurements.large,
-  areaColorRgb: '#f0f0f0',
-  legendTitle: 'Title',
-  yAxisLabel: 'Values',
-  metricUsage: 'Value',
-  unitOfDisplay: 'Req/Sec',
-  currentDataIndex: 0,
-};
-
-const timeSeries = createTimeSeries(convertedMetrics[0].queries,
-  defaultValuesComponent.graphWidth, defaultValuesComponent.graphHeight,
-  defaultValuesComponent.graphHeightOffset);
+const timeSeries = createTimeSeries(convertedMetrics[0].queries, 500, 300, 120);
 
 defaultValuesComponent.timeSeries = timeSeries;
 
-function getTextFromNode(component, selector) {
-  return component.$el.querySelector(selector).firstChild.nodeValue.trim();
-}
+describe('Legend Component', () => {
+  let vm;
+  let Legend;
 
-describe('GraphLegend', () => {
-  describe('Computed props', () => {
-    it('textTransform', () => {
-      const component = createComponent(defaultValuesComponent);
-
-      expect(component.textTransform).toContain('translate(15, 120) rotate(-90)');
-    });
-
-    it('xPosition', () => {
-      const component = createComponent(defaultValuesComponent);
-
-      expect(component.xPosition).toEqual(180);
-    });
-
-    it('yPosition', () => {
-      const component = createComponent(defaultValuesComponent);
-
-      expect(component.yPosition).toEqual(240);
-    });
-
-    it('rectTransform', () => {
-      const component = createComponent(defaultValuesComponent);
-
-      expect(component.rectTransform).toContain('translate(0, 120) rotate(-90)');
-    });
+  beforeEach(() => {
+    Legend = Vue.extend(GraphLegend);
   });
 
-  describe('methods', () => {
-    it('translateLegendGroup should only change Y direction', () => {
-      const component = createComponent(defaultValuesComponent);
-
-      const translatedCoordinate = component.translateLegendGroup(1);
-      expect(translatedCoordinate.indexOf('translate(0, ')).not.toEqual(-1);
+  describe('Methods', () => {
+    beforeEach(() => {
+      vm = mountComponent(Legend, {
+        legendTitle: 'legend',
+        timeSeries,
+        currentDataIndex: 0,
+        unitOfDisplay: 'Req/Sec',
+      });
     });
 
     it('formatMetricUsage should contain the unit of display and the current value selected via "currentDataIndex"', () => {
-      const component = createComponent(defaultValuesComponent);
+      const formattedMetricUsage = vm.formatMetricUsage(timeSeries[0]);
+      const valueFromSeries = timeSeries[0].values[vm.currentDataIndex].value;
 
-      const formattedMetricUsage = component.formatMetricUsage(timeSeries[0]);
-      const valueFromSeries = timeSeries[0].values[component.currentDataIndex].value;
-      expect(formattedMetricUsage.indexOf(component.unitOfDisplay)).not.toEqual(-1);
+      expect(formattedMetricUsage.indexOf(vm.unitOfDisplay)).not.toEqual(-1);
       expect(formattedMetricUsage.indexOf(valueFromSeries)).not.toEqual(-1);
+    });
+
+    it('strokeDashArray', () => {
+      const dashedArray = vm.strokeDashArray('dashed');
+      const dottedArray = vm.strokeDashArray('dotted');
+
+      expect(dashedArray).toEqual('6, 3');
+      expect(dottedArray).toEqual('3, 3');
+    });
+
+    it('summaryMetrics gets the average and max of a series', () => {
+      const summary = vm.summaryMetrics(timeSeries[0]);
+
+      expect(summary.indexOf('Max')).not.toEqual(-1);
+      expect(summary.indexOf('Avg')).not.toEqual(-1);
     });
   });
 
-  it('has 2 rect-axis-text rect svg elements', () => {
-    const component = createComponent(defaultValuesComponent);
+  describe('View', () => {
+    beforeEach(() => {
+      vm = mountComponent(Legend, {
+        legendTitle: 'legend',
+        timeSeries,
+        currentDataIndex: 0,
+        unitOfDisplay: 'Req/Sec',
+      });
+    });
 
-    expect(component.$el.querySelectorAll('.rect-axis-text').length).toEqual(2);
-  });
+    it('should render the usage, title and time with multiple time series', () => {
+      const titles = vm.$el.querySelectorAll('.legend-metric-title');
 
-  it('contains text to signal the usage, title and time with multiple time series', () => {
-    const component = createComponent(defaultValuesComponent);
-    const titles = component.$el.querySelectorAll('.legend-metric-title');
+      expect(titles[0].textContent.indexOf('1xx')).not.toEqual(-1);
+      expect(titles[1].textContent.indexOf('2xx')).not.toEqual(-1);
+    });
 
-    expect(titles[0].textContent.indexOf('1xx')).not.toEqual(-1);
-    expect(titles[1].textContent.indexOf('2xx')).not.toEqual(-1);
-    expect(getTextFromNode(component, '.y-label-text')).toEqual(component.yAxisLabel);
-  });
-
-  it('should contain the same number of legend groups as the timeSeries length', () => {
-    const component = createComponent(defaultValuesComponent);
-
-    expect(component.$el.querySelectorAll('.legend-group').length).toEqual(component.timeSeries.length);
+    it('should container the same number of rows in the table as time series', () => {
+      expect(vm.$el.querySelectorAll('.prometheus-table tr').length).toEqual(
+        vm.timeSeries.length,
+      );
+    });
   });
 });
