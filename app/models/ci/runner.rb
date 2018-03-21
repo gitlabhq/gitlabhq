@@ -54,6 +54,10 @@ module Ci
 
     chronic_duration_attr :maximum_timeout_human_readable, :maximum_timeout
 
+    validates :maximum_timeout, allow_nil: true,
+                                numericality: { greater_than_or_equal_to: 600,
+                                                message: 'needs to be at least 10 minutes' }
+
     # Searches for runners matching the given query.
     #
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.

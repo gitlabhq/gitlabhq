@@ -1299,7 +1299,7 @@ describe Ci::Build do
       end
 
       context 'when runner sets timeout to smaller value' do
-        let(:runner2) { create(:ci_runner, maximum_timeout: 500) }
+        let(:runner2) { create(:ci_runner, maximum_timeout: 600) }
         let(:build) { create(:ci_build, :pending, pipeline: pipeline2, runner: runner2) }
 
         it 'returns project timeout configuration' do
