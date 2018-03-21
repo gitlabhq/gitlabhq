@@ -36,12 +36,26 @@ describe('Job details header', () => {
       },
       isLoading: false,
     };
-
-    vm = mountComponent(HeaderComponent, props);
   });
 
   afterEach(() => {
     vm.$destroy();
+  });
+
+  describe('job reason', () => {
+    it('should not render the reason when reason is absent', () => {
+      vm = mountComponent(HeaderComponent, props);
+
+      expect(vm.shouldRenderReason).toBe(false);
+    });
+
+    it('should render the reason when reason is present', () => {
+      props.job.status.callout_message = 'There is an unknown failure, please try again';
+
+      vm = mountComponent(HeaderComponent, props);
+
+      expect(vm.shouldRenderReason).toBe(true);
+    });
   });
 
   describe('triggered job', () => {
@@ -56,9 +70,9 @@ describe('Job details header', () => {
     });
 
     it('should render new issue link', () => {
-      expect(
-        vm.$el.querySelector('.js-new-issue').getAttribute('href'),
-      ).toEqual(props.job.new_issue_path);
+      expect(vm.$el.querySelector('.js-new-issue').getAttribute('href')).toEqual(
+        props.job.new_issue_path,
+      );
     });
   });
 

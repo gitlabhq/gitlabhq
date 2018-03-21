@@ -1,12 +1,14 @@
 <script>
   import ciHeader from '../../vue_shared/components/header_ci_component.vue';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+  import jobStatusReason from './job_status_reason.vue';
 
   export default {
     name: 'JobHeaderSection',
     components: {
       ciHeader,
       loadingIcon,
+      jobStatusReason,
     },
     props: {
       job: {
@@ -29,6 +31,9 @@
       },
       shouldRenderContent() {
         return !this.isLoading && Object.keys(this.job).length;
+      },
+      shouldRenderReason() {
+        return !!(this.job.status && this.job.status.failure_description);
       },
       /**
        * When job has not started the key will be `false`
@@ -61,22 +66,29 @@
   };
 </script>
 <template>
-  <div class="js-build-header build-header top-area">
-    <ci-header
-      v-if="shouldRenderContent"
-      :status="status"
-      item-name="Job"
-      :item-id="job.id"
-      :time="job.created_at"
-      :user="job.user"
-      :actions="actions"
-      :has-sidebar-button="true"
-      :should-render-triggered-label="jobStarted"
+  <header>
+    <div class="js-build-header build-header top-area">
+      <ci-header
+        v-if="shouldRenderContent"
+        :status="status"
+        item-name="Job"
+        :item-id="job.id"
+        :time="job.created_at"
+        :user="job.user"
+        :actions="actions"
+        :has-sidebar-button="true"
+        :should-render-triggered-label="jobStarted"
+      />
+      <loading-icon
+        v-if="isLoading"
+        size="2"
+        class="prepend-top-default append-bottom-default"
+      />
+    </div>
+
+    <job-status-reason
+      v-if="shouldRenderReason"
+      :job="job"
     />
-    <loading-icon
-      v-if="isLoading"
-      size="2"
-      class="prepend-top-default append-bottom-default"
-    />
-  </div>
+  </header>
 </template>

@@ -1,0 +1,24 @@
+<script>
+  import icon from '../../vue_shared/components/icon.vue';
+
+  export default {
+    components: {
+      icon,
+    },
+    props: {
+      job: {
+        type: Object,
+        required: true,
+      },
+    },
+  };
+</script>
+<template>
+  <div
+    class="bs-callout bs-callout-danger"
+    role="alert"
+    aria-live="assertive"
+  >
+    {{ job.status.callout_message }}
+  </div>
+</template>
