@@ -1,5 +1,4 @@
 /* eslint-disable import/first */
-/* global ConfirmDangerModal */
 /* global $ */
 
 import jQuery from 'jquery';
@@ -21,7 +20,6 @@ import './behaviors/';
 // everything else
 import loadAwardsHandler from './awards_handler';
 import bp from './breakpoints';
-import './confirm_danger_modal';
 import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
 import initTodoToggle from './header';
@@ -215,16 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     $(document).trigger('toggle.comments');
-  });
-
-  $document.on('click', '.js-confirm-danger', (e) => {
-    const btn = $(e.target);
-    const form = btn.closest('form');
-    const text = btn.data('confirmDangerMessage');
-    e.preventDefault();
-
-    // eslint-disable-next-line no-new
-    new ConfirmDangerModal(form, text);
   });
 
   $document.on('breakpoint:change', (e, breakpoint) => {
