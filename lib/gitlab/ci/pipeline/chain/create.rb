@@ -9,13 +9,6 @@ module Gitlab
             ::Ci::Pipeline.transaction do
               pipeline.save!
 
-              @command.seeds_block&.call(pipeline)
-
-              pipeline.stage_seeds.each do |seed|
-                seed.user = current_user
-                seed.to_resource.save!
-              end
-
               # TODO populate environments with find_or_initialize_by in the chain too.
 
               ##

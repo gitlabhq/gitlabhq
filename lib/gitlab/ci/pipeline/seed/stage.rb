@@ -37,8 +37,6 @@ module Gitlab
                   stage.builds << build
                 end
               end
-
-              @pipeline.stages << stage
             end
           end
         end
