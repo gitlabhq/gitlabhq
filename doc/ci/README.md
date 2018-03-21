@@ -22,6 +22,7 @@ The first steps towards your GitLab CI/CD journey.
 - [Pipelines and jobs](pipelines.md): configure your GitLab CI/CD pipelines to build, test, and deploy your application.
 - Runners: The [GitLab Runner](https://docs.gitlab.com/runner/) is responsible by running the jobs in your CI/CD pipeline. On GitLab.com, Shared Runners are enabled by default, so
 you don't need to set up anything to start to use them with GitLab CI/CD.
+- [Using GitLab CI/CD with GitHub and other external repositories](ci_cd_for_external_repos/index.md)
 
 ### Introduction to GitLab CI/CD
 
