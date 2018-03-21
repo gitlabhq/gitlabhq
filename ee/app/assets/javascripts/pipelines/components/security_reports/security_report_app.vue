@@ -58,7 +58,7 @@
       :error-text="translateText('dependency scanning').error"
       :success-text="depedencyScanningText(
         securityReports.dependencyScanning.newIssues,
-        securityReports.dependencyScanning.resolvedIssues,
+        securityReports.dependencyScanning.resolvedIssues
       )"
       :unresolved-issues="securityReports.dependencyScanning.newIssues"
       :resolved-issues="securityReports.dependencyScanning.resolvedIssues"
