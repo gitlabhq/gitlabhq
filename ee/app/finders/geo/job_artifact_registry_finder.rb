@@ -76,7 +76,7 @@ module Geo
     #
 
     def fdw_find_job_artifacts
-      fdw_job_artifacts.joins("INNER JOIN file_registry ON file_registry.file_id = #{fdw_jobs_artifacts_table}.id")
+      fdw_job_artifacts.joins("INNER JOIN file_registry ON file_registry.file_id = #{fdw_job_artifacts_table}.id")
         .with_files_stored_locally
         .merge(Geo::FileRegistry.job_artifacts)
     end
