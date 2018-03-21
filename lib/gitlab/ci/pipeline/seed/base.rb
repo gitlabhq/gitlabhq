@@ -10,6 +10,10 @@ module Gitlab
           def excluded?
             raise NotImplementedError
           end
+
+          def to_resource
+            raise NotImplementedError
+          end
         end
       end
     end

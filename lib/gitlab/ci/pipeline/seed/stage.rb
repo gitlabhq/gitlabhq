@@ -3,40 +3,44 @@ module Gitlab
     module Pipeline
       module Seed
         class Stage < Seed::Base
-          attr_reader :pipeline
-
-          delegate :project, to: :pipeline
-          delegate :size, to: :@builds
+          delegate :size, to: :@seeds
 
           def initialize(pipeline, name, builds)
             @pipeline = pipeline
             @name = name
 
-            @builds = builds.map do |attributes|
-              Seed::Build.new(pipeline, attributes)
+            @seeds = builds.map do |attributes|
+              Seed::Build.new(@pipeline, attributes)
             end
           end
 
           def user=(current_user)
-            @builds.each { |seed| seed.user = current_user }
+            @seeds.each { |seed| seed.user = current_user }
           end
 
           def attributes
-            { name: @name, project: project }
+            { name: @name, pipeline: @pipeline, project: @pipeline.project }
           end
 
-          # TODO decouple from Seed::Build
+          # TODO decouple
+          #
           def builds_attributes
-            @builds.map(&:attributes)
+            @seeds.map(&:attributes)
+          end
+
+          def to_resource
+            ::Ci::Stage.new(attributes)
           end
 
           def create!
-            pipeline.stages.build(attributes).tap do |stage|
-              builds_attributes.each do |build_attributes|
-                stage.builds.build(build_attributes).tap do |build|
-                  build.pipeline = pipeline
+            to_resource.tap do |stage|
+              @seeds.each do |seed|
+                seed.to_resource.tap do |build|
+                  stage.builds << build
                 end
               end
+
+              @pipeline.stages << stage
 
               stage.save!
 
@@ -44,11 +48,6 @@ module Gitlab
                 yield build if block_given?
               end
             end
-          end
-
-          private
-
-          def protected_ref?
           end
         end
       end
