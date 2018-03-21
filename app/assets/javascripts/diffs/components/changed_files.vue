@@ -1,10 +1,12 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   components: {
     Icon,
+    ClipboardButton,
   },
   props: {
     diffFiles: {
@@ -88,7 +90,13 @@ export default {
     truncatedDiffPath(path) {
       const maxLength = 60;
 
-      return path.length > maxLength ? `...${path.slice(0, maxLength)}` : path;
+      if (path.length > maxLength) {
+        const start = path.length - maxLength;
+        const end = start + maxLength;
+        return `...${path.slice(start, end)}`;
+      }
+
+      return path;
     },
   },
 };
@@ -251,7 +259,16 @@ export default {
           v-show="activeFile"
           class="prepend-left-5"
         >
-          {{ truncatedDiffPath(activeFile) }}
+          <strong class="prepend-right-5">
+            {{ truncatedDiffPath(activeFile) }}
+          </strong>
+          <clipboard-button
+            :text="activeFile"
+            :title="s__('Copy file name to clipboard')"
+            tooltip-placement="bottom"
+            tooltip-container="body"
+            class="btn btn-default btn-transparent btn-clipboard"
+          />
         </span>
       </div>
     </div>
