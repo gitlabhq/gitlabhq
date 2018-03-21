@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Stage::Seed do
+describe Gitlab::Ci::Pipeline::Seed::Stage do
   let(:pipeline) { create(:ci_empty_pipeline) }
 
   let(:builds) do

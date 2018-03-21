@@ -252,7 +252,8 @@ describe Ci::Pipeline, :mailer do
       end
 
       it 'returns preseeded stage seeds object' do
-        expect(pipeline.stage_seeds).to all(be_a Gitlab::Ci::Stage::Seed)
+        expect(pipeline.stage_seeds)
+          .to all(be_a Gitlab::Ci::Pipeline::Seed::Base)
         expect(pipeline.stage_seeds.count).to eq 1
       end
     end
