@@ -79,5 +79,15 @@ describe Gitlab::Ci::Pipeline::Seed::Stage do
       expect(pipeline.stages)
         .to all(satisfy { |stage| stage.project.present? })
     end
+
+    it 'can not be persisted without explicit pipeline assignment' do
+      stage = subject.to_resource
+
+      pipeline.save!
+
+      expect(stage).not_to be_persisted
+      expect(pipeline.reload.stages.count).to eq 0
+      expect(pipeline.reload.builds.count).to eq 0
+    end
   end
 end

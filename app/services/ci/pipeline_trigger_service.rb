@@ -18,8 +18,8 @@ module Ci
 
       pipeline = Ci::CreatePipelineService.new(project, trigger.owner, ref: params[:ref])
         .execute(:trigger, ignore_skip_ci: true) do |pipeline|
-          pipeline.trigger_requests.create!(trigger: trigger)
-          create_pipeline_variables!(pipeline)
+          pipeline.trigger_requests.build(trigger: trigger)
+          pipeline.variables.build(variables)
         end
 
       if pipeline.persisted?
@@ -37,13 +37,15 @@ module Ci
 
       pipeline = Ci::CreatePipelineService.new(project, job.user, ref: params[:ref])
         .execute(:pipeline, ignore_skip_ci: true) do |pipeline|
-          job.sourced_pipelines.create!(
+          # TODO this needs a solution and specs
+
+          job.sourced_pipelines.build(
             source_pipeline: job.pipeline,
             source_project: job.project,
             pipeline: pipeline,
             project: project)
 
-          create_pipeline_variables!(pipeline)
+          pipeline.variables.build(variables)
         end
 
       if pipeline.persisted?
@@ -60,19 +62,15 @@ module Ci
     end
 
     def job_from_token
-      return @job if defined?(@job)
-
-      @job = Ci::Build.find_by_token(params[:token].to_s)
+      strong_memoize(:job) do
+        Ci::Build.find_by_token(params[:token].to_s)
+      end
     end
 
-    def create_pipeline_variables!(pipeline)
-      return unless params[:variables]
-
-      variables = params[:variables].map do |key, value|
+    def variables
+      params[:variables].to_h.map do |key, value|
         { key: key, value: value }
       end
-
-      pipeline.variables.create!(variables)
     end
   end
 end
