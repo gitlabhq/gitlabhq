@@ -41,4 +41,32 @@ export default function initMrNotes() {
       return createElement('discussion-counter');
     },
   });
+
+  // eslint-disable-next-line no-new
+  new Vue({
+    el: '#js-diffs-app',
+    name: 'DiffsApp',
+    components: {
+      diffsApp,
+    },
+    store,
+    data() {
+      const { dataset } = document.querySelector(this.$options.el);
+
+      return {
+        endpoint: dataset.endpoint,
+      };
+    },
+    computed: {
+      ...mapGetters(['activeTab']),
+    },
+    render(createElement) {
+      return createElement('diffs-app', {
+        props: {
+          endpoint: this.endpoint,
+          shouldShow: this.activeTab === 'diffs',
+        },
+      });
+    },
+  });
 }
