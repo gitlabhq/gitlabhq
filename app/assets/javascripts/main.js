@@ -32,7 +32,6 @@ import LazyLoader from './lazy_loader';
 import initLogoAnimation from './logo';
 import './milestone_select';
 import './projects_dropdown';
-import './render_gfm';
 import initBreadcrumbs from './breadcrumb';
 
 // EE-only scripts

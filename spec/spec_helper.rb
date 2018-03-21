@@ -200,6 +200,10 @@ RSpec.configure do |config|
     example.run if Gitlab::Database.postgresql?
   end
 
+  config.around(:each, :geo_tracking_db) do |example|
+    example.run if Gitlab::Geo.geo_database_configured?
+  end
+
   config.around(:each, :postgresql) do |example|
     example.run if Gitlab::Database.postgresql?
   end

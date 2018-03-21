@@ -143,7 +143,11 @@ module Ci
         next if build.retries_max.zero?
 
         if build.retries_count < build.retries_max
-          Ci::Build.retry(build, build.user)
+          begin
+            Ci::Build.retry(build, build.user)
+          rescue Gitlab::Access::AccessDeniedError => ex
+            Rails.logger.error "Unable to auto-retry job #{build.id}: #{ex}"
+          end
         end
       end
 
@@ -331,8 +335,7 @@ module Ci
     end
 
     def erase_old_trace!
-      write_attribute(:trace, nil)
-      save
+      update_column(:trace, nil)
     end
 
     def needs_touch?

@@ -745,7 +745,7 @@ describe SystemNoteService do
           expect(cross_reference(type)).to eq("Events for #{type.pluralize.humanize.downcase} are disabled.")
         end
 
-        it "blocks cross reference when #{type.underscore}_events is true" do
+        it "creates cross reference when #{type.underscore}_events is true" do
           jira_tracker.update("#{type}_events" => true)
 
           expect(cross_reference(type)).to eq(success_message)

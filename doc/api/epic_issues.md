@@ -10,7 +10,7 @@ Epics are available only in Ultimate. If epics feature is not available a `403` 
 Gets all issues that are assigned to an epic and the authenticated user has  access to.
 
 ```
-GET /groups/:id/-/epics/:epic_iid/issues
+GET /groups/:id/epics/:epic_iid/issues
 ```
 
 | Attribute           | Type             | Required   | Description                                                                            |
@@ -19,7 +19,7 @@ GET /groups/:id/-/epics/:epic_iid/issues
 | `epic_iid`          | integer/string   | yes        | The internal ID  of the epic.  |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/-/epics/5/issues/
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/epics/5/issues/
 ```
 
 Example response:
@@ -106,7 +106,7 @@ Example response:
 Creates an epic - issue association. If the issue in question belongs to another epic it is unassigned from that epic.
 
 ```
-POST /groups/:id/-/epics/:epic_iid/issues/:issue_id
+POST /groups/:id/epics/:epic_iid/issues/:issue_id
 ```
 
 | Attribute           | Type             | Required   | Description                                                                            |
@@ -116,7 +116,7 @@ POST /groups/:id/-/epics/:epic_iid/issues/:issue_id
 | `issue_id`          | integer/string   | yes        | The ID  of the issue.          |
 
 ```bash
-curl --header POST "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/-/epics/5/issues/55
+curl --header POST "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/epics/5/issues/55
 ```
 
 Example response:
@@ -212,7 +212,7 @@ Example response:
 Removes an epic - issue association.
 
 ```
-DELETE /groups/:id/-/epics/:epic_iid/issues/:epic_issue_id
+DELETE /groups/:id/epics/:epic_iid/issues/:epic_issue_id
 ```
 
 | Attribute           | Type             | Required   | Description                                                                                          |
@@ -222,7 +222,7 @@ DELETE /groups/:id/-/epics/:epic_iid/issues/:epic_issue_id
 | `epic_issue_id`     | integer/string   | yes        | The ID  of the issue - epic association.     |
 
 ```bash
-curl --header DELETE "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/-/epics/5/issues/11
+curl --header DELETE "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/epics/5/issues/11
 ```
 
 Example response:
@@ -318,7 +318,7 @@ Example response:
 Updates an epic - issue association.
 
 ```
-PUT /groups/:id/-/epics/:epic_iid/issues/:epic_issue_id
+PUT /groups/:id/epics/:epic_iid/issues/:epic_issue_id
 ```
 
 | Attribute           | Type             | Required   | Description                                                                                          |
@@ -330,7 +330,7 @@ PUT /groups/:id/-/epics/:epic_iid/issues/:epic_issue_id
 | `move_after_id`     | integer/string   | no         | The ID of the issue - epic association that should be placed after the link in the question.     |
 
 ```bash
-curl --header PUT "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/-/epics/5/issues/11?move_before_id=20
+curl --header PUT "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/epics/5/issues/11?move_before_id=20
 ```
 
 Example response:

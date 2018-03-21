@@ -2121,6 +2121,35 @@ describe Ci::Build do
 
         subject.drop!
       end
+
+      context 'when retry service raises Gitlab::Access::AccessDeniedError exception' do
+        let(:retry_service) { Ci::RetryBuildService.new(subject.project, subject.user) }
+
+        before do
+          allow_any_instance_of(Ci::RetryBuildService)
+            .to receive(:execute)
+            .with(subject)
+            .and_raise(Gitlab::Access::AccessDeniedError)
+          allow(Rails.logger).to receive(:error)
+        end
+
+        it 'handles raised exception' do
+          expect { subject.drop! }.not_to raise_exception(Gitlab::Access::AccessDeniedError)
+        end
+
+        it 'logs the error' do
+          subject.drop!
+
+          expect(Rails.logger)
+            .to have_received(:error)
+            .with(a_string_matching("Unable to auto-retry job #{subject.id}"))
+        end
+
+        it 'fails the job' do
+          subject.drop!
+          expect(subject.failed?).to be_truthy
+        end
+      end
     end
 
     context 'when build is not configured to be retried' do

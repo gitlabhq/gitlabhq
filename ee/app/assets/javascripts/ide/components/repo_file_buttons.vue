@@ -1,19 +1,20 @@
 <script>
-import { mapGetters } from 'vuex';
-
 export default {
+  props: {
+    file: {
+      type: Object,
+      required: true,
+    },
+  },
   computed: {
-    ...mapGetters([
-      'activeFile',
-    ]),
     showButtons() {
-      return this.activeFile.rawPath ||
-        this.activeFile.blamePath ||
-        this.activeFile.commitsPath ||
-        this.activeFile.permalink;
+      return this.file.rawPath ||
+        this.file.blamePath ||
+        this.file.commitsPath ||
+        this.file.permalink;
     },
     rawDownloadButtonLabel() {
-      return this.activeFile.binary ? 'Download' : 'Raw';
+      return this.file.binary ? 'Download' : 'Raw';
     },
   },
 };
@@ -25,7 +26,7 @@ export default {
     class="multi-file-editor-btn-group"
   >
     <a
-      :href="activeFile.rawPath"
+      :href="file.rawPath"
       target="_blank"
       class="btn btn-default btn-sm raw"
       rel="noopener noreferrer">
@@ -38,19 +39,19 @@ export default {
       aria-label="File actions"
     >
       <a
-        :href="activeFile.blamePath"
+        :href="file.blamePath"
         class="btn btn-default btn-sm blame"
       >
         Blame
       </a>
       <a
-        :href="activeFile.commitsPath"
+        :href="file.commitsPath"
         class="btn btn-default btn-sm history"
       >
         History
       </a>
       <a
-        :href="activeFile.permalink"
+        :href="file.permalink"
         class="btn btn-default btn-sm permalink"
       >
         Permalink

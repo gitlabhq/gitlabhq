@@ -39,15 +39,10 @@ module Gitlab
 
         return true if File.directory?(dir)
 
-        if File.exist?(dir)
-          log_transfer_error("#{dir} is not a directory, unable to save #{filename}")
-          return false
-        end
-
         begin
           FileUtils.mkdir_p(dir)
         rescue => e
-          log_transfer_error("unable to create directory #{dir}: #{e}")
+          log_error("unable to create directory #{dir}: #{e}")
           return false
         end
 

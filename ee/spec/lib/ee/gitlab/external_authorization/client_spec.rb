@@ -27,6 +27,19 @@ describe EE::Gitlab::ExternalAuthorization::Client do
       client.request_access
     end
 
+    it 'respects the the timeout' do
+      allow(EE::Gitlab::ExternalAuthorization).to receive(:timeout).and_return(3)
+
+      expect(Excon).to receive(:post).with(dummy_url,
+                                           hash_including(
+                                             connect_timeout: 3,
+                                             read_timeout: 3,
+                                             write_timeout: 3
+                                           ))
+
+      client.request_access
+    end
+
     it 'returns an expected response' do
       expect(Excon).to receive(:post)
 

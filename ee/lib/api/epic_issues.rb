@@ -40,7 +40,7 @@ module API
         optional :move_before_id, type: Integer, desc: 'The id of the epic issue association that should be positioned before the actual issue'
         optional :move_after_id, type: Integer, desc: 'The id of the epic issue association that should be positioned after the actual issue'
       end
-      put ':id/-/epics/:epic_iid/issues/:epic_issue_id' do
+      put ':id/(-/)epics/:epic_iid/issues/:epic_issue_id' do
         authorize_can_admin!
 
         update_params = {
@@ -67,7 +67,7 @@ module API
       params do
         requires :epic_iid, type: Integer, desc: 'The iid of the epic'
       end
-      get ':id/-/epics/:epic_iid/issues' do
+      get ':id/(-/)epics/:epic_iid/issues' do
         authorize_can_read!
 
         present epic.issues(current_user),
@@ -81,7 +81,7 @@ module API
       params do
         requires :epic_iid, type: Integer, desc: 'The iid of the epic'
       end
-      post ':id/-/epics/:epic_iid/issues/:issue_id' do
+      post ':id/(-/)epics/:epic_iid/issues/:issue_id' do
         authorize_can_admin!
 
         issue = Issue.find(params[:issue_id])
@@ -106,7 +106,7 @@ module API
         requires :epic_iid, type: Integer, desc: 'The iid of the epic'
         requires :epic_issue_id, type: Integer, desc: 'The id of the association'
       end
-      delete ':id/-/epics/:epic_iid/issues/:epic_issue_id' do
+      delete ':id/(-/)epics/:epic_iid/issues/:epic_issue_id' do
         authorize_can_admin!
 
         result = ::EpicIssues::DestroyService.new(link, current_user).execute

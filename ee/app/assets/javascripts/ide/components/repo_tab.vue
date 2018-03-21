@@ -67,7 +67,7 @@
     <button
       type="button"
       class="multi-file-tab-close"
-      @click.stop.prevent="closeFile(tab)"
+      @click.stop.prevent="closeFile(tab.path)"
       :aria-label="closeLabel"
     >
       <icon

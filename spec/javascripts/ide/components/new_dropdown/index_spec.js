@@ -17,6 +17,9 @@ describe('new dropdown component', () => {
 
     vm.$store.state.currentProjectId = 'abcproject';
     vm.$store.state.path = '';
+    vm.$store.state.trees['abcproject/mybranch'] = {
+      tree: [],
+    };
 
     vm.$mount();
   });
@@ -29,8 +32,12 @@ describe('new dropdown component', () => {
 
   it('renders new file, upload and new directory links', () => {
     expect(vm.$el.querySelectorAll('a')[0].textContent.trim()).toBe('New file');
-    expect(vm.$el.querySelectorAll('a')[1].textContent.trim()).toBe('Upload file');
-    expect(vm.$el.querySelectorAll('a')[2].textContent.trim()).toBe('New directory');
+    expect(vm.$el.querySelectorAll('a')[1].textContent.trim()).toBe(
+      'Upload file',
+    );
+    expect(vm.$el.querySelectorAll('a')[2].textContent.trim()).toBe(
+      'New directory',
+    );
   });
 
   describe('createNewItem', () => {
@@ -46,7 +53,7 @@ describe('new dropdown component', () => {
       expect(vm.modalType).toBe('tree');
     });
 
-    it('opens modal when link is clicked', (done) => {
+    it('opens modal when link is clicked', done => {
       vm.$el.querySelectorAll('a')[0].click();
 
       Vue.nextTick(() => {
@@ -58,12 +65,12 @@ describe('new dropdown component', () => {
   });
 
   describe('hideModal', () => {
-    beforeAll((done) => {
+    beforeAll(done => {
       vm.openModal = true;
       Vue.nextTick(done);
     });
 
-    it('closes modal after toggling', (done) => {
+    it('closes modal after toggling', done => {
       vm.hideModal();
 
       Vue.nextTick()

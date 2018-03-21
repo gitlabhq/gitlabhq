@@ -18,6 +18,7 @@ describe('Dashboard', () => {
     deploymentEndpoint: null,
     emptyGettingStartedSvgPath: '/path/to/getting-started.svg',
     emptyLoadingSvgPath: '/path/to/loading.svg',
+    emptyNoDataSvgPath: '/path/to/no-data.svg',
     emptyUnableToConnectSvgPath: '/path/to/unable-to-connect.svg',
   };
 

@@ -83,7 +83,8 @@ describe API::Settings, 'EE Settings' do
       {
         external_authorization_service_enabled: true,
         external_authorization_service_url: 'https://custom.service/',
-        external_authorization_service_default_label: 'default'
+        external_authorization_service_default_label: 'default',
+        external_authorization_service_timeout: 9.99
       }
     end
     let(:feature) { :external_authorization_service }

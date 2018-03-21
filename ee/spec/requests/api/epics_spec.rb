@@ -40,8 +40,8 @@ describe API::Epics do
     end
   end
 
-  describe 'GET /groups/:id/-/epics' do
-    let(:url) { "/groups/#{group.path}/-/epics" }
+  describe 'GET /groups/:id/epics' do
+    let(:url) { "/groups/#{group.path}/epics" }
 
     it_behaves_like 'error requests'
 
@@ -141,8 +141,8 @@ describe API::Epics do
     end
   end
 
-  describe 'GET /groups/:id/-/epics/:epic_iid' do
-    let(:url) { "/groups/#{group.path}/-/epics/#{epic.iid}" }
+  describe 'GET /groups/:id/epics/:epic_iid' do
+    let(:url) { "/groups/#{group.path}/epics/#{epic.iid}" }
 
     it_behaves_like 'error requests'
 
@@ -163,8 +163,8 @@ describe API::Epics do
     end
   end
 
-  describe 'POST /groups/:id/-/epics' do
-    let(:url) { "/groups/#{group.path}/-/epics" }
+  describe 'POST /groups/:id/epics' do
+    let(:url) { "/groups/#{group.path}/epics" }
     let(:params) { { title: 'new epic', description: 'epic description', labels: 'label1' } }
 
     it_behaves_like 'error requests'
@@ -210,8 +210,8 @@ describe API::Epics do
     end
   end
 
-  describe 'PUT /groups/:id/-/epics/:epic_iid' do
-    let(:url) { "/groups/#{group.path}/-/epics/#{epic.iid}" }
+  describe 'PUT /groups/:id/epics/:epic_iid' do
+    let(:url) { "/groups/#{group.path}/epics/#{epic.iid}" }
     let(:params) { { title: 'new title', description: 'new description', labels: 'label2' } }
 
     it_behaves_like 'error requests'
@@ -265,8 +265,8 @@ describe API::Epics do
     end
   end
 
-  describe 'DELETE /groups/:id/-/epics/:epic_iid' do
-    let(:url) { "/groups/#{group.path}/-/epics/#{epic.iid}" }
+  describe 'DELETE /groups/:id/epics/:epic_iid' do
+    let(:url) { "/groups/#{group.path}/epics/#{epic.iid}" }
 
     it_behaves_like 'error requests'
 

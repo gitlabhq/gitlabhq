@@ -116,7 +116,7 @@ gem 'fog-rackspace', '~> 0.1.1'
 gem 'fog-aliyun', '~> 0.2.0'
 
 # for Google storage
-gem 'google-api-client', '~> 0.19'
+gem 'google-api-client', '~> 0.19.8'
 
 # for aws storage
 gem 'unf', '~> 0.1.4'
@@ -288,7 +288,6 @@ gem 'batch-loader', '~> 1.2.1'
 # Perf bar
 gem 'peek', '~> 1.0.1'
 gem 'peek-gc', '~> 0.0.2'
-gem 'peek-host', '~> 1.0.0'
 gem 'peek-mysql2', '~> 1.1.0', group: :mysql
 gem 'peek-performance_bar', '~> 1.3.0'
 gem 'peek-pg', '~> 1.3.0', group: :postgres

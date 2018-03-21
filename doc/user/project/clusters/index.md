@@ -117,7 +117,7 @@ are trusted, so **only trusted users should be allowed to control your clusters*
 
 The default cluster configuration grants access to a wide set of
 functionalities needed to successfully build and deploy a containerized
-application. Bare in mind that the same credentials are used for all the
+application. Bear in mind that the same credentials are used for all the
 applications running on the cluster.
 
 When GitLab creates the cluster, it enables and uses the legacy
@@ -167,6 +167,17 @@ external IP address with the following procedure. It can be deployed using the
 In order to publish your web application, you first need to find the external IP
 address associated to your load balancer.
 
+### Let GitLab fetch the IP address
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17052) in GitLab 10.6.
+
+If you installed the Ingress [via the **Applications**](#installing-applications),
+you should see the Ingress IP address on this same page within a few minutes.
+If you don't see this, GitLab might not be able to determine the IP address of
+your ingress application in which case you should manually determine it.
+
+### Manually determining the IP address
+
 If the cluster is on GKE, click on the **Google Kubernetes Engine** link in the
 **Advanced settings**, or go directly to the
 [Google Kubernetes Engine dashboard](https://console.cloud.google.com/kubernetes/)
@@ -192,6 +203,24 @@ kubectl get svc --all-namespaces -o jsonpath='{range.items[?(@.status.loadBalanc
 The output is the external IP address of your cluster. This information can then
 be used to set up DNS entries and forwarding rules that allow external access to
 your deployed applications.
+
+### Using a static IP
+
+By default, an ephemeral external IP address is associated to the cluster's load
+balancer. If you associate the ephemeral IP with your DNS and the IP changes,
+your apps will not be able to be reached, and you'd have to change the DNS
+record again. In order to avoid that, you should change it into a static
+reserved IP.
+
+[Read how to promote an ephemeral external IP address in GKE.](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address#promote_ephemeral_ip)
+
+### Pointing your DNS at the cluster IP
+
+Once you've set up the static IP, you should associate it to a [wildcard DNS
+record](https://en.wikipedia.org/wiki/Wildcard_DNS_record), in order to be able
+to reach your apps. This heavily depends on your domain provider, but in case
+you aren't sure, just create an A record with a wildcard host like
+`*.example.com.`.
 
 ## Setting the environment scope
 
@@ -278,6 +307,14 @@ GitLab CI/CD build environment.
 | `KUBE_CA_PEM_FILE` | Only present if a custom CA bundle was specified. Path to a file containing PEM data. |
 | `KUBE_CA_PEM` | (**deprecated**) Only if a custom CA bundle was specified. Raw PEM data. |
 | `KUBECONFIG` | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified. |
+
+## Monitoring your Kubernetes cluster
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/4701) in [GitLab Ultimate][ee] 10.6.
+
+When [Prometheus is deployed](#installing-applications), GitLab will automatically monitor the cluster's health. At the top of the cluster settings page, CPU and Memory utilization is displayed, along with the total amount available. If the cluster runs out of memory, pods will become to be shutdown or fail to start. 
+
+![Cluster Monitoring](img/k8s_cluster_monitoring.png)
 
 ## Enabling or disabling the Kubernetes cluster integration
 

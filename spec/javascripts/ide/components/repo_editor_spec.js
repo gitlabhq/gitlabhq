@@ -3,6 +3,7 @@ import store from 'ee/ide/stores';
 import repoEditor from 'ee/ide/components/repo_editor.vue';
 import monacoLoader from 'ee/ide/monaco_loader';
 import Editor from 'ee/ide/lib/editor';
+import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import { file, resetStore } from '../helpers';
 
 describe('RepoEditor', () => {
@@ -12,14 +13,15 @@ describe('RepoEditor', () => {
     const f = file();
     const RepoEditor = Vue.extend(repoEditor);
 
-    vm = new RepoEditor({
-      store,
+    vm = createComponentWithStore(RepoEditor, store, {
+      file: f,
     });
 
     f.active = true;
     f.tempFile = true;
+    f.html = 'testing';
     vm.$store.state.openFiles.push(f);
-    vm.$store.getters.activeFile.html = 'testing';
+    vm.$store.state.entries[f.path] = f;
     vm.monaco = true;
 
     vm.$mount();
@@ -47,9 +49,9 @@ describe('RepoEditor', () => {
 
   describe('when open file is binary and not raw', () => {
     beforeEach((done) => {
-      vm.$store.getters.activeFile.binary = true;
+      vm.file.binary = true;
 
-      Vue.nextTick(done);
+      vm.$nextTick(done);
     });
 
     it('does not render the IDE', () => {
@@ -97,7 +99,7 @@ describe('RepoEditor', () => {
 
       vm.setupEditor();
 
-      expect(vm.editor.createModel).toHaveBeenCalledWith(vm.$store.getters.activeFile);
+      expect(vm.editor.createModel).toHaveBeenCalledWith(vm.file);
       expect(vm.model).not.toBeNull();
     });
 
@@ -126,7 +128,7 @@ describe('RepoEditor', () => {
       vm.model.setValue('testing 123');
 
       setTimeout(() => {
-        expect(vm.$store.getters.activeFile.content).toBe('testing 123');
+        expect(vm.file.content).toBe('testing 123');
 
         done();
       });

@@ -623,8 +623,6 @@ GEM
       railties (>= 4.0.0)
     peek-gc (0.0.2)
       peek
-    peek-host (1.0.0)
-      peek
     peek-mysql2 (1.1.0)
       atomic (>= 1.0.0)
       mysql2
@@ -688,7 +686,7 @@ GEM
       httpclient (>= 2.4)
       multi_json (>= 1.3.6)
       rack (>= 1.1)
-    rack-protection (1.5.3)
+    rack-protection (2.0.1)
       rack
     rack-proxy (0.6.0)
       rack
@@ -1103,7 +1101,7 @@ DEPENDENCIES
   gollum-lib (~> 4.2)
   gollum-rugged_adapter (~> 0.4.4)
   gon (~> 6.1.0)
-  google-api-client (~> 0.19)
+  google-api-client (~> 0.19.8)
   google-protobuf (= 3.5.1)
   gpgme
   grape (~> 1.0)
@@ -1162,7 +1160,6 @@ DEPENDENCIES
   org-ruby (~> 0.9.12)
   peek (~> 1.0.1)
   peek-gc (~> 0.0.2)
-  peek-host (~> 1.0.0)
   peek-mysql2 (~> 1.1.0)
   peek-performance_bar (~> 1.3.0)
   peek-pg (~> 1.3.0)

@@ -38,6 +38,9 @@ admin area under the settings page:
 The available required properties are:
 
 - **Service URL**: The URL to make authorization requests to
+- **External authorization request timeout**: The timeout after which an
+  authorization request is aborted. When a request times out, access is denied
+  to the user.
 - **Default classification label**: The classification label to use when
   requesting authorization if no specific label is defined on the project
 

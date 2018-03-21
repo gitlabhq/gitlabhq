@@ -1,33 +1,16 @@
 <script>
-import { mapState } from 'vuex';
-import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
-import repoFile from './repo_file.vue';
+import SkeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
+import RepoFile from './repo_file.vue';
 
 export default {
   components: {
-    repoFile,
-    skeletonLoadingContainer,
+    RepoFile,
+    SkeletonLoadingContainer,
   },
   props: {
-    treeId: {
-      type: String,
+    tree: {
+      type: Object,
       required: true,
-    },
-  },
-  computed: {
-    ...mapState([
-      'trees',
-    ]),
-    ...mapState({
-      projectName(state) {
-        return state.project.name;
-      },
-    }),
-    selctedTree() {
-      return this.trees[this.treeId].tree;
-    },
-    showLoading() {
-      return !this.trees[this.treeId] || this.trees[this.treeId].loading;
     },
   },
 };
@@ -36,9 +19,8 @@ export default {
 <template>
   <div
     class="ide-file-list"
-    v-if="treeId"
   >
-    <template v-if="showLoading">
+    <template v-if="tree.loading">
       <div
         class="multi-file-loading-container"
         v-for="n in 3"
@@ -47,10 +29,13 @@ export default {
         <skeleton-loading-container />
       </div>
     </template>
-    <repo-file
-      v-for="file in selctedTree"
-      :key="file.key"
-      :file="file"
-    />
+    <template v-else>
+      <repo-file
+        v-for="file in tree.tree"
+        :key="file.key"
+        :file="file"
+        :level="0"
+      />
+    </template>
   </div>
 </template>

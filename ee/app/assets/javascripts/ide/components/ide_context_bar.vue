@@ -1,82 +1,42 @@
 <script>
-  import { mapState, mapActions } from 'vuex';
-  import icon from '~/vue_shared/components/icon.vue';
-  import panelResizer from '~/vue_shared/components/panel_resizer.vue';
-  import repoCommitSection from './repo_commit_section.vue';
+import { mapActions, mapGetters, mapState } from 'vuex';
+import icon from '~/vue_shared/components/icon.vue';
+import panelResizer from '~/vue_shared/components/panel_resizer.vue';
+import repoCommitSection from './repo_commit_section.vue';
+import ResizablePanel from './resizable_panel.vue';
 
-  export default {
-    components: {
-      repoCommitSection,
-      icon,
-      panelResizer,
+export default {
+  components: {
+    repoCommitSection,
+    icon,
+    panelResizer,
+    ResizablePanel,
+  },
+  props: {
+    noChangesStateSvgPath: {
+      type: String,
+      required: true,
     },
-    props: {
-      noChangesStateSvgPath: {
-        type: String,
-        required: true,
-      },
-      committedStateSvgPath: {
-        type: String,
-        required: true,
-      },
+    committedStateSvgPath: {
+      type: String,
+      required: true,
     },
-    data() {
-      return {
-        width: 340,
-      };
-    },
-    computed: {
-      ...mapState([
-        'rightPanelCollapsed',
-        'changedFiles',
-      ]),
-      currentIcon() {
-        return this.rightPanelCollapsed ? 'angle-double-left' : 'angle-double-right';
-      },
-      maxSize() {
-        return window.innerWidth / 2;
-      },
-      panelStyle() {
-        if (!this.rightPanelCollapsed) {
-          return { width: `${this.width}px` };
-        }
-        return {};
-      },
-    },
-    methods: {
-      ...mapActions([
-        'setPanelCollapsedStatus',
-        'setResizingStatus',
-      ]),
-      toggleCollapsed() {
-        this.setPanelCollapsedStatus({
-          side: 'right',
-          collapsed: !this.rightPanelCollapsed,
-        });
-      },
-      toggleFullbarCollapsed() {
-        if (this.rightPanelCollapsed) {
-          this.toggleCollapsed();
-        }
-      },
-      resizingStarted() {
-        this.setResizingStatus(true);
-      },
-      resizingEnded() {
-        this.setResizingStatus(false);
-      },
-    },
-  };
+  },
+  computed: {
+    ...mapState(['changedFiles', 'rightPanelCollapsed']),
+    ...mapGetters(['currentIcon']),
+  },
+  methods: {
+    ...mapActions(['setPanelCollapsedStatus']),
+  },
+};
 </script>
 
 <template>
-  <div
-    class="multi-file-commit-panel"
-    :class="{
-      'is-collapsed': rightPanelCollapsed,
-    }"
-    :style="panelStyle"
-    @click="toggleFullbarCollapsed"
+  <resizable-panel
+    :collapsible="true"
+    :initial-width="340"
+    side="right"
   >
     <div
       class="multi-file-commit-panel-section"
@@ -104,7 +64,10 @@
         <button
           type="button"
           class="btn btn-transparent multi-file-commit-panel-collapse-btn"
-          @click.stop="toggleCollapsed"
+          @click.stop="setPanelCollapsedStatus({
+            side: 'right',
+            collapsed: !rightPanelCollapsed,
+          })"
         >
           <icon
             :name="currentIcon"
@@ -117,15 +80,5 @@
         :committed-state-svg-path="committedStateSvgPath"
       />
     </div>
-    <panel-resizer
-      :size.sync="width"
-      :enabled="!rightPanelCollapsed"
-      :start-size="340"
-      :min-size="200"
-      :max-size="maxSize"
-      @resize-start="resizingStarted"
-      @resize-end="resizingEnded"
-      side="left"
-    />
-  </div>
+  </resizable-panel>
 </template>

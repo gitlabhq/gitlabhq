@@ -35,7 +35,8 @@ class NotificationRecipient
 
     # check this last because it's expensive
     # nobody should receive notifications if they've specifically unsubscribed
-    return false if unsubscribed?
+    # except if they were mentioned.
+    return false if @type != :mention && unsubscribed?
 
     true
   end
