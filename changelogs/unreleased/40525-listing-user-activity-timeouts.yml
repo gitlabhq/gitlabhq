@@ -1,0 +1,5 @@
+---
+title: Improve database response time for user activity listing.
+merge_request: 17454
+author:
+type: performance
