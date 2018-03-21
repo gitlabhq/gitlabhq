@@ -38,7 +38,6 @@ export default {
         this.$emit('toggleFile');
       }
     },
-    noop() {},
   },
 };
 </script>

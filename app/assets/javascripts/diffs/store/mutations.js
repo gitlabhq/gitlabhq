@@ -109,4 +109,21 @@ export default {
       }
     }
   },
+
+  [types.ADD_CONTEXT_LINES](state, options) {
+    const { lineNumbers, contextLines, fileHash } = options;
+    const { bottom } = options.params;
+    const diffFile = utils.findDiffFile(state.diffFiles, fileHash);
+    const { highlightedDiffLines, parallelDiffLines } = diffFile;
+
+    utils.removeMatchLine(diffFile, lineNumbers, bottom);
+    const lines = utils.addLineReferences(contextLines, lineNumbers, bottom);
+    utils.addContextLines({
+      inlineLines: highlightedDiffLines,
+      parallelLines: parallelDiffLines,
+      contextLines: lines,
+      bottom,
+      lineNumbers,
+    });
+  },
 };

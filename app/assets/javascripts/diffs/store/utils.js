@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import {
   LINE_POSITION_LEFT,
   LINE_POSITION_RIGHT,
@@ -6,6 +7,7 @@ import {
   DIFF_NOTE_TYPE,
   NEW_LINE_TYPE,
   OLD_LINE_TYPE,
+  MATCH_LINE_TYPE,
 } from '../constants';
 
 export const findDiffLineIndex = options => {
@@ -25,6 +27,9 @@ export const findDiffLineIndex = options => {
     return line.lineCode === lineCode;
   });
 };
+
+export const findDiffFile = (files, hash) =>
+  files.filter(file => file.fileHash === hash)[0];
 
 export const getReversePosition = linePosition => {
   if (linePosition === LINE_POSITION_RIGHT) {
@@ -80,4 +85,102 @@ export const getNoteFormData = params => {
     endpoint: noteableData.create_note_path,
     data: postData,
   };
+};
+
+export const findIndexInInlineLines = (lines, lineNumbers) => {
+  const { oldLineNumber, newLineNumber } = lineNumbers;
+
+  return _.findIndex(
+    lines,
+    line => line.oldLine === oldLineNumber && line.newLine === newLineNumber,
+  );
+};
+
+export const findIndexInParallelLines = (lines, lineNumbers) => {
+  const { oldLineNumber, newLineNumber } = lineNumbers;
+
+  return _.findIndex(
+    lines,
+    line =>
+      line.left &&
+      line.right &&
+      line.left.oldLine === oldLineNumber &&
+      line.right.newLine === newLineNumber,
+  );
+};
+
+export const removeMatchLine = (diffFile, lineNumbers, bottom) => {
+  const indexForInline = findIndexInInlineLines(
+    diffFile.highlightedDiffLines,
+    lineNumbers,
+  );
+
+  const indexForParallel = findIndexInParallelLines(
+    diffFile.parallelDiffLines,
+    lineNumbers,
+  );
+
+  const factor = bottom ? 1 : -1;
+
+  diffFile.highlightedDiffLines.splice(indexForInline + factor, 1);
+  diffFile.parallelDiffLines.splice(indexForParallel + factor, 1);
+};
+
+export const addLineReferences = (lines, lineNumbers, bottom) => {
+  const { oldLineNumber, newLineNumber } = lineNumbers;
+  const lineCount = lines.length;
+  let matchLineIndex = -1;
+
+  const linesWithNumbers = lines.map((l, index) => {
+    const line = convertObjectPropsToCamelCase(l);
+
+    if (line.type === MATCH_LINE_TYPE) {
+      matchLineIndex = index;
+    } else {
+      Object.assign(line, {
+        oldLine: bottom
+          ? oldLineNumber + index + 1
+          : oldLineNumber + index - lineCount,
+        newLine: bottom
+          ? newLineNumber + index + 1
+          : newLineNumber + index - lineCount,
+      });
+    }
+
+    return line;
+  });
+
+  if (matchLineIndex > -1) {
+    const line = linesWithNumbers[matchLineIndex];
+    const targetLine = bottom
+      ? linesWithNumbers[matchLineIndex - 1]
+      : linesWithNumbers[matchLineIndex + 1];
+
+    Object.assign(line, {
+      metaData: {
+        oldPos: targetLine.oldLine,
+        newPos: targetLine.newLine,
+      },
+    });
+  }
+
+  return linesWithNumbers;
+};
+
+export const addContextLines = options => {
+  const { inlineLines, parallelLines, contextLines, lineNumbers } = options;
+  const inlineIndex = findIndexInInlineLines(inlineLines, lineNumbers);
+  const parallelIndex = findIndexInParallelLines(parallelLines, lineNumbers);
+  const normalizedParallelLines = contextLines.map(line => ({
+    left: line,
+    right: line,
+  }));
+
+  if (options.bottom) {
+    inlineLines.push(...contextLines);
+    parallelLines.push(...normalizedParallelLines);
+  } else {
+    inlineLines.splice(inlineIndex, 0, ...contextLines);
+    parallelLines.splice(parallelIndex, 0, ...normalizedParallelLines);
+  }
 };

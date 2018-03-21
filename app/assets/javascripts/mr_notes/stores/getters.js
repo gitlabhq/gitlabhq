@@ -1,5 +1,5 @@
 export default {
-  activeTab(state) {
-    return state.activeTab;
+  isLoggedIn(state, getters) {
+    return !!getters.getUserData.id;
   },
 };
