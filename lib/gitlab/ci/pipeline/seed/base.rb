@@ -7,7 +7,7 @@ module Gitlab
             raise NotImplementedError
           end
 
-          def excluded?
+          def included?
             raise NotImplementedError
           end
 

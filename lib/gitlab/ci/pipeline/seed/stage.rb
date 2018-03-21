@@ -31,11 +31,7 @@ module Gitlab
           end
 
           def to_resource
-            ::Ci::Stage.new(attributes)
-          end
-
-          def create!
-            to_resource.tap do |stage|
+            ::Ci::Stage.new(attributes).tap do |stage|
               @seeds.each do |seed|
                 seed.to_resource.tap do |build|
                   stage.builds << build
@@ -43,8 +39,6 @@ module Gitlab
               end
 
               @pipeline.stages << stage
-
-              stage.save!
             end
           end
         end
