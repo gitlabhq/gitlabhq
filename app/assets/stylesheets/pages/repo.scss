@@ -43,7 +43,7 @@
     cursor: pointer;
 
     &.file-open {
-      background: $white-normal;
+      background: $link-active-background;
     }
 
     .ide-file-name {
@@ -72,7 +72,10 @@
       margin-right: -8px;
     }
 
-    &:hover {
+    &:hover,
+    &:focus {
+      background: $link-active-background;
+
       .ide-new-btn {
         display: block;
       }
