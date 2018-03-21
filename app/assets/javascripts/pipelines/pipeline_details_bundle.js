@@ -8,7 +8,7 @@ import pipelineHeader from './components/header_component.vue';
 import eventHub from './event_hub';
 
 import SecurityReportApp from 'ee/pipelines/components/security_reports/security_report_app.vue'; // eslint-disable-line import/first
-import SastSummaryWidget from 'ee/pipelines/components/security_reports/sast_report_summary_widget.vue'; // eslint-disable-line import/first
+import SastSummaryWidget from 'ee/pipelines/components/security_reports/report_summary_widget.vue'; // eslint-disable-line import/first
 
 Vue.use(Translate);
 
@@ -142,7 +142,10 @@ export default () => {
       render(createElement) {
         return createElement('sast-summary-widget', {
           props: {
-            unresolvedIssues: this.mediator.store.state.securityReports.sast.newIssues.length +
+            hasDependencyScanning: dependencyScanningEndpoint !== undefined,
+            hasSast: endpoint !== undefined,
+            sastIssues: this.mediator.store.state.securityReports.sast.newIssues.length,
+            dependencyScanningIssues:
               this.mediator.store.state.securityReports.dependencyScanning.newIssues.length,
           },
         });
