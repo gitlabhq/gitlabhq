@@ -17,9 +17,7 @@ export default {
     'mr-widget-geo-secondary-node': GeoSecondaryNode,
     ReportSection,
   },
-  mixins: [
-    securityMixin,
-  ],
+  mixins: [securityMixin],
   dast: DAST,
   sast: SAST,
   sastContainer: SAST_CONTAINER,
@@ -30,11 +28,13 @@ export default {
       isLoadingSecurity: false,
       isLoadingDocker: false,
       isLoadingDast: false,
+      isLoadingDependencyScanning: false,
       loadingCodequalityFailed: false,
       loadingPerformanceFailed: false,
       loadingSecurityFailed: false,
       loadingDockerFailed: false,
       loadingDastFailed: false,
+      loadingDependencyScanningFailed: false,
     };
   },
   computed: {
@@ -53,10 +53,13 @@ export default {
       return this.mr.sast && this.mr.sast.head_path;
     },
     shouldRenderDockerReport() {
-      return this.mr.sastContainer;
+      return this.mr.sastContainer && this.mr.sastContainer.head_path;
     },
     shouldRenderDastReport() {
-      return this.mr.dast;
+      return this.mr.dast && this.mr.dast.head_path;
+    },
+    shouldRenderDependencyReport() {
+      return this.mr.dependencyScanning && this.mr.dependencyScanning.head_path;
     },
     codequalityText() {
       const { newIssues, resolvedIssues } = this.mr.codeclimateMetrics;
@@ -68,11 +71,13 @@ export default {
         text.push(s__('ciReport|Code quality'));
 
         if (resolvedIssues.length) {
-          text.push(n__(
-            ' improved on %d point',
-            ' improved on %d points',
-            resolvedIssues.length,
-          ));
+          text.push(
+            n__(
+              ' improved on %d point',
+              ' improved on %d points',
+              resolvedIssues.length,
+            ),
+          );
         }
 
         if (newIssues.length > 0 && resolvedIssues.length > 0) {
@@ -80,11 +85,13 @@ export default {
         }
 
         if (newIssues.length) {
-          text.push(n__(
-            ' degraded on %d point',
-            ' degraded on %d points',
-            newIssues.length,
-          ));
+          text.push(
+            n__(
+              ' degraded on %d point',
+              ' degraded on %d points',
+              newIssues.length,
+            ),
+          );
         }
       }
 
@@ -101,11 +108,13 @@ export default {
         text.push(s__('ciReport|Performance metrics'));
 
         if (improved.length) {
-          text.push(n__(
-            ' improved on %d point',
-            ' improved on %d points',
-            improved.length,
-          ));
+          text.push(
+            n__(
+              ' improved on %d point',
+              ' improved on %d points',
+              improved.length,
+            ),
+          );
         }
 
         if (improved.length > 0 && degraded.length > 0) {
@@ -113,11 +122,13 @@ export default {
         }
 
         if (degraded.length) {
-          text.push(n__(
-            ' degraded on %d point',
-            ' degraded on %d points',
-            degraded.length,
-          ));
+          text.push(
+            n__(
+              ' degraded on %d point',
+              ' degraded on %d points',
+              degraded.length,
+            ),
+          );
         }
       }
 
@@ -127,6 +138,11 @@ export default {
     securityText() {
       const { newIssues, resolvedIssues, allIssues } = this.mr.securityReport;
       return this.sastText(newIssues, resolvedIssues, allIssues);
+    },
+
+    dependencyScanningText() {
+      const { newIssues, resolvedIssues, allIssues } = this.mr.dependencyScanningReport;
+      return this.depedencyScanningText(newIssues, resolvedIssues, allIssues);
     },
 
     dockerText() {
@@ -139,23 +155,42 @@ export default {
     },
 
     codequalityStatus() {
-      return this.checkReportStatus(this.isLoadingCodequality, this.loadingCodequalityFailed);
+      return this.checkReportStatus(
+        this.isLoadingCodequality,
+        this.loadingCodequalityFailed,
+      );
     },
 
     performanceStatus() {
-      return this.checkReportStatus(this.isLoadingPerformance, this.loadingPerformanceFailed);
+      return this.checkReportStatus(
+        this.isLoadingPerformance,
+        this.loadingPerformanceFailed,
+      );
     },
 
     securityStatus() {
-      return this.checkReportStatus(this.isLoadingSecurity, this.loadingSecurityFailed);
+      return this.checkReportStatus(
+        this.isLoadingSecurity,
+        this.loadingSecurityFailed,
+      );
     },
 
     dockerStatus() {
-      return this.checkReportStatus(this.isLoadingDocker, this.loadingDockerFailed);
+      return this.checkReportStatus(
+        this.isLoadingDocker,
+        this.loadingDockerFailed,
+      );
     },
 
     dastStatus() {
       return this.checkReportStatus(this.isLoadingDast, this.loadingDastFailed);
+    },
+
+    dependencyScanningStatus() {
+      return this.checkReportStatus(
+        this.isLoadingDependencyScanning,
+        this.loadingDependencyScanningFailed,
+      );
     },
   },
   methods: {
@@ -168,7 +203,7 @@ export default {
         this.service.fetchReport(head_path),
         this.service.fetchReport(base_path),
       ])
-        .then((values) => {
+        .then(values => {
           this.mr.compareCodeclimateMetrics(
             values[0],
             values[1],
@@ -192,7 +227,7 @@ export default {
         this.service.fetchReport(head_path),
         this.service.fetchReport(base_path),
       ])
-        .then((values) => {
+        .then(values => {
           this.mr.comparePerformanceMetrics(values[0], values[1]);
           this.isLoadingPerformance = false;
         })
@@ -216,7 +251,7 @@ export default {
           this.service.fetchReport(sast.head_path),
           this.service.fetchReport(sast.base_path),
         ])
-          .then((values) => {
+          .then(values => {
             this.handleSecuritySuccess({
               head: values[0],
               headBlobPath: this.mr.headBlobPath,
@@ -226,14 +261,54 @@ export default {
           })
           .catch(() => this.handleSecurityError());
       } else if (sast.head_path) {
-        this.service.fetchReport(sast.head_path)
-          .then((data) => {
+        this.service
+          .fetchReport(sast.head_path)
+          .then(data => {
             this.handleSecuritySuccess({
               head: data,
               headBlobPath: this.mr.headBlobPath,
             });
           })
           .catch(() => this.handleSecurityError());
+      }
+    },
+
+    fetchDependencyScanning() {
+      const { dependencyScanning } = this.mr;
+
+      this.isLoadingDependencyScanning = true;
+
+      if (dependencyScanning.base_path && dependencyScanning.head_path) {
+        Promise.all([
+          this.service.fetchReport(dependencyScanning.head_path),
+          this.service.fetchReport(dependencyScanning.base_path),
+        ])
+          .then(values => {
+            this.mr.setDependencyScanningReport({
+              head: values[0],
+              headBlobPath: this.mr.headBlobPath,
+              base: values[1],
+              baseBlobPath: this.mr.baseBlobPath,
+            });
+            this.isLoadingDependencyScanning = false;
+          })
+          .catch(() => {
+            this.isLoadingDependencyScanning = false;
+            this.loadingDependencyScanningFailed = true;
+          });
+      } else if (dependencyScanning.head_path) {
+        this.service
+          .fetchReport(dependencyScanning.head_path)
+          .then(data => {
+            this.mr.setDependencyScanningReport({
+              head: data,
+              headBlobPath: this.mr.headBlobPath,
+            });
+          })
+          .catch(() => {
+            this.isLoadingDependencyScanning = false;
+            this.loadingDependencyScanningFailed = true;
+          });
       }
     },
 
@@ -251,8 +326,9 @@ export default {
       const { head_path } = this.mr.sastContainer;
       this.isLoadingDocker = true;
 
-      this.service.fetchReport(head_path)
-        .then((data) => {
+      this.service
+        .fetchReport(head_path)
+        .then(data => {
           this.mr.setDockerReport(data);
           this.isLoadingDocker = false;
         })
@@ -265,8 +341,9 @@ export default {
     fetchDastReport() {
       this.isLoadingDast = true;
 
-      this.service.fetchReport(this.mr.dast.head_path)
-        .then((data) => {
+      this.service
+        .fetchReport(this.mr.dast.head_path)
+        .then(data => {
           this.mr.setDastReport(data);
           this.isLoadingDast = false;
         })
@@ -295,6 +372,10 @@ export default {
 
     if (this.shouldRenderDastReport) {
       this.fetchDastReport();
+    }
+
+    if (this.shouldRenderDependencyReport) {
+      this.fetchDependencyScanning();
     }
   },
   template: `
@@ -351,6 +432,18 @@ export default {
         :resolved-issues="mr.securityReport.resolvedIssues"
         :all-issues="mr.securityReport.allIssues"
         />
+      <report-section
+        class="js-dependency-scanning-widget"
+        v-if="shouldRenderDependencyReport"
+        :type="$options.sast"
+        :status="dependencyScanningStatus"
+        :loading-text="translateText('dependency scanning').loading"
+        :error-text="translateText('dependency scanning').error"
+        :success-text="dependencyScanningText"
+        :unresolved-issues="mr.dependencyScanningReport.newIssues"
+        :resolved-issues="mr.dependencyScanningReport.resolvedIssues"
+        :all-issues="mr.dependencyScanningReport.allIssues"
+      />
       <report-section
         class="js-docker-widget"
         v-if="shouldRenderDockerReport"

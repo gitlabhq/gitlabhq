@@ -1,39 +1,33 @@
 <script>
   import $ from 'jquery';
   import { n__, s__ } from '~/locale';
-  import ciIcon from '~/vue_shared/components/ci_icon.vue';
+  import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
   export default {
     name: 'SastSummaryReport',
     components: {
-      ciIcon,
+      CiIcon,
     },
     props: {
       unresolvedIssues: {
-        type: Array,
+        type: Number,
         required: false,
-        default: () => ([]),
+        default: 0,
       },
     },
     computed: {
-      sastText() {
-        if (this.unresolvedIssues.length) {
-          return s__('ciReport|SAST degraded on');
-        }
-        return s__('ciReport|SAST detected');
-      },
       sastLink() {
-        if (this.unresolvedIssues.length) {
+        if (this.unresolvedIssues > 0) {
           return n__(
             '%d security vulnerability',
             '%d security vulnerabilities',
-            this.unresolvedIssues.length,
+            this.unresolvedIssues,
           );
         }
         return s__('ciReport|no security vulnerabilities');
       },
       statusIcon() {
-        if (this.unresolvedIssues.length) {
+        if (this.unresolvedIssues > 0) {
           return {
             group: 'warning',
             icon: 'status_warning',
@@ -65,7 +59,7 @@
     <span
       class="prepend-left-10 flex flex-align-self-center"
     >
-      {{ sastText }}
+      {{ s__('ciReport|Security reports detected') }}
       <button
         type="button"
         class="btn-link btn-blank prepend-left-5"

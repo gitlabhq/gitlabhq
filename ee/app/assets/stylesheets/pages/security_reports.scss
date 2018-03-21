@@ -2,10 +2,15 @@
   .space-children,
   .space-children > span {
     display: flex;
+    align-self: center;
   }
 
   .media {
     align-items: center;
+  }
+
+  .code-text {
+    width: 100%;
   }
 }
 
