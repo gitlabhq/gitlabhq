@@ -3,7 +3,6 @@ import $ from 'jquery';
 import { mapGetters, mapActions } from 'vuex';
 import { getLocationHash } from '../../lib/utils/url_utility';
 import Flash from '../../flash';
-import store from '../stores/';
 import * as constants from '../constants';
 import noteableNote from './noteable_note.vue';
 import noteableDiscussion from './noteable_discussion.vue';
@@ -40,7 +39,6 @@ export default {
       default: () => ({}),
     },
   },
-  store,
   data() {
     return {
       isLoading: true,
