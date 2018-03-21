@@ -4,13 +4,19 @@ module EE
 
     override :deployment_platform
     def deployment_platform(environment: nil)
+      find_cluster_platform_kubernetes(environment: environment) ||
+        find_kubernetes_service_integration ||
+        build_cluster_and_deployment_platform
+    end
+
+    private
+
+    override :find_cluster_platform_kubernetes
+    def find_cluster_platform_kubernetes(environment: nil)
       return super unless environment && feature_available?(:multiple_clusters)
 
-      @deployment_platform = # rubocop:disable Gitlab/ModuleWithInstanceVariables
-        clusters.enabled.on_environment(environment.name)
-          .last&.platform_kubernetes
-
-      super # Wildcard or KubernetesService
+      clusters.enabled.on_environment(environment.name)
+        .last&.platform_kubernetes
     end
   end
 end

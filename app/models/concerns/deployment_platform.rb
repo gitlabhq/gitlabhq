@@ -1,16 +1,18 @@
 module DeploymentPlatform
-  # EE would override this and utilize the extra argument
+  # EE would override this and utilize environment argument
   def deployment_platform(environment: nil)
     @deployment_platform ||=
-      find_cluster_platform_kubernetes ||
+      find_cluster_platform_kubernetes(environment: environment) ||
       find_kubernetes_service_integration ||
       build_cluster_and_deployment_platform
   end
 
   private
 
-  def find_cluster_platform_kubernetes
-    clusters.find_by(enabled: true)&.platform_kubernetes
+  # EE would override this and utilize environment argument
+  def find_cluster_platform_kubernetes(environment: nil)
+    clusters.enabled.default_environment
+      .last&.platform_kubernetes
   end
 
   def find_kubernetes_service_integration
