@@ -5,21 +5,21 @@
 - issuable_mr        = @issuable_meta_data[issuable.id].merge_requests_count
 
 - if issuable_mr > 0
-  %li.issuable-mr.hidden-xs
+  %li.issuable-mr.hidden-xs.has-tooltip{ title: _('Related merge requests') }
     = image_tag('icon-merge-request-unmerged.svg', class: 'icon-merge-request-unmerged')
     = issuable_mr
 
 - if upvotes > 0
-  %li.issuable-upvotes.hidden-xs
+  %li.issuable-upvotes.hidden-xs.has-tooltip{ title: _('Upvotes') }
     = icon('thumbs-up')
     = upvotes
 
 - if downvotes > 0
-  %li.issuable-downvotes.hidden-xs
+  %li.issuable-downvotes.hidden-xs.has-tooltip{ title: _('Downvotes') }
     = icon('thumbs-down')
     = downvotes
 
 %li.issuable-comments.hidden-xs
-  = link_to issuable_url, class: ('no-comments' if note_count.zero?) do
+  = link_to issuable_url, class: ['has-tooltip', ('no-comments' if note_count.zero?)], title: _('Comments') do
     = icon('comments')
     = note_count
