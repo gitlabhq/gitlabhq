@@ -268,13 +268,13 @@ class Group < Namespace
       end
 
     GroupMember
-      .active_without_invites
+      .active_without_invites_and_requests
       .where(source_id: source_ids)
   end
 
   def members_with_descendants
     GroupMember
-      .active_without_invites
+      .active_without_invites_and_requests
       .where(source_id: self_and_descendants.reorder(nil).select(:id))
   end
 
