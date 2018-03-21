@@ -1,51 +1,48 @@
 <script>
-  import {
-    MarkdownCell,
+import { MarkdownCell, CodeCell } from './cells';
+
+export default {
+  components: {
     CodeCell,
-  } from './cells';
+    MarkdownCell,
+  },
+  props: {
+    notebook: {
+      type: Object,
+      required: true,
+    },
+    codeCssClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+  computed: {
+    cells() {
+      if (this.notebook.worksheets) {
+        const data = {
+          cells: [],
+        };
 
-  export default {
-    components: {
-      'code-cell': CodeCell,
-      'markdown-cell': MarkdownCell,
-    },
-    props: {
-      notebook: {
-        type: Object,
-        required: true,
-      },
-      codeCssClass: {
-        type: String,
-        required: false,
-        default: '',
-      },
-    },
-    computed: {
-      cells() {
-        if (this.notebook.worksheets) {
-          const data = {
-            cells: [],
-          };
+        return this.notebook.worksheets.reduce((cellData, sheet) => {
+          const cellDataCopy = cellData;
+          cellDataCopy.cells = cellDataCopy.cells.concat(sheet.cells);
+          return cellDataCopy;
+        }, data).cells;
+      }
 
-          return this.notebook.worksheets.reduce((cellData, sheet) => {
-            const cellDataCopy = cellData;
-            cellDataCopy.cells = cellDataCopy.cells.concat(sheet.cells);
-            return cellDataCopy;
-          }, data).cells;
-        }
-
-        return this.notebook.cells;
-      },
-      hasNotebook() {
-        return Object.keys(this.notebook).length;
-      },
+      return this.notebook.cells;
     },
-    methods: {
-      cellType(type) {
-        return `${type}-cell`;
-      },
+    hasNotebook() {
+      return Object.keys(this.notebook).length;
     },
-  };
+  },
+  methods: {
+    cellType(type) {
+      return `${type}-cell`;
+    },
+  },
+};
 </script>
 
 <template>
@@ -55,7 +52,8 @@
       :is="cellType(cell.cell_type)"
       :cell="cell"
       :key="index"
-      :code-css-class="codeCssClass" />
+      :code-css-class="codeCssClass"
+    />
   </div>
 </template>
 

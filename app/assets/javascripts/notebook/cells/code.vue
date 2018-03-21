@@ -1,11 +1,12 @@
 <script>
-import CodeCell from './code/index.vue';
+import CodeOutput from './code/index.vue';
 import OutputCell from './output/index.vue';
 
 export default {
+  name: 'CodeCell',
   components: {
-    'code-cell': CodeCell,
-    'output-cell': OutputCell,
+    CodeOutput,
+    OutputCell,
   },
   props: {
     cell: {
@@ -38,7 +39,7 @@ export default {
 
 <template>
   <div class="cell">
-    <code-cell
+    <code-output
       type="input"
       :raw-code="rawInputCode"
       :count="cell.execution_count"

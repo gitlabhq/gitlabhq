@@ -1,11 +1,11 @@
 <script>
-import CodeCell from '../code/index.vue';
+import CodeOutput from '../code/index.vue';
 import HtmlOutput from './html.vue';
 import ImageOutput from './image.vue';
 
 export default {
   components: {
-    CodeCell,
+    CodeOutput,
     HtmlOutput,
     ImageOutput,
   },
@@ -42,7 +42,7 @@ export default {
     },
     componentName(output) {
       if (output.text) {
-        return 'code-cell';
+        return 'code-output';
       } else if (output.data['image/png']) {
         this.outputType = 'image/png';
 
@@ -58,7 +58,7 @@ export default {
       }
 
       this.outputType = 'text/plain';
-      return 'code-cell';
+      return 'code-output';
     },
     rawCode(output) {
       if (output.text) {
@@ -75,6 +75,7 @@ export default {
   <div>
     <component
       v-for="(output, index) in outputs"
+      :key="index"
       :is="componentName(output)"
       type="output"
       :output-type="outputType"
@@ -82,7 +83,6 @@ export default {
       :index="index"
       :raw-code="rawCode(output)"
       :code-css-class="codeCssClass"
-      :key="index"
     />
   </div>
 </template>

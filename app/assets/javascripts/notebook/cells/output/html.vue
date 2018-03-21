@@ -36,7 +36,7 @@ export default {
 <template>
   <div class="output">
     <prompt
-      type="out"
+      type="Out"
       :count="count"
       :show-output="index === 0"
     />

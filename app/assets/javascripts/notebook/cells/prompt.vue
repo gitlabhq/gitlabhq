@@ -11,15 +11,15 @@ export default {
       required: false,
       default: 0,
     },
-  },
-  computed: {
-    hasKeys() {
-      return this.type !== '' && this.count;
-    },
     showOutput: {
       type: Boolean,
       required: false,
       default: true,
+    },
+  },
+  computed: {
+    hasKeys() {
+      return this.type !== '' && this.count;
     },
   },
 };
