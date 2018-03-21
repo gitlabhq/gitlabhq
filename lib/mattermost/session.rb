@@ -83,7 +83,7 @@ module Mattermost
 
     def delete(path, options = {})
       handle_exceptions do
-        Gitlab::HTTP.delete(path, options.merge(headers: @headers))
+        Gitlab::HTTP.delete(path, build_options(options))
       end
     end
 
