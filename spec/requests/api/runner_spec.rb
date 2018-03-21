@@ -112,7 +112,7 @@ describe API::Runner do
       context 'when maximum job timeout is specified' do
         it 'creates runner' do
           post api('/runners'), token: registration_token,
-                                maximum_timeout: '2h 30m'
+                                maximum_timeout: 9000
 
           expect(response).to have_gitlab_http_status 201
           expect(Ci::Runner.first.maximum_timeout).to eq(9000)
