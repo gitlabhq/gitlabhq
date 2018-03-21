@@ -204,7 +204,7 @@
       <template v-if="showAdvanceItems">
         <template v-if="node.primary">
           <geo-node-detail-item
-            v-if="nodeDetails.repository_verification_enabled"
+            v-if="nodeDetails.repositoryVerificationEnabled"
             :item-title="s__('GeoNodes|Repositories checksummed:')"
             :success-label="s__('GeoNodes|Checksummed')"
             :neutral-label="s__('GeoNodes|Not checksummed')"
@@ -213,7 +213,7 @@
             :item-value-type="valueType.GRAPH"
           />
           <geo-node-detail-item
-            v-if="nodeDetails.repository_verification_enabled"
+            v-if="nodeDetails.repositoryVerificationEnabled"
             :item-title="s__('GeoNodes|Wikis checksummed:')"
             :success-label="s__('GeoNodes|Checksummed')"
             :neutral-label="s__('GeoNodes|Not checksummed')"
@@ -238,7 +238,7 @@
         </template>
         <template v-else>
           <geo-node-detail-item
-            v-if="nodeDetails.repository_verification_enabled"
+            v-if="nodeDetails.repositoryVerificationEnabled"
             :item-title="s__('GeoNodes|Repository checksums verified:')"
             :success-label="s__('GeoNodes|Verified')"
             :neutral-label="s__('GeoNodes|Unverified')"
@@ -247,7 +247,7 @@
             :item-value-type="valueType.GRAPH"
           />
           <geo-node-detail-item
-            v-if="nodeDetails.repository_verification_enabled"
+            v-if="nodeDetails.repositoryVerificationEnabled"
             :item-title="s__('GeoNodes|Wiki checksums verified:')"
             :success-label="s__('GeoNodes|Verified')"
             :neutral-label="s__('GeoNodes|Unverified')"
