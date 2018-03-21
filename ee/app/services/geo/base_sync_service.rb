@@ -112,11 +112,6 @@ module Geo
         attrs["last_#{type}_synced_at"] = started_at
         attrs["#{type}_retry_count"] = retry_count + 1
         attrs["#{type}_retry_at"] = next_retry_time(attrs["#{type}_retry_count"])
-
-        # indicate that repository verification needs to be done again
-        attrs["#{type}_verification_checksum"] = nil
-        attrs["last_#{type}_verification_at"] = nil
-        attrs["last_#{type}_verification_failure"] = nil
       end
 
       if finished_at
@@ -125,6 +120,10 @@ module Geo
         attrs["#{type}_retry_count"] = nil
         attrs["#{type}_retry_at"] = nil
         attrs["force_to_redownload_#{type}"] = false
+
+        # Indicate that repository verification needs to be done again
+        attrs["#{type}_verification_checksum"] = nil
+        attrs["last_#{type}_verification_failure"] = nil
       end
 
       registry.update!(attrs)

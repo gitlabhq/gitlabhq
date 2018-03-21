@@ -319,6 +319,93 @@ describe Geo::ProjectRegistryFinder, :geo do
     end
   end
 
+  shared_examples 'find outdated registries for repositories/wikis' do
+    it 'returns registries that verified on primary but not on secondary' do
+      project_verified    = create(:repository_state, :repository_verified, :wiki_verified).project
+      repository_verified = create(:repository_state, :repository_verified).project
+      wiki_verified       = create(:repository_state, :wiki_verified).project
+
+      create(:geo_project_registry, :repository_verified, :wiki_verified, project: project_verified)
+      registry_repository_verified = create(:geo_project_registry, :repository_verified, project: repository_verified)
+      registry_wiki_verified       = create(:geo_project_registry, :wiki_verified, project: wiki_verified)
+
+      expect(subject.find_registries_to_verify(batch_size: 100))
+        .to match_array([
+          registry_repository_verified,
+          registry_wiki_verified
+        ])
+    end
+
+    it 'does not return registries were unverified/outdated on primary' do
+      project_unverified_primary  = create(:project)
+      project_outdated_primary    = create(:repository_state, :repository_outdated, :wiki_outdated).project
+      repository_outdated_primary = create(:repository_state, :repository_outdated, :wiki_verified).project
+      wiki_outdated_primary       = create(:repository_state, :repository_verified, :wiki_outdated).project
+
+      create(:geo_project_registry, project: project_unverified_primary)
+      create(:geo_project_registry, :repository_verification_outdated, :wiki_verification_outdated, project: project_outdated_primary)
+      create(:geo_project_registry, :repository_verified, :wiki_verified, project: repository_outdated_primary)
+      create(:geo_project_registry, :repository_verified, :wiki_verified, project: wiki_outdated_primary)
+
+      expect(subject.find_registries_to_verify(batch_size: 100)).to be_empty
+    end
+
+    it 'returns registries that were unverified/outdated on secondary' do
+      # Secondary unverified/outdated
+      project_unverified_secondary  = create(:repository_state, :repository_verified, :wiki_verified).project
+      project_outdated_secondary    = create(:repository_state, :repository_verified, :wiki_verified).project
+      repository_outdated_secondary = create(:repository_state, :repository_verified, :wiki_verified).project
+      wiki_outdated_secondary       = create(:repository_state, :repository_verified, :wiki_verified).project
+
+      registry_unverified_secondary          = create(:geo_project_registry, project: project_unverified_secondary)
+      registry_outdated_secondary            = create(:geo_project_registry, :repository_verification_outdated, :wiki_verification_outdated, project: project_outdated_secondary)
+      registry_repository_outdated_secondary = create(:geo_project_registry, :repository_verification_outdated, :wiki_verified, project: repository_outdated_secondary)
+      registry_wiki_outdated_secondary       = create(:geo_project_registry, :repository_verified, :wiki_verification_outdated, project: wiki_outdated_secondary)
+
+      expect(subject.find_registries_to_verify(batch_size: 100))
+        .to match_array([
+          registry_unverified_secondary,
+          registry_outdated_secondary,
+          registry_repository_outdated_secondary,
+          registry_wiki_outdated_secondary
+        ])
+    end
+
+    it 'does not return registries that both verification failed on primary' do
+      verification_failed_primary = create(:repository_state, :repository_failed, :wiki_failed).project
+      repository_failed_primary   = create(:repository_state, :repository_failed, :wiki_verified).project
+      wiki_failed_primary         = create(:repository_state, :repository_verified, :wiki_failed).project
+
+      create(:geo_project_registry, project: verification_failed_primary)
+      registry_repository_failed_primary = create(:geo_project_registry, project: repository_failed_primary)
+      registry_wiki_failed_primary       = create(:geo_project_registry, project: wiki_failed_primary)
+
+      expect(subject.find_registries_to_verify(batch_size: 100))
+        .to match_array([
+          registry_repository_failed_primary,
+          registry_wiki_failed_primary
+        ])
+    end
+
+    it 'returns registries that verification failed on secondary' do
+      # Verification failed on secondary
+      verification_failed_secondary = create(:repository_state, :repository_verified, :wiki_verified).project
+      repository_failed_secondary   = create(:repository_state, :repository_verified).project
+      wiki_failed_secondary         = create(:repository_state, :wiki_verified).project
+
+      registry_verification_failed_secondary = create(:geo_project_registry, :repository_verification_failed, :wiki_verification_failed, project: verification_failed_secondary)
+      registry_repository_failed_secondary   = create(:geo_project_registry, :repository_verification_failed, project: repository_failed_secondary)
+      registry_wiki_failed_secondary         = create(:geo_project_registry, :wiki_verification_failed, project: wiki_failed_secondary)
+
+      expect(subject.find_registries_to_verify(batch_size: 100))
+        .to match_array([
+          registry_verification_failed_secondary,
+          registry_repository_failed_secondary,
+          registry_wiki_failed_secondary
+        ])
+    end
+  end
+
   # Disable transactions via :delete method because a foreign table
   # can't see changes inside a transaction of a different connection.
   context 'FDW', :delete do
@@ -389,160 +476,9 @@ describe Geo::ProjectRegistryFinder, :geo do
         expect(projects.pluck(:id)).to match_array([project_repository_dirty.id, project_wiki_dirty.id])
       end
     end
-  end
 
-  shared_examples 'find registries for repositories/wikis' do |use_fdw|
-    before do
-      allow(Gitlab::Geo::Fdw).to receive(:enabled?).and_return(use_fdw)
-    end
-
-    let(:verified_repository_state) { create(:repository_state, :repository_verified, :wiki_verified, last_repository_verification_at: 10.minutes.from_now) }
-    let(:verified_project) { create(:project, repository_state: verified_repository_state) }
-    let(:verified_registry) do
-      create(:geo_project_registry,
-             project: verified_project,
-             last_repository_verification_at: Time.now,
-             last_repository_successful_sync_at: 5.minutes.from_now)
-    end
-
-    context 'with the primary verification failure' do
-      it 'finds when not failed' do
-        verified_repository_state.last_repository_verification_failed = false
-        verified_repository_state.last_wiki_verification_failed = false
-        verified_registry
-
-        expect(subject.find_registries_to_verify.count).to eq 1
-      end
-
-      it 'does not find when failed' do
-        verified_repository_state.last_repository_verification_failed = true
-        verified_repository_state.last_wiki_verification_failed = true
-        verified_registry
-
-        expect(subject.find_registries_to_verify.count).to eq 0
-      end
-
-      it 'finds when either repo/wiki fails' do
-        verified_repository_state.last_repository_verification_failed = true
-        verified_repository_state.last_wiki_verification_failed = false
-        verified_registry
-
-        expect(subject.find_registries_to_verify.count).to eq 1
-      end
-    end
-
-    context 'with the primary verification checksum' do
-      it 'finds with a checksum' do
-        verified_repository_state.repository_verification_checksum = 'my-checksum'
-        verified_repository_state.wiki_verification_checksum = 'my-checksum'
-        verified_registry
-
-        expect(subject.find_registries_to_verify.count).to eq 1
-      end
-
-      it 'does not find a checksum' do
-        verified_repository_state.repository_verification_checksum = nil
-        verified_repository_state.wiki_verification_checksum = nil
-        verified_registry
-
-        expect(subject.find_registries_to_verify.count).to eq 0
-      end
-
-      it 'finds when either repo/wiki has a checksum' do
-        verified_repository_state.repository_verification_checksum = 'my-checksum'
-        verified_repository_state.wiki_verification_checksum = nil
-        verified_registry
-
-        expect(subject.find_registries_to_verify.count).to eq 1
-      end
-    end
-
-    context 'with the primary repository verification date ' do
-      let(:verified_project) do
-        project = create(:project, repository_state: verified_repository_state)
-        project.update_attribute(:last_repository_updated_at, 30.minutes.ago)
-        project
-      end
-      let(:verified_registry) do
-        create(:geo_project_registry,
-               project: verified_project,
-               last_repository_verification_at: 25.minutes.ago,
-               last_wiki_verification_at: 25.minutes.ago,
-               last_repository_successful_sync_at: 5.minutes.from_now,
-               last_wiki_successful_sync_at: 5.minutes.from_now)
-      end
-
-      it 'finds if primary verified after the primary repository was updated' do
-        verified_repository_state.last_repository_verification_at = 20.minutes.ago
-        verified_registry
-
-        expect(subject.find_registries_to_verify.count).to eq 1
-      end
-
-      it 'does not find if primary repository updated after primary verification' do
-        verified_repository_state.last_repository_verification_at = 35.minutes.ago
-        verified_repository_state.last_wiki_verification_at = 35.minutes.ago
-        verified_registry
-
-        expect(subject.find_registries_to_verify.count).to eq 0
-      end
-
-      it 'finds if primary wiki verified after the primary repository was updated' do
-        verified_repository_state.last_repository_verification_at = 35.minutes.ago
-        verified_repository_state.last_wiki_verification_at = 20.minutes.ago
-        verified_registry
-
-        expect(subject.find_registries_to_verify.count).to eq 1
-      end
-
-      it 'does not find if primary verification did not happen' do
-        verified_repository_state.last_repository_verification_at = nil
-        verified_repository_state.last_wiki_verification_at = nil
-        verified_registry
-
-        expect(subject.find_registries_to_verify.count).to eq 0
-      end
-
-      it 'finds if primary was verified after the secondary was verified' do
-        verified_registry.update_attribute(:last_repository_verification_at, verified_repository_state.last_repository_verification_at - 5.minutes)
-
-        expect(subject.find_registries_to_verify.count).to eq 1
-      end
-
-      it 'does not find if primary was verified before the secondary was verified' do
-        verified_registry.update_attributes(
-          last_repository_verification_at: verified_repository_state.last_repository_verification_at + 5.minutes,
-          last_wiki_verification_at: verified_repository_state.last_wiki_verification_at + 5.minutes
-        )
-
-        expect(subject.find_registries_to_verify.count).to eq 0
-      end
-    end
-
-    it 'returns repositories failed more than 24 hours ago' do
-      create(:geo_project_registry,
-             project: verified_project,
-             repository_verification_checksum: nil,
-             last_repository_verification_failed: true,
-             last_repository_verification_at: 2.days.ago)
-
-      expect(subject.find_registries_to_verify.count).to eq 1
-    end
-
-    it 'does not return repositories failed less than 24 hours ago' do
-      create(:geo_project_registry, :repository_verification_failed, last_repository_verification_at: 5.hours.ago)
-
-      expect(subject.find_registries_to_verify.count).to eq 0
-    end
-  end
-
-  describe '#find_registries_to_verify', :delete do
-    context 'using FDW' do
-      include_examples 'find registries for repositories/wikis', true
-    end
-
-    context 'using Legacy' do
-      include_examples 'find registries for repositories/wikis', false
+    describe '#find_registries_to_verify' do
+      include_examples 'find outdated registries for repositories/wikis'
     end
   end
 
@@ -582,6 +518,10 @@ describe Geo::ProjectRegistryFinder, :geo do
 
         expect(projects.pluck(:id)).to match_array([project_repository_dirty.id, project_wiki_dirty.id])
       end
+    end
+
+    describe '#find_registries_to_verify' do
+      include_examples 'find outdated registries for repositories/wikis'
     end
   end
 end

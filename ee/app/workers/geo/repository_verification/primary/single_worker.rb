@@ -11,15 +11,15 @@ module Geo
 
         attr_reader :project
 
-        def perform(project_id, scheduled_time)
+        def perform(project_id)
           return unless Gitlab::Geo.primary?
 
           @project = Project.find_by(id: project_id)
           return if project.nil? || project.pending_delete?
 
           try_obtain_lease do
-            calculate_repository_checksum if repository_state.repository_checksum_outdated?(scheduled_time)
-            calculate_wiki_checksum if repository_state.wiki_checksum_outdated?(scheduled_time)
+            calculate_repository_checksum if repository_state.repository_checksum_outdated?
+            calculate_wiki_checksum if repository_state.wiki_checksum_outdated?
           end
         end
 
@@ -38,14 +38,12 @@ module Geo
           update_repository_state!(type, checksum: checksum.calculate)
         rescue => e
           log_error('Error calculating the repository checksum', e, type: type)
-          update_repository_state!(type, failed: true, failure: e.message)
+          update_repository_state!(type, failure: e.message)
         end
 
-        def update_repository_state!(type, checksum: nil, failed: false, failure: nil)
+        def update_repository_state!(type, checksum: nil, failure: nil)
           repository_state.update!(
             "#{type}_verification_checksum" => checksum,
-            "last_#{type}_verification_at" => DateTime.now,
-            "last_#{type}_verification_failed" => failed,
             "last_#{type}_verification_failure" => failure
           )
         end

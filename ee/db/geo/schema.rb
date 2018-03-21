@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180201154345) do
+ActiveRecord::Schema.define(version: 20180320013929) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,21 +53,21 @@ ActiveRecord::Schema.define(version: 20180201154345) do
     t.string "last_repository_sync_failure"
     t.string "last_wiki_sync_failure"
     t.string "repository_verification_checksum"
-    t.datetime_with_timezone "last_repository_verification_at"
-    t.boolean "last_repository_verification_failed", default: false, null: false
     t.string "last_repository_verification_failure"
     t.string "wiki_verification_checksum"
-    t.datetime_with_timezone "last_wiki_verification_at"
-    t.boolean "last_wiki_verification_failed", default: false, null: false
     t.string "last_wiki_verification_failure"
   end
 
   add_index "project_registry", ["last_repository_successful_sync_at"], name: "index_project_registry_on_last_repository_successful_sync_at", using: :btree
   add_index "project_registry", ["last_repository_synced_at"], name: "index_project_registry_on_last_repository_synced_at", using: :btree
+  add_index "project_registry", ["project_id"], name: "idx_project_registry_on_repository_failure_partial", where: "(last_repository_verification_failure IS NOT NULL)", using: :btree
+  add_index "project_registry", ["project_id"], name: "idx_project_registry_on_wiki_failure_partial", where: "(last_wiki_verification_failure IS NOT NULL)", using: :btree
   add_index "project_registry", ["project_id"], name: "index_project_registry_on_project_id", unique: true, using: :btree
   add_index "project_registry", ["repository_retry_at"], name: "index_project_registry_on_repository_retry_at", using: :btree
+  add_index "project_registry", ["repository_verification_checksum"], name: "idx_project_registry_on_repository_checksum_partial", where: "(repository_verification_checksum IS NULL)", using: :btree
   add_index "project_registry", ["resync_repository"], name: "index_project_registry_on_resync_repository", using: :btree
   add_index "project_registry", ["resync_wiki"], name: "index_project_registry_on_resync_wiki", using: :btree
   add_index "project_registry", ["wiki_retry_at"], name: "index_project_registry_on_wiki_retry_at", using: :btree
+  add_index "project_registry", ["wiki_verification_checksum"], name: "idx_project_registry_on_wiki_checksum_partial", where: "(wiki_verification_checksum IS NULL)", using: :btree
 
 end

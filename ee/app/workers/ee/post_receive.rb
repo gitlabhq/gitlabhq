@@ -11,8 +11,9 @@ module EE
     def after_project_changes_hooks(post_received, user, refs, changes)
       super
 
-      # Generate repository updated event on Geo event log when Geo is enabled
-      ::Geo::RepositoryUpdatedEventStore.new(post_received.project, refs: refs, changes: changes).create
+      if ::Gitlab::Geo.primary?
+        ::Geo::RepositoryUpdatedService.new(post_received.project, refs: refs, changes: changes).execute
+      end
     end
 
     def process_wiki_changes(post_received)
@@ -20,9 +21,8 @@ module EE
 
       update_wiki_es_indexes(post_received)
 
-      if ::Gitlab::Geo.enabled?
-        # Create wiki repository updated event on Geo event log
-        ::Geo::RepositoryUpdatedEventStore.new(post_received.project, source: ::Geo::RepositoryUpdatedEvent::WIKI).create
+      if ::Gitlab::Geo.primary?
+        ::Geo::RepositoryUpdatedService.new(post_received.project, source: ::Geo::RepositoryUpdatedEvent::WIKI).execute
       end
     end
 
