@@ -124,7 +124,7 @@ export default {
       class="view prepend-left-5"
     >
       <span
-        v-if="currentRequest && currentRequest.details"
+        v-if="currentRequest && currentRequest.details && currentRequest.details.host"
         class="current-host"
       >
         {{ currentRequest.details.host.hostname }}

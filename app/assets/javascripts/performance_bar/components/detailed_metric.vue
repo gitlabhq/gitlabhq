@@ -27,6 +27,11 @@ export default {
       required: true,
     },
   },
+  computed: {
+    detailsList() {
+      return this.currentRequest.details[this.metric][this.details];
+    },
+  },
 };
 </script>
 <template>
@@ -55,19 +60,30 @@ export default {
       :header-title-text="header"
       class="performance-bar-modal"
     >
-      <table class="table">
-        <tr
-          v-for="(item, index) in currentRequest.details[metric][details]"
-          :key="index"
-        >
-          <td><strong>{{ item.duration }}ms</strong></td>
-          <td
-            v-for="key in keys"
-            :key="key"
+      <table
+        class="table"
+      >
+        <template v-if="detailsList.length">
+          <tr
+            v-for="(item, index) in detailsList"
+            :key="index"
           >
-            {{ item[key] }}
-          </td>
-        </tr>
+            <td><strong>{{ item.duration }}ms</strong></td>
+            <td
+              v-for="key in keys"
+              :key="key"
+            >
+              {{ item[key] }}
+            </td>
+          </tr>
+        </template>
+        <template v-else>
+          <tr>
+            <td>
+              No {{ header.toLowerCase() }} for this request.
+            </td>
+          </tr>
+        </template>
       </table>
 
       <div slot="footer">
