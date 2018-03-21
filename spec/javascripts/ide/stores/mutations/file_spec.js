@@ -144,6 +144,72 @@ describe('Multi-file store file mutations', () => {
     });
   });
 
+  describe('STAGE_CHANGE', () => {
+    it('adds file into stagedFiles array', () => {
+      const f = file();
+
+      mutations.STAGE_CHANGE(localState, f);
+
+      expect(localState.stagedFiles.length).toBe(1);
+      expect(localState.stagedFiles[0]).toEqual(f);
+    });
+
+    it('updates changedFiles file to staged', () => {
+      const f = {
+        ...file(),
+        type: 'blob',
+        staged: false,
+      };
+
+      localState.changedFiles.push(f);
+
+      mutations.STAGE_CHANGE(localState, f);
+
+      expect(localState.changedFiles[0].staged).toBeTruthy();
+    });
+
+    it('updates stagedFile if it is already staged', () => {
+      const f = file();
+      f.type = 'blob';
+
+      mutations.STAGE_CHANGE(localState, f);
+
+      f.raw = 'testing 123';
+
+      mutations.STAGE_CHANGE(localState, f);
+
+      expect(localState.stagedFiles.length).toBe(1);
+      expect(localState.stagedFiles[0].raw).toEqual('testing 123');
+    });
+  });
+
+  describe('UNSTAGE_CHANGE', () => {
+    let f;
+
+    beforeEach(() => {
+      f = {
+        ...file(),
+        type: 'blob',
+        staged: true,
+      };
+
+      localState.stagedFiles.push(f);
+      localState.changedFiles.push(f);
+    });
+
+    it('removes from stagedFiles array', () => {
+      mutations.UNSTAGE_CHANGE(localState, f);
+
+      expect(localState.stagedFiles.length).toBe(0);
+    });
+
+    it('updates changedFiles array file to unstaged', () => {
+      mutations.UNSTAGE_CHANGE(localState, f);
+
+      expect(localState.changedFiles[0].staged).toBeFalsy();
+    });
+  });
+
   describe('TOGGLE_FILE_CHANGED', () => {
     it('updates file changed status', () => {
       mutations.TOGGLE_FILE_CHANGED(localState, {

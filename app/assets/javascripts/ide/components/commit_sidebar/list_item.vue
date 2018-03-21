@@ -1,38 +1,44 @@
 <script>
-  import { mapActions } from 'vuex';
-  import icon from '~/vue_shared/components/icon.vue';
-  import router from '../../ide_router';
+import Icon from '~/vue_shared/components/icon.vue';
+import StageButton from './stage_button.vue';
+import UnstageButton from './unstage_button.vue';
+import router from '../../ide_router';
 
-  export default {
-    components: {
-      icon,
+export default {
+  components: {
+    Icon,
+    StageButton,
+    UnstageButton,
+  },
+  props: {
+    file: {
+      type: Object,
+      required: true,
     },
-    props: {
-      file: {
-        type: Object,
-        required: true,
-      },
+    actionComponent: {
+      type: String,
+      required: true,
     },
-    computed: {
-      iconName() {
-        return this.file.tempFile ? 'file-addition' : 'file-modified';
-      },
-      iconClass() {
-        return `multi-file-${this.file.tempFile ? 'addition' : 'modified'} append-right-8`;
-      },
+  },
+  computed: {
+    iconName() {
+      return this.file.tempFile ? 'file-addition' : 'file-modified';
     },
-    methods: {
-      ...mapActions([
-        'discardFileChanges',
-        'updateViewer',
-      ]),
-      openFileInEditor(file) {
-        this.updateViewer('diff');
+    iconClass() {
+      return `multi-file-${
+        this.file.tempFile ? 'addition' : 'modified'
+      } append-right-8`;
+    },
+  },
+  methods: {
+    ...mapActions(['updateViewer']),
+    openFileInEditor(file) {
+      this.updateViewer('diff');
 
-        router.push(`/project${file.url}`);
-      },
+      router.push(`/project${file.url}`);
     },
-  };
+  },
+};
 </script>
 
 <template>
@@ -49,12 +55,9 @@
         />{{ file.path }}
       </span>
     </button>
-    <button
-      type="button"
-      class="btn btn-blank multi-file-discard-btn"
-      @click="discardFileChanges(file.path)"
-    >
-      Discard
-    </button>
+    <component
+      :is="actionComponent"
+      :file="file"
+    />
   </div>
 </template>

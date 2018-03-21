@@ -13,6 +13,7 @@ export const dataStructure = () => ({
   opened: false,
   active: false,
   changed: false,
+  staged: false,
   lastCommitPath: '',
   lastCommit: {
     id: '',
@@ -38,7 +39,7 @@ export const dataStructure = () => ({
   eol: '',
 });
 
-export const decorateData = (entity) => {
+export const decorateData = entity => {
   const {
     id,
     projectId,
@@ -57,7 +58,6 @@ export const decorateData = (entity) => {
     base64 = false,
 
     file_lock,
-
   } = entity;
 
   return {
@@ -80,24 +80,23 @@ export const decorateData = (entity) => {
     base64,
 
     file_lock,
-
   };
 };
 
-export const findEntry = (tree, type, name, prop = 'name') => tree.find(
-  f => f.type === type && f[prop] === name,
-);
+export const findEntry = (tree, type, name, prop = 'name') =>
+  tree.find(f => f.type === type && f[prop] === name);
 
-export const findIndexOfFile = (state, file) => state.findIndex(f => f.path === file.path);
+export const findIndexOfFile = (state, file) =>
+  state.findIndex(f => f.path === file.path);
 
-export const setPageTitle = (title) => {
+export const setPageTitle = title => {
   document.title = title;
 };
 
 export const createCommitPayload = (branch, newBranch, state, rootState) => ({
   branch,
   commit_message: state.commitMessage,
-  actions: rootState.changedFiles.map(f => ({
+  actions: rootState.stagedFiles.map(f => ({
     action: f.tempFile ? 'create' : 'update',
     file_path: f.path,
     content: f.content,
@@ -120,6 +119,11 @@ const sortTreesByTypeAndName = (a, b) => {
   return 0;
 };
 
-export const sortTree = sortedTree => sortedTree.map(entity => Object.assign(entity, {
-  tree: entity.tree.length ? sortTree(entity.tree) : [],
-})).sort(sortTreesByTypeAndName);
+export const sortTree = sortedTree =>
+  sortedTree
+    .map(entity =>
+      Object.assign(entity, {
+        tree: entity.tree.length ? sortTree(entity.tree) : [],
+      }),
+    )
+    .sort(sortTreesByTypeAndName);

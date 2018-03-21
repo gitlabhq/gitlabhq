@@ -1,25 +1,33 @@
 import Vue from 'vue';
+import store from '~/ide/stores';
 import listItem from '~/ide/components/commit_sidebar/list_item.vue';
 import router from '~/ide/ide_router';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { file } from '../../helpers';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { file, resetStore } from '../../helpers';
 
 describe('Multi-file editor commit sidebar list item', () => {
   let vm;
   let f;
 
-  beforeEach(() => {
+  beforeEach(done => {
     const Component = Vue.extend(listItem);
 
     f = file('test-file');
 
-    vm = mountComponent(Component, {
+    vm = createComponentWithStore(Component, store, {
       file: f,
+      actionComponent: 'stage-button',
     });
+
+    vm.$mount();
+
+    Vue.nextTick(done);
   });
 
   afterEach(() => {
     vm.$destroy();
+
+    resetStore(vm.$store);
   });
 
   it('renders file path', () => {
@@ -28,12 +36,8 @@ describe('Multi-file editor commit sidebar list item', () => {
     ).toBe(f.path);
   });
 
-  it('calls discardFileChanges when clicking discard button', () => {
-    spyOn(vm, 'discardFileChanges');
-
-    vm.$el.querySelector('.multi-file-discard-btn').click();
-
-    expect(vm.discardFileChanges).toHaveBeenCalled();
+  it('renders actionn button', () => {
+    expect(vm.$el.querySelector('.multi-file-discard-btn')).not.toBeNull();
   });
 
   it('opens a closed file in the editor when clicking the file path', () => {

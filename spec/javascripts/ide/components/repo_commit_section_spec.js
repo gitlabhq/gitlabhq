@@ -28,10 +28,24 @@ describe('RepoCommitSection', () => {
       },
     };
 
+    const files = [file('file1'), file('file2')].map(f =>
+      Object.assign(f, {
+        type: 'blob',
+      }),
+    );
+
     vm.$store.state.rightPanelCollapsed = false;
     vm.$store.state.currentBranch = 'master';
-    vm.$store.state.changedFiles = [file('file1'), file('file2')];
+    vm.$store.state.changedFiles = [...files];
     vm.$store.state.changedFiles.forEach(f =>
+      Object.assign(f, {
+        changed: true,
+        content: 'changedFile testing',
+      }),
+    );
+
+    vm.$store.state.stagedFiles = [{ ...files[0] }, { ...files[1] }];
+    vm.$store.state.stagedFiles.forEach(f =>
       Object.assign(f, {
         changed: true,
         content: 'testing',
@@ -94,18 +108,91 @@ describe('RepoCommitSection', () => {
       ...vm.$el.querySelectorAll('.multi-file-commit-list li'),
     ];
     const submitCommit = vm.$el.querySelector('form .btn');
+    const allFiles = vm.$store.state.changedFiles.concat(
+      vm.$store.state.stagedFiles,
+    );
 
     expect(vm.$el.querySelector('.multi-file-commit-form')).not.toBeNull();
-    expect(changedFileElements.length).toEqual(2);
+    expect(changedFileElements.length).toEqual(4);
 
     changedFileElements.forEach((changedFile, i) => {
-      expect(changedFile.textContent.trim()).toContain(
-        vm.$store.state.changedFiles[i].path,
-      );
+      expect(changedFile.textContent.trim()).toContain(allFiles[i].path);
     });
 
     expect(submitCommit.disabled).toBeTruthy();
     expect(submitCommit.querySelector('.fa-spinner.fa-spin')).toBeNull();
+  });
+
+  it('adds changed files into staged files', done => {
+    vm.$el.querySelector('.ide-staged-action-btn').click();
+
+    Vue.nextTick(() => {
+      expect(
+        vm.$el.querySelector('.ide-commit-list-container').textContent,
+      ).toContain('No changes');
+
+      done();
+    });
+  });
+
+  it('stages a single file', done => {
+    vm.$el.querySelector('.multi-file-discard-btn .btn').click();
+
+    Vue.nextTick(() => {
+      expect(
+        vm.$el
+          .querySelector('.ide-commit-list-container')
+          .querySelectorAll('li').length,
+      ).toBe(1);
+
+      done();
+    });
+  });
+
+  it('discards a single file', done => {
+    vm.$el.querySelectorAll('.multi-file-discard-btn .btn')[1].click();
+
+    Vue.nextTick(() => {
+      expect(
+        vm.$el.querySelector('.ide-commit-list-container').textContent,
+      ).not.toContain('file1');
+      expect(
+        vm.$el
+          .querySelector('.ide-commit-list-container')
+          .querySelectorAll('li').length,
+      ).toBe(1);
+
+      done();
+    });
+  });
+
+  it('removes all staged files', done => {
+    vm.$el.querySelectorAll('.ide-staged-action-btn')[1].click();
+
+    Vue.nextTick(() => {
+      expect(
+        vm.$el.querySelectorAll('.ide-commit-list-container')[1].textContent,
+      ).toContain('No changes');
+
+      done();
+    });
+  });
+
+  it('unstages a single file', done => {
+    vm.$el
+      .querySelectorAll('.multi-file-discard-btn')[2]
+      .querySelector('.btn')
+      .click();
+
+    Vue.nextTick(() => {
+      expect(
+        vm.$el
+          .querySelectorAll('.ide-commit-list-container')[1]
+          .querySelectorAll('li').length,
+      ).toBe(1);
+
+      done();
+    });
   });
 
   it('updates commitMessage in store on input', done => {

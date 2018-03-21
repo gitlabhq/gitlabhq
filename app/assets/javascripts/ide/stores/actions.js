@@ -33,6 +33,13 @@ export const setPanelCollapsedStatus = ({ commit }, { side, collapsed }) => {
   }
 };
 
+export const toggleRightPanelCollapsed = ({ dispatch, state }) => {
+  dispatch('setPanelCollapsedStatus', {
+    side: 'right',
+    collapsed: !state.rightPanelCollapsed,
+  });
+};
+
 export const setResizingStatus = ({ commit }, resizing) => {
   commit(types.SET_RESIZING_STATUS, resizing);
 };
@@ -106,6 +113,14 @@ export const scrollToTab = () => {
       tabEl.focus();
     }
   });
+};
+
+export const stageAllChanges = ({ state, commit }) => {
+  [...state.changedFiles].forEach(file => commit(types.STAGE_CHANGE, file));
+};
+
+export const unstageAllChanges = ({ state, commit }) => {
+  [...state.stagedFiles].forEach(file => commit(types.UNSTAGE_CHANGE, file));
 };
 
 export const updateViewer = ({ commit }, viewer) => {

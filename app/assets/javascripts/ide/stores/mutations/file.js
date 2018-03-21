@@ -1,4 +1,5 @@
 import * as types from '../mutation_types';
+import { findIndexOfFile, findEntry } from '../utils';
 
 export default {
   [types.SET_FILE_ACTIVE](state, { path, active }) {
@@ -73,6 +74,33 @@ export default {
   [types.REMOVE_FILE_FROM_CHANGED](state, path) {
     Object.assign(state, {
       changedFiles: state.changedFiles.filter(f => f.path !== path),
+    });
+  },
+  [types.STAGE_CHANGE](state, file) {
+    const stagedFile = findEntry(state.stagedFiles, 'blob', file.name);
+
+    Object.assign(file, {
+      staged: true,
+    });
+
+    if (stagedFile) {
+      Object.assign(stagedFile, {
+        ...file,
+      });
+    } else {
+      state.stagedFiles.push({
+        ...file,
+      });
+    }
+  },
+  [types.UNSTAGE_CHANGE](state, file) {
+    const indexOfStagedFile = findIndexOfFile(state.stagedFiles, file);
+    const changedFile = findEntry(state.changedFiles, 'blob', file.name);
+
+    state.stagedFiles.splice(indexOfStagedFile, 1);
+
+    Object.assign(changedFile, {
+      staged: false,
     });
   },
   [types.TOGGLE_FILE_CHANGED](state, { file, changed }) {

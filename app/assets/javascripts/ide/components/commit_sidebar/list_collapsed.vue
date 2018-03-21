@@ -1,18 +1,35 @@
 <script>
-  import { mapGetters } from 'vuex';
-  import icon from '~/vue_shared/components/icon.vue';
+import icon from '~/vue_shared/components/icon.vue';
 
-  export default {
-    components: {
-      icon,
+export default {
+  components: {
+    icon,
+  },
+  props: {
+    files: {
+      type: Array,
+      required: true,
     },
-    computed: {
-      ...mapGetters([
-        'addedFiles',
-        'modifiedFiles',
-      ]),
+    icon: {
+      type: String,
+      required: true,
     },
-  };
+  },
+  computed: {
+    addedFilesLength() {
+      return this.files.filter(f => f.tempFile).length;
+    },
+    modifiedFilesLength() {
+      return this.files.filter(f => !f.tempFile).length;
+    },
+    addedFilesIconClass() {
+      return this.addedFilesLength ? 'multi-file-addition' : '';
+    },
+    modifiedFilesClass() {
+      return this.modifiedFilesLength ? 'multi-file-modified' : '';
+    },
+  },
+};
 </script>
 
 <template>
@@ -20,16 +37,22 @@
     class="multi-file-commit-list-collapsed text-center"
   >
     <icon
+      v-once
+      :name="icon"
+      :size="18"
+      css-classes="append-bottom-15"
+    />
+    <icon
       name="file-addition"
       :size="18"
-      css-classes="multi-file-addition append-bottom-10"
+      :css-classes="addedFilesIconClass + 'append-bottom-10'"
     />
-    {{ addedFiles.length }}
+    {{ addedFilesLength }}
     <icon
       name="file-modified"
       :size="18"
-      css-classes="multi-file-modified prepend-top-10 append-bottom-10"
+      :css-classes="modifiedFilesClass + ' prepend-top-10 append-bottom-10'"
     />
-    {{ modifiedFiles.length }}
+    {{ modifiedFilesLength }}
   </div>
 </template>

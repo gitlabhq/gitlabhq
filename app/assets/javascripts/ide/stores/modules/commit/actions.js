@@ -131,9 +131,10 @@ export const updateFilesAfterCommit = (
     );
   });
 
-  commit(rootTypes.REMOVE_ALL_CHANGES_FILES, null, { root: true });
-
-  if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH) {
+  if (
+    state.commitAction === consts.COMMIT_TO_NEW_BRANCH &&
+    rootGetters.activeFile
+  ) {
     router.push(
       `/project/${rootState.currentProjectId}/blob/${branch}/${
         rootGetters.activeFile.path
@@ -186,7 +187,6 @@ export const commitChanges = ({
       }
 
       dispatch('setLastCommitMessage', data);
-      dispatch('updateCommitMessage', '');
 
       if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH_MR) {
         dispatch(
@@ -204,6 +204,10 @@ export const commitChanges = ({
           branch: getters.branchName,
         });
       }
+
+      commit(rootTypes.CLEAR_STAGED_CHANGES, null, { root: true });
+
+      dispatch('discardDraft');
     })
     .catch(err => {
       let errMsg = __('Error committing changes. Please try again.');
