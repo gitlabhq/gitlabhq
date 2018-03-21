@@ -330,9 +330,12 @@ ActiveRecord::Schema.define(version: 20180327101207) do
   add_index "ci_builds", ["user_id"], name: "index_ci_builds_on_user_id", using: :btree
 
   create_table "ci_builds_metadata", primary_key: "build_id", force: :cascade do |t|
+    t.integer "project_id", null: false
     t.integer "timeout"
     t.integer "timeout_source", default: 1, null: false
   end
+
+  add_index "ci_builds_metadata", ["project_id"], name: "index_ci_builds_metadata_on_project_id", using: :btree
 
   create_table "ci_group_variables", force: :cascade do |t|
     t.string "key", null: false
@@ -2035,6 +2038,7 @@ ActiveRecord::Schema.define(version: 20180327101207) do
   add_foreign_key "ci_builds", "ci_stages", column: "stage_id", name: "fk_3a9eaa254d", on_delete: :cascade
   add_foreign_key "ci_builds", "projects", name: "fk_befce0568a", on_delete: :cascade
   add_foreign_key "ci_builds_metadata", "ci_builds", column: "build_id", on_delete: :cascade
+  add_foreign_key "ci_builds_metadata", "projects", on_delete: :cascade
   add_foreign_key "ci_group_variables", "namespaces", column: "group_id", name: "fk_33ae4d58d8", on_delete: :cascade
   add_foreign_key "ci_job_artifacts", "ci_builds", column: "job_id", on_delete: :cascade
   add_foreign_key "ci_job_artifacts", "projects", on_delete: :cascade

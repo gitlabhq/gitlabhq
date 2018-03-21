@@ -9,8 +9,11 @@ module Ci
     self.table_name = 'ci_builds_metadata'
 
     belongs_to :build, class_name: 'Ci::Build'
+    belongs_to :project
 
     chronic_duration_attr_reader :timeout_human_readable, :timeout
+
+    after_initialize :set_project_id
 
     enum timeout_source: {
         unknown_timeout_source: 1,
@@ -26,6 +29,14 @@ module Ci
       timeout_source = timeout < project_timeout ? :runner_timeout_source : :project_timeout_source
 
       update_attributes(timeout: timeout, timeout_source: timeout_source)
+    end
+
+    private
+
+    def set_project_id
+      return unless self.project_id.nil?
+
+      self.project_id = build&.project&.id
     end
   end
 end
