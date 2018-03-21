@@ -2,7 +2,7 @@ import Vue from 'vue';
 import promoteMilestoneModal from '~/pages/milestones/shared/components/promote_milestone_modal.vue';
 import eventHub from '~/pages/milestones/shared/event_hub';
 import axios from '~/lib/utils/axios_utils';
-import mountComponent from '../../../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('Promote milestone modal', () => {
   let vm;

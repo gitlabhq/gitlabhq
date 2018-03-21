@@ -221,7 +221,7 @@ gem 'babosa', '~> 1.0.2'
 gem 'loofah', '~> 2.0.3'
 
 # Working with license
-gem 'licensee', '~> 8.7.0'
+gem 'licensee', '~> 8.9'
 
 # Protect against bruteforcing
 gem 'rack-attack', '~> 4.4.1'
@@ -268,7 +268,7 @@ gem 'premailer-rails', '~> 1.9.7'
 gem 'ruby_parser', '~> 3.8', require: false
 gem 'rails-i18n', '~> 4.0.9'
 gem 'gettext_i18n_rails', '~> 1.8.0'
-gem 'gettext_i18n_rails_js', '~> 1.2.0'
+gem 'gettext_i18n_rails_js', '~> 1.3'
 gem 'gettext', '~> 3.2.2', require: false, group: :development
 
 gem 'batch-loader', '~> 1.2.1'
