@@ -58,10 +58,6 @@ module Gitlab
       postgresql? && version.to_f >= 9.4
     end
 
-    def self.pg_stat_wal_receiver_supported?
-      postgresql? && version.to_f >= 9.6
-    end
-
     # map some of the function names that changed between PostgreSQL 9 and 10
     # https://wiki.postgresql.org/wiki/New_in_postgres_10
     def self.pg_wal_lsn_diff
@@ -110,10 +106,6 @@ module Gitlab
 
     def self.random
       postgresql? ? "RANDOM()" : "RAND()"
-    end
-
-    def self.minute_interval(value)
-      postgresql? ? "#{value} * '1 minute'::interval" : "INTERVAL #{value} MINUTE"
     end
 
     def self.true_value
@@ -207,14 +199,6 @@ module Gitlab
           ConnectionSpecification::Resolver.new(config).spec(env.to_sym)
 
       ActiveRecord::ConnectionAdapters::ConnectionPool.new(spec)
-    end
-
-    # Disables prepared statements for the current database connection.
-    def self.disable_prepared_statements
-      config = ActiveRecord::Base.configurations[Rails.env]
-      config['prepared_statements'] = false
-
-      ActiveRecord::Base.establish_connection(config)
     end
 
     def self.connection
