@@ -119,8 +119,8 @@ module Gitlab
             seeds = subject.stage_seeds(pipeline)
 
             expect(seeds.size).to eq 2
-            expect(seeds.first.stage_attributes[:name]).to eq 'test'
-            expect(seeds.second.stage_attributes[:name]).to eq 'deploy'
+            expect(seeds.first.attributes[:name]).to eq 'test'
+            expect(seeds.second.attributes[:name]).to eq 'deploy'
             expect(seeds.first.builds_attributes.dig(0, :name)).to eq 'rspec'
             expect(seeds.first.builds_attributes.dig(1, :name)).to eq 'spinach'
             expect(seeds.second.builds_attributes.dig(0, :name)).to eq 'production'
@@ -141,7 +141,7 @@ module Gitlab
             seeds = subject.stage_seeds(pipeline)
 
             expect(seeds.size).to eq 1
-            expect(seeds.first.stage_attributes[:name]).to eq 'test'
+            expect(seeds.first.attributes[:name]).to eq 'test'
             expect(seeds.first.builds_attributes.dig(0, :name)).to eq 'spinach'
           end
         end
@@ -160,7 +160,7 @@ module Gitlab
             seeds = subject.stage_seeds(pipeline)
 
             expect(seeds.size).to eq 1
-            expect(seeds.first.stage_attributes[:name]).to eq 'test'
+            expect(seeds.first.attributes[:name]).to eq 'test'
             expect(seeds.first.builds_attributes.dig(0, :name)).to eq 'spinach'
           end
         end
