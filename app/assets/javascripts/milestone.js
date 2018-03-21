@@ -1,5 +1,6 @@
 import axios from './lib/utils/axios_utils';
 import flash from './flash';
+import Popover from './shared/popover';
 
 export default class Milestone {
   constructor() {
@@ -49,31 +50,10 @@ export default class Milestone {
 
     if (!deprecationMesssage) return;
 
-    const deprecationMesssageTemplate = deprecationMesssage.querySelector('.milestone-deprecation-message-template');
+    const deprecationMesssageTemplate = deprecationMesssage.querySelector('.milestone-deprecation-message-template').innerHTML;
     const popoverLink = deprecationMesssage.querySelector('.popover-link');
-    const $popoverLink = $(popoverLink);
 
-    $popoverLink
-      .popover({
-        html: true,
-        placement: 'bottom',
-        content: deprecationMesssageTemplate.innerHTML,
-        trigger: 'hover',
-      })
-      .on('inserted.bs.popover', () => {
-        const $popover = $popoverLink.siblings('.popover').first();
-        const $popoverContent = $('.popover-content', $popover);
-
-        $popoverContent.on('mouseleave', () => {
-          $popoverContent.off('mouseleave');
-          $popoverLink.popover('hide');
-        });
-      })
-      .on('hidden.bs.popover', (event) => {
-        $(event.target).data('bs.popover').inState.click = false;
-      })
-      .on('mouseleave', () => {
-
-      });
+    const popover = new Popover(popoverLink, deprecationMesssageTemplate);
+    popover.init();
   }
 }
