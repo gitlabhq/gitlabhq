@@ -3,7 +3,10 @@ module Gitlab
     module Pipeline
       module Seed
         class Stage < Seed::Base
-          delegate :size, to: :@seeds
+          attr_reader :pipeline, :seeds
+
+          delegate :size, to: :seeds
+          delegate :dig, to: :seeds
 
           def initialize(pipeline, name, builds)
             @pipeline = pipeline
@@ -22,12 +25,6 @@ module Gitlab
             { name: @name,
               pipeline: @pipeline,
               project: @pipeline.project }
-          end
-
-          # TODO decouple
-          #
-          def builds_attributes
-            @seeds.map(&:attributes)
           end
 
           def to_resource

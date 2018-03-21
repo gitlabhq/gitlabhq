@@ -3,6 +3,10 @@ module Gitlab
     module Pipeline
       module Seed
         class Build < Seed::Base
+          attr_reader :pipeline, :attributes
+
+          delegate :dig, to: :attributes
+
           def initialize(pipeline, attributes)
             @pipeline = pipeline
             @attributes = attributes

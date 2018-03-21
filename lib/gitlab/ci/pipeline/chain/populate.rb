@@ -9,12 +9,13 @@ module Gitlab
 
           def perform!
             ##
-            # Populate pipeline with seeds block.
-            #
-            # It comes from a block argument to CreatePipelineService#execute.
+            # Populate pipeline with block `CreatePipelineService#execute`.
             #
             @command.seeds_block&.call(pipeline)
 
+            ##
+            # Populate pipeline with all stages and builds.
+            #
             pipeline.stage_seeds.each do |seed|
               seed.user = current_user
 
