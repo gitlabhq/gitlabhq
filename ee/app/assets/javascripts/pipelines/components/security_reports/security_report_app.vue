@@ -56,7 +56,10 @@
       )"
       :loading-text="translateText('dependency scanning').loading"
       :error-text="translateText('dependency scanning').error"
-      :success-text="depedencyScanningText(securityReports.dependencyScanning.newIssues, securityReports.dependencyScanning.resolvedIssues)"
+      :success-text="depedencyScanningText(
+        securityReports.dependencyScanning.newIssues,
+        securityReports.dependencyScanning.resolvedIssues,
+      )"
       :unresolved-issues="securityReports.dependencyScanning.newIssues"
       :resolved-issues="securityReports.dependencyScanning.resolvedIssues"
       :all-issues="securityReports.dependencyScanning.allIssues"

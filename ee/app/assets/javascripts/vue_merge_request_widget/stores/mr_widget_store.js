@@ -97,7 +97,7 @@ export default class MergeRequestStore extends CEMergeRequestStore {
   }
 
   initDependencyScanningReport(data) {
-    this.dependencyScanning = data.dependencyScanning;
+    this.dependencyScanning = data.dependency_scanning;
     this.dependencyScanningReport = {
       newIssues: [],
       resolvedIssues: [],

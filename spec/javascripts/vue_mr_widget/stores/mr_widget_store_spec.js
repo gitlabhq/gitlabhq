@@ -118,6 +118,26 @@ describe('MergeRequestStore', () => {
     });
   });
 
+  describe('setDependencyScanningReport', () => {
+    it('should set security issues with head', () => {
+      store.setDependencyScanningReport({ head: sastIssues, headBlobPath: 'path' });
+      expect(store.dependencyScanningReport.newIssues).toEqual(parsedSastIssuesStore);
+    });
+
+    it('should set security issues with head and base', () => {
+      store.setDependencyScanningReport({
+        head: sastIssues,
+        headBlobPath: 'path',
+        base: sastIssuesBase,
+        baseBlobPath: 'path',
+      });
+
+      expect(store.dependencyScanningReport.newIssues).toEqual(parsedSastIssuesHead);
+      expect(store.dependencyScanningReport.resolvedIssues).toEqual(parsedSastBaseStore);
+      expect(store.dependencyScanningReport.allIssues).toEqual(allIssuesParsed);
+    });
+  });
+
   describe('isNothingToMergeState', () => {
     it('returns true when nothingToMerge', () => {
       store.state = stateKey.nothingToMerge;
