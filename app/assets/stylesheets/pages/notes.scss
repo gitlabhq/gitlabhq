@@ -782,3 +782,35 @@ ul.notes {
 .line-resolve-text {
   vertical-align: middle;
 }
+
+// Vue refactored diff discussion adjustments
+.files {
+  .diff-discussions {
+    .note-discussion.timeline-entry {
+      padding-left: 0;
+
+      & > .timeline-entry-inner {
+        padding: 0;
+
+        & > .timeline-content {
+          margin-left: 0;
+        }
+
+        & > .timeline-icon {
+          display: none;
+        }
+      }
+      .discussion-body {
+        padding-top: 0;
+
+        .discussion-wrapper {
+          border-color: transparent;
+        }
+      }
+    }
+  }
+
+  .diff-comment-form {
+    display: block;
+  }
+}
