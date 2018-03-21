@@ -7,9 +7,9 @@ module Geo
 
       if Gitlab::Geo.primary?
         fetch_secondary_geo_nodes_metrics
-      else
-        fetch_current_geo_node_metrics
       end
+
+      fetch_current_geo_node_metrics
     end
 
     private
