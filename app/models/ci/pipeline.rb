@@ -6,6 +6,7 @@ module Ci
     include AfterCommitQueue
     include Presentable
     include Gitlab::OptimisticLocking
+    include Gitlab::Utils::StrongMemoize
 
     prepend ::EE::Ci::Pipeline
 
@@ -487,6 +488,22 @@ module Ci
         when 'skipped' then skip
         when 'manual' then block
         end
+      end
+    end
+
+    # TODO specs
+    #
+    def protected_ref?
+      strong_memoize(:protected_ref) do
+        project.protected_for?(ref)
+      end
+    end
+
+    # TODO specs
+    #
+    def legacy_trigger
+      strong_memoize(:legacy_trigger) do
+        trigger_requests.first
       end
     end
 

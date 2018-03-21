@@ -3,43 +3,35 @@ module Gitlab
     module Pipeline
       module Seed
         class Stage < Seed::Base
-          include ::Gitlab::Utils::StrongMemoize
-
           attr_reader :pipeline
 
           delegate :project, to: :pipeline
           delegate :size, to: :@builds
 
-          def initialize(pipeline, stage, builds)
+          def initialize(pipeline, name, builds)
             @pipeline = pipeline
-            @stage = stage            # stage name
-            @builds = builds.to_a.dup # builds array of hashes
+            @name = name
+
+            @builds = builds.map do |attributes|
+              Seed::Build.new(pipeline, attributes)
+            end
           end
 
           def user=(current_user)
-            @builds.map! do |attributes|
-              attributes.merge(user: current_user)
-            end
+            @builds.each { |seed| seed.user = current_user }
           end
 
-          def stage_attributes
-            { name: @stage, project: project }
+          def attributes
+            { name: @name, project: project }
           end
 
+          # TODO decouple from Seed::Build
           def builds_attributes
-            trigger = pipeline.trigger_requests.first
-
-            @builds.map do |attributes|
-              attributes.merge(project: project,
-                               ref: pipeline.ref,
-                               tag: pipeline.tag,
-                               trigger_request: trigger,
-                               protected: protected_ref?)
-            end
+            @builds.map(&:attributes)
           end
 
           def create!
-            pipeline.stages.build(stage_attributes).tap do |stage|
+            pipeline.stages.build(attributes).tap do |stage|
               builds_attributes.each do |build_attributes|
                 stage.builds.build(build_attributes).tap do |build|
                   build.pipeline = pipeline
@@ -57,9 +49,6 @@ module Gitlab
           private
 
           def protected_ref?
-            strong_memoize(:protected_ref) do
-              project.protected_for?(pipeline.ref)
-            end
           end
         end
       end
