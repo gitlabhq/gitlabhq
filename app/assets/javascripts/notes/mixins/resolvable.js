@@ -35,9 +35,13 @@ export default {
   methods: {
     resolveHandler(resolvedState = false) {
       this.isResolving = true;
-      const endpoint = this.note.resolve_path || `${this.note.path}/resolve`;
       const isResolved = this.discussionResolved || resolvedState;
       const discussion = this.resolveAsThread;
+      let endpoint = `${this.note.path}/resolve`;
+
+      if (discussion) {
+        endpoint = this.note.resolve_path;
+      }
 
       this.toggleResolveNote({ endpoint, isResolved, discussion })
         .then(() => {
