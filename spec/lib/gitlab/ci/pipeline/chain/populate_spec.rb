@@ -42,6 +42,32 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
     end
   end
 
+  context 'when pipeline is empty' do
+    let(:config) do
+      { rspec: {
+          script: 'ls',
+          only: ['something']
+      } }
+    end
+
+    let(:pipeline) do
+      build(:ci_pipeline, project: project, config: config)
+    end
+
+    before do
+      step.perform!
+    end
+
+    it 'breaks the chain' do
+      expect(step.break?).to be true
+    end
+
+    it 'appends an error about missing stages' do
+      expect(pipeline.errors.to_a)
+        .to include 'No stages / jobs for this pipeline.'
+    end
+  end
+
   context 'when pipeline has validation errors' do
     let(:pipeline) do
       build(:ci_pipeline, project: project, ref: nil)

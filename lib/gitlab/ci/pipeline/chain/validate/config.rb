@@ -18,10 +18,6 @@ module Gitlab
 
                 return error(@pipeline.yaml_errors)
               end
-
-              unless @pipeline.has_stage_seeds?
-                return error('No stages / jobs for this pipeline.')
-              end
             end
 
             def break?
