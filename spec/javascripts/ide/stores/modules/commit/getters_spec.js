@@ -1,6 +1,6 @@
-import commitState from 'ee/ide/stores/modules/commit/state';
-import * as consts from 'ee/ide/stores/modules/commit/constants';
-import * as getters from 'ee/ide/stores/modules/commit/getters';
+import commitState from '~/ide/stores/modules/commit/state';
+import * as consts from '~/ide/stores/modules/commit/constants';
+import * as getters from '~/ide/stores/modules/commit/getters';
 
 describe('IDE commit module getters', () => {
   let state;
@@ -38,26 +38,34 @@ describe('IDE commit module getters', () => {
     };
 
     it('returns false when discardDraftButtonDisabled is false & changedFiles is not empty', () => {
-      expect(getters.commitButtonDisabled(state, localGetters, rootState)).toBeFalsy();
+      expect(
+        getters.commitButtonDisabled(state, localGetters, rootState),
+      ).toBeFalsy();
     });
 
     it('returns true when discardDraftButtonDisabled is false & changedFiles is empty', () => {
       rootState.changedFiles.length = 0;
 
-      expect(getters.commitButtonDisabled(state, localGetters, rootState)).toBeTruthy();
+      expect(
+        getters.commitButtonDisabled(state, localGetters, rootState),
+      ).toBeTruthy();
     });
 
     it('returns true when discardDraftButtonDisabled is true', () => {
       localGetters.discardDraftButtonDisabled = true;
 
-      expect(getters.commitButtonDisabled(state, localGetters, rootState)).toBeTruthy();
+      expect(
+        getters.commitButtonDisabled(state, localGetters, rootState),
+      ).toBeTruthy();
     });
 
     it('returns true when discardDraftButtonDisabled is false & changedFiles is not empty', () => {
       localGetters.discardDraftButtonDisabled = false;
       rootState.changedFiles.length = 0;
 
-      expect(getters.commitButtonDisabled(state, localGetters, rootState)).toBeTruthy();
+      expect(
+        getters.commitButtonDisabled(state, localGetters, rootState),
+      ).toBeTruthy();
     });
   });
 
@@ -65,7 +73,9 @@ describe('IDE commit module getters', () => {
     it('includes username, currentBranchId, patch & random number', () => {
       gon.current_username = 'username';
 
-      const branch = getters.newBranchName(state, null, { currentBranchId: 'testing' });
+      const branch = getters.newBranchName(state, null, {
+        currentBranchId: 'testing',
+      });
 
       expect(branch).toMatch(/username-testing-patch-\d{5}$/);
     });
@@ -89,7 +99,7 @@ describe('IDE commit module getters', () => {
       expect(getters.branchName(state, null, rootState)).toBe('master');
     });
 
-    ['COMMIT_TO_NEW_BRANCH', 'COMMIT_TO_NEW_BRANCH_MR'].forEach((type) => {
+    ['COMMIT_TO_NEW_BRANCH', 'COMMIT_TO_NEW_BRANCH_MR'].forEach(type => {
       describe(type, () => {
         beforeEach(() => {
           Object.assign(state, {
@@ -98,7 +108,9 @@ describe('IDE commit module getters', () => {
         });
 
         it('uses newBranchName when not empty', () => {
-          expect(getters.branchName(state, localGetters, rootState)).toBe('state-newBranchName');
+          expect(getters.branchName(state, localGetters, rootState)).toBe(
+            'state-newBranchName',
+          );
         });
 
         it('uses getters newBranchName when state newBranchName is empty', () => {
@@ -106,7 +118,9 @@ describe('IDE commit module getters', () => {
             newBranchName: '',
           });
 
-          expect(getters.branchName(state, localGetters, rootState)).toBe('newBranchName');
+          expect(getters.branchName(state, localGetters, rootState)).toBe(
+            'newBranchName',
+          );
         });
       });
     });

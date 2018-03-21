@@ -1,13 +1,13 @@
 /* global monaco */
-import eventHub from 'ee/ide/eventhub';
-import monacoLoader from 'ee/ide/monaco_loader';
-import ModelManager from 'ee/ide/lib/common/model_manager';
+import eventHub from '~/ide/eventhub';
+import monacoLoader from '~/ide/monaco_loader';
+import ModelManager from '~/ide/lib/common/model_manager';
 import { file } from '../../helpers';
 
 describe('Multi-file editor library model manager', () => {
   let instance;
 
-  beforeEach((done) => {
+  beforeEach(done => {
     monacoLoader(['vs/editor/editor.main'], () => {
       instance = new ModelManager(monaco);
 
@@ -55,7 +55,10 @@ describe('Multi-file editor library model manager', () => {
 
       instance.addModel(f);
 
-      expect(eventHub.$on).toHaveBeenCalledWith(`editor.update.model.dispose.${f.path}`, jasmine.anything());
+      expect(eventHub.$on).toHaveBeenCalledWith(
+        `editor.update.model.dispose.${f.path}`,
+        jasmine.anything(),
+      );
     });
   });
 
@@ -99,7 +102,10 @@ describe('Multi-file editor library model manager', () => {
 
       instance.removeCachedModel(f);
 
-      expect(eventHub.$off).toHaveBeenCalledWith(`editor.update.model.dispose.${f.path}`, jasmine.anything());
+      expect(eventHub.$off).toHaveBeenCalledWith(
+        `editor.update.model.dispose.${f.path}`,
+        jasmine.anything(),
+      );
     });
   });
 

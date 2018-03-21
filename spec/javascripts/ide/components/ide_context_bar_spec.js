@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from 'ee/ide/stores';
-import ideContextBar from 'ee/ide/components/ide_context_bar.vue';
+import store from '~/ide/stores';
+import ideContextBar from '~/ide/components/ide_context_bar.vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 
 describe('Multi-file editor right context bar', () => {
@@ -24,7 +24,7 @@ describe('Multi-file editor right context bar', () => {
   });
 
   describe('collapsed', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       vm.$store.state.rightPanelCollapsed = true;
 
       Vue.nextTick(done);

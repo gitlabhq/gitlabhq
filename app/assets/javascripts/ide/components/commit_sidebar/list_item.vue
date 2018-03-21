@@ -1,7 +1,7 @@
 <script>
   import { mapActions } from 'vuex';
-  import router from 'ee/ide/ide_router';
   import icon from '~/vue_shared/components/icon.vue';
+  import router from '../../ide_router';
 
   export default {
     components: {

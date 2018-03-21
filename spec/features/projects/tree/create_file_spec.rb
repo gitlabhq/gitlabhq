@@ -1,18 +1,14 @@
 require 'spec_helper'
 
-feature 'Multi-file editor new directory', :js do
+feature 'Multi-file editor new file', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 
   before do
-    stub_licensed_features(ide: true)
-
     project.add_master(user)
     sign_in(user)
 
-    set_cookie('new_repo', 'true')
-
-    visit project_tree_path(project, :master)
+    visit project_path(project)
 
     wait_for_requests
 
@@ -25,22 +21,12 @@ feature 'Multi-file editor new directory', :js do
     set_cookie('new_repo', 'false')
   end
 
-  it 'creates directory in current directory' do
-    find('.add-to-tree').click
-
-    click_link('New directory')
-
-    page.within('.modal') do
-      find('.form-control').set('folder name')
-
-      click_button('Create directory')
-    end
-
+  it 'creates file in current directory' do
     find('.add-to-tree').click
 
     click_link('New file')
 
-    page.within('.modal-dialog') do
+    page.within('.modal') do
       find('.form-control').set('file name')
 
       click_button('Create file')
@@ -52,6 +38,6 @@ feature 'Multi-file editor new directory', :js do
 
     click_button('Commit')
 
-    expect(page).to have_content('folder name')
+    expect(page).to have_content('file name')
   end
 end

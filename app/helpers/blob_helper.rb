@@ -33,6 +33,17 @@ module BlobHelper
                     ref)
   end
 
+  def ide_edit_button(project = @project, ref = @ref, path = @path, options = {})
+    return unless blob = readable_blob(options, path, project, ref)
+
+    edit_button_tag(blob,
+                    'btn btn-default',
+                    _('Web IDE'),
+                    ide_edit_path(project, ref, path, options),
+                    project,
+                    ref)
+  end
+
   def modify_file_button(project = @project, ref = @ref, path = @path, label:, action:, btn_class:, modal_type:)
     return unless current_user
 

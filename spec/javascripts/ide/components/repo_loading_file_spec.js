@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from 'ee/ide/stores';
-import repoLoadingFile from 'ee/ide/components/repo_loading_file.vue';
+import store from '~/ide/stores';
+import repoLoadingFile from '~/ide/components/repo_loading_file.vue';
 import { resetStore } from '../helpers';
 
 describe('RepoLoadingFile', () => {
@@ -22,7 +22,7 @@ describe('RepoLoadingFile', () => {
   }
 
   function assertColumns(columns) {
-    columns.forEach((column) => {
+    columns.forEach(column => {
       const container = column.querySelector('.animation-container');
       const lines = [...container.querySelectorAll(':scope > div')];
 
@@ -46,7 +46,7 @@ describe('RepoLoadingFile', () => {
     assertColumns(columns);
   });
 
-  it('renders 1 column of animated LoC if isMini', (done) => {
+  it('renders 1 column of animated LoC if isMini', done => {
     vm = createComponent();
     vm.$store.state.leftPanelCollapsed = true;
     vm.$store.state.openFiles.push('test');

@@ -1,6 +1,6 @@
 import * as urlUtils from '~/lib/utils/url_utility';
-import store from 'ee/ide/stores';
-import router from 'ee/ide/ide_router';
+import store from '~/ide/stores';
+import router from '~/ide/ide_router';
 import { resetStore, file } from '../helpers';
 
 describe('Multi-file store actions', () => {

@@ -1,4 +1,4 @@
-import * as utils from 'ee/ide/stores/utils';
+import * as utils from '~/ide/stores/utils';
 
 describe('Multi-file store utils', () => {
   describe('setPageTitle', () => {
@@ -13,11 +13,14 @@ describe('Multi-file store utils', () => {
     let localState;
 
     beforeEach(() => {
-      localState = [{
-        path: '1',
-      }, {
-        path: '2',
-      }];
+      localState = [
+        {
+          path: '1',
+        },
+        {
+          path: '2',
+        },
+      ];
     });
 
     it('finds in the index of an entry by path', () => {
@@ -34,13 +37,16 @@ describe('Multi-file store utils', () => {
 
     beforeEach(() => {
       localState = {
-        tree: [{
-          type: 'tree',
-          name: 'test',
-        }, {
-          type: 'blob',
-          name: 'file',
-        }],
+        tree: [
+          {
+            type: 'tree',
+            name: 'test',
+          },
+          {
+            type: 'blob',
+            name: 'file',
+          },
+        ],
       };
     });
 

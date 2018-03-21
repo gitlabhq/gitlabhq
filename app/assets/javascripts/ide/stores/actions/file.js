@@ -1,6 +1,6 @@
 import { normalizeHeaders } from '~/lib/utils/common_utils';
 import flash from '~/flash';
-import eventHub from 'ee/ide/eventhub';
+import eventHub from '../../eventhub';
 import service from '../../services';
 import * as types from '../mutation_types';
 import router from '../../ide_router';
