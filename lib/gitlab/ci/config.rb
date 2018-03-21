@@ -4,6 +4,7 @@ module Gitlab
     # Base GitLab CI Configuration facade
     #
     class Config
+      # EE would override this and utilize opts argument
       def initialize(config, opts = {})
         @config = Loader.new(config).load!
 

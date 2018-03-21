@@ -1,5 +1,5 @@
 class Projects::Ci::LintsController < Projects::ApplicationController
-  before_action :ensure_user_access
+  before_action :authorize_create_pipeline!
 
   def show
   end
@@ -23,9 +23,5 @@ class Projects::Ci::LintsController < Projects::ApplicationController
 
   def yaml_processor_options
     { project: @project, sha: project.repository.commit.sha }
-  end
-
-  def ensure_user_access
-    return access_denied! unless can?(current_user, :create_pipeline, @project)
   end
 end
