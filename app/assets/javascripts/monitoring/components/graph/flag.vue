@@ -160,7 +160,7 @@ export default {
         </div>
       </div>
       <div class="popover-content">
-        <table>
+        <table class="prometheus-table">
           <tr
             v-for="(series, index) in timeSeries"
             :key="index"
