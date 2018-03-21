@@ -194,7 +194,7 @@ describe API::Runners do
                                                  run_untagged: 'false',
                                                  locked: 'true',
                                                  access_level: 'ref_protected',
-                                                 maximum_timeout: 1234 )
+                                                 maximum_timeout: 1234)
           shared_runner.reload
 
           expect(response).to have_gitlab_http_status(200)
