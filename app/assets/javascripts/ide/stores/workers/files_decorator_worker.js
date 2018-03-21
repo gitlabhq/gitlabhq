@@ -1,10 +1,14 @@
-import {
-  decorateData,
-  sortTree,
-} from '../utils';
+import { decorateData, sortTree } from '../utils';
 
-self.addEventListener('message', (e) => {
-  const { data, projectId, branchId, tempFile = false, content = '', base64 = false } = e.data;
+self.addEventListener('message', e => {
+  const {
+    data,
+    projectId,
+    branchId,
+    tempFile = false,
+    content = '',
+    base64 = false,
+  } = e.data;
 
   const treeList = [];
   let file;
@@ -15,7 +19,9 @@ self.addEventListener('message', (e) => {
     if (pathSplit.length > 0) {
       pathSplit.reduce((pathAcc, folderName) => {
         const parentFolder = acc[pathAcc[pathAcc.length - 1]];
-        const folderPath = `${(parentFolder ? `${parentFolder.path}/` : '')}${folderName}`;
+        const folderPath = `${
+          parentFolder ? `${parentFolder.path}/` : ''
+        }${folderName}`;
         const foundEntry = acc[folderPath];
 
         if (!foundEntry) {
@@ -25,9 +31,11 @@ self.addEventListener('message', (e) => {
             id: folderPath,
             name: folderName,
             path: folderPath,
-            url: `/${projectId}/tree/${branchId}/${folderPath}`,
+            url: `/${projectId}/tree/${branchId}/${folderPath}/`,
             type: 'tree',
-            parentTreeUrl: parentFolder ? parentFolder.url : `/${projectId}/tree/${branchId}/`,
+            parentTreeUrl: parentFolder
+              ? parentFolder.url
+              : `/${projectId}/tree/${branchId}/`,
             tempFile,
             changed: tempFile,
             opened: tempFile,
@@ -62,7 +70,9 @@ self.addEventListener('message', (e) => {
         path,
         url: `/${projectId}/blob/${branchId}/${path}`,
         type: 'blob',
-        parentTreeUrl: fileFolder ? fileFolder.url : `/${projectId}/blob/${branchId}`,
+        parentTreeUrl: fileFolder
+          ? fileFolder.url
+          : `/${projectId}/blob/${branchId}`,
         tempFile,
         changed: tempFile,
         content,
