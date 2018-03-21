@@ -13,7 +13,7 @@ describe('IDE stage file button', () => {
     f = file();
 
     vm = createComponentWithStore(Component, store, {
-      file: f,
+      path: f.path,
     });
 
     spyOn(vm, 'stageChange');
@@ -35,12 +35,12 @@ describe('IDE stage file button', () => {
   it('calls store with stage button', () => {
     vm.$el.querySelectorAll('.btn')[0].click();
 
-    expect(vm.stageChange).toHaveBeenCalledWith(f);
+    expect(vm.stageChange).toHaveBeenCalledWith(f.path);
   });
 
   it('calls store with discard button', () => {
     vm.$el.querySelectorAll('.btn')[1].click();
 
-    expect(vm.discardFileChanges).toHaveBeenCalledWith(f);
+    expect(vm.discardFileChanges).toHaveBeenCalledWith(f.path);
   });
 });

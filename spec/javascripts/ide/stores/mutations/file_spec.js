@@ -8,7 +8,10 @@ describe('Multi-file store file mutations', () => {
 
   beforeEach(() => {
     localState = state();
-    localFile = file();
+    localFile = {
+      ...file(),
+      type: 'blob',
+    };
 
     localState.entries[localFile.path] = localFile;
   });
@@ -146,37 +149,18 @@ describe('Multi-file store file mutations', () => {
 
   describe('STAGE_CHANGE', () => {
     it('adds file into stagedFiles array', () => {
-      const f = file();
-
-      mutations.STAGE_CHANGE(localState, f);
+      mutations.STAGE_CHANGE(localState, localFile.path);
 
       expect(localState.stagedFiles.length).toBe(1);
-      expect(localState.stagedFiles[0]).toEqual(f);
-    });
-
-    it('updates changedFiles file to staged', () => {
-      const f = {
-        ...file(),
-        type: 'blob',
-        staged: false,
-      };
-
-      localState.changedFiles.push(f);
-
-      mutations.STAGE_CHANGE(localState, f);
-
-      expect(localState.changedFiles[0].staged).toBeTruthy();
+      expect(localState.stagedFiles[0]).toEqual(localFile);
     });
 
     it('updates stagedFile if it is already staged', () => {
-      const f = file();
-      f.type = 'blob';
+      mutations.STAGE_CHANGE(localState, localFile.path);
 
-      mutations.STAGE_CHANGE(localState, f);
+      localFile.raw = 'testing 123';
 
-      f.raw = 'testing 123';
-
-      mutations.STAGE_CHANGE(localState, f);
+      mutations.STAGE_CHANGE(localState, localFile.path);
 
       expect(localState.stagedFiles.length).toBe(1);
       expect(localState.stagedFiles[0].raw).toEqual('testing 123');
@@ -195,18 +179,14 @@ describe('Multi-file store file mutations', () => {
 
       localState.stagedFiles.push(f);
       localState.changedFiles.push(f);
+      localState.entries[f.path] = f;
     });
 
     it('removes from stagedFiles array', () => {
-      mutations.UNSTAGE_CHANGE(localState, f);
+      mutations.UNSTAGE_CHANGE(localState, f.path);
 
       expect(localState.stagedFiles.length).toBe(0);
-    });
-
-    it('updates changedFiles array file to unstaged', () => {
-      mutations.UNSTAGE_CHANGE(localState, f);
-
-      expect(localState.changedFiles[0].staged).toBeFalsy();
+      expect(localState.changedFiles.length).toBe(1);
     });
   });
 

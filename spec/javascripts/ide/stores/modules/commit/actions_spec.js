@@ -212,14 +212,14 @@ describe('IDE commit module actions', () => {
           },
         },
       };
-      store.state.changedFiles.push(f, {
+      store.state.stagedFiles.push(f, {
         ...file('changedFile2'),
         changed: true,
       });
-      store.state.openFiles = store.state.changedFiles;
+      store.state.openFiles = store.state.stagedFiles;
 
-      store.state.changedFiles.forEach(changedFile => {
-        store.state.entries[changedFile.path] = changedFile;
+      store.state.stagedFiles.forEach(stagedFile => {
+        store.state.entries[stagedFile.path] = stagedFile;
       });
     });
 
@@ -248,19 +248,6 @@ describe('IDE commit module actions', () => {
           store.state.openFiles.forEach(entry => {
             expect(entry.changed).toBeFalsy();
           });
-        })
-        .then(done)
-        .catch(done.fail);
-    });
-
-    it('removes all changed files', done => {
-      store
-        .dispatch('commit/updateFilesAfterCommit', {
-          data,
-          branch,
-        })
-        .then(() => {
-          expect(store.state.changedFiles.length).toBe(0);
         })
         .then(done)
         .catch(done.fail);
@@ -301,7 +288,7 @@ describe('IDE commit module actions', () => {
         .then(() => {
           expect(eventHub.$emit).toHaveBeenCalledWith(
             `editor.update.model.content.${f.path}`,
-            f.content,
+            { content: f.content, changed: false },
           );
         })
         .then(done)
@@ -483,6 +470,16 @@ describe('IDE commit module actions', () => {
 
             done();
           })
+          .catch(done.fail);
+      });
+
+      it('removes all staged files', done => {
+        store
+          .dispatch('commit/commitChanges')
+          .then(() => {
+            expect(store.state.stagedFiles.length).toBe(0);
+          })
+          .then(done)
           .catch(done.fail);
       });
     });

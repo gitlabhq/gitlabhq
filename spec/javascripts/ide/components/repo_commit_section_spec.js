@@ -52,6 +52,10 @@ describe('RepoCommitSection', () => {
       }),
     );
 
+    vm.$store.state.changedFiles.forEach(f => {
+      vm.$store.state.entries[f.path] = f;
+    });
+
     return vm.$mount();
   }
 

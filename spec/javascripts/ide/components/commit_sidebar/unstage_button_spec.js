@@ -13,7 +13,7 @@ describe('IDE unstage file button', () => {
     f = file();
 
     vm = createComponentWithStore(Component, store, {
-      file: f,
+      path: f.path,
     });
 
     spyOn(vm, 'unstageChange');
@@ -34,6 +34,6 @@ describe('IDE unstage file button', () => {
   it('calls store with unnstage button', () => {
     vm.$el.querySelector('.btn').click();
 
-    expect(vm.unstageChange).toHaveBeenCalledWith(f);
+    expect(vm.unstageChange).toHaveBeenCalledWith(f.path);
   });
 });
