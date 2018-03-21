@@ -21,15 +21,19 @@ module Gitlab
               pipeline.stages << seed.to_resource
             end
 
+            if pipeline.stages.none?
+              return error('No stages / jobs for this pipeline.')
+            end
+
             if pipeline.invalid?
-              error('Failed to build the pipeline!')
+              return error('Failed to build the pipeline!')
             end
 
             raise Populate::PopulateError if pipeline.persisted?
           end
 
           def break?
-            pipeline.invalid?
+            pipeline.errors.any?
           end
         end
       end

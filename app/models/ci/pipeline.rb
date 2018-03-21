@@ -365,16 +365,8 @@ module Ci
       @stage_seeds ||= config_processor.stage_seeds(self)
     end
 
-    def seeds_size
-      @seeds_size ||= stage_seeds.sum(&:size)
-    end
-
     def has_kubernetes_active?
       project.deployment_platform&.active?
-    end
-
-    def has_stage_seeds?
-      stage_seeds.any?
     end
 
     def has_warnings?

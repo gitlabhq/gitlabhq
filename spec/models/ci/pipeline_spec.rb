@@ -253,14 +253,6 @@ describe Ci::Pipeline, :mailer do
       end
     end
 
-    describe '#seeds_size' do
-      let(:pipeline) { build(:ci_pipeline_with_one_job) }
-
-      it 'returns number of jobs in stage seeds' do
-        expect(pipeline.seeds_size).to eq 1
-      end
-    end
-
     describe '#legacy_stages' do
       subject { pipeline.legacy_stages }
 
@@ -587,20 +579,6 @@ describe Ci::Pipeline, :mailer do
       it 'returns false' do
         expect(pipeline).not_to have_kubernetes_active
       end
-    end
-  end
-
-  describe '#has_stage_seeds?' do
-    context 'when pipeline has stage seeds' do
-      subject { build(:ci_pipeline_with_one_job) }
-
-      it { is_expected.to have_stage_seeds }
-    end
-
-    context 'when pipeline does not have stage seeds' do
-      subject { create(:ci_pipeline_without_jobs) }
-
-      it { is_expected.not_to have_stage_seeds }
     end
   end
 
