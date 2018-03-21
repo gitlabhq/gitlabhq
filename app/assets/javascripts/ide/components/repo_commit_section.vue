@@ -32,9 +32,8 @@ export default {
     },
   },
   computed: {
-    ...mapState(['stagedFiles', 'rightPanelCollapsed']),
+    ...mapState(['changedFiles', 'stagedFiles', 'rightPanelCollapsed']),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
-    ...mapGetters(['unstagedFiles']),
     ...mapGetters('commit', [
       'commitButtonDisabled',
       'discardDraftButtonDisabled',
@@ -74,12 +73,12 @@ export default {
       </template>
     </modal>
     <template
-      v-if="unstagedFiles.length || stagedFiles.length"
+      v-if="changedFiles.length || stagedFiles.length"
     >
       <commit-files-list
         icon="unstaged"
         :title="__('Unstaged')"
-        :file-list="unstagedFiles"
+        :file-list="changedFiles"
         action="stageAllChanges"
         :action-btn-text="__('Stage all')"
         item-action-component="stage-button"

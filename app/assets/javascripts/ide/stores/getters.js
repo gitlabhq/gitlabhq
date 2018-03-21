@@ -24,9 +24,8 @@ export const projectsWithTrees = state =>
   });
 
 // eslint-disable-next-line no-confusing-arrow
-export const currentIcon = state =>
+export const collapseButtonIcon = state =>
   state.rightPanelCollapsed ? 'angle-double-left' : 'angle-double-right';
 
-export const hasChanges = state => !!state.changedFiles.length;
-
-export const unstagedFiles = state => state.changedFiles.filter(f => !f.staged);
+export const hasChanges = state =>
+  !!state.changedFiles.length || !!state.stagedFiles.length;

@@ -7,8 +7,8 @@ export default {
     Icon,
   },
   props: {
-    file: {
-      type: Object,
+    path: {
+      type: String,
       required: true,
     },
   },
@@ -27,7 +27,7 @@ export default {
       type="button"
       class="btn btn-blank append-right-5"
       :aria-label="__('Stage change')"
-      @click.stop="stageChange(file)"
+      @click.stop="stageChange(path)"
     >
       <icon
         name="mobile-issue-close"
@@ -38,7 +38,7 @@ export default {
       type="button"
       class="btn btn-blank"
       :aria-label="__('Discard change')"
-      @click.stop="discardFileChanges(file)"
+      @click.stop="discardFileChanges(path)"
     >
       <icon
         name="remove"

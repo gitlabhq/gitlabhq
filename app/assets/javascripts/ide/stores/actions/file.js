@@ -145,10 +145,10 @@ export const discardFileChanges = ({ state, commit }, path) => {
   eventHub.$emit(`editor.update.model.content.${file.path}`, file.raw);
 };
 
-export const stageChange = ({ commit }, file) => {
-  commit(types.STAGE_CHANGE, file);
+export const stageChange = ({ commit }, path) => {
+  commit(types.STAGE_CHANGE, path);
 };
 
-export const unstageChange = ({ commit }, file) => {
-  commit(types.UNSTAGE_CHANGE, file);
+export const unstageChange = ({ commit }, path) => {
+  commit(types.UNSTAGE_CHANGE, path);
 };

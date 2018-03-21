@@ -69,9 +69,12 @@ export default class Model {
     );
   }
 
-  updateContent(content) {
+  updateContent({ content, changed }) {
     this.getOriginalModel().setValue(content);
-    this.getModel().setValue(content);
+
+    if (!changed) {
+      this.getModel().setValue(content);
+    }
   }
 
   dispose() {

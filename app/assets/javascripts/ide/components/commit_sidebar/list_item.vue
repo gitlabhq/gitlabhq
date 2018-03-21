@@ -1,4 +1,5 @@
 <script>
+import { mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import StageButton from './stage_button.vue';
 import UnstageButton from './unstage_button.vue';
@@ -57,7 +58,7 @@ export default {
     </button>
     <component
       :is="actionComponent"
-      :file="file"
+      :path="file.path"
     />
   </div>
 </template>

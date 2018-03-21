@@ -104,6 +104,21 @@ export default {
       delayViewerUpdated,
     });
   },
+  [types.UPDATE_FILE_AFTER_COMMIT](state, { file, lastCommit }) {
+    const changedFile = state.changedFiles.find(f => f.path === file.path);
+
+    Object.assign(state.entries[file.path], {
+      raw: file.content,
+      changed: !!changedFile,
+      lastCommit: Object.assign(state.entries[file.path].lastCommit, {
+        id: lastCommit.commit.id,
+        url: lastCommit.commit_path,
+        message: lastCommit.commit.message,
+        author: lastCommit.commit.author_name,
+        updatedAt: lastCommit.commit.authored_date,
+      }),
+    });
+  },
   ...projectMutations,
   ...fileMutations,
   ...treeMutations,

@@ -100,35 +100,22 @@ export const updateFilesAfterCommit = (
     { root: true },
   );
 
-  rootState.changedFiles.forEach(entry => {
+  rootState.stagedFiles.forEach(file => {
+    const changedFile = rootState.changedFiles.find(f => f.path === file.path);
+
     commit(
-      rootTypes.SET_LAST_COMMIT_DATA,
+      rootTypes.UPDATE_FILE_AFTER_COMMIT,
       {
-        entry,
+        file,
         lastCommit,
       },
       { root: true },
     );
 
-    eventHub.$emit(`editor.update.model.content.${entry.path}`, entry.content);
-
-    commit(
-      rootTypes.SET_FILE_RAW_DATA,
-      {
-        file: entry,
-        raw: entry.content,
-      },
-      { root: true },
-    );
-
-    commit(
-      rootTypes.TOGGLE_FILE_CHANGED,
-      {
-        file: entry,
-        changed: false,
-      },
-      { root: true },
-    );
+    eventHub.$emit(`editor.update.model.content.${file.path}`, {
+      content: file.content,
+      changed: !!changedFile,
+    });
   });
 
   if (

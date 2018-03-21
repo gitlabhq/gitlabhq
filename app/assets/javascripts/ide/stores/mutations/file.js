@@ -1,5 +1,4 @@
 import * as types from '../mutation_types';
-import { findIndexOfFile, findEntry } from '../utils';
 
 export default {
   [types.SET_FILE_ACTIVE](state, { path, active }) {
@@ -76,31 +75,42 @@ export default {
       changedFiles: state.changedFiles.filter(f => f.path !== path),
     });
   },
-  [types.STAGE_CHANGE](state, file) {
-    const stagedFile = findEntry(state.stagedFiles, 'blob', file.name);
+  [types.STAGE_CHANGE](state, path) {
+    const stagedFile = state.stagedFiles.find(f => f.path === path);
 
-    Object.assign(file, {
-      staged: true,
+    Object.assign(state, {
+      changedFiles: state.changedFiles.filter(f => f.path !== path),
     });
 
     if (stagedFile) {
       Object.assign(stagedFile, {
-        ...file,
+        ...state.entries[path],
       });
     } else {
-      state.stagedFiles.push({
-        ...file,
+      Object.assign(state, {
+        stagedFiles: state.stagedFiles.concat({
+          ...state.entries[path],
+        }),
       });
     }
   },
-  [types.UNSTAGE_CHANGE](state, file) {
-    const indexOfStagedFile = findIndexOfFile(state.stagedFiles, file);
-    const changedFile = findEntry(state.changedFiles, 'blob', file.name);
+  [types.UNSTAGE_CHANGE](state, path) {
+    const changedFile = state.changedFiles.find(f => f.path === path);
+    const stagedFile = state.stagedFiles.find(f => f.path === path);
 
-    state.stagedFiles.splice(indexOfStagedFile, 1);
+    if (!changedFile && stagedFile) {
+      Object.assign(state.entries[path], {
+        ...stagedFile,
+        changed: true,
+      });
 
-    Object.assign(changedFile, {
-      staged: false,
+      Object.assign(state, {
+        changedFiles: state.changedFiles.concat(state.entries[path]),
+      });
+    }
+
+    Object.assign(state, {
+      stagedFiles: state.stagedFiles.filter(f => f.path !== path),
     });
   },
   [types.TOGGLE_FILE_CHANGED](state, { file, changed }) {
