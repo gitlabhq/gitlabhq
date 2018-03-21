@@ -145,7 +145,7 @@ module Geo
         status = Gitlab::SidekiqStatus.job_status(scheduled_job_ids)
 
         # SidekiqStatus returns an array of booleans: true if the job is still running, false otherwise.
-        # For each entry, first use `zip` to make { job_id: 123, id: 10 } -> [ { job_id: 123, id: 10 }, bool ]
+        # For each entry, first use `zip` to make { job_id: 123 } -> [ { job_id: 123 }, bool ]
         # Next, filter out the jobs that have completed.
         @scheduled_jobs = @scheduled_jobs.zip(status).map { |(job, running)| job if running }.compact
       end
@@ -160,12 +160,7 @@ module Geo
         num_to_schedule = 0 if num_to_schedule < 0
 
         to_schedule = pending_resources.shift(num_to_schedule)
-
-        scheduled = to_schedule.map do |args|
-          job = schedule_job(*args)
-          job if job&.fetch(:job_id, nil).present?
-        end.compact
-
+        scheduled = to_schedule.map { |args| schedule_job(*args) }.compact
         scheduled_jobs.concat(scheduled)
 
         log_info("Loop #{loops}", enqueued: scheduled.length, pending: pending_resources.length, scheduled: scheduled_jobs.length, capacity: capacity)
