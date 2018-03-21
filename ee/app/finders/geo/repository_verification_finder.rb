@@ -2,20 +2,19 @@ module Geo
   class RepositoryVerificationFinder
     def find_outdated_projects(batch_size:)
       Project.select(:id)
+       .with_route
        .joins(:repository_state)
-       .where(repository_unverified
-          .or(repository_verification_outdated)
-          .or(wiki_unverified)
-          .or(wiki_verification_outdated))
-       .order(repository_state_table[:last_repository_verification_at].asc)
+       .where(repository_outdated.or(wiki_outdated))
+       .order(last_repository_updated_at_asc)
        .limit(batch_size)
     end
 
     def find_unverified_projects(batch_size:)
       Project.select(:id)
+       .with_route
        .joins(left_join_repository_state)
        .where(repository_never_verified)
-       .order(projects_table[:last_repository_updated_at].asc)
+       .order(last_repository_updated_at_asc)
        .limit(batch_size)
     end
 
@@ -52,26 +51,20 @@ module Geo
         .join_sources
     end
 
-    def repository_unverified
+    def repository_outdated
       repository_state_table[:repository_verification_checksum].eq(nil)
     end
 
-    def repository_verification_outdated
-      repository_state_table[:last_repository_verification_at]
-        .lt(projects_table[:last_repository_updated_at])
-    end
-
-    def wiki_unverified
+    def wiki_outdated
       repository_state_table[:wiki_verification_checksum].eq(nil)
-    end
-
-    def wiki_verification_outdated
-      repository_state_table[:last_wiki_verification_at]
-        .lt(projects_table[:last_repository_updated_at])
     end
 
     def repository_never_verified
       repository_state_table[:id].eq(nil)
+    end
+
+    def last_repository_updated_at_asc
+      Gitlab::Database.nulls_last_order('projects.last_repository_updated_at', 'ASC')
     end
   end
 end

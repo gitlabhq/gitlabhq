@@ -160,6 +160,18 @@ describe Geo::RepositorySyncService do
           expect(registry.last_repository_successful_sync_at).not_to be_nil
         end
 
+        it 'resets the repository_verification_checksum' do
+          subject.execute
+
+          expect(registry.repository_verification_checksum).to be_nil
+        end
+
+        it 'resets the last_repository_verification_failure' do
+          subject.execute
+
+          expect(registry.last_repository_verification_failure).to be_nil
+        end
+
         it 'logs success with timings' do
           allow(Gitlab::Geo::Logger).to receive(:info).and_call_original
           expect(Gitlab::Geo::Logger).to receive(:info).with(hash_including(:message, :update_delay_s, :download_time_s)).and_call_original

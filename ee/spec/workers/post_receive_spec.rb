@@ -26,8 +26,18 @@ describe PostReceive do
         allow_any_instance_of(GitPushService).to receive(:execute).and_return(true)
       end
 
-      it 'calls Geo::RepositoryUpdatedEventStore' do
-        expect_any_instance_of(::Geo::RepositoryUpdatedEventStore).to receive(:create)
+      it 'calls Geo::RepositoryUpdatedService when running on a Geo primary node' do
+        allow(Gitlab::Geo).to receive(:primary?) { true }
+
+        expect_any_instance_of(::Geo::RepositoryUpdatedService).to receive(:execute)
+
+        described_class.new.perform(gl_repository, key_id, base64_changes)
+      end
+
+      it 'does not call Geo::RepositoryUpdatedEventStore when not running on a Geo primary node' do
+        allow(Gitlab::Geo).to receive(:primary?) { false }
+
+        expect_any_instance_of(::Geo::RepositoryUpdatedService).not_to receive(:execute)
 
         described_class.new.perform(gl_repository, key_id, base64_changes)
       end
@@ -37,11 +47,18 @@ describe PostReceive do
   describe '#process_wiki_changes' do
     let(:gl_repository) { "wiki-#{project.id}" }
 
-    it 'triggers Geo::RepositoryUpdatedEventStore when Geo is enabled' do
-      allow(Gitlab::Geo).to receive(:enabled?) { true }
+    it 'calls Geo::RepositoryUpdatedEventStore when running on a Geo primary node' do
+      allow(Gitlab::Geo).to receive(:primary?) { true }
 
-      expect(::Geo::RepositoryUpdatedEventStore).to receive(:new).with(instance_of(Project), source: ::Geo::RepositoryUpdatedEvent::WIKI).and_call_original
-      expect_any_instance_of(::Geo::RepositoryUpdatedEventStore).to receive(:create)
+      expect_any_instance_of(::Geo::RepositoryUpdatedService).to receive(:execute)
+
+      described_class.new.perform(gl_repository, key_id, base64_changes)
+    end
+
+    it 'does not call Geo::RepositoryUpdatedEventStore when not running on a Geo primary node' do
+      allow(Gitlab::Geo).to receive(:primary?) { false }
+
+      expect_any_instance_of(::Geo::RepositoryUpdatedService).not_to receive(:execute)
 
       described_class.new.perform(gl_repository, key_id, base64_changes)
     end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180314100728) do
+ActiveRecord::Schema.define(version: 20180314174825) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1900,15 +1900,14 @@ ActiveRecord::Schema.define(version: 20180314100728) do
     t.integer "project_id", null: false
     t.binary "repository_verification_checksum"
     t.binary "wiki_verification_checksum"
-    t.boolean "last_repository_verification_failed", default: false, null: false
-    t.boolean "last_wiki_verification_failed", default: false, null: false
-    t.datetime_with_timezone "last_repository_verification_at"
-    t.datetime_with_timezone "last_wiki_verification_at"
     t.string "last_repository_verification_failure"
     t.string "last_wiki_verification_failure"
   end
 
+  add_index "project_repository_states", ["last_repository_verification_failure"], name: "idx_repository_states_on_repository_failure_partial", where: "(last_repository_verification_failure IS NOT NULL)", using: :btree
+  add_index "project_repository_states", ["last_wiki_verification_failure"], name: "idx_repository_states_on_wiki_failure_partial", where: "(last_wiki_verification_failure IS NOT NULL)", using: :btree
   add_index "project_repository_states", ["project_id"], name: "index_project_repository_states_on_project_id", unique: true, using: :btree
+  add_index "project_repository_states", ["repository_verification_checksum", "wiki_verification_checksum"], name: "idx_repository_states_on_checksums_partial", where: "((repository_verification_checksum IS NULL) OR (wiki_verification_checksum IS NULL))", using: :btree
 
   create_table "project_statistics", force: :cascade do |t|
     t.integer "project_id", null: false

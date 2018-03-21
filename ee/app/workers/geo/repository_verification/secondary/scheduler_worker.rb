@@ -19,7 +19,8 @@ module Geo
         end
 
         def load_pending_resources
-          finder.find_registries_to_verify.limit(db_retrieve_batch_size).pluck(:id)
+          finder.find_registries_to_verify(batch_size: db_retrieve_batch_size)
+                .pluck(:id)
         end
 
         def schedule_job(registry_id)

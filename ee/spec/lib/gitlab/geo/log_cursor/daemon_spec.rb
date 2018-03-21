@@ -111,22 +111,44 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
         expect { daemon.run_once! }.to change(Geo::ProjectRegistry, :count).by(1)
       end
 
-      it 'sets resync_repository to true if event source is repository' do
-        repository_updated_event.update!(source: Geo::RepositoryUpdatedEvent::REPOSITORY)
-        registry = create(:geo_project_registry, :synced, project: repository_updated_event.project)
+      context 'when event source is repository' do
+        let!(:registry) { create(:geo_project_registry, :synced, :repository_verified, project: repository_updated_event.project) }
 
-        daemon.run_once!
+        before do
+          repository_updated_event.update!(source: Geo::RepositoryUpdatedEvent::REPOSITORY)
+        end
 
-        expect(registry.reload.resync_repository).to be true
+        it 'sets resync_repository to true' do
+          daemon.run_once!
+
+          expect(registry.reload.resync_repository).to be true
+        end
+
+        it 'resets the repository verification checksum' do
+          daemon.run_once!
+
+          expect(registry.reload).to have_attributes(resync_repository: true, repository_verification_checksum: nil)
+        end
       end
 
-      it 'sets resync_wiki to true if event source is wiki' do
-        repository_updated_event.update!(source: Geo::RepositoryUpdatedEvent::WIKI)
-        registry = create(:geo_project_registry, :synced, project: repository_updated_event.project)
+      context 'when event source is wiki' do
+        let!(:registry) { create(:geo_project_registry, :synced, :wiki_verified, project: repository_updated_event.project) }
 
-        daemon.run_once!
+        before do
+          repository_updated_event.update!(source: Geo::RepositoryUpdatedEvent::WIKI)
+        end
 
-        expect(registry.reload.resync_wiki).to be true
+        it 'sets resync_wiki to true' do
+          daemon.run_once!
+
+          expect(registry.reload.resync_wiki).to be true
+        end
+
+        it 'resets the wiki verification checksum' do
+          daemon.run_once!
+
+          expect(registry.reload).to have_attributes(resync_wiki: true, wiki_verification_checksum: nil)
+        end
       end
 
       it 'performs Geo::ProjectSyncWorker' do
