@@ -21,7 +21,7 @@ describe Ci::Pipeline do
     codeclimate_artifact: [Ci::Build::CODEQUALITY_FILE, 'codequality'],
     performance_artifact: [Ci::Build::PERFORMANCE_FILE, 'performance'],
     sast_artifact: [Ci::Build::SAST_FILE, 'sast'],
-    dependency_scanning_artifact: [Ci::Build::DEPENDENCY_SCANNING_FILE, 'dependency-scanning'],
+    dependency_scanning_artifact: [Ci::Build::DEPENDENCY_SCANNING_FILE, 'dependency_scanning'],
     sast_container_artifact: [Ci::Build::SAST_CONTAINER_FILE, 'sast:container'],
     dast_artifact: [Ci::Build::DAST_FILE, 'dast']
   }.freeze
