@@ -11,10 +11,12 @@ shared_examples 'ChronicDurationAttribute reader' do
     expect(subject.send(virtual_field)).to eq('2m')
   end
 
-  it 'outputs empty string when value set to nil' do
-    subject.send("#{source_field}=", nil)
+  context 'when value is set to nil' do
+    it 'outputs empty string' do
+      subject.send("#{source_field}=", nil)
 
-    expect(subject.send(virtual_field)).to be_empty
+      expect(subject.send(virtual_field)).to be_empty
+    end
   end
 end
 
@@ -29,28 +31,62 @@ shared_examples 'ChronicDurationAttribute writer' do
     expect(subject.send(source_field)).to eq(600)
   end
 
-  it 'writes nil when empty input is used' do
-    subject.send("#{virtual_field}=", '')
+  it 'passes validation' do
+    subject.send("#{virtual_field}=", '10m')
 
-    expect(subject.send(source_field)).to be_nil
+    expect(subject.valid?).to be_truthy
   end
 
-  it 'writes nil when negative input is used' do
-    allow(ChronicDuration).to receive(:parse).and_return(-10)
+  context 'when negative input is used' do
+    before do
+      subject.send("#{source_field}=", 3600)
+    end
 
-    subject.send("#{virtual_field}=", '-10m')
+    it "doesn't raise exception" do
+      expect { subject.send("#{virtual_field}=", '-10m') }.not_to raise_error(ChronicDuration::DurationParseError)
+    end
 
-    expect(subject.send(source_field)).to be_nil
+    it "doesn't change value" do
+      expect { subject.send("#{virtual_field}=", '-10m') }.not_to change { subject.send(source_field) }
+    end
+
+    it "doesn't pass validation" do
+      subject.send("#{virtual_field}=", '-10m')
+
+      expect(subject.valid?).to be_falsey
+    end
   end
 
-  it 'writes nil when nil input is used' do
-    subject.send("#{virtual_field}=", nil)
+  context 'when empty input is used' do
+    it 'writes nil' do
+      subject.send("#{virtual_field}=", '')
 
-    expect(subject.send(source_field)).to be_nil
+      expect(subject.send(source_field)).to be_nil
+    end
+
+    it 'passes validation' do
+      subject.send("#{virtual_field}=", '')
+
+      expect(subject.valid?).to be_truthy
+    end
   end
 
-  it "doesn't raise exception when nil input is used" do
-    expect { subject.send("#{virtual_field}=", nil) }.not_to raise_error(NoMethodError)
+  context 'when nil input is used' do
+    it 'writes nil' do
+      subject.send("#{virtual_field}=", nil)
+
+      expect(subject.send(source_field)).to be_nil
+    end
+
+    it 'passes validation' do
+      subject.send("#{virtual_field}=", nil)
+
+      expect(subject.valid?).to be_truthy
+    end
+
+    it "doesn't raise exception" do
+      expect { subject.send("#{virtual_field}=", nil) }.not_to raise_error(NoMethodError)
+    end
   end
 end
 
