@@ -19,7 +19,9 @@ module Gitlab
           end
 
           def attributes
-            { name: @name, pipeline: @pipeline, project: @pipeline.project }
+            { name: @name,
+              pipeline: @pipeline,
+              project: @pipeline.project }
           end
 
           # TODO decouple
@@ -43,10 +45,6 @@ module Gitlab
               @pipeline.stages << stage
 
               stage.save!
-
-              stage.builds.each do |build|
-                yield build if block_given?
-              end
             end
           end
         end

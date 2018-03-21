@@ -73,8 +73,10 @@ module Gitlab
         seeds = @stages.uniq.map do |stage|
           builds = pipeline_stage_builds(stage, pipeline)
 
-          Gitlab::Ci::Pipeline::Seed::Stage
-            .new(pipeline, stage, builds) if builds.any?
+          if builds.any?
+            Gitlab::Ci::Pipeline::Seed::Stage
+              .new(pipeline, stage, builds)
+          end
         end
 
         seeds.compact
