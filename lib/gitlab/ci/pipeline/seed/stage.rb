@@ -8,11 +8,11 @@ module Gitlab
           delegate :size, to: :seeds
           delegate :dig, to: :seeds
 
-          def initialize(pipeline, name, builds)
+          def initialize(pipeline, attributes)
             @pipeline = pipeline
-            @name = name
+            @attributes = attributes
 
-            @seeds = builds.map do |attributes|
+            @seeds = attributes.fetch(:builds).map do |attributes|
               Seed::Build.new(@pipeline, attributes)
             end
           end
@@ -22,17 +22,23 @@ module Gitlab
           end
 
           def attributes
-            { name: @name,
+            { name: @attributes.fetch(:name),
               pipeline: @pipeline,
               project: @pipeline.project }
           end
 
+          # TODO specs
+          #
+          def included?
+            @seeds.any?(&:included?)
+          end
+
           def to_resource
-            ::Ci::Stage.new(attributes).tap do |stage|
+            @stage ||= ::Ci::Stage.new(attributes).tap do |stage|
               @seeds.each do |seed|
-                seed.to_resource.tap do |build|
-                  stage.builds << build
-                end
+                next unless seed.included?
+
+                stage.builds << seed.to_resource
               end
             end
           end

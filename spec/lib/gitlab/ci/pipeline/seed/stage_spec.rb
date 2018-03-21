@@ -3,12 +3,14 @@ require 'spec_helper'
 describe Gitlab::Ci::Pipeline::Seed::Stage do
   let(:pipeline) { create(:ci_empty_pipeline) }
 
-  let(:builds) do
-    [{ name: 'rspec' }, { name: 'spinach' }]
+  let(:attributes) do
+    { name: 'test',
+      index: 0,
+      builds: [{ name: 'rspec' }, { name: 'spinach' }] }
   end
 
   subject do
-    described_class.new(pipeline, 'test', builds)
+    described_class.new(pipeline, attributes)
   end
 
   describe '#size' do

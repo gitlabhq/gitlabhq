@@ -3,6 +3,8 @@ module Gitlab
     module Pipeline
       module Seed
         class Build < Seed::Base
+          include Gitlab::Utils::StrongMemoize
+
           attr_reader :pipeline, :attributes
 
           delegate :dig, to: :attributes
@@ -10,6 +12,9 @@ module Gitlab
           def initialize(pipeline, attributes)
             @pipeline = pipeline
             @attributes = attributes
+
+            @only = attributes.delete(:only)
+            @except = attributes.delete(:except)
           end
 
           # TODO find a different solution
@@ -27,6 +32,16 @@ module Gitlab
               trigger_request: @pipeline.legacy_trigger,
               protected: @pipeline.protected_ref?
             )
+          end
+
+          def included?
+            strong_memoize(:inclusion) do
+              only_specs = Gitlab::Ci::Build::Policy.fabricate(@only)
+              except_specs = Gitlab::Ci::Build::Policy.fabricate(@except)
+
+              only_specs.all? { |spec| spec.satisfied_by?(pipeline) } &&
+                except_specs.none? { |spec| spec.satisfied_by?(pipeline) }
+            end
           end
 
           def to_resource
