@@ -3,6 +3,8 @@ module Gitlab
     module Pipeline
       module Chain
         class Populate < Chain::Base
+          include Chain::Helpers
+
           PopulateError = Class.new(StandardError)
 
           def perform!
@@ -19,11 +21,15 @@ module Gitlab
               pipeline.stages << seed.to_resource
             end
 
+            if pipeline.invalid?
+              error('Failed to build the pipeline!')
+            end
+
             raise Populate::PopulateError if pipeline.persisted?
           end
 
           def break?
-            pipeline.persisted?
+            pipeline.invalid?
           end
         end
       end
