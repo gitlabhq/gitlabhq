@@ -121,9 +121,9 @@ module Gitlab
             expect(seeds.size).to eq 2
             expect(seeds.first.attributes[:name]).to eq 'test'
             expect(seeds.second.attributes[:name]).to eq 'deploy'
-            expect(seeds.first.builds_attributes.dig(0, :name)).to eq 'rspec'
-            expect(seeds.first.builds_attributes.dig(1, :name)).to eq 'spinach'
-            expect(seeds.second.builds_attributes.dig(0, :name)).to eq 'production'
+            expect(seeds.dig(0, 0, :name)).to eq 'rspec'
+            expect(seeds.dig(0, 1, :name)).to eq 'spinach'
+            expect(seeds.dig(1, 0, :name)).to eq 'production'
           end
         end
 
@@ -142,7 +142,7 @@ module Gitlab
 
             expect(seeds.size).to eq 1
             expect(seeds.first.attributes[:name]).to eq 'test'
-            expect(seeds.first.builds_attributes.dig(0, :name)).to eq 'spinach'
+            expect(seeds.dig(0, 0, :name)).to eq 'spinach'
           end
         end
 
@@ -161,7 +161,7 @@ module Gitlab
 
             expect(seeds.size).to eq 1
             expect(seeds.first.attributes[:name]).to eq 'test'
-            expect(seeds.first.builds_attributes.dig(0, :name)).to eq 'spinach'
+            expect(seeds.dig(0, 0, :name)).to eq 'spinach'
           end
         end
 
@@ -183,8 +183,8 @@ module Gitlab
                 seeds = subject.stage_seeds(pipeline)
 
                 expect(seeds.size).to eq 2
-                expect(seeds.first.builds_attributes.dig(0, :name)).to eq 'spinach'
-                expect(seeds.second.builds_attributes.dig(0, :name)).to eq 'production'
+                expect(seeds.dig(0, 0, :name)).to eq 'spinach'
+                expect(seeds.dig(1, 0, :name)).to eq 'production'
               end
             end
 
@@ -209,7 +209,7 @@ module Gitlab
               seeds = subject.stage_seeds(pipeline)
 
               expect(seeds.size).to eq 1
-              expect(seeds.first.builds_attributes.dig(0, :name)).to eq 'spinach'
+              expect(seeds.dig(0, 0, :name)).to eq 'spinach'
             end
           end
         end

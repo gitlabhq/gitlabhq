@@ -395,6 +395,9 @@ module Ci
       end
     end
 
+    ##
+    # TODO, setting yaml_errors should be moved to the pipeline creation chain.
+    #
     def config_processor
       return unless ci_yaml_file
       return @config_processor if defined?(@config_processor)

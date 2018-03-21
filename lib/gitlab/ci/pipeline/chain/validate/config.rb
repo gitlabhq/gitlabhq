@@ -16,7 +16,7 @@ module Gitlab
                   @pipeline.drop!(:config_error)
                 end
 
-                return error(@pipeline.yaml_errors)
+                error(@pipeline.yaml_errors)
               end
             end
 

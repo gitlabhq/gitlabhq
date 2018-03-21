@@ -17,20 +17,20 @@ describe Gitlab::Ci::Pipeline::Seed::Stage do
     end
   end
 
-  describe '#stage_attributes' do
+  describe '#attributes' do
     it 'returns hash attributes of a stage' do
       expect(subject.attributes).to be_a Hash
       expect(subject.attributes).to include(:name, :project)
     end
   end
 
-  describe '#builds_attributes' do
+  describe '#seeds' do
     it 'returns hash attributes of all builds' do
-      expect(subject.builds_attributes.size).to eq 2
-      expect(subject.builds_attributes).to all(include(ref: 'master'))
-      expect(subject.builds_attributes).to all(include(tag: false))
-      expect(subject.builds_attributes).to all(include(project: pipeline.project))
-      expect(subject.builds_attributes)
+      expect(subject.seeds.size).to eq 2
+      expect(subject.seeds.map(&:attributes)).to all(include(ref: 'master'))
+      expect(subject.seeds.map(&:attributes)).to all(include(tag: false))
+      expect(subject.seeds.map(&:attributes)).to all(include(project: pipeline.project))
+      expect(subject.seeds.map(&:attributes))
         .to all(include(trigger_request: pipeline.trigger_requests.first))
     end
 
@@ -40,17 +40,17 @@ describe Gitlab::Ci::Pipeline::Seed::Stage do
       end
 
       it 'returns protected builds' do
-        expect(subject.builds_attributes).to all(include(protected: true))
+        expect(subject.seeds.map(&:attributes)).to all(include(protected: true))
       end
     end
 
-    context 'when a ref is unprotected' do
+    context 'when a ref is not protected' do
       before do
         allow_any_instance_of(Project).to receive(:protected_for?).and_return(false)
       end
 
       it 'returns unprotected builds' do
-        expect(subject.builds_attributes).to all(include(protected: false))
+        expect(subject.seeds.map(&:attributes)).to all(include(protected: false))
       end
     end
   end
@@ -61,7 +61,7 @@ describe Gitlab::Ci::Pipeline::Seed::Stage do
     it 'assignes relevant pipeline attributes' do
       subject.user = user
 
-      expect(subject.builds_attributes).to all(include(user: user))
+      expect(subject.seeds.map(&:attributes)).to all(include(user: user))
     end
   end
 
