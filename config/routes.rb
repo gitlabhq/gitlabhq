@@ -61,6 +61,9 @@ Rails.application.routes.draw do
 
     # UserCallouts
     resources :user_callouts, only: [:create]
+
+    get 'ide' => 'ide#index'
+    get 'ide/*vueroute' => 'ide#index', format: false
   end
 
   # Koding route
