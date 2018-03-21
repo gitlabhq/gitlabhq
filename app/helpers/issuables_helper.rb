@@ -32,7 +32,7 @@ module IssuablesHelper
     end
   end
 
-  def serialize_issuable(issuable)
+  def serialize_issuable(issuable, serializer: nil)
     serializer_klass = case issuable
                        when Issue
                          IssueSerializer
@@ -42,7 +42,7 @@ module IssuablesHelper
 
     serializer_klass
       .new(current_user: current_user, project: issuable.project)
-      .represent(issuable)
+      .represent(issuable, serializer: serializer)
       .to_json
   end
 
@@ -99,7 +99,7 @@ module IssuablesHelper
     project = Project.find_by(id: project_id)
 
     if project
-      project.name_with_namespace
+      project.full_name
     else
       default_label
     end
@@ -234,14 +234,14 @@ module IssuablesHelper
 
     data.merge!(updated_at_by(issuable))
 
-    data.to_json
+    data
   end
 
   def updated_at_by(issuable)
     return {} unless issuable.edited?
 
     {
-      updatedAt: issuable.updated_at.to_time.iso8601,
+      updatedAt: issuable.last_edited_at.to_time.iso8601,
       updatedBy: {
         name: issuable.last_edited_by.name,
         path: user_path(issuable.last_edited_by)
@@ -304,6 +304,12 @@ module IssuablesHelper
     issuable.model_name.human.downcase
   end
 
+  def selected_labels
+    Array(params[:label_name]).map do |label_name|
+      Label.new(title: label_name)
+    end
+  end
+
   private
 
   def sidebar_gutter_collapsed?
@@ -362,7 +368,7 @@ module IssuablesHelper
       moveIssueEndpoint: move_namespace_project_issue_path(namespace_id: issuable.project.namespace.to_param, project_id: issuable.project, id: issuable),
       projectsAutocompleteEndpoint: autocomplete_projects_path(project_id: @project.id),
       editable: can_edit_issuable,
-      currentUser: current_user.as_json(only: [:username, :id, :name], methods: :avatar_url),
+      currentUser: UserSerializer.new.represent(current_user),
       rootPath: root_path,
       fullPath: @project.full_path
     }

@@ -24,7 +24,7 @@ class MarkdownFeature
 
   def project
     @project ||= create(:project, :repository, group: group).tap do |project|
-      project.team << [user, :master]
+      project.add_master(user)
     end
   end
 
@@ -85,7 +85,7 @@ class MarkdownFeature
     @xproject ||= begin
       group = create(:group, :nested)
       create(:project, :repository, namespace: group) do |project|
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
     end
   end

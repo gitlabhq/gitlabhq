@@ -26,7 +26,7 @@ describe 'Commits' do
       let!(:status) { create(:generic_commit_status, pipeline: pipeline) }
 
       before do
-        project.team << [user, :reporter]
+        project.add_reporter(user)
       end
 
       describe 'Commit builds' do
@@ -51,7 +51,7 @@ describe 'Commits' do
 
       context 'when logged as developer' do
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         describe 'Project commits' do
@@ -145,7 +145,7 @@ describe 'Commits' do
 
       context "when logged as reporter" do
         before do
-          project.team << [user, :reporter]
+          project.add_reporter(user)
           build.update_attributes(legacy_artifacts_file: artifacts_file)
           visit pipeline_path(pipeline)
         end
@@ -188,13 +188,13 @@ describe 'Commits' do
     let(:branch_name) { 'master' }
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in(user)
       visit project_commits_path(project, branch_name)
     end
 
     it 'includes the committed_date for each commit' do
-      commits = project.repository.commits(branch_name)
+      commits = project.repository.commits(branch_name, limit: 40)
 
       commits.each do |commit|
         expect(page).to have_content("authored #{commit.authored_date.strftime("%b %d, %Y")}")

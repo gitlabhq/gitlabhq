@@ -96,9 +96,7 @@ module Gitlab
       end
 
       def ensure_action_dispatch_request(request)
-        return request if request.is_a?(ActionDispatch::Request)
-
-        ActionDispatch::Request.new(request.env)
+        ActionDispatch::Request.new(request.env.dup)
       end
 
       def current_request

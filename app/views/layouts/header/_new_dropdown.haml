@@ -1,5 +1,5 @@
 %li.header-new.dropdown
-  = link_to new_project_path, class: "header-new-dropdown-toggle has-tooltip", title: "New...", ref: 'tooltip', aria: { label: "New..." }, data: { toggle: 'dropdown', placement: 'bottom', container: 'body' } do
+  = link_to new_project_path, class: "header-new-dropdown-toggle has-tooltip qa-new-menu-toggle", title: "New...", ref: 'tooltip', aria: { label: "New..." }, data: { toggle: 'dropdown', placement: 'bottom', container: 'body' } do
     = sprite_icon('plus-square', size: 16)
     = sprite_icon('angle-down', css_class: 'caret-down')
   .dropdown-menu-nav.dropdown-menu-align-right

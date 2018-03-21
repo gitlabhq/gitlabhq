@@ -31,7 +31,7 @@ feature 'Visibility settings', :js do
     let(:master_user) { create(:user) }
 
     before do
-      project.team << [master_user, :master]
+      project.add_master(master_user)
       sign_in(master_user)
       visit edit_project_path(project)
     end

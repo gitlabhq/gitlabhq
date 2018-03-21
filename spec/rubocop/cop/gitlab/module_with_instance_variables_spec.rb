@@ -12,7 +12,7 @@ describe RuboCop::Cop::Gitlab::ModuleWithInstanceVariables do
     let(:offending_lines) { options[:offending_lines] }
 
     it 'registers an offense when instance variable is used in a module' do
-      inspect_source(cop, source)
+      inspect_source(source)
 
       aggregate_failures do
         expect(cop.offenses.size).to eq(offending_lines.size)
@@ -23,7 +23,7 @@ describe RuboCop::Cop::Gitlab::ModuleWithInstanceVariables do
 
   shared_examples('not registering offense') do
     it 'does not register offenses' do
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.offenses).to be_empty
     end

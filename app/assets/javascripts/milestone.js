@@ -1,6 +1,6 @@
-/* global Sortable */
-
-import Flash from './flash';
+import $ from 'jquery';
+import axios from './lib/utils/axios_utils';
+import flash from './flash';
 
 export default class Milestone {
   constructor() {
@@ -35,15 +35,12 @@ export default class Milestone {
     const tabElId = $target.attr('href');
 
     if (endpoint && !$target.hasClass('is-loaded')) {
-      $.ajax({
-        url: endpoint,
-        dataType: 'JSON',
-      })
-      .fail(() => new Flash('Error loading milestone tab'))
-      .done((data) => {
-        $(tabElId).html(data.html);
-        $target.addClass('is-loaded');
-      });
+      axios.get(endpoint)
+        .then(({ data }) => {
+          $(tabElId).html(data.html);
+          $target.addClass('is-loaded');
+        })
+        .catch(() => flash('Error loading milestone tab'));
     }
   }
 }

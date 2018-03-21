@@ -1,3 +1,8 @@
+import $ from 'jquery';
+import { __ } from './locale';
+import axios from './lib/utils/axios_utils';
+import flash from './flash';
+
 export default class NotificationsForm {
   constructor() {
     this.toggleCheckbox = this.toggleCheckbox.bind(this);
@@ -27,24 +32,20 @@ export default class NotificationsForm {
   saveEvent($checkbox, $parent) {
     const form = $parent.parents('form:first');
 
-    return $.ajax({
-      url: form.attr('action'),
-      method: form.attr('method'),
-      dataType: 'json',
-      data: form.serialize(),
-      beforeSend: () => {
-        this.showCheckboxLoadingSpinner($parent);
-      },
-    }).done((data) => {
-      $checkbox.enable();
-      if (data.saved) {
-        $parent.find('.custom-notification-event-loading').toggleClass('fa-spin fa-spinner fa-check is-done');
-        setTimeout(() => {
-          $parent.removeClass('is-loading')
-            .find('.custom-notification-event-loading')
-            .toggleClass('fa-spin fa-spinner fa-check is-done');
-        }, 2000);
-      }
-    });
+    this.showCheckboxLoadingSpinner($parent);
+
+    axios[form.attr('method')](form.attr('action'), form.serialize())
+      .then(({ data }) => {
+        $checkbox.enable();
+        if (data.saved) {
+          $parent.find('.custom-notification-event-loading').toggleClass('fa-spin fa-spinner fa-check is-done');
+          setTimeout(() => {
+            $parent.removeClass('is-loading')
+              .find('.custom-notification-event-loading')
+              .toggleClass('fa-spin fa-spinner fa-check is-done');
+          }, 2000);
+        }
+      })
+      .catch(() => flash(__('There was an error saving your notification settings.')));
   }
 }

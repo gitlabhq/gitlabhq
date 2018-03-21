@@ -3,10 +3,11 @@ require 'spec_helper'
 describe Gitlab::SlashCommands::Command do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
+  let(:chat_name) { double(:chat_name, user: user) }
 
   describe '#execute' do
     subject do
-      described_class.new(project, user, params).execute
+      described_class.new(project, chat_name, params).execute
     end
 
     context 'when no command is available' do
@@ -88,7 +89,7 @@ describe Gitlab::SlashCommands::Command do
   end
 
   describe '#match_command' do
-    subject { described_class.new(project, user, params).match_command.first }
+    subject { described_class.new(project, chat_name, params).match_command.first }
 
     context 'IssueShow is triggered' do
       let(:params) { { text: 'issue show 123' } }
@@ -106,6 +107,11 @@ describe Gitlab::SlashCommands::Command do
       let(:params) { { text: 'issue search my query' } }
 
       it { is_expected.to eq(Gitlab::SlashCommands::IssueSearch) }
+    end
+
+    context 'IssueMove is triggered' do
+      let(:params) { { text: 'issue move #78291 to gitlab/gitlab-ci' } }
+      it { is_expected.to eq(Gitlab::SlashCommands::IssueMove) }
     end
   end
 end

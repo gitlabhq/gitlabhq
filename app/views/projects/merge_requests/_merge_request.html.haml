@@ -30,7 +30,7 @@
           %span.project-ref-path
             &nbsp;
             = link_to project_ref_path(merge_request.project, merge_request.target_branch), class: 'ref-name' do
-              = icon('code-fork')
+              = sprite_icon('fork', size: 12, css_class: 'fork-sprite')
               = merge_request.target_branch
         - if merge_request.labels.any?
           &nbsp;

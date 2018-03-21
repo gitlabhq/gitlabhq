@@ -12,14 +12,12 @@ module IssuableCollections
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def set_issuables_index
-    @issuables          = issuables_collection
-    @issuables          = @issuables.page(params[:page])
-    @issuable_meta_data = issuable_meta_data(@issuables, collection_type)
-    @total_pages        = issuable_page_count
+    @issuables = issuables_collection
 
+    set_pagination
     return if redirect_out_of_range(@total_pages)
 
-    if params[:label_name].present?
+    if params[:label_name].present? && @project
       labels_params = { project_id: @project.id, title: params[:label_name] }
       @labels = LabelsFinder.new(current_user, labels_params).execute
     end
@@ -35,14 +33,26 @@ module IssuableCollections
       @users.push(author) if author
     end
   end
+
+  def set_pagination
+    return if pagination_disabled?
+
+    @issuables          = @issuables.page(params[:page])
+    @issuable_meta_data = issuable_meta_data(@issuables, collection_type)
+    @total_pages        = issuable_page_count
+  end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+  def pagination_disabled?
+    false
+  end
 
   def issuables_collection
     finder.execute.preload(preload_for_collection)
   end
 
   def redirect_out_of_range(total_pages)
-    return false if total_pages.zero?
+    return false if total_pages.nil? || total_pages.zero?
 
     out_of_range = @issuables.current_page > total_pages # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
@@ -84,6 +94,7 @@ module IssuableCollections
       @filter_params[:project_id] = @project.id
     elsif @group
       @filter_params[:group_id] = @group.id
+      @filter_params[:include_subgroups] = true
     else
       # TODO: this filter ignore issues/mr created in public or
       # internal repos where you are not a member. Enable this filter
@@ -92,7 +103,7 @@ module IssuableCollections
       # @filter_params[:authorized_only] = true
     end
 
-    @filter_params.permit(IssuableFinder::VALID_PARAMS)
+    @filter_params.permit(finder_type.valid_params)
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
@@ -135,7 +146,7 @@ module IssuableCollections
 
   def finder
     strong_memoize(:finder) do
-      issuable_finder_for(@finder_type) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+      issuable_finder_for(finder_type)
     end
   end
 

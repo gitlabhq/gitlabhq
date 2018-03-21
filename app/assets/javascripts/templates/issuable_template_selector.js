@@ -1,14 +1,15 @@
 /* eslint-disable no-useless-return, max-len */
 
+import $ from 'jquery';
 import Api from '../api';
 import TemplateSelector from '../blob/template_selector';
 
 export default class IssuableTemplateSelector extends TemplateSelector {
   constructor(...args) {
     super(...args);
-    this.projectPath = this.dropdown.data('project-path');
-    this.namespacePath = this.dropdown.data('namespace-path');
-    this.issuableType = this.$dropdownContainer.data('issuable-type');
+    this.projectPath = this.dropdown.data('projectPath');
+    this.namespacePath = this.dropdown.data('namespacePath');
+    this.issuableType = this.$dropdownContainer.data('issuableType');
     this.titleInput = $(`#${this.issuableType}_title`);
 
     const initialQuery = {
@@ -32,8 +33,8 @@ export default class IssuableTemplateSelector extends TemplateSelector {
     this.startLoadingSpinner();
     Api.issueTemplate(this.namespacePath, this.projectPath, query.name, this.issuableType, (err, currentTemplate) => {
       this.currentTemplate = currentTemplate;
-      if (err) return; // Error handled by global AJAX error handler
       this.stopLoadingSpinner();
+      if (err) return; // Error handled by global AJAX error handler
       this.setInputValueToTemplateContent();
     });
     return;

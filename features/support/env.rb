@@ -10,25 +10,26 @@ if ENV['CI']
   Knapsack::Adapters::SpinachAdapter.bind
 end
 
-%w(select2_helper test_env repo_helpers wait_for_requests sidekiq project_forks_helper).each do |f|
+WebMock.enable!
+
+%w(select2_helper test_env repo_helpers wait_for_requests sidekiq project_forks_helper webmock).each do |f|
   require Rails.root.join('spec', 'support', f)
 end
 
 Dir["#{Rails.root}/features/steps/shared/*.rb"].each { |file| require file }
 
-WebMock.allow_net_connect!
-
 Spinach.hooks.before_run do
   include RSpec::Mocks::ExampleMethods
+  include ActiveJob::TestHelper
+  include FactoryBot::Syntax::Methods
+  include GitlabRoutingHelper
+
   RSpec::Mocks.setup
   TestEnv.init(mailer: false)
 
   # skip pre-receive hook check so we can use
   # web editor and merge
   TestEnv.disable_pre_receive
-
-  include FactoryBot::Syntax::Methods
-  include GitlabRoutingHelper
 end
 
 Spinach.hooks.after_scenario do |scenario_data, step_definitions|

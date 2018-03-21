@@ -21,20 +21,20 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   step 'I should see that I am subscribed' do
     wait_for_requests
-    expect(find('.js-issuable-subscribe-button span')).to have_content 'Unsubscribe'
+    expect(find('.js-issuable-subscribe-button')).to have_css 'button.is-checked'
   end
 
   step 'I should see that I am unsubscribed' do
     wait_for_requests
-    expect(find('.js-issuable-subscribe-button span')).to have_content 'Subscribe'
+    expect(find('.js-issuable-subscribe-button')).to have_css 'button:not(.is-checked)'
   end
 
   step 'I click link "Closed"' do
     find('.issues-state-filters [data-state="closed"] span', text: 'Closed').click
   end
 
-  step 'I click button "Unsubscribe"' do
-    click_on "Unsubscribe"
+  step 'I click the subscription toggle' do
+    find('.js-issuable-subscribe-button button').click
   end
 
   step 'I should see "Release 0.3" in issues' do

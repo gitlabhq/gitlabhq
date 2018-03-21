@@ -12,6 +12,9 @@ describe Ci::JobArtifact do
   it { is_expected.to respond_to(:created_at) }
   it { is_expected.to respond_to(:updated_at) }
 
+  it { is_expected.to delegate_method(:open).to(:file) }
+  it { is_expected.to delegate_method(:exists?).to(:file) }
+
   describe '#set_size' do
     it 'sets the size' do
       expect(artifact.size).to eq(106365)

@@ -112,7 +112,7 @@ describe Gitlab::GitalyClient::RefService do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:delete_refs)
         .with(gitaly_request_with_params(except_with_prefix: prefixes), kind_of(Hash))
-        .and_return(double('delete_refs_response'))
+        .and_return(double('delete_refs_response', git_error: ""))
 
       client.delete_refs(except_with_prefixes: prefixes)
     end

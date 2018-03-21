@@ -1,7 +1,6 @@
 module Clusters
   module Platforms
     class Kubernetes < ActiveRecord::Base
-      include Gitlab::CurrentSettings
       include Gitlab::Kubernetes
       include ReactiveCaching
 
@@ -57,19 +56,19 @@ module Clusters
       def predefined_variables
         config = YAML.dump(kubeconfig)
 
-        variables = [
-          { key: 'KUBE_URL', value: api_url, public: true },
-          { key: 'KUBE_TOKEN', value: token, public: false },
-          { key: 'KUBE_NAMESPACE', value: actual_namespace, public: true },
-          { key: 'KUBECONFIG', value: config, public: false, file: true }
-        ]
+        Gitlab::Ci::Variables::Collection.new.tap do |variables|
+          variables
+            .append(key: 'KUBE_URL', value: api_url)
+            .append(key: 'KUBE_TOKEN', value: token, public: false)
+            .append(key: 'KUBE_NAMESPACE', value: actual_namespace)
+            .append(key: 'KUBECONFIG', value: config, public: false, file: true)
 
-        if ca_pem.present?
-          variables << { key: 'KUBE_CA_PEM', value: ca_pem, public: true }
-          variables << { key: 'KUBE_CA_PEM_FILE', value: ca_pem, public: true, file: true }
+          if ca_pem.present?
+            variables
+              .append(key: 'KUBE_CA_PEM', value: ca_pem)
+              .append(key: 'KUBE_CA_PEM_FILE', value: ca_pem, file: true)
+          end
         end
-
-        variables
       end
 
       # Constructs a list of terminals from the reactive cache
@@ -135,7 +134,7 @@ module Clusters
         kubeclient = build_kubeclient!
 
         kubeclient.get_pods(namespace: actual_namespace).as_json
-      rescue KubeException => err
+      rescue Kubeclient::HttpError => err
         raise err unless err.error_code == 404
 
         []
@@ -169,7 +168,7 @@ module Clusters
         {
           token: token,
           ca_pem: ca_pem,
-          max_session_time: current_application_settings.terminal_max_session_time
+          max_session_time: Gitlab::CurrentSettings.terminal_max_session_time
         }
       end
 
@@ -181,7 +180,7 @@ module Clusters
         return unless managed?
 
         if api_url_changed? || token_changed? || ca_pem_changed?
-          errors.add(:base, "cannot modify managed cluster")
+          errors.add(:base, _('Cannot modify managed Kubernetes cluster'))
           return false
         end
 

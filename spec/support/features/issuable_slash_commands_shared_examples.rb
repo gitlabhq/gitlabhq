@@ -19,7 +19,7 @@ shared_examples 'issuable record that supports quick actions in its description 
   let(:new_url_opts) { {} }
 
   before do
-    project.team << [master, :master]
+    project.add_master(master)
 
     gitlab_sign_in(master)
   end
@@ -127,7 +127,6 @@ shared_examples 'issuable record that supports quick actions in its description 
         it "does not close the #{issuable_type}" do
           write_note("/close")
 
-          expect(page).to have_content '/close'
           expect(page).not_to have_content 'Commands applied'
 
           expect(issuable).to be_open
@@ -165,7 +164,6 @@ shared_examples 'issuable record that supports quick actions in its description 
         it "does not reopen the #{issuable_type}" do
           write_note("/reopen")
 
-          expect(page).to have_content '/reopen'
           expect(page).not_to have_content 'Commands applied'
 
           expect(issuable).to be_closed
@@ -195,10 +193,9 @@ shared_examples 'issuable record that supports quick actions in its description 
           visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
         end
 
-        it "does not reopen the #{issuable_type}" do
+        it "does not change the #{issuable_type} title" do
           write_note("/title Awesome new title")
 
-          expect(page).to have_content '/title'
           expect(page).not_to have_content 'Commands applied'
 
           expect(issuable.reload.title).not_to eq 'Awesome new title'

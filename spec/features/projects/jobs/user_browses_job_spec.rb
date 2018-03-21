@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'User browses a job', :js do
-  let!(:build) { create(:ci_build, :coverage, pipeline: pipeline) }
+  let!(:build) { create(:ci_build, :running, :coverage, pipeline: pipeline) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.sha, ref: 'master') }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:user) { create(:user) }

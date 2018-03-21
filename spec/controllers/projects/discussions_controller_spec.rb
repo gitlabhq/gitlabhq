@@ -31,7 +31,7 @@ describe Projects::DiscussionsController do
 
     context "when the user is authorized to resolve the discussion" do
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       context "when the discussion is not resolvable" do
@@ -71,6 +71,19 @@ describe Projects::DiscussionsController do
 
           expect(response).to have_gitlab_http_status(200)
         end
+
+        context "when vue_mr_discussions cookie is present" do
+          before do
+            allow(controller).to receive(:cookies).and_return(vue_mr_discussions: 'true')
+          end
+
+          it "renders discussion with serializer" do
+            expect_any_instance_of(DiscussionSerializer).to receive(:represent)
+              .with(instance_of(Discussion), { context: instance_of(described_class) })
+
+            post :resolve, request_params
+          end
+        end
       end
     end
   end
@@ -92,7 +105,7 @@ describe Projects::DiscussionsController do
 
     context "when the user is authorized to resolve the discussion" do
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       context "when the discussion is not resolvable" do
@@ -118,6 +131,19 @@ describe Projects::DiscussionsController do
           delete :unresolve, request_params
 
           expect(response).to have_gitlab_http_status(200)
+        end
+
+        context "when vue_mr_discussions cookie is present" do
+          before do
+            allow(controller).to receive(:cookies).and_return({ vue_mr_discussions: 'true' })
+          end
+
+          it "renders discussion with serializer" do
+            expect_any_instance_of(DiscussionSerializer).to receive(:represent)
+              .with(instance_of(Discussion), { context: instance_of(described_class) })
+
+            delete :unresolve, request_params
+          end
         end
       end
     end

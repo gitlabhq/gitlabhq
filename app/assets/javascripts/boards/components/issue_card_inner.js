@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Vue from 'vue';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import eventHub from '../eventhub';
@@ -30,6 +31,10 @@ gl.issueBoards.IssueCardInner = Vue.extend({
       type: Boolean,
       required: false,
       default: false,
+    },
+    groupId: {
+      type: Number,
+      required: false,
     },
   },
   data() {
@@ -64,7 +69,13 @@ gl.issueBoards.IssueCardInner = Vue.extend({
       return this.issue.assignees.length > this.numberOverLimit;
     },
     cardUrl() {
-      return `${this.issueLinkBase}/${this.issue.iid}`;
+      let baseUrl = this.issueLinkBase;
+
+      if (this.groupId && this.issue.project) {
+        baseUrl = this.issueLinkBase.replace(':project_path', this.issue.project.path);
+      }
+
+      return `${baseUrl}/${this.issue.iid}`;
     },
     issueId() {
       if (this.issue.iid) {
@@ -148,7 +159,7 @@ gl.issueBoards.IssueCardInner = Vue.extend({
             class="card-number"
             v-if="issueId"
           >
-            {{ issueId }}
+            <template v-if="groupId && issue.project">{{issue.project.path}}</template>{{ issueId }}
           </span>
         </h4>
         <div class="card-assignee">

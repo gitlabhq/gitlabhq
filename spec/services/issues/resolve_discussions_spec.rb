@@ -14,7 +14,7 @@ describe Issues::ResolveDiscussions do
   let(:user) { create(:user) }
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
   end
 
   describe "for resolving discussions" do

@@ -5,6 +5,7 @@ module Search
     def initialize(user, group, params)
       super(user, params)
 
+      @default_project_filter = false
       @group = group
     end
 

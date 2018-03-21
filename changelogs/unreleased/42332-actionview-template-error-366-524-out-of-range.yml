@@ -1,0 +1,5 @@
+---
+title: Fix 500 error being shown when diff has context marker with invalid encoding
+merge_request:
+author:
+type: fixed

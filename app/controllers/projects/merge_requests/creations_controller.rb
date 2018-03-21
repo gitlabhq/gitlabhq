@@ -4,6 +4,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   include RendersCommits
 
   skip_before_action :merge_request
+  before_action :whitelist_query_limiting, only: [:create]
   before_action :authorize_create_merge_request!
   before_action :apply_diff_view_cookie!, only: [:diffs, :diff_for_path]
   before_action :build_merge_request, except: [:create]
@@ -43,11 +44,8 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   end
 
   def diffs
-    @diffs = if @merge_request.can_be_created
-               @merge_request.diffs(diff_options)
-             else
-               []
-             end
+    @diffs = @merge_request.diffs(diff_options) if @merge_request.can_be_created
+
     @diff_notes_disabled = true
 
     @environment = @merge_request.environments_for(current_user).last
@@ -77,7 +75,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   def branch_to
     @target_project = selected_target_project
 
-    if params[:ref].present?
+    if @target_project && params[:ref].present?
       @ref = params[:ref]
       @commit = @target_project.commit(Gitlab::Git::BRANCH_REF_PREFIX + @ref)
     end
@@ -87,7 +85,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
   def update_branches
     @target_project = selected_target_project
-    @target_branches = @target_project.repository.branch_names
+    @target_branches = @target_project ? @target_project.repository.branch_names : []
 
     render layout: false
   end
@@ -123,9 +121,13 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
       @project
     elsif params[:target_project_id].present?
       MergeRequestTargetProjectFinder.new(current_user: current_user, source_project: @project)
-        .execute.find(params[:target_project_id])
+        .find_by(id: params[:target_project_id])
     else
       @project.forked_from_project
     end
+  end
+
+  def whitelist_query_limiting
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42384')
   end
 end

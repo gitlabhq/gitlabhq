@@ -1,13 +1,6 @@
 - page_title 'Two-Factor Authentication', 'Account'
-- add_to_breadcrumbs("Account", profile_account_path)
+- add_to_breadcrumbs("Two-Factor Authentication", profile_account_path)
 - @content_class = "limit-container-width" unless fluid_layout
-
-= render 'profiles/head'
-
-- content_for :page_specific_javascripts do
-  - if inject_u2f_api?
-    = page_specific_javascript_bundle_tag('u2f')
-  = page_specific_javascript_bundle_tag('two_factor_auth')
 
 .js-two-factor-auth{ 'data-two-factor-skippable' => "#{two_factor_skippable?}", 'data-two_factor_skip_url' => skip_profile_two_factor_auth_path }
   .row.prepend-top-default
@@ -18,7 +11,12 @@
         Use an app on your mobile device to enable two-factor authentication (2FA).
     .col-lg-8
       - if current_user.two_factor_otp_enabled?
-        = icon "check inverse", base: "circle", class: "text-success", text: "You've already enabled two-factor authentication using mobile authenticator applications. You can disable it from your account settings page."
+        %p
+          You've already enabled two-factor authentication using mobile authenticator applications. In order to register a different device, you must first disable two-factor authentication.
+          = link_to 'Disable two-factor authentication', profile_two_factor_auth_path,
+                method: :delete,
+                data: { confirm: "Are you sure? This will invalidate your registered applications and U2F devices." },
+                class: 'btn btn-danger'
       - else
         %p
           Download the Google Authenticator application from App Store or Google Play Store and scan this code.

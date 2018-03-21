@@ -1,7 +1,7 @@
 class PagesWorker
   include ApplicationWorker
 
-  sidekiq_options retry: false
+  sidekiq_options retry: 3
 
   def perform(action, *arg)
     send(action, *arg) # rubocop:disable GitlabSecurity/PublicSend
@@ -13,6 +13,7 @@ class PagesWorker
     if result[:status] == :success
       result = Projects::UpdatePagesConfigurationService.new(build.project).execute
     end
+
     result
   end
 

@@ -53,7 +53,7 @@ Below we describe the contributing process to GitLab for two reasons:
 Several people from the [GitLab team][team] are helping community members to get
 their contributions accepted by meeting our [Definition of done][done].
 
-What you can expect from them is described at https://about.gitlab.com/jobs/merge-request-coach/.
+What you can expect from them is described at https://about.gitlab.com/roles/merge-request-coach/.
 
 ## Assigning issues
 
@@ -71,10 +71,14 @@ star, smile, etc.). Some good tips about code reviews can be found in our
 
 ## Feature freeze on the 7th for the release on the 22nd
 
-After the 7th (Pacific Standard Time Zone) of each month, RC1 of the upcoming release (to be shipped on the 22nd) is created and deployed to GitLab.com and the stable branch for this release is frozen, which means master is no longer merged into it.
+After 7th at 23:59 (Pacific Time Zone) of each month, RC1 of the upcoming release (to be shipped on the 22nd) is created and deployed to GitLab.com and the stable branch for this release is frozen, which means master is no longer merged into it.
 Merge requests may still be merged into master during this period,
 but they will go into the _next_ release, unless they are manually cherry-picked into the stable branch.
+
 By freezing the stable branches 2 weeks prior to a release, we reduce the risk of a last minute merge request potentially breaking things.
+
+Any release candidate that gets created after this date can become a final release,
+hence the name release candidate.
 
 ### Between the 1st and the 7th
 
@@ -85,7 +89,8 @@ These types of merge requests for the upcoming release need special consideratio
   and a dedicated team with front-end, back-end, and UX.
 * **Small features**: any other feature request.
 
-**Large features** must be with a maintainer **by the 1st**. This means that:
+It is strongly recommended that **large features** be with a maintainer **by the
+1st**. This means that:
 
 * There is a merge request (even if it's WIP).
 * The person (or people, if it needs a frontend and backend maintainer) who will
@@ -100,13 +105,36 @@ The maintainer can also choose to assign a reviewer to perform an initial
 review, but this way the maintainer is unlikely to be surprised by receiving an
 MR later in the cycle.
 
-**Small features** must be with a reviewer (not necessarily maintainer) **by the
-3rd**.
+It is strongly recommended that **small features** be with a reviewer (not
+necessarily a maintainer) **by the 3rd**.
 
 Most merge requests from the community do not have a specific release
 target. However, if one does and falls into either of the above categories, it's
 the reviewer's responsibility to manage the above communication and assignment
 on behalf of the community member.
+
+#### What happens if these deadlines are missed?
+
+If a small or large feature is _not_ with a maintainer or reviewer by the
+recommended date, this does _not_ mean that maintainers or reviewers will refuse
+to review or merge it, or that the feature will definitely not make it in before
+the feature freeze.
+
+However, with every day that passes without review, it will become more likely
+that the feature will slip, because maintainers and reviewers may not have
+enough time to do a thorough review, and developers may not have enough time to
+adequately address any feedback that may come back.
+
+A maintainer or reviewer may also determine that it will not be possible to
+finish the current scope of the feature in time, but that it is possible to
+reduce the scope so that something can still ship this month, with the remaining
+scope moving to the next release. The sooner this decision is made, in
+conversation with the Product Manager and developer, the more time there is to
+extract that which is now out of scope, and to finish that which remains in scope.
+
+For these reasons, it is strongly recommended to follow the guidelines above,
+to maximize the chances of your feature making it in before the feature freeze,
+and to prevent any last minute surprises.
 
 ### On the 7th
 
@@ -169,11 +197,13 @@ to be backported down to the `9.5` release, you will need to assign it the
 ### Asking for an exception
 
 If you think a merge request should go into an RC or patch even though it does not meet these requirements,
-you can ask for an exception to be made. Exceptions require sign-off from 3 people besides the developer:
+you can ask for an exception to be made.
 
-1. a Release Manager
-2. an Engineering Lead
-3. an Engineering Director, the VP of Engineering, or the CTO
+Go to [Release tasks issue tracker](https://gitlab.com/gitlab-org/release/tasks/issues/new) and create an issue
+using the `Exception-request` issue template.
+
+**Do not** set the relevant `Pick into X.Y` label (see above) before request an
+exception; this should be done after the exception is approved.
 
 You can find who is who on the [team page](https://about.gitlab.com/team/).
 

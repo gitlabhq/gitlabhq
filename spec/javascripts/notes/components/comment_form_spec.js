@@ -1,17 +1,21 @@
+import $ from 'jquery';
 import Vue from 'vue';
 import Autosize from 'autosize';
 import store from '~/notes/stores';
-import issueCommentForm from '~/notes/components/comment_form.vue';
+import CommentForm from '~/notes/components/comment_form.vue';
 import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } from '../mock_data';
 import { keyboardDownEvent } from '../../issue_show/helpers';
 
 describe('issue_comment_form component', () => {
   let vm;
-  const Component = Vue.extend(issueCommentForm);
+  const Component = Vue.extend(CommentForm);
   let mountComponent;
 
   beforeEach(() => {
-    mountComponent = () => new Component({
+    mountComponent = (noteableType = 'issue') => new Component({
+      propsData: {
+        noteableType,
+      },
       store,
     }).$mount();
   });
@@ -136,13 +140,26 @@ describe('issue_comment_form component', () => {
 
           expect(vm.editCurrentUserLastNote).toHaveBeenCalled();
         });
+
+        it('inits autosave', () => {
+          expect(vm.autosave).toBeDefined();
+          expect(vm.autosave.key).toEqual(`autosave/Note/Issue/${noteableDataMock.id}`);
+        });
       });
 
       describe('event enter', () => {
-        it('should save note when cmd/ctrl+enter is pressed', () => {
+        it('should save note when cmd+enter is pressed', () => {
           spyOn(vm, 'handleSave').and.callThrough();
           vm.$el.querySelector('.js-main-target-form textarea').value = 'Foo';
           vm.$el.querySelector('.js-main-target-form textarea').dispatchEvent(keyboardDownEvent(13, true));
+
+          expect(vm.handleSave).toHaveBeenCalled();
+        });
+
+        it('should save note when ctrl+enter is pressed', () => {
+          spyOn(vm, 'handleSave').and.callThrough();
+          vm.$el.querySelector('.js-main-target-form textarea').value = 'Foo';
+          vm.$el.querySelector('.js-main-target-form textarea').dispatchEvent(keyboardDownEvent(13, false, true));
 
           expect(vm.handleSave).toHaveBeenCalled();
         });
@@ -172,6 +189,29 @@ describe('issue_comment_form component', () => {
           expect(vm.$el.querySelector('.btn-comment-and-close').textContent.trim()).toEqual('Comment & close issue');
           expect(vm.$el.querySelector('.js-note-discard')).toBeDefined();
           done();
+        });
+      });
+
+      it('updates button text with noteable type', (done) => {
+        vm.noteableType = 'merge_request';
+
+        Vue.nextTick(() => {
+          expect(vm.$el.querySelector('.btn-comment-and-close').textContent.trim()).toEqual('Close merge request');
+          done();
+        });
+      });
+
+      describe('when clicking close/reopen button', () => {
+        it('should disable button and show a loading spinner', (done) => {
+          const toggleStateButton = vm.$el.querySelector('.js-action-button');
+
+          toggleStateButton.click();
+          Vue.nextTick(() => {
+            expect(toggleStateButton.disabled).toEqual(true);
+            expect(toggleStateButton.querySelector('.js-loading-button-icon')).not.toBeNull();
+
+            done();
+          });
         });
       });
     });

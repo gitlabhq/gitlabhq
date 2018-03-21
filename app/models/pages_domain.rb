@@ -1,10 +1,14 @@
 class PagesDomain < ActiveRecord::Base
+  VERIFICATION_KEY = 'gitlab-pages-verification-code'.freeze
+  VERIFICATION_THRESHOLD = 3.days.freeze
+
   belongs_to :project
 
   validates :domain, hostname: { allow_numeric_hostname: true }
   validates :domain, uniqueness: { case_sensitive: false }
   validates :certificate, certificate: true, allow_nil: true, allow_blank: true
   validates :key, certificate_key: true, allow_nil: true, allow_blank: true
+  validates :verification_code, presence: true, allow_blank: false
 
   validate :validate_pages_domain
   validate :validate_matching_key, if: ->(domain) { domain.certificate.present? || domain.key.present? }
@@ -16,9 +20,31 @@ class PagesDomain < ActiveRecord::Base
     key: Gitlab::Application.secrets.db_key_base,
     algorithm: 'aes-256-cbc'
 
+  after_initialize :set_verification_code
   after_create :update_daemon
-  after_save :update_daemon
+  after_update :update_daemon, if: :pages_config_changed?
   after_destroy :update_daemon
+
+  scope :enabled, -> { where('enabled_until >= ?', Time.now ) }
+  scope :needs_verification, -> do
+    verified_at = arel_table[:verified_at]
+    enabled_until = arel_table[:enabled_until]
+    threshold = Time.now + VERIFICATION_THRESHOLD
+
+    where(verified_at.eq(nil).or(enabled_until.eq(nil).or(enabled_until.lt(threshold))))
+  end
+
+  def verified?
+    !!verified_at
+  end
+
+  def unverified?
+    !verified?
+  end
+
+  def enabled?
+    !Gitlab::CurrentSettings.pages_domain_verification_enabled? || enabled_until.present?
+  end
 
   def to_param
     domain
@@ -27,7 +53,7 @@ class PagesDomain < ActiveRecord::Base
   def url
     return unless domain
 
-    if certificate
+    if certificate.present?
       "https://#{domain}"
     else
       "http://#{domain}"
@@ -84,10 +110,47 @@ class PagesDomain < ActiveRecord::Base
     @certificate_text ||= x509.try(:to_text)
   end
 
+  # Verification codes may be TXT records for domain or verification_domain, to
+  # support the use of CNAME records on domain.
+  def verification_domain
+    return unless domain.present?
+
+    "_#{VERIFICATION_KEY}.#{domain}"
+  end
+
+  def keyed_verification_code
+    return unless verification_code.present?
+
+    "#{VERIFICATION_KEY}=#{verification_code}"
+  end
+
   private
+
+  def set_verification_code
+    return if self.verification_code.present?
+
+    self.verification_code = SecureRandom.hex(16)
+  end
 
   def update_daemon
     ::Projects::UpdatePagesConfigurationService.new(project).execute
+  end
+
+  def pages_config_changed?
+    project_id_changed? ||
+      domain_changed? ||
+      certificate_changed? ||
+      key_changed? ||
+      became_enabled? ||
+      became_disabled?
+  end
+
+  def became_enabled?
+    enabled_until.present? && !enabled_until_was.present?
+  end
+
+  def became_disabled?
+    !enabled_until.present? && enabled_until_was.present?
   end
 
   def validate_matching_key

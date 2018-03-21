@@ -7,12 +7,16 @@ module Gitlab
     class PrepareUntrackedUploads # rubocop:disable Metrics/ClassLength
       # For bulk_queue_background_migration_jobs_by_range
       include Database::MigrationHelpers
+      include ::Gitlab::Utils::StrongMemoize
 
       FIND_BATCH_SIZE = 500
       RELATIVE_UPLOAD_DIR = "uploads".freeze
-      ABSOLUTE_UPLOAD_DIR = "#{CarrierWave.root}/#{RELATIVE_UPLOAD_DIR}".freeze
+      ABSOLUTE_UPLOAD_DIR = File.join(
+        Gitlab.config.uploads.storage_path,
+        RELATIVE_UPLOAD_DIR
+      )
       FOLLOW_UP_MIGRATION = 'PopulateUntrackedUploads'.freeze
-      START_WITH_CARRIERWAVE_ROOT_REGEX = %r{\A#{CarrierWave.root}/}
+      START_WITH_ROOT_REGEX = %r{\A#{Gitlab.config.uploads.storage_path}/}
       EXCLUDED_HASHED_UPLOADS_PATH = "#{ABSOLUTE_UPLOAD_DIR}/@hashed/*".freeze
       EXCLUDED_TMP_UPLOADS_PATH = "#{ABSOLUTE_UPLOAD_DIR}/tmp/*".freeze
 
@@ -39,7 +43,11 @@ module Gitlab
 
         store_untracked_file_paths
 
-        schedule_populate_untracked_uploads_jobs
+        if UntrackedFile.all.empty?
+          drop_temp_table
+        else
+          schedule_populate_untracked_uploads_jobs
+        end
       end
 
       private
@@ -80,7 +88,7 @@ module Gitlab
         paths = []
 
         stdout.each_line("\0") do |line|
-          paths << line.chomp("\0").sub(START_WITH_CARRIERWAVE_ROOT_REGEX, '')
+          paths << line.chomp("\0").sub(START_WITH_ROOT_REGEX, '')
 
           if paths.size >= batch_size
             yield(paths)
@@ -88,7 +96,7 @@ module Gitlab
           end
         end
 
-        yield(paths)
+        yield(paths) if paths.any?
       end
 
       def build_find_command(search_dir)
@@ -142,7 +150,9 @@ module Gitlab
       end
 
       def postgresql?
-        @postgresql ||= Gitlab::Database.postgresql?
+        strong_memoize(:postgresql) do
+          Gitlab::Database.postgresql?
+        end
       end
 
       def can_bulk_insert_and_ignore_duplicates?
@@ -150,13 +160,21 @@ module Gitlab
       end
 
       def postgresql_pre_9_5?
-        @postgresql_pre_9_5 ||= postgresql? &&
-          Gitlab::Database.version.to_f < 9.5
+        strong_memoize(:postgresql_pre_9_5) do
+          postgresql? && Gitlab::Database.version.to_f < 9.5
+        end
       end
 
       def schedule_populate_untracked_uploads_jobs
         bulk_queue_background_migration_jobs_by_range(
           UntrackedFile, FOLLOW_UP_MIGRATION)
+      end
+
+      def drop_temp_table
+        unless Rails.env.test? # Dropping a table intermittently breaks test cleanup
+          UntrackedFile.connection.drop_table(:untracked_files_for_uploads,
+                                              if_exists: true)
+        end
       end
     end
   end

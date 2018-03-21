@@ -7,13 +7,13 @@ module Ci
     include Presentable
     include Gitlab::OptimisticLocking
 
-    belongs_to :project
+    belongs_to :project, inverse_of: :pipelines
     belongs_to :user
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
     belongs_to :pipeline_schedule, class_name: 'Ci::PipelineSchedule'
 
     has_many :stages
-    has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
+    has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :builds, foreign_key: :commit_id
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id # rubocop:disable Cop/ActiveRecordDependent
     has_many :variables, class_name: 'Ci::PipelineVariable'
@@ -287,8 +287,12 @@ module Ci
       Ci::Pipeline.truncate_sha(sha)
     end
 
+    # NOTE: This is loaded lazily and will never be nil, even if the commit
+    # cannot be found.
+    #
+    # Use constructs like: `pipeline.commit.present?`
     def commit
-      @commit ||= project.commit_by(oid: sha)
+      @commit ||= Commit.lazy(project, sha)
     end
 
     def branch?
@@ -338,12 +342,9 @@ module Ci
     end
 
     def latest?
-      return false unless ref
+      return false unless ref && commit.present?
 
-      commit = project.commit(ref)
-      return false unless commit
-
-      commit.sha == sha
+      project.commit(ref) == commit
     end
 
     def retried
@@ -393,7 +394,7 @@ module Ci
 
       @config_processor ||= begin
         Gitlab::Ci::YamlProcessor.new(ci_yaml_file)
-      rescue Gitlab::Ci::YamlProcessor::ValidationError, Psych::SyntaxError => e
+      rescue Gitlab::Ci::YamlProcessor::ValidationError => e
         self.yaml_errors = e.message
         nil
       rescue
@@ -472,11 +473,10 @@ module Ci
     end
 
     def predefined_variables
-      [
-        { key: 'CI_PIPELINE_ID', value: id.to_s, public: true },
-        { key: 'CI_CONFIG_PATH', value: ci_yaml_file_path, public: true },
-        { key: 'CI_PIPELINE_SOURCE', value: source.to_s, public: true }
-      ]
+      Gitlab::Ci::Variables::Collection.new
+        .append(key: 'CI_PIPELINE_ID', value: id.to_s)
+        .append(key: 'CI_CONFIG_PATH', value: ci_yaml_file_path)
+        .append(key: 'CI_PIPELINE_SOURCE', value: source.to_s)
     end
 
     def queued_duration
@@ -513,7 +513,7 @@ module Ci
       # We purposely cast the builds to an Array here. Because we always use the
       # rows if there are more than 0 this prevents us from having to run two
       # queries: one to get the count and one to get the rows.
-      @latest_builds_with_artifacts ||= builds.latest.with_artifacts.to_a
+      @latest_builds_with_artifacts ||= builds.latest.with_artifacts_archive.to_a
     end
 
     private
@@ -523,7 +523,7 @@ module Ci
       return unless sha
 
       project.repository.gitlab_ci_yml_for(sha, ci_yaml_file_path)
-    rescue GRPC::NotFound, Rugged::ReferenceError, GRPC::Internal
+    rescue GRPC::NotFound, GRPC::Internal
       nil
     end
 

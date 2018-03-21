@@ -16,7 +16,7 @@ class SessionsController < Devise::SessionsController
 
   def new
     set_minimum_password_length
-    @ldap_servers = Gitlab::LDAP::Config.available_servers
+    @ldap_servers = Gitlab::Auth::LDAP::Config.available_servers
 
     super
   end
@@ -28,6 +28,7 @@ class SessionsController < Devise::SessionsController
         resource.update_attributes(reset_password_token: nil,
                                    reset_password_sent_at: nil)
       end
+
       # hide the signed-in notification
       flash[:notice] = nil
       log_audit_event(current_user, resource, with: authentication_method)

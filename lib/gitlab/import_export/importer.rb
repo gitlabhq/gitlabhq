@@ -9,7 +9,7 @@ module Gitlab
         @archive_file = project.import_source
         @current_user = project.creator
         @project = project
-        @shared = Gitlab::ImportExport::Shared.new(relative_path: path_with_namespace)
+        @shared = project.import_export_shared
       end
 
       def execute
@@ -50,9 +50,10 @@ module Gitlab
       end
 
       def wiki_restorer
-        Gitlab::ImportExport::RepoRestorer.new(path_to_bundle: wiki_repo_path,
+        Gitlab::ImportExport::WikiRestorer.new(path_to_bundle: wiki_repo_path,
                                                shared: @shared,
-                                               project: ProjectWiki.new(project_tree.restored_project))
+                                               project: ProjectWiki.new(project_tree.restored_project),
+                                               wiki_enabled: @project.wiki_enabled?)
       end
 
       def uploads_restorer

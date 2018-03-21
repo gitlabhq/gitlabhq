@@ -1,7 +1,4 @@
 - todo = issuable_todo(issuable)
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_vue')
-  = page_specific_javascript_bundle_tag('sidebar')
 
 %aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { signed: { in: current_user.present? } }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
   .issuable-sidebar{ data: { endpoint: "#{issuable_json_path(issuable)}" } }
@@ -9,7 +6,7 @@
     .block.issuable-sidebar-header
       - if current_user
         %span.issuable-header-text.hide-collapsed.pull-left
-          Todo
+          = _('Todo')
       %a.gutter-toggle.pull-right.js-sidebar-toggle{ role: "button", href: "#", "aria-label" => "Toggle sidebar" }
         = sidebar_gutter_toggle_icon
       - if current_user
@@ -29,26 +26,27 @@
               %span.has-tooltip{ title: "#{issuable.milestone.title}<br>#{milestone_tooltip_title(issuable.milestone)}", data: { container: 'body', html: 1, placement: 'left' } }
                 = issuable.milestone.title
             - else
-              None
+              = _('None')
         .title.hide-collapsed
-          Milestone
+          = _('Milestone')
           = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
           - if can_edit_issuable
-            = link_to 'Edit', '#', class: 'js-sidebar-dropdown-toggle edit-link pull-right'
+            = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link pull-right'
         .value.hide-collapsed
           - if issuable.milestone
             = link_to issuable.milestone.title, milestone_path(issuable.milestone), class: "bold has-tooltip", title: milestone_tooltip_title(issuable.milestone), data: { container: "body", html: 1 }
           - else
-            %span.no-value None
+            %span.no-value
+              = _('None')
 
         .selectbox.hide-collapsed
           = f.hidden_field 'milestone_id', value: issuable.milestone_id, id: nil
-          = dropdown_tag('Milestone', options: { title: 'Assign milestone', toggle_class: 'js-milestone-select js-extra-options', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: 'Search milestones', data: { show_no: true, field_name: "#{issuable.to_ability_name}[milestone_id]", project_id: @project.id, issuable_id: issuable.id, milestones: project_milestones_path(@project, :json), ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable), use_id: true, default_no: true, selected: (issuable.milestone.name if issuable.milestone), null_default: true }})
+          = dropdown_tag('Milestone', options: { title: _('Assign milestone'), toggle_class: 'js-milestone-select js-extra-options', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: _('Search milestones'), data: { show_no: true, field_name: "#{issuable.to_ability_name}[milestone_id]", project_id: @project.id, issuable_id: issuable.id, milestones: project_milestones_path(@project, :json), ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable), use_id: true, default_no: true, selected: (issuable.milestone.name if issuable.milestone), null_default: true }})
       - if issuable.has_attribute?(:time_estimate)
         #issuable-time-tracker.block
           // Fallback while content is loading
           .title.hide-collapsed
-            Time tracking
+            = _('Time tracking')
             = icon('spinner spin', 'aria-hidden': 'true')
       - if issuable.has_attribute?(:due_date)
         .block.due_date
@@ -57,30 +55,32 @@
             %span.js-due-date-sidebar-value
               = issuable.due_date.try(:to_s, :medium) || 'None'
           .title.hide-collapsed
-            Due date
+            = _('Due date')
             = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
             - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
-              = link_to 'Edit', '#', class: 'js-sidebar-dropdown-toggle edit-link pull-right'
+              = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link pull-right'
           .value.hide-collapsed
             %span.value-content
               - if issuable.due_date
                 %span.bold= issuable.due_date.to_s(:medium)
               - else
-                %span.no-value No due date
+                %span.no-value
+                  = _('No due date')
             - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
               %span.no-value.js-remove-due-date-holder{ class: ("hidden" if issuable.due_date.nil?) }
                 \-
                 %a.js-remove-due-date{ href: "#", role: "button" }
-                  remove due date
+                  = _('remove due date')
           - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
             .selectbox.hide-collapsed
               = f.hidden_field :due_date, value: issuable.due_date.try(:strftime, 'yy-mm-dd')
               .dropdown
                 %button.dropdown-menu-toggle.js-due-date-select{ type: 'button', data: { toggle: 'dropdown', field_name: "#{issuable.to_ability_name}[due_date]", ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable) } }
-                  %span.dropdown-toggle-text Due date
+                  %span.dropdown-toggle-text
+                    = _('Due date')
                   = icon('chevron-down', 'aria-hidden': 'true')
                 .dropdown-menu.dropdown-menu-due-date
-                  = dropdown_title('Due date')
+                  = dropdown_title(_('Due date'))
                   = dropdown_content do
                     .js-due-date-calendar
 
@@ -92,16 +92,17 @@
             %span
               = selected_labels.size
           .title.hide-collapsed
-            Labels
+            = _('Labels')
             = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
             - if can_edit_issuable
-              = link_to 'Edit', '#', class: 'js-sidebar-dropdown-toggle edit-link pull-right'
+              = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link pull-right'
           .value.issuable-show-labels.hide-collapsed{ class: ("has-labels" if selected_labels.any?) }
             - if selected_labels.any?
               - selected_labels.each do |label|
                 = link_to_label(label, subject: issuable.project, type: issuable.to_ability_name)
             - else
-              %span.no-value None
+              %span.no-value
+                = _('None')
           .selectbox.hide-collapsed
             - selected_labels.each do |label|
               = hidden_field_tag "#{issuable.to_ability_name}[label_names][]", label.id, id: nil
@@ -116,10 +117,12 @@
                   = render partial: "shared/issuable/label_page_create"
 
       - if issuable.has_attribute?(:confidential)
+        -# haml-lint:disable InlineJavaScript
         %script#js-confidential-issue-data{ type: "application/json" }= { is_confidential: @issue.confidential, is_editable: can_edit_issuable }.to_json.html_safe
         #js-confidential-entry-point
 
       - if issuable.has_attribute?(:discussion_locked)
+        -# haml-lint:disable InlineJavaScript
         %script#js-lock-issue-data{ type: "application/json" }= { is_locked: issuable.discussion_locked?, is_editable: can_edit_issuable }.to_json.html_safe
         #js-lock-entry-point
 
@@ -131,29 +134,30 @@
       - project_ref = cross_project_reference(@project, issuable)
       .block.project-reference
         .sidebar-collapsed-icon.dont-change-state
-          = clipboard_button(text: project_ref, title: "Copy reference to clipboard", placement: "left")
+          = clipboard_button(text: project_ref, title: _('Copy reference to clipboard'), placement: "left")
         .cross-project-reference.hide-collapsed
           %span
-            Reference:
+            = _('Reference:')
             %cite{ title: project_ref }
               = project_ref
-          = clipboard_button(text: project_ref, title: "Copy reference to clipboard", placement: "left")
+          = clipboard_button(text: project_ref, title: _('Copy reference to clipboard'), placement: "left")
       - if current_user && issuable.can_move?(current_user)
         .block.js-sidebar-move-issue-block
-          .sidebar-collapsed-icon{ data: { toggle: 'tooltip', placement: 'left', container: 'body' }, title: 'Move issue' }
+          .sidebar-collapsed-icon{ data: { toggle: 'tooltip', placement: 'left', container: 'body' }, title: _('Move issue') }
             = custom_icon('icon_arrow_right')
           .dropdown.sidebar-move-issue-dropdown.hide-collapsed
             %button.btn.btn-default.btn-block.js-sidebar-dropdown-toggle.js-move-issue{ type: 'button',
               data: { toggle: 'dropdown' } }
-              Move issue
+              = _('Move issue')
             .dropdown-menu.dropdown-menu-selectable
-              = dropdown_title('Move issue')
-              = dropdown_filter('Search project', search_id: 'sidebar-move-issue-dropdown-search')
+              = dropdown_title(_('Move issue'))
+              = dropdown_filter(_('Search project'), search_id: 'sidebar-move-issue-dropdown-search')
               = dropdown_content
               = dropdown_loading
               = dropdown_footer add_content_class: true do
                 %button.btn.btn-new.sidebar-move-issue-confirmation-button.js-move-issue-confirmation-button{ disabled: true }
-                  Move
+                  = _('Move')
                   = icon('spinner spin', class: 'sidebar-move-issue-confirmation-loading-icon')
 
+    -# haml-lint:disable InlineJavaScript
     %script.js-sidebar-options{ type: "application/json" }= issuable_sidebar_options(issuable, can_edit_issuable).to_json.html_safe

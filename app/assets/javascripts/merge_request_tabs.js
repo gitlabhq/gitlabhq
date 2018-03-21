@@ -1,8 +1,9 @@
 /* eslint-disable no-new, class-methods-use-this */
-/* global notes */
 
+import $ from 'jquery';
 import Cookies from 'js-cookie';
-import Flash from './flash';
+import axios from './lib/utils/axios_utils';
+import flash from './flash';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import initChangesDropdown from './init_changes_dropdown';
 import bp from './breakpoints';
@@ -16,6 +17,7 @@ import initDiscussionTab from './image_diff/init_discussion_tab';
 import Diff from './diff';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import syntaxHighlight from './syntax_highlight';
+import Notes from './notes';
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -71,6 +73,7 @@ export default class MergeRequestTabs {
   constructor({ action, setUrl, stubLocation } = {}) {
     const mergeRequestTabs = document.querySelector('.js-tabs-affix');
     const navbar = document.querySelector('.navbar-gitlab');
+    const peek = document.getElementById('peek');
     const paddingTop = 16;
 
     this.diffsLoaded = false;
@@ -83,6 +86,10 @@ export default class MergeRequestTabs {
     this.tabShown = this.tabShown.bind(this);
     this.showTab = this.showTab.bind(this);
     this.stickyTop = navbar ? navbar.offsetHeight - paddingTop : 0;
+
+    if (peek) {
+      this.stickyTop += peek.offsetHeight;
+    }
 
     if (mergeRequestTabs) {
       this.stickyTop += mergeRequestTabs.offsetHeight;
@@ -240,19 +247,30 @@ export default class MergeRequestTabs {
     return newState;
   }
 
+  getCurrentAction() {
+    return this.currentAction;
+  }
+
   loadCommits(source) {
     if (this.commitsLoaded) {
       return;
     }
-    this.ajaxGet({
-      url: `${source}.json`,
-      success: (data) => {
+
+    this.toggleLoading(true);
+
+    axios.get(`${source}.json`)
+      .then(({ data }) => {
         document.querySelector('div#commits').innerHTML = data.html;
         localTimeAgo($('.js-timeago', 'div#commits'));
         this.commitsLoaded = true;
         this.scrollToElement('#commits');
-      },
-    });
+
+        this.toggleLoading(false);
+      })
+      .catch(() => {
+        this.toggleLoading(false);
+        flash('An error occurred while fetching this tab.');
+      });
   }
 
   mountPipelinesView() {
@@ -283,9 +301,10 @@ export default class MergeRequestTabs {
     // some pages like MergeRequestsController#new has query parameters on that anchor
     const urlPathname = parseUrlPathname(source);
 
-    this.ajaxGet({
-      url: `${urlPathname}.json${location.search}`,
-      success: (data) => {
+    this.toggleLoading(true);
+
+    axios.get(`${urlPathname}.json${location.search}`)
+      .then(({ data }) => {
         const $container = $('#diffs');
         $container.html(data.html);
 
@@ -324,7 +343,7 @@ export default class MergeRequestTabs {
         if (anchor && anchor.length > 0) {
           const notesContent = anchor.closest('.notes_content');
           const lineType = notesContent.hasClass('new') ? 'new' : 'old';
-          notes.toggleDiffNote({
+          Notes.instance.toggleDiffNote({
             target: anchor,
             lineType,
             forceShow: true,
@@ -335,8 +354,13 @@ export default class MergeRequestTabs {
           // (discussion and diff tabs) and `:target` only applies to the first
           anchor.addClass('target');
         }
-      },
-    });
+
+        this.toggleLoading(false);
+      })
+      .catch(() => {
+        this.toggleLoading(false);
+        flash('An error occurred while fetching this tab.');
+      });
   }
 
   // Show or hide the loading spinner
@@ -346,19 +370,8 @@ export default class MergeRequestTabs {
     $('.mr-loading-status .loading').toggle(status);
   }
 
-  ajaxGet(options) {
-    const defaults = {
-      beforeSend: () => this.toggleLoading(true),
-      error: () => new Flash('An error occurred while fetching this tab.', 'alert'),
-      complete: () => this.toggleLoading(false),
-      dataType: 'json',
-      type: 'GET',
-    };
-    $.ajax($.extend({}, defaults, options));
-  }
-
   diffViewType() {
-    return $('.inline-parallel-buttons a.active').data('view-type');
+    return $('.inline-parallel-buttons a.active').data('viewType');
   }
 
   isDiffAction(action) {

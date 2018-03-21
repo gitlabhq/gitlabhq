@@ -15,6 +15,7 @@ module API
           if errors[:project_access].any?
             error!(errors[:project_access], 422)
           end
+
           not_found!
         end
 

@@ -85,10 +85,11 @@ class NotificationService
     recipients.each do |recipient|
       mailer.send(
         :reassigned_issue_email,
-        recipient.id,
+        recipient.user.id,
         issue.id,
         previous_assignee_ids,
-        current_user.id
+        current_user.id,
+        recipient.reason
       ).deliver_later
     end
   end
@@ -176,7 +177,7 @@ class NotificationService
       action: "resolve_all_discussions")
 
     recipients.each do |recipient|
-      mailer.resolved_all_discussions_email(recipient.id, merge_request.id, current_user.id).deliver_later
+      mailer.resolved_all_discussions_email(recipient.user.id, merge_request.id, current_user.id, recipient.reason).deliver_later
     end
   end
 
@@ -199,7 +200,7 @@ class NotificationService
 
     recipients = NotificationRecipientService.build_new_note_recipients(note)
     recipients.each do |recipient|
-      mailer.send(notify_method, recipient.id, note.id).deliver_later
+      mailer.send(notify_method, recipient.user.id, note.id).deliver_later
     end
   end
 
@@ -207,7 +208,12 @@ class NotificationService
   def new_access_request(member)
     return true unless member.notifiable?(:subscription)
 
-    mailer.member_access_requested_email(member.real_source_type, member.id).deliver_later
+    recipients = member.source.members.active_without_invites.owners_and_masters
+    if fallback_to_group_owners_masters?(recipients, member)
+      recipients = member.source.group.members.active_without_invites.owners_and_masters
+    end
+
+    recipients.each { |recipient| deliver_access_request_email(recipient, member) }
   end
 
   def decline_access_request(member)
@@ -299,7 +305,7 @@ class NotificationService
     recipients = NotificationRecipientService.build_recipients(issue, current_user, action: 'moved')
 
     recipients.map do |recipient|
-      email = mailer.issue_moved_email(recipient, issue, new_issue, current_user)
+      email = mailer.issue_moved_email(recipient.user, issue, new_issue, current_user, recipient.reason)
       email.deliver_later
       email
     end
@@ -333,22 +339,46 @@ class NotificationService
     end
   end
 
+  def pages_domain_verification_succeeded(domain)
+    recipients_for_pages_domain(domain).each do |user|
+      mailer.pages_domain_verification_succeeded_email(domain, user).deliver_later
+    end
+  end
+
+  def pages_domain_verification_failed(domain)
+    recipients_for_pages_domain(domain).each do |user|
+      mailer.pages_domain_verification_failed_email(domain, user).deliver_later
+    end
+  end
+
+  def pages_domain_enabled(domain)
+    recipients_for_pages_domain(domain).each do |user|
+      mailer.pages_domain_enabled_email(domain, user).deliver_later
+    end
+  end
+
+  def pages_domain_disabled(domain)
+    recipients_for_pages_domain(domain).each do |user|
+      mailer.pages_domain_disabled_email(domain, user).deliver_later
+    end
+  end
+
   protected
 
   def new_resource_email(target, method)
     recipients = NotificationRecipientService.build_recipients(target, target.author, action: "new")
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id).deliver_later
+      mailer.send(method, recipient.user.id, target.id, recipient.reason).deliver_later
     end
   end
 
   def new_mentions_in_resource_email(target, new_mentioned_users, current_user, method)
     recipients = NotificationRecipientService.build_recipients(target, current_user, action: "new")
-    recipients = recipients & new_mentioned_users
+    recipients = recipients.select {|r| new_mentioned_users.include?(r.user) }
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id, current_user.id).deliver_later
+      mailer.send(method, recipient.user.id, target.id, current_user.id, recipient.reason).deliver_later
     end
   end
 
@@ -363,7 +393,7 @@ class NotificationService
     )
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id, current_user.id).deliver_later
+      mailer.send(method, recipient.user.id, target.id, current_user.id, recipient.reason).deliver_later
     end
   end
 
@@ -381,10 +411,11 @@ class NotificationService
     recipients.each do |recipient|
       mailer.send(
         method,
-        recipient.id,
+        recipient.user.id,
         target.id,
         previous_assignee_id,
-        current_user.id
+        current_user.id,
+        recipient.reason
       ).deliver_later
     end
   end
@@ -408,7 +439,7 @@ class NotificationService
     recipients = NotificationRecipientService.build_recipients(target, current_user, action: "reopen")
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id, status, current_user.id).deliver_later
+      mailer.send(method, recipient.user.id, target.id, status, current_user.id, recipient.reason).deliver_later
     end
   end
 
@@ -426,11 +457,29 @@ class NotificationService
 
   private
 
+  def recipients_for_pages_domain(domain)
+    project = domain.project
+
+    return [] unless project
+
+    notifiable_users(project.team.masters, :watch, target: project)
+  end
+
   def notifiable?(*args)
     NotificationRecipientService.notifiable?(*args)
   end
 
   def notifiable_users(*args)
     NotificationRecipientService.notifiable_users(*args)
+  end
+
+  def deliver_access_request_email(recipient, member)
+    mailer.member_access_requested_email(member.real_source_type, member.id, recipient.user.notification_email).deliver_later
+  end
+
+  def fallback_to_group_owners_masters?(recipients, member)
+    return false if recipients.present?
+
+    member.source.respond_to?(:group) && member.source.group
   end
 end

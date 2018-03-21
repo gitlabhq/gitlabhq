@@ -1,11 +1,8 @@
 class RepositoryImportWorker
-  ImportError = Class.new(StandardError)
-
   include ApplicationWorker
   include ExceptionBacktrace
   include ProjectStartImport
-
-  sidekiq_options status_expiration: StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION
+  include ProjectImportOptions
 
   def perform(project_id)
     project = Project.find(project_id)
@@ -23,17 +20,13 @@ class RepositoryImportWorker
     # to those importers to mark the import process as complete.
     return if service.async?
 
-    raise ImportError, result[:message] if result[:status] == :error
+    if result[:status] == :error
+      fail_import(project, result[:message]) if project.gitlab_project_import?
+
+      raise result[:message]
+    end
 
     project.after_import
-  rescue ImportError => ex
-    fail_import(project, ex.message)
-    raise
-  rescue => ex
-    return unless project
-
-    fail_import(project, ex.message)
-    raise ImportError, "#{ex.class} #{ex.message}"
   end
 
   private

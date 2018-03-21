@@ -20,6 +20,22 @@
   }
 }
 
+.multi-file-editor-options {
+  label {
+    margin-right: 20px;
+    text-align: center;
+  }
+
+  .preview {
+    font-size: 0;
+
+    img {
+      border: 1px solid $border-color-settings;
+      border-radius: 4px;
+    }
+  }
+}
+
 .application-theme {
   label {
     margin-right: 20px;

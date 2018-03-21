@@ -1,8 +1,10 @@
 /* eslint-disable comma-dangle, space-before-function-paren, one-var */
-/* global Sortable */
+
+import $ from 'jquery';
+import Sortable from 'vendor/Sortable';
 import Vue from 'vue';
 import AccessorUtilities from '../../lib/utils/accessor';
-import boardList from './board_list';
+import boardList from './board_list.vue';
 import boardBlankState from './board_blank_state';
 import './board_delete';
 

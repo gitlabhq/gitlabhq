@@ -1,6 +1,7 @@
+import $ from 'jquery';
 import Api from './api';
 
-document.addEventListener('DOMContentLoaded', () => {
+export default () => {
   $('#js-project-dropdown').glDropdown({
     data: (term, callback) => {
       Api.projects(term, {
@@ -19,4 +20,4 @@ document.addEventListener('DOMContentLoaded', () => {
     id: data => data.id,
     isSelected: data => (data.id === 2),
   });
-});
+};

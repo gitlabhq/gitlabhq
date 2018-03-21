@@ -11,155 +11,11 @@ const createComponent = (propsData) => {
 };
 
 describe('MonitoringDeployment', () => {
-  const reducedDeploymentData = [deploymentData[0]];
-  reducedDeploymentData[0].ref = reducedDeploymentData[0].ref.name;
-  reducedDeploymentData[0].xPos = 10;
-  reducedDeploymentData[0].time = new Date(reducedDeploymentData[0].created_at);
   describe('Methods', () => {
-    it('refText shows the ref when a tag is available', () => {
-      reducedDeploymentData[0].tag = '1.0';
-      const component = createComponent({
-        showDeployInfo: false,
-        deploymentData: reducedDeploymentData,
-        graphWidth: 440,
-        graphHeight: 300,
-        graphHeightOffset: 120,
-      });
-
-      expect(
-        component.refText(reducedDeploymentData[0]),
-      ).toEqual(reducedDeploymentData[0].ref);
-    });
-
-    it('refText shows the sha when no tag is available', () => {
-      reducedDeploymentData[0].tag = null;
-      const component = createComponent({
-        showDeployInfo: false,
-        deploymentData: reducedDeploymentData,
-        graphHeight: 300,
-        graphWidth: 440,
-        graphHeightOffset: 120,
-      });
-
-      expect(
-        component.refText(reducedDeploymentData[0]),
-      ).toContain('f5bcd1');
-    });
-
-    it('nameDeploymentClass creates a class with the prefix deploy-info-', () => {
-      const component = createComponent({
-        showDeployInfo: false,
-        deploymentData: reducedDeploymentData,
-        graphHeight: 300,
-        graphWidth: 440,
-        graphHeightOffset: 120,
-      });
-
-      expect(
-        component.nameDeploymentClass(reducedDeploymentData[0]),
-      ).toContain('deploy-info');
-    });
-
-    it('transformDeploymentGroup translates an available deployment', () => {
-      const component = createComponent({
-        showDeployInfo: false,
-        deploymentData: reducedDeploymentData,
-        graphHeight: 300,
-        graphWidth: 440,
-        graphHeightOffset: 120,
-      });
-
-      expect(
-        component.transformDeploymentGroup(reducedDeploymentData[0]),
-      ).toContain('translate(11, 20)');
-    });
-
-    it('hides the deployment flag', () => {
-      reducedDeploymentData[0].showDeploymentFlag = false;
-      const component = createComponent({
-        showDeployInfo: true,
-        deploymentData: reducedDeploymentData,
-        graphWidth: 440,
-        graphHeight: 300,
-        graphHeightOffset: 120,
-      });
-
-      expect(component.$el.querySelector('.js-deploy-info-box')).toBeNull();
-    });
-
-    it('positions the flag to the left when the xPos is too far right', () => {
-      reducedDeploymentData[0].showDeploymentFlag = false;
-      reducedDeploymentData[0].xPos = 250;
-      const component = createComponent({
-        showDeployInfo: true,
-        deploymentData: reducedDeploymentData,
-        graphWidth: 440,
-        graphHeight: 300,
-        graphHeightOffset: 120,
-      });
-
-      expect(
-        component.positionFlag(reducedDeploymentData[0]),
-      ).toBeLessThan(0);
-    });
-
-    it('shows the deployment flag', () => {
-      reducedDeploymentData[0].showDeploymentFlag = true;
-      const component = createComponent({
-        showDeployInfo: true,
-        deploymentData: reducedDeploymentData,
-        graphHeight: 300,
-        graphWidth: 440,
-        graphHeightOffset: 120,
-      });
-
-      expect(
-        component.$el.querySelector('.js-deploy-info-box').style.display,
-      ).not.toEqual('display: none;');
-    });
-
-    it('contains date, refs and the "deployed" text', () => {
-      reducedDeploymentData[0].showDeploymentFlag = true;
-      const component = createComponent({
-        showDeployInfo: true,
-        deploymentData: reducedDeploymentData,
-        graphHeight: 300,
-        graphWidth: 440,
-        graphHeightOffset: 120,
-      });
-
-      expect(
-        component.$el.querySelectorAll('.deploy-info-text'),
-      ).toContainText('Deployed');
-
-      expect(
-        component.$el.querySelectorAll('.deploy-info-text'),
-      ).toContainText('Wed, May 31');
-
-      expect(
-        component.$el.querySelectorAll('.deploy-info-text'),
-      ).toContainText(component.refText(reducedDeploymentData[0]));
-    });
-
-    it('contains a link to the commit contents', () => {
-      reducedDeploymentData[0].showDeploymentFlag = true;
-      const component = createComponent({
-        showDeployInfo: true,
-        deploymentData: reducedDeploymentData,
-        graphHeight: 300,
-        graphWidth: 440,
-        graphHeightOffset: 120,
-      });
-
-      expect(
-        component.$el.querySelectorAll('.deploy-info-text-link')[0].parentElement.getAttribute('xlink:href'),
-      ).not.toEqual('');
-    });
-
     it('should contain a hidden gradient', () => {
       const component = createComponent({
         showDeployInfo: true,
-        deploymentData: reducedDeploymentData,
+        deploymentData,
         graphHeight: 300,
         graphWidth: 440,
         graphHeightOffset: 120,
@@ -168,11 +24,25 @@ describe('MonitoringDeployment', () => {
       expect(component.$el.querySelector('#shadow-gradient')).not.toBeNull();
     });
 
+    it('transformDeploymentGroup translates an available deployment', () => {
+      const component = createComponent({
+        showDeployInfo: false,
+        deploymentData,
+        graphHeight: 300,
+        graphWidth: 440,
+        graphHeightOffset: 120,
+      });
+
+      expect(
+        component.transformDeploymentGroup({ xPos: 16 }),
+      ).toContain('translate(11, 20)');
+    });
+
     describe('Computed props', () => {
       it('calculatedHeight', () => {
         const component = createComponent({
           showDeployInfo: true,
-          deploymentData: reducedDeploymentData,
+          deploymentData,
           graphHeight: 300,
           graphWidth: 440,
           graphHeightOffset: 120,

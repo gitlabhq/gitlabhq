@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import memoryUsageComponent from '~/vue_merge_request_widget/components/mr_widget_memory_usage';
+import MemoryUsage from '~/vue_merge_request_widget/components/memory_usage.vue';
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 
 const url = '/root/acets-review-apps/environments/15/deployments/1/metrics';
@@ -34,7 +34,7 @@ const metricsMockData = {
 };
 
 const createComponent = () => {
-  const Component = Vue.extend(memoryUsageComponent);
+  const Component = Vue.extend(MemoryUsage);
 
   return new Component({
     el: document.createElement('div'),
@@ -67,21 +67,9 @@ describe('MemoryUsage', () => {
     el = vm.$el;
   });
 
-  describe('props', () => {
-    it('should have props with defaults', () => {
-      const { metricsUrl } = memoryUsageComponent.props;
-      const MetricsUrlTypeClass = metricsUrl.type;
-
-      Vue.nextTick(() => {
-        expect(new MetricsUrlTypeClass() instanceof String).toBeTruthy();
-        expect(metricsUrl.required).toBeTruthy();
-      });
-    });
-  });
-
   describe('data', () => {
     it('should have default data', () => {
-      const data = memoryUsageComponent.data();
+      const data = MemoryUsage.data();
 
       expect(Array.isArray(data.memoryMetrics)).toBeTruthy();
       expect(data.memoryMetrics.length).toBe(0);
@@ -155,9 +143,7 @@ describe('MemoryUsage', () => {
     describe('loadMetrics', () => {
       const returnServicePromise = () => new Promise((resolve) => {
         resolve({
-          json() {
-            return metricsMockData;
-          },
+          data: metricsMockData,
         });
       });
 

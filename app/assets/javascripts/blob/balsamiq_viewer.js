@@ -7,7 +7,7 @@ function onError() {
   return flash;
 }
 
-function loadBalsamiqFile() {
+export default function loadBalsamiqFile() {
   const viewer = document.getElementById('js-balsamiq-viewer');
 
   if (!(viewer instanceof Element)) return;
@@ -17,5 +17,3 @@ function loadBalsamiqFile() {
   const balsamiqViewer = new BalsamiqViewer(viewer);
   balsamiqViewer.loadFile(endpoint).catch(onError);
 }
-
-$(loadBalsamiqFile);

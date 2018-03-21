@@ -1,8 +1,9 @@
+import _ from 'underscore';
 import Vue from 'vue';
 import environmentsComponent from '~/environments/components/environments_app.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { headersInterceptor } from 'spec/helpers/vue_resource_helper';
 import { environment, folder } from './mock_data';
-import { headersInterceptor } from '../helpers/vue_resource_helper';
-import mountComponent from '../helpers/vue_mount_component_helper';
 
 describe('Environment', () => {
   const mockData = {
@@ -60,6 +61,7 @@ describe('Environment', () => {
     });
 
     describe('with paginated environments', () => {
+      let backupInterceptors;
       const environmentsResponseInterceptor = (request, next) => {
         next((response) => {
           response.headers.set('X-nExt-pAge', '2');
@@ -83,16 +85,16 @@ describe('Environment', () => {
       };
 
       beforeEach(() => {
-        Vue.http.interceptors.push(environmentsResponseInterceptor);
-        Vue.http.interceptors.push(headersInterceptor);
+        backupInterceptors = Vue.http.interceptors;
+        Vue.http.interceptors = [
+          environmentsResponseInterceptor,
+          headersInterceptor,
+        ];
         component = mountComponent(EnvironmentsComponent, mockData);
       });
 
       afterEach(() => {
-        Vue.http.interceptors = _.without(
-          Vue.http.interceptors, environmentsResponseInterceptor,
-        );
-        Vue.http.interceptors = _.without(Vue.http.interceptors, headersInterceptor);
+        Vue.http.interceptors = backupInterceptors;
       });
 
       it('should render a table with environments', (done) => {

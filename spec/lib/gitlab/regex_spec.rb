@@ -14,16 +14,22 @@ describe Gitlab::Regex do
     it { is_expected.not_to match('?gitlab') }
   end
 
-  describe '.environment_slug_regex' do
+  describe '.environment_name_regex' do
     subject { described_class.environment_name_regex }
 
     it { is_expected.to match('foo') }
+    it { is_expected.to match('a') }
     it { is_expected.to match('foo-1') }
     it { is_expected.to match('FOO') }
     it { is_expected.to match('foo/1') }
     it { is_expected.to match('foo.1') }
     it { is_expected.not_to match('9&foo') }
     it { is_expected.not_to match('foo-^') }
+    it { is_expected.not_to match('!!()()') }
+    it { is_expected.not_to match('/foo') }
+    it { is_expected.not_to match('foo/') }
+    it { is_expected.not_to match('/foo/') }
+    it { is_expected.not_to match('/') }
   end
 
   describe '.environment_slug_regex' do

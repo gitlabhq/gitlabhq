@@ -27,8 +27,8 @@ describe API::V3::Boards do
   end
 
   before do
-    project.team << [user, :reporter]
-    project.team << [guest, :guest]
+    project.add_reporter(user)
+    project.add_guest(guest)
   end
 
   describe "GET /projects/:id/boards" do

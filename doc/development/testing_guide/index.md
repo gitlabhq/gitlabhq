@@ -65,6 +65,13 @@ Everything you should know about how to test Rake tasks.
 
 ---
 
+## [End-to-end tests](end_to_end_tests.md)
+
+Everything you should know about how to run end-to-end tests using
+[GitLab QA][gitlab-qa] testing framework.
+
+---
+
 ## Spinach (feature) tests
 
 GitLab [moved from Cucumber to Spinach](https://github.com/gitlabhq/gitlabhq/pull/1426)
@@ -89,3 +96,4 @@ test should be re-implemented using RSpec instead.
 [Capybara]: https://github.com/teamcapybara/capybara
 [Karma]: http://karma-runner.github.io/
 [Jasmine]: https://jasmine.github.io/
+[gitlab-qa]: https://gitlab.com/gitlab-org/gitlab-qa

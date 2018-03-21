@@ -11,7 +11,7 @@ module CacheMarkdownField
   extend ActiveSupport::Concern
 
   # Increment this number every time the renderer changes its output
-  CACHE_VERSION = 2
+  CACHE_VERSION = 3
 
   # changes to these attributes cause the cache to be invalidates
   INVALIDATED_BY = %w[author project].freeze

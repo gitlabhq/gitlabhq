@@ -12,9 +12,9 @@ following format:
 
 ```yaml
 ---
-title: "Going through change[log]s"
+title: "Change[log]s"
 merge_request: 1972
-author: Ozzy Osbourne
+author: Black Sabbath
 type: added
 ```
 
@@ -125,9 +125,9 @@ author:
 type:
 ```
 If you're working on the GitLab EE repository, the entry will be added to
-`changelogs/unreleased-ee/` instead.
+`ee/changelogs/unreleased/` instead.
 
-#### Arguments
+### Arguments
 
 | Argument            | Shorthand | Purpose                                                                                                    |
 | -----------------   | --------- | ---------------------------------------------------------------------------------------------------------- |
@@ -279,8 +279,8 @@ After much discussion we settled on the current solution of one file per entry,
 and then compiling the entries into the overall `CHANGELOG.md` file during the
 [release process].
 
-[boring solution]: https://about.gitlab.com/handbook/#boring-solutions
-[release managers]: https://gitlab.com/gitlab-org/release-tools/blob/master/doc/release-manager.md
+[boring solution]: https://about.gitlab.com/handbook/values/#boring-solutions
+[release managers]: https://gitlab.com/gitlab-org/release/docs/blob/master/quickstart/release-manager.md
 [started brainstorming]: https://gitlab.com/gitlab-org/gitlab-ce/issues/17826
 [release process]: https://gitlab.com/gitlab-org/release-tools
 

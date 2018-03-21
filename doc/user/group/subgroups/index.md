@@ -90,7 +90,8 @@ structure.
 
 To create a subgroup:
 
-1. In the group's dashboard go to the **Subgroups** page and click **New subgroup**.
+1. In the group's dashboard expand the **New project** split button, select
+   **New subgroup** and click the **New subgroup** button.
 
     ![Subgroups page](img/create_subgroup_button.png)
 

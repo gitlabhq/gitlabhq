@@ -203,6 +203,7 @@ module MarkupHelper
           node.content = node.content.truncate(num_remaining)
           truncated = true
         end
+
         content_length += node.content.length
       end
 

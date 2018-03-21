@@ -44,4 +44,64 @@ describe Identity do
       end
     end
   end
+
+  context 'callbacks' do
+    context 'before_save' do
+      describe 'normalizes extern uid' do
+        let!(:ldap_identity) { create(:identity, provider: 'ldapmain', extern_uid: 'uid=john smith,ou=people,dc=example,dc=com') }
+
+        it 'if extern_uid changes' do
+          expect(ldap_identity).not_to receive(:ensure_normalized_extern_uid)
+          ldap_identity.save
+        end
+
+        it 'if current_uid is nil' do
+          expect(ldap_identity).to receive(:ensure_normalized_extern_uid)
+
+          ldap_identity.update(extern_uid: nil)
+
+          expect(ldap_identity.extern_uid).to be_nil
+        end
+
+        it 'if extern_uid changed and not nil' do
+          ldap_identity.update(extern_uid: 'uid=john1,ou=PEOPLE,dc=example,dc=com')
+
+          expect(ldap_identity.extern_uid).to eq 'uid=john1,ou=people,dc=example,dc=com'
+        end
+      end
+    end
+
+    context 'after_destroy' do
+      let!(:user) { create(:user) }
+      let(:ldap_identity) { create(:identity, provider: 'ldapmain', extern_uid: 'uid=john smith,ou=people,dc=example,dc=com', user: user) }
+      let(:ldap_user_synced_attributes) { { provider: 'ldapmain', name_synced: true, email_synced: true } }
+      let(:other_provider_user_synced_attributes) { { provider: 'other', name_synced: true, email_synced: true } }
+
+      describe 'if user synced attributes metadada provider' do
+        context 'matches the identity provider ' do
+          it 'removes the user synced attributes' do
+            user.create_user_synced_attributes_metadata(ldap_user_synced_attributes)
+
+            expect(user.user_synced_attributes_metadata.provider).to eq 'ldapmain'
+
+            ldap_identity.destroy
+
+            expect(user.reload.user_synced_attributes_metadata).to be_nil
+          end
+        end
+
+        context 'does not matche the identity provider' do
+          it 'does not remove the user synced attributes' do
+            user.create_user_synced_attributes_metadata(other_provider_user_synced_attributes)
+
+            expect(user.user_synced_attributes_metadata.provider).to eq 'other'
+
+            ldap_identity.destroy
+
+            expect(user.reload.user_synced_attributes_metadata.provider).to eq 'other'
+          end
+        end
+      end
+    end
+  end
 end

@@ -154,8 +154,8 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
 
   step 'commit has ci status' do
     @project.enable_ci
-    pipeline = create :ci_pipeline, project: @project, sha: sample_commit.id
-    create :ci_build, pipeline: pipeline
+    @pipeline = create(:ci_pipeline, project: @project, sha: sample_commit.id)
+    create(:ci_build, pipeline: @pipeline)
   end
 
   step 'repository contains ".gitlab-ci.yml" file' do
@@ -163,7 +163,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I see commit ci info' do
-    expect(page).to have_content "Pipeline #1 pending"
+    expect(page).to have_content "Pipeline ##{@pipeline.id} pending"
   end
 
   step 'I search "submodules" commits' do
@@ -180,11 +180,13 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
     dropdown.find(".compare-dropdown-toggle").click
     dropdown.find('.dropdown-menu', visible: true)
     dropdown.fill_in("Filter by Git revision", with: selection)
+
     if is_commit
       dropdown.find('input[type="search"]').send_keys(:return)
     else
       find_link(selection, visible: true).click
     end
+
     dropdown.find('.dropdown-menu', visible: false)
   end
 end

@@ -4,6 +4,9 @@
   import pipelinesMixin from '../../pipelines/mixins/pipelines';
 
   export default {
+    mixins: [
+      pipelinesMixin,
+    ],
     props: {
       endpoint: {
         type: String,
@@ -17,10 +20,6 @@
         type: String,
         required: true,
       },
-      emptyStateSvgPath: {
-        type: String,
-        required: true,
-      },
       errorStateSvgPath: {
         type: String,
         required: true,
@@ -31,9 +30,6 @@
         default: 'child',
       },
     },
-    mixins: [
-      pipelinesMixin,
-    ],
 
     data() {
       const store = new PipelineStore();
@@ -45,22 +41,13 @@
     },
 
     computed: {
-      /**
-       * Empty state is only rendered if after the first request we receive no pipelines.
-       *
-       * @return {Boolean}
-       */
-      shouldRenderEmptyState() {
-        return !this.state.pipelines.length &&
-          !this.isLoading &&
-          this.hasMadeRequest &&
-          !this.hasError;
-      },
-
       shouldRenderTable() {
         return !this.isLoading &&
           this.state.pipelines.length > 0 &&
           !this.hasError;
+      },
+      shouldRenderErrorState() {
+        return this.hasError && !this.isLoading;
       },
     },
     created() {
@@ -92,31 +79,29 @@
   <div class="content-list pipelines">
 
     <loading-icon
-      label="Loading pipelines"
+      :label="s__('Pipelines|Loading Pipelines')"
       size="3"
       v-if="isLoading"
-      />
+      class="prepend-top-20"
+    />
 
-    <empty-state
-      v-if="shouldRenderEmptyState"
-      :help-page-path="helpPagePath"
-      :empty-state-svg-path="emptyStateSvgPath"
-      />
-
-    <error-state
-      v-if="shouldRenderErrorState"
-      :error-state-svg-path="errorStateSvgPath"
-      />
+    <svg-blank-state
+      v-else-if="shouldRenderErrorState"
+      :svg-path="errorStateSvgPath"
+      :message="s__(`Pipelines|There was an error fetching the pipelines.
+      Try again in a few moments or contact your support team.`)"
+    />
 
     <div
       class="table-holder"
-      v-if="shouldRenderTable">
+      v-else-if="shouldRenderTable"
+    >
       <pipelines-table-component
         :pipelines="state.pipelines"
         :update-graph-dropdown="updateGraphDropdown"
         :auto-devops-help-path="autoDevopsHelpPath"
         :view-type="viewType"
-        />
+      />
     </div>
   </div>
 </template>

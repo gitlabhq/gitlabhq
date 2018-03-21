@@ -1,5 +1,0 @@
----
-title: Use custom user agent header in all GCP API requests.
-merge_request: 15705
-author:
-type: changed

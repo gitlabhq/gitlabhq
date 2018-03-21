@@ -1,6 +1,8 @@
+import $ from 'jquery';
+
 export default function issueStatusSelect() {
   $('.js-issue-status').each((i, el) => {
-    const fieldName = $(el).data('field-name');
+    const fieldName = $(el).data('fieldName');
     return $(el).glDropdown({
       selectable: true,
       fieldName,

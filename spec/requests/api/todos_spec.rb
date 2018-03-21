@@ -13,8 +13,8 @@ describe API::Todos do
   let!(:done) { create(:todo, :done, project: project_1, author: author_1, user: john_doe) }
 
   before do
-    project_1.team << [john_doe, :developer]
-    project_2.team << [john_doe, :developer]
+    project_1.add_developer(john_doe)
+    project_2.add_developer(john_doe)
   end
 
   describe 'GET /todos' do
@@ -129,6 +129,12 @@ describe API::Todos do
 
         post api("/todos/#{pending_1.id}/mark_as_done", john_doe)
       end
+
+      it 'returns 404 if the todo does not belong to the current user' do
+        post api("/todos/#{pending_1.id}/mark_as_done", author_1)
+
+        expect(response.status).to eq(404)
+      end
     end
   end
 
@@ -191,7 +197,7 @@ describe API::Todos do
 
     it 'returns an error if the issuable is not accessible' do
       guest = create(:user)
-      project_1.team << [guest, :guest]
+      project_1.add_guest(guest)
 
       post api("/projects/#{project_1.id}/#{issuable_type}/#{issuable.iid}/todo", guest)
 

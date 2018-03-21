@@ -8,11 +8,15 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
   subject(:importer) { described_class.new(admin, bare_repository) }
 
   before do
+    @rainbow = Rainbow.enabled
+    Rainbow.enabled = false
+
     allow(described_class).to receive(:log)
   end
 
   after do
     FileUtils.rm_rf(base_dir)
+    Rainbow.enabled = @rainbow
   end
 
   shared_examples 'importing a repository' do
@@ -68,14 +72,24 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
         expect(Project.find_by_full_path(project_path)).not_to be_nil
       end
 
-      it 'creates the Git repo in disk' do
-        FileUtils.mkdir_p(File.join(base_dir, "#{project_path}.git"))
+      it 'does not schedule an import' do
+        expect_any_instance_of(Project).not_to receive(:import_schedule)
+
+        importer.create_project_if_needed
+      end
+
+      it 'creates the Git repo on disk with the proper symlink for hooks' do
+        create_bare_repository("#{project_path}.git")
 
         importer.create_project_if_needed
 
         project = Project.find_by_full_path(project_path)
+        repo_path = File.join(project.repository_storage_path, project.disk_path + '.git')
+        hook_path = File.join(repo_path, 'hooks')
 
-        expect(File).to exist(File.join(project.repository_storage_path, project.disk_path + '.git'))
+        expect(File).to exist(repo_path)
+        expect(File.symlink?(hook_path)).to be true
+        expect(File.readlink(hook_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
       end
 
       context 'hashed storage enabled' do
@@ -124,20 +138,21 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
     end
 
     it 'creates the Git repo in disk' do
-      FileUtils.mkdir_p(File.join(base_dir, "#{project_path}.git"))
+      create_bare_repository("#{project_path}.git")
 
       importer.create_project_if_needed
 
       project = Project.find_by_full_path("#{admin.full_path}/#{project_path}")
 
       expect(File).to exist(File.join(project.repository_storage_path, project.disk_path + '.git'))
+      expect(File).to exist(File.join(project.repository_storage_path, project.disk_path + '.wiki.git'))
     end
 
     it 'moves an existing project to the correct path' do
       # This is a quick way to get a valid repository instead of copying an
       # existing one. Since it's not persisted, the importer will try to
       # create the project.
-      project = build(:project, :repository)
+      project = build(:project, :legacy_storage, :repository)
       original_commit_count = project.repository.commit_count
 
       bare_repo = Gitlab::BareRepositoryImport::Repository.new(project.repository_storage_path, project.repository.path)
@@ -158,8 +173,11 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
     it_behaves_like 'importing a repository'
 
     it 'creates the Wiki git repo in disk' do
-      FileUtils.mkdir_p(File.join(base_dir, "#{project_path}.git"))
-      FileUtils.mkdir_p(File.join(base_dir, "#{project_path}.wiki.git"))
+      create_bare_repository("#{project_path}.git")
+      create_bare_repository("#{project_path}.wiki.git")
+
+      expect(Projects::CreateService).to receive(:new).with(admin, hash_including(skip_wiki: true,
+                                                                                  import_type: 'bare_repository')).and_call_original
 
       importer.create_project_if_needed
 
@@ -181,5 +199,10 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
         expect { importer.create_project_if_needed }.to raise_error('Nested groups are not supported on MySQL')
       end
     end
+  end
+
+  def create_bare_repository(project_path)
+    repo_path = File.join(base_dir, project_path)
+    Gitlab::Git::Repository.create(repo_path, bare: true)
   end
 end

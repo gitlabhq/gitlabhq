@@ -8,6 +8,7 @@ describe API::Runner do
   before do
     stub_gitlab_calls
     stub_application_setting(runners_registration_token: registration_token)
+    allow_any_instance_of(Ci::Runner).to receive(:cache_attributes)
   end
 
   describe '/api/v4/runners' do
@@ -120,6 +121,15 @@ describe API::Runner do
             expect(Ci::Runner.first.read_attribute(param.to_sym)).to eq(value)
           end
         end
+      end
+
+      it "sets the runner's ip_address" do
+        post api('/runners'),
+          { token: registration_token },
+          { 'REMOTE_ADDR' => '123.111.123.111' }
+
+        expect(response).to have_gitlab_http_status 201
+        expect(Ci::Runner.first.ip_address).to eq('123.111.123.111')
       end
     end
 
@@ -408,7 +418,7 @@ describe API::Runner do
             expect { request_job }.to change { runner.reload.contacted_at }
           end
 
-          %w(name version revision platform architecture).each do |param|
+          %w(version revision platform architecture).each do |param|
             context "when info parameter '#{param}' is present" do
               let(:value) { "#{param}_value" }
 
@@ -419,6 +429,15 @@ describe API::Runner do
                 expect(runner.reload.read_attribute(param.to_sym)).to eq(value)
               end
             end
+          end
+
+          it "sets the runner's ip_address" do
+            post api('/jobs/request'),
+              { token: runner.token },
+              { 'User-Agent' => user_agent, 'REMOTE_ADDR' => '123.222.123.222' }
+
+            expect(response).to have_gitlab_http_status 201
+            expect(runner.reload.ip_address).to eq('123.222.123.222')
           end
 
           context 'when concurrently updating a job' do
@@ -638,7 +657,7 @@ describe API::Runner do
     end
 
     describe 'PUT /api/v4/jobs/:id' do
-      let(:job) { create(:ci_build, :pending, :trace, pipeline: pipeline, runner_id: runner.id) }
+      let(:job) { create(:ci_build, :pending, :trace_live, pipeline: pipeline, runner_id: runner.id) }
 
       before do
         job.run!
@@ -679,12 +698,18 @@ describe API::Runner do
         end
       end
 
-      context 'when tace is given' do
-        it 'updates a running build' do
-          update_job(trace: 'BUILD TRACE UPDATED')
+      context 'when trace is given' do
+        it 'creates a trace artifact' do
+          allow(BuildFinishedWorker).to receive(:perform_async).with(job.id) do
+            ArchiveTraceWorker.new.perform(job.id)
+          end
 
+          update_job(state: 'success', trace: 'BUILD TRACE UPDATED')
+
+          job.reload
           expect(response).to have_gitlab_http_status(200)
-          expect(job.reload.trace.raw).to eq 'BUILD TRACE UPDATED'
+          expect(job.trace.raw).to eq 'BUILD TRACE UPDATED'
+          expect(job.job_artifacts_trace.open.read).to eq 'BUILD TRACE UPDATED'
         end
       end
 
@@ -713,7 +738,7 @@ describe API::Runner do
     end
 
     describe 'PATCH /api/v4/jobs/:id/trace' do
-      let(:job) { create(:ci_build, :running, :trace, runner_id: runner.id, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :running, :trace_live, runner_id: runner.id, pipeline: pipeline) }
       let(:headers) { { API::Helpers::Runner::JOB_TOKEN_HEADER => job.token, 'Content-Type' => 'text/plain' } }
       let(:headers_with_range) { headers.merge({ 'Content-Range' => '11-20' }) }
       let(:update_interval) { 10.seconds.to_i }
@@ -774,7 +799,7 @@ describe API::Runner do
 
         context 'when project for the build has been deleted' do
           let(:job) do
-            create(:ci_build, :running, :trace, runner_id: runner.id, pipeline: pipeline) do |job|
+            create(:ci_build, :running, :trace_live, runner_id: runner.id, pipeline: pipeline) do |job|
               job.project.update(pending_delete: true)
             end
           end
@@ -945,7 +970,7 @@ describe API::Runner do
         context 'when artifacts are being stored inside of tmp path' do
           before do
             # by configuring this path we allow to pass temp file from any path
-            allow(JobArtifactUploader).to receive(:artifacts_upload_path).and_return('/')
+            allow(JobArtifactUploader).to receive(:workhorse_upload_path).and_return('/')
           end
 
           context 'when job has been erased' do
@@ -1075,11 +1100,13 @@ describe API::Runner do
 
           context 'posts artifacts file and metadata file' do
             let!(:artifacts) { file_upload }
+            let!(:artifacts_sha256) { Digest::SHA256.file(artifacts.path).hexdigest }
             let!(:metadata) { file_upload2 }
 
             let(:stored_artifacts_file) { job.reload.artifacts_file.file }
             let(:stored_metadata_file) { job.reload.artifacts_metadata.file }
             let(:stored_artifacts_size) { job.reload.artifacts_size }
+            let(:stored_artifacts_sha256) { job.reload.job_artifacts_archive.file_sha256 }
 
             before do
               post(api("/jobs/#{job.id}/artifacts"), post_data, headers_with_token)
@@ -1089,6 +1116,7 @@ describe API::Runner do
               let(:post_data) do
                 { 'file.path' => artifacts.path,
                   'file.name' => artifacts.original_filename,
+                  'file.sha256' => artifacts_sha256,
                   'metadata.path' => metadata.path,
                   'metadata.name' => metadata.original_filename }
               end
@@ -1098,6 +1126,7 @@ describe API::Runner do
                 expect(stored_artifacts_file.original_filename).to eq(artifacts.original_filename)
                 expect(stored_metadata_file.original_filename).to eq(metadata.original_filename)
                 expect(stored_artifacts_size).to eq(72821)
+                expect(stored_artifacts_sha256).to eq(artifacts_sha256)
               end
             end
 
@@ -1122,7 +1151,7 @@ describe API::Runner do
             # by configuring this path we allow to pass file from @tmpdir only
             # but all temporary files are stored in system tmp directory
             @tmpdir = Dir.mktmpdir
-            allow(JobArtifactUploader).to receive(:artifacts_upload_path).and_return(@tmpdir)
+            allow(JobArtifactUploader).to receive(:workhorse_upload_path).and_return(@tmpdir)
           end
 
           after do
@@ -1142,6 +1171,7 @@ describe API::Runner do
                    else
                      { 'file' => file }
                    end
+
           post api("/jobs/#{job.id}/artifacts"), params, headers
         end
       end

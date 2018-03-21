@@ -19,5 +19,21 @@ describe ProtectedBranches::CreateService do
       expect(project.protected_branches.last.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
       expect(project.protected_branches.last.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
     end
+
+    context 'when user does not have permission' do
+      let(:user) { create(:user) }
+
+      before do
+        project.add_developer(user)
+      end
+
+      it 'creates a new protected branch if we skip authorization step' do
+        expect { service.execute(skip_authorization: true) }.to change(ProtectedBranch, :count).by(1)
+      end
+
+      it 'raises Gitlab::Access:AccessDeniedError' do
+        expect { service.execute }.to raise_error(Gitlab::Access::AccessDeniedError)
+      end
+    end
   end
 end

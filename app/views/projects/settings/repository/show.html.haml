@@ -2,10 +2,6 @@
 - page_title "Repository"
 - @content_class = "limit-container-width" unless fluid_layout
 
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_vue')
-  = page_specific_javascript_bundle_tag('deploy_keys')
-
 -# Protected branches & tags use a lot of nested partials.
 -# The shared parts of the views can be found in the `shared` directory.
 -# Those are used throughout the actual views. These `shared` views are then

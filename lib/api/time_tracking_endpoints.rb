@@ -85,7 +85,7 @@ module API
 
         update_issuable(spend_time: {
           duration: Gitlab::TimeTrackingFormatter.parse(params.delete(:duration)),
-          user: current_user
+          user_id: current_user.id
         })
       end
 
@@ -97,7 +97,7 @@ module API
         authorize! update_issuable_key, load_issuable
 
         status :ok
-        update_issuable(spend_time: { duration: :reset, user: current_user })
+        update_issuable(spend_time: { duration: :reset, user_id: current_user.id })
       end
 
       desc "Show time stats for a project #{issuable_name}"

@@ -12,8 +12,4 @@ class ProjectPathValidator < AbstractPathValidator
   def self.format_error_message
     Gitlab::PathRegex.project_path_format_message
   end
-
-  def self.full_path(record, value)
-    record.build_full_path
-  end
 end

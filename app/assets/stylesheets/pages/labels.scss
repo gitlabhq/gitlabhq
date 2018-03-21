@@ -58,13 +58,13 @@
 
     @media (min-width: $screen-sm-min) {
       width: 200px;
+      margin-left: $gl-padding * 2;
       margin-bottom: 0;
     }
 
     .label {
       overflow: hidden;
       text-overflow: ellipsis;
-      vertical-align: middle;
       max-width: 100%;
     }
   }
@@ -79,32 +79,42 @@
       width: 100px;
       margin-left: 10px;
       margin-bottom: 0;
-      vertical-align: middle;
+      vertical-align: top;
     }
   }
 
   .label-description {
     display: block;
     margin-bottom: 10px;
-    margin-left: 50px;
+
+    .description-text {
+      margin-bottom: $gl-padding;
+    }
+
+    a {
+      color: $blue-600;
+    }
 
     @media (min-width: $screen-sm-min) {
       display: inline-block;
-      width: 30%;
+      max-width: 50%;
       margin-left: 10px;
       margin-bottom: 0;
-      vertical-align: middle;
+      vertical-align: top;
     }
   }
 
   .label {
-    padding: 8px 9px 9px;
-    font-size: 14px;
+    padding: 4px $grid-size;
+    font-size: $label-font-size;
+    position: relative;
+    top: ($grid-size / 2);
   }
 }
 
 .color-label {
-  padding: 3px $label-padding;
+  padding: 0 $grid-size;
+  line-height: 16px;
   border-radius: $label-border-radius;
 }
 
@@ -116,6 +126,12 @@
 }
 
 .manage-labels-list {
+  @media(min-width: $screen-md-min) {
+    &.content-list li {
+      padding: $gl-padding 0;
+    }
+  }
+
   > li:not(.empty-message):not(.is-not-draggable) {
     background-color: $white-light;
     cursor: move;
@@ -133,8 +149,6 @@
   }
 
   .btn-action {
-    color: $gl-text-color;
-
     .fa {
       font-size: 18px;
       vertical-align: middle;
@@ -155,10 +169,18 @@
       float: right;
     }
   }
+
+  @media (max-width: $screen-xs-max) {
+    .dropdown-menu {
+      min-width: 100%;
+    }
+  }
 }
 
 .draggable-handler {
   display: inline-block;
+  vertical-align: top;
+  margin: 5px 0;
   opacity: 0;
   transition: opacity .3s;
   color: $gray-darkest;
@@ -188,7 +210,7 @@
 
 .toggle-priority {
   display: inline-block;
-  vertical-align: middle;
+  vertical-align: top;
 
   button {
     border-color: transparent;
@@ -255,6 +277,11 @@
 }
 
 .label-subscribe-button {
+  @media(min-width: $screen-md-min) {
+    min-width: 105px;
+    margin-left: $gl-padding;
+  }
+
   .label-subscribe-button-icon {
     &[disabled] {
       opacity: 0.5;
@@ -278,10 +305,11 @@
 }
 
 .label-link {
-  display: inline-block;
+  display: inline-flex;
   vertical-align: top;
 
   .label {
     vertical-align: inherit;
+    font-size: $label-font-size;
   }
 }

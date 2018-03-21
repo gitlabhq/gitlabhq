@@ -1,8 +1,10 @@
 /* eslint-disable comma-dangle, space-before-function-paren, one-var, no-shadow, dot-notation, max-len */
 /* global List */
+
+import $ from 'jquery';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
-import { getUrlParamsArray } from '../../lib/utils/common_utils';
+import { getUrlParamsArray } from '~/lib/utils/common_utils';
 
 window.gl = window.gl || {};
 window.gl.issueBoards = window.gl.issueBoards || {};

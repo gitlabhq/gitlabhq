@@ -25,7 +25,7 @@ export default {
 
     if (!this.userCanCreateNote) {
       // data-can-create-note is an empty string when true, otherwise undefined
-      this.userCanCreateNote = $diffFile.closest(DIFF_CONTAINER_SELECTOR).data('can-create-note') === '';
+      this.userCanCreateNote = $diffFile.closest(DIFF_CONTAINER_SELECTOR).data('canCreateNote') === '';
     }
 
     this.isParallelView = Cookies.get('diff_view') === 'parallel';

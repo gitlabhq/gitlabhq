@@ -16,9 +16,76 @@ describe Route do
     it { is_expected.to validate_presence_of(:source) }
     it { is_expected.to validate_presence_of(:path) }
     it { is_expected.to validate_uniqueness_of(:path).case_insensitive }
+
+    describe '#ensure_permanent_paths' do
+      context 'when the route is not yet persisted' do
+        let(:new_route) { described_class.new(path: 'foo', source: build(:group)) }
+
+        context 'when permanent conflicting redirects exist' do
+          it 'is invalid' do
+            redirect = build(:redirect_route, :permanent, path: 'foo/bar/baz')
+            redirect.save!(validate: false)
+
+            expect(new_route.valid?).to be_falsey
+            expect(new_route.errors.first[1]).to eq('has been taken before')
+          end
+        end
+
+        context 'when no permanent conflicting redirects exist' do
+          it 'is valid' do
+            expect(new_route.valid?).to be_truthy
+          end
+        end
+      end
+
+      context 'when path has changed' do
+        before do
+          route.path = 'foo'
+        end
+
+        context 'when permanent conflicting redirects exist' do
+          it 'is invalid' do
+            redirect = build(:redirect_route, :permanent, path: 'foo/bar/baz')
+            redirect.save!(validate: false)
+
+            expect(route.valid?).to be_falsey
+            expect(route.errors.first[1]).to eq('has been taken before')
+          end
+        end
+
+        context 'when no permanent conflicting redirects exist' do
+          it 'is valid' do
+            expect(route.valid?).to be_truthy
+          end
+        end
+      end
+
+      context 'when path has not changed' do
+        context 'when permanent conflicting redirects exist' do
+          it 'is valid' do
+            redirect = build(:redirect_route, :permanent, path: 'git_lab/foo/bar')
+            redirect.save!(validate: false)
+
+            expect(route.valid?).to be_truthy
+          end
+        end
+        context 'when no permanent conflicting redirects exist' do
+          it 'is valid' do
+            expect(route.valid?).to be_truthy
+          end
+        end
+      end
+    end
   end
 
   describe 'callbacks' do
+    context 'before validation' do
+      it 'calls #delete_conflicting_orphaned_routes' do
+        expect(route).to receive(:delete_conflicting_orphaned_routes)
+        route.valid?
+      end
+    end
+
     context 'after update' do
       it 'calls #create_redirect_for_old_path' do
         expect(route).to receive(:create_redirect_for_old_path)
@@ -301,7 +368,7 @@ describe Route do
 
         group2.path = 'foo'
         group2.valid?
-        expect(group2.errors["route.path"].first).to eq('foo has been taken before. Please use another one')
+        expect(group2.errors[:path]).to eq(['has been taken before'])
       end
     end
 
@@ -315,6 +382,60 @@ describe Route do
 
         project2.path = 'foo'
         expect(project2.save).to be_truthy
+      end
+    end
+  end
+
+  describe '#delete_conflicting_orphaned_routes' do
+    context 'when there is a conflicting route' do
+      let!(:conflicting_group) { create(:group, path: 'foo') }
+
+      before do
+        route.path = conflicting_group.route.path
+      end
+
+      context 'when the route is orphaned' do
+        let!(:offending_route) { conflicting_group.route }
+
+        before do
+          Group.delete(conflicting_group) # Orphan the route
+        end
+
+        it 'deletes the orphaned route' do
+          expect do
+            route.valid?
+          end.to change { described_class.count }.from(2).to(1)
+        end
+
+        it 'passes validation, as usual' do
+          expect(route.valid?).to be_truthy
+        end
+      end
+
+      context 'when the route is not orphaned' do
+        it 'does not delete the conflicting route' do
+          expect do
+            route.valid?
+          end.not_to change { described_class.count }
+        end
+
+        it 'fails validation, as usual' do
+          expect(route.valid?).to be_falsey
+        end
+      end
+    end
+
+    context 'when there are no conflicting routes' do
+      it 'does not delete any routes' do
+        route
+
+        expect do
+          route.valid?
+        end.not_to change { described_class.count }
+      end
+
+      it 'passes validation, as usual' do
+        expect(route.valid?).to be_truthy
       end
     end
   end

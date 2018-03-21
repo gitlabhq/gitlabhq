@@ -10,7 +10,6 @@
 }
 
 .axis {
-  fill: $stat-graph-axis-fill;
   font-size: 10px;
 }
 
@@ -54,9 +53,7 @@
 }
 
 .selection rect {
-  fill: $stat-graph-selection-fill;
   fill-opacity: 0.1;
-  stroke: $stat-graph-selection-stroke;
   stroke-width: 1px;
   stroke-opacity: 0.4;
   shape-rendering: crispedges;

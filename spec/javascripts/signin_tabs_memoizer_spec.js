@@ -1,5 +1,5 @@
 import AccessorUtilities from '~/lib/utils/accessor';
-import SigninTabsMemoizer from '~/signin_tabs_memoizer';
+import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
 
 (() => {
   describe('SigninTabsMemoizer', () => {
@@ -51,6 +51,13 @@ import SigninTabsMemoizer from '~/signin_tabs_memoizer';
       document.getElementById('standard').click();
 
       expect(memo.readData()).toEqual('#standard');
+    });
+
+    it('overrides last selected tab with hash tag when given', () => {
+      window.location.hash = '#ldap';
+      createMemoizer();
+
+      expect(memo.readData()).toEqual('#ldap');
     });
 
     describe('class constructor', () => {

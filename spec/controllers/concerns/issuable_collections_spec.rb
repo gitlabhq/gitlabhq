@@ -8,6 +8,10 @@ describe IssuableCollections do
       def self.helper_method(name); end
 
       include IssuableCollections
+
+      def finder_type
+        IssuesFinder
+      end
     end
 
     controller = klass.new

@@ -1,0 +1,86 @@
+{
+  "type": "object",
+  "required" : [
+    "id",
+    "project",
+    "lists"
+  ],
+  "properties" : {
+    "id": { "type": "integer" },
+    "project": {
+      "type": ["object", "null"],
+      "required": [
+        "id",
+        "avatar_url",
+        "description",
+        "default_branch",
+        "tag_list",
+        "ssh_url_to_repo",
+        "http_url_to_repo",
+        "web_url",
+        "name",
+        "name_with_namespace",
+        "path",
+        "path_with_namespace",
+        "star_count",
+        "forks_count",
+        "created_at",
+        "last_activity_at"
+      ],
+      "properties": {
+        "id": { "type": "integer" },
+        "avatar_url": { "type": ["string", "null"] },
+        "description": { "type": ["string", "null"] },
+        "default_branch": { "type": ["string", "null"] },
+        "tag_list": { "type": "array" },
+        "ssh_url_to_repo": { "type": "string" },
+        "http_url_to_repo": { "type": "string" },
+        "web_url": { "type": "string" },
+        "name": { "type": "string" },
+        "name_with_namespace": { "type": "string" },
+        "path": { "type": "string" },
+        "path_with_namespace": { "type": "string" },
+        "star_count": { "type": "integer" },
+        "forks_count": { "type": "integer" },
+        "created_at": { "type": "date" },
+        "last_activity_at": { "type": "date" }
+      },
+      "additionalProperties": false
+    },
+    "lists": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required" : [
+          "id",
+          "label",
+          "position"
+        ],
+        "properties" : {
+          "id": { "type": "integer" },
+          "label": {
+            "type": ["object", "null"],
+            "required": [
+              "id",
+              "color",
+              "description",
+              "name"
+            ],
+            "properties": {
+              "id": { "type": "integer" },
+              "color": {
+                "type": "string",
+                "pattern": "^#[0-9A-Fa-f]{3}{1,2}+$"
+              },
+              "description": { "type": ["string", "null"] },
+              "name": { "type": "string" }
+            }
+          },
+          "position": { "type": ["integer", "null"] }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": true
+}

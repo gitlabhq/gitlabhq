@@ -91,11 +91,19 @@ describe Projects::MergeRequestsController do
         end
       end
 
-      context 'without basic serializer param' do
-        it 'renders the merge request in the json format' do
-          go(format: :json)
+      context 'with widget serializer param' do
+        it 'renders widget MR entity as json' do
+          go(serializer: 'widget', format: :json)
 
-          expect(response).to match_response_schema('entities/merge_request')
+          expect(response).to match_response_schema('entities/merge_request_widget')
+        end
+      end
+
+      context 'when no serialiser was passed' do
+        it 'renders widget MR entity as json' do
+          go(serializer: nil, format: :json)
+
+          expect(response).to match_response_schema('entities/merge_request_widget')
         end
       end
     end
@@ -468,7 +476,7 @@ describe Projects::MergeRequestsController do
       end
 
       it 'delegates the update of the todos count cache to TodoService' do
-        expect_any_instance_of(TodoService).to receive(:destroy_issuable).with(merge_request, owner).once
+        expect_any_instance_of(TodoService).to receive(:destroy_target).with(merge_request).once
 
         delete :destroy, namespace_id: project.namespace, project_id: project, id: merge_request.iid
       end
@@ -674,6 +682,64 @@ describe Projects::MergeRequestsController do
                             project_id: project,
                             id: merge_request.iid,
                             format: :json
+    end
+  end
+
+  describe 'POST #rebase' do
+    let(:viewer)        { user }
+
+    def post_rebase
+      post :rebase, namespace_id: project.namespace, project_id: project, id: merge_request
+    end
+
+    def expect_rebase_worker_for(user)
+      expect(RebaseWorker).to receive(:perform_async).with(merge_request.id, user.id)
+    end
+
+    context 'successfully' do
+      it 'enqeues a RebaseWorker' do
+        expect_rebase_worker_for(viewer)
+
+        post_rebase
+
+        expect(response.status).to eq(200)
+      end
+    end
+
+    context 'with a forked project' do
+      let(:fork_project) { create(:project, :repository, forked_from_project: project) }
+      let(:fork_owner) { fork_project.owner }
+
+      before do
+        merge_request.update!(source_project: fork_project)
+        fork_project.add_reporter(user)
+      end
+
+      context 'user cannot push to source branch' do
+        it 'returns 404' do
+          expect_rebase_worker_for(viewer).never
+
+          post_rebase
+
+          expect(response.status).to eq(404)
+        end
+      end
+
+      context 'user can push to source branch' do
+        before do
+          project.add_reporter(fork_owner)
+
+          sign_in(fork_owner)
+        end
+
+        it 'returns 200' do
+          expect_rebase_worker_for(fork_owner)
+
+          post_rebase
+
+          expect(response.status).to eq(200)
+        end
+      end
     end
   end
 end

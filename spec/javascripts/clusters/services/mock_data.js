@@ -18,10 +18,16 @@ const CLUSTERS_MOCK_DATA = {
           name: 'ingress',
           status: APPLICATION_ERROR,
           status_reason: 'Cannot connect',
+          external_ip: null,
         }, {
           name: 'runner',
           status: APPLICATION_INSTALLING,
           status_reason: null,
+        },
+        {
+          name: 'prometheus',
+          status: APPLICATION_ERROR,
+          status_reason: 'Cannot connect',
         }],
       },
     },
@@ -30,6 +36,7 @@ const CLUSTERS_MOCK_DATA = {
     '/gitlab-org/gitlab-shell/clusters/1/applications/helm': { },
     '/gitlab-org/gitlab-shell/clusters/1/applications/ingress': { },
     '/gitlab-org/gitlab-shell/clusters/1/applications/runner': { },
+    '/gitlab-org/gitlab-shell/clusters/1/applications/prometheus': { },
   },
 };
 

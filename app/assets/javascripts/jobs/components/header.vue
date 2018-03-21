@@ -3,7 +3,11 @@
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
   export default {
-    name: 'jobHeaderSection',
+    name: 'JobHeaderSection',
+    components: {
+      ciHeader,
+      loadingIcon,
+    },
     props: {
       job: {
         type: Object,
@@ -13,10 +17,6 @@
         type: Boolean,
         required: true,
       },
-    },
-    components: {
-      ciHeader,
-      loadingIcon,
     },
     data() {
       return {
@@ -29,6 +29,18 @@
       },
       shouldRenderContent() {
         return !this.isLoading && Object.keys(this.job).length;
+      },
+      /**
+       * When job has not started the key will be `false`
+       * When job started the key will be a string with a date.
+       */
+      jobStarted() {
+        return !this.job.started === false;
+      },
+    },
+    watch: {
+      job() {
+        this.actions = this.getActions();
       },
     },
     methods: {
@@ -46,11 +58,6 @@
         return actions;
       },
     },
-    watch: {
-      job() {
-        this.actions = this.getActions();
-      },
-    },
   };
 </script>
 <template>
@@ -63,11 +70,13 @@
       :time="job.created_at"
       :user="job.user"
       :actions="actions"
-      :hasSidebarButton="true"
-      />
+      :has-sidebar-button="true"
+      :should-render-triggered-label="jobStarted"
+    />
     <loading-icon
       v-if="isLoading"
       size="2"
-      />
+      class="prepend-top-default append-bottom-default"
+    />
   </div>
 </template>

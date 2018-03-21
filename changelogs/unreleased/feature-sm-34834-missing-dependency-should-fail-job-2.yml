@@ -1,5 +1,0 @@
----
-title: Fail jobs if its dependency is missing
-merge_request: 14009
-author:
-type: fixed

@@ -85,7 +85,7 @@ module Gitlab
         begin
           Gitlab::Ci::YamlProcessor.new(content)
           nil
-        rescue ValidationError, Psych::SyntaxError => e
+        rescue ValidationError => e
           e.message
         end
       end

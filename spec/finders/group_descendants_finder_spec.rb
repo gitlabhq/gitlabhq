@@ -35,6 +35,15 @@ describe GroupDescendantsFinder do
       expect(finder.execute).to contain_exactly(project)
     end
 
+    it 'does not include projects shared with the group' do
+      project = create(:project, namespace: group)
+      other_project = create(:project)
+      other_project.project_group_links.create(group: group,
+                                               group_access: ProjectGroupLink::MASTER)
+
+      expect(finder.execute).to contain_exactly(project)
+    end
+
     context 'when archived is `true`' do
       let(:params) { { archived: 'true' } }
 
@@ -71,6 +80,41 @@ describe GroupDescendantsFinder do
         matching_project = create(:project, namespace: group, name: 'testproject')
 
         expect(finder.execute).to contain_exactly(matching_project)
+      end
+    end
+
+    context 'sorting by name' do
+      let!(:project1) { create(:project, namespace: group, name: 'a', path: 'project-a') }
+      let!(:project2) { create(:project, namespace: group, name: 'z', path: 'project-z') }
+      let(:params) do
+        {
+          sort: 'name_asc'
+        }
+      end
+
+      it 'sorts elements by name' do
+        expect(subject.execute).to eq(
+          [
+            project1,
+            project2
+          ]
+        )
+      end
+
+      context 'with nested groups', :nested_groups do
+        let!(:subgroup1) { create(:group, parent: group, name: 'a', path: 'sub-a') }
+        let!(:subgroup2) { create(:group, parent: group, name: 'z', path: 'sub-z') }
+
+        it 'sorts elements by name' do
+          expect(subject.execute).to eq(
+            [
+              subgroup1,
+              subgroup2,
+              project1,
+              project2
+            ]
+          )
+        end
       end
     end
   end
@@ -152,6 +196,17 @@ describe GroupDescendantsFinder do
             matching_project = create(:project, namespace: subgroup, name: 'Testproject')
 
             expect(finder.execute).to contain_exactly(subgroup, matching_project)
+          end
+
+          context 'with a small page size' do
+            let(:params) { { filter: 'test', per_page: 1 } }
+
+            it 'contains all the ancestors of a matching subgroup regardless the page size' do
+              subgroup = create(:group, :private, parent: group)
+              matching = create(:group, :private, name: 'testgroup', parent: subgroup)
+
+              expect(finder.execute).to contain_exactly(subgroup, matching)
+            end
           end
 
           it 'does not include the parent itself' do

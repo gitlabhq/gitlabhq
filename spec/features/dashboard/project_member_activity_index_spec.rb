@@ -5,7 +5,7 @@ feature 'Project member activity', :js do
   let(:project)         { create(:project, :public, name: 'x', namespace: user.namespace) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   def visit_activities_and_wait_with_event(event_type)

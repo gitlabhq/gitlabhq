@@ -69,9 +69,8 @@ describe ProfilesController, :request_store do
 
   describe 'PUT update_username' do
     let(:namespace) { user.namespace }
-    let(:project) { create(:project_empty_repo, namespace: namespace) }
     let(:gitlab_shell) { Gitlab::Shell.new }
-    let(:new_username) { 'renamedtosomethingelse' }
+    let(:new_username) { generate(:username) }
 
     it 'allows username change' do
       sign_in(user)
@@ -85,16 +84,39 @@ describe ProfilesController, :request_store do
       expect(user.username).to eq(new_username)
     end
 
-    it 'moves dependent projects to new namespace' do
-      sign_in(user)
+    context 'with legacy storage' do
+      it 'moves dependent projects to new namespace' do
+        project = create(:project_empty_repo, :legacy_storage, namespace: namespace)
 
-      put :update_username,
-        user: { username: new_username }
+        sign_in(user)
 
-      user.reload
+        put :update_username,
+          user: { username: new_username }
 
-      expect(response.status).to eq(302)
-      expect(gitlab_shell.exists?(project.repository_storage_path, "#{new_username}/#{project.path}.git")).to be_truthy
+        user.reload
+
+        expect(response.status).to eq(302)
+        expect(gitlab_shell.exists?(project.repository_storage_path, "#{new_username}/#{project.path}.git")).to be_truthy
+      end
+    end
+
+    context 'with hashed storage' do
+      it 'keeps repository location unchanged on disk' do
+        project = create(:project_empty_repo, namespace: namespace)
+
+        before_disk_path = project.disk_path
+
+        sign_in(user)
+
+        put :update_username,
+          user: { username: new_username }
+
+        user.reload
+
+        expect(response.status).to eq(302)
+        expect(gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_truthy
+        expect(before_disk_path).to eq(project.disk_path)
+      end
     end
   end
 end

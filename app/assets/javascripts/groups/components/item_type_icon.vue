@@ -1,7 +1,11 @@
 <script>
+import icon from '~/vue_shared/components/icon.vue';
 import { ITEM_TYPE } from '../constants';
 
 export default {
+  components: {
+    icon,
+  },
   props: {
     itemType: {
       type: String,
@@ -16,9 +20,9 @@ export default {
   computed: {
     iconClass() {
       if (this.itemType === ITEM_TYPE.GROUP) {
-        return this.isGroupOpen ? 'fa-folder-open' : 'fa-folder';
+        return this.isGroupOpen ? 'folder-open' : 'folder';
       }
-      return 'fa-bookmark';
+      return 'bookmark';
     },
   },
 };
@@ -26,9 +30,6 @@ export default {
 
 <template>
   <span class="item-type-icon">
-    <i
-      :class="iconClass"
-      class="fa"
-      aria-hidden="true"/>
+    <icon :name="iconClass"/>
   </span>
 </template>

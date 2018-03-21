@@ -104,7 +104,7 @@ describe LabelsHelper do
     context 'with a tooltip argument' do
       context 'set to false' do
         it 'does not include the has-tooltip class' do
-          expect(link_to_label(label, tooltip: false)).not_to match %r{has-tooltip}
+          expect(link_to_label(label, tooltip: false)).not_to match /has-tooltip/
         end
       end
     end
@@ -137,6 +137,78 @@ describe LabelsHelper do
     it 'supports RGB triplets' do
       expect(text_color_for_bg('#FFF')).to eq '#333333'
       expect(text_color_for_bg('#000')).to eq '#FFFFFF'
+    end
+  end
+
+  describe 'create_label_title' do
+    set(:group) { create(:group) }
+
+    context 'with a group as subject' do
+      it 'returns "Create group label"' do
+        expect(create_label_title(group)).to eq 'Create group label'
+      end
+    end
+
+    context 'with a project as subject' do
+      set(:project) { create(:project, namespace: group) }
+
+      it 'returns "Create project label"' do
+        expect(create_label_title(project)).to eq 'Create project label'
+      end
+    end
+
+    context 'with no subject' do
+      it 'returns "Create new label"' do
+        expect(create_label_title(nil)).to eq 'Create new label'
+      end
+    end
+  end
+
+  describe 'manage_labels_title' do
+    set(:group) { create(:group) }
+
+    context 'with a group as subject' do
+      it 'returns "Manage group labels"' do
+        expect(manage_labels_title(group)).to eq 'Manage group labels'
+      end
+    end
+
+    context 'with a project as subject' do
+      set(:project) { create(:project, namespace: group) }
+
+      it 'returns "Manage project labels"' do
+        expect(manage_labels_title(project)).to eq 'Manage project labels'
+      end
+    end
+
+    context 'with no subject' do
+      it 'returns "Manage labels"' do
+        expect(manage_labels_title(nil)).to eq 'Manage labels'
+      end
+    end
+  end
+
+  describe 'view_labels_title' do
+    set(:group) { create(:group) }
+
+    context 'with a group as subject' do
+      it 'returns "View group labels"' do
+        expect(view_labels_title(group)).to eq 'View group labels'
+      end
+    end
+
+    context 'with a project as subject' do
+      set(:project) { create(:project, namespace: group) }
+
+      it 'returns "View project labels"' do
+        expect(view_labels_title(project)).to eq 'View project labels'
+      end
+    end
+
+    context 'with no subject' do
+      it 'returns "View labels"' do
+        expect(view_labels_title(nil)).to eq 'View labels'
+      end
     end
   end
 end

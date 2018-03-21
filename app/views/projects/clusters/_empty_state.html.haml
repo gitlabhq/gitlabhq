@@ -3,10 +3,9 @@
     .svg-content= image_tag 'illustrations/clusters_empty.svg'
   .col-xs-12
     .text-content
-      %h4.text-center= s_('ClusterIntegration|Integrate cluster automation')
-      - link_to_help_page = link_to(s_('ClusterIntegration|Learn more about Clusters'), help_page_path('user/project/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
-      %p= s_('ClusterIntegration|Clusters allow you to use review apps, deploy your applications, run your pipelines, and much more in an easy way. %{link_to_help_page}').html_safe % { link_to_help_page: link_to_help_page}
+      %h4.text-center= s_('ClusterIntegration|Integrate Kubernetes cluster automation')
+      - link_to_help_page = link_to(_('Learn more about Kubernetes'), help_page_path('user/project/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
+      %p= s_('ClusterIntegration|Kubernetes clusters allow you to use review apps, deploy your applications, run your pipelines, and much more in an easy way. %{link_to_help_page}').html_safe % { link_to_help_page: link_to_help_page}
 
       .text-center
-        = link_to s_('ClusterIntegration|Add cluster'), new_project_cluster_path(@project), class: 'btn btn-success'
-
+        = link_to s_('ClusterIntegration|Add Kubernetes cluster'), new_project_cluster_path(@project), class: 'btn btn-success'

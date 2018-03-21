@@ -17,13 +17,10 @@ describe Projects::PipelinesController do
 
   describe 'GET index.json' do
     before do
-      branch_head = project.commit
-      parent = branch_head.parent
-
-      create(:ci_empty_pipeline, status: 'pending', project: project, sha: branch_head.id)
-      create(:ci_empty_pipeline, status: 'running', project: project, sha: branch_head.id)
-      create(:ci_empty_pipeline, status: 'created', project: project, sha: parent.id)
-      create(:ci_empty_pipeline, status: 'success', project: project, sha: parent.id)
+      %w(pending running created success).each_with_index do |status, index|
+        sha = project.commit("HEAD~#{index}")
+        create(:ci_empty_pipeline, status: status, project: project, sha: sha)
+      end
     end
 
     subject do
@@ -46,7 +43,7 @@ describe Projects::PipelinesController do
 
     context 'when performing gitaly calls', :request_store do
       it 'limits the Gitaly requests' do
-        expect { subject }.to change { Gitlab::GitalyClient.get_request_count }.by(8)
+        expect { subject }.to change { Gitlab::GitalyClient.get_request_count }.by(3)
       end
     end
   end

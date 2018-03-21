@@ -1,15 +1,15 @@
 %h3 Shared Runners
 
-.bs-callout.bs-callout-warning.shared-runners-description
-  - if current_application_settings.shared_runners_text.present?
-    = markdown_field(current_application_settings, :shared_runners_text)
+.bs-callout.shared-runners-description
+  - if Gitlab::CurrentSettings.shared_runners_text.present?
+    = markdown_field(Gitlab::CurrentSettings.current_application_settings, :shared_runners_text)
   - else
     GitLab Shared Runners execute code of different projects on the same Runner
     unless you configure GitLab Runner Autoscale with MaxBuilds 1 (which it is
     on GitLab.com).
   %hr
   - if @project.shared_runners_enabled?
-    = link_to toggle_shared_runners_project_runners_path(@project), class: 'btn btn-warning', method: :post do
+    = link_to toggle_shared_runners_project_runners_path(@project), class: 'btn btn-close', method: :post do
       Disable shared Runners
   - else
     = link_to toggle_shared_runners_project_runners_path(@project), class: 'btn btn-success', method: :post do
@@ -23,6 +23,3 @@
   %h4.underlined-title Available shared Runners : #{@shared_runners_count}
   %ul.bordered-list.available-shared-runners
     = render partial: 'projects/runners/runner', collection: @shared_runners, as: :runner
-  - if @shared_runners_count > 10
-    .light
-      and #{@shared_runners_count - 10} more...

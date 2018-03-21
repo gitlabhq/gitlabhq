@@ -30,14 +30,18 @@ Example response:
         "description": "test-1-20150125",
         "id": 6,
         "is_shared": false,
-        "name": null
+        "name": null,
+        "online": true,
+        "status": "online"
     },
     {
         "active": true,
         "description": "test-2-20150125",
         "id": 8,
         "is_shared": false,
-        "name": null
+        "name": null,
+        "online": false,
+        "status": "offline"
     }
 ]
 ```
@@ -69,28 +73,36 @@ Example response:
         "description": "shared-runner-1",
         "id": 1,
         "is_shared": true,
-        "name": null
+        "name": null,
+        "online": true,
+        "status": "online"
     },
     {
         "active": true,
         "description": "shared-runner-2",
         "id": 3,
         "is_shared": true,
-        "name": null
+        "name": null,
+        "online": false
+        "status": "offline"
     },
     {
         "active": true,
         "description": "test-1-20150125",
         "id": 6,
         "is_shared": false,
-        "name": null
+        "name": null,
+        "online": true
+        "status": "paused"
     },
     {
         "active": true,
         "description": "test-2-20150125",
         "id": 8,
         "is_shared": false,
-        "name": null
+        "name": null,
+        "online": false,
+        "status": "offline"
     }
 ]
 ```
@@ -122,6 +134,8 @@ Example response:
     "is_shared": false,
     "contacted_at": "2016-01-25T16:39:48.066Z",
     "name": null,
+    "online": true,
+    "status": "online",
     "platform": null,
     "projects": [
         {
@@ -176,6 +190,8 @@ Example response:
     "is_shared": false,
     "contacted_at": "2016-01-25T16:39:48.066Z",
     "name": null,
+    "online": true,
+    "status": "online",
     "platform": null,
     "projects": [
         {
@@ -327,14 +343,18 @@ Example response:
         "description": "test-2-20150125",
         "id": 8,
         "is_shared": false,
-        "name": null
+        "name": null,
+        "online": false,
+        "status": "offline"
     },
     {
         "active": true,
         "description": "development_runner",
         "id": 5,
         "is_shared": true,
-        "name": null
+        "name": null,
+        "online": true
+        "status": "paused"
     }
 ]
 ```
@@ -364,7 +384,9 @@ Example response:
     "description": "test-2016-02-01",
     "id": 9,
     "is_shared": false,
-    "name": null
+    "name": null,
+    "online": true,
+    "status": "online"
 }
 ```
 

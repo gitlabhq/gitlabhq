@@ -4,7 +4,6 @@ module Gitlab
   module Middleware
     class Go
       include ActionView::Helpers::TagHelper
-      include Gitlab::CurrentSettings
 
       PROJECT_PATH_REGEX = %r{\A(#{Gitlab::PathRegex.full_namespace_route_regex}/#{Gitlab::PathRegex.project_route_regex})/}.freeze
 
@@ -42,7 +41,7 @@ module Gitlab
         project_url = URI.join(config.gitlab.url, path)
         import_prefix = strip_url(project_url.to_s)
 
-        repository_url = if current_application_settings.enabled_git_access_protocol == 'ssh'
+        repository_url = if Gitlab::CurrentSettings.enabled_git_access_protocol == 'ssh'
                            shell = config.gitlab_shell
                            port = ":#{shell.ssh_port}" unless shell.ssh_port == 22
                            "ssh://#{shell.ssh_user}@#{shell.ssh_host}#{port}/#{path}.git"
@@ -56,12 +55,12 @@ module Gitlab
       end
 
       def strip_url(url)
-        url.gsub(/\Ahttps?:\/\//, '')
+        url.gsub(%r{\Ahttps?://}, '')
       end
 
       def project_path(request)
         path_info = request.env["PATH_INFO"]
-        path_info.sub!(/^\//, '')
+        path_info.sub!(%r{^/}, '')
 
         project_path_match = "#{path_info}/".match(PROJECT_PATH_REGEX)
         return unless project_path_match
@@ -115,7 +114,15 @@ module Gitlab
       end
 
       def current_user(request)
-        request.env['warden']&.authenticate
+        authenticator = Gitlab::Auth::RequestAuthenticator.new(request)
+        user = authenticator.find_user_from_access_token || authenticator.find_user_from_warden
+
+        return unless user&.can?(:access_api)
+
+        # Right now, the `api` scope is the only one that should be able to determine private project existence.
+        return unless authenticator.valid_access_token?(scopes: [:api])
+
+        user
       end
     end
   end

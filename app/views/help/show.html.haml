@@ -1,5 +1,3 @@
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'help'
 - page_title @path.split("/").reverse.map(&:humanize)
 .documentation.wiki.prepend-top-default
   = markdown @markdown

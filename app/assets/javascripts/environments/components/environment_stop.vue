@@ -1,53 +1,55 @@
 <script>
-/**
- * Renders the stop "button" that allows stop an environment.
- * Used in environments table.
- */
-import eventHub from '../event_hub';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
-import tooltip from '../../vue_shared/directives/tooltip';
+  /**
+  * Renders the stop "button" that allows stop an environment.
+  * Used in environments table.
+  */
 
-export default {
-  props: {
-    stopUrl: {
-      type: String,
-      default: '',
+  import $ from 'jquery';
+  import eventHub from '../event_hub';
+  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+  import tooltip from '../../vue_shared/directives/tooltip';
+
+  export default {
+    components: {
+      loadingIcon,
     },
-  },
 
-  directives: {
-    tooltip,
-  },
-
-  data() {
-    return {
-      isLoading: false,
-    };
-  },
-
-  components: {
-    loadingIcon,
-  },
-
-  computed: {
-    title() {
-      return 'Stop';
+    directives: {
+      tooltip,
     },
-  },
 
-  methods: {
-    onClick() {
-      // eslint-disable-next-line no-alert
-      if (confirm('Are you sure you want to stop this environment?')) {
-        this.isLoading = true;
-
-        $(this.$el).tooltip('destroy');
-
-        eventHub.$emit('postAction', this.stopUrl);
-      }
+    props: {
+      stopUrl: {
+        type: String,
+        default: '',
+      },
     },
-  },
-};
+
+    data() {
+      return {
+        isLoading: false,
+      };
+    },
+
+    computed: {
+      title() {
+        return 'Stop';
+      },
+    },
+
+    methods: {
+      onClick() {
+        // eslint-disable-next-line no-alert
+        if (confirm('Are you sure you want to stop this environment?')) {
+          this.isLoading = true;
+
+          $(this.$el).tooltip('destroy');
+
+          eventHub.$emit('postAction', this.stopUrl);
+        }
+      },
+    },
+  };
 </script>
 <template>
   <button
@@ -58,10 +60,13 @@ export default {
     @click="onClick"
     :disabled="isLoading"
     :title="title"
-    :aria-label="title">
+    :aria-label="title"
+  >
     <i
       class="fa fa-stop stop-env-icon"
-      aria-hidden="true" />
+      aria-hidden="true"
+    >
+    </i>
     <loading-icon v-if="isLoading" />
   </button>
 </template>

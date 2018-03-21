@@ -1,42 +1,27 @@
 module Members
-  class DestroyService < BaseService
-    include MembersHelper
+  class DestroyService < Members::BaseService
+    def execute(member, skip_authorization: false)
+      raise Gitlab::Access::AccessDeniedError unless skip_authorization || can_destroy_member?(member)
 
-    attr_accessor :source
+      return member if member.is_a?(GroupMember) && member.source.last_owner?(member.user)
 
-    ALLOWED_SCOPES = %i[members requesters all].freeze
+      member.destroy
 
-    def initialize(source, current_user, params = {})
-      @source = source
-      @current_user = current_user
-      @params = params
-    end
+      member.user&.invalidate_cache_counts
 
-    def execute(scope = :members)
-      raise "scope :#{scope} is not allowed!" unless ALLOWED_SCOPES.include?(scope)
+      if member.request? && member.user != current_user
+        notification_service.decline_access_request(member)
+      end
 
-      member = find_member!(scope)
+      after_execute(member: member)
 
-      raise Gitlab::Access::AccessDeniedError unless can_destroy_member?(member)
-
-      AuthorizedDestroyService.new(member, current_user).execute
+      member
     end
 
     private
 
-    def find_member!(scope)
-      condition = params[:user_id] ? { user_id: params[:user_id] } : { id: params[:id] }
-      case scope
-      when :all
-        source.members.find_by(condition) ||
-          source.requesters.find_by!(condition)
-      else
-        source.public_send(scope).find_by!(condition) # rubocop:disable GitlabSecurity/PublicSend
-      end
-    end
-
     def can_destroy_member?(member)
-      member && can?(current_user, destroy_member_permission(member), member)
+      can?(current_user, destroy_member_permission(member), member)
     end
 
     def destroy_member_permission(member)
@@ -45,6 +30,8 @@ module Members
         :destroy_group_member
       when ProjectMember
         :destroy_project_member
+      else
+        raise "Unknown member type: #{member}!"
       end
     end
   end

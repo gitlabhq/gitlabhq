@@ -1,78 +1,65 @@
-/* eslint-disable func-names, wrap-iife, consistent-return,
-  no-return-assign, no-param-reassign, one-var-declaration-per-line, no-unused-vars,
-  prefer-template, object-shorthand, prefer-arrow-callback */
-
+import $ from 'jquery';
 import { pluralize } from './lib/utils/text_utility';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import Pager from './pager';
+import axios from './lib/utils/axios_utils';
 
-export default (function () {
-  const CommitsList = {};
+export default class CommitsList {
+  constructor(limit = 0) {
+    this.timer = null;
 
-  CommitsList.timer = null;
-
-  CommitsList.init = function (limit) {
     this.$contentList = $('.content_list');
 
-    $('body').on('click', '.day-commits-table li.commit', function (e) {
-      if (e.target.nodeName !== 'A') {
-        location.href = $(this).attr('url');
-        e.stopPropagation();
-        return false;
-      }
-    });
-
-    Pager.init(parseInt(limit, 10), false, false, this.processCommits);
+    Pager.init(parseInt(limit, 10), false, false, this.processCommits.bind(this));
 
     this.content = $('#commits-list');
     this.searchField = $('#commits-search');
     this.lastSearch = this.searchField.val();
-    return this.initSearch();
-  };
+    this.initSearch();
+  }
 
-  CommitsList.initSearch = function () {
+  initSearch() {
     this.timer = null;
-    return this.searchField.keyup((function (_this) {
-      return function () {
-        clearTimeout(_this.timer);
-        return _this.timer = setTimeout(_this.filterResults, 500);
-      };
-    })(this));
-  };
-
-  CommitsList.filterResults = function () {
-    const form = $('.commits-search-form');
-    const search = CommitsList.searchField.val();
-    if (search === CommitsList.lastSearch) return;
-    const commitsUrl = form.attr('action') + '?' + form.serialize();
-    CommitsList.content.fadeTo('fast', 0.5);
-    return $.ajax({
-      type: 'GET',
-      url: form.attr('action'),
-      data: form.serialize(),
-      complete: function () {
-        return CommitsList.content.fadeTo('fast', 1.0);
-      },
-      success: function (data) {
-        CommitsList.lastSearch = search;
-        CommitsList.content.html(data.html);
-        return history.replaceState({
-          page: commitsUrl,
-        // Change url so if user reload a page - search results are saved
-        }, document.title, commitsUrl);
-      },
-      error: function () {
-        CommitsList.lastSearch = null;
-      },
-      dataType: 'json',
+    this.searchField.on('keyup', () => {
+      clearTimeout(this.timer);
+      this.timer = setTimeout(this.filterResults.bind(this), 500);
     });
-  };
+  }
+
+  filterResults() {
+    const form = $('.commits-search-form');
+    const search = this.searchField.val();
+    if (search === this.lastSearch) return Promise.resolve();
+    const commitsUrl = `${form.attr('action')}?${form.serialize()}`;
+    this.content.fadeTo('fast', 0.5);
+    const params = form.serializeArray().reduce((acc, obj) => Object.assign(acc, {
+      [obj.name]: obj.value,
+    }), {});
+
+    return axios.get(form.attr('action'), {
+      params,
+    })
+      .then(({ data }) => {
+        this.lastSearch = search;
+        this.content.html(data.html);
+        this.content.fadeTo('fast', 1.0);
+
+        // Change url so if user reload a page - search results are saved
+        history.replaceState({
+          page: commitsUrl,
+        }, document.title, commitsUrl);
+      })
+      .catch(() => {
+        this.content.fadeTo('fast', 1.0);
+        this.lastSearch = null;
+      });
+  }
 
   // Prepare loaded data.
-  CommitsList.processCommits = (data) => {
+  processCommits(data) {
     let processedData = data;
     const $processedData = $(processedData);
-    const $commitsHeadersLast = CommitsList.$contentList.find('li.js-commit-header').last();
+    const $commitsHeadersLast = this.$contentList.find('li.js-commit-header').last();
     const lastShownDay = $commitsHeadersLast.data('day');
     const $loadedCommitsHeadersFirst = $processedData.filter('li.js-commit-header').first();
     const loadedShownDayFirst = $loadedCommitsHeadersFirst.data('day');
@@ -95,7 +82,5 @@ export default (function () {
     localTimeAgo($processedData.find('.js-timeago'));
 
     return processedData;
-  };
-
-  return CommitsList;
-})();
+  }
+}

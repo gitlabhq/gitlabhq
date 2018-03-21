@@ -10,6 +10,7 @@ const hideFlash = (flashEl, fadeTransition = true) => {
 
   flashEl.addEventListener('transitionend', () => {
     flashEl.remove();
+    if (document.body.classList.contains('flash-shown')) document.body.classList.remove('flash-shown');
   }, {
     once: true,
     passive: true,
@@ -64,6 +65,7 @@ const createFlash = function createFlash(
   parent = document,
   actionConfig = null,
   fadeTransition = true,
+  addBodyClass = false,
 ) {
   const flashContainer = parent.querySelector('.flash-container');
 
@@ -85,6 +87,8 @@ const createFlash = function createFlash(
   }
 
   flashContainer.style.display = 'block';
+
+  if (addBodyClass) document.body.classList.add('flash-shown');
 
   return flashContainer;
 };

@@ -3,18 +3,19 @@
 This document describes the usage of `.gitlab-ci.yml`, the file that is used by
 GitLab Runner to manage your project's jobs.
 
-If you want a quick introduction to GitLab CI, follow our
-[quick start guide](../quick_start/README.md).
-
-## .gitlab-ci.yml
-
 From version 7.12, GitLab CI uses a [YAML](https://en.wikipedia.org/wiki/YAML)
 file (`.gitlab-ci.yml`) for the project configuration. It is placed in the root
 of your repository and contains definitions of how your project should be built.
 
+If you want a quick introduction to GitLab CI, follow our
+[quick start guide](../quick_start/README.md).
+
+## Jobs
+
 The YAML file defines a set of jobs with constraints stating when they should
-be run. The jobs are defined as top-level elements with a name and always have
-to contain at least the `script` clause:
+be run. You can specify an unlimited number of jobs which are defined as
+top-level elements with an arbitrary name and always have to contain at least
+the `script` clause.
 
 ```yaml
 job1:
@@ -24,9 +25,8 @@ job2:
   script: "execute-script-for-job2"
 ```
 
-The above example is the simplest possible CI configuration with two separate
+The above example is the simplest possible CI/CD configuration with two separate
 jobs, where each of the jobs executes a different command.
-
 Of course a command can execute code directly (`./configure;make;make install`)
 or run a script (`test.sh`) in the repository.
 
@@ -34,78 +34,115 @@ Jobs are picked up by [Runners](../runners/README.md) and executed within the
 environment of the Runner. What is important, is that each job is run
 independently from each other.
 
-The YAML syntax allows for using more complex job specifications than in the
-above example:
+Each job must have a unique name, but there are a few **reserved `keywords` that
+cannot be used as job names**:
 
-```yaml
-image: ruby:2.1
-services:
-  - postgres
+- `image`
+- `services`
+- `stages`
+- `types`
+- `before_script`
+- `after_script`
+- `variables`
+- `cache`
 
-before_script:
-  - bundle install
-
-after_script:
-  - rm secrets
-
-stages:
-  - build
-  - test
-  - deploy
-
-job1:
-  stage: build
-  script:
-    - execute-script-for-job1
-  only:
-    - master
-  tags:
-    - docker
-```
-
-There are a few reserved `keywords` that **cannot** be used as job names:
+A job is defined by a list of parameters that define the job behavior.
 
 | Keyword       | Required | Description |
 |---------------|----------|-------------|
-| image         | no | Use docker image, covered in [Use Docker](../docker/README.md) |
-| services      | no | Use docker services, covered in [Use Docker](../docker/README.md) |
-| stages        | no | Define build stages |
-| types         | no | Alias for `stages` (deprecated) |
-| before_script | no | Define commands that run before each job's script |
-| after_script  | no | Define commands that run after each job's script |
-| variables     | no | Define build variables |
-| cache         | no | Define list of files that should be cached between subsequent runs |
+| script        | yes      | Defines a shell script which is executed by Runner |
+| image         | no       | Use docker image, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
+| services      | no       | Use docker services, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
+| stage         | no       | Defines a job stage (default: `test`) |
+| type          | no       | Alias for `stage` |
+| variables     | no       | Define job variables on a job level |
+| only          | no       | Defines a list of git refs for which job is created |
+| except        | no       | Defines a list of git refs for which job is not created |
+| tags          | no       | Defines a list of tags which are used to select Runner |
+| allow_failure | no       | Allow job to fail. Failed job doesn't contribute to commit status |
+| when          | no       | Define when to run job. Can be `on_success`, `on_failure`, `always` or `manual` |
+| dependencies  | no       | Define other jobs that a job depends on so that you can pass artifacts between them|
+| artifacts     | no       | Define list of [job artifacts](#artifacts) |
+| cache         | no       | Define list of files that should be cached between subsequent runs |
+| before_script | no       | Override a set of commands that are executed before job |
+| after_script  | no       | Override a set of commands that are executed after job |
+| environment   | no       | Defines a name of environment to which deployment is done by this job |
+| coverage      | no       | Define code coverage settings for a given job |
+| retry         | no       | Define how many times a job can be auto-retried in case of a failure |
 
-### image and services
+### `pages`
+
+`pages` is a special job that is used to upload static content to GitLab that
+can be used to serve your website. It has a special syntax, so the two
+requirements below must be met:
+
+1. Any static content must be placed under a `public/` directory
+1. `artifacts` with a path to the `public/` directory must be defined
+
+The example below simply moves all files from the root of the project to the
+`public/` directory. The `.public` workaround is so `cp` doesn't also copy
+`public/` to itself in an infinite loop:
+
+```
+pages:
+  stage: deploy
+  script:
+  - mkdir .public
+  - cp -r * .public
+  - mv .public public
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
+```
+
+Read more on [GitLab Pages user documentation](../../user/project/pages/index.md).
+
+## `image` and `services`
 
 This allows to specify a custom Docker image and a list of services that can be
 used for time of the job. The configuration of this feature is covered in
 [a separate document](../docker/README.md).
 
-### before_script
-
-`before_script` is used to define the command that should be run before all
-jobs, including deploy jobs, but after the restoration of artifacts. This can
-be an array or a multi-line string.
-
-### after_script
+## `before_script` and `after_script`
 
 > Introduced in GitLab 8.7 and requires Gitlab Runner v1.2
 
-`after_script` is used to define the command that will be run after for all
-jobs. This has to be an array or a multi-line string.
+`before_script` is used to define the command that should be run before all
+jobs, including deploy jobs, but after the restoration of [artifacts](#artifacts).
+This can be an array or a multi-line string.
 
-> **Note:**
+`after_script` is used to define the command that will be run after for all
+jobs, including failed ones. This has to be an array or a multi-line string.
+
 The `before_script` and the main `script` are concatenated and run in a single context/container.
 The `after_script` is run separately, so depending on the executor, changes done
 outside of the working tree might not be visible, e.g. software installed in the
 `before_script`.
 
-### stages
+It's possible to overwrite the globally defined `before_script` and `after_script`
+if you set it per-job:
 
-`stages` is used to define stages that can be used by jobs.
+```yaml
+before_script:
+- global before script
+
+job:
+  before_script:
+  - execute this instead of global before script
+  script:
+  - my command
+  after_script:
+  - execute this after my script
+```
+
+## `stages`
+
+`stages` is used to define stages that can be used by jobs and is defined
+globally.
+
 The specification of `stages` allows for having flexible multi stage pipelines.
-
 The ordering of elements in `stages` defines the ordering of jobs' execution:
 
 1. Jobs of the same stage are run in parallel.
@@ -134,280 +171,45 @@ There are also two edge cases worth mentioning:
    `test` and `deploy` are allowed to be used as job's stage by default.
 2. If a job doesn't specify a `stage`, the job is assigned the `test` stage.
 
-### types
+## `stage`
 
-> Deprecated, and could be removed in one of the future releases. Use [stages](#stages) instead.
-
-Alias for [stages](#stages).
-
-### variables
-
-> Introduced in GitLab Runner v0.5.0.
-
-GitLab CI allows you to add variables to `.gitlab-ci.yml` that are set in the
-job environment. The variables are stored in the Git repository and are meant
-to store non-sensitive project configuration, for example:
-
-```yaml
-variables:
-  DATABASE_URL: "postgres://postgres@postgres/my_database"
-```
-
->**Note:**
-Integers (as well as strings) are legal both for variable's name and value.
-Floats are not legal and cannot be used.
-
-These variables can be later used in all executed commands and scripts.
-The YAML-defined variables are also set to all created service containers,
-thus allowing to fine tune them. Variables can be also defined on a
-[job level](#job-variables).
-
-Except for the user defined variables, there are also the ones set up by the
-Runner itself. One example would be `CI_COMMIT_REF_NAME` which has the value of
-the branch or tag name for which project is built. Apart from the variables
-you can set in `.gitlab-ci.yml`, there are also the so called secret variables
-which can be set in GitLab's UI.
-
-[Learn more about variables.][variables]
-
-### cache
-
->
-**Notes:**
-- Introduced in GitLab Runner v0.7.0.
-- Prior to GitLab 9.2, caches were restored after artifacts.
-- From GitLab 9.2, caches are restored before artifacts.
-
-`cache` is used to specify a list of files and directories which should be
-cached between jobs. You can only use paths that are within the project
-workspace.
-
-**By default caching is enabled and shared between pipelines and jobs,
-starting from GitLab 9.0**
-
-If `cache` is defined outside the scope of jobs, it means it is set
-globally and all jobs will use that definition.
-
-Cache all files in `binaries` and `.config`:
-
-```yaml
-rspec:
-  script: test
-  cache:
-    paths:
-    - binaries/
-    - .config
-```
-
-Cache all Git untracked files:
-
-```yaml
-rspec:
-  script: test
-  cache:
-    untracked: true
-```
-
-Cache all Git untracked files and files in `binaries`:
-
-```yaml
-rspec:
-  script: test
-  cache:
-    untracked: true
-    paths:
-    - binaries/
-```
-
-Locally defined cache overrides globally defined options. The following `rspec`
-job will cache only `binaries/`:
-
-```yaml
-cache:
-  paths:
-  - my/files
-
-rspec:
-  script: test
-  cache:
-    key: rspec
-    paths:
-    - binaries/
-```
-
-Note that since cache is shared between jobs, if you're using different
-paths for different jobs, you should also set a different **cache:key**
-otherwise cache content can be overwritten.
-
-The cache is provided on a best-effort basis, so don't expect that the cache
-will be always present. For implementation details, please check GitLab Runner.
-
-#### cache:key
-
-> Introduced in GitLab Runner v1.0.0.
-
-The `key` directive allows you to define the affinity of caching
-between jobs, allowing to have a single cache for all jobs,
-cache per-job, cache per-branch or any other way you deem proper.
-
-This allows you to fine tune caching, allowing you to cache data between
-different jobs or even different branches.
-
-The `cache:key` variable can use any of the [predefined variables](../variables/README.md).
-
-The default key is **default** across the project, therefore everything is
-shared between each pipelines and jobs by default, starting from GitLab 9.0.
-
->**Note:** The `cache:key` variable cannot contain the `/` character.
-
----
-
-**Example configurations**
-
-To enable per-job caching:
-
-```yaml
-cache:
-  key: "$CI_JOB_NAME"
-  untracked: true
-```
-
-To enable per-branch caching:
-
-```yaml
-cache:
-  key: "$CI_COMMIT_REF_NAME"
-  untracked: true
-```
-
-To enable per-job and per-branch caching:
-
-```yaml
-cache:
-  key: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
-  untracked: true
-```
-
-To enable per-branch and per-stage caching:
-
-```yaml
-cache:
-  key: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"
-  untracked: true
-```
-
-If you use **Windows Batch** to run your shell scripts you need to replace
-`$` with `%`:
-
-```yaml
-cache:
-  key: "%CI_JOB_STAGE%-%CI_COMMIT_REF_NAME%"
-  untracked: true
-```
-
-If you use **Windows PowerShell** to run your shell scripts you need to replace
-`$` with `$env:`:
-
-```yaml
-cache:
-  key: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_NAME"
-  untracked: true
-```
-
-### cache:policy
-
-> Introduced in GitLab 9.4.
-
-The default behaviour of a caching job is to download the files at the start of
-execution, and to re-upload them at the end. This allows any changes made by the
-job to be persisted for future runs, and is known as the `pull-push` cache
-policy.
-
-If you know the job doesn't alter the cached files, you can skip the upload step
-by setting `policy: pull` in the job specification. Typically, this would be
-twinned with an ordinary cache job at an earlier stage to ensure the cache
-is updated from time to time:
+`stage` is defined per-job and relies on [`stages`](#stages) which is defined
+globally. It allows to group jobs into different stages, and jobs of the same
+`stage` are executed in `parallel`. For example:
 
 ```yaml
 stages:
-  - setup
+  - build
   - test
+  - deploy
 
-prepare:
-  stage: setup
-  cache:
-    key: gems
-    paths:
-      - vendor/bundle
-  script:
-    - bundle install --deployment
+job 1:
+  stage: build
+  script: make build dependencies
 
-rspec:
+job 2:
+  stage: build
+  script: make build artifacts
+
+job 3:
   stage: test
-  cache:
-    key: gems
-    paths:
-      - vendor/bundle
-    policy: pull
-  script:
-    - bundle exec rspec ...
+  script: make test
+
+job 4:
+  stage: deploy
+  script: make deploy
 ```
 
-This helps to speed up job execution and reduce load on the cache server,
-especially when you have a large number of cache-using jobs executing in
-parallel.
+## `types`
 
-Additionally, if you have a job that unconditionally recreates the cache without
-reference to its previous contents, you can use `policy: push` in that job to
-skip the download step.
+CAUTION: **Deprecated:**
+`types` is deprecated, and could be removed in one of the future releases.
+Use [stages](#stages) instead.
 
-## Jobs
+## `script`
 
-`.gitlab-ci.yml` allows you to specify an unlimited number of jobs. Each job
-must have a unique name, which is not one of the keywords mentioned above.
-A job is defined by a list of parameters that define the job behavior.
-
-```yaml
-job_name:
-  script:
-    - rake spec
-    - coverage
-  stage: test
-  only:
-    - master
-  except:
-    - develop
-  tags:
-    - ruby
-    - postgres
-  allow_failure: true
-```
-
-| Keyword       | Required | Description |
-|---------------|----------|-------------|
-| script        | yes      | Defines a shell script which is executed by Runner |
-| image         | no       | Use docker image, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
-| services      | no       | Use docker services, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
-| stage         | no       | Defines a job stage (default: `test`) |
-| type          | no       | Alias for `stage` |
-| variables     | no       | Define job variables on a job level |
-| only          | no       | Defines a list of git refs for which job is created |
-| except        | no       | Defines a list of git refs for which job is not created |
-| tags          | no       | Defines a list of tags which are used to select Runner |
-| allow_failure | no       | Allow job to fail. Failed job doesn't contribute to commit status |
-| when          | no       | Define when to run job. Can be `on_success`, `on_failure`, `always` or `manual` |
-| dependencies  | no       | Define other jobs that a job depends on so that you can pass artifacts between them|
-| artifacts     | no       | Define list of [job artifacts](../../user/project/pipelines/job_artifacts.md) |
-| cache         | no       | Define list of files that should be cached between subsequent runs |
-| before_script | no       | Override a set of commands that are executed before job |
-| after_script  | no       | Override a set of commands that are executed after job |
-| environment   | no       | Defines a name of environment to which deployment is done by this job |
-| coverage      | no       | Define code coverage settings for a given job |
-| retry         | no       | Define how many times a job can be auto-retried in case of a failure |
-
-### script
-
-`script` is a shell script which is executed by the Runner. For example:
+`script` is the only required keyword that a job needs. It's a shell script
+which is executed by the Runner. For example:
 
 ```yaml
 job:
@@ -429,13 +231,7 @@ that the YAML parser knows to interpret the whole thing as a string rather than
 a "key: value" pair. Be careful when using special characters:
 `:`, `{`, `}`, `[`, `]`, `,`, `&`, `*`, `#`, `?`, `|`, `-`, `<`, `>`, `=`, `!`, `%`, `@`, `` ` ``.
 
-### stage
-
-`stage` allows to group jobs into different stages. Jobs of the same `stage`
-are executed in `parallel`. For more info about the use of `stage` please check
-[stages](#stages).
-
-### only and except (simplified)
+## `only` and `except` (simplified)
 
 `only` and `except` are two parameters that set a job policy to limit when
 jobs are created:
@@ -505,12 +301,13 @@ job:
 The above example will run `job` for all branches on `gitlab-org/gitlab-ce`,
 except master.
 
-### only and except (complex)
+## `only` and `except` (complex)
 
 > Introduced in GitLab 10.0
 
-> This an _alpha_ feature, and it it subject to change at any time without
-  prior notice!
+CAUTION: **Warning:**
+This an _alpha_ feature, and it it subject to change at any time without
+prior notice!
 
 Since GitLab 10.0 it is possible to define a more elaborate only/except job
 policy configuration.
@@ -535,24 +332,7 @@ job:
     kubernetes: active
 ```
 
-### Job variables
-
-It is possible to define job variables using a `variables` keyword on a job
-level. It works basically the same way as its [global-level equivalent](#variables),
-but allows you to define job-specific variables.
-
-When the `variables` keyword is used on a job level, it overrides the global YAML
-job variables and predefined ones. To turn off global defined variables
-in your job, define an empty hash:
-
-```yaml
-job_name:
-  variables: {}
-```
-
-Job variables priority is defined in the [variables documentation][variables].
-
-### tags
+## `tags`
 
 `tags` is used to select specific Runners from the list of all Runners that are
 allowed to run this project.
@@ -573,7 +353,7 @@ job:
 The specification above, will make sure that `job` is built by a Runner that
 has both `ruby` AND `postgres` tags defined.
 
-### allow_failure
+## `allow_failure`
 
 `allow_failure` is used when you want to allow a job to fail without impacting
 the rest of the CI suite. Failed jobs don't contribute to the commit status.
@@ -606,7 +386,7 @@ job3:
   - deploy_to_staging
 ```
 
-### when
+## `when`
 
 `when` is used to implement jobs that are run in case of failure or despite the
 failure.
@@ -619,7 +399,7 @@ failure.
     fails.
 1. `always` - execute job regardless of the status of jobs from prior stages.
 1. `manual` - execute job manually (added in GitLab 8.10). Read about
-    [manual actions](#manual-actions) below.
+    [manual actions](#when-manual) below.
 
 For example:
 
@@ -667,42 +447,41 @@ The above script will:
    success or failure.
 3. Allow you to manually execute `deploy_job` from GitLab's UI.
 
-#### Manual actions
+### `when:manual`
 
-> Introduced in GitLab 8.10.
-> Blocking manual actions were introduced in GitLab 9.0
-> Protected actions were introduced in GitLab 9.2
+> **Notes:**
+- Introduced in GitLab 8.10.
+- Blocking manual actions were introduced in GitLab 9.0.
+- Protected actions were introduced in GitLab 9.2.
 
-Manual actions are a special type of job that are not executed automatically;
-they need to be explicitly started by a user. Manual actions can be started
-from pipeline, build, environment, and deployment views.
+Manual actions are a special type of job that are not executed automatically,
+they need to be explicitly started by a user. An example usage of manual actions
+would be a deployment to a production environment. Manual actions can be started
+from the pipeline, job, environment, and deployment views. Read more at the
+[environments documentation][env-manual].
 
-An example usage of manual actions is deployment to production.
-
-Read more at the [environments documentation][env-manual].
-
-Manual actions can be either optional or blocking. Blocking manual action will
-block execution of the pipeline at stage this action is defined in. It is
+Manual actions can be either optional or blocking. Blocking manual actions will
+block the execution of the pipeline at the stage this action is defined in. It's
 possible to resume execution of the pipeline when someone executes a blocking
-manual actions by clicking a _play_ button.
+manual action by clicking a _play_ button.
 
-When pipeline is blocked it will not be merged if Merge When Pipeline Succeeds
+When a pipeline is blocked, it will not be merged if Merge When Pipeline Succeeds
 is set. Blocked pipelines also do have a special status, called _manual_.
-
 Manual actions are non-blocking by default. If you want to make manual action
 blocking, it is necessary to add `allow_failure: false` to the job's definition
 in `.gitlab-ci.yml`.
 
-Optional manual actions have `allow_failure: true` set by default.
+Optional manual actions have `allow_failure: true` set by default and their
+Statuses do not contribute to the overall pipeline status. So, if a manual
+action fails, the pipeline will eventually succeed.
 
-**Statuses of optional actions do not contribute to overall pipeline status.**
+Manual actions are considered to be write actions, so permissions for
+[protected branches](../../user/project/protected_branches.md) are used when
+user wants to trigger an action. In other words, in order to trigger a manual
+action assigned to a branch that the pipeline is running for, user needs to
+have ability to merge to this branch.
 
-**Manual actions are considered to be write actions, so permissions for
-protected branches are used when user wants to trigger an action. In other
-words, in order to trigger a manual action assigned to a branch that the
-pipeline is running for, user needs to have ability to merge to this branch.**
-
-### environment
+## `environment`
 
 >
 **Notes:**
@@ -727,7 +506,7 @@ deploy to production:
 In the above example, the `deploy to production` job will be marked as doing a
 deployment to the `production` environment.
 
-#### environment:name
+### `environment:name`
 
 >
 **Notes:**
@@ -766,7 +545,7 @@ deploy to production:
     name: production
 ```
 
-#### environment:url
+### `environment:url`
 
 >
 **Notes:**
@@ -793,7 +572,7 @@ deploy to production:
     url: https://prod.example.com
 ```
 
-#### environment:on_stop
+### `environment:on_stop`
 
 >
 **Notes:**
@@ -808,7 +587,7 @@ the environment.
 
 Read the `environment:action` section for an example.
 
-#### environment:action
+### `environment:action`
 
 > [Introduced][ce-6669] in GitLab 8.13.
 
@@ -849,7 +628,7 @@ The `stop_review_app` job is **required** to have the following keywords defined
 - `stage` should be the same as the `review_app` in order for the environment
   to stop automatically when the branch is deleted
 
-#### dynamic environments
+### Dynamic environments
 
 >
 **Notes:**
@@ -885,13 +664,204 @@ The common use case is to create dynamic environments for branches and use them
 as Review Apps. You can see a simple example using Review Apps at
 <https://gitlab.com/gitlab-examples/review-apps-nginx/>.
 
-### artifacts
+## `cache`
+
+>
+**Notes:**
+- Introduced in GitLab Runner v0.7.0.
+- `cache` can be set globally and per-job.
+- From GitLab 9.0, caching is enabled and shared between pipelines and jobs
+  by default.
+- From GitLab 9.2, caches are restored before [artifacts](#artifacts).
+
+`cache` is used to specify a list of files and directories which should be
+cached between jobs. You can only use paths that are within the project
+workspace.
+
+If `cache` is defined outside the scope of jobs, it means it is set
+globally and all jobs will use that definition.
+
+Cache all files in `binaries` and `.config`:
+
+```yaml
+rspec:
+  script: test
+  cache:
+    paths:
+    - binaries/
+    - .config
+```
+
+Cache all Git untracked files:
+
+```yaml
+rspec:
+  script: test
+  cache:
+    untracked: true
+```
+
+Cache all Git untracked files and files in `binaries`:
+
+```yaml
+rspec:
+  script: test
+  cache:
+    untracked: true
+    paths:
+    - binaries/
+```
+
+Locally defined cache overrides globally defined options. The following `rspec`
+job will cache only `binaries/`:
+
+```yaml
+cache:
+  paths:
+  - my/files
+
+rspec:
+  script: test
+  cache:
+    key: rspec
+    paths:
+    - binaries/
+```
+
+Note that since cache is shared between jobs, if you're using different
+paths for different jobs, you should also set a different **cache:key**
+otherwise cache content can be overwritten.
+
+NOTE: **Note:**
+The cache is provided on a best-effort basis, so don't expect that the cache
+will be always present.
+
+### `cache:key`
+
+> Introduced in GitLab Runner v1.0.0.
+
+The `key` directive allows you to define the affinity of caching
+between jobs, allowing to have a single cache for all jobs,
+cache per-job, cache per-branch or any other way that fits your needs.
+
+This way, you can fine tune caching, allowing you to cache data between
+different jobs or even different branches.
+
+The `cache:key` variable can use any of the
+[predefined variables](../variables/README.md), and the default key, if not set,
+is set as `$CI_JOB_NAME-$CI_COMMIT_REF_NAME` which translates as "per-job and
+per-branch". It is the default across the project, therefore everything is
+shared between pipelines and jobs running on the same branch by default.
+
+NOTE: **Note:**
+The `cache:key` variable cannot contain the `/` character, or the equivalent
+URI-encoded `%2F`; a value made only of dots (`.`, `%2E`) is also forbidden.
+
+**Example configurations**
+
+To enable per-job caching:
+
+```yaml
+cache:
+  key: "$CI_JOB_NAME"
+  untracked: true
+```
+
+To enable per-branch caching:
+
+```yaml
+cache:
+  key: "$CI_COMMIT_REF_SLUG"
+  untracked: true
+```
+
+To enable per-job and per-branch caching:
+
+```yaml
+cache:
+  key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+  untracked: true
+```
+
+To enable per-branch and per-stage caching:
+
+```yaml
+cache:
+  key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
+  untracked: true
+```
+
+If you use **Windows Batch** to run your shell scripts you need to replace
+`$` with `%`:
+
+```yaml
+cache:
+  key: "%CI_JOB_STAGE%-%CI_COMMIT_REF_SLUG%"
+  untracked: true
+```
+
+If you use **Windows PowerShell** to run your shell scripts you need to replace
+`$` with `$env:`:
+
+```yaml
+cache:
+  key: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_SLUG"
+  untracked: true
+```
+
+### `cache:policy`
+
+> Introduced in GitLab 9.4.
+
+The default behaviour of a caching job is to download the files at the start of
+execution, and to re-upload them at the end. This allows any changes made by the
+job to be persisted for future runs, and is known as the `pull-push` cache
+policy.
+
+If you know the job doesn't alter the cached files, you can skip the upload step
+by setting `policy: pull` in the job specification. Typically, this would be
+twinned with an ordinary cache job at an earlier stage to ensure the cache
+is updated from time to time:
+
+```yaml
+stages:
+  - setup
+  - test
+
+prepare:
+  stage: setup
+  cache:
+    key: gems
+    paths:
+      - vendor/bundle
+  script:
+    - bundle install --deployment
+
+rspec:
+  stage: test
+  cache:
+    key: gems
+    paths:
+      - vendor/bundle
+    policy: pull
+  script:
+    - bundle exec rspec ...
+```
+
+This helps to speed up job execution and reduce load on the cache server,
+especially when you have a large number of cache-using jobs executing in
+parallel.
+
+Additionally, if you have a job that unconditionally recreates the cache without
+reference to its previous contents, you can use `policy: push` in that job to
+skip the download step.
+
+## `artifacts`
 
 >
 **Notes:**
 - Introduced in GitLab Runner v0.7.0 for non-Windows platforms.
 - Windows support was added in GitLab Runner v.1.0.0.
-- Prior to GitLab 9.2, caches were restored after artifacts.
 - From GitLab 9.2, caches are restored before artifacts.
 - Currently not all executors are supported.
 - Job artifacts are only collected for successful jobs by default.
@@ -960,7 +930,9 @@ release-job:
 The artifacts will be sent to GitLab after the job finishes successfully and will
 be available for download in the GitLab UI.
 
-#### artifacts:name
+[Read more about artifacts.](../../user/project/pipelines/job_artifacts.md)
+
+### `artifacts:name`
 
 > Introduced in GitLab 8.6 and GitLab Runner v1.1.0.
 
@@ -969,10 +941,6 @@ archive. That way, you can have a unique name for every archive which could be
 useful when you'd like to download the archive from GitLab. The `artifacts:name`
 variable can make use of any of the [predefined variables](../variables/README.md).
 The default name is `artifacts`, which becomes `artifacts.zip` when downloaded.
-
----
-
-**Example configurations**
 
 To create an archive with a name of the current job:
 
@@ -998,7 +966,7 @@ tag including only the files that are untracked by Git:
 ```yaml
 job:
   artifacts:
-    name: "${CI_JOB_NAME}_${CI_COMMIT_REF_NAME}"
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
     untracked: true
 ```
 
@@ -1007,7 +975,7 @@ To create an archive with a name of the current [stage](#stages) and branch name
 ```yaml
 job:
   artifacts:
-    name: "${CI_JOB_STAGE}_${CI_COMMIT_REF_NAME}"
+    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"
     untracked: true
 ```
 
@@ -1019,7 +987,7 @@ If you use **Windows Batch** to run your shell scripts you need to replace
 ```yaml
 job:
   artifacts:
-    name: "%CI_JOB_STAGE%_%CI_COMMIT_REF_NAME%"
+    name: "%CI_JOB_STAGE%-%CI_COMMIT_REF_NAME%"
     untracked: true
 ```
 
@@ -1029,11 +997,11 @@ If you use **Windows PowerShell** to run your shell scripts you need to replace
 ```yaml
 job:
   artifacts:
-    name: "$env:CI_JOB_STAGE_$env:CI_COMMIT_REF_NAME"
+    name: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_NAME"
     untracked: true
 ```
 
-#### artifacts:when
+### `artifacts:when`
 
 > Introduced in GitLab 8.9 and GitLab Runner v1.3.0.
 
@@ -1046,11 +1014,7 @@ failure.
 1. `on_failure` - upload artifacts only when the job fails.
 1. `always` - upload artifacts regardless of the job status.
 
----
-
-**Example configurations**
-
-To upload artifacts only when job fails.
+To upload artifacts only when job fails:
 
 ```yaml
 job:
@@ -1058,22 +1022,23 @@ job:
     when: on_failure
 ```
 
-#### artifacts:expire_in
+### `artifacts:expire_in`
 
 > Introduced in GitLab 8.9 and GitLab Runner v1.3.0.
 
-`artifacts:expire_in` is used to delete uploaded artifacts after the specified
-time. By default, artifacts are stored on GitLab forever. `expire_in` allows you
-to specify how long artifacts should live before they expire, counting from the
-time they are uploaded and stored on GitLab.
+`expire_in` allows you to specify how long artifacts should live before they
+expire and therefore deleted, counting from the time they are uploaded and
+stored on GitLab. If the expiry time is not defined, it defaults to the
+[instance wide setting](../../user/admin_area/settings/continuous_integration.md#default-artifacts-expiration)
+(30 days by default, forever on GitLab.com).
 
 You can use the **Keep** button on the job page to override expiration and
 keep artifacts forever.
 
-After expiry, artifacts are actually deleted hourly by default (via a cron job),
-but they are not accessible after expiry.
+After their expiry, artifacts are deleted hourly by default (via a cron job),
+and are not accessible anymore.
 
-The value of `expire_in` is an elapsed time. Examples of parseable values:
+The value of `expire_in` is an elapsed time. Examples of parsable values:
 
 - '3 mins 4 sec'
 - '2 hrs 20 min'
@@ -1081,10 +1046,6 @@ The value of `expire_in` is an elapsed time. Examples of parseable values:
 - '6 mos 1 day'
 - '47 yrs 6 mos and 4d'
 - '3 weeks and 2 days'
-
----
-
-**Example configurations**
 
 To expire artifacts 1 week after being uploaded:
 
@@ -1094,7 +1055,7 @@ job:
     expire_in: 1 week
 ```
 
-### dependencies
+## `dependencies`
 
 > Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
 
@@ -1153,7 +1114,7 @@ deploy:
   script: make deploy
 ```
 
-#### When a dependent job will fail
+### When a dependent job will fail
 
 > Introduced in GitLab 10.3.
 
@@ -1167,27 +1128,9 @@ You can ask your administrator to
 [flip this switch](../../administration/job_artifacts.md#validation-for-dependencies)
 and bring back the old behavior.
 
-### before_script and after_script
+## `coverage`
 
-It's possible to overwrite the globally defined `before_script` and `after_script`:
-
-```yaml
-before_script:
-- global before script
-
-job:
-  before_script:
-  - execute this instead of global before script
-  script:
-  - my command
-  after_script:
-  - execute this after my script
-```
-
-### coverage
-
-**Notes:**
-- [Introduced][ce-7447] in GitLab 8.17.
+> [Introduced][ce-7447] in GitLab 8.17.
 
 `coverage` allows you to configure how code coverage will be extracted from the
 job output.
@@ -1205,10 +1148,9 @@ job1:
   coverage: '/Code coverage: \d+\.\d+/'
 ```
 
-### retry
+## `retry`
 
-**Notes:**
-- [Introduced][ce-3442] in GitLab 9.5.
+> [Introduced][ce-3442] in GitLab 9.5.
 
 `retry` allows you to configure how many times a job is going to be retried in
 case of a failure.
@@ -1228,16 +1170,57 @@ test:
   retry: 2
 ```
 
-## Git Strategy
+## `variables`
+
+> Introduced in GitLab Runner v0.5.0.
+
+NOTE: **Note:**
+Integers (as well as strings) are legal both for variable's name and value.
+Floats are not legal and cannot be used.
+
+GitLab CI/CD allows you to define variables inside `.gitlab-ci.yml` that are
+then passed in the job environment. They can be set globally and per-job.
+When the `variables` keyword is used on a job level, it overrides the global
+YAML variables and predefined ones.
+
+They are stored in the Git repository and are meant to store non-sensitive
+project configuration, for example:
+
+```yaml
+variables:
+  DATABASE_URL: "postgres://postgres@postgres/my_database"
+```
+
+These variables can be later used in all executed commands and scripts.
+The YAML-defined variables are also set to all created service containers,
+thus allowing to fine tune them.
+
+To turn off global defined variables in a specific job, define an empty hash:
+
+```yaml
+job_name:
+  variables: {}
+```
+
+Except for the user defined variables, there are also the ones [set up by the
+Runner itself](../variables/README.md#predefined-variables-environment-variables).
+One example would be `CI_COMMIT_REF_NAME` which has the value of
+the branch or tag name for which project is built. Apart from the variables
+you can set in `.gitlab-ci.yml`, there are also the so called
+[secret variables](../variables/README.md#secret-variables)
+which can be set in GitLab's UI.
+
+[Learn more about variables and their priority.][variables]
+
+### Git strategy
 
 > Introduced in GitLab 8.9 as an experimental feature.  May change or be removed
   completely in future releases. `GIT_STRATEGY=none` requires GitLab Runner
   v1.7+.
 
 You can set the `GIT_STRATEGY` used for getting recent application code, either
-in the global [`variables`](#variables) section or the [`variables`](#job-variables)
-section for individual jobs. If left unspecified, the default from project
-settings will be used.
+globally or per-job in the [`variables`](#variables) section. If left
+unspecified, the default from project settings will be used.
 
 There are three possible values: `clone`, `fetch`, and `none`.
 
@@ -1269,44 +1252,13 @@ variables:
   GIT_STRATEGY: none
 ```
 
-## Git Checkout
-
-> Introduced in GitLab Runner 9.3
-
-The `GIT_CHECKOUT` variable can be used when the `GIT_STRATEGY` is set to either
-`clone` or `fetch` to specify whether a `git checkout` should be run. If not
-specified, it defaults to true. Like `GIT_STRATEGY`, it can be set in either the
-global [`variables`](#variables) section or the [`variables`](#job-variables)
-section for individual jobs.
-
-If set to `false`, the Runner will:
-
-- when doing `fetch` - update the repository and leave working copy on
-  the current revision,
-- when doing `clone` - clone the repository and leave working copy on the
-  default branch.
-
-Having this setting set to `true` will mean that for both `clone` and `fetch`
-strategies the Runner will checkout the working copy to a revision related
-to the CI pipeline:
-
-```yaml
-variables:
-  GIT_STRATEGY: clone
-  GIT_CHECKOUT: false
-script:
-  - git checkout master
-  - git merge $CI_BUILD_REF_NAME
-```
-
-## Git Submodule Strategy
+### Git submodule strategy
 
 > Requires GitLab Runner v1.10+.
 
 The `GIT_SUBMODULE_STRATEGY` variable is used to control if / how Git
-submodules are included when fetching the code before a build. Like
-`GIT_STRATEGY`, it can be set in either the global [`variables`](#variables)
-section or the [`variables`](#job-variables) section for individual jobs.
+submodules are included when fetching the code before a build. You can set them
+globally or per-job in the [`variables`](#variables) section.
 
 There are three possible values: `none`, `normal`, and `recursive`:
 
@@ -1336,8 +1288,36 @@ Note that for this feature to work correctly, the submodules must be configured
 - a relative path to another repository on the same GitLab server. See the
   [Git submodules](../git_submodules.md) documentation.
 
+### Git checkout
 
-## Job stages attempts
+> Introduced in GitLab Runner 9.3
+
+The `GIT_CHECKOUT` variable can be used when the `GIT_STRATEGY` is set to either
+`clone` or `fetch` to specify whether a `git checkout` should be run. If not
+specified, it defaults to true. You can set them globally or per-job in the
+[`variables`](#variables) section.
+
+If set to `false`, the Runner will:
+
+- when doing `fetch` - update the repository and leave working copy on
+  the current revision,
+- when doing `clone` - clone the repository and leave working copy on the
+  default branch.
+
+Having this setting set to `true` will mean that for both `clone` and `fetch`
+strategies the Runner will checkout the working copy to a revision related
+to the CI pipeline:
+
+```yaml
+variables:
+  GIT_STRATEGY: clone
+  GIT_CHECKOUT: "false"
+script:
+  - git checkout master
+  - git merge $CI_BUILD_REF_NAME
+```
+
+### Job stages attempts
 
 > Introduced in GitLab, it requires GitLab Runner v1.9+.
 
@@ -1359,10 +1339,9 @@ variables:
   GET_SOURCES_ATTEMPTS: 3
 ```
 
-You can set them in the global [`variables`](#variables) section or the
-[`variables`](#job-variables) section for individual jobs.
+You can set them globally or per-job in the [`variables`](#variables) section.
 
-## Shallow cloning
+### Shallow cloning
 
 > Introduced in GitLab 8.9 as an experimental feature. May change in future
 releases or be removed completely.
@@ -1393,7 +1372,17 @@ variables:
   GIT_DEPTH: "3"
 ```
 
-## Hidden keys (jobs)
+You can set it globally or per-job in the [`variables`](#variables) section.
+
+## Special YAML features
+
+It's possible to use special YAML features like anchors (`&`), aliases (`*`)
+and map merging (`<<`), which will allow you to greatly reduce the complexity
+of `.gitlab-ci.yml`.
+
+Read more about the various [YAML features](https://learnxinyminutes.com/docs/yaml/).
+
+### Hidden keys (jobs)
 
 > Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
 
@@ -1418,14 +1407,6 @@ GitLab CI. In the following example, `.hidden_job` will be ignored:
 Use this feature to ignore jobs, or use the
 [special YAML features](#special-yaml-features) and transform the hidden keys
 into templates.
-
-## Special YAML features
-
-It's possible to use special YAML features like anchors (`&`), aliases (`*`)
-and map merging (`<<`), which will allow you to greatly reduce the complexity
-of `.gitlab-ci.yml`.
-
-Read more about the various [YAML features](https://learnxinyminutes.com/docs/yaml/).
 
 ### Anchors
 
@@ -1556,34 +1537,10 @@ with an API call.
 
 [Read more in the triggers documentation.](../triggers/README.md)
 
-### pages
+## Skipping jobs
 
-`pages` is a special job that is used to upload static content to GitLab that
-can be used to serve your website. It has a special syntax, so the two
-requirements below must be met:
-
-1. Any static content must be placed under a `public/` directory
-1. `artifacts` with a path to the `public/` directory must be defined
-
-The example below simply moves all files from the root of the project to the
-`public/` directory. The `.public` workaround is so `cp` doesn't also copy
-`public/` to itself in an infinite loop:
-
-```
-pages:
-  stage: deploy
-  script:
-  - mkdir .public
-  - cp -r * .public
-  - mv .public public
-  artifacts:
-    paths:
-    - public
-  only:
-  - master
-```
-
-Read more on [GitLab Pages user documentation](../../user/project/pages/index.md).
+If your commit message contains `[ci skip]` or `[skip ci]`, using any
+capitalization, the commit will be created but the pipeline will be skipped.
 
 ## Validate the .gitlab-ci.yml
 
@@ -1594,11 +1551,6 @@ You can find the link under `/ci/lint` of your gitlab instance.
 
 If you get validation error when using specific values (e.g., `true` or `false`),
 try to quote them, or change them to a different form (e.g., `/bin/true`).
-
-## Skipping jobs
-
-If your commit message contains `[ci skip]` or `[skip ci]`, using any
-capitalization, the commit will be created but the jobs will be skipped.
 
 ## Examples
 

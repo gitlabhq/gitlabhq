@@ -13,6 +13,12 @@ module ReactiveCachingHelpers
     write_reactive_cache(subject, data, *qualifiers) if data
   end
 
+  def synchronous_reactive_cache(subject)
+    allow(service).to receive(:with_reactive_cache) do |*args, &block|
+      block.call(service.calculate_reactive_cache(*args))
+    end
+  end
+
   def read_reactive_cache(subject, *qualifiers)
     Rails.cache.read(reactive_cache_key(subject, *qualifiers))
   end

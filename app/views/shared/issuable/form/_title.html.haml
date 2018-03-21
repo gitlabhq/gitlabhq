@@ -6,7 +6,7 @@
 
 %div{ class: div_class }
   = form.text_field :title, required: true, maxlength: 255, autofocus: true,
-      autocomplete: 'off', class: 'form-control pad'
+      autocomplete: 'off', class: 'form-control pad qa-issuable-form-title'
 
   - if issuable.respond_to?(:work_in_progress?)
     %p.help-block

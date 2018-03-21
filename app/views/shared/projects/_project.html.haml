@@ -6,7 +6,7 @@
 - user = local_assigns[:user]
 - access = user&.max_member_access_for_project(project.id) unless user.nil?
 - css_class = '' unless local_assigns[:css_class]
-- show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true && project.commit
+- show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true && can_show_last_commit_in_list?(project)
 - css_class += " no-description" if project.description.blank? && !show_last_commit_as_description
 - cache_key = project_list_cache_key(project)
 - updated_tooltip = time_ago_with_tooltip(project.last_activity_date)
@@ -17,7 +17,7 @@
       .avatar-container.s40
         = link_to project_path(project), class: dom_class(project) do
           - if project.creator && use_creator_avatar
-            = image_tag avatar_icon(project.creator.email, 40), class: "avatar s40", alt:''
+            = image_tag avatar_icon_for_user(project.creator, 40), class: "avatar s40", alt:''
           - else
             = project_icon(project, alt: '', class: 'avatar project-avatar s40')
     .project-details
@@ -47,12 +47,12 @@
       .prepend-top-0
         - if project.archived
           %span.prepend-left-10.label.label-warning archived
-        - if project.pipeline_status.has_status?
+        - if can?(current_user, :read_cross_project) && project.pipeline_status.has_status?
           %span.prepend-left-10
             = render_project_pipeline_status(project.pipeline_status)
         - if forks
           %span.prepend-left-10
-            = icon('code-fork')
+            = sprite_icon('fork', size: 12)
             = number_with_delimiter(project.forks_count)
         - if stars
           %span.prepend-left-10

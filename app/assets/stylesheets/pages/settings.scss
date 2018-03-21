@@ -135,6 +135,17 @@
   padding-top: 0;
 }
 
+.integration-settings-form {
+  .well {
+    padding: $gl-padding / 2;
+    box-shadow: none;
+  }
+
+  .svg-container {
+    max-width: 150px;
+  }
+}
+
 .token-token-container {
   #impersonation-token-token {
     width: 80%;
@@ -194,7 +205,8 @@
     }
 
     .badge {
-      font-size: inherit;
+      font-size: 12px;
+      line-height: 12px;
     }
 
     .panel-heading .badge-count {
@@ -267,4 +279,8 @@
   .scope-description {
     margin: 0 0 5px 17px;
   }
+}
+
+.deprecated-service {
+  cursor: default;
 }

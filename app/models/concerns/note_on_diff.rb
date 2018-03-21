@@ -14,10 +14,6 @@ module NoteOnDiff
     raise NotImplementedError
   end
 
-  def for_line?(line)
-    raise NotImplementedError
-  end
-
   def original_line_code
     raise NotImplementedError
   end

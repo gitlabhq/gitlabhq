@@ -68,7 +68,7 @@ en:
       read_user:
         Read-only access to the user's profile information, like username, public email and full name
       openid:
-        The ability to authenticate using GitLab, and read-only access to the user's profile information
+        The ability to authenticate using GitLab, and read-only access to the user's profile information and group memberships
       sudo:
         Access to the Sudo feature, to perform API actions as any user in the system (only available for admins)
     flash:

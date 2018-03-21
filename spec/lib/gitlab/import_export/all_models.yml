@@ -276,6 +276,10 @@ project:
 - fork_network_member
 - fork_network
 - custom_attributes
+- lfs_file_locks
+- project_badges
+- source_of_merge_requests
+- internal_ids
 award_emoji:
 - awardable
 - user
@@ -290,3 +294,7 @@ push_event_payload:
 issue_assignees:
 - issue
 - assignee
+lfs_file_locks:
+- user
+project_badges:
+- project

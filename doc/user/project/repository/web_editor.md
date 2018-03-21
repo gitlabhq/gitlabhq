@@ -45,7 +45,7 @@ has already been created, which creates a link to the license itself.
 ![New file button](img/web_editor_template_dropdown_buttons.png)
 
 >**Note:**
-The **Set up CI** button will not appear on an empty repository. You have to at
+The **Set up CI/CD** button will not appear on an empty repository. You have to at
 least add a file in order for the button to show up.
 
 ## Upload a file

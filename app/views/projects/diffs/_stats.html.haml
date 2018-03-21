@@ -7,9 +7,9 @@
     = icon("caret-down", class: "prepend-left-5")
   %span.diff-stats-additions-deletions-expanded#diff-stats
     with
-    %strong.cgreen #{sum_added_lines} additions
+    %strong.cgreen= pluralize(sum_added_lines, 'addition')
     and
-    %strong.cred #{sum_removed_lines} deletions
+    %strong.cred= pluralize(sum_removed_lines, 'deletion')
   .diff-stats-additions-deletions-collapsed.pull-right.hidden-xs.hidden-sm{ "aria-hidden": "true", "aria-describedby": "diff-stats" }
     %strong.cgreen<
       +#{sum_added_lines}
@@ -24,8 +24,13 @@
             %a.diff-changed-file{ href: "##{hexdigest(diff_file.file_path)}", title: diff_file.new_path }
               = sprite_icon(diff_file_changed_icon(diff_file), size: 16, css_class: "#{diff_file_changed_icon_color(diff_file)} diff-file-changed-icon append-right-8")
               %span.diff-changed-file-content.append-right-8
-                %strong.diff-changed-file-name= diff_file.blob.name
-                %span.diff-changed-file-path.prepend-top-5= diff_file.new_path
+                - if diff_file.blob&.name
+                  %strong.diff-changed-file-name
+                    = diff_file.blob.name
+                - else
+                  %strong.diff-changed-blank-file-name
+                    = s_('Diffs|No file name available')
+                %span.diff-changed-file-path.prepend-top-5= diff_file_path_text(diff_file)
               %span.diff-changed-stats
                 %span.cgreen<
                   +#{diff_file.added_lines}

@@ -48,11 +48,11 @@ class Spinach::Features::ProjectDeployKeys < Spinach::FeatureSteps
 
   step 'other projects have deploy keys' do
     @second_project = create(:project, namespace: create(:group))
-    @second_project.team << [current_user, :master]
+    @second_project.add_master(current_user)
     create(:deploy_keys_project, project: @second_project)
 
     @third_project = create(:project, namespace: create(:group))
-    @third_project.team << [current_user, :master]
+    @third_project.add_master(current_user)
     create(:deploy_keys_project, project: @third_project, deploy_key: @second_project.deploy_keys.first)
   end
 

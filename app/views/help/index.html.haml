@@ -1,17 +1,18 @@
 %div
-- if current_application_settings.help_page_text.present?
-  = markdown_field(current_application_settings, :help_page_text)
+- if Gitlab::CurrentSettings.help_page_text.present?
+  = markdown_field(Gitlab::CurrentSettings.current_application_settings, :help_page_text)
   %hr
 
-- unless current_application_settings.help_page_hide_commercial_content?
-  %h1
-    GitLab
-    Community Edition
-    - if user_signed_in?
-      %span= Gitlab::VERSION
-      %small= link_to Gitlab::REVISION, Gitlab::COM_URL + namespace_project_commits_path('gitlab-org', 'gitlab-ce', Gitlab::REVISION)
-      = version_status_badge
+%h1
+  GitLab
+  Community Edition
+  - if user_signed_in?
+    %span= Gitlab::VERSION
+    %small= link_to Gitlab::REVISION, Gitlab::COM_URL + namespace_project_commits_path('gitlab-org', 'gitlab-ce', Gitlab::REVISION)
+    = version_status_badge
+  %hr
 
+- unless Gitlab::CurrentSettings.help_page_hide_commercial_content?
   %p.slead
     GitLab is open source software to collaborate on code.
     %br
@@ -37,8 +38,12 @@
         Quick help
       %ul.well-list
         %li= link_to 'See our website for getting help', support_url
-        %li= link_to 'Use the search bar on the top of this page', '#', onclick: 'Shortcuts.focusSearch(event)'
-        %li= link_to 'Use shortcuts', '#', onclick: 'Shortcuts.toggleHelp()'
-        - unless current_application_settings.help_page_hide_commercial_content?
+        %li
+          %button.btn-blank.btn-link.js-trigger-search-bar{ type: 'button' }
+            Use the search bar on the top of this page
+        %li
+          %button.btn-blank.btn-link.js-trigger-shortcut{ type: 'button' }
+            Use shortcuts
+        - unless Gitlab::CurrentSettings.help_page_hide_commercial_content?
           %li= link_to 'Get a support subscription', 'https://about.gitlab.com/pricing/'
           %li= link_to 'Compare GitLab editions', 'https://about.gitlab.com/features/#compare'

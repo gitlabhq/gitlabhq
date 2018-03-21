@@ -1,39 +1,39 @@
 import Vue from 'vue';
-import authorComponent from '~/vue_merge_request_widget/components/mr_widget_author';
-
-const author = {
-  webUrl: 'http://foo.bar',
-  avatarUrl: 'http://gravatar.com/foo',
-  name: 'fatihacet',
-};
-const createComponent = () => {
-  const Component = Vue.extend(authorComponent);
-
-  return new Component({
-    el: document.createElement('div'),
-    propsData: { author },
-  });
-};
+import authorComponent from '~/vue_merge_request_widget/components/mr_widget_author.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('MRWidgetAuthor', () => {
-  describe('props', () => {
-    it('should have props', () => {
-      const authorProp = authorComponent.props.author;
+  let vm;
 
-      expect(authorProp).toBeDefined();
-      expect(authorProp.type instanceof Object).toBeTruthy();
-      expect(authorProp.required).toBeTruthy();
+  beforeEach(() => {
+    const Component = Vue.extend(authorComponent);
+
+    vm = mountComponent(Component, {
+      author: {
+        name: 'Administrator',
+        username: 'root',
+        webUrl: 'http://localhost:3000/root',
+        avatarUrl: 'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+      },
+
     });
   });
 
-  describe('template', () => {
-    it('should have correct elements', () => {
-      const el = createComponent().$el;
+  afterEach(() => {
+    vm.$destroy();
+  });
 
-      expect(el.tagName).toEqual('A');
-      expect(el.getAttribute('href')).toEqual(author.webUrl);
-      expect(el.querySelector('img').getAttribute('src')).toEqual(author.avatarUrl);
-      expect(el.querySelector('.author').innerText.trim()).toEqual(author.name);
-    });
+  it('renders link with the author web url', () => {
+    expect(vm.$el.getAttribute('href')).toEqual('http://localhost:3000/root');
+  });
+
+  it('renders image with avatar url', () => {
+    expect(
+      vm.$el.querySelector('img').getAttribute('src'),
+    ).toEqual('http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon');
+  });
+
+  it('renders author name', () => {
+    expect(vm.$el.textContent.trim()).toEqual('Administrator');
   });
 });

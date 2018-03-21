@@ -1,3 +1,4 @@
+- options_hash = local_assigns.fetch(:options_hash, groups_sort_options_hash)
 - show_archive_options = local_assigns.fetch(:show_archive_options, false)
 - if @sort.present?
   - default_sort_by = @sort
@@ -10,23 +11,23 @@
 .dropdown.inline.js-group-filter-dropdown-wrap.append-right-10
   %button.dropdown-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
     %span.dropdown-label
-      = sort_options_hash[default_sort_by]
+      = options_hash[default_sort_by]
     = icon('chevron-down')
   %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-selectable
     %li.dropdown-header
       = _("Sort by")
-    - groups_sort_options_hash.each do |value, title|
+    - options_hash.each do |value, title|
       %li.js-filter-sort-order
         = link_to filter_groups_path(sort: value), class: ("is-active" if default_sort_by == value) do
           = title
     - if show_archive_options
       %li.divider
       %li.js-filter-archived-projects
-        = link_to group_children_path(@group, archived: nil), class: ("is-active" unless params[:archived].present?) do
+        = link_to filter_groups_path(archived: nil), class: ("is-active" unless params[:archived].present?) do
           Hide archived projects
       %li.js-filter-archived-projects
-        = link_to group_children_path(@group, archived: true), class: ("is-active" if Gitlab::Utils.to_boolean(params[:archived])) do
+        = link_to filter_groups_path(archived: true), class: ("is-active" if Gitlab::Utils.to_boolean(params[:archived])) do
           Show archived projects
       %li.js-filter-archived-projects
-        = link_to group_children_path(@group, archived: 'only'), class: ("is-active" if params[:archived] == 'only') do
+        = link_to filter_groups_path(archived: 'only'), class: ("is-active" if params[:archived] == 'only') do
           Show archived projects only

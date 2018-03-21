@@ -5,7 +5,7 @@ feature 'project commit pipelines', :js do
 
   background do
     user = create(:user)
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 

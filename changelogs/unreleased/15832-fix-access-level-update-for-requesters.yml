@@ -1,5 +1,0 @@
----
-title: Fix error that was preventing users to change the access level of access requests for Groups or Projects
-merge_request: 15832
-author:
-type: fixed

@@ -1,5 +1,24 @@
-- content_url = local_assigns.fetch(:content_url, nil)
-- if show_new_repo?
-  = render 'shared/repo/repo', project: @project, content_url: content_url
-- else
-  = render 'projects/tree/old_tree_content', tree: tree
+.tree-content-holder.js-tree-content{ 'data-logs-path': @logs_path }
+  .table-holder
+    %table.table#tree-slider{ class: "table_#{@hex_path} tree-table" }
+      %thead
+        %tr
+          %th= s_('ProjectFileTree|Name')
+          %th.hidden-xs
+            .pull-left= _('Last commit')
+          %th.text-right= _('Last update')
+      - if @path.present?
+        %tr.tree-item
+          %td.tree-item-file-name
+            = link_to "..", project_tree_path(@project, up_dir_path), class: 'prepend-left-10'
+          %td
+          %td.hidden-xs
+
+      = render_tree(tree)
+
+  - if tree.readme
+    = render "projects/tree/readme", readme: tree.readme
+
+- if can_edit_tree?
+  = render 'projects/blob/upload', title: _('Upload New File'), placeholder: _('Upload New File'), button_title: _('Upload file'), form_path: project_create_blob_path(@project, @id), method: :post
+  = render 'projects/blob/new_dir'

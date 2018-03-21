@@ -1,15 +1,15 @@
 import Vue from 'vue';
 import deployKeysApp from './components/app.vue';
 
-document.addEventListener('DOMContentLoaded', () => new Vue({
+export default () => new Vue({
   el: document.getElementById('js-deploy-keys'),
+  components: {
+    deployKeysApp,
+  },
   data() {
     return {
       endpoint: this.$options.el.dataset.endpoint,
     };
-  },
-  components: {
-    deployKeysApp,
   },
   render(createElement) {
     return createElement('deploy-keys-app', {
@@ -18,4 +18,4 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
       },
     });
   },
-}));
+});

@@ -3,7 +3,7 @@ xml.entry do
   xml.link    href: project_issue_url(issue.project, issue)
   xml.title   truncate(issue.title, length: 80)
   xml.updated issue.updated_at.xmlschema
-  xml.media   :thumbnail, width: "40", height: "40", url: image_url(avatar_icon(issue.author_email))
+  xml.media   :thumbnail, width: "40", height: "40", url: image_url(avatar_icon_for_user(issue.author))
 
   xml.author do
     xml.name issue.author_name

@@ -1,7 +1,8 @@
+import $ from 'jquery';
 import Vue from 'vue';
 import descriptionComponent from '~/issue_show/components/description.vue';
 import * as taskList from '~/task_list';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('Description component', () => {
   let vm;

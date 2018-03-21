@@ -1,0 +1,5 @@
+---
+title: 'Expose GITLAB_FEATURES as CI/CD variable (fixes #40994)'
+merge_request:
+author:
+type: added

@@ -4,7 +4,7 @@ class Environment < ActiveRecord::Base
   NUMBERS = '0'..'9'
   SUFFIX_CHARS = LETTERS.to_a + NUMBERS.to_a
 
-  belongs_to :project, required: true, validate: true
+  belongs_to :project, required: true
 
   has_many :deployments, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
@@ -65,10 +65,9 @@ class Environment < ActiveRecord::Base
   end
 
   def predefined_variables
-    [
-      { key: 'CI_ENVIRONMENT_NAME', value: name, public: true },
-      { key: 'CI_ENVIRONMENT_SLUG', value: slug, public: true }
-    ]
+    Gitlab::Ci::Variables::Collection.new
+      .append(key: 'CI_ENVIRONMENT_NAME', value: name)
+      .append(key: 'CI_ENVIRONMENT_SLUG', value: slug)
   end
 
   def recently_updated_on_branch?(ref)
@@ -99,8 +98,8 @@ class Environment < ActiveRecord::Base
     folder_name == "production"
   end
 
-  def first_deployment_for(commit)
-    ref = project.repository.ref_name_for_sha(ref_path, commit.sha)
+  def first_deployment_for(commit_sha)
+    ref = project.repository.ref_name_for_sha(ref_path, commit_sha)
 
     return nil unless ref
 
@@ -115,7 +114,7 @@ class Environment < ActiveRecord::Base
   def formatted_external_url
     return nil unless external_url
 
-    external_url.gsub(/\A.*?:\/\//, '')
+    external_url.gsub(%r{\A.*?://}, '')
   end
 
   def stop_action?
@@ -146,21 +145,19 @@ class Environment < ActiveRecord::Base
   end
 
   def has_metrics?
-    project.monitoring_service.present? && available? && last_deployment.present?
+    prometheus_adapter&.can_query? && available? && last_deployment.present?
   end
 
   def metrics
-    project.monitoring_service.environment_metrics(self) if has_metrics?
-  end
-
-  def has_additional_metrics?
-    project.prometheus_service.present? && available? && last_deployment.present?
+    prometheus_adapter.query(:environment, self) if has_metrics?
   end
 
   def additional_metrics
-    if has_additional_metrics?
-      project.prometheus_service.additional_environment_metrics(self)
-    end
+    prometheus_adapter.query(:additional_metrics_environment, self) if has_metrics?
+  end
+
+  def prometheus_adapter
+    @prometheus_adapter ||= Prometheus::AdapterService.new(project, deployment_platform).prometheus_adapter
   end
 
   def slug
@@ -224,6 +221,10 @@ class Environment < ActiveRecord::Base
 
   def folder_name
     self.environment_type || self.name
+  end
+
+  def deployment_platform
+    project.deployment_platform(environment: self)
   end
 
   private

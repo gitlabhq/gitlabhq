@@ -7,12 +7,10 @@ FactoryBot.define do
     stage_idx 0
     ref 'master'
     tag false
-    status 'pending'
-    created_at 'Di 29. Okt 09:50:00 CET 2013'
-    started_at 'Di 29. Okt 09:51:28 CET 2013'
-    finished_at 'Di 29. Okt 09:53:28 CET 2013'
     commands 'ls -a'
     protected false
+    created_at 'Di 29. Okt 09:50:00 CET 2013'
+    pending
 
     options do
       {
@@ -29,23 +27,37 @@ FactoryBot.define do
 
     pipeline factory: :ci_pipeline
 
+    trait :started do
+      started_at 'Di 29. Okt 09:51:28 CET 2013'
+    end
+
+    trait :finished do
+      started
+      finished_at 'Di 29. Okt 09:53:28 CET 2013'
+    end
+
     trait :success do
+      finished
       status 'success'
     end
 
     trait :failed do
+      finished
       status 'failed'
     end
 
     trait :canceled do
+      finished
       status 'canceled'
     end
 
     trait :skipped do
+      started
       status 'skipped'
     end
 
     trait :running do
+      started
       status 'running'
     end
 
@@ -114,11 +126,6 @@ FactoryBot.define do
       build.project ||= build.pipeline.project
     end
 
-    factory :ci_not_started_build do
-      started_at nil
-      finished_at nil
-    end
-
     trait :tag do
       tag true
     end
@@ -128,13 +135,19 @@ FactoryBot.define do
       coverage_regex '/(d+)/'
     end
 
-    trait :trace do
+    trait :trace_live do
       after(:create) do |build, evaluator|
         build.trace.set('BUILD TRACE')
       end
     end
 
-    trait :unicode_trace do
+    trait :trace_artifact do
+      after(:create) do |build, evaluator|
+        create(:ci_job_artifact, :trace, job: build)
+      end
+    end
+
+    trait :unicode_trace_live do
       after(:create) do |build, evaluator|
         trace = File.binread(
           File.expand_path(
@@ -167,8 +180,8 @@ FactoryBot.define do
 
     trait :artifacts do
       after(:create) do |build|
-        create(:ci_job_artifact, :archive, job: build)
-        create(:ci_job_artifact, :metadata, job: build)
+        create(:ci_job_artifact, :archive, job: build, expire_at: build.artifacts_expire_at)
+        create(:ci_job_artifact, :metadata, job: build, expire_at: build.artifacts_expire_at)
         build.reload
       end
     end

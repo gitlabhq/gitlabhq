@@ -18,7 +18,7 @@ export function getParameterValues(sParam) {
 // @param {String} url
 export function mergeUrlParams(params, url) {
   let newUrl = Object.keys(params).reduce((acc, paramName) => {
-    const paramValue = params[paramName];
+    const paramValue = encodeURIComponent(params[paramName]);
     const pattern = new RegExp(`\\b(${paramName}=).*?(&|$)`);
 
     if (paramValue === null) {

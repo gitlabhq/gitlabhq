@@ -68,6 +68,7 @@ class Settings < Settingslogic
         end
         values.delete_if { |value| value.nil? }
       end
+
       values
     end
 
@@ -78,6 +79,7 @@ class Settings < Settingslogic
       if current.is_a? String
         value = modul.const_get(current.upcase) rescue default
       end
+
       value
     end
 
@@ -108,7 +110,7 @@ class Settings < Settingslogic
       url = "http://#{url}" unless url.start_with?('http')
 
       # Get rid of the path so that we don't even have to encode it
-      url_without_path = url.sub(%r{(https?://[^\/]+)/?.*}, '\1')
+      url_without_path = url.sub(%r{(https?://[^/]+)/?.*}, '\1')
 
       URI.parse(url_without_path).host
     end
@@ -149,6 +151,7 @@ if Settings.ldap['enabled'] || Rails.env.test?
     server['allow_username_or_email_login'] = false if server['allow_username_or_email_login'].nil?
     server['active_directory'] = true if server['active_directory'].nil?
     server['attributes'] = {} if server['attributes'].nil?
+    server['lowercase_usernames'] = false if server['lowercase_usernames'].nil?
     server['provider_name'] ||= "ldap#{key}".downcase
     server['provider_class'] = OmniAuth::Utils.camelize(server['provider_name'])
 
@@ -259,7 +262,7 @@ Settings.gitlab['signup_enabled'] ||= true if Settings.gitlab['signup_enabled'].
 Settings.gitlab['signin_enabled'] ||= true if Settings.gitlab['signin_enabled'].nil?
 Settings.gitlab['restricted_visibility_levels'] = Settings.__send__(:verify_constant_array, Gitlab::VisibilityLevel, Settings.gitlab['restricted_visibility_levels'], [])
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
-Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)|[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)' if Settings.gitlab['issue_closing_pattern'].nil?
+Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)|[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?: *,? +and +| *, *)?)|([A-Z][A-Z0-9_]+-\d+))+)' if Settings.gitlab['issue_closing_pattern'].nil?
 Settings.gitlab['default_projects_features'] ||= {}
 Settings.gitlab['webhook_timeout'] ||= 10
 Settings.gitlab['max_attachment_size'] ||= 10
@@ -298,8 +301,10 @@ Settings.incoming_email['enabled'] = false if Settings.incoming_email['enabled']
 #
 Settings['artifacts'] ||= Settingslogic.new({})
 Settings.artifacts['enabled']      = true if Settings.artifacts['enabled'].nil?
-Settings.artifacts['path']         = Settings.absolute(Settings.artifacts['path'] || File.join(Settings.shared['path'], "artifacts"))
-Settings.artifacts['max_size']   ||= 100 # in megabytes
+Settings.artifacts['storage_path'] = Settings.absolute(Settings.artifacts.values_at('path', 'storage_path').compact.first || File.join(Settings.shared['path'], "artifacts"))
+# Settings.artifact['path'] is deprecated, use `storage_path` instead
+Settings.artifacts['path']         = Settings.artifacts['storage_path']
+Settings.artifacts['max_size'] ||= 100 # in megabytes
 
 #
 # Registry
@@ -337,6 +342,13 @@ Settings.lfs['enabled']      = true if Settings.lfs['enabled'].nil?
 Settings.lfs['storage_path'] = Settings.absolute(Settings.lfs['storage_path'] || File.join(Settings.shared['path'], "lfs-objects"))
 
 #
+# Uploads
+#
+Settings['uploads'] ||= Settingslogic.new({})
+Settings.uploads['storage_path'] = Settings.absolute(Settings.uploads['storage_path'] || 'public')
+Settings.uploads['base_dir'] = Settings.uploads['base_dir'] || 'uploads/-/system'
+
+#
 # Mattermost
 #
 Settings['mattermost'] ||= Settingslogic.new({})
@@ -348,7 +360,7 @@ Settings.mattermost['host'] = nil unless Settings.mattermost.enabled
 #
 Settings['gravatar'] ||= Settingslogic.new({})
 Settings.gravatar['enabled']      = true if Settings.gravatar['enabled'].nil?
-Settings.gravatar['plain_url']  ||= 'http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
+Settings.gravatar['plain_url']  ||= 'https://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
 Settings.gravatar['ssl_url']    ||= 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
 Settings.gravatar['host']         = Settings.host_without_www(Settings.gravatar['plain_url'])
 
@@ -415,6 +427,10 @@ Settings.cron_jobs['stuck_merge_jobs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_merge_jobs_worker']['cron'] ||= '0 */2 * * *'
 Settings.cron_jobs['stuck_merge_jobs_worker']['job_class'] = 'StuckMergeJobsWorker'
 
+Settings.cron_jobs['pages_domain_verification_cron_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['pages_domain_verification_cron_worker']['cron'] ||= '*/15 * * * *'
+Settings.cron_jobs['pages_domain_verification_cron_worker']['job_class'] = 'PagesDomainVerificationCronWorker'
+
 #
 # GitLab Shell
 #
@@ -467,10 +483,10 @@ end
 # repository_downloads_path value.
 #
 repositories_storages          = Settings.repositories.storages.values
-repository_downloads_path      = Settings.gitlab['repository_downloads_path'].to_s.gsub(/\/$/, '')
+repository_downloads_path      = Settings.gitlab['repository_downloads_path'].to_s.gsub(%r{/$}, '')
 repository_downloads_full_path = File.expand_path(repository_downloads_path, Settings.gitlab['user_home'])
 
-if repository_downloads_path.blank? || repositories_storages.any? { |rs| [repository_downloads_path, repository_downloads_full_path].include?(rs['path'].gsub(/\/$/, '')) }
+if repository_downloads_path.blank? || repositories_storages.any? { |rs| [repository_downloads_path, repository_downloads_full_path].include?(rs['path'].gsub(%r{/$}, '')) }
   Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path'], 'cache/archive')
 end
 

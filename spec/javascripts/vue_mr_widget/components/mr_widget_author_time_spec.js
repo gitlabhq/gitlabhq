@@ -1,61 +1,40 @@
 import Vue from 'vue';
-import authorTimeComponent from '~/vue_merge_request_widget/components/mr_widget_author_time';
-
-const props = {
-  actionText: 'Merged by',
-  author: {
-    webUrl: 'http://foo.bar',
-    avatarUrl: 'http://gravatar.com/foo',
-    name: 'fatihacet',
-  },
-  dateTitle: '2017-03-23T23:02:00.807Z',
-  dateReadable: '12 hours ago',
-};
-const createComponent = () => {
-  const Component = Vue.extend(authorTimeComponent);
-
-  return new Component({
-    el: document.createElement('div'),
-    propsData: props,
-  });
-};
+import authorTimeComponent from '~/vue_merge_request_widget/components/mr_widget_author_time.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('MRWidgetAuthorTime', () => {
-  describe('props', () => {
-    it('should have props', () => {
-      const { actionText, author, dateTitle, dateReadable } = authorTimeComponent.props;
-      const ActionTextClass = actionText.type;
-      const DateTitleClass = dateTitle.type;
-      const DateReadableClass = dateReadable.type;
+  let vm;
 
-      expect(new ActionTextClass() instanceof String).toBeTruthy();
-      expect(actionText.required).toBeTruthy();
+  beforeEach(() => {
+    const Component = Vue.extend(authorTimeComponent);
 
-      expect(author.type instanceof Object).toBeTruthy();
-      expect(author.required).toBeTruthy();
-
-      expect(new DateTitleClass() instanceof String).toBeTruthy();
-      expect(dateTitle.required).toBeTruthy();
-
-      expect(new DateReadableClass() instanceof String).toBeTruthy();
-      expect(dateReadable.required).toBeTruthy();
+    vm = mountComponent(Component, {
+      actionText: 'Merged by',
+      author: {
+        name: 'Administrator',
+        username: 'root',
+        webUrl: 'http://localhost:3000/root',
+        avatarUrl: 'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+      },
+      dateTitle: '2017-03-23T23:02:00.807Z',
+      dateReadable: '12 hours ago',
     });
   });
 
-  describe('components', () => {
-    it('should have components', () => {
-      expect(authorTimeComponent.components['mr-widget-author']).toBeDefined();
-    });
+  afterEach(() => {
+    vm.$destroy();
   });
 
-  describe('template', () => {
-    it('should have correct elements', () => {
-      const el = createComponent().$el;
+  it('renders provided action text', () => {
+    expect(vm.$el.textContent).toContain('Merged by');
+  });
 
-      expect(el.tagName).toEqual('H4');
-      expect(el.querySelector('a').getAttribute('href')).toEqual(props.author.webUrl);
-      expect(el.querySelector('time').innerText).toContain(props.dateReadable);
-      expect(el.querySelector('time').getAttribute('title')).toEqual(props.dateTitle);
-    });
+  it('renders author', () => {
+    expect(vm.$el.textContent).toContain('Administrator');
+  });
+
+  it('renders provided time', () => {
+    expect(vm.$el.querySelector('time').getAttribute('title')).toEqual('2017-03-23T23:02:00.807Z');
+    expect(vm.$el.querySelector('time').textContent.trim()).toEqual('12 hours ago');
   });
 });

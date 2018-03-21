@@ -34,7 +34,7 @@ and deploy from one single platform. Issue Boards help you to visualize
 and manage the entire process _in_ GitLab.
 
 With [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards), available
-only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/),
+only in [GitLab Ultimate](https://about.gitlab.com/products/),
 you go even further, as you can not only keep yourself and your project
 organized from a broader perspective with one Issue Board per project,
 but also allow your team members to organize their own workflow by creating
@@ -234,6 +234,27 @@ to another list the label changes and a system not is recorded.
 
 [Developers and up](../permissions.md) can use all the functionality of the
 Issue Board, that is create/delete lists and drag issues around.
+
+##  Group Issue Board
+
+>Introduced in GitLab 10.6
+
+Group issue board is analogous to project-level issue board and it is accessible at the group
+navigation level. A group-level issue board allows you to view all issues from all projects in that group
+(currently, it does not see issues from projects in subgroups). Similarly, you can only filter by group labels for these
+boards. When updating milestones and labels for an issue through the sidebar update mechanism, again only
+group-level objects are available.
+
+## Features per tier
+
+Different issue board features are available in different [GitLab tiers](https://about.gitlab.com/pricing/), as shown in the following table:
+
+| Tier | Number of project issue boards | Board with configuration in project issue boards | Number of group issue boards | Board with configuration in group issue boards |
+| --- | --- | --- | --- | --- |
+| Libre    | 1        | No  | 1        | No  |
+| Starter  | Multiple | Yes | 1        | No  |
+| Premium  | Multiple | Yes | Multiple | Yes |
+| Ultimate | Multiple | Yes | Multiple | Yes |
 
 ## Tips
 

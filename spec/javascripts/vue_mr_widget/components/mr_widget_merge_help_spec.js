@@ -1,51 +1,56 @@
 import Vue from 'vue';
-import mergeHelpComponent from '~/vue_merge_request_widget/components/mr_widget_merge_help';
-
-const props = {
-  missingBranch: 'this-is-not-the-branch-you-are-looking-for',
-};
-const text = `If the ${props.missingBranch} branch exists in your local repository`;
-
-const createComponent = () => {
-  const Component = Vue.extend(mergeHelpComponent);
-  return new Component({
-    el: document.createElement('div'),
-    propsData: props,
-  });
-};
+import mergeHelpComponent from '~/vue_merge_request_widget/components/mr_widget_merge_help.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('MRWidgetMergeHelp', () => {
-  describe('props', () => {
-    it('should have props', () => {
-      const { missingBranch } = mergeHelpComponent.props;
-      const MissingBranchTypeClass = missingBranch.type;
+  let vm;
+  let Component;
 
-      expect(new MissingBranchTypeClass() instanceof String).toBeTruthy();
-      expect(missingBranch.required).toBeFalsy();
-      expect(missingBranch.default).toEqual('');
+  beforeEach(() => {
+    Component = Vue.extend(mergeHelpComponent);
+  });
+
+  afterEach(() => {
+    vm.$destroy();
+  });
+
+  describe('with missing branch', () => {
+    beforeEach(() => {
+      vm = mountComponent(Component, {
+        missingBranch: 'this-is-not-the-branch-you-are-looking-for',
+      });
+    });
+
+    it('renders missing branch information', () => {
+      expect(
+        vm.$el.textContent.trim().replace(/[\r\n]+/g, ' ').replace(/\s\s+/g, ' '),
+      ).toEqual(
+        'If the this-is-not-the-branch-you-are-looking-for branch exists in your local repository, you can merge this merge request manually using the command line',
+      );
+    });
+
+    it('renders button to open help modal', () => {
+      expect(vm.$el.querySelector('.js-open-modal-help').getAttribute('data-target')).toEqual('#modal_merge_info');
+      expect(vm.$el.querySelector('.js-open-modal-help').getAttribute('data-toggle')).toEqual('modal');
     });
   });
 
-  describe('template', () => {
-    let vm;
-    let el;
-
+  describe('without missing branch', () => {
     beforeEach(() => {
-      vm = createComponent();
-      el = vm.$el;
+      vm = mountComponent(Component);
     });
 
-    it('should have the correct elements', () => {
-      expect(el.classList.contains('mr-widget-help')).toBeTruthy();
-      expect(el.textContent).toContain(text);
+    it('renders information about how to merge manually', () => {
+      expect(
+        vm.$el.textContent.trim().replace(/[\r\n]+/g, ' ').replace(/\s\s+/g, ' '),
+      ).toEqual(
+        'You can merge this merge request manually using the command line',
+      );
     });
 
-    it('should not show missing branch name if missingBranch props is not provided', (done) => {
-      vm.missingBranch = null;
-      Vue.nextTick(() => {
-        expect(el.textContent).not.toContain(text);
-        done();
-      });
+    it('renders element to open a modal', () => {
+      expect(vm.$el.querySelector('.js-open-modal-help').getAttribute('data-target')).toEqual('#modal_merge_info');
+      expect(vm.$el.querySelector('.js-open-modal-help').getAttribute('data-toggle')).toEqual('modal');
     });
   });
 });

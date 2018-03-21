@@ -199,6 +199,24 @@ describe API::Users do
         expect(json_response.size).to eq(1)
         expect(json_response.first['username']).to eq(user.username)
       end
+
+      it 'returns the correct order when sorted by id' do
+        admin
+        user
+
+        get api('/users', admin), { order_by: 'id', sort: 'asc' }
+
+        expect(response).to match_response_schema('public_api/v4/user/admins')
+        expect(json_response.size).to eq(2)
+        expect(json_response.first['id']).to eq(admin.id)
+        expect(json_response.last['id']).to eq(user.id)
+      end
+
+      it 'returns 400 when provided incorrect sort params' do
+        get api('/users', admin), { order_by: 'magic', sort: 'asc' }
+
+        expect(response).to have_gitlab_http_status(400)
+      end
     end
   end
 

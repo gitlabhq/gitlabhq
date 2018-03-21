@@ -1,4 +1,8 @@
 /* eslint-disable no-return-assign, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-unused-vars, no-cond-assign, consistent-return, object-shorthand, prefer-arrow-callback, func-names, space-before-function-paren, prefer-template, quotes, class-methods-use-this, no-sequences, wrap-iife, no-lonely-if, no-else-return, no-param-reassign, vars-on-top, max-len */
+
+import $ from 'jquery';
+import axios from './lib/utils/axios_utils';
+import DropdownUtils from './filtered_search/dropdown_utils';
 import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from './lib/utils/common_utils';
 
 /**
@@ -24,32 +28,32 @@ function setSearchOptions() {
   if ($projectOptionsDataEl.length) {
     gl.projectOptions = gl.projectOptions || {};
 
-    var projectPath = $projectOptionsDataEl.data('project-path');
+    var projectPath = $projectOptionsDataEl.data('projectPath');
 
     gl.projectOptions[projectPath] = {
       name: $projectOptionsDataEl.data('name'),
-      issuesPath: $projectOptionsDataEl.data('issues-path'),
-      issuesDisabled: $projectOptionsDataEl.data('issues-disabled'),
-      mrPath: $projectOptionsDataEl.data('mr-path'),
+      issuesPath: $projectOptionsDataEl.data('issuesPath'),
+      issuesDisabled: $projectOptionsDataEl.data('issuesDisabled'),
+      mrPath: $projectOptionsDataEl.data('mrPath'),
     };
   }
 
   if ($groupOptionsDataEl.length) {
     gl.groupOptions = gl.groupOptions || {};
 
-    var groupPath = $groupOptionsDataEl.data('group-path');
+    var groupPath = $groupOptionsDataEl.data('groupPath');
 
     gl.groupOptions[groupPath] = {
       name: $groupOptionsDataEl.data('name'),
-      issuesPath: $groupOptionsDataEl.data('issues-path'),
-      mrPath: $groupOptionsDataEl.data('mr-path'),
+      issuesPath: $groupOptionsDataEl.data('issuesPath'),
+      mrPath: $groupOptionsDataEl.data('mrPath'),
     };
   }
 
   if ($dashboardOptionsDataEl.length) {
     gl.dashboardOptions = {
-      issuesPath: $dashboardOptionsDataEl.data('issues-path'),
-      mrPath: $dashboardOptionsDataEl.data('mr-path'),
+      issuesPath: $dashboardOptionsDataEl.data('issuesPath'),
+      mrPath: $dashboardOptionsDataEl.data('mrPath'),
     };
   }
 }
@@ -60,9 +64,9 @@ export default class SearchAutocomplete {
     this.bindEventContext();
     this.wrap = wrap || $('.search');
     this.optsEl = optsEl || this.wrap.find('.search-autocomplete-opts');
-    this.autocompletePath = autocompletePath || this.optsEl.data('autocomplete-path');
-    this.projectId = projectId || (this.optsEl.data('autocomplete-project-id') || '');
-    this.projectRef = projectRef || (this.optsEl.data('autocomplete-project-ref') || '');
+    this.autocompletePath = autocompletePath || this.optsEl.data('autocompletePath');
+    this.projectId = projectId || (this.optsEl.data('autocompleteProjectId') || '');
+    this.projectRef = projectRef || (this.optsEl.data('autocompleteProjectRef') || '');
     this.dropdown = this.wrap.find('.dropdown');
     this.dropdownToggle = this.wrap.find('.js-dropdown-search-toggle');
     this.dropdownContent = this.dropdown.find('.dropdown-content');
@@ -146,23 +150,25 @@ export default class SearchAutocomplete {
 
     this.loadingSuggestions = true;
 
-    return $.get(this.autocompletePath, {
-      project_id: this.projectId,
-      project_ref: this.projectRef,
-      term: term,
-    }, (response) => {
-      var firstCategory, i, lastCategory, len, suggestion;
+    return axios.get(this.autocompletePath, {
+      params: {
+        project_id: this.projectId,
+        project_ref: this.projectRef,
+        term: term,
+      },
+    }).then((response) => {
       // Hide dropdown menu if no suggestions returns
-      if (!response.length) {
+      if (!response.data.length) {
         this.disableAutocomplete();
         return;
       }
 
       const data = [];
       // List results
-      firstCategory = true;
-      for (i = 0, len = response.length; i < len; i += 1) {
-        suggestion = response[i];
+      let firstCategory = true;
+      let lastCategory;
+      for (let i = 0, len = response.data.length; i < len; i += 1) {
+        const suggestion = response.data[i];
         // Add group header before list each group
         if (lastCategory !== suggestion.category) {
           if (!firstCategory) {
@@ -177,7 +183,7 @@ export default class SearchAutocomplete {
           lastCategory = suggestion.category;
         }
         data.push({
-          id: (suggestion.category.toLowerCase()) + "-" + suggestion.id,
+          id: `${suggestion.category.toLowerCase()}-${suggestion.id}`,
           category: suggestion.category,
           text: suggestion.label,
           url: suggestion.url,
@@ -187,13 +193,17 @@ export default class SearchAutocomplete {
       if (data.length) {
         data.push('separator');
         data.push({
-          text: "Result name contains \"" + term + "\"",
-          url: "/search?search=" + term + "&project_id=" + (this.projectInputEl.val()) + "&group_id=" + (this.groupInputEl.val()),
+          text: `Result name contains "${term}"`,
+          url: `/search?search=${term}&project_id=${this.projectInputEl.val()}&group_id=${this.groupInputEl.val()}`,
         });
       }
-      return callback(data);
-    })
-    .always(() => { this.loadingSuggestions = false; });
+
+      callback(data);
+
+      this.loadingSuggestions = false;
+    }).catch(() => {
+      this.loadingSuggestions = false;
+    });
   }
 
   getCategoryContents() {

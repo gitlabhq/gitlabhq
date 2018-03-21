@@ -1,0 +1,5 @@
+---
+title: Display ingress IP address in the Kubernetes page
+merge_request: 17052
+author:
+type: added

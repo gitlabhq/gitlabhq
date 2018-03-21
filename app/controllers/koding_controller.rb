@@ -10,6 +10,6 @@ class KodingController < ApplicationController
   private
 
   def check_integration!
-    render_404 unless current_application_settings.koding_enabled?
+    render_404 unless Gitlab::CurrentSettings.koding_enabled?
   end
 end

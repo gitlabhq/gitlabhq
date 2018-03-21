@@ -55,4 +55,20 @@ feature 'Group show page' do
       end
     end
   end
+
+  context 'group has a project with emoji in description', :js do
+    let(:user) { create(:user) }
+    let!(:project) { create(:project, description: ':smile:', namespace: group) }
+
+    before do
+      group.add_owner(user)
+      sign_in(user)
+      visit path
+    end
+
+    it 'shows the project info' do
+      expect(page).to have_content(project.title)
+      expect(page).to have_selector('gl-emoji[data-name="smile"]')
+    end
+  end
 end

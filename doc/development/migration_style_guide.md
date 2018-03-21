@@ -4,7 +4,7 @@ When writing migrations for GitLab, you have to take into account that
 these will be ran by hundreds of thousands of organizations of all sizes, some with
 many years of data in their database.
 
-In addition, having to take a server offline for a a upgrade small or big is a
+In addition, having to take a server offline for an upgrade small or big is a
 big burden for most organizations. For this reason it is important that your
 migrations are written carefully, can be applied online and adhere to the style
 guide below.

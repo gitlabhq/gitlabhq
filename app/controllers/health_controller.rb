@@ -8,7 +8,8 @@ class HealthController < ActionController::Base
     Gitlab::HealthChecks::Redis::CacheCheck,
     Gitlab::HealthChecks::Redis::QueuesCheck,
     Gitlab::HealthChecks::Redis::SharedStateCheck,
-    Gitlab::HealthChecks::FsShardsCheck
+    Gitlab::HealthChecks::FsShardsCheck,
+    Gitlab::HealthChecks::GitalyCheck
   ].freeze
 
   def readiness

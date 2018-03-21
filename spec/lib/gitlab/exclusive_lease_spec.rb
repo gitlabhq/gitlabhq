@@ -73,4 +73,31 @@ describe Gitlab::ExclusiveLease, :clean_gitlab_redis_shared_state do
       described_class.new(key, timeout: 3600).try_obtain
     end
   end
+
+  describe '#ttl' do
+    it 'returns the TTL of the Redis key' do
+      lease = described_class.new('kittens', timeout: 100)
+      lease.try_obtain
+
+      expect(lease.ttl <= 100).to eq(true)
+    end
+
+    it 'returns nil when the lease does not exist' do
+      lease = described_class.new('kittens', timeout: 10)
+
+      expect(lease.ttl).to be_nil
+    end
+  end
+
+  describe '.reset_all!' do
+    it 'removes all existing lease keys from redis' do
+      uuid = described_class.new(unique_key, timeout: 3600).try_obtain
+
+      expect(described_class.get_uuid(unique_key)).to eq(uuid)
+
+      described_class.reset_all!
+
+      expect(described_class.get_uuid(unique_key)).to be_falsey
+    end
+  end
 end

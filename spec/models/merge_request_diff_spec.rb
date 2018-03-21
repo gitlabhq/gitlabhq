@@ -15,6 +15,28 @@ describe MergeRequestDiff do
     it { expect(subject.start_commit_sha).to eq('0b4bc9a49b562e85de7cc9e834518ea6828729b9') }
   end
 
+  describe '.by_commit_sha' do
+    subject(:by_commit_sha) { described_class.by_commit_sha(sha) }
+
+    let!(:merge_request) { create(:merge_request, :with_diffs) }
+
+    context 'with sha contained in' do
+      let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
+
+      it 'returns merge request diffs' do
+        expect(by_commit_sha).to eq([merge_request.merge_request_diff])
+      end
+    end
+
+    context 'with sha not contained in' do
+      let(:sha) { 'b83d6e3' }
+
+      it 'returns empty result' do
+        expect(by_commit_sha).to be_empty
+      end
+    end
+  end
+
   describe '#latest' do
     let!(:mr) { create(:merge_request, :with_diffs) }
     let!(:first_diff) { mr.merge_request_diff }

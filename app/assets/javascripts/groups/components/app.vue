@@ -1,16 +1,21 @@
 <script>
 /* global Flash */
 
+import $ from 'jquery';
+import { s__ } from '~/locale';
+import loadingIcon from '~/vue_shared/components/loading_icon.vue';
+import modal from '~/vue_shared/components/modal.vue';
+import { getParameterByName } from '~/lib/utils/common_utils';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
+
 import eventHub from '../event_hub';
-import { getParameterByName } from '../../lib/utils/common_utils';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import { COMMON_STR } from '../constants';
-import { mergeUrlParams } from '../../lib/utils/url_utility';
 import groupsComponent from './groups.vue';
 
 export default {
   components: {
     loadingIcon,
+    modal,
     groupsComponent,
   },
   props: {
@@ -32,6 +37,10 @@ export default {
       isLoading: true,
       isSearchEmpty: false,
       searchEmptyMessage: '',
+      showModal: false,
+      groupLeaveConfirmationMessage: '',
+      targetGroup: null,
+      targetParentGroup: null,
     };
   },
   computed: {
@@ -41,6 +50,26 @@ export default {
     pageInfo() {
       return this.store.getPaginationInfo();
     },
+  },
+  created() {
+    this.searchEmptyMessage = this.hideProjects ?
+      COMMON_STR.GROUP_SEARCH_EMPTY : COMMON_STR.GROUP_PROJECT_SEARCH_EMPTY;
+
+    eventHub.$on('fetchPage', this.fetchPage);
+    eventHub.$on('toggleChildren', this.toggleChildren);
+    eventHub.$on('showLeaveGroupModal', this.showLeaveGroupModal);
+    eventHub.$on('updatePagination', this.updatePagination);
+    eventHub.$on('updateGroups', this.updateGroups);
+  },
+  mounted() {
+    this.fetchAllGroups();
+  },
+  beforeDestroy() {
+    eventHub.$off('fetchPage', this.fetchPage);
+    eventHub.$off('toggleChildren', this.toggleChildren);
+    eventHub.$off('showLeaveGroupModal', this.showLeaveGroupModal);
+    eventHub.$off('updatePagination', this.updatePagination);
+    eventHub.$off('updateGroups', this.updateGroups);
   },
   methods: {
     fetchGroups({ parentId, page, filterGroupsBy, sortBy, archived, updatePagination }) {
@@ -121,14 +150,23 @@ export default {
         parentGroup.isOpen = false;
       }
     },
-    leaveGroup(group, parentGroup) {
-      const targetGroup = group;
-      targetGroup.isBeingRemoved = true;
-      this.service.leaveGroup(targetGroup.leavePath)
+    showLeaveGroupModal(group, parentGroup) {
+      this.targetGroup = group;
+      this.targetParentGroup = parentGroup;
+      this.showModal = true;
+      this.groupLeaveConfirmationMessage = s__(`GroupsTree|Are you sure you want to leave the "${group.fullName}" group?`);
+    },
+    hideLeaveGroupModal() {
+      this.showModal = false;
+    },
+    leaveGroup() {
+      this.showModal = false;
+      this.targetGroup.isBeingRemoved = true;
+      this.service.leaveGroup(this.targetGroup.leavePath)
         .then(res => res.json())
         .then((res) => {
           $.scrollTo(0);
-          this.store.removeGroup(targetGroup, parentGroup);
+          this.store.removeGroup(this.targetGroup, this.targetParentGroup);
           Flash(res.notice, 'notice');
         })
         .catch((err) => {
@@ -137,7 +175,7 @@ export default {
             message = COMMON_STR.LEAVE_FORBIDDEN;
           }
           Flash(message);
-          targetGroup.isBeingRemoved = false;
+          this.targetGroup.isBeingRemoved = false;
         });
     },
     updatePagination(headers) {
@@ -151,26 +189,6 @@ export default {
         this.store.setGroups(groups);
       }
     },
-  },
-  created() {
-    this.searchEmptyMessage = this.hideProjects ?
-      COMMON_STR.GROUP_SEARCH_EMPTY : COMMON_STR.GROUP_PROJECT_SEARCH_EMPTY;
-
-    eventHub.$on('fetchPage', this.fetchPage);
-    eventHub.$on('toggleChildren', this.toggleChildren);
-    eventHub.$on('leaveGroup', this.leaveGroup);
-    eventHub.$on('updatePagination', this.updatePagination);
-    eventHub.$on('updateGroups', this.updateGroups);
-  },
-  mounted() {
-    this.fetchAllGroups();
-  },
-  beforeDestroy() {
-    eventHub.$off('fetchPage', this.fetchPage);
-    eventHub.$off('toggleChildren', this.toggleChildren);
-    eventHub.$off('leaveGroup', this.leaveGroup);
-    eventHub.$off('updatePagination', this.updatePagination);
-    eventHub.$off('updateGroups', this.updateGroups);
   },
 };
 </script>
@@ -189,6 +207,15 @@ export default {
       :search-empty="isSearchEmpty"
       :search-empty-message="searchEmptyMessage"
       :page-info="pageInfo"
+    />
+    <modal
+      v-if="showModal"
+      kind="warning"
+      :primary-button-label="__('Leave')"
+      :title="__('Are you sure?')"
+      :text="groupLeaveConfirmationMessage"
+      @cancel="hideLeaveGroupModal"
+      @submit="leaveGroup"
     />
   </div>
 </template>

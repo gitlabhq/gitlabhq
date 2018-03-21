@@ -11,7 +11,7 @@ describe Projects::MilestonesController do
 
   before do
     sign_in(user)
-    project.team << [user, :master]
+    project.add_master(user)
     controller.instance_variable_set(:@project, project)
   end
 
@@ -98,10 +98,8 @@ describe Projects::MilestonesController do
       it 'shows group milestone' do
         post :promote, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid
 
-        group_milestone = assigns(:milestone)
-
-        expect(response).to redirect_to(group_milestone_path(project.group, group_milestone.iid))
-        expect(flash[:notice]).to eq('Milestone has been promoted to group milestone.')
+        expect(flash[:notice]).to eq("#{milestone.title} promoted to group milestone")
+        expect(response).to redirect_to(project_milestones_path(project))
       end
     end
 

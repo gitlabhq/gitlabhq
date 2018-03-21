@@ -7,7 +7,7 @@
         %span
           = enabled_project_button(project, enabled_protocol)
     - else
-      %a#clone-dropdown.btn.clone-dropdown-btn{ href: '#', data: { toggle: 'dropdown' } }
+      %a#clone-dropdown.btn.clone-dropdown-btn.qa-clone-dropdown{ href: '#', data: { toggle: 'dropdown' } }
         %span
           = default_clone_protocol.upcase
         = icon('caret-down')

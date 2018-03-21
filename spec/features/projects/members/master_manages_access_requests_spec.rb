@@ -7,7 +7,7 @@ feature 'Projects > Members > Master manages access requests' do
 
   background do
     project.request_access(user)
-    project.team << [master, :master]
+    project.add_master(master)
     sign_in(master)
   end
 
@@ -25,7 +25,7 @@ feature 'Projects > Members > Master manages access requests' do
     perform_enqueued_jobs { click_on 'Grant access' }
 
     expect(ActionMailer::Base.deliveries.last.to).to eq [user.notification_email]
-    expect(ActionMailer::Base.deliveries.last.subject).to match "Access to the #{project.name_with_namespace} project was granted"
+    expect(ActionMailer::Base.deliveries.last.subject).to match "Access to the #{project.full_name} project was granted"
   end
 
   scenario 'master can deny access' do
@@ -36,7 +36,7 @@ feature 'Projects > Members > Master manages access requests' do
     perform_enqueued_jobs { click_on 'Deny access' }
 
     expect(ActionMailer::Base.deliveries.last.to).to eq [user.notification_email]
-    expect(ActionMailer::Base.deliveries.last.subject).to match "Access to the #{project.name_with_namespace} project was denied"
+    expect(ActionMailer::Base.deliveries.last.subject).to match "Access to the #{project.full_name} project was denied"
   end
 
   def expect_visible_access_request(project, user)

@@ -1,13 +1,17 @@
 {
-  "type": "object",
+  "type": ["object", "null"],
   "required": [
     "id",
+    "name",
+    "username",
     "state",
     "avatar_url",
     "web_url"
   ],
   "properties": {
     "id": { "type": "integer" },
+    "name": { "type": "string" },
+    "username": { "type": "string" },
     "state": { "type": "string" },
     "avatar_url": { "type": "string" },
     "web_url": { "type": "string" }

@@ -1,5 +1,9 @@
 /* eslint-disable func-names, prefer-arrow-callback, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, one-var, one-var-declaration-per-line, consistent-return, no-param-reassign, max-len */
 
+import $ from 'jquery';
+import { __ } from './locale';
+import axios from './lib/utils/axios_utils';
+import createFlash from './flash';
 import FilesCommentButton from './files_comment_button';
 import imageDiffHelper from './image_diff/helpers/index';
 import syntaxHighlight from './syntax_highlight';
@@ -15,7 +19,7 @@ export default class SingleFileDiff {
     this.toggleDiff = this.toggleDiff.bind(this);
     this.content = $('.diff-content', this.file);
     this.$toggleIcon = $('.diff-toggle-caret', this.file);
-    this.diffForPath = this.content.find('[data-diff-for-path]').data('diff-for-path');
+    this.diffForPath = this.content.find('[data-diff-for-path]').data('diffForPath');
     this.isOpen = !this.diffForPath;
     if (this.diffForPath) {
       this.collapsedContent = this.content;
@@ -60,30 +64,33 @@ export default class SingleFileDiff {
   getContentHTML(cb) {
     this.collapsedContent.hide();
     this.loadingContent.show();
-    $.get(this.diffForPath, (function(_this) {
-      return function(data) {
-        _this.loadingContent.hide();
+
+    axios.get(this.diffForPath)
+      .then(({ data }) => {
+        this.loadingContent.hide();
         if (data.html) {
-          _this.content = $(data.html);
-          syntaxHighlight(_this.content);
+          this.content = $(data.html);
+          syntaxHighlight(this.content);
         } else {
-          _this.hasError = true;
-          _this.content = $(ERROR_HTML);
+          this.hasError = true;
+          this.content = $(ERROR_HTML);
         }
-        _this.collapsedContent.after(_this.content);
+        this.collapsedContent.after(this.content);
 
         if (typeof gl.diffNotesCompileComponents !== 'undefined') {
           gl.diffNotesCompileComponents();
         }
 
-        const $file = $(_this.file);
+        const $file = $(this.file);
         FilesCommentButton.init($file);
 
         const canCreateNote = $file.closest('.files').is('[data-can-create-note]');
         imageDiffHelper.initImageDiff($file[0], canCreateNote);
 
         if (cb) cb();
-      };
-    })(this));
+      })
+      .catch(() => {
+        createFlash(__('An error occurred while retrieving diff'));
+      });
   }
 }

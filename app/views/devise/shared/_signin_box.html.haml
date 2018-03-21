@@ -8,7 +8,7 @@
       .login-body
         = render 'devise/sessions/new_ldap', server: server
   - if password_authentication_enabled_for_web?
-    .login-box.tab-pane{ id: 'ldap-standard', role: 'tabpanel' }
+    .login-box.tab-pane{ id: 'login-pane', role: 'tabpanel' }
       .login-body
         = render 'devise/sessions/new_base'
 

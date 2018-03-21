@@ -13,13 +13,13 @@
             = group_icon(@group, alt: '', class: 'avatar group-avatar s160')
           %p.light
             - if @group.avatar?
-              You can change your group avatar here
+              You can change the group avatar here
             - else
               You can upload a group avatar here
           = render 'shared/choose_group_avatar_button', f: f
           - if @group.avatar?
             %hr
-            = link_to 'Remove avatar', group_avatar_path(@group.to_param), data: { confirm: "Group avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
+            = link_to _('Remove avatar'), group_avatar_path(@group.to_param), data: { confirm: _("Avatar will be removed. Are you sure?")}, method: :delete, class: "btn btn-danger btn-inverted"
 
       = render 'shared/visibility_level', f: f, visibility_level: @group.visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group
 
@@ -56,5 +56,21 @@
 
       .form-actions
         = button_to 'Remove group', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_group_message(@group) }
+
+- if supports_nested_groups?
+  .panel.panel-warning
+    .panel-heading Transfer group
+    .panel-body
+      = form_for @group, url: transfer_group_path(@group), method: :put do |f|
+        .form-group
+          = dropdown_tag('Select parent group', options: { toggle_class: 'js-groups-dropdown', title: 'Parent Group', filter: true, dropdown_class: 'dropdown-open-top dropdown-group-transfer', placeholder: "Search groups", data: { data: parent_group_options(@group) } })
+          = hidden_field_tag 'new_parent_group_id'
+
+        %ul
+          %li Be careful. Changing a group's parent can have unintended #{link_to 'side effects', 'https://docs.gitlab.com/ce/user/project/index.html#redirects-when-changing-repository-paths', target: 'blank'}.
+          %li You can only transfer the group to a group you manage.
+          %li You will need to update your local repositories to point to the new location.
+          %li If the parent group's visibility is lower than the group current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility.
+        = f.submit 'Transfer group', class: "btn btn-warning"
 
 = render 'shared/confirm_modal', phrase: @group.path

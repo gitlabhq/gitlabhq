@@ -1,10 +1,16 @@
 <script>
-  import pipelineStage from '../../pipelines/components/stage.vue';
-  import ciIcon from '../../vue_shared/components/ci_icon.vue';
-  import icon from '../../vue_shared/components/icon.vue';
+  /* eslint-disable vue/require-default-prop */
+  import pipelineStage from '~/pipelines/components/stage.vue';
+  import ciIcon from '~/vue_shared/components/ci_icon.vue';
+  import icon from '~/vue_shared/components/icon.vue';
 
   export default {
     name: 'MRWidgetPipeline',
+    components: {
+      pipelineStage,
+      ciIcon,
+      icon,
+    },
     props: {
       pipeline: {
         type: Object,
@@ -20,11 +26,6 @@
         type: String,
         required: false,
       },
-    },
-    components: {
-      pipelineStage,
-      ciIcon,
-      icon,
     },
     computed: {
       hasPipeline() {
@@ -62,7 +63,8 @@
       <template v-else-if="hasPipeline">
         <a
           class="append-right-10"
-          :href="this.status.details_path">
+          :href="status.details_path"
+        >
           <ci-icon :status="status" />
         </a>
 
@@ -70,33 +72,37 @@
           Pipeline
           <a
             :href="pipeline.path"
-            class="pipeline-id">
-            #{{pipeline.id}}
+            class="pipeline-id"
+          >
+            #{{ pipeline.id }}
           </a>
 
-          {{pipeline.details.status.label}} for
+          {{ pipeline.details.status.label }} for
 
           <a
             :href="pipeline.commit.commit_path"
-            class="commit-sha js-commit-link">
-            {{pipeline.commit.short_id}}</a>.
+            class="commit-sha js-commit-link"
+          >
+          {{ pipeline.commit.short_id }}</a>.
 
           <span class="mr-widget-pipeline-graph">
-            <span class="stage-cell">
+            <span
+              class="stage-cell"
+              v-if="hasStages"
+            >
               <div
-                v-if="hasStages"
                 v-for="(stage, i) in pipeline.details.stages"
                 :key="i"
-                class="stage-container dropdown js-mini-pipeline-graph">
+                class="stage-container dropdown js-mini-pipeline-graph"
+              >
                 <pipeline-stage :stage="stage" />
               </div>
             </span>
           </span>
 
           <template v-if="pipeline.coverage">
-            Coverage {{pipeline.coverage}}%
+            Coverage {{ pipeline.coverage }}%
           </template>
-
         </div>
       </template>
     </div>

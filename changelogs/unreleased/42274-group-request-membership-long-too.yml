@@ -1,0 +1,5 @@
+---
+title: Fix long list of recipients on group request membership email
+merge_request: 17121
+author: Jacopo Beschi @jacopo-beschi
+type: fixed

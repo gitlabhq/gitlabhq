@@ -4,6 +4,7 @@ class Projects::ClustersController < Projects::ApplicationController
   before_action :authorize_create_cluster!, only: [:new]
   before_action :authorize_update_cluster!, only: [:update]
   before_action :authorize_admin_cluster!, only: [:destroy]
+  before_action :update_applications_status, only: [:status]
 
   STATUS_POLLING_INTERVAL = 10_000
 
@@ -41,7 +42,7 @@ class Projects::ClustersController < Projects::ApplicationController
           head :no_content
         end
         format.html do
-          flash[:notice] = "Cluster was successfully updated."
+          flash[:notice] = _('Kubernetes cluster was successfully updated.')
           redirect_to project_cluster_path(project, cluster)
         end
       end
@@ -55,10 +56,10 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def destroy
     if cluster.destroy
-      flash[:notice] = "Cluster integration was successfully removed."
+      flash[:notice] = _('Kubernetes cluster integration was successfully removed.')
       redirect_to project_clusters_path(project), status: 302
     else
-      flash[:notice] = "Cluster integration was not removed."
+      flash[:notice] = _('Kubernetes cluster integration was not removed.')
       render :show
     end
   end
@@ -87,6 +88,7 @@ class Projects::ClustersController < Projects::ApplicationController
     if cluster.managed?
       params.require(:cluster).permit(
         :enabled,
+        :environment_scope,
         platform_kubernetes_attributes: [
           :namespace
         ]
@@ -95,6 +97,7 @@ class Projects::ClustersController < Projects::ApplicationController
       params.require(:cluster).permit(
         :enabled,
         :name,
+        :environment_scope,
         platform_kubernetes_attributes: [
           :api_url,
           :token,
@@ -111,5 +114,9 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def authorize_admin_cluster!
     access_denied! unless can?(current_user, :admin_cluster, cluster)
+  end
+
+  def update_applications_status
+    @cluster.applications.each(&:schedule_status_update)
   end
 end

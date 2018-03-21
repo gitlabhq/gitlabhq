@@ -14,7 +14,6 @@ export default {
   "updated_by_id": null,
   "created_at": "2017-04-07T12:27:26.718Z",
   "updated_at": "2017-04-07T15:39:25.852Z",
-  "deleted_at": null,
   "time_estimate": 0,
   "total_time_spent": 0,
   "human_time_estimate": null,
@@ -33,24 +32,25 @@ export default {
   "source_project_id": 19,
   "target_branch": "master",
   "target_project_id": 19,
-  "merge_event": {
-    "author": {
+  "metrics": {
+    "merged_by": {
       "name": "Administrator",
       "username": "root",
       "id": 1,
       "state": "active",
-      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+      "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
       "web_url": "http://localhost:3000/root"
     },
-    "updated_at": "2017-04-07T15:39:25.696Z"
+    "merged_at": "2017-04-07T15:39:25.696Z",
+    "closed_by": null,
+    "closed_at": null
   },
-  "closed_event": null,
   "author": {
     "name": "Administrator",
     "username": "root",
     "id": 1,
     "state": "active",
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+    "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
     "web_url": "http://localhost:3000/root"
   },
   "merge_user": null,
@@ -64,7 +64,7 @@ export default {
       "username": "root",
       "id": 1,
       "state": "active",
-      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+      "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
       "web_url": "http://localhost:3000/root"
     },
     "active": false,
@@ -159,10 +159,10 @@ export default {
         "username": "root",
         "id": 1,
         "state": "active",
-        "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+        "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
         "web_url": "http://localhost:3000/root"
       },
-      "author_gravatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+      "author_gravatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
       "commit_url": "http://localhost:3000/root/acets-app/commit/104096c51715e12e7ae41f9333e9fa35b73f385d",
       "commit_path": "/root/acets-app/commit/104096c51715e12e7ae41f9333e9fa35b73f385d"
     },

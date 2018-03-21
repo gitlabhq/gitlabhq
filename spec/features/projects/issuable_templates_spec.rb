@@ -8,7 +8,7 @@ feature 'issuable templates', :js do
   let(:issue_form_location) { '#content-body .issuable-details .detail-page-description' }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in user
   end
 
@@ -32,9 +32,7 @@ feature 'issuable templates', :js do
         message: 'added issue template',
         branch_name: 'master')
       visit project_issue_path project, issue
-      page.within('.js-issuable-actions') do
-        click_on 'Edit'
-      end
+      page.find('.js-issuable-edit').click
       fill_in :'issuable-title', with: 'test issue title'
     end
 
@@ -77,9 +75,7 @@ feature 'issuable templates', :js do
         message: 'added issue template',
         branch_name: 'master')
       visit project_issue_path project, issue
-      page.within('.js-issuable-actions') do
-        click_on 'Edit'
-      end
+      page.find('.js-issuable-edit').click
       fill_in :'issuable-title', with: 'test issue title'
       fill_in :'issue-description', with: prior_description
     end
@@ -124,7 +120,7 @@ feature 'issuable templates', :js do
     background do
       sign_out(:user)
 
-      project.team << [fork_user, :developer]
+      project.add_developer(fork_user)
 
       sign_in(fork_user)
 

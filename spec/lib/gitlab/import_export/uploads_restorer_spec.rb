@@ -3,8 +3,7 @@ require 'spec_helper'
 describe Gitlab::ImportExport::UploadsRestorer do
   describe 'bundle a project Git repo' do
     let(:export_path) { "#{Dir.tmpdir}/uploads_saver_spec" }
-    let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: project.full_path) }
-    let(:uploads_path) { FileUploader.dynamic_path_segment(project) }
+    let(:shared) { project.import_export_shared }
 
     before do
       allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
@@ -17,6 +16,24 @@ describe Gitlab::ImportExport::UploadsRestorer do
     end
 
     describe 'legacy storage' do
+      let(:project) { create(:project, :legacy_storage) }
+
+      subject(:restorer) { described_class.new(project: project, shared: shared) }
+
+      it 'saves the uploads successfully' do
+        expect(restorer.restore).to be true
+      end
+
+      it 'copies the uploads to the project path' do
+        subject.restore
+
+        uploads = Dir.glob(File.join(subject.uploads_path, '**/*')).map { |file| File.basename(file) }
+
+        expect(uploads).to include('dummy.txt')
+      end
+    end
+
+    describe 'hashed storage' do
       let(:project) { create(:project) }
 
       subject(:restorer) { described_class.new(project: project, shared: shared) }
@@ -26,27 +43,9 @@ describe Gitlab::ImportExport::UploadsRestorer do
       end
 
       it 'copies the uploads to the project path' do
-        restorer.restore
+        subject.restore
 
-        uploads = Dir.glob(File.join(uploads_path, '**/*')).map { |file| File.basename(file) }
-
-        expect(uploads).to include('dummy.txt')
-      end
-    end
-
-    describe 'hashed storage' do
-      let(:project) { create(:project, :hashed) }
-
-      subject(:restorer) { described_class.new(project: project, shared: shared) }
-
-      it 'saves the uploads successfully' do
-        expect(restorer.restore).to be true
-      end
-
-      it 'copies the uploads to the project path' do
-        restorer.restore
-
-        uploads = Dir.glob(File.join(uploads_path, '**/*')).map { |file| File.basename(file) }
+        uploads = Dir.glob(File.join(subject.uploads_path, '**/*')).map { |file| File.basename(file) }
 
         expect(uploads).to include('dummy.txt')
       end

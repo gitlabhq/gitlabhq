@@ -1,5 +1,144 @@
+# frozen_string_literal: true
 module API
   class Services < Grape::API
+    CHAT_NOTIFICATION_SETTINGS = [
+      {
+        required: true,
+        name: :webhook,
+        type: String,
+        desc: 'The chat webhook'
+      },
+      {
+        required: false,
+        name: :username,
+        type: String,
+        desc: 'The chat username'
+      },
+      {
+        required: false,
+        name: :channel,
+        type: String,
+        desc: 'The default chat channel'
+      }
+    ].freeze
+
+    CHAT_NOTIFICATION_FLAGS = [
+      {
+        required: false,
+        name: :notify_only_broken_pipelines,
+        type: Boolean,
+        desc: 'Send notifications for broken pipelines'
+      },
+      {
+        required: false,
+        name: :notify_only_default_branch,
+        type: Boolean,
+        desc: 'Send notifications only for the default branch'
+      }
+    ].freeze
+
+    CHAT_NOTIFICATION_CHANNELS = [
+      {
+        required: false,
+        name: :push_channel,
+        type: String,
+        desc: 'The name of the channel to receive push_events notifications'
+      },
+      {
+        required: false,
+        name: :issue_channel,
+        type: String,
+        desc: 'The name of the channel to receive issues_events notifications'
+      },
+      {
+        required: false,
+        name: :confidential_issue_channel,
+        type: String,
+        desc: 'The name of the channel to receive confidential_issues_events notifications'
+      },
+      {
+        required: false,
+        name: :merge_request_channel,
+        type: String,
+        desc: 'The name of the channel to receive merge_requests_events notifications'
+      },
+      {
+        required: false,
+        name: :note_channel,
+        type: String,
+        desc: 'The name of the channel to receive note_events notifications'
+      },
+      {
+        required: false,
+        name: :tag_push_channel,
+        type: String,
+        desc: 'The name of the channel to receive tag_push_events notifications'
+      },
+      {
+        required: false,
+        name: :pipeline_channel,
+        type: String,
+        desc: 'The name of the channel to receive pipeline_events notifications'
+      },
+      {
+        required: false,
+        name: :wiki_page_channel,
+        type: String,
+        desc: 'The name of the channel to receive wiki_page_events notifications'
+      }
+    ].freeze
+
+    CHAT_NOTIFICATION_EVENTS = [
+      {
+        required: false,
+        name: :push_events,
+        type: Boolean,
+        desc: 'Enable notifications for push_events'
+      },
+      {
+        required: false,
+        name: :issues_events,
+        type: Boolean,
+        desc: 'Enable notifications for issues_events'
+      },
+      {
+        required: false,
+        name: :confidential_issues_events,
+        type: Boolean,
+        desc: 'Enable notifications for confidential_issues_events'
+      },
+      {
+        required: false,
+        name: :merge_requests_events,
+        type: Boolean,
+        desc: 'Enable notifications for merge_requests_events'
+      },
+      {
+        required: false,
+        name: :note_events,
+        type: Boolean,
+        desc: 'Enable notifications for note_events'
+      },
+      {
+        required: false,
+        name: :tag_push_events,
+        type: Boolean,
+        desc: 'Enable notifications for tag_push_events'
+      },
+      {
+        required: false,
+        name: :pipeline_events,
+        type: Boolean,
+        desc: 'Enable notifications for pipeline_events'
+      },
+      {
+        required: false,
+        name: :wiki_page_events,
+        type: Boolean,
+        desc: 'Enable notifications for wiki_page_events'
+      }
+    ].freeze
+
     services = {
       'asana' => [
         {
@@ -489,25 +628,11 @@ module API
         }
       ],
       'slack' => [
-        {
-          required: true,
-          name: :webhook,
-          type: String,
-          desc: 'The Slack webhook. e.g. https://hooks.slack.com/services/...'
-        },
-        {
-          required: false,
-          name: :new_issue_url,
-          type: String,
-          desc: 'The user name'
-        },
-        {
-          required: false,
-          name: :channel,
-          type: String,
-          desc: 'The channel name'
-        }
-      ],
+        CHAT_NOTIFICATION_SETTINGS,
+        CHAT_NOTIFICATION_FLAGS,
+        CHAT_NOTIFICATION_CHANNELS,
+        CHAT_NOTIFICATION_EVENTS
+      ].flatten,
       'microsoft-teams' => [
         {
           required: true,
@@ -517,19 +642,11 @@ module API
         }
       ],
       'mattermost' => [
-        {
-          required: true,
-          name: :webhook,
-          type: String,
-          desc: 'The Mattermost webhook. e.g. http://mattermost_host/hooks/...'
-        },
-        {
-          required: false,
-          name: :username,
-          type: String,
-          desc: 'The username to use to post the message'
-        }
-      ],
+        CHAT_NOTIFICATION_SETTINGS,
+        CHAT_NOTIFICATION_FLAGS,
+        CHAT_NOTIFICATION_CHANNELS,
+        CHAT_NOTIFICATION_EVENTS
+      ].flatten,
       'teamcity' => [
         {
           required: true,
@@ -608,7 +725,22 @@ module API
       ]
     end
 
-    trigger_services = {
+    SERVICES = services.freeze
+    SERVICE_CLASSES = service_classes.freeze
+
+    SERVICE_CLASSES.each do |service|
+      event_names = service.try(:event_names) || next
+      event_names.each do |event_name|
+        SERVICES[service.to_param.tr("_", "-")] << {
+          required: false,
+          name: event_name.to_sym,
+          type: String,
+          desc: service.event_description(event_name)
+        }
+      end
+    end
+
+    TRIGGER_SERVICES = {
       'mattermost-slash-commands' => [
         {
           name: :token,
@@ -640,22 +772,9 @@ module API
         end
       end
 
-      services.each do |service_slug, settings|
+      SERVICES.each do |service_slug, settings|
         desc "Set #{service_slug} service for project"
         params do
-          service_classes.each do |service|
-            event_names = service.try(:event_names) || next
-            event_names.each do |event_name|
-              services[service.to_param.tr("_", "-")] << {
-                required: false,
-                name: event_name.to_sym,
-                type: String,
-                desc: ServicesHelper.service_event_description(event_name)
-              }
-            end
-          end
-          services.freeze
-
           settings.each do |setting|
             if setting[:required]
               requires setting[:name], type: setting[:type], desc: setting[:desc]
@@ -669,7 +788,7 @@ module API
           service_params = declared_params(include_missing: false).merge(active: true)
 
           if service.update_attributes(service_params)
-            present service, with: Entities::ProjectService, include_passwords: current_user.admin?
+            present service, with: Entities::ProjectService
           else
             render_api_error!('400 Bad Request', 400)
           end
@@ -678,7 +797,7 @@ module API
 
       desc "Delete a service for project"
       params do
-        requires :service_slug, type: String, values: services.keys, desc: 'The name of the service'
+        requires :service_slug, type: String, values: SERVICES.keys, desc: 'The name of the service'
       end
       delete ":id/services/:service_slug" do
         service = user_project.find_or_initialize_service(params[:service_slug].underscore)
@@ -698,7 +817,7 @@ module API
         success Entities::ProjectService
       end
       params do
-        requires :service_slug, type: String, values: services.keys, desc: 'The name of the service'
+        requires :service_slug, type: String, values: SERVICES.keys, desc: 'The name of the service'
       end
       get ":id/services/:service_slug" do
         service = user_project.find_or_initialize_service(params[:service_slug].underscore)
@@ -706,7 +825,7 @@ module API
       end
     end
 
-    trigger_services.each do |service_slug, settings|
+    TRIGGER_SERVICES.each do |service_slug, settings|
       helpers do
         def slash_command_service(project, service_slug, params)
           project.services.active.where(template: false).find do |service|

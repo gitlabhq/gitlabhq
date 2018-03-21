@@ -21,7 +21,7 @@ describe RuboCop::Cop::Migration::RemoveColumn do
     end
 
     it 'registers an offense when remove_column is used in the change method' do
-      inspect_source(cop, source('change'))
+      inspect_source(source('change'))
 
       aggregate_failures do
         expect(cop.offenses.size).to eq(1)
@@ -30,7 +30,7 @@ describe RuboCop::Cop::Migration::RemoveColumn do
     end
 
     it 'registers an offense when remove_column is used in the up method' do
-      inspect_source(cop, source('up'))
+      inspect_source(source('up'))
 
       aggregate_failures do
         expect(cop.offenses.size).to eq(1)
@@ -39,7 +39,7 @@ describe RuboCop::Cop::Migration::RemoveColumn do
     end
 
     it 'registers no offense when remove_column is used in the down method' do
-      inspect_source(cop, source('down'))
+      inspect_source(source('down'))
 
       expect(cop.offenses.size).to eq(0)
     end
@@ -52,7 +52,7 @@ describe RuboCop::Cop::Migration::RemoveColumn do
     end
 
     it 'registers no offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.offenses.size).to eq(0)
     end
@@ -60,7 +60,7 @@ describe RuboCop::Cop::Migration::RemoveColumn do
 
   context 'outside of a migration' do
     it 'registers no offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.offenses.size).to eq(0)
     end

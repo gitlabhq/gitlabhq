@@ -18,6 +18,7 @@ describe Group do
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
     it { is_expected.to have_one(:chat_team) }
     it { is_expected.to have_many(:custom_attributes).class_name('GroupCustomAttribute') }
+    it { is_expected.to have_many(:badges).class_name('GroupBadge') }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
@@ -41,7 +42,6 @@ describe Group do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of :name }
-    it { is_expected.to validate_uniqueness_of(:name).scoped_to(:parent_id) }
     it { is_expected.to validate_presence_of :path }
     it { is_expected.not_to validate_presence_of :owner }
     it { is_expected.to validate_presence_of :two_factor_grace_period }
@@ -550,7 +550,7 @@ describe Group do
 
     context 'when the ref is a protected branch' do
       before do
-        create(:protected_branch, name: 'ref', project: project)
+        allow(project).to receive(:protected_for?).with('ref').and_return(true)
       end
 
       it_behaves_like 'ref is protected'
@@ -558,7 +558,7 @@ describe Group do
 
     context 'when the ref is a protected tag' do
       before do
-        create(:protected_tag, name: 'ref', project: project)
+        allow(project).to receive(:protected_for?).with('ref').and_return(true)
       end
 
       it_behaves_like 'ref is protected'
@@ -572,6 +572,10 @@ describe Group do
       let(:variable_child_2) { create(:ci_group_variable, group: group_child_2) }
       let(:variable_child_3) { create(:ci_group_variable, group: group_child_3) }
 
+      before do
+        allow(project).to receive(:protected_for?).with('ref').and_return(true)
+      end
+
       it 'returns all variables belong to the group and parent groups' do
         expected_array1 = [protected_variable, secret_variable]
         expected_array2 = [variable_child, variable_child_2, variable_child_3]
@@ -579,6 +583,22 @@ describe Group do
 
         expect(got_array.shift(2)).to contain_exactly(*expected_array1)
         expect(got_array).to eq(expected_array2)
+      end
+    end
+  end
+
+  describe '#has_parent?' do
+    context 'when the group has a parent' do
+      it 'should be truthy' do
+        group = create(:group, :nested)
+        expect(group.has_parent?).to be_truthy
+      end
+    end
+
+    context 'when the group has no parent' do
+      it 'should be falsy' do
+        group = create(:group, parent: nil)
+        expect(group.has_parent?).to be_falsy
       end
     end
   end

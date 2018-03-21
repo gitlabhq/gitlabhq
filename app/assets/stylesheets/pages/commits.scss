@@ -194,13 +194,15 @@
 
 .commit-actions {
   @media (min-width: $screen-sm-min) {
-    font-size: 0;
+    .fa-spinner {
+      font-size: 12px;
+    }
   }
 
   .ci-status-link {
     display: inline-block;
     position: relative;
-    top: 1px;
+    top: 2px;
   }
 
   .btn-clipboard,
@@ -218,6 +220,11 @@
   .commit-sha {
     font-size: 14px;
     font-weight: $gl-font-weight-bold;
+  }
+
+  .ci-status-icon {
+    position: relative;
+    top: 2px;
   }
 }
 
@@ -310,8 +317,8 @@
   }
 
   &.invalid {
-    @include status-color($gray-dark, $gray, $common-gray-dark);
-    border-color: $common-gray-light;
+    @include status-color($gray-dark, $gray, $gray-darkest);
+    border-color: $gray-darkest;
   }
 }
 
@@ -335,8 +342,8 @@
 
   &.invalid {
     svg {
-      border: 1px solid $common-gray-light;
-      fill: $common-gray-light;
+      border: 1px solid $gray-darkest;
+      fill: $gray-darkest;
     }
   }
 

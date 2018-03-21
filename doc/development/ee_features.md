@@ -28,11 +28,44 @@ we still need to merge changes from GitLab CE to EE. To help us get there,
 we should make sure that we no longer edit CE files in place in order to
 implement EE features.
 
-Instead, all EE codes should be put inside the `ee/` top-level directory, and
-tests should be put inside `spec/ee/`. We don't use `ee/spec` for now due to
-technical limitation. The rest of codes should be as close as to the CE files.
+Instead, all EE code should be put inside the `ee/` top-level directory. The
+rest of the code should be as close to the CE files as possible.
 
 [single code base]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2952#note_41016454
+
+### Detection of EE-only files
+
+For each commit (except on `master`), the `ee-files-location-check` CI job tries
+to detect if there are any new files that are EE-only. If any file is detected,
+the job fails with an explanation of why and what to do to make it pass.
+
+Basically, the fix is simple: `git mv <file> ee/<file>`.
+
+#### How to name your branches?
+
+For any EE branch, the job will try to detect its CE counterpart by removing any
+`ee-` prefix or `-ee` suffix from the EE branch name, and matching the last
+branch that contains it.
+
+For instance, from the EE branch `new-shiny-feature-ee` (or
+`ee-new-shiny-feature`), the job would find the corresponding CE branches:
+
+- `new-shiny-feature`
+- `ce-new-shiny-feature`
+- `new-shiny-feature-ce`
+- `my-super-new-shiny-feature-in-ce`
+
+#### Whitelist some EE-only files that cannot be moved to `ee/`
+
+The `ee-files-location-check` CI job provides a whitelist of files or folders
+that cannot or should not be moved to `ee/`. Feel free to open an issue to
+discuss adding a new file/folder to this whitelist.
+
+For instance, it was decided that moving EE-only files from `qa/` to `ee/qa/`
+would make it difficult to build the `gitLab-{ce,ee}-qa` Docker images and it
+was [not worth the complexity].
+
+[not worth the complexity]: https://gitlab.com/gitlab-org/gitlab-ee/issues/4997#note_59764702
 
 ### EE-only features
 
@@ -52,6 +85,11 @@ is applied not only to models. Here's a list of other examples:
 - `ee/app/services/foo/create_service.rb`
 - `ee/app/validators/foo_attr_validator.rb`
 - `ee/app/workers/foo_worker.rb`
+
+This works because for every path that are present in CE's eager-load/auto-load
+paths, we add the same `ee/`-prepended path in [`config/application.rb`].
+
+[`config/application.rb`]: https://gitlab.com/gitlab-org/gitlab-ee/blob/d278b76d6600a0e27d8019a0be27971ba23ab640/config/application.rb#L41-51
 
 ### EE features based on CE features
 
@@ -87,9 +125,9 @@ still having access the class's implementation with `super`.
 
 There are a few gotchas with it:
 
-- you should always add a `raise NotImplementedError unless defined?(super)`
-  guard clause in the "overrider" method to ensure that if the method gets
-  renamed in CE, the EE override won't be silently forgotten.
+- you should always [`extend ::Gitlab::Utils::Override`] and use `override` to
+  guard the "overrider" method to ensure that if the method gets renamed in
+  CE, the EE override won't be silently forgotten.
 - when the "overrider" would add a line in the middle of the CE
   implementation, you should refactor the CE method and split it in
   smaller methods. Or create a "hook" method that is empty in CE,
@@ -134,6 +172,9 @@ There are a few gotchas with it:
   guards:
   ``` ruby
     module EE::Base
+      extend ::Gitlab::Utils::Override
+
+      override :do_something
       def do_something
         # Follow the above pattern to call super and extend it
       end
@@ -174,10 +215,11 @@ implementation:
 
 ```ruby
 module EE
-  class ApplicationController
-    def after_sign_out_path_for(resource)
-      raise NotImplementedError unless defined?(super)
+  module ApplicationController
+    extend ::Gitlab::Utils::Override
 
+    override :after_sign_out_path_for
+    def after_sign_out_path_for(resource)
       if Gitlab::Geo.secondary?
         Gitlab::Geo.primary_node.oauth_logout_url(@geo_logout_state)
       else
@@ -187,6 +229,8 @@ module EE
   end
 end
 ```
+
+[`extend ::Gitlab::Utils::Override`]: utilities.md#override
 
 #### Use self-descriptive wrapper methods
 
@@ -208,8 +252,8 @@ end
 In EE, the implementation `ee/app/models/ee/users.rb` would be:
 
 ```ruby
+override :full_private_access?
 def full_private_access?
-  raise NotImplementedError unless defined?(super)
   super || auditor?
 end
 ```
@@ -312,31 +356,19 @@ When you're testing EE-only features, avoid adding examples to the
 existing CE specs. Also do no change existing CE examples, since they
 should remain working as-is when EE is running without a license.
 
-Instead place EE specs in the `spec/ee/spec` folder.
+Instead place EE specs in the `ee/spec` folder.
 
 ## JavaScript code in `assets/javascripts/`
 
-To separate EE-specific JS-files we can also move the files into an `ee` folder.
+To separate EE-specific JS-files we should also move the files into an `ee` folder.
 
 For example there can be an
 `app/assets/javascripts/protected_branches/protected_branches_bundle.js` and an
 EE counterpart
 `ee/app/assets/javascripts/protected_branches/protected_branches_bundle.js`.
 
-That way we can create a separate webpack bundle in `webpack.config.js`:
-
-```javascript
-    protected_branches:    '~/protected_branches',
-    ee_protected_branches: 'ee/protected_branches/protected_branches_bundle.js',
-```
-
-With the separate bundle in place, we can decide which bundle to load inside the
-view, using the `page_specific_javascript_bundle_tag` helper.
-
-```haml
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('protected_branches')
-```
+See the frontend guide [performance section](./fe_guide/performance.md) for
+information on managing page-specific javascript within EE.
 
 ## SCSS code in `assets/stylesheets`
 

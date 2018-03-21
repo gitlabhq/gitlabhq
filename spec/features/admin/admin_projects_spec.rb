@@ -58,7 +58,7 @@ describe "Admin::Projects"  do
       expect(current_path).to eq admin_project_path(project)
       expect(page).to have_content(project.path)
       expect(page).to have_content(project.name)
-      expect(page).to have_content(project.name_with_namespace)
+      expect(page).to have_content(project.full_name)
       expect(page).to have_content(project.creator.name)
     end
   end
@@ -88,7 +88,7 @@ describe "Admin::Projects"  do
 
   describe 'add admin himself to a project' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
     end
 
     it 'adds admin a to a project as developer', :js do
@@ -110,8 +110,8 @@ describe "Admin::Projects"  do
 
   describe 'admin remove himself from a project' do
     before do
-      project.team << [user, :master]
-      project.team << [current_user, :developer]
+      project.add_master(user)
+      project.add_developer(current_user)
     end
 
     it 'removes admin from the project' do

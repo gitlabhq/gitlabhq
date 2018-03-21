@@ -1,6 +1,9 @@
+import DropdownUtils from './dropdown_utils';
+import FilteredSearchDropdownManager from './filtered_search_dropdown_manager';
+
 const DATA_DROPDOWN_TRIGGER = 'data-dropdown-trigger';
 
-class FilteredSearchDropdown {
+export default class FilteredSearchDropdown {
   constructor({ droplab, dropdown, input, filter }) {
     this.droplab = droplab;
     this.hookId = input && input.id;
@@ -30,11 +33,11 @@ class FilteredSearchDropdown {
     const { selected } = e.detail;
 
     if (selected.tagName === 'LI' && selected.innerHTML) {
-      const dataValueSet = gl.DropdownUtils.setDataValueIfSelected(this.filter, selected);
+      const dataValueSet = DropdownUtils.setDataValueIfSelected(this.filter, selected);
 
       if (!dataValueSet) {
         const value = getValueFunction(selected);
-        gl.FilteredSearchDropdownManager.addWordToInput(this.filter, value, true);
+        FilteredSearchDropdownManager.addWordToInput(this.filter, value, true);
       }
 
       this.resetFilters();
@@ -108,6 +111,9 @@ class FilteredSearchDropdown {
 
     if (hook) {
       const data = hook.list.data || [];
+
+      if (!data) return;
+
       const results = data.map((o) => {
         const updated = o;
         updated.droplab_hidden = false;
@@ -117,6 +123,3 @@ class FilteredSearchDropdown {
     }
   }
 }
-
-window.gl = window.gl || {};
-gl.FilteredSearchDropdown = FilteredSearchDropdown;

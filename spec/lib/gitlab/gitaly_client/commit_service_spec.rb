@@ -113,7 +113,7 @@ describe Gitlab::GitalyClient::CommitService do
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
         .and_return([])
 
-      client.tree_entries(repository, revision, path)
+      client.tree_entries(repository, revision, path, false)
     end
 
     context 'with UTF-8 params strings' do
@@ -126,7 +126,30 @@ describe Gitlab::GitalyClient::CommitService do
           .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
           .and_return([])
 
-        client.tree_entries(repository, revision, path)
+        client.tree_entries(repository, revision, path, false)
+      end
+    end
+  end
+
+  describe '#commit_count' do
+    before do
+      expect_any_instance_of(Gitaly::CommitService::Stub)
+        .to receive(:count_commits)
+        .with(gitaly_request_with_path(storage_name, relative_path),
+              kind_of(Hash))
+        .and_return([])
+    end
+
+    it 'sends a commit_count message' do
+      client.commit_count(revision)
+    end
+
+    context 'with UTF-8 params strings' do
+      let(:revision) { "branch\u011F" }
+      let(:path) { "foo/\u011F.txt" }
+
+      it 'handles string encodings correctly' do
+        client.commit_count(revision, path: path)
       end
     end
   end
@@ -142,6 +165,32 @@ describe Gitlab::GitalyClient::CommitService do
         .with(request, kind_of(Hash)).and_return(double(commit: nil))
 
       described_class.new(repository).find_commit(revision)
+    end
+
+    describe 'caching', :request_store do
+      let(:commit_dbl) { double(id: 'f01b' * 10) }
+
+      context 'when passed revision is a branch name' do
+        it 'calls Gitaly' do
+          expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:find_commit).twice.and_return(double(commit: commit_dbl))
+
+          commit = nil
+          2.times { commit = described_class.new(repository).find_commit('master') }
+
+          expect(commit).to eq(commit_dbl)
+        end
+      end
+
+      context 'when passed revision is a commit ID' do
+        it 'returns a cached commit' do
+          expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:find_commit).once.and_return(double(commit: commit_dbl))
+
+          commit = nil
+          2.times { commit = described_class.new(repository).find_commit('f01b' * 10) }
+
+          expect(commit).to eq(commit_dbl)
+        end
+      end
     end
   end
 

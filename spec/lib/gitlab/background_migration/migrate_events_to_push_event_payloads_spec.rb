@@ -281,6 +281,17 @@ describe Gitlab::BackgroundMigration::MigrateEventsToPushEventPayloads, :migrati
 
       migration.process_event(event)
     end
+
+    it 'handles an error gracefully' do
+      event1 = create_push_event(project, author, { commits: [] })
+
+      expect(migration).to receive(:replicate_event).and_call_original
+      expect(migration).to receive(:create_push_event_payload).and_raise(ActiveRecord::InvalidForeignKey, 'invalid foreign key')
+
+      migration.process_event(event1)
+
+      expect(described_class::EventForMigration.all.count).to eq(0)
+    end
   end
 
   describe '#replicate_event' do
@@ -335,9 +346,8 @@ describe Gitlab::BackgroundMigration::MigrateEventsToPushEventPayloads, :migrati
     it 'does not create push event payloads for removed events' do
       allow(event).to receive(:id).and_return(-1)
 
-      payload = migration.create_push_event_payload(event)
+      expect { migration.create_push_event_payload(event) }.to raise_error(ActiveRecord::InvalidForeignKey)
 
-      expect(payload).to be_nil
       expect(PushEventPayload.count).to eq(0)
     end
 

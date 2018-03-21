@@ -25,6 +25,13 @@ describe Ci::Build do
 
   it { is_expected.to be_a(ArtifactMigratable) }
 
+  describe 'associations' do
+    it 'has a bidirectional relationship with projects' do
+      expect(described_class.reflect_on_association(:project).has_inverse?).to eq(:builds)
+      expect(Project.reflect_on_association(:builds).has_inverse?).to eq(:project)
+    end
+  end
+
   describe 'callbacks' do
     context 'when running after_create callback' do
       it 'triggers asynchronous build hooks worker' do
@@ -70,6 +77,42 @@ describe Ci::Build do
       end
 
       it { is_expected.not_to include(job) }
+    end
+  end
+
+  describe '.with_artifacts_archive' do
+    subject { described_class.with_artifacts_archive }
+
+    context 'when job does not have an archive' do
+      let!(:job) { create(:ci_build) }
+
+      it 'does not return the job' do
+        is_expected.not_to include(job)
+      end
+    end
+
+    context 'when job has a legacy archive' do
+      let!(:job) { create(:ci_build, :legacy_artifacts) }
+
+      it 'returns the job' do
+        is_expected.to include(job)
+      end
+    end
+
+    context 'when job has a job artifact archive' do
+      let!(:job) { create(:ci_build, :artifacts) }
+
+      it 'returns the job' do
+        is_expected.to include(job)
+      end
+    end
+
+    context 'when job has a job artifact trace' do
+      let!(:job) { create(:ci_build, :trace_artifact) }
+
+      it 'does not return the job' do
+        is_expected.not_to include(job)
+      end
     end
   end
 
@@ -252,6 +295,42 @@ describe Ci::Build do
   describe '#commit' do
     it 'returns commit pipeline has been created for' do
       expect(build.commit).to eq project.commit
+    end
+  end
+
+  describe '#cache' do
+    let(:options) { { cache: { key: "key", paths: ["public"], policy: "pull-push" } } }
+
+    subject { build.cache }
+
+    context 'when build has cache' do
+      before do
+        allow(build).to receive(:options).and_return(options)
+      end
+
+      context 'when project has jobs_cache_index' do
+        before do
+          allow_any_instance_of(Project).to receive(:jobs_cache_index).and_return(1)
+        end
+
+        it { is_expected.to be_an(Array).and all(include(key: "key-1")) }
+      end
+
+      context 'when project does not have jobs_cache_index' do
+        before do
+          allow_any_instance_of(Project).to receive(:jobs_cache_index).and_return(nil)
+        end
+
+        it { is_expected.to eq([options[:cache]]) }
+      end
+    end
+
+    context 'when build does not have cache' do
+      before do
+        allow(build).to receive(:options).and_return({})
+      end
+
+      it { is_expected.to eq([nil]) }
     end
   end
 
@@ -632,25 +711,25 @@ describe Ci::Build do
 
     context 'build is erasable' do
       context 'new artifacts' do
-        let!(:build) { create(:ci_build, :trace, :success, :artifacts) }
+        let!(:build) { create(:ci_build, :trace_artifact, :success, :artifacts) }
 
         describe '#erase' do
           before do
-            build.erase(erased_by: user)
+            build.erase(erased_by: erased_by)
           end
 
           context 'erased by user' do
-            let!(:user) { create(:user, username: 'eraser') }
+            let!(:erased_by) { create(:user, username: 'eraser') }
 
             include_examples 'erasable'
 
             it 'records user who erased a build' do
-              expect(build.erased_by).to eq user
+              expect(build.erased_by).to eq erased_by
             end
           end
 
           context 'erased by system' do
-            let(:user) { nil }
+            let(:erased_by) { nil }
 
             include_examples 'erasable'
 
@@ -666,7 +745,7 @@ describe Ci::Build do
         end
 
         describe '#erased?' do
-          let!(:build) { create(:ci_build, :trace, :success, :artifacts) }
+          let!(:build) { create(:ci_build, :trace_artifact, :success, :artifacts) }
           subject { build.erased? }
 
           context 'job has not been erased' do
@@ -701,25 +780,25 @@ describe Ci::Build do
     context 'old artifacts' do
       context 'build is erasable' do
         context 'new artifacts' do
-          let!(:build) { create(:ci_build, :trace, :success, :legacy_artifacts) }
+          let!(:build) { create(:ci_build, :trace_artifact, :success, :legacy_artifacts) }
 
           describe '#erase' do
             before do
-              build.erase(erased_by: user)
+              build.erase(erased_by: erased_by)
             end
 
             context 'erased by user' do
-              let!(:user) { create(:user, username: 'eraser') }
+              let!(:erased_by) { create(:user, username: 'eraser') }
 
               include_examples 'erasable'
 
               it 'records user who erased a build' do
-                expect(build.erased_by).to eq user
+                expect(build.erased_by).to eq erased_by
               end
             end
 
             context 'erased by system' do
-              let(:user) { nil }
+              let(:erased_by) { nil }
 
               include_examples 'erasable'
 
@@ -735,7 +814,7 @@ describe Ci::Build do
           end
 
           describe '#erased?' do
-            let!(:build) { create(:ci_build, :trace, :success, :legacy_artifacts) }
+            let!(:build) { create(:ci_build, :trace_artifact, :success, :legacy_artifacts) }
             subject { build.erased? }
 
             context 'job has not been erased' do
@@ -1370,6 +1449,7 @@ describe Ci::Build do
       [
         { key: 'CI', value: 'true', public: true },
         { key: 'GITLAB_CI', value: 'true', public: true },
+        { key: 'GITLAB_FEATURES', value: project.namespace.features.join(','), public: true },
         { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
         { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
         { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true },
@@ -1380,6 +1460,17 @@ describe Ci::Build do
         { key: 'CI_COMMIT_SHA', value: build.sha, public: true },
         { key: 'CI_COMMIT_REF_NAME', value: build.ref, public: true },
         { key: 'CI_COMMIT_REF_SLUG', value: build.ref_slug, public: true },
+        { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true },
+        { key: 'CI_REGISTRY_PASSWORD', value: build.token, public: false },
+        { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false },
+        { key: 'CI_BUILD_ID', value: build.id.to_s, public: true },
+        { key: 'CI_BUILD_TOKEN', value: build.token, public: false },
+        { key: 'CI_BUILD_REF', value: build.sha, public: true },
+        { key: 'CI_BUILD_BEFORE_SHA', value: build.before_sha, public: true },
+        { key: 'CI_BUILD_REF_NAME', value: build.ref, public: true },
+        { key: 'CI_BUILD_REF_SLUG', value: build.ref_slug, public: true },
+        { key: 'CI_BUILD_NAME', value: 'test', public: true },
+        { key: 'CI_BUILD_STAGE', value: 'test', public: true },
         { key: 'CI_PROJECT_ID', value: project.id.to_s, public: true },
         { key: 'CI_PROJECT_NAME', value: project.path, public: true },
         { key: 'CI_PROJECT_PATH', value: project.full_path, public: true },
@@ -1389,9 +1480,7 @@ describe Ci::Build do
         { key: 'CI_PROJECT_VISIBILITY', value: 'private', public: true },
         { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
         { key: 'CI_CONFIG_PATH', value: pipeline.ci_yaml_file_path, public: true },
-        { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true },
-        { key: 'CI_REGISTRY_PASSWORD', value: build.token, public: false },
-        { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false }
+        { key: 'CI_PIPELINE_SOURCE', value: pipeline.source, public: true }
       ]
     end
 
@@ -1546,7 +1635,7 @@ describe Ci::Build do
 
       context 'when the branch is protected' do
         before do
-          create(:protected_branch, project: build.project, name: build.ref)
+          allow(build.project).to receive(:protected_for?).with(build.ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }
@@ -1554,7 +1643,7 @@ describe Ci::Build do
 
       context 'when the tag is protected' do
         before do
-          create(:protected_tag, project: build.project, name: build.ref)
+          allow(build.project).to receive(:protected_for?).with(build.ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }
@@ -1591,7 +1680,7 @@ describe Ci::Build do
 
       context 'when the branch is protected' do
         before do
-          create(:protected_branch, project: build.project, name: build.ref)
+          allow(build.project).to receive(:protected_for?).with(build.ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }
@@ -1599,7 +1688,7 @@ describe Ci::Build do
 
       context 'when the tag is protected' do
         before do
-          create(:protected_tag, project: build.project, name: build.ref)
+          allow(build.project).to receive(:protected_for?).with(build.ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }
@@ -1790,39 +1879,6 @@ describe Ci::Build do
       it { is_expected.to include(ci_config_path) }
     end
 
-    context 'returns variables in valid order' do
-      let(:build_pre_var) { { key: 'build', value: 'value' } }
-      let(:project_pre_var) { { key: 'project', value: 'value' } }
-      let(:pipeline_pre_var) { { key: 'pipeline', value: 'value' } }
-      let(:build_yaml_var) { { key: 'yaml', value: 'value' } }
-
-      before do
-        allow(build).to receive(:predefined_variables) { [build_pre_var] }
-        allow(build).to receive(:yaml_variables) { [build_yaml_var] }
-
-        allow_any_instance_of(Project)
-          .to receive(:predefined_variables) { [project_pre_var] }
-
-        allow_any_instance_of(Project)
-          .to receive(:secret_variables_for)
-          .with(ref: 'master', environment: nil) do
-          [create(:ci_variable, key: 'secret', value: 'value')]
-        end
-
-        allow_any_instance_of(Ci::Pipeline)
-          .to receive(:predefined_variables) { [pipeline_pre_var] }
-      end
-
-      it do
-        is_expected.to eq(
-          [build_pre_var,
-           project_pre_var,
-           pipeline_pre_var,
-           build_yaml_var,
-           { key: 'secret', value: 'value', public: false }])
-      end
-    end
-
     context 'when using auto devops' do
       context 'and is enabled' do
         before do
@@ -1846,6 +1902,81 @@ describe Ci::Build do
         end
       end
     end
+
+    context 'when pipeline variable overrides build variable' do
+      before do
+        build.yaml_variables = [{ key: 'MYVAR', value: 'myvar', public: true }]
+        pipeline.variables.build(key: 'MYVAR', value: 'pipeline value')
+      end
+
+      it 'overrides YAML variable using a pipeline variable' do
+        variables = subject.reverse.uniq { |variable| variable[:key] }.reverse
+
+        expect(variables)
+          .not_to include(key: 'MYVAR', value: 'myvar', public: true)
+        expect(variables)
+          .to include(key: 'MYVAR', value: 'pipeline value', public: false)
+      end
+    end
+
+    describe 'variables ordering' do
+      context 'when variables hierarchy is stubbed' do
+        let(:build_pre_var) { { key: 'build', value: 'value', public: true } }
+        let(:project_pre_var) { { key: 'project', value: 'value', public: true } }
+        let(:pipeline_pre_var) { { key: 'pipeline', value: 'value', public: true } }
+        let(:build_yaml_var) { { key: 'yaml', value: 'value', public: true } }
+
+        before do
+          allow(build).to receive(:predefined_variables) { [build_pre_var] }
+          allow(build).to receive(:yaml_variables) { [build_yaml_var] }
+
+          allow_any_instance_of(Project)
+            .to receive(:predefined_variables) { [project_pre_var] }
+
+          allow_any_instance_of(Project)
+            .to receive(:secret_variables_for)
+            .with(ref: 'master', environment: nil) do
+            [create(:ci_variable, key: 'secret', value: 'value')]
+          end
+
+          allow_any_instance_of(Ci::Pipeline)
+            .to receive(:predefined_variables) { [pipeline_pre_var] }
+        end
+
+        it 'returns variables in order depending on resource hierarchy' do
+          is_expected.to eq(
+            [build_pre_var,
+             project_pre_var,
+             pipeline_pre_var,
+             build_yaml_var,
+             { key: 'secret', value: 'value', public: false }])
+        end
+      end
+
+      context 'when build has environment and user-provided variables' do
+        let(:expected_variables) do
+          predefined_variables.map { |variable| variable.fetch(:key) } +
+            %w[YAML_VARIABLE CI_ENVIRONMENT_NAME CI_ENVIRONMENT_SLUG
+               CI_ENVIRONMENT_URL]
+        end
+
+        before do
+          create(:environment, project: build.project,
+                               name: 'staging')
+
+          build.yaml_variables = [{ key: 'YAML_VARIABLE',
+                                    value: 'var',
+                                    public: true }]
+          build.environment = 'staging'
+        end
+
+        it 'matches explicit variables ordering' do
+          received_variables = subject.map { |variable| variable.fetch(:key) }
+
+          expect(received_variables).to eq expected_variables
+        end
+      end
+    end
   end
 
   describe 'state transition: any => [:pending]' do
@@ -1863,7 +1994,7 @@ describe Ci::Build do
       context 'when depended job has not been completed yet' do
         let!(:pre_stage_job) { create(:ci_build, :manual, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
-        it { expect { job.run! }.not_to raise_error(Ci::Build::MissingDependenciesError) }
+        it { expect { job.run! }.not_to raise_error }
       end
 
       context 'when artifacts of depended job has been expired' do
@@ -1969,6 +2100,35 @@ describe Ci::Build do
         expect(service).not_to receive(:commit_status_merge_requests)
 
         subject.drop!
+      end
+
+      context 'when retry service raises Gitlab::Access::AccessDeniedError exception' do
+        let(:retry_service) { Ci::RetryBuildService.new(subject.project, subject.user) }
+
+        before do
+          allow_any_instance_of(Ci::RetryBuildService)
+            .to receive(:execute)
+            .with(subject)
+            .and_raise(Gitlab::Access::AccessDeniedError)
+          allow(Rails.logger).to receive(:error)
+        end
+
+        it 'handles raised exception' do
+          expect { subject.drop! }.not_to raise_exception(Gitlab::Access::AccessDeniedError)
+        end
+
+        it 'logs the error' do
+          subject.drop!
+
+          expect(Rails.logger)
+            .to have_received(:error)
+            .with(a_string_matching("Unable to auto-retry job #{subject.id}"))
+        end
+
+        it 'fails the job' do
+          subject.drop!
+          expect(subject.failed?).to be_truthy
+        end
       end
     end
 

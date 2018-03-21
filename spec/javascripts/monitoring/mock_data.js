@@ -1,6 +1,8 @@
 /* eslint-disable quote-props, indent, comma-dangle */
 
-const metricsGroupsAPIResponse = {
+export const mockApiEndpoint = `${gl.TEST_HOST}/monitoring/mock`;
+
+export const metricsGroupsAPIResponse = {
   'success': true,
   'data': [
     {
@@ -2469,6 +2471,7 @@ export const deploymentData = [
 
 export const statePaths = {
   settingsPath: '/root/hello-prometheus/services/prometheus/edit',
+  clustersPath: '/root/hello-prometheus/clusters',
   documentationPath: '/help/administration/monitoring/prometheus/index.md',
 };
 

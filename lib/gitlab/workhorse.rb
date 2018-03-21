@@ -10,6 +10,7 @@ module Gitlab
     INTERNAL_API_CONTENT_TYPE = 'application/vnd.gitlab-workhorse+json'.freeze
     INTERNAL_API_REQUEST_HEADER = 'Gitlab-Workhorse-Api-Request'.freeze
     NOTIFICATION_CHANNEL = 'workhorse:notifications'.freeze
+    ALLOWED_GIT_HTTP_ACTIONS = %w[git_receive_pack git_upload_pack info_refs].freeze
 
     # Supposedly the effective key size for HMAC-SHA256 is 256 bits, i.e. 32
     # bytes https://tools.ietf.org/html/rfc4868#section-2.6
@@ -17,6 +18,8 @@ module Gitlab
 
     class << self
       def git_http_ok(repository, is_wiki, user, action, show_all_refs: false)
+        raise "Unsupported action: #{action}" unless ALLOWED_GIT_HTTP_ACTIONS.include?(action.to_s)
+
         project = repository.project
         repo_path = repository.path_to_repo
         params = {
@@ -31,34 +34,21 @@ module Gitlab
           token: Gitlab::GitalyClient.token(project.repository_storage)
         }
         params[:Repository] = repository.gitaly_repository.to_h
-
-        feature_enabled = case action.to_s
-                          when 'git_receive_pack'
-                            Gitlab::GitalyClient.feature_enabled?(:post_receive_pack)
-                          when 'git_upload_pack'
-                            true
-                          when 'info_refs'
-                            true
-                          else
-                            raise "Unsupported action: #{action}"
-                          end
-        if feature_enabled
-          params[:GitalyServer] = server
-        end
+        params[:GitalyServer] = server
 
         params
       end
 
       def lfs_upload_ok(oid, size)
         {
-          StoreLFSPath: "#{Gitlab.config.lfs.storage_path}/tmp/upload",
+          StoreLFSPath: LfsObjectUploader.workhorse_upload_path,
           LfsOid: oid,
           LfsSize: size
         }
       end
 
       def artifact_upload_ok
-        { TempPath: JobArtifactUploader.artifacts_upload_path }
+        { TempPath: JobArtifactUploader.workhorse_upload_path }
       end
 
       def send_git_blob(repository, blob)
@@ -96,6 +86,9 @@ module Gitlab
             'GitalyRepository' => repository.gitaly_repository.to_h
           )
         end
+
+        # If present DisableCache must be a Boolean. Otherwise workhorse ignores it.
+        params['DisableCache'] = true if git_archive_cache_disabled?
 
         [
           SEND_DATA_HEADER,
@@ -140,14 +133,29 @@ module Gitlab
       end
 
       def send_artifacts_entry(build, entry)
+        file = build.artifacts_file
+        archive = file.file_storage? ? file.path : file.url
+
         params = {
-          'Archive' => build.artifacts_file.path,
+          'Archive' => archive,
           'Entry' => Base64.encode64(entry.to_s)
         }
 
         [
           SEND_DATA_HEADER,
           "artifacts-entry:#{encode(params)}"
+        ]
+      end
+
+      def send_url(url, allow_redirects: false)
+        params = {
+          'URL' => url,
+          'AllowRedirects' => allow_redirects
+        }
+
+        [
+          SEND_DATA_HEADER,
+          "send-url:#{encode(params)}"
         ]
       end
 
@@ -243,6 +251,10 @@ module Gitlab
           left_commit_id: diff_refs.base_sha,
           right_commit_id: diff_refs.head_sha
         }
+      end
+
+      def git_archive_cache_disabled?
+        ENV['WORKHORSE_ARCHIVE_CACHE_DISABLED'].present? || Feature.enabled?(:workhorse_archive_cache_disabled)
       end
     end
   end

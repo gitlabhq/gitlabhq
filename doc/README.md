@@ -1,5 +1,4 @@
 ---
-toc: false
 comments: false
 ---
 
@@ -8,23 +7,11 @@ comments: false
 Welcome to [GitLab](https://about.gitlab.com/), a Git-based fully featured
 platform for software development!
 
-GitLab offers the most scalable Git-based fully integrated platform for software development, with flexible products and subscription plans:
+GitLab offers the most scalable Git-based fully integrated platform for
+software development, with flexible products and subscriptions.
+To understand what features you have access to, check the [GitLab subscriptions](#gitlab-subscriptions) below.
 
-- **GitLab Community Edition (CE)** is an [opensource product](https://gitlab.com/gitlab-org/gitlab-ce/),
-self-hosted, free to use. Every feature available in GitLab CE is also available on GitLab Enterprise Edition (Starter and Premium) and GitLab.com.
-- **GitLab Enterprise Edition (EE)** is an [opencore product](https://gitlab.com/gitlab-org/gitlab-ee/),
-self-hosted, fully featured solution of GitLab, available under distinct [subscriptions](https://about.gitlab.com/products/): **GitLab Enterprise Edition Starter (EES)**, **GitLab Enterprise Edition Premium (EEP)**, and **GitLab Enterprise Edition Ultimate (EEU)**.
-- **GitLab.com**: SaaS GitLab solution, with [free and paid subscriptions](https://about.gitlab.com/gitlab-com/). GitLab.com is hosted by GitLab, Inc., and administrated by GitLab (users don't have access to admin settings).
-
-> **GitLab EE** contains all features available in **GitLab CE**,
-plus premium features available in each version: **Enterprise Edition Starter**
-(**EES**), **Enterprise Edition Premium** (**EEP**), and **Enterprise Edition Ultimate**
-(**EEU**). Everything available in **EES** is also available in **EEP**. Every feature
-available in **EEP** is also available in **EEU**.
-
-----
-
-Shortcuts to GitLab's most visited docs:
+## Shortcuts to GitLab's most visited docs
 
 | [GitLab CI/CD](ci/README.md) | Other |
 | :----- | :----- |
@@ -90,6 +77,7 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
 - [Discussions](user/discussions/index.md): Threads, comments, and resolvable discussions in issues, commits, and  merge requests.
 - [Issues](user/project/issues/index.md)
 - [Project issue Board](user/project/issue_board.md)
+- [Group Issue Board](user/project/issue_board.md#group-issue-board)
 - [Issues and merge requests templates](user/project/description_templates.md): Create templates for submitting new issues and merge requests.
 - [Labels](user/project/labels.md): Categorize your issues or merge requests based on descriptive titles.
 - [Merge Requests](user/project/merge_requests/index.md)
@@ -130,28 +118,59 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
 - [GitLab Integration](integration/README.md): Integrate with multiple third-party services with GitLab to allow external issue trackers and external authentication.
 - [Trello Power-Up](integration/trello_power_up.md): Integrate with GitLab's Trello Power-Up
 
-----
-
 ## Administrator documentation
 
 [Administration documentation](administration/index.md) applies to admin users of GitLab
-self-hosted instances:
-
-- GitLab Community Edition
-- GitLab [Enterprise Editions](https://about.gitlab.com/gitlab-ee/)
-  - Enterprise Edition Starter (EES)
-  - Enterprise Edition Premium (EEP)
-  - Enterprise Edition Ultimate (EEU)
+self-hosted instances.
 
 Learn how to install, configure, update, upgrade, integrate, and maintain your own instance.
 Regular users don't have access to GitLab administration tools and settings.
 
 ## Contributor documentation
 
-GitLab Community Edition is [opensource](https://gitlab.com/gitlab-org/gitlab-ce/)
-and Enterprise Editions are [opencore](https://gitlab.com/gitlab-org/gitlab-ee/).
+GitLab Community Edition is [open source](https://gitlab.com/gitlab-org/gitlab-ce/)
+and GitLab Enterprise Edition is [open-core](https://gitlab.com/gitlab-org/gitlab-ee/).
 Learn how to contribute to GitLab:
 
 - [Development](development/README.md): All styleguides and explanations how to contribute.
 - [Legal](legal/README.md): Contributor license agreements.
 - [Writing documentation](development/writing_documentation.md): Contributing to GitLab Docs.
+
+## GitLab subscriptions
+
+You have two options to use GitLab:
+
+- GitLab self-hosted: Install, administer, and maintain your own GitLab instance.
+- GitLab.com: GitLab's SaaS offering. You don't need to install anything to use GitLab.com,
+you only need to [sign up](https://gitlab.com/users/sign_in) and start using GitLab
+straight away.
+
+### GitLab self-hosted
+
+With GitLab self-hosted, you deploy your own GitLab instance on-premises or on a private cloud of your choice. GitLab self-hosted is available for [free and with paid subscriptions](https://about.gitlab.com/products/): Libre, Starter, Premium, and Ultimate.
+
+Every feature available in Libre is also available in Starter, Premium, and Ultimate.
+Starter features are also available in Premium and Ultimate, and Premium features are also
+available in Ultimate.
+
+### GitLab.com
+
+GitLab.com is hosted, managed, and administered by GitLab, Inc., with
+[free and paid subscriptions](https://about.gitlab.com/gitlab-com/) for individuals
+and teams: Free, Bronze, Silver, and Gold.
+
+GitLab.com subscriptions grants access
+to the same features available in GitLab self-hosted, **expect
+[administration](administration/index.md) tools and settings**:
+
+- GitLab.com Free includes the same features available in GitLab Libre
+- GitLab.com Bronze includes the same features available in GitLab Starter
+- GitLab.com Silver includes the same features available in GitLab Premium
+- GitLab.com Gold includes the same features available in GitLab Ultimate
+
+For supporting the open source community and encouraging the development of
+open source projects, GitLab grants access to **Gold** features
+for all GitLab.com **public** projects, regardless of the subscription.
+
+To know more about GitLab subscriptions and licensing, please refer to the
+[GitLab Product Marketing Handbook](https://about.gitlab.com/handbook/marketing/product-marketing/#tiers).

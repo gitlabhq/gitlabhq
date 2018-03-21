@@ -15,6 +15,7 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
 
   def merge_request_params_attributes
     [
+      :allow_maintainer_to_push,
       :assignee_id,
       :description,
       :force_remove_source_branch,

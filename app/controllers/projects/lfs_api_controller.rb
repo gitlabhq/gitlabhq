@@ -98,7 +98,7 @@ class Projects::LfsApiController < Projects::GitHttpClientController
         json: {
           message: lfs_read_only_message
         },
-        content_type: 'application/vnd.git-lfs+json',
+        content_type: LfsRequest::CONTENT_TYPE,
         status: 403
       )
     end

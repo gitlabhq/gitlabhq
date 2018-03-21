@@ -68,7 +68,7 @@ Example response:
 
 ```json
 {
-  "file_name": "app/project.rb",
+  "file_path": "app/project.rb",
   "branch": "master"
 }
 ```
@@ -98,7 +98,7 @@ Example response:
 
 ```json
 {
-  "file_name": "app/project.rb",
+  "file_path": "app/project.rb",
   "branch": "master"
 }
 ```
@@ -134,15 +134,6 @@ DELETE /projects/:id/repository/files/:file_path
 curl --request DELETE --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb?branch=master&author_email=author%40example.com&author_name=Firstname%20Lastname&commit_message=delete%20file'
 ```
 
-Example response:
-
-```json
-{
-  "file_name": "app/project.rb",
-  "branch": "master"
-}
-```
-
 Parameters:
 
 - `file_path` (required) - Url encoded full path to new file. Ex. lib%2Fclass%2Erb
@@ -151,3 +142,4 @@ Parameters:
 - `author_email` (optional) - Specify the commit author's email address
 - `author_name` (optional) - Specify the commit author's name
 - `commit_message` (required) - Commit message
+- `last_commit_id` (optional) - Last known file commit id

@@ -1,5 +1,5 @@
 #modal-create-new-dir.modal
-  .modal-dialog
+  .modal-dialog.modal-lg
     .modal-content
       .modal-header
         %a.close{ href: "#", "data-dismiss" => "modal" } ×
@@ -17,6 +17,4 @@
             = submit_tag _("Create directory"), class: 'btn btn-create'
             = link_to "Cancel", '#', class: "btn btn-cancel", "data-dismiss" => "modal"
 
-            - unless can?(current_user, :push_code, @project)
-              .inline.prepend-left-10
-                = commit_in_fork_help
+            = render 'shared/projects/edit_information'

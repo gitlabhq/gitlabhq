@@ -1,33 +1,18 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, quotes, consistent-return, prefer-arrow-callback, comma-dangle, object-shorthand, no-new, max-len, no-multi-spaces, import/newline-after-import, import/first */
+/* eslint-disable import/first */
 /* global ConfirmDangerModal */
+/* global $ */
 
 import jQuery from 'jquery';
-import _ from 'underscore';
 import Cookies from 'js-cookie';
-import Dropzone from 'dropzone';
-import Sortable from 'vendor/Sortable';
 import svg4everybody from 'svg4everybody';
-
-// libraries with import side-effects
-import 'mousetrap';
-import 'mousetrap/plugins/pause/mousetrap-pause';
 
 // expose common libraries as globals (TODO: remove these)
 window.jQuery = jQuery;
 window.$ = jQuery;
-window._ = _;
-window.Dropzone = Dropzone;
-window.Sortable = Sortable;
-
-// templates
-import './templates/issuable_template_selector';
-import './templates/issuable_template_selectors';
-
-import './commit/image_file';
 
 // lib/utils
-import { handleLocationHash } from './lib/utils/common_utils';
-import { localTimeAgo, renderTimeago } from './lib/utils/datetime_utility';
+import { handleLocationHash, addSelectOnFocusBehaviour } from './lib/utils/common_utils';
+import { localTimeAgo } from './lib/utils/datetime_utility';
 import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 
 // behaviors
@@ -41,28 +26,25 @@ import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
 import initTodoToggle from './header';
 import initImporterStatus from './importer_status';
-import './layout_nav';
+import initLayoutNav from './layout_nav';
+import './feature_highlight/feature_highlight_options';
 import LazyLoader from './lazy_loader';
-import './line_highlighter';
 import initLogoAnimation from './logo';
-import './merge_request_tabs';
 import './milestone_select';
-import './notes';
-import './preview_markdown';
 import './projects_dropdown';
-import './render_gfm';
 import initBreadcrumbs from './breadcrumb';
 
-import './dispatcher';
+import initDispatcher from './dispatcher';
 
-// eslint-disable-next-line global-require, import/no-commonjs
-if (process.env.NODE_ENV !== 'production') require('./test_utils/');
-
-Dropzone.autoDiscover = false;
+// inject test utilities if necessary
+if (process.env.NODE_ENV !== 'production' && gon && gon.test_env) {
+  $.fx.off = true;
+  import(/* webpackMode: "eager" */ './test_utils/');
+}
 
 svg4everybody();
 
-document.addEventListener('beforeunload', function () {
+document.addEventListener('beforeunload', () => {
   // Unbind scroll events
   $(document).off('scroll');
   // Close any open tooltips
@@ -79,18 +61,18 @@ window.addEventListener('load', function onLoad() {
 
 gl.lazyLoader = new LazyLoader({
   scrollContainer: window,
-  observerNode: '#content-body'
+  observerNode: '#content-body',
 });
 
-$(function () {
-  var $body = $('body');
-  var $document = $(document);
-  var $window = $(window);
-  var $sidebarGutterToggle = $('.js-sidebar-toggle');
-  var bootstrapBreakpoint = bp.getBreakpointSize();
-  var fitSidebarForSize;
+document.addEventListener('DOMContentLoaded', () => {
+  const $body = $('body');
+  const $document = $(document);
+  const $window = $(window);
+  const $sidebarGutterToggle = $('.js-sidebar-toggle');
+  let bootstrapBreakpoint = bp.getBreakpointSize();
 
   initBreadcrumbs();
+  initLayoutNav();
   initImporterStatus();
   initTodoToggle();
   initLogoAnimation();
@@ -99,8 +81,8 @@ $(function () {
   Cookies.defaults.path = gon.relative_url_root || '/';
 
   // `hashchange` is not triggered when link target is already in window.location
-  $body.on('click', 'a[href^="#"]', function() {
-    var href = this.getAttribute('href');
+  $body.on('click', 'a[href^="#"]', function clickHashLinkCallback() {
+    const href = this.getAttribute('href');
     if (href.substr(1) === getLocationHash()) {
       setTimeout(handleLocationHash, 1);
     }
@@ -115,157 +97,156 @@ $(function () {
   }
 
   // prevent default action for disabled buttons
-  $('.btn').click(function(e) {
+  $('.btn').click(function clickDisabledButtonCallback(e) {
     if ($(this).hasClass('disabled')) {
       e.preventDefault();
       e.stopImmediatePropagation();
       return false;
     }
+
+    return true;
   });
 
-  $('.js-select-on-focus').on('focusin', function () {
-    return $(this).select().one('mouseup', function (e) {
-      return e.preventDefault();
-    });
-  // Click a .js-select-on-focus field, select the contents
-  // Prevent a mouseup event from deselecting the input
-  });
-  $('.remove-row').bind('ajax:success', function () {
+  addSelectOnFocusBehaviour('.js-select-on-focus');
+
+  $('.remove-row').on('ajax:success', function removeRowAjaxSuccessCallback() {
     $(this).tooltip('destroy')
       .closest('li')
       .fadeOut();
   });
-  $('.js-remove-tr').bind('ajax:before', function () {
-    return $(this).hide();
+
+  $('.js-remove-tr').on('ajax:before', function removeTRAjaxBeforeCallback() {
+    $(this).hide();
   });
-  $('.js-remove-tr').bind('ajax:success', function () {
-    return $(this).closest('tr').fadeOut();
+
+  $('.js-remove-tr').on('ajax:success', function removeTRAjaxSuccessCallback() {
+    $(this).closest('tr').fadeOut();
   });
+
+  // Initialize select2 selects
   $('select.select2').select2({
     width: 'resolve',
-    // Initialize select2 selects
-    dropdownAutoWidth: true
+    dropdownAutoWidth: true,
   });
-  $('.js-select2').bind('select2-close', function () {
-    return setTimeout((function () {
-      $('.select2-container-active').removeClass('select2-container-active');
-      return $(':focus').blur();
-    }), 1);
+
   // Close select2 on escape
+  $('.js-select2').on('select2-close', () => {
+    setTimeout(() => {
+      $('.select2-container-active').removeClass('select2-container-active');
+      $(':focus').blur();
+    }, 1);
   });
+
   // Initialize tooltips
   $.fn.tooltip.Constructor.DEFAULTS.trigger = 'hover';
   $body.tooltip({
     selector: '.has-tooltip, [data-toggle="tooltip"]',
-    placement: function (tip, el) {
+    placement(tip, el) {
       return $(el).data('placement') || 'bottom';
-    }
+    },
   });
+
   // Initialize popovers
   $body.popover({
     selector: '[data-toggle="popover"]',
     trigger: 'focus',
     // set the viewport to the main content, excluding the navigation bar, so
     // the navigation can't overlap the popover
-    viewport: '.layout-page'
+    viewport: '.layout-page',
   });
-  $('.trigger-submit').on('change', function () {
-    return $(this).parents('form').submit();
+
   // Form submitter
+  $('.trigger-submit').on('change', function triggerSubmitCallback() {
+    $(this).parents('form').submit();
   });
+
   localTimeAgo($('abbr.timeago, .js-timeago'), true);
+
   // Disable form buttons while a form is submitting
-  $body.on('ajax:complete, ajax:beforeSend, submit', 'form', function (e) {
-    var buttons;
-    buttons = $('[type="submit"], .js-disable-on-submit', this);
+  $body.on('ajax:complete, ajax:beforeSend, submit', 'form', function ajaxCompleteCallback(e) {
+    const $buttons = $('[type="submit"], .js-disable-on-submit', this);
     switch (e.type) {
       case 'ajax:beforeSend':
       case 'submit':
-        return buttons.disable();
+        return $buttons.disable();
       default:
-        return buttons.enable();
+        return $buttons.enable();
     }
   });
-  $(document).ajaxError(function (e, xhrObj) {
-    var ref = xhrObj.status;
-    if (xhrObj.status === 401) {
-      return new Flash('You need to be logged in.', 'alert');
+
+  $(document).ajaxError((e, xhrObj) => {
+    const ref = xhrObj.status;
+
+    if (ref === 401) {
+      Flash('You need to be logged in.');
     } else if (ref === 404 || ref === 500) {
-      return new Flash('Something went wrong on our end.', 'alert');
+      Flash('Something went wrong on our end.');
     }
   });
-  $('.account-box').hover(function () {
-    // Show/Hide the profile menu when hovering the account box
-    return $(this).toggleClass('hover');
-  });
-  $document.on('click', '.diff-content .js-show-suppressed-diff', function () {
-    var $container;
-    $container = $(this).parent();
-    $container.next('table').show();
-    return $container.remove();
+
   // Commit show suppressed diff
+  $document.on('click', '.diff-content .js-show-suppressed-diff', function showDiffCallback() {
+    const $container = $(this).parent();
+    $container.next('table').show();
+    $container.remove();
   });
+
   $('.navbar-toggle').on('click', () => {
     $('.header-content').toggleClass('menu-expanded');
     gl.lazyLoader.loadCheck();
   });
+
   // Show/hide comments on diff
-  $body.on('click', '.js-toggle-diff-comments', function (e) {
-    var $this = $(this);
-    var notesHolders = $this.closest('.diff-file').find('.notes_holder');
+  $body.on('click', '.js-toggle-diff-comments', function toggleDiffCommentsCallback(e) {
+    const $this = $(this);
+    const notesHolders = $this.closest('.diff-file').find('.notes_holder');
+
+    e.preventDefault();
+
     $this.toggleClass('active');
+
     if ($this.hasClass('active')) {
       notesHolders.show().find('.hide, .content').show();
     } else {
       notesHolders.hide().find('.content').hide();
     }
+
     $(document).trigger('toggle.comments');
-    return e.preventDefault();
   });
-  $document.off('click', '.js-confirm-danger');
-  $document.on('click', '.js-confirm-danger', function (e) {
-    var btn = $(e.target);
-    var form = btn.closest('form');
-    var text = btn.data('confirm-danger-message');
+
+  $document.on('click', '.js-confirm-danger', (e) => {
+    const btn = $(e.target);
+    const form = btn.closest('form');
+    const text = btn.data('confirmDangerMessage');
     e.preventDefault();
-    return new ConfirmDangerModal(form, text);
+
+    // eslint-disable-next-line no-new
+    new ConfirmDangerModal(form, text);
   });
-  $('input[type="search"]').each(function () {
-    var $this = $(this);
-    $this.attr('value', $this.val());
-  });
-  $document.off('keyup', 'input[type="search"]').on('keyup', 'input[type="search"]', function () {
-    var $this;
-    $this = $(this);
-    return $this.attr('value', $this.val());
-  });
-  $document.off('breakpoint:change').on('breakpoint:change', function (e, breakpoint) {
-    var $gutterIcon;
+
+  $document.on('breakpoint:change', (e, breakpoint) => {
     if (breakpoint === 'sm' || breakpoint === 'xs') {
-      $gutterIcon = $sidebarGutterToggle.find('i');
+      const $gutterIcon = $sidebarGutterToggle.find('i');
       if ($gutterIcon.hasClass('fa-angle-double-right')) {
-        return $sidebarGutterToggle.trigger('click');
+        $sidebarGutterToggle.trigger('click');
       }
     }
   });
-  fitSidebarForSize = function () {
-    var oldBootstrapBreakpoint;
-    oldBootstrapBreakpoint = bootstrapBreakpoint;
+
+  function fitSidebarForSize() {
+    const oldBootstrapBreakpoint = bootstrapBreakpoint;
     bootstrapBreakpoint = bp.getBreakpointSize();
+
     if (bootstrapBreakpoint !== oldBootstrapBreakpoint) {
-      return $document.trigger('breakpoint:change', [bootstrapBreakpoint]);
+      $document.trigger('breakpoint:change', [bootstrapBreakpoint]);
     }
-  };
-  $window.off('resize.app').on('resize.app', function () {
-    return fitSidebarForSize();
-  });
+  }
+
+  $window.on('resize.app', fitSidebarForSize);
+
   loadAwardsHandler();
 
-  renderTimeago();
-
-  $(document).trigger('init.scrolling-tabs');
-
-  $('form.filter-form').on('submit', function (event) {
+  $('form.filter-form').on('submit', function filterFormSubmitCallback(event) {
     const link = document.createElement('a');
     link.href = this.action;
 
@@ -282,4 +263,6 @@ $(function () {
       removeFlashClickListener(flashEl);
     });
   }
+
+  initDispatcher();
 });

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :truncate do
+describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :delete do
   let(:migration) { FakeRenameReservedPathMigrationV1.new }
   let(:subject) { described_class.new(['the-path'], migration) }
   let(:namespace) { create(:group, name: 'the-path') }
@@ -94,7 +94,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :
   describe '#move_repositories' do
     let(:namespace) { create(:group, name: 'hello-group') }
     it 'moves a project for a namespace' do
-      create(:project, :repository, namespace: namespace, path: 'hello-project')
+      create(:project, :repository, :legacy_storage, namespace: namespace, path: 'hello-project')
       expected_path = File.join(TestEnv.repos_path, 'bye-group', 'hello-project.git')
 
       subject.move_repositories(namespace, 'hello-group', 'bye-group')
@@ -104,7 +104,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :
 
     it 'moves a namespace in a subdirectory correctly' do
       child_namespace = create(:group, name: 'sub-group', parent: namespace)
-      create(:project, :repository, namespace: child_namespace, path: 'hello-project')
+      create(:project, :repository, :legacy_storage, namespace: child_namespace, path: 'hello-project')
 
       expected_path = File.join(TestEnv.repos_path, 'hello-group', 'renamed-sub-group', 'hello-project.git')
 
@@ -115,7 +115,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :
 
     it 'moves a parent namespace with subdirectories' do
       child_namespace = create(:group, name: 'sub-group', parent: namespace)
-      create(:project, :repository, namespace: child_namespace, path: 'hello-project')
+      create(:project, :repository, :legacy_storage, namespace: child_namespace, path: 'hello-project')
       expected_path = File.join(TestEnv.repos_path, 'renamed-group', 'sub-group', 'hello-project.git')
 
       subject.move_repositories(child_namespace, 'hello-group', 'renamed-group')
@@ -166,7 +166,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :
 
   describe '#rename_namespace_dependencies' do
     it "moves the the repository for a project in the namespace" do
-      create(:project, :repository, namespace: namespace, path: "the-path-project")
+      create(:project, :repository, :legacy_storage, namespace: namespace, path: "the-path-project")
       expected_repo = File.join(TestEnv.repos_path, "the-path0", "the-path-project.git")
 
       subject.rename_namespace_dependencies(namespace, 'the-path', 'the-path0')
@@ -187,7 +187,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :
     end
 
     it 'invalidates the markdown cache of related projects' do
-      project = create(:project, namespace: namespace, path: "the-path-project")
+      project = create(:project, :legacy_storage, namespace: namespace, path: "the-path-project")
 
       expect(subject).to receive(:remove_cached_html_for_projects).with([project.id])
 
@@ -243,7 +243,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :
 
   describe '#revert_renames', :redis do
     it 'renames the routes back to the previous values' do
-      project = create(:project, :repository, path: 'a-project', namespace: namespace)
+      project = create(:project, :legacy_storage, :repository, path: 'a-project', namespace: namespace)
       subject.rename_namespace(namespace)
 
       expect(subject).to receive(:perform_rename)
@@ -261,7 +261,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :
     end
 
     it 'moves the repositories back to their original place' do
-      project = create(:project, :repository, path: 'a-project', namespace: namespace)
+      project = create(:project, :repository, :legacy_storage, path: 'a-project', namespace: namespace)
       project.create_repository
       subject.rename_namespace(namespace)
 

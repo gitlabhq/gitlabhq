@@ -51,7 +51,7 @@ describe Projects::ForksController do
 
         context 'when user is a member of the Project' do
           before do
-            forked_project.team << [project.creator, :developer]
+            forked_project.add_developer(project.creator)
           end
 
           it 'sees the project listed' do

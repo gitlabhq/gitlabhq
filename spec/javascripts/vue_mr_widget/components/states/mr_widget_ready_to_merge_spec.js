@@ -170,14 +170,14 @@ describe('MRWidgetReadyToMerge', () => {
         expect(vm.iconClass).toEqual('success');
       });
 
-      it('shows x for failed status', () => {
+      it('shows warning icon for failed status', () => {
         vm.mr.hasCI = true;
-        expect(vm.iconClass).toEqual('failed');
+        expect(vm.iconClass).toEqual('warning');
       });
 
-      it('shows x for merge not allowed', () => {
+      it('shows warning icon for merge not allowed', () => {
         vm.mr.hasCI = true;
-        expect(vm.iconClass).toEqual('failed');
+        expect(vm.iconClass).toEqual('warning');
       });
     });
 
@@ -292,8 +292,8 @@ describe('MRWidgetReadyToMerge', () => {
     describe('handleMergeButtonClick', () => {
       const returnPromise = status => new Promise((resolve) => {
         resolve({
-          json() {
-            return { status };
+          data: {
+            status,
           },
         });
       });
@@ -364,10 +364,15 @@ describe('MRWidgetReadyToMerge', () => {
     describe('handleMergePolling', () => {
       const returnPromise = state => new Promise((resolve) => {
         resolve({
-          json() {
-            return { state, source_branch_exists: true };
+          data: {
+            state,
+            source_branch_exists: true,
           },
         });
+      });
+
+      beforeEach(() => {
+        loadFixtures('merge_requests/merge_request_of_current_user.html.raw');
       });
 
       it('should call start and stop polling when MR merged', (done) => {
@@ -389,6 +394,47 @@ describe('MRWidgetReadyToMerge', () => {
 
           done();
         }, 333);
+      });
+
+      it('updates status box', (done) => {
+        spyOn(vm.service, 'poll').and.returnValue(returnPromise('merged'));
+        spyOn(vm, 'initiateRemoveSourceBranchPolling');
+
+        vm.handleMergePolling(() => {}, () => {});
+
+        setTimeout(() => {
+          const statusBox = document.querySelector('.status-box');
+          expect(statusBox.classList.contains('status-box-mr-merged')).toBeTruthy();
+          expect(statusBox.textContent).toContain('Merged');
+
+          done();
+        });
+      });
+
+      it('hides close button', (done) => {
+        spyOn(vm.service, 'poll').and.returnValue(returnPromise('merged'));
+        spyOn(vm, 'initiateRemoveSourceBranchPolling');
+
+        vm.handleMergePolling(() => {}, () => {});
+
+        setTimeout(() => {
+          expect(document.querySelector('.btn-close').classList.contains('hidden')).toBeTruthy();
+
+          done();
+        });
+      });
+
+      it('updates merge request count badge', (done) => {
+        spyOn(vm.service, 'poll').and.returnValue(returnPromise('merged'));
+        spyOn(vm, 'initiateRemoveSourceBranchPolling');
+
+        vm.handleMergePolling(() => {}, () => {});
+
+        setTimeout(() => {
+          expect(document.querySelector('.js-merge-counter').textContent).toBe('0');
+
+          done();
+        });
       });
 
       it('should continue polling until MR is merged', (done) => {
@@ -422,8 +468,8 @@ describe('MRWidgetReadyToMerge', () => {
     describe('handleRemoveBranchPolling', () => {
       const returnPromise = state => new Promise((resolve) => {
         resolve({
-          json() {
-            return { source_branch_exists: state };
+          data: {
+            source_branch_exists: state,
           },
         });
       });
@@ -471,13 +517,9 @@ describe('MRWidgetReadyToMerge', () => {
 
   describe('Remove source branch checkbox', () => {
     describe('when user can merge but cannot delete branch', () => {
-      it('isRemoveSourceBranchButtonDisabled should be true', () => {
-        expect(vm.isRemoveSourceBranchButtonDisabled).toBe(true);
-      });
-
       it('should be disabled in the rendered output', () => {
         const checkboxElement = vm.$el.querySelector('#remove-source-branch-input');
-        expect(checkboxElement.getAttribute('disabled')).toBe('disabled');
+        expect(checkboxElement).toBeNull();
       });
     });
 
@@ -494,7 +536,7 @@ describe('MRWidgetReadyToMerge', () => {
 
       it('should be enabled in rendered output', () => {
         const checkboxElement = this.customVm.$el.querySelector('#remove-source-branch-input');
-        expect(checkboxElement.getAttribute('disabled')).toBeNull();
+        expect(checkboxElement).not.toBeNull();
       });
     });
   });
@@ -503,12 +545,12 @@ describe('MRWidgetReadyToMerge', () => {
     describe('when allowed to merge', () => {
       beforeEach(() => {
         vm = createComponent({
-          mr: { isMergeAllowed: true },
+          mr: { isMergeAllowed: true, canRemoveSourceBranch: true },
         });
       });
 
       it('shows remove source branch checkbox', () => {
-        expect(vm.$el.querySelector('.js-remove-source-branch-checkbox')).toBeDefined();
+        expect(vm.$el.querySelector('.js-remove-source-branch-checkbox')).not.toBeNull();
       });
 
       it('shows modify commit message button', () => {

@@ -1,24 +1,22 @@
-/* global boardsMockInterceptor */
 /* global BoardService */
 /* global List */
-/* global listObj */
-/* global mockBoardService */
 
 import Vue from 'vue';
-import boardNewIssue from '~/boards/components/board_new_issue';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
+import boardNewIssue from '~/boards/components/board_new_issue.vue';
 
 import '~/boards/models/list';
-import './mock_data';
+import { listObj, boardsMockInterceptor, mockBoardService } from './mock_data';
 
 describe('Issue boards new issue form', () => {
   let vm;
   let list;
+  let mock;
   let newIssueMock;
   const promiseReturn = {
-    json() {
-      return {
-        iid: 100,
-      };
+    data: {
+      iid: 100,
     },
   };
 
@@ -35,7 +33,9 @@ describe('Issue boards new issue form', () => {
 
     const BoardNewIssueComp = Vue.extend(boardNewIssue);
 
-    Vue.http.interceptors.push(boardsMockInterceptor);
+    mock = new MockAdapter(axios);
+    mock.onAny().reply(boardsMockInterceptor);
+
     gl.boardService = mockBoardService();
     gl.issueBoards.BoardsStore.create();
     gl.IssueBoardsApp = new Vue();
@@ -56,7 +56,10 @@ describe('Issue boards new issue form', () => {
       .catch(done.fail);
   });
 
-  afterEach(() => vm.$destroy());
+  afterEach(() => {
+    vm.$destroy();
+    mock.restore();
+  });
 
   it('calls submit if submit button is clicked', (done) => {
     spyOn(vm, 'submit').and.callFake(e => e.preventDefault());

@@ -10,6 +10,7 @@ module Gitlab
 
         def initialize(mail, mail_key)
           super(mail, mail_key)
+
           if m = /\A([^\+]*)\+merge-request\+(.*)/.match(mail_key.to_s)
             @project_path, @incoming_email_token = m.captures
           end

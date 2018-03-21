@@ -1,13 +1,15 @@
 /* eslint-disable no-var, comma-dangle, object-shorthand */
-/* global Notes */
 
+import $ from 'jquery';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
 import MergeRequestTabs from '~/merge_request_tabs';
 import '~/commit/pipelines/pipelines_bundle';
 import '~/breakpoints';
 import '~/lib/utils/common_utils';
 import Diff from '~/diff';
-import '~/notes';
+import Notes from '~/notes';
 import 'vendor/jquery.scrollTo';
 
 (function () {
@@ -47,7 +49,7 @@ import 'vendor/jquery.scrollTo';
 
     describe('activateTab', function () {
       beforeEach(function () {
-        spyOn($, 'ajax').and.callFake(function () {});
+        spyOn(axios, 'get').and.returnValue(Promise.resolve({ data: {} }));
         loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
         this.subject = this.class.activateTab;
       });
@@ -149,7 +151,7 @@ import 'vendor/jquery.scrollTo';
 
     describe('setCurrentAction', function () {
       beforeEach(function () {
-        spyOn($, 'ajax').and.callFake(function () {});
+        spyOn(axios, 'get').and.returnValue(Promise.resolve({ data: {} }));
         this.subject = this.class.setCurrentAction;
       });
 
@@ -215,11 +217,19 @@ import 'vendor/jquery.scrollTo';
     });
 
     describe('tabShown', () => {
+      let mock;
+
       beforeEach(function () {
-        spyOn($, 'ajax').and.callFake(function (options) {
-          options.success({ html: '' });
+        mock = new MockAdapter(axios);
+        mock.onGet(/(.*)\/diffs\.json/).reply(200, {
+          data: { html: '' },
         });
+
         loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
+      });
+
+      afterEach(() => {
+        mock.restore();
       });
 
       describe('with "Side-by-side"/parallel diff view', () => {
@@ -279,8 +289,8 @@ import 'vendor/jquery.scrollTo';
         loadFixtures('merge_requests/diff_comment.html.raw');
         $('body').attr('data-page', 'projects:merge_requests:show');
         window.gl.ImageFile = () => {};
-        window.notes = new Notes('', []);
-        spyOn(window.notes, 'toggleDiffNote').and.callThrough();
+        Notes.initialize('', []);
+        spyOn(Notes.instance, 'toggleDiffNote').and.callThrough();
       });
 
       afterEach(() => {
@@ -291,15 +301,22 @@ import 'vendor/jquery.scrollTo';
         $('body').removeAttr('data-page');
       });
 
-      it('requires an absolute pathname', function () {
-        spyOn($, 'ajax').and.callFake(function (options) {
-          expect(options.url).toEqual('/foo/bar/merge_requests/1/diffs.json');
+      it('triggers Ajax request to JSON endpoint', function (done) {
+        const url = '/foo/bar/merge_requests/1/diffs';
+
+        spyOn(axios, 'get').and.callFake((reqUrl) => {
+          expect(reqUrl).toBe(`${url}.json`);
+
+          done();
+
+          return Promise.resolve({ data: {} });
         });
 
-        this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
+        this.class.loadDiff(url);
       });
 
-      it('triggers scroll event when diff already loaded', function () {
+      it('triggers scroll event when diff already loaded', function (done) {
+        spyOn(axios, 'get').and.callFake(done.fail);
         spyOn(document, 'dispatchEvent');
 
         this.class.diffsLoaded = true;
@@ -308,11 +325,13 @@ import 'vendor/jquery.scrollTo';
         expect(
           document.dispatchEvent,
         ).toHaveBeenCalledWith(new CustomEvent('scroll'));
+        done();
       });
 
       describe('with inline diff', () => {
         let noteId;
         let noteLineNumId;
+        let mock;
 
         beforeEach(() => {
           const diffsResponse = getJSONFixture(inlineChangesTabJsonFixture);
@@ -327,29 +346,40 @@ import 'vendor/jquery.scrollTo';
             .attr('href')
             .replace('#', '');
 
-          spyOn($, 'ajax').and.callFake(function (options) {
-            options.success(diffsResponse);
-          });
+          mock = new MockAdapter(axios);
+          mock.onGet(/(.*)\/diffs\.json/).reply(200, diffsResponse);
+        });
+
+        afterEach(() => {
+          mock.restore();
         });
 
         describe('with note fragment hash', () => {
-          it('should expand and scroll to linked fragment hash #note_xxx', function () {
+          it('should expand and scroll to linked fragment hash #note_xxx', function (done) {
             spyOn(urlUtils, 'getLocationHash').and.returnValue(noteId);
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
-            expect(noteId.length).toBeGreaterThan(0);
-            expect(window.notes.toggleDiffNote).toHaveBeenCalledWith({
-              target: jasmine.any(Object),
-              lineType: 'old',
-              forceShow: true,
+            setTimeout(() => {
+              expect(noteId.length).toBeGreaterThan(0);
+              expect(Notes.instance.toggleDiffNote).toHaveBeenCalledWith({
+                target: jasmine.any(Object),
+                lineType: 'old',
+                forceShow: true,
+              });
+
+              done();
             });
           });
 
-          it('should gracefully ignore non-existant fragment hash', function () {
+          it('should gracefully ignore non-existant fragment hash', function (done) {
             spyOn(urlUtils, 'getLocationHash').and.returnValue('note_something-that-does-not-exist');
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
-            expect(window.notes.toggleDiffNote).not.toHaveBeenCalled();
+            setTimeout(() => {
+              expect(Notes.instance.toggleDiffNote).not.toHaveBeenCalled();
+
+              done();
+            });
           });
         });
 
@@ -359,7 +389,7 @@ import 'vendor/jquery.scrollTo';
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
             expect(noteLineNumId.length).toBeGreaterThan(0);
-            expect(window.notes.toggleDiffNote).not.toHaveBeenCalled();
+            expect(Notes.instance.toggleDiffNote).not.toHaveBeenCalled();
           });
         });
       });
@@ -367,6 +397,7 @@ import 'vendor/jquery.scrollTo';
       describe('with parallel diff', () => {
         let noteId;
         let noteLineNumId;
+        let mock;
 
         beforeEach(() => {
           const diffsResponse = getJSONFixture(parallelChangesTabJsonFixture);
@@ -381,30 +412,40 @@ import 'vendor/jquery.scrollTo';
             .attr('href')
             .replace('#', '');
 
-          spyOn($, 'ajax').and.callFake(function (options) {
-            options.success(diffsResponse);
-          });
+          mock = new MockAdapter(axios);
+          mock.onGet(/(.*)\/diffs\.json/).reply(200, diffsResponse);
+        });
+
+        afterEach(() => {
+          mock.restore();
         });
 
         describe('with note fragment hash', () => {
-          it('should expand and scroll to linked fragment hash #note_xxx', function () {
+          it('should expand and scroll to linked fragment hash #note_xxx', function (done) {
             spyOn(urlUtils, 'getLocationHash').and.returnValue(noteId);
 
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
-            expect(noteId.length).toBeGreaterThan(0);
-            expect(window.notes.toggleDiffNote).toHaveBeenCalledWith({
-              target: jasmine.any(Object),
-              lineType: 'new',
-              forceShow: true,
+            setTimeout(() => {
+              expect(noteId.length).toBeGreaterThan(0);
+              expect(Notes.instance.toggleDiffNote).toHaveBeenCalledWith({
+                target: jasmine.any(Object),
+                lineType: 'new',
+                forceShow: true,
+              });
+
+              done();
             });
           });
 
-          it('should gracefully ignore non-existant fragment hash', function () {
+          it('should gracefully ignore non-existant fragment hash', function (done) {
             spyOn(urlUtils, 'getLocationHash').and.returnValue('note_something-that-does-not-exist');
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
-            expect(window.notes.toggleDiffNote).not.toHaveBeenCalled();
+            setTimeout(() => {
+              expect(Notes.instance.toggleDiffNote).not.toHaveBeenCalled();
+              done();
+            });
           });
         });
 
@@ -414,7 +455,7 @@ import 'vendor/jquery.scrollTo';
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
             expect(noteLineNumId.length).toBeGreaterThan(0);
-            expect(window.notes.toggleDiffNote).not.toHaveBeenCalled();
+            expect(Notes.instance.toggleDiffNote).not.toHaveBeenCalled();
           });
         });
       });

@@ -12,7 +12,7 @@ feature 'Issues > User uses quick actions', :js do
     let(:project) { create(:project, :public) }
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in(user)
       visit project_issue_path(project, issue)
     end
@@ -50,7 +50,7 @@ feature 'Issues > User uses quick actions', :js do
       context 'when the current user cannot update the due date' do
         let(:guest) { create(:user) }
         before do
-          project.team << [guest, :guest]
+          project.add_guest(guest)
           gitlab_sign_out
           sign_in(guest)
           visit project_issue_path(project, issue)
@@ -59,7 +59,6 @@ feature 'Issues > User uses quick actions', :js do
         it 'does not create a note, and sets the due date accordingly' do
           write_note("/due 2016-08-28")
 
-          expect(page).to have_content '/due 2016-08-28'
           expect(page).not_to have_content 'Commands applied'
 
           issue.reload
@@ -90,7 +89,7 @@ feature 'Issues > User uses quick actions', :js do
       context 'when the current user cannot update the due date' do
         let(:guest) { create(:user) }
         before do
-          project.team << [guest, :guest]
+          project.add_guest(guest)
           gitlab_sign_out
           sign_in(guest)
           visit project_issue_path(project, issue)
@@ -99,7 +98,6 @@ feature 'Issues > User uses quick actions', :js do
         it 'does not create a note, and sets the due date accordingly' do
           write_note("/remove_due_date")
 
-          expect(page).to have_content '/remove_due_date'
           expect(page).not_to have_content 'Commands applied'
 
           issue.reload
@@ -138,7 +136,7 @@ feature 'Issues > User uses quick actions', :js do
       context 'when the current user cannot update the issue' do
         let(:guest) { create(:user) }
         before do
-          project.team << [guest, :guest]
+          project.add_guest(guest)
           gitlab_sign_out
           sign_in(guest)
           visit project_issue_path(project, issue)
@@ -147,7 +145,6 @@ feature 'Issues > User uses quick actions', :js do
         it 'does not create a note, and does not mark the issue as a duplicate' do
           write_note("/duplicate ##{original_issue.to_reference}")
 
-          expect(page).to have_content "/duplicate ##{original_issue.to_reference}"
           expect(page).not_to have_content 'Commands applied'
           expect(page).not_to have_content "marked this issue as a duplicate of #{original_issue.to_reference}"
 
@@ -163,7 +160,7 @@ feature 'Issues > User uses quick actions', :js do
         let(:target_project) { create(:project, :public) }
 
         before do
-          target_project.team << [user, :master]
+          target_project.add_master(user)
           sign_in(user)
           visit project_issue_path(project, issue)
         end
@@ -220,7 +217,7 @@ feature 'Issues > User uses quick actions', :js do
         let(:wontfix_target)  { create(:label, project: target_project, title: 'wontfix') }
 
         before do
-          target_project.team << [user, :master]
+          target_project.add_master(user)
           sign_in(user)
           visit project_issue_path(project, issue)
         end

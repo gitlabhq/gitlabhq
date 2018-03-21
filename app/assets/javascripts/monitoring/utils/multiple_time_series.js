@@ -1,5 +1,10 @@
-import d3 from 'd3';
 import _ from 'underscore';
+import { scaleLinear, scaleTime } from 'd3-scale';
+import { line, area, curveLinear } from 'd3-shape';
+import { extent, max } from 'd3-array';
+import { timeMinute } from 'd3-time';
+
+const d3 = { scaleLinear, scaleTime, line, area, curveLinear, extent, max, timeMinute };
 
 const defaultColorPalette = {
   blue: ['#1f78d1', '#8fbce8'],
@@ -38,27 +43,27 @@ function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom
     let lineColor = '';
     let areaColor = '';
 
-    const timeSeriesScaleX = d3.time.scale()
+    const timeSeriesScaleX = d3.scaleTime()
       .range([0, graphWidth - 70]);
 
-    const timeSeriesScaleY = d3.scale.linear()
+    const timeSeriesScaleY = d3.scaleLinear()
       .range([graphHeight - graphHeightOffset, 0]);
 
     timeSeriesScaleX.domain(xDom);
-    timeSeriesScaleX.ticks(d3.time.minute, 60);
+    timeSeriesScaleX.ticks(d3.timeMinute, 60);
     timeSeriesScaleY.domain(yDom);
 
     const defined = d => !isNaN(d.value) && d.value != null;
 
-    const lineFunction = d3.svg.line()
+    const lineFunction = d3.line()
       .defined(defined)
-      .interpolate('linear')
+      .curve(d3.curveLinear) // d3 v4 uses curbe instead of interpolate
       .x(d => timeSeriesScaleX(d.time))
       .y(d => timeSeriesScaleY(d.value));
 
-    const areaFunction = d3.svg.area()
+    const areaFunction = d3.area()
       .defined(defined)
-      .interpolate('linear')
+      .curve(d3.curveLinear)
       .x(d => timeSeriesScaleX(d.time))
       .y0(graphHeight - graphHeightOffset)
       .y1(d => timeSeriesScaleY(d.value));
@@ -71,7 +76,7 @@ function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom
       metricTag = seriesCustomizationData.value || timeSeriesMetricLabel;
       [lineColor, areaColor] = pickColor(seriesCustomizationData.color);
     } else {
-      metricTag = timeSeriesMetricLabel || `series ${timeSeriesNumber + 1}`;
+      metricTag = timeSeriesMetricLabel || query.label || `series ${timeSeriesNumber + 1}`;
       [lineColor, areaColor] = pickColor();
     }
 

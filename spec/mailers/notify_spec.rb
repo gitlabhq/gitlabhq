@@ -71,6 +71,18 @@ describe Notify do
           is_expected.to have_html_escaped_body_text issue.description
         end
 
+        it 'does not add a reason header' do
+          is_expected.not_to have_header('X-GitLab-NotificationReason', /.+/)
+        end
+
+        context 'when sent with a reason' do
+          subject { described_class.new_issue_email(issue.assignees.first.id, issue.id, NotificationReason::ASSIGNED) }
+
+          it 'includes the reason in a header' do
+            is_expected.to have_header('X-GitLab-NotificationReason', NotificationReason::ASSIGNED)
+          end
+        end
+
         context 'when enabled email_author_in_body' do
           before do
             stub_application_setting(email_author_in_body: true)
@@ -106,6 +118,14 @@ describe Notify do
             is_expected.to have_html_escaped_body_text(previous_assignee.name)
             is_expected.to have_html_escaped_body_text(assignee.name)
             is_expected.to have_body_text(project_issue_path(project, issue))
+          end
+        end
+
+        context 'when sent with a reason' do
+          subject { described_class.reassigned_issue_email(recipient.id, issue.id, [previous_assignee.id], current_user.id, NotificationReason::ASSIGNED) }
+
+          it 'includes the reason in a header' do
+            is_expected.to have_header('X-GitLab-NotificationReason', NotificationReason::ASSIGNED)
           end
         end
       end
@@ -226,6 +246,14 @@ describe Notify do
           is_expected.to have_html_escaped_body_text merge_request.description
         end
 
+        context 'when sent with a reason' do
+          subject { described_class.new_merge_request_email(merge_request.assignee_id, merge_request.id, NotificationReason::ASSIGNED) }
+
+          it 'includes the reason in a header' do
+            is_expected.to have_header('X-GitLab-NotificationReason', NotificationReason::ASSIGNED)
+          end
+        end
+
         context 'when enabled email_author_in_body' do
           before do
             stub_application_setting(email_author_in_body: true)
@@ -261,6 +289,27 @@ describe Notify do
             is_expected.to have_html_escaped_body_text(previous_assignee.name)
             is_expected.to have_body_text(project_merge_request_path(project, merge_request))
             is_expected.to have_html_escaped_body_text(assignee.name)
+          end
+        end
+
+        context 'when sent with a reason' do
+          subject { described_class.reassigned_merge_request_email(recipient.id, merge_request.id, previous_assignee.id, current_user.id, NotificationReason::ASSIGNED) }
+
+          it 'includes the reason in a header' do
+            is_expected.to have_header('X-GitLab-NotificationReason', NotificationReason::ASSIGNED)
+          end
+
+          it 'includes the reason in the footer' do
+            text = EmailsHelper.instance_method(:notification_reason_text).bind(self).call(NotificationReason::ASSIGNED)
+            is_expected.to have_body_text(text)
+
+            new_subject = described_class.reassigned_merge_request_email(recipient.id, merge_request.id, previous_assignee.id, current_user.id, NotificationReason::MENTIONED)
+            text = EmailsHelper.instance_method(:notification_reason_text).bind(self).call(NotificationReason::MENTIONED)
+            expect(new_subject).to have_body_text(text)
+
+            new_subject = described_class.reassigned_merge_request_email(recipient.id, merge_request.id, previous_assignee.id, current_user.id, nil)
+            text = EmailsHelper.instance_method(:notification_reason_text).bind(self).call(nil)
+            expect(new_subject).to have_body_text(text)
           end
         end
       end
@@ -408,65 +457,36 @@ describe Notify do
 
       it 'has the correct subject and body' do
         is_expected.to have_subject("#{project.name} | Project was moved")
-        is_expected.to have_html_escaped_body_text project.name_with_namespace
+        is_expected.to have_html_escaped_body_text project.full_name
         is_expected.to have_body_text(project.ssh_url_to_repo)
       end
     end
 
     describe 'project access requested' do
-      context 'for a project in a user namespace' do
-        let(:project) do
-          create(:project, :public, :access_requestable) do |project|
-            project.team << [project.owner, :master, project.owner]
-          end
-        end
-
-        let(:project_member) do
-          project.request_access(user)
-          project.requesters.find_by(user_id: user.id)
-        end
-        subject { described_class.member_access_requested_email('project', project_member.id) }
-
-        it_behaves_like 'an email sent from GitLab'
-        it_behaves_like 'it should not have Gmail Actions links'
-        it_behaves_like "a user cannot unsubscribe through footer link"
-
-        it 'contains all the useful information' do
-          to_emails = subject.header[:to].addrs
-          expect(to_emails.size).to eq(1)
-          expect(to_emails[0].address).to eq(project.members.owners_and_masters.first.user.notification_email)
-
-          is_expected.to have_subject "Request to join the #{project.name_with_namespace} project"
-          is_expected.to have_html_escaped_body_text project.name_with_namespace
-          is_expected.to have_body_text project_project_members_url(project)
-          is_expected.to have_body_text project_member.human_access
+      let(:project) do
+        create(:project, :public, :access_requestable) do |project|
+          project.add_master(project.owner)
         end
       end
 
-      context 'for a project in a group' do
-        let(:group_owner) { create(:user) }
-        let(:group) { create(:group).tap { |g| g.add_owner(group_owner) } }
-        let(:project) { create(:project, :public, :access_requestable, namespace: group) }
-        let(:project_member) do
-          project.request_access(user)
-          project.requesters.find_by(user_id: user.id)
-        end
-        subject { described_class.member_access_requested_email('project', project_member.id) }
+      let(:project_member) do
+        project.request_access(user)
+        project.requesters.find_by(user_id: user.id)
+      end
+      subject { described_class.member_access_requested_email('project', project_member.id, recipient.notification_email) }
 
-        it_behaves_like 'an email sent from GitLab'
-        it_behaves_like 'it should not have Gmail Actions links'
-        it_behaves_like "a user cannot unsubscribe through footer link"
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like "a user cannot unsubscribe through footer link"
 
-        it 'contains all the useful information' do
-          to_emails = subject.header[:to].addrs
-          expect(to_emails.size).to eq(1)
-          expect(to_emails[0].address).to eq(group.members.owners_and_masters.first.user.notification_email)
+      it 'contains all the useful information' do
+        to_emails = subject.header[:to].addrs.map(&:address)
+        expect(to_emails).to eq([recipient.notification_email])
 
-          is_expected.to have_subject "Request to join the #{project.name_with_namespace} project"
-          is_expected.to have_html_escaped_body_text project.name_with_namespace
-          is_expected.to have_body_text project_project_members_url(project)
-          is_expected.to have_body_text project_member.human_access
-        end
+        is_expected.to have_subject "Request to join the #{project.full_name} project"
+        is_expected.to have_html_escaped_body_text project.full_name
+        is_expected.to have_body_text project_project_members_url(project)
+        is_expected.to have_body_text project_member.human_access
       end
     end
 
@@ -483,8 +503,8 @@ describe Notify do
       it_behaves_like "a user cannot unsubscribe through footer link"
 
       it 'contains all the useful information' do
-        is_expected.to have_subject "Access to the #{project.name_with_namespace} project was denied"
-        is_expected.to have_html_escaped_body_text project.name_with_namespace
+        is_expected.to have_subject "Access to the #{project.full_name} project was denied"
+        is_expected.to have_html_escaped_body_text project.full_name
         is_expected.to have_body_text project.web_url
       end
     end
@@ -500,8 +520,8 @@ describe Notify do
       it_behaves_like "a user cannot unsubscribe through footer link"
 
       it 'contains all the useful information' do
-        is_expected.to have_subject "Access to the #{project.name_with_namespace} project was granted"
-        is_expected.to have_html_escaped_body_text project.name_with_namespace
+        is_expected.to have_subject "Access to the #{project.full_name} project was granted"
+        is_expected.to have_html_escaped_body_text project.full_name
         is_expected.to have_body_text project.web_url
         is_expected.to have_body_text project_member.human_access
       end
@@ -520,7 +540,7 @@ describe Notify do
     end
 
     describe 'project invitation' do
-      let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
+      let(:master) { create(:user).tap { |u| project.add_master(u) } }
       let(:project_member) { invite_to_project(project, inviter: master) }
 
       subject { described_class.member_invited_email('project', project_member.id, project_member.invite_token) }
@@ -530,8 +550,8 @@ describe Notify do
       it_behaves_like "a user cannot unsubscribe through footer link"
 
       it 'contains all the useful information' do
-        is_expected.to have_subject "Invitation to join the #{project.name_with_namespace} project"
-        is_expected.to have_html_escaped_body_text project.name_with_namespace
+        is_expected.to have_subject "Invitation to join the #{project.full_name} project"
+        is_expected.to have_html_escaped_body_text project.full_name
         is_expected.to have_body_text project.web_url
         is_expected.to have_body_text project_member.human_access
         is_expected.to have_body_text project_member.invite_token
@@ -540,7 +560,7 @@ describe Notify do
 
     describe 'project invitation accepted' do
       let(:invited_user) { create(:user, name: 'invited user') }
-      let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
+      let(:master) { create(:user).tap { |u| project.add_master(u) } }
       let(:project_member) do
         invitee = invite_to_project(project, inviter: master)
         invitee.accept_invite!(invited_user)
@@ -555,7 +575,7 @@ describe Notify do
 
       it 'contains all the useful information' do
         is_expected.to have_subject 'Invitation accepted'
-        is_expected.to have_html_escaped_body_text project.name_with_namespace
+        is_expected.to have_html_escaped_body_text project.full_name
         is_expected.to have_body_text project.web_url
         is_expected.to have_body_text project_member.invite_email
         is_expected.to have_html_escaped_body_text invited_user.name
@@ -563,7 +583,7 @@ describe Notify do
     end
 
     describe 'project invitation declined' do
-      let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
+      let(:master) { create(:user).tap { |u| project.add_master(u) } }
       let(:project_member) do
         invitee = invite_to_project(project, inviter: master)
         invitee.decline_invite!
@@ -578,7 +598,7 @@ describe Notify do
 
       it 'contains all the useful information' do
         is_expected.to have_subject 'Invitation declined'
-        is_expected.to have_html_escaped_body_text project.name_with_namespace
+        is_expected.to have_html_escaped_body_text project.full_name
         is_expected.to have_body_text project.web_url
         is_expected.to have_body_text project_member.invite_email
       end
@@ -910,13 +930,16 @@ describe Notify do
         group.request_access(user)
         group.requesters.find_by(user_id: user.id)
       end
-      subject { described_class.member_access_requested_email('group', group_member.id) }
+      subject { described_class.member_access_requested_email('group', group_member.id, recipient.notification_email) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
       it_behaves_like "a user cannot unsubscribe through footer link"
 
       it 'contains all the useful information' do
+        to_emails = subject.header[:to].addrs.map(&:address)
+        expect(to_emails).to eq([recipient.notification_email])
+
         is_expected.to have_subject "Request to join the #{group.name} group"
         is_expected.to have_html_escaped_body_text group.name
         is_expected.to have_body_text group_group_members_url(group)
@@ -1308,7 +1331,7 @@ describe Notify do
 
     matcher :have_part_with do |expected|
       match do |actual|
-        actual.body.parts.any? { |part| part.content_type.try(:match, %r(#{expected})) }
+        actual.body.parts.any? { |part| part.content_type.try(:match, /#{expected}/) }
       end
     end
   end

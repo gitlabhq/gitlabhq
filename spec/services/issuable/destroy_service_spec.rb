@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Issuable::DestroyService do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :public) }
 
   subject(:service) { described_class.new(project, user) }
 
@@ -19,6 +19,13 @@ describe Issuable::DestroyService do
 
         service.execute(issue)
       end
+
+      it 'updates the todo caches for users with todos on the issue' do
+        create(:todo, target: issue, user: user, author: user, project: project)
+
+        expect { service.execute(issue) }
+          .to change { user.todos_pending_count }.from(1).to(0)
+      end
     end
 
     context 'when issuable is a merge request' do
@@ -32,6 +39,13 @@ describe Issuable::DestroyService do
         expect_any_instance_of(Projects::OpenMergeRequestsCountService).to receive(:refresh_cache)
 
         service.execute(merge_request)
+      end
+
+      it 'updates the todo caches for users with todos on the merge request' do
+        create(:todo, target: merge_request, user: user, author: user, project: project)
+
+        expect { service.execute(merge_request) }
+          .to change { user.todos_pending_count }.from(1).to(0)
       end
     end
   end

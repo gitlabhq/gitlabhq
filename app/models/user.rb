@@ -2,10 +2,8 @@ require 'carrierwave/orm/activerecord'
 
 class User < ActiveRecord::Base
   extend Gitlab::ConfigHelper
-  extend Gitlab::CurrentSettings
 
   include Gitlab::ConfigHelper
-  include Gitlab::CurrentSettings
   include Gitlab::SQL::Pattern
   include AfterCommitQueue
   include Avatarable
@@ -18,6 +16,7 @@ class User < ActiveRecord::Base
   include CreatedAtFilterable
   include IgnorableColumn
   include BulkMemberAccessLoad
+  include BlocksJsonSerialization
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -29,7 +28,7 @@ class User < ActiveRecord::Base
   add_authentication_token_field :rss_token
 
   default_value_for :admin, false
-  default_value_for(:external) { current_application_settings.user_default_external }
+  default_value_for(:external) { Gitlab::CurrentSettings.user_default_external }
   default_value_for :can_create_group, gitlab_config.default_can_create_group
   default_value_for :can_create_team, false
   default_value_for :hide_no_ssh_key, false
@@ -52,11 +51,16 @@ class User < ActiveRecord::Base
   serialize :otp_backup_codes, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
   devise :lockable, :recoverable, :rememberable, :trackable,
-    :validatable, :omniauthable, :confirmable, :registerable
+         :validatable, :omniauthable, :confirmable, :registerable
+
+  BLOCKED_MESSAGE = "Your account has been blocked. Please contact your GitLab " \
+                    "administrator if you think this is an error.".freeze
 
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
   def update_tracked_fields!(request)
+    return if Gitlab::Database.read_only?
+
     update_tracked_fields(request)
 
     lease = Gitlab::ExclusiveLease.new("user_update_tracked_fields:#{id}", timeout: 1.hour.to_i)
@@ -75,7 +79,7 @@ class User < ActiveRecord::Base
   #
 
   # Namespace for personal projects
-  has_one :namespace, -> { where(type: nil) }, dependent: :destroy, foreign_key: :owner_id, autosave: true # rubocop:disable Cop/ActiveRecordDependent
+  has_one :namespace, -> { where(type: nil) }, dependent: :destroy, foreign_key: :owner_id, inverse_of: :owner, autosave: true # rubocop:disable Cop/ActiveRecordDependent
 
   # Profile
   has_many :keys, -> do
@@ -93,8 +97,8 @@ class User < ActiveRecord::Base
   has_one :user_synced_attributes_metadata, autosave: true
 
   # Groups
-  has_many :members, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, source: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
+  has_many :members
+  has_many :group_members, -> { where(requested_at: nil) }, source: 'GroupMember'
   has_many :groups, through: :group_members
   has_many :owned_groups, -> { where members: { access_level: Gitlab::Access::OWNER } }, through: :group_members, source: :group
   has_many :masters_groups, -> { where members: { access_level: Gitlab::Access::MASTER } }, through: :group_members, source: :group
@@ -102,7 +106,7 @@ class User < ActiveRecord::Base
   # Projects
   has_many :groups_projects,          through: :groups, source: :projects
   has_many :personal_projects,        through: :namespace, source: :projects
-  has_many :project_members, -> { where(requested_at: nil) }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :project_members, -> { where(requested_at: nil) }
   has_many :projects,                 through: :project_members
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
   has_many :users_star_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -110,20 +114,22 @@ class User < ActiveRecord::Base
   has_many :project_authorizations
   has_many :authorized_projects, through: :project_authorizations, source: :project
 
+  has_many :user_interacted_projects
+  has_many :project_interactions, through: :user_interacted_projects, source: :project, class_name: 'Project'
+
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :issues,                   dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :events,                   dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :subscriptions,            dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :recent_events, -> { order "id DESC" }, foreign_key: :author_id,   class_name: "Event"
   has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_one  :abuse_report,             dependent: :destroy, foreign_key: :user_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :reported_abuse_reports,   dependent: :destroy, foreign_key: :reporter_id, class_name: "AbuseReport" # rubocop:disable Cop/ActiveRecordDependent
   has_many :spam_logs,                dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build' # rubocop:disable Cop/ActiveRecordDependent
   has_many :pipelines,                dependent: :nullify, class_name: 'Ci::Pipeline' # rubocop:disable Cop/ActiveRecordDependent
-  has_many :todos,                    dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :todos
   has_many :notification_settings,    dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :award_emoji,              dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :triggers,                 dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :owner_id # rubocop:disable Cop/ActiveRecordDependent
@@ -133,6 +139,8 @@ class User < ActiveRecord::Base
   has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest" # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
+  has_many :callouts, class_name: 'UserCallout'
+  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   #
   # Validations
@@ -147,20 +155,15 @@ class User < ActiveRecord::Base
   validates :projects_limit,
     presence: true,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
-  validates :username,
-    user_path: true,
-    presence: true,
-    uniqueness: { case_sensitive: false }
+  validates :username, presence: true
 
-  validate :namespace_uniq, if: :username_changed?
+  validates :namespace, presence: true
   validate :namespace_move_dir_allowed, if: :username_changed?
 
-  validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :unique_email, if: :email_changed?
   validate :owns_notification_email, if: :notification_email_changed?
   validate :owns_public_email, if: :public_email_changed?
   validate :signup_domain_valid?, on: :create, if: ->(user) { !user.created_by_id }
-  validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: :email_changed?
@@ -169,7 +172,8 @@ class User < ActiveRecord::Base
   before_save :ensure_user_rights_and_limits, if: ->(user) { user.new_record? || user.external_changed? }
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
   before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
-  after_save :ensure_namespace_correct
+  before_validation :ensure_namespace_correct
+  after_validation :set_username_errors
   after_update :username_changed_hook, if: :username_changed?
   after_destroy :post_destroy_hook
   after_destroy :remove_key_cache
@@ -216,14 +220,10 @@ class User < ActiveRecord::Base
       end
 
       def inactive_message
-        "Your account has been blocked. Please contact your GitLab " \
-          "administrator if you think this is an error."
+        BLOCKED_MESSAGE
       end
     end
   end
-
-  mount_uploader :avatar, AvatarUploader
-  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   # Scopes
   scope :admins, -> { where(admin: true) }
@@ -232,8 +232,8 @@ class User < ActiveRecord::Base
   scope :active, -> { with_state(:active).non_internal }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members WHERE user_id IS NOT NULL AND requested_at IS NULL)') }
   scope :todo_authors, ->(user_id, state) { where(id: Todo.where(user_id: user_id, state: state).select(:author_id)) }
-  scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('last_sign_in_at', 'DESC')) }
-  scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('last_sign_in_at', 'ASC')) }
+  scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
+  scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'ASC')) }
 
   def self.with_two_factor
     joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id")
@@ -253,7 +253,7 @@ class User < ActiveRecord::Base
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup
       if login = conditions.delete(:login)
-        where(conditions).find_by("lower(username) = :value OR lower(email) = :value", value: login.downcase)
+        where(conditions).find_by("lower(username) = :value OR lower(email) = :value", value: login.downcase.strip)
       else
         find_by(conditions)
       end
@@ -315,6 +315,8 @@ class User < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
+      return none if query.blank?
+
       query = query.downcase
 
       order = <<~SQL
@@ -327,8 +329,8 @@ class User < ActiveRecord::Base
       SQL
 
       where(
-        fuzzy_arel_match(:name, query)
-          .or(fuzzy_arel_match(:username, query))
+        fuzzy_arel_match(:name, query, lower_exact_match: true)
+          .or(fuzzy_arel_match(:username, query, lower_exact_match: true))
           .or(arel_table[:email].eq(query))
       ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, :name)
     end
@@ -338,6 +340,8 @@ class User < ActiveRecord::Base
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
 
     def search_with_secondary_emails(query)
+      return none if query.blank?
+
       query = query.downcase
 
       email_table = Email.arel_table
@@ -429,7 +433,7 @@ class User < ActiveRecord::Base
   end
 
   def self.non_internal
-    where(Hash[internal_attributes.zip([[false, nil]] * internal_attributes.size)])
+    where(internal_attributes.map { |attr| "#{attr} IS NOT TRUE" }.join(" AND "))
   end
 
   #
@@ -503,26 +507,9 @@ class User < ActiveRecord::Base
     end
   end
 
-  def namespace_uniq
-    # Return early if username already failed the first uniqueness validation
-    return if errors.key?(:username) &&
-        errors[:username].include?('has already been taken')
-
-    existing_namespace = Namespace.by_path(username)
-    if existing_namespace && existing_namespace != namespace
-      errors.add(:username, 'has already been taken')
-    end
-  end
-
   def namespace_move_dir_allowed
     if namespace&.any_project_has_container_registry_tags?
       errors.add(:username, 'cannot be changed if a personal project has container registry tags.')
-    end
-  end
-
-  def avatar_type
-    unless avatar.image?
-      errors.add :avatar, "only images allowed"
     end
   end
 
@@ -568,12 +555,17 @@ class User < ActiveRecord::Base
     gpg_keys.each(&:update_invalid_gpg_signatures)
   end
 
-  # Returns the groups a user has access to
+  # Returns the groups a user has access to, either through a membership or a project authorization
   def authorized_groups
     union = Gitlab::SQL::Union
       .new([groups.select(:id), authorized_projects.select(:namespace_id)])
 
     Group.where("namespaces.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+  end
+
+  # Returns the groups a user is a member of, either directly or through a parent group
+  def membership_groups
+    Gitlab::GroupHierarchy.new(groups).base_and_descendants
   end
 
   # Returns a relation of groups the user has access to, including their parent
@@ -609,6 +601,15 @@ class User < ActiveRecord::Base
 
   def authorized_project?(project, min_access_level = nil)
     authorized_projects(min_access_level).exists?({ id: project.id })
+  end
+
+  # Typically used in conjunction with projects table to get projects
+  # a user has been given access to.
+  #
+  # Example use:
+  # `Project.where('EXISTS(?)', user.authorizations_for_projects)`
+  def authorizations_for_projects
+    project_authorizations.select(1).where('project_authorizations.project_id = projects.id')
   end
 
   # Returns the projects this user has reporter (or greater) access to, limited
@@ -663,11 +664,11 @@ class User < ActiveRecord::Base
   end
 
   def allow_password_authentication_for_web?
-    current_application_settings.password_authentication_enabled_for_web? && !ldap_user?
+    Gitlab::CurrentSettings.password_authentication_enabled_for_web? && !ldap_user?
   end
 
   def allow_password_authentication_for_git?
-    current_application_settings.password_authentication_enabled_for_git? && !ldap_user?
+    Gitlab::CurrentSettings.password_authentication_enabled_for_git? && !ldap_user?
   end
 
   def can_change_username?
@@ -738,7 +739,7 @@ class User < ActiveRecord::Base
 
   def ldap_user?
     if identities.loaded?
-      identities.find { |identity| Gitlab::OAuth::Provider.ldap_provider?(identity.provider) && !identity.extern_uid.nil? }
+      identities.find { |identity| Gitlab::Auth::OAuth::Provider.ldap_provider?(identity.provider) && !identity.extern_uid.nil? }
     else
       identities.exists?(["provider LIKE ? AND extern_uid IS NOT NULL", "ldap%"])
     end
@@ -793,12 +794,9 @@ class User < ActiveRecord::Base
     # `User.select(:id)` raises
     # `ActiveModel::MissingAttributeError: missing attribute: projects_limit`
     # without this safeguard!
-    return unless has_attribute?(:projects_limit)
+    return unless has_attribute?(:projects_limit) && projects_limit.nil?
 
-    connection_default_value_defined = new_record? && !projects_limit_changed?
-    return unless projects_limit.nil? || connection_default_value_defined
-
-    self.projects_limit = current_application_settings.default_projects_limit
+    self.projects_limit = Gitlab::CurrentSettings.default_projects_limit
   end
 
   def requires_ldap_check?
@@ -838,13 +836,13 @@ class User < ActiveRecord::Base
   end
 
   def full_website_url
-    return "http://#{website_url}" if website_url !~ /\Ahttps?:\/\//
+    return "http://#{website_url}" if website_url !~ %r{\Ahttps?://}
 
     website_url
   end
 
   def short_website_url
-    website_url.sub(/\Ahttps?:\/\//, '')
+    website_url.sub(%r{\Ahttps?://}, '')
   end
 
   def all_ssh_keys
@@ -856,9 +854,7 @@ class User < ActiveRecord::Base
   end
 
   def avatar_url(size: nil, scale: 2, **args)
-    # We use avatar_path instead of overriding avatar_url because of carrierwave.
-    # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
-    avatar_path(args) || GravatarService.new.execute(email, size, scale, username: username)
+    GravatarService.new.execute(email, size, scale, username: username)
   end
 
   def primary_email_verified?
@@ -893,17 +889,16 @@ class User < ActiveRecord::Base
   end
 
   def ensure_namespace_correct
-    # Ensure user has namespace
-    create_namespace!(path: username, name: username) unless namespace
-
-    if username_changed?
-      unless namespace.update_attributes(path: username, name: username)
-        namespace.errors.each do |attribute, message|
-          self.errors.add(:"namespace_#{attribute}", message)
-        end
-        raise ActiveRecord::RecordInvalid.new(namespace)
-      end
+    if namespace
+      namespace.path = namespace.name = username if username_changed?
+    else
+      build_namespace(path: username, name: username)
     end
+  end
+
+  def set_username_errors
+    namespace_path_errors = self.errors.delete(:"namespace.path")
+    self.errors[:username].concat(namespace_path_errors) if namespace_path_errors
   end
 
   def username_changed_hook
@@ -1042,24 +1037,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def update_cache_counts
-    assigned_open_merge_requests_count(force: true)
-    assigned_open_issues_count(force: true)
-  end
-
-  def invalidate_cache_counts
-    invalidate_issue_cache_counts
-    invalidate_merge_request_cache_counts
-  end
-
-  def invalidate_issue_cache_counts
-    Rails.cache.delete(['users', id, 'assigned_open_issues_count'])
-  end
-
-  def invalidate_merge_request_cache_counts
-    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count'])
-  end
-
   def todos_done_count(force: false)
     Rails.cache.fetch(['users', id, 'todos_done_count'], force: force, expires_in: 20.minutes) do
       TodosFinder.new(self, state: :done).execute.count
@@ -1072,9 +1049,37 @@ class User < ActiveRecord::Base
     end
   end
 
+  def update_cache_counts
+    assigned_open_merge_requests_count(force: true)
+    assigned_open_issues_count(force: true)
+  end
+
   def update_todos_count_cache
     todos_done_count(force: true)
     todos_pending_count(force: true)
+  end
+
+  def invalidate_cache_counts
+    invalidate_issue_cache_counts
+    invalidate_merge_request_cache_counts
+    invalidate_todos_done_count
+    invalidate_todos_pending_count
+  end
+
+  def invalidate_issue_cache_counts
+    Rails.cache.delete(['users', id, 'assigned_open_issues_count'])
+  end
+
+  def invalidate_merge_request_cache_counts
+    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count'])
+  end
+
+  def invalidate_todos_done_count
+    Rails.cache.delete(['users', id, 'todos_done_count'])
+  end
+
+  def invalidate_todos_pending_count
+    Rails.cache.delete(['users', id, 'todos_pending_count'])
   end
 
   # This is copied from Devise::Models::Lockable#valid_for_authentication?, as our auth
@@ -1223,7 +1228,7 @@ class User < ActiveRecord::Base
     else
       # Only revert these back to the default if they weren't specifically changed in this update.
       self.can_create_group = gitlab_config.default_can_create_group unless can_create_group_changed?
-      self.projects_limit = current_application_settings.default_projects_limit unless projects_limit_changed?
+      self.projects_limit = Gitlab::CurrentSettings.default_projects_limit unless projects_limit_changed?
     end
   end
 
@@ -1231,15 +1236,15 @@ class User < ActiveRecord::Base
     valid = true
     error = nil
 
-    if current_application_settings.domain_blacklist_enabled?
-      blocked_domains = current_application_settings.domain_blacklist
+    if Gitlab::CurrentSettings.domain_blacklist_enabled?
+      blocked_domains = Gitlab::CurrentSettings.domain_blacklist
       if domain_matches?(blocked_domains, email)
         error = 'is not from an allowed domain.'
         valid = false
       end
     end
 
-    allowed_domains = current_application_settings.domain_whitelist
+    allowed_domains = Gitlab::CurrentSettings.domain_whitelist
     unless allowed_domains.blank?
       if domain_matches?(allowed_domains, email)
         valid = true

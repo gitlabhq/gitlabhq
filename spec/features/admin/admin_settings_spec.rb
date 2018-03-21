@@ -38,12 +38,22 @@ feature 'Admin updates settings' do
     uncheck 'Project export enabled'
     click_button 'Save'
 
-    expect(current_application_settings.gravatar_enabled).to be_falsey
-    expect(current_application_settings.home_page_url).to eq "https://about.gitlab.com/"
-    expect(current_application_settings.help_page_text).to eq "Example text"
-    expect(current_application_settings.help_page_hide_commercial_content).to be_truthy
-    expect(current_application_settings.help_page_support_url).to eq "http://example.com/help"
-    expect(current_application_settings.project_export_enabled).to be_falsey
+    expect(Gitlab::CurrentSettings.gravatar_enabled).to be_falsey
+    expect(Gitlab::CurrentSettings.home_page_url).to eq "https://about.gitlab.com/"
+    expect(Gitlab::CurrentSettings.help_page_text).to eq "Example text"
+    expect(Gitlab::CurrentSettings.help_page_hide_commercial_content).to be_truthy
+    expect(Gitlab::CurrentSettings.help_page_support_url).to eq "http://example.com/help"
+    expect(Gitlab::CurrentSettings.project_export_enabled).to be_falsey
+    expect(page).to have_content "Application settings saved successfully"
+  end
+
+  scenario 'Change AutoDevOps settings' do
+    check 'Enabled Auto DevOps (Beta) for projects by default'
+    fill_in 'Auto devops domain', with: 'domain.com'
+    click_button 'Save'
+
+    expect(Gitlab::CurrentSettings.auto_devops_enabled?).to be true
+    expect(Gitlab::CurrentSettings.auto_devops_domain).to eq('domain.com')
     expect(page).to have_content "Application settings saved successfully"
   end
 

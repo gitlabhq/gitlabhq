@@ -29,7 +29,7 @@ module RuboCop
                 hash_key_name(pair) == :using
 
             if hash_key_value(pair).to_s == 'hash'
-              add_offense(pair, :expression)
+              add_offense(pair, location: :expression)
             end
           end
         end

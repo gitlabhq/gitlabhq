@@ -1,7 +1,11 @@
 module Boards
   class IssuesController < Boards::ApplicationController
     include BoardsResponses
+    include ControllerWithCrossProjectAccessCheck
 
+    requires_cross_project_access if: -> { board&.group_board? }
+
+    before_action :whitelist_query_limiting, only: [:index, :update]
     before_action :authorize_read_issue, only: [:index]
     before_action :authorize_create_issue, only: [:create]
     before_action :authorize_update_issue, only: [:update]
@@ -54,7 +58,7 @@ module Boards
     end
 
     def issue
-      @issue ||= issues_finder.execute.find(params[:id])
+      @issue ||= issues_finder.find(params[:id])
     end
 
     def filter_params
@@ -63,11 +67,19 @@ module Boards
     end
 
     def issues_finder
-      IssuesFinder.new(current_user, project_id: board_parent.id)
+      if board.group_board?
+        IssuesFinder.new(current_user, group_id: board_parent.id)
+      else
+        IssuesFinder.new(current_user, project_id: board_parent.id)
+      end
     end
 
     def project
-      board_parent
+      @project ||= if board.group_board?
+                     Project.find(issue_params[:project_id])
+                   else
+                     board_parent
+                   end
     end
 
     def move_params
@@ -91,6 +103,11 @@ module Boards
           milestone: { only: [:id, :title] }
         }
       )
+    end
+
+    def whitelist_query_limiting
+      # Also see https://gitlab.com/gitlab-org/gitlab-ce/issues/42439
+      Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42428')
     end
   end
 end

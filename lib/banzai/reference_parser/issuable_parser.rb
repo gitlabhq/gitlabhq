@@ -18,7 +18,7 @@ module Banzai
       end
 
       def can_read_reference?(user, issuable)
-        can?(user, "read_#{issuable.class.to_s.underscore}".to_sym, issuable)
+        can?(user, "read_#{issuable.class.to_s.underscore}_iid".to_sym, issuable)
       end
     end
   end

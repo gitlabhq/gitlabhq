@@ -1,7 +1,7 @@
 - @content_class = "limit-container-width" unless fluid_layout
-- add_to_breadcrumbs "Clusters", project_clusters_path(@project)
-- breadcrumb_title @cluster.id
-- page_title _("Cluster")
+- add_to_breadcrumbs "Kubernetes Clusters", project_clusters_path(@project)
+- breadcrumb_title @cluster.name
+- page_title _("Kubernetes Cluster")
 
 - expanded = Rails.env.test?
 
@@ -9,26 +9,31 @@
 .edit-cluster-form.js-edit-cluster-form{ data: { status_path: status_path,
   install_helm_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :helm),
   install_ingress_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :ingress),
+  install_prometheus_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :prometheus),
+  install_runner_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :runner),
   toggle_status: @cluster.enabled? ? 'true': 'false',
   cluster_status: @cluster.status_name,
   cluster_status_reason: @cluster.status_reason,
-  help_path: help_page_path('user/project/clusters/index.md', anchor: 'installing-applications') } }
+  help_path: help_page_path('user/project/clusters/index.md', anchor: 'installing-applications'),
+  ingress_help_path: help_page_path('user/project/clusters/index.md', anchor: 'getting-the-external-ip-address'),
+  ingress_dns_help_path: help_page_path('topics/autodevops/quick_start_guide.md', anchor: 'point-dns-at-cluster-ip'),
+  manage_prometheus_path: edit_project_service_path(@cluster.project, 'prometheus') } }
 
   .js-cluster-application-notice
     .flash-container
 
-  %section.settings.no-animate.expanded
+  %section.settings.no-animate.expanded#cluster-integration
     = render 'banner'
-    = render 'enabled'
+    = render 'integration_form'
 
   .cluster-applications-table#js-cluster-applications
 
   %section.settings#js-cluster-details{ class: ('expanded' if expanded) }
     .settings-header
-      %h4= s_('ClusterIntegration|Cluster details')
+      %h4= s_('ClusterIntegration|Kubernetes cluster details')
       %button.btn.js-settings-toggle
         = expanded ? 'Collapse' : 'Expand'
-      %p= s_('ClusterIntegration|See and edit the details for your cluster')
+      %p= s_('ClusterIntegration|See and edit the details for your Kubernetes cluster')
     .settings-content
       - if @cluster.managed?
         = render 'projects/clusters/gcp/show'
@@ -40,6 +45,6 @@
       %h4= _('Advanced settings')
       %button.btn.js-settings-toggle
         = expanded ? 'Collapse' : 'Expand'
-      %p= s_('ClusterIntegration|Manage cluster integration on your GitLab project')
+      %p= s_("ClusterIntegration|Advanced options on this Kubernetes cluster's integration")
     .settings-content
       = render 'advanced_settings'

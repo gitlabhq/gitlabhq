@@ -6,11 +6,10 @@ module Gitlab
   # Parser/renderer for the AsciiDoc format that uses Asciidoctor and filters
   # the resulting HTML through HTML pipeline filters.
   module Asciidoc
-    extend Gitlab::CurrentSettings
-
     DEFAULT_ADOC_ATTRS = [
       'showtitle', 'idprefix=user-content-', 'idseparator=-', 'env=gitlab',
-      'env-gitlab', 'source-highlighter=html-pipeline', 'icons=font'
+      'env-gitlab', 'source-highlighter=html-pipeline', 'icons=font',
+      'outfilesuffix=.adoc'
     ].freeze
 
     # Public: Converts the provided Asciidoc markup into HTML.
@@ -33,9 +32,9 @@ module Gitlab
 
     def self.plantuml_setup
       Asciidoctor::PlantUml.configure do |conf|
-        conf.url = current_application_settings.plantuml_url
-        conf.svg_enable = current_application_settings.plantuml_enabled
-        conf.png_enable = current_application_settings.plantuml_enabled
+        conf.url = Gitlab::CurrentSettings.plantuml_url
+        conf.svg_enable = Gitlab::CurrentSettings.plantuml_enabled
+        conf.png_enable = Gitlab::CurrentSettings.plantuml_enabled
         conf.txt_enable = false
       end
     end

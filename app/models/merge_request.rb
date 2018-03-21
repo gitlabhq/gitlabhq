@@ -1,5 +1,5 @@
 class MergeRequest < ActiveRecord::Base
-  include InternalId
+  include NonatomicInternalId
   include Issuable
   include Noteable
   include Referable
@@ -11,7 +11,8 @@ class MergeRequest < ActiveRecord::Base
   include Gitlab::Utils::StrongMemoize
 
   ignore_column :locked_at,
-                :ref_fetched
+                :ref_fetched,
+                :deleted_at
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
@@ -139,7 +140,9 @@ class MergeRequest < ActiveRecord::Base
   scope :merged, -> { with_state(:merged) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
   scope :from_source_branches, ->(branches) { where(source_branch: branches) }
-
+  scope :by_commit_sha, ->(sha) do
+    where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(sha)).reorder(nil)
+  end
   scope :join_project, -> { joins(:target_project) }
   scope :references_project, -> { references(:target_project) }
   scope :assigned, -> { where("assignee_id IS NOT NULL") }
@@ -150,10 +153,17 @@ class MergeRequest < ActiveRecord::Base
 
   after_save :keep_around_commit
 
-  acts_as_paranoid
-
   def self.reference_prefix
     '!'
+  end
+
+  def rebase_in_progress?
+    strong_memoize(:rebase_in_progress) do
+      # The source project can be deleted
+      next false unless source_project
+
+      source_project.repository.rebase_in_progress?(id)
+    end
   end
 
   # Use this method whenever you need to make sure the head_pipeline is synced with the
@@ -365,15 +375,27 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_start_sha
-    diff_start_commit.try(:sha)
+    if persisted?
+      merge_request_diff.start_commit_sha
+    else
+      target_branch_head.try(:sha)
+    end
   end
 
   def diff_base_sha
-    diff_base_commit.try(:sha)
+    if persisted?
+      merge_request_diff.base_commit_sha
+    else
+      branch_merge_base_commit.try(:sha)
+    end
   end
 
   def diff_head_sha
-    diff_head_commit.try(:sha)
+    if persisted?
+      merge_request_diff.head_commit_sha
+    else
+      source_branch_head.try(:sha)
+    end
   end
 
   # When importing a pull request from GitHub, the old and new branches may no
@@ -557,9 +579,10 @@ class MergeRequest < ActiveRecord::Base
     return unless open?
 
     old_diff_refs = self.diff_refs
+    new_diff = create_merge_request_diff
 
-    create_merge_request_diff
-    MergeRequests::MergeRequestDiffCacheService.new.execute(self)
+    MergeRequests::MergeRequestDiffCacheService.new.execute(self, new_diff)
+
     new_diff_refs = self.diff_refs
 
     update_diff_discussion_positions(
@@ -607,15 +630,15 @@ class MergeRequest < ActiveRecord::Base
 
     check_if_can_be_merged
 
-    can_be_merged?
+    can_be_merged? && !should_be_rebased?
   end
 
-  def mergeable_state?(skip_ci_check: false)
+  def mergeable_state?(skip_ci_check: false, skip_discussions_check: false)
     return false unless open?
     return false if work_in_progress?
     return false if broken?
     return false unless skip_ci_check || mergeable_ci_state?
-    return false unless mergeable_discussions_state?
+    return false unless skip_discussions_check || mergeable_discussions_state?
 
     true
   end
@@ -636,7 +659,7 @@ class MergeRequest < ActiveRecord::Base
     !ProtectedBranch.protected?(source_project, source_branch) &&
       !source_project.root_ref?(source_branch) &&
       Ability.allowed?(current_user, :push_code, source_project) &&
-      diff_head_commit == source_branch_head
+      diff_head_sha == source_branch_head.try(:sha)
   end
 
   def should_remove_source_branch?
@@ -787,6 +810,7 @@ class MergeRequest < ActiveRecord::Base
     if !include_description && closes_issues_references.present?
       message << "Closes #{closes_issues_references.to_sentence}"
     end
+
     message << "#{description}" if include_description && description.present?
     message << "See merge request #{to_reference(full: true)}"
 
@@ -842,7 +866,7 @@ class MergeRequest < ActiveRecord::Base
 
   def can_be_merged_by?(user)
     access = ::Gitlab::UserAccess.new(user, project: project)
-    access.can_push_to_branch?(target_branch) || access.can_merge_to_branch?(target_branch)
+    access.can_update_branch?(target_branch)
   end
 
   def can_be_merged_via_command_line_by?(user)
@@ -975,7 +999,22 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def can_be_reverted?(current_user)
-    merge_commit && !merge_commit.has_been_reverted?(current_user, self)
+    return false unless merge_commit
+
+    merged_at = metrics&.merged_at
+    notes_association = notes_with_associations
+
+    if merged_at
+      # It is not guaranteed that Note#created_at will be strictly later than
+      # MergeRequestMetric#merged_at. Nanoseconds on MySQL may break this
+      # comparison, as will a HA environment if clocks are not *precisely*
+      # synchronized. Add a minute's leeway to compensate for both possibilities
+      cutoff = merged_at - 1.minute
+
+      notes_association = notes_association.where('created_at >= ?', cutoff)
+    end
+
+    !merge_commit.has_been_reverted?(current_user, notes_association)
   end
 
   def can_be_cherry_picked?
@@ -1048,5 +1087,23 @@ class MergeRequest < ActiveRecord::Base
     return false if project.team.max_member_access(author_id) > Gitlab::Access::GUEST
 
     project.merge_requests.merged.where(author_id: author_id).empty?
+  end
+
+  def allow_maintainer_to_push
+    maintainer_push_possible? && super
+  end
+
+  alias_method :allow_maintainer_to_push?, :allow_maintainer_to_push
+
+  def maintainer_push_possible?
+    source_project.present? && for_fork? &&
+      target_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE &&
+      source_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE &&
+      !ProtectedBranch.protected?(source_project, source_branch)
+  end
+
+  def can_allow_maintainer_to_push?(user)
+    maintainer_push_possible? &&
+      Ability.allowed?(user, :push_code, source_project)
   end
 end

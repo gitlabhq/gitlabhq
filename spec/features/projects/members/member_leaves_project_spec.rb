@@ -5,7 +5,7 @@ feature 'Projects > Members > Member leaves project' do
   let(:project) { create(:project, :repository) }
 
   background do
-    project.team << [user, :developer]
+    project.add_developer(user)
     sign_in(user)
     visit project_path(project)
   end

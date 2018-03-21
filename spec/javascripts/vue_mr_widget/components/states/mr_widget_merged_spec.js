@@ -1,105 +1,99 @@
 import Vue from 'vue';
-import mergedComponent from '~/vue_merge_request_widget/components/states/mr_widget_merged';
+import mergedComponent from '~/vue_merge_request_widget/components/states/mr_widget_merged.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
-
-const targetBranch = 'foo';
-
-const createComponent = () => {
-  const Component = Vue.extend(mergedComponent);
-  const mr = {
-    isRemovingSourceBranch: false,
-    cherryPickInForkPath: false,
-    canCherryPickInCurrentMR: true,
-    revertInForkPath: false,
-    canRevertInCurrentMR: true,
-    canRemoveSourceBranch: true,
-    sourceBranchRemoved: true,
-    mergedEvent: {
-      author: {},
-      updatedAt: 'mergedUpdatedAt',
-      formattedUpdatedAt: '',
-    },
-    updatedAt: 'mrUpdatedAt',
-    targetBranch,
-  };
-
-  const service = {
-    removeSourceBranch() {},
-  };
-
-  return new Component({
-    el: document.createElement('div'),
-    propsData: { mr, service },
-  });
-};
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('MRWidgetMerged', () => {
-  describe('props', () => {
-    it('should have props', () => {
-      const { mr, service } = mergedComponent.props;
+  let vm;
+  const targetBranch = 'foo';
 
-      expect(mr.type instanceof Object).toBeTruthy();
-      expect(mr.required).toBeTruthy();
+  beforeEach(() => {
+    const Component = Vue.extend(mergedComponent);
+    const mr = {
+      isRemovingSourceBranch: false,
+      cherryPickInForkPath: false,
+      canCherryPickInCurrentMR: true,
+      revertInForkPath: false,
+      canRevertInCurrentMR: true,
+      canRemoveSourceBranch: true,
+      sourceBranchRemoved: true,
+      metrics: {
+        mergedBy: {
+          name: 'Administrator',
+          username: 'root',
+          webUrl: 'http://localhost:3000/root',
+          avatarUrl: 'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+        },
+        mergedAt: 'Jan 24, 2018 1:02pm GMT+0000',
+        readableMergedAt: '',
+        closedBy: {},
+        closedAt: 'Jan 24, 2018 1:02pm GMT+0000',
+        readableClosedAt: '',
+      },
+      updatedAt: 'mergedUpdatedAt',
+      targetBranch,
+    };
 
-      expect(service.type instanceof Object).toBeTruthy();
-      expect(service.required).toBeTruthy();
-    });
+    const service = {
+      removeSourceBranch() {},
+    };
+
+    spyOn(eventHub, '$emit');
+
+    vm = mountComponent(Component, { mr, service });
   });
 
-  describe('components', () => {
-    it('should have components added', () => {
-      expect(mergedComponent.components['mr-widget-author-and-time']).toBeDefined();
-    });
-  });
-
-  describe('data', () => {
-    it('should have default data', () => {
-      const data = mergedComponent.data();
-
-      expect(data.isMakingRequest).toBeFalsy();
-    });
+  afterEach(() => {
+    vm.$destroy();
   });
 
   describe('computed', () => {
     describe('shouldShowRemoveSourceBranch', () => {
-      it('should correct value when fields changed', () => {
-        const vm = createComponent();
+      it('returns true when sourceBranchRemoved is false', () => {
         vm.mr.sourceBranchRemoved = false;
-        expect(vm.shouldShowRemoveSourceBranch).toBeTruthy();
+        expect(vm.shouldShowRemoveSourceBranch).toEqual(true);
+      });
 
+      it('returns false wehn sourceBranchRemoved is true', () => {
         vm.mr.sourceBranchRemoved = true;
-        expect(vm.shouldShowRemoveSourceBranch).toBeFalsy();
+        expect(vm.shouldShowRemoveSourceBranch).toEqual(false);
+      });
 
+      it('returns false when canRemoveSourceBranch is false', () => {
         vm.mr.sourceBranchRemoved = false;
         vm.mr.canRemoveSourceBranch = false;
-        expect(vm.shouldShowRemoveSourceBranch).toBeFalsy();
+        expect(vm.shouldShowRemoveSourceBranch).toEqual(false);
+      });
 
+      it('returns false when is making request', () => {
         vm.mr.canRemoveSourceBranch = true;
         vm.isMakingRequest = true;
-        expect(vm.shouldShowRemoveSourceBranch).toBeFalsy();
+        expect(vm.shouldShowRemoveSourceBranch).toEqual(false);
+      });
 
+      it('returns true when all are true', () => {
         vm.mr.isRemovingSourceBranch = true;
         vm.mr.canRemoveSourceBranch = true;
         vm.isMakingRequest = true;
-        expect(vm.shouldShowRemoveSourceBranch).toBeFalsy();
+        expect(vm.shouldShowRemoveSourceBranch).toEqual(false);
       });
     });
+
     describe('shouldShowSourceBranchRemoving', () => {
       it('should correct value when fields changed', () => {
-        const vm = createComponent();
         vm.mr.sourceBranchRemoved = false;
-        expect(vm.shouldShowSourceBranchRemoving).toBeFalsy();
+        expect(vm.shouldShowSourceBranchRemoving).toEqual(false);
 
         vm.mr.sourceBranchRemoved = true;
-        expect(vm.shouldShowRemoveSourceBranch).toBeFalsy();
+        expect(vm.shouldShowRemoveSourceBranch).toEqual(false);
 
         vm.mr.sourceBranchRemoved = false;
         vm.isMakingRequest = true;
-        expect(vm.shouldShowSourceBranchRemoving).toBeTruthy();
+        expect(vm.shouldShowSourceBranchRemoving).toEqual(true);
 
         vm.isMakingRequest = false;
         vm.mr.isRemovingSourceBranch = true;
-        expect(vm.shouldShowSourceBranchRemoving).toBeTruthy();
+        expect(vm.shouldShowSourceBranchRemoving).toEqual(true);
       });
     });
   });
@@ -107,14 +101,10 @@ describe('MRWidgetMerged', () => {
   describe('methods', () => {
     describe('removeSourceBranch', () => {
       it('should set flag and call service then request main component to update the widget', (done) => {
-        const vm = createComponent();
-        spyOn(eventHub, '$emit');
         spyOn(vm.service, 'removeSourceBranch').and.returnValue(new Promise((resolve) => {
           resolve({
-            json() {
-              return {
-                message: 'Branch was removed',
-              };
+            data: {
+              message: 'Branch was removed',
             },
           });
         }));
@@ -122,7 +112,7 @@ describe('MRWidgetMerged', () => {
         vm.removeSourceBranch();
         setTimeout(() => {
           const args = eventHub.$emit.calls.argsFor(0);
-          expect(vm.isMakingRequest).toBeTruthy();
+          expect(vm.isMakingRequest).toEqual(true);
           expect(args[0]).toEqual('MRWidgetUpdateRequested');
           expect(args[1]).not.toThrow();
           done();
@@ -131,53 +121,50 @@ describe('MRWidgetMerged', () => {
     });
   });
 
-  describe('template', () => {
-    let vm;
-    let el;
+  it('has merged by information', () => {
+    expect(vm.$el.textContent).toContain('Merged by');
+    expect(vm.$el.textContent).toContain('Administrator');
+  });
 
-    beforeEach(() => {
-      vm = createComponent();
-      el = vm.$el;
+  it('renders branch information', () => {
+    expect(vm.$el.textContent).toContain('The changes were merged into');
+    expect(vm.$el.textContent).toContain(targetBranch);
+  });
+
+  it('renders information about branch being removed', () => {
+    expect(vm.$el.textContent).toContain('The source branch has been removed');
+  });
+
+  it('shows revert and cherry-pick buttons', () => {
+    expect(vm.$el.textContent).toContain('Revert');
+    expect(vm.$el.textContent).toContain('Cherry-pick');
+  });
+
+  it('should not show source branch removed text', (done) => {
+    vm.mr.sourceBranchRemoved = false;
+
+    Vue.nextTick(() => {
+      expect(vm.$el.innerText).toContain('You can remove source branch now');
+      expect(vm.$el.innerText).not.toContain('The source branch has been removed');
+      done();
     });
+  });
 
-    it('should have correct elements', () => {
-      expect(el.classList.contains('mr-widget-body')).toBeTruthy();
-      expect(el.querySelector('.js-mr-widget-author')).toBeDefined();
-      expect(el.innerText).toContain('The changes were merged into');
-      expect(el.innerText).toContain(targetBranch);
-      expect(el.innerText).toContain('The source branch has been removed');
-      expect(el.innerText).toContain('Revert');
-      expect(el.innerText).toContain('Cherry-pick');
-      expect(el.innerText).not.toContain('You can remove source branch now');
-      expect(el.innerText).not.toContain('The source branch is being removed');
+  it('should show source branch removing text', (done) => {
+    vm.mr.isRemovingSourceBranch = true;
+    vm.mr.sourceBranchRemoved = false;
+
+    Vue.nextTick(() => {
+      expect(vm.$el.innerText).toContain('The source branch is being removed');
+      expect(vm.$el.innerText).not.toContain('You can remove source branch now');
+      expect(vm.$el.innerText).not.toContain('The source branch has been removed');
+      done();
     });
+  });
 
-    it('should not show source branch removed text', (done) => {
-      vm.mr.sourceBranchRemoved = false;
-
-      Vue.nextTick(() => {
-        expect(el.innerText).toContain('You can remove source branch now');
-        expect(el.innerText).not.toContain('The source branch has been removed');
-        done();
-      });
-    });
-
-    it('should show source branch removing text', (done) => {
-      vm.mr.isRemovingSourceBranch = true;
-      vm.mr.sourceBranchRemoved = false;
-
-      Vue.nextTick(() => {
-        expect(el.innerText).toContain('The source branch is being removed');
-        expect(el.innerText).not.toContain('You can remove source branch now');
-        expect(el.innerText).not.toContain('The source branch has been removed');
-        done();
-      });
-    });
-
-    it('should use mergedEvent updatedAt as tooltip title', () => {
-      expect(
-        el.querySelector('time').getAttribute('title'),
-      ).toBe('mergedUpdatedAt');
-    });
+  it('should use mergedEvent mergedAt as tooltip title', () => {
+    expect(
+      vm.$el.querySelector('time').getAttribute('title'),
+    ).toBe('Jan 24, 2018 1:02pm GMT+0000');
   });
 });

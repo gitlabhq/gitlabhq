@@ -1,12 +1,15 @@
 %p
   - link_to_help_page = link_to(s_('ClusterIntegration|help page'), help_page_path('user/project/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
-  = s_('ClusterIntegration|Read our %{link_to_help_page} on cluster integration.').html_safe % { link_to_help_page: link_to_help_page}
+  = s_('ClusterIntegration|Read our %{link_to_help_page} on Kubernetes cluster integration.').html_safe % { link_to_help_page: link_to_help_page}
 
 = form_for @cluster, html: { class: 'prepend-top-20' }, url: gcp_namespace_project_clusters_path(@project.namespace, @project), as: :cluster do |field|
   = form_errors(@cluster)
   .form-group
-    = field.label :name, s_('ClusterIntegration|Cluster name')
-    = field.text_field :name, class: 'form-control', placeholder: s_('ClusterIntegration|Cluster name')
+    = field.label :name, s_('ClusterIntegration|Kubernetes cluster name')
+    = field.text_field :name, class: 'form-control', placeholder: s_('ClusterIntegration|Kubernetes cluster name')
+  .form-group
+    = field.label :environment_scope, s_('ClusterIntegration|Environment scope')
+    = field.text_field :environment_scope, class: 'form-control', readonly: !has_multiple_clusters?(@project), placeholder: s_('ClusterIntegration|Environment scope')
 
   = field.fields_for :provider_gcp, @cluster.provider_gcp do |provider_gcp_field|
     .form-group
@@ -29,4 +32,4 @@
       = provider_gcp_field.text_field :machine_type, class: 'form-control', placeholder: 'n1-standard-4'
 
     .form-group
-      = field.submit s_('ClusterIntegration|Create cluster'), class: 'btn btn-success'
+      = field.submit s_('ClusterIntegration|Create Kubernetes cluster'), class: 'btn btn-success'

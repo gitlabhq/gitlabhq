@@ -160,7 +160,7 @@ module DiffHelper
   end
 
   def diff_file_changed_icon(diff_file)
-    if diff_file.deleted_file? || diff_file.renamed_file?
+    if diff_file.deleted_file?
       "file-deletion"
     elsif diff_file.new_file?
       "file-addition"
@@ -225,5 +225,13 @@ module DiffHelper
     diffs = @merge_request_diff.presence || diff_files
 
     diffs.overflow?
+  end
+
+  def diff_file_path_text(diff_file, max: 60)
+    path = diff_file.new_path
+
+    return path unless path.size > max && max > 3
+
+    "...#{path[-(max - 3)..-1]}"
   end
 end

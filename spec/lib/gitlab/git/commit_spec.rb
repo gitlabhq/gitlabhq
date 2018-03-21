@@ -55,7 +55,6 @@ describe Gitlab::Git::Commit, seed_helper: true do
     it { expect(@commit.parents).to eq(@gitlab_parents) }
     it { expect(@commit.parent_id).to eq(@parents.first.oid) }
     it { expect(@commit.no_commit_message).to eq("--no commit message") }
-    it { expect(@commit.tree).to eq(@tree) }
 
     after do
       # Erase the new commit so other tests get the original repo
@@ -101,6 +100,10 @@ describe Gitlab::Git::Commit, seed_helper: true do
 
       it "should return valid commit" do
         expect(described_class.find(repository, SeedRepo::Commit::ID)).to be_valid_commit
+      end
+
+      it "returns an array of parent ids" do
+        expect(described_class.find(repository, SeedRepo::Commit::ID).parent_ids).to be_an(Array)
       end
 
       it "should return valid commit for tag" do
@@ -389,6 +392,114 @@ describe Gitlab::Git::Commit, seed_helper: true do
         end
       end
     end
+
+    shared_examples 'extracting commit signature' do
+      context 'when the commit is signed' do
+        let(:commit_id) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
+
+        it 'returns signature and signed text' do
+          signature, signed_text = subject
+
+          expected_signature = <<~SIGNATURE
+            -----BEGIN PGP SIGNATURE-----
+            Version: GnuPG/MacGPG2 v2.0.22 (Darwin)
+            Comment: GPGTools - https://gpgtools.org
+
+            iQEcBAABCgAGBQJTDvaZAAoJEGJ8X1ifRn8XfvYIAMuB0yrbTGo1BnOSoDfyrjb0
+            Kw2EyUzvXYL72B63HMdJ+/0tlSDC6zONF3fc+bBD8z+WjQMTbwFNMRbSSy2rKEh+
+            mdRybOP3xBIMGgEph0/kmWln39nmFQBsPRbZBWoU10VfI/ieJdEOgOphszgryRar
+            TyS73dLBGE9y9NIININVaNISet9D9QeXFqc761CGjh4YIghvPpi+YihMWapGka6v
+            hgKhX+hc5rj+7IEE0CXmlbYR8OYvAbAArc5vJD7UTxAY4Z7/l9d6Ydt9GQ25khfy
+            ANFgltYzlR6evLFmDjssiP/mx/ZMN91AL0ueJ9nNGv411Mu2CUW+tDCaQf35mdc=
+            =j51i
+            -----END PGP SIGNATURE-----
+          SIGNATURE
+
+          expect(signature).to eq(expected_signature.chomp)
+          expect(signature).to be_a_binary_string
+
+          expected_signed_text = <<~SIGNED_TEXT
+            tree 22bfa2fbd217df24731f43ff43a4a0f8db759dae
+            parent ae73cb07c9eeaf35924a10f713b364d32b2dd34f
+            author Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com> 1393489561 +0200
+            committer Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com> 1393489561 +0200
+
+            Feature added
+
+            Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
+          SIGNED_TEXT
+
+          expect(signed_text).to eq(expected_signed_text)
+          expect(signed_text).to be_a_binary_string
+        end
+      end
+
+      context 'when the commit has no signature' do
+        let(:commit_id) { '4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6' }
+
+        it 'returns nil' do
+          expect(subject).to be_nil
+        end
+      end
+
+      context 'when the commit cannot be found' do
+        let(:commit_id) { Gitlab::Git::BLANK_SHA }
+
+        it 'returns nil' do
+          expect(subject).to be_nil
+        end
+      end
+
+      context 'when the commit ID is invalid' do
+        let(:commit_id) { '4b4918a572fa86f9771e5ba40fbd48e' }
+
+        it 'raises ArgumentError' do
+          expect { subject }.to raise_error(ArgumentError)
+        end
+      end
+    end
+
+    describe '.extract_signature_lazily' do
+      shared_examples 'loading signatures in batch once' do
+        it 'fetches signatures in batch once' do
+          commit_ids = %w[0b4bc9a49b562e85de7cc9e834518ea6828729b9 4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6]
+          signatures = commit_ids.map do |commit_id|
+            described_class.extract_signature_lazily(repository, commit_id)
+          end
+
+          expect(described_class).to receive(:batch_signature_extraction)
+            .with(repository, commit_ids)
+            .once
+            .and_return({})
+
+          2.times { signatures.each(&:itself) }
+        end
+      end
+
+      subject { described_class.extract_signature_lazily(repository, commit_id).itself }
+
+      context 'with Gitaly extract_commit_signature_in_batch feature enabled' do
+        it_behaves_like 'extracting commit signature'
+        it_behaves_like 'loading signatures in batch once'
+      end
+
+      context 'with Gitaly extract_commit_signature_in_batch feature disabled', :disable_gitaly do
+        it_behaves_like 'extracting commit signature'
+        it_behaves_like 'loading signatures in batch once'
+      end
+    end
+
+    describe '.extract_signature' do
+      subject { described_class.extract_signature(repository, commit_id) }
+
+      context 'with gitaly' do
+        it_behaves_like 'extracting commit signature'
+      end
+
+      context 'without gitaly', :disable_gitaly do
+        it_behaves_like 'extracting commit signature'
+      end
+    end
   end
 
   describe '#init_from_rugged' do
@@ -427,6 +538,11 @@ describe Gitlab::Git::Commit, seed_helper: true do
     describe '#deletions' do
       subject { super().deletions }
       it { is_expected.to eq(6) }
+    end
+
+    describe '#total' do
+      subject { super().total }
+      it { is_expected.to eq(17) }
     end
   end
 

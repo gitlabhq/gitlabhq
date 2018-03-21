@@ -1,8 +1,9 @@
 /* global CommentsStore */
-/* global notes */
 
+import $ from 'jquery';
 import Vue from 'vue';
 import collapseIcon from '../icons/collapse_icon.svg';
+import Notes from '../../notes';
 import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
 
 const DiffNoteAvatars = Vue.extend({
@@ -129,7 +130,7 @@ const DiffNoteAvatars = Vue.extend({
   },
   methods: {
     clickedAvatar(e) {
-      notes.onAddDiffNote(e);
+      Notes.instance.onAddDiffNote(e);
 
       // Toggle the active state of the toggle all button
       this.toggleDiscussionsToggleState();

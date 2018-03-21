@@ -1,6 +1,10 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, consistent-return, one-var, one-var-declaration-per-line, no-cond-assign, max-len, object-shorthand, no-param-reassign, comma-dangle, prefer-template, no-unused-vars, no-return-assign */
 
+import $ from 'jquery';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import axios from '~/lib/utils/axios_utils';
+import flash from '~/flash';
+import { __ } from '~/locale';
 
 // highlight text(awefwbwgtc -> <b>a</b>wefw<b>b</b>wgt<b>c</b> )
 const highlighter = function(element, text, matches) {
@@ -70,24 +74,19 @@ export default class ProjectFindFile {
   // find file
   }
 
-    // files pathes load
+  // files pathes load
   load(url) {
-    return $.ajax({
-      url: url,
-      method: "get",
-      dataType: "json",
-      success: (function(_this) {
-        return function(data) {
-          _this.element.find(".loading").hide();
-          _this.filePaths = data;
-          _this.findFile();
-          return _this.element.find(".files-slider tr.tree-item").eq(0).addClass("selected").focus();
-        };
-      })(this)
-    });
+    axios.get(url)
+      .then(({ data }) => {
+        this.element.find('.loading').hide();
+        this.filePaths = data;
+        this.findFile();
+        this.element.find('.files-slider tr.tree-item').eq(0).addClass('selected').focus();
+      })
+      .catch(() => flash(__('An error occurred while loading filenames')));
   }
 
-    // render result
+  // render result
   renderList(filePaths, searchText) {
     var blobItemUrl, filePath, html, i, j, len, matches, results;
     this.element.find(".tree-table > tbody").empty();

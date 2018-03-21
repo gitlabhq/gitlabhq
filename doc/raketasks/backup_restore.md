@@ -5,14 +5,27 @@
 An application data backup creates an archive file that contains the database,
 all repositories and all attachments.
 
-You can only restore a backup to **exactly the same version and type (CE/EE)** 
-of GitLab on which it was created. The best way to migrate your repositories 
+You can only restore a backup to **exactly the same version and type (CE/EE)**
+of GitLab on which it was created. The best way to migrate your repositories
 from one server to another is through backup restore.
 
 ## Backup
 
 GitLab provides a simple command line interface to backup your whole installation,
 and is flexible enough to fit your needs.
+
+### Requirements
+
+If you're using GitLab with the Omnibus package, you're all set. If you
+installed GitLab from source, make sure the following packages are installed:
+
+* rsync
+
+If you're using Ubuntu, you could run:
+
+```
+sudo apt-get install -y rsync
+```
 
 ### Backup timestamp
 
@@ -155,6 +168,32 @@ For Omnibus GitLab packages:
     ```
 
 1. [Reconfigure GitLab] for the changes to take effect
+
+#### Digital Ocean Spaces
+
+This example can be used for a bucket in Amsterdam (AMS3).
+
+1. Add the following to `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    gitlab_rails['backup_upload_connection'] = {
+      'provider' => 'AWS',
+      'region' => 'ams3',
+      'aws_access_key_id' => 'AKIAKIAKI',
+      'aws_secret_access_key' => 'secret123',
+      'endpoint'              => 'https://ams3.digitaloceanspaces.com'
+    }
+    gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
+    ```
+
+1. [Reconfigure GitLab] for the changes to take effect
+
+#### Other S3 Providers
+
+Not all S3 providers are fully-compatible with the Fog library. For example,
+if you see `411 Length Required` errors after attempting to upload, you may
+need to downgrade the `aws_signature_version` value from the default value to
+2 [due to this issue](https://github.com/fog/fog-aws/issues/428).
 
 ---
 
@@ -431,7 +470,7 @@ The [restore prerequisites section](#restore-prerequisites) includes crucial
 information. Make sure to read and test the whole restore process at least once
 before attempting to perform it in a production environment.
 
-You can only restore a backup to **exactly the same version and type (CE/EE)** of 
+You can only restore a backup to **exactly the same version and type (CE/EE)** of
 GitLab that you created it on, for example CE 9.1.0.
 
 ### Restore prerequisites
@@ -457,7 +496,7 @@ more of the following options:
 
 - `BACKUP=timestamp_of_backup` - Required if more than one backup exists.
   Read what the [backup timestamp is about](#backup-timestamp).
-- `force=yes` - Do not ask if the authorized_keys file should get regenerated.
+- `force=yes` - Does not ask if the authorized_keys file should get regenerated and assumes 'yes' for warning that database tables will be removed.
 
 ### Restore for installation from source
 
@@ -511,7 +550,7 @@ sudo service gitlab restart
 
 This procedure assumes that:
 
-- You have installed the **exact same version and type (CE/EE)** of GitLab 
+- You have installed the **exact same version and type (CE/EE)** of GitLab
   Omnibus with which the backup was created.
 - You have run `sudo gitlab-ctl reconfigure` at least once.
 - GitLab is running.  If not, start it using `sudo gitlab-ctl start`.

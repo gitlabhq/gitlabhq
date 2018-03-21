@@ -16,10 +16,7 @@ module Ci
         @builds = @config_processor.builds
         @jobs = @config_processor.jobs
       end
-    rescue
-      @error = 'Undefined error'
-      @status = false
-    ensure
+
       render :show
     end
   end

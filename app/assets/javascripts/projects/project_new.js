@@ -1,6 +1,10 @@
+import $ from 'jquery';
+import { addSelectOnFocusBehaviour } from '../lib/utils/common_utils';
+
 let hasUserDefinedProjectPath = false;
 
-const deriveProjectPathFromUrl = ($projectImportUrl, $projectPath) => {
+const deriveProjectPathFromUrl = ($projectImportUrl) => {
+  const $currentProjectPath = $projectImportUrl.parents('.toggle-import-form').find('#project_path');
   if (hasUserDefinedProjectPath) {
     return;
   }
@@ -21,7 +25,7 @@ const deriveProjectPathFromUrl = ($projectImportUrl, $projectPath) => {
   // extract everything after the last slash
   const pathMatch = /\/([^/]+)$/.exec(importUrl);
   if (pathMatch) {
-    $projectPath.val(pathMatch[1]);
+    $currentProjectPath.val(pathMatch[1]);
   }
 };
 
@@ -35,6 +39,7 @@ const bindEvents = () => {
   const $changeTemplateBtn = $('.change-template');
   const $selectedIcon = $('.selected-icon svg');
   const $templateProjectNameInput = $('#template-project-name #project_path');
+  const $pushNewProjectTipTrigger = $('.push-new-project-tip');
 
   if ($newProjectForm.length !== 1) {
     return;
@@ -53,6 +58,34 @@ const bindEvents = () => {
     const importHref = $('a.btn_import_gitlab_project').attr('href');
     $('.btn_import_gitlab_project').attr('href', `${importHref}?namespace_id=${$('#project_namespace_id').val()}&path=${$projectPath.val()}`);
   });
+
+  if ($pushNewProjectTipTrigger) {
+    $pushNewProjectTipTrigger
+      .removeAttr('rel')
+      .removeAttr('target')
+      .on('click', (e) => { e.preventDefault(); })
+      .popover({
+        title: $pushNewProjectTipTrigger.data('title'),
+        placement: 'auto bottom',
+        html: 'true',
+        content: $('.push-new-project-tip-template').html(),
+      })
+      .on('shown.bs.popover', () => {
+        $(document).on('click.popover touchstart.popover', (event) => {
+          if ($(event.target).closest('.popover').length === 0) {
+            $pushNewProjectTipTrigger.trigger('click');
+          }
+        });
+
+        const target = $(`#${$pushNewProjectTipTrigger.attr('aria-describedby')}`).find('.js-select-on-focus');
+        addSelectOnFocusBehaviour(target);
+
+        target.focus();
+      })
+      .on('hide.bs.popover', () => {
+        $(document).off('click.popover touchstart.popover');
+      });
+  }
 
   function chooseTemplate() {
     $('.template-option').hide();
@@ -96,10 +129,8 @@ const bindEvents = () => {
     hasUserDefinedProjectPath = $projectPath.val().trim().length > 0;
   });
 
-  $projectImportUrl.keyup(() => deriveProjectPathFromUrl($projectImportUrl, $projectPath));
+  $projectImportUrl.keyup(() => deriveProjectPathFromUrl($projectImportUrl));
 };
-
-document.addEventListener('DOMContentLoaded', bindEvents);
 
 export default {
   bindEvents,

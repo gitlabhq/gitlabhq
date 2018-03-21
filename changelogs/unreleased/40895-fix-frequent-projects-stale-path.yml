@@ -1,5 +1,0 @@
----
-title: Use relative URL for projects to avoid storing domains
-merge_request: 15876
-author:
-type: fixed

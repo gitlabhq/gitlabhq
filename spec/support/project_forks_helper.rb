@@ -38,10 +38,6 @@ module ProjectForksHelper
       # so we have to explicitely call this method to clear the @exists variable.
       # of the instance we're returning here.
       forked_project.repository.after_import
-
-      # We can't leave the hooks in place after a fork, as those would fail in tests
-      # The "internal" API is not available
-      FileUtils.rm_rf("#{forked_project.repository.path}/hooks")
     end
 
     forked_project

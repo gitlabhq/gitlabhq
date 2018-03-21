@@ -2,7 +2,7 @@
 
 > [Introduced][ce-6373] in GitLab 8.15.
 
-### Snippet visibility level
+## Snippet visibility level
 
 Snippets in GitLab can be either private, internal, or public.
 You can set it with the `visibility` field in the snippet.
@@ -84,7 +84,11 @@ Parameters:
 
 
 ``` bash
-curl --request POST --data '{"title": "This is a snippet", "content": "Hello world", "description": "Hello World snippet", "file_name": "test.txt", "visibility": "internal" }' --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/snippets
+curl --request POST \
+     --data '{"title": "This is a snippet", "content": "Hello world", "description": "Hello World snippet", "file_name": "test.txt", "visibility": "internal" }' \
+     --header 'Content-Type: application/json' \
+     --header "PRIVATE-TOKEN: valid_api_token" \
+     https://gitlab.example.com/api/v4/snippets
 ```
 
 Example response:
@@ -131,7 +135,11 @@ Parameters:
 
 
 ``` bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data '{"title": "foo", "content": "bar"}' https://gitlab.example.com/api/v4/snippets/1
+curl --request PUT \
+     --data '{"title": "foo", "content": "bar"}' \
+     --header 'Content-Type: application/json' \
+     --header "PRIVATE-TOKEN: valid_api_token" \
+     https://gitlab.example.com/api/v4/snippets/1
 ```
 
 Example response:
@@ -265,4 +273,5 @@ Example response:
 }
 ```
 
-[ce-[ce-29508]: https://gitlab.com/gitlab-org/gitlab-ce/issues/29508]: https://gitlab.com/gitlab-org/gitlab-ce/issues/29508
+[ce-6373]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6373
+[ce-29508]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12655

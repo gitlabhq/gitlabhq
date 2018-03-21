@@ -37,7 +37,7 @@ describe Projects::IssuesController do
     context 'internal issue tracker' do
       before do
         sign_in(user)
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       it_behaves_like "issuables list meta-data", :issue
@@ -69,7 +69,7 @@ describe Projects::IssuesController do
 
       before do
         sign_in(user)
-        project.team << [user, :developer]
+        project.add_developer(user)
         allow(Kaminari.config).to receive(:default_per_page).and_return(1)
       end
 
@@ -102,6 +102,18 @@ describe Projects::IssuesController do
 
         expect(response).to redirect_to(namespace_project_issues_path(page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
       end
+
+      it 'does not use pagination if disabled' do
+        allow(controller).to receive(:pagination_disabled?).and_return(true)
+
+        get :index,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          page: (last_page + 1).to_param
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(assigns(:issues).size).to eq(2)
+      end
     end
   end
 
@@ -116,7 +128,7 @@ describe Projects::IssuesController do
     context 'internal issue tracker' do
       before do
         sign_in(user)
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       it 'builds a new issue' do
@@ -127,7 +139,7 @@ describe Projects::IssuesController do
 
       it 'fills in an issue for a merge request' do
         project_with_repository = create(:project, :repository)
-        project_with_repository.team << [user, :developer]
+        project_with_repository.add_developer(user)
         mr = create(:merge_request_with_diff_notes, source_project: project_with_repository)
 
         get :new, namespace_id: project_with_repository.namespace, project_id: project_with_repository, merge_request_to_resolve_discussions_of: mr.iid
@@ -153,7 +165,7 @@ describe Projects::IssuesController do
 
       before do
         sign_in(user)
-        project.team << [user, :developer]
+        project.add_developer(user)
 
         external = double
         allow(project).to receive(:external_issue_tracker).and_return(external)
@@ -301,6 +313,53 @@ describe Projects::IssuesController do
     end
   end
 
+  describe 'GET #realtime_changes' do
+    def go(id:)
+      get :realtime_changes,
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: id
+    end
+
+    context 'when an issue was edited' do
+      before do
+        project.add_developer(user)
+
+        issue.update!(last_edited_by: user, last_edited_at: issue.created_at + 1.minute)
+
+        sign_in(user)
+      end
+
+      it 'returns last edited time' do
+        go(id: issue.iid)
+
+        data = JSON.parse(response.body)
+
+        expect(data).to include('updated_at')
+        expect(data['updated_at']).to eq(issue.last_edited_at.to_time.iso8601)
+      end
+    end
+
+    context 'when an issue was edited by a deleted user' do
+      let(:deleted_user) { create(:user) }
+
+      before do
+        project.add_developer(user)
+
+        issue.update!(last_edited_by: deleted_user, last_edited_at: Time.now)
+
+        deleted_user.destroy
+        sign_in(user)
+      end
+
+      it 'returns 200' do
+        go(id: issue.iid)
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+    end
+  end
+
   describe 'Confidential Issues' do
     let(:project) { create(:project_empty_repo, :public) }
     let(:assignee) { create(:assignee) }
@@ -329,7 +388,7 @@ describe Projects::IssuesController do
 
       it 'does not list confidential issues for project members with guest role' do
         sign_in(member)
-        project.team << [member, :guest]
+        project.add_guest(member)
 
         get_issues
 
@@ -354,7 +413,7 @@ describe Projects::IssuesController do
 
       it 'lists confidential issues for project members' do
         sign_in(member)
-        project.team << [member, :developer]
+        project.add_developer(member)
 
         get_issues
 
@@ -394,7 +453,7 @@ describe Projects::IssuesController do
 
       it 'returns 404 for project members with guest role' do
         sign_in(member)
-        project.team << [member, :guest]
+        project.add_guest(member)
         go(id: unescaped_parameter_value.to_param)
 
         expect(response).to have_gitlab_http_status :not_found
@@ -416,7 +475,7 @@ describe Projects::IssuesController do
 
       it "returns #{http_status[:success]} for project members" do
         sign_in(member)
-        project.team << [member, :developer]
+        project.add_developer(member)
         go(id: unescaped_parameter_value.to_param)
 
         expect(response).to have_gitlab_http_status http_status[:success]
@@ -450,7 +509,7 @@ describe Projects::IssuesController do
 
       before do
         sign_in(user)
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       it_behaves_like 'restricted action', success: 200
@@ -589,25 +648,6 @@ describe Projects::IssuesController do
           project_id: project,
           id: id
       end
-
-      context 'when an issue was edited by a deleted user' do
-        let(:deleted_user) { create(:user) }
-
-        before do
-          project.team << [user, :developer]
-
-          issue.update!(last_edited_by: deleted_user, last_edited_at: Time.now)
-
-          deleted_user.destroy
-          sign_in(user)
-        end
-
-        it 'returns 200' do
-          go(id: issue.iid)
-
-          expect(response).to have_gitlab_http_status(200)
-        end
-      end
     end
 
     describe 'GET #edit' do
@@ -638,7 +678,7 @@ describe Projects::IssuesController do
     def post_new_issue(issue_attrs = {}, additional_params = {})
       sign_in(user)
       project = create(:project, :public)
-      project.team << [user, :developer]
+      project.add_developer(user)
 
       post :create, {
         namespace_id: project.namespace.to_param,
@@ -655,7 +695,7 @@ describe Projects::IssuesController do
       let(:project) { merge_request.source_project }
 
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         sign_in user
       end
 
@@ -829,7 +869,7 @@ describe Projects::IssuesController do
       def post_spam
         admin = create(:admin)
         create(:user_agent_detail, subject: issue)
-        project.team << [admin, :master]
+        project.add_master(admin)
         sign_in(admin)
         post :mark_as_spam, {
           namespace_id: project.namespace,
@@ -874,7 +914,7 @@ describe Projects::IssuesController do
       end
 
       it 'delegates the update of the todos count cache to TodoService' do
-        expect_any_instance_of(TodoService).to receive(:destroy_issuable).with(issue, owner).once
+        expect_any_instance_of(TodoService).to receive(:destroy_target).with(issue).once
 
         delete :destroy, namespace_id: project.namespace, project_id: project, id: issue.iid
       end
@@ -934,7 +974,7 @@ describe Projects::IssuesController do
       it 'returns discussion json' do
         get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
 
-        expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes individual_note])
+        expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes diff_discussion individual_note resolvable resolve_with_issue_path resolved])
       end
 
       context 'with cross-reference system note', :request_store do

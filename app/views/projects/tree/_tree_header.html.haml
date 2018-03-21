@@ -2,16 +2,77 @@
   .tree-ref-holder
     = render 'shared/ref_switcher', destination: 'tree', path: @path, show_create: true
 
-  - if show_new_repo? && can_push_branch?(@project, @ref)
-    .js-new-dropdown
-  - else
-    = render 'projects/tree/old_tree_header'
+    - if on_top_of_branch?
+      - addtotree_toggle_attributes = { href: '#', 'data-toggle': 'dropdown', 'data-target': '.add-to-tree-dropdown' }
+    - else
+      - addtotree_toggle_attributes = { title: _("You can only add files when you are on a branch"), data: { container: 'body' }, class: 'disabled has-tooltip' }
+
+  %ul.breadcrumb.repo-breadcrumb
+    %li
+      = link_to project_tree_path(@project, @ref) do
+        = @project.path
+    - path_breadcrumbs do |title, path|
+      %li
+        = link_to truncate(title, length: 40), project_tree_path(@project, tree_join(@ref, path))
+
+    - if current_user
+      %li
+        %a.btn.add-to-tree{ addtotree_toggle_attributes }
+          = sprite_icon('plus', size: 16, css_class: 'pull-left')
+          = sprite_icon('arrow-down', size: 16, css_class: 'pull-left')
+        - if on_top_of_branch?
+          .add-to-tree-dropdown
+            %ul.dropdown-menu
+              - if can_edit_tree?
+                %li.dropdown-header
+                  #{ _('This directory') }
+                %li
+                  = link_to project_new_blob_path(@project, @id) do
+                    #{ _('New file') }
+                %li
+                  = link_to '#modal-upload-blob', { 'data-target' => '#modal-upload-blob', 'data-toggle' => 'modal' } do
+                    #{ _('Upload file') }
+                %li
+                  = link_to '#modal-create-new-dir', { 'data-target' => '#modal-create-new-dir', 'data-toggle' => 'modal' } do
+                    #{ _('New directory') }
+              - elsif can?(current_user, :fork_project, @project)
+                %li
+                  - continue_params = { to:         project_new_blob_path(@project, @id),
+                                        notice:     edit_in_new_fork_notice,
+                                        notice_now: edit_in_new_fork_notice_now }
+                  - fork_path = project_forks_path(@project, namespace_key:  current_user.namespace.id,
+                                                                                          continue:       continue_params)
+                  = link_to fork_path, method: :post do
+                    #{ _('New file') }
+                %li
+                  - continue_params = { to:         request.fullpath,
+                                        notice:     edit_in_new_fork_notice + " Try to upload a file again.",
+                                        notice_now: edit_in_new_fork_notice_now }
+                  - fork_path = project_forks_path(@project, namespace_key:  current_user.namespace.id,
+                                                                                          continue:       continue_params)
+                  = link_to fork_path, method: :post do
+                    #{ _('Upload file') }
+                %li
+                  - continue_params = { to:         request.fullpath,
+                                        notice:     edit_in_new_fork_notice + " Try to create a new directory again.",
+                                        notice_now: edit_in_new_fork_notice_now }
+                  - fork_path = project_forks_path(@project, namespace_key:  current_user.namespace.id,
+                                                                                          continue:       continue_params)
+                  = link_to fork_path, method: :post do
+                    #{ _('New directory') }
+
+              %li.divider
+              %li.dropdown-header
+                #{ _('This repository') }
+              %li
+                = link_to new_project_branch_path(@project) do
+                  #{ _('New branch') }
+              %li
+                = link_to new_project_tag_path(@project) do
+                  #{ _('New tag') }
 
 .tree-controls
-  - if show_new_repo?
-    .editable-mode
-  - else
-    = link_to s_('Commits|History'), project_commits_path(@project, @id), class: 'btn'
+  = link_to s_('Commits|History'), project_commits_path(@project, @id), class: 'btn'
 
   = render 'projects/find_file_link'
 

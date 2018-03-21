@@ -1,6 +1,5 @@
 class GitGarbageCollectWorker
   include ApplicationWorker
-  include Gitlab::CurrentSettings
 
   sidekiq_options retry: false
 
@@ -45,6 +44,10 @@ class GitGarbageCollectWorker
 
     # Refresh the branch cache in case garbage collection caused a ref lookup to fail
     flush_ref_caches(project) if task == :gc
+
+    # In case pack files are deleted, release libgit2 cache and open file
+    # descriptors ASAP instead of waiting for Ruby garbage collection
+    project.cleanup
   ensure
     cancel_lease(lease_key, lease_uuid) if lease_key.present? && lease_uuid.present?
   end
@@ -102,7 +105,7 @@ class GitGarbageCollectWorker
   end
 
   def bitmaps_enabled?
-    current_application_settings.housekeeping_bitmaps_enabled
+    Gitlab::CurrentSettings.housekeeping_bitmaps_enabled
   end
 
   def git(write_bitmaps:)

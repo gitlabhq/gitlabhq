@@ -1,8 +1,12 @@
 /* eslint-disable class-methods-use-this */
+
+import $ from 'jquery';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
-import { isInIssuePage, updateTooltipTitle } from './lib/utils/common_utils';
-import Flash from './flash';
+import { __ } from './locale';
+import { isInIssuePage, isInMRPage, hasVueMRDiscussionsCookie, updateTooltipTitle } from './lib/utils/common_utils';
+import flash from './flash';
+import axios from './lib/utils/axios_utils';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
 const transitionEndEventString = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
@@ -48,10 +52,8 @@ class AwardsHandler {
 
     this.registerEventListener('on', $('html'), 'click', (e) => {
       const $target = $(e.target);
-      if (!$target.closest('.emoji-menu-content').length) {
-        $('.js-awards-block.current').removeClass('current');
-      }
       if (!$target.closest('.emoji-menu').length) {
+        $('.js-awards-block.current').removeClass('current');
         if ($('.emoji-menu').is(':visible')) {
           $('.js-add-award.is-active').removeClass('is-active');
           this.hideMenuElement($('.emoji-menu'));
@@ -239,9 +241,9 @@ class AwardsHandler {
   }
 
   addAward(votesBlock, awardUrl, emoji, checkMutuality, callback) {
-    const isMainAwardsBlock = votesBlock.closest('.js-issue-note-awards').length;
+    const isMainAwardsBlock = votesBlock.closest('.js-noteable-awards').length;
 
-    if (isInIssuePage() && !isMainAwardsBlock) {
+    if (this.isInVueNoteablePage() && !isMainAwardsBlock) {
       const id = votesBlock.attr('id').replace('note_', '');
 
       this.hideMenuElement($('.emoji-menu'));
@@ -293,8 +295,16 @@ class AwardsHandler {
     }
   }
 
+  isVueMRDiscussions() {
+    return isInMRPage() && hasVueMRDiscussionsCookie() && !$('#diffs').is(':visible');
+  }
+
+  isInVueNoteablePage() {
+    return isInIssuePage() || this.isVueMRDiscussions();
+  }
+
   getVotesBlock() {
-    if (isInIssuePage()) {
+    if (this.isInVueNoteablePage()) {
       const $el = $('.js-add-award.is-active').closest('.note.timeline-entry');
 
       if ($el.length) {
@@ -312,7 +322,7 @@ class AwardsHandler {
   }
 
   getAwardUrl() {
-    return this.getVotesBlock().data('award-url');
+    return this.getVotesBlock().data('awardUrl');
   }
 
   checkMutuality(votesBlock, emoji) {
@@ -441,13 +451,15 @@ class AwardsHandler {
     if (this.isUserAuthored($emojiButton)) {
       this.userAuthored($emojiButton);
     } else {
-      $.post(awardUrl, {
+      axios.post(awardUrl, {
         name: emoji,
-      }, (data) => {
+      })
+      .then(({ data }) => {
         if (data.ok) {
           callback();
         }
-      }).fail(() => new Flash('Something went wrong on our end.'));
+      })
+      .catch(() => flash(__('Something went wrong on our end.')));
     }
   }
 

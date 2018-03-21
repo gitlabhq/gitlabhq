@@ -1,11 +1,23 @@
 require 'spec_helper'
 
-describe 'Gitlab::Popen' do
+describe Gitlab::Popen do
   let(:path) { Rails.root.join('tmp').to_s }
 
   before do
     @klass = Class.new(Object)
-    @klass.send(:include, Gitlab::Popen)
+    @klass.send(:include, described_class)
+  end
+
+  describe '.popen_with_detail' do
+    subject { @klass.new.popen_with_detail(cmd) }
+
+    let(:cmd) { %W[#{Gem.ruby} -e $stdout.puts(1);$stderr.puts(2);exit(3)] }
+
+    it { expect(subject.cmd).to eq(cmd) }
+    it { expect(subject.stdout).to eq("1\n") }
+    it { expect(subject.stderr).to eq("2\n") }
+    it { expect(subject.status.exitstatus).to eq(3) }
+    it { expect(subject.duration).to be_kind_of(Numeric) }
   end
 
   context 'zero status' do

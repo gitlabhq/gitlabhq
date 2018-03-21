@@ -1,82 +1,79 @@
-/* eslint-disable space-before-function-paren, comma-dangle, no-param-reassign, camelcase, max-len, no-unused-vars */
-
-import Vue from 'vue';
+import axios from '../../lib/utils/axios_utils';
+import { mergeUrlParams } from '../../lib/utils/url_utility';
 
 export default class BoardService {
-  constructor ({ boardsEndpoint, listsEndpoint, bulkUpdatePath, boardId }) {
-    this.boards = Vue.resource(`${boardsEndpoint}{/id}.json`, {}, {
-      issues: {
-        method: 'GET',
-        url: `${gon.relative_url_root}/-/boards/${boardId}/issues.json`,
-      }
-    });
-    this.lists = Vue.resource(`${listsEndpoint}{/id}`, {}, {
-      generate: {
-        method: 'POST',
-        url: `${listsEndpoint}/generate.json`
-      }
-    });
-    this.issue = Vue.resource(`${gon.relative_url_root}/-/boards/${boardId}/issues{/id}`, {});
-    this.issues = Vue.resource(`${listsEndpoint}{/id}/issues`, {}, {
-      bulkUpdate: {
-        method: 'POST',
-        url: bulkUpdatePath,
+  constructor({ boardsEndpoint, listsEndpoint, bulkUpdatePath, boardId }) {
+    this.boardsEndpoint = boardsEndpoint;
+    this.boardId = boardId;
+    this.listsEndpoint = listsEndpoint;
+    this.listsEndpointGenerate = `${listsEndpoint}/generate.json`;
+    this.bulkUpdatePath = bulkUpdatePath;
+  }
+
+  generateBoardsPath(id) {
+    return `${this.boardsEndpoint}${id ? `/${id}` : ''}.json`;
+  }
+
+  generateIssuesPath(id) {
+    return `${this.listsEndpoint}${id ? `/${id}` : ''}/issues`;
+  }
+
+  static generateIssuePath(boardId, id) {
+    return `${gon.relative_url_root}/-/boards/${boardId ? `/${boardId}` : ''}/issues${id ? `/${id}` : ''}`;
+  }
+
+  all() {
+    return axios.get(this.listsEndpoint);
+  }
+
+  generateDefaultLists() {
+    return axios.post(this.listsEndpointGenerate, {});
+  }
+
+  createList(labelId) {
+    return axios.post(this.listsEndpoint, {
+      list: {
+        label_id: labelId,
       },
     });
   }
 
-  all () {
-    return this.lists.get();
-  }
-
-  generateDefaultLists () {
-    return this.lists.generate({});
-  }
-
-  createList (label_id) {
-    return this.lists.save({}, {
+  updateList(id, position) {
+    return axios.put(`${this.listsEndpoint}/${id}`, {
       list: {
-        label_id
-      }
+        position,
+      },
     });
   }
 
-  updateList (id, position) {
-    return this.lists.update({ id }, {
-      list: {
-        position
-      }
-    });
+  destroyList(id) {
+    return axios.delete(`${this.listsEndpoint}/${id}`);
   }
 
-  destroyList (id) {
-    return this.lists.delete({ id });
-  }
-
-  getIssuesForList (id, filter = {}) {
+  getIssuesForList(id, filter = {}) {
     const data = { id };
     Object.keys(filter).forEach((key) => { data[key] = filter[key]; });
 
-    return this.issues.get(data);
+    return axios.get(mergeUrlParams(data, this.generateIssuesPath(id)));
   }
 
-  moveIssue (id, from_list_id = null, to_list_id = null, move_before_id = null, move_after_id = null) {
-    return this.issue.update({ id }, {
-      from_list_id,
-      to_list_id,
-      move_before_id,
-      move_after_id,
+  moveIssue(id, fromListId = null, toListId = null, moveBeforeId = null, moveAfterId = null) {
+    return axios.put(BoardService.generateIssuePath(this.boardId, id), {
+      from_list_id: fromListId,
+      to_list_id: toListId,
+      move_before_id: moveBeforeId,
+      move_after_id: moveAfterId,
     });
   }
 
-  newIssue (id, issue) {
-    return this.issues.save({ id }, {
-      issue
+  newIssue(id, issue) {
+    return axios.post(this.generateIssuesPath(id), {
+      issue,
     });
   }
 
   getBacklog(data) {
-    return this.boards.issues(data);
+    return axios.get(mergeUrlParams(data, `${gon.relative_url_root}/-/boards/${this.boardId}/issues.json`));
   }
 
   bulkUpdate(issueIds, extraData = {}) {
@@ -86,15 +83,15 @@ export default class BoardService {
       }),
     };
 
-    return this.issues.bulkUpdate(data);
+    return axios.post(this.bulkUpdatePath, data);
   }
 
   static getIssueInfo(endpoint) {
-    return Vue.http.get(endpoint);
+    return axios.get(endpoint);
   }
 
   static toggleIssueSubscription(endpoint) {
-    return Vue.http.post(endpoint);
+    return axios.post(endpoint);
   }
 }
 

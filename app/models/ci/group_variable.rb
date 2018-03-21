@@ -6,7 +6,10 @@ module Ci
 
     belongs_to :group
 
-    validates :key, uniqueness: { scope: :group_id }
+    validates :key, uniqueness: {
+      scope: :group_id,
+      message: "(%{value}) has already been taken"
+    }
 
     scope :unprotected, -> { where(protected: false) }
   end

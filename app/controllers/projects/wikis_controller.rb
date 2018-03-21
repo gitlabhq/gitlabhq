@@ -54,8 +54,8 @@ class Projects::WikisController < Projects::ApplicationController
     else
       render 'edit'
     end
-  rescue WikiPage::PageChangedError
-    @conflict = true
+  rescue WikiPage::PageChangedError, WikiPage::PageRenameError => e
+    @error = e
     render 'edit'
   end
 
@@ -76,9 +76,9 @@ class Projects::WikisController < Projects::ApplicationController
     @page = @project_wiki.find_page(params[:id])
 
     if @page
-      @page_versions = Kaminari.paginate_array(@page.versions(page: params[:page]),
+      @page_versions = Kaminari.paginate_array(@page.versions(page: params[:page].to_i),
                                                total_count: @page.count_versions)
-                               .page(params[:page])
+        .page(params[:page])
     else
       redirect_to(
         project_wiki_path(@project, :home),

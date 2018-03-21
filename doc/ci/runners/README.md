@@ -144,6 +144,27 @@ To protect/unprotect Runners:
 
 ![specific Runners edit icon](img/protected_runners_check_box.png)
 
+## Manually clearing the Runners cache
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/41249) in GitLab 10.4.
+
+GitLab Runners use [cache](../yaml/README.md#cache) to speed up the execution
+of your jobs by reusing existing data. This however, can sometimes lead to an
+inconsistent behavior.
+
+To start with a fresh copy of the cache, you can easily do it via GitLab's UI:
+
+1. Navigate to your project's **CI/CD > Pipelines** page.
+1. Click on the **Clear Runner caches** to clean up the cache.
+1. On the next push, your CI/CD job will use a new cache.
+
+That way, you don't have to change the [cache key](../yaml/README.md#cache-key)
+in your `.gitlab-ci.yml`.
+
+Behind the scenes, this works by increasing a counter in the database, and the
+value of that counter is used to create the key for the cache. After a push, a
+new key is generated and the old cache is not valid anymore.
+
 ## How shared Runners pick jobs
 
 Shared Runners abide to a process queue we call fair usage. The fair usage
@@ -259,3 +280,36 @@ We're always looking for contributions that can mitigate these
 [register]: http://docs.gitlab.com/runner/register/
 [protected branches]: ../../user/project/protected_branches.md
 [protected tags]: ../../user/project/protected_tags.md
+
+## Determining the IP address of a Runner
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17286) in GitLab 10.6.
+
+It may be useful to know the IP address of a Runner so you can troubleshoot
+issues with that Runner. GitLab stores and displays the IP address by viewing
+the source of the HTTP requests it makes to GitLab when polling for jobs. The
+IP address is always kept up to date so if the Runner IP changes it will be
+automatically updated in GitLab.
+
+The IP address for shared Runners and specific Runners can be found in
+different places.
+
+### Shared Runners
+
+To view the IP address of a shared Runner you must have admin access to
+the GitLab instance. To determine this:
+
+1. Visit **Admin area ➔ Overview ➔ Runners**
+1. Look for the Runner in the table and you should see a column for "IP Address"
+
+![shared Runner IP address](img/shared_runner_ip_address.png)
+
+### Specific Runners
+
+You can find the IP address of a Runner for a specific project by:
+
+1. Visit your project's **Settings ➔ CI/CD**
+1. Find the Runner and click on it's ID which links you to the details page
+1. On the details page you should see a row for "IP Address"
+
+![specific Runner IP address](img/specific_runner_ip_address.png)

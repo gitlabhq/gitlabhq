@@ -51,6 +51,11 @@ GET /users?blocked=true
 GET /users
 ```
 
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `order_by` | string | no | Return projects ordered by `id`, `name`, `username`, `created_at`, or `updated_at` fields. Default is `id` |
+| `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
+
 ```json
 [
   {
@@ -160,6 +165,12 @@ You can filter by [custom attributes](custom_attributes.md) with:
 GET /users?custom_attributes[key]=value&custom_attributes[other_key]=other_value
 ```
 
+You can include the users' [custom attributes](custom_attributes.md) in the response with:
+
+```
+GET /users?with_custom_attributes=true
+```
+
 ## Single user
 
 Get a single user.
@@ -238,6 +249,12 @@ Parameters:
   "two_factor_enabled": true,
   "external": false
 }
+```
+
+You can include the user's [custom attributes](custom_attributes.md) in the response with:
+
+```
+GET /users/:id?with_custom_attributes=true
 ```
 
 ## User creation
@@ -414,6 +431,10 @@ GET /user
   "external": false
 }
 ```
+
+## List user projects
+
+Please refer to the [List of user projects ](projects.md#list-user-projects).
 
 ## List SSH keys
 

@@ -13,8 +13,8 @@ describe Boards::IssuesController do
   let!(:list2) { create(:list, board: board, label: development, position: 1) }
 
   before do
-    project.team << [user, :master]
-    project.team << [guest, :guest]
+    project.add_master(user)
+    project.add_guest(guest)
   end
 
   describe 'GET index' do
@@ -86,6 +86,7 @@ describe Boards::IssuesController do
 
     context 'with unauthorized user' do
       before do
+        allow(Ability).to receive(:allowed?).and_call_original
         allow(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(true)
         allow(Ability).to receive(:allowed?).with(user, :read_issue, project).and_return(false)
       end
@@ -221,7 +222,7 @@ describe Boards::IssuesController do
       let(:guest) { create(:user) }
 
       before do
-        project.team << [guest, :guest]
+        project.add_guest(guest)
       end
 
       it 'returns a forbidden 403 response' do

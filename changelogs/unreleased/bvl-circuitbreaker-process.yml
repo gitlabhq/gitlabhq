@@ -1,5 +1,0 @@
----
-title: Monitor NFS shards for circuitbreaker in a separate process
-merge_request: 15426
-author:
-type: changed

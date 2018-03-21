@@ -1,4 +1,6 @@
 class Route < ActiveRecord::Base
+  include CaseSensitivity
+
   belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
   validates :source, presence: true
@@ -8,8 +10,9 @@ class Route < ActiveRecord::Base
     presence: true,
     uniqueness: { case_sensitive: false }
 
-  validate :ensure_permanent_paths
+  validate :ensure_permanent_paths, if: :path_changed?
 
+  before_validation :delete_conflicting_orphaned_routes
   after_create :delete_conflicting_redirects
   after_update :delete_conflicting_redirects, if: :path_changed?
   after_update :create_redirect_for_old_path
@@ -72,10 +75,19 @@ class Route < ActiveRecord::Base
   def ensure_permanent_paths
     return if path.nil?
 
-    errors.add(:path, "#{path} has been taken before. Please use another one") if conflicting_redirect_exists?
+    errors.add(:path, "has been taken before") if conflicting_redirect_exists?
   end
 
   def conflicting_redirect_exists?
     RedirectRoute.permanent.matching_path_and_descendants(path).exists?
+  end
+
+  def delete_conflicting_orphaned_routes
+    conflicting = self.class.iwhere(path: path)
+    conflicting_orphaned_routes = conflicting.select do |route|
+      route.source.nil?
+    end
+
+    conflicting_orphaned_routes.each(&:destroy)
   end
 end

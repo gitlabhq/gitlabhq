@@ -1,17 +1,18 @@
+- subject = @project || @group
 .dropdown-page-two.dropdown-new-label
-  = dropdown_title("Create new label", options: { back: true })
+  = dropdown_title(create_label_title(subject), options: { back: true })
   = dropdown_content do
     .dropdown-labels-error.js-label-error
-    %input#new_label_name.default-dropdown-input{ type: "text", placeholder: "Name new label" }
+    %input#new_label_name.default-dropdown-input{ type: "text", placeholder: _('Name new label') }
     .suggest-colors.suggest-colors-dropdown
       - suggested_colors.each do |color|
         = link_to '#', style: "background-color: #{color}", data: { color: color } do
           &nbsp
     .dropdown-label-color-input
       .dropdown-label-color-preview.js-dropdown-label-color-preview
-      %input#new_label_color.default-dropdown-input{ type: "text", placeholder: "Assign custom color like #FF0000" }
+      %input#new_label_color.default-dropdown-input{ type: "text", placeholder: _('Assign custom color like #FF0000') }
     .clearfix
       %button.btn.btn-primary.pull-left.js-new-label-btn{ type: "button" }
-        Create
+        = _('Create')
       %button.btn.btn-default.pull-right.js-cancel-label-btn{ type: "button" }
-        Cancel
+        = _('Cancel')

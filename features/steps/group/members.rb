@@ -9,14 +9,6 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
     expect(group_members_list).to have_content("John Doe")
   end
 
-  step 'I should not see user "John Doe" in team list' do
-    expect(group_members_list).not_to have_content("John Doe")
-  end
-
-  step 'I should see user "Mary Jane" in team list' do
-    expect(group_members_list).to have_content("Mary Jane")
-  end
-
   step 'I should not see user "Mary Jane" in team list' do
     expect(group_members_list).not_to have_content("Mary Jane")
   end
@@ -39,13 +31,6 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
   step 'I should not see the "Remove User From Group" button for "Mary Jane"' do
     expect(find(:css, 'li', text: "Mary Jane")).not_to have_selector(:css, 'a.btn-remove')
     # poltergeist always confirms popups.
-  end
-
-  step 'I search for \'Mary\' member' do
-    page.within '.member-search-form' do
-      fill_in 'search', with: 'Mary'
-      find('.member-search-btn').click
-    end
   end
 
   step 'I change the "Mary Jane" role to "Developer"' do

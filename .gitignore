@@ -2,6 +2,7 @@
 *.swp
 *.mo
 *.edit.po
+*.rej
 .DS_Store
 .bundle
 .chef
@@ -10,6 +11,7 @@
 eslint-report.html
 /.gitlab_shell_secret
 .idea
+/.vscode/*
 /.rbenv-version
 .rbx/
 /.ruby-gemset
@@ -21,6 +23,9 @@ eslint-report.html
 /.yarn-cache
 /.byebug_history
 /Vagrantfile
+/app/assets/images/icons.json
+/app/assets/images/icons.svg
+/app/assets/images/illustrations/
 /app/assets/javascripts/locale/**/app.js
 /backups/*
 /config/aws.yml
@@ -65,3 +70,4 @@ eslint-report.html
 /locale/**/LC_MESSAGES
 /locale/**/*.time_stamp
 /.rspec
+/plugins/*

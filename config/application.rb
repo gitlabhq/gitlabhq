@@ -6,10 +6,12 @@ Bundler.require(:default, Rails.env)
 
 module Gitlab
   class Application < Rails::Application
+    require_dependency Rails.root.join('lib/gitlab/redis/wrapper')
     require_dependency Rails.root.join('lib/gitlab/redis/cache')
     require_dependency Rails.root.join('lib/gitlab/redis/queues')
     require_dependency Rails.root.join('lib/gitlab/redis/shared_state')
     require_dependency Rails.root.join('lib/gitlab/request_context')
+    require_dependency Rails.root.join('lib/gitlab/current_settings')
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -24,6 +26,7 @@ module Gitlab
     # This is a nice reference article on autoloading/eager loading:
     # http://blog.arkency.com/2014/11/dont-forget-about-eager-load-when-extending-autoload
     config.eager_load_paths.push(*%W[#{config.root}/lib
+                                     #{config.root}/app/models/badges
                                      #{config.root}/app/models/hooks
                                      #{config.root}/app/models/members
                                      #{config.root}/app/models/project_services
@@ -61,6 +64,7 @@ module Gitlab
     # - Any parameter containing `secret`
     # - Two-factor tokens (:otp_attempt)
     # - Repo/Project Import URLs (:import_url)
+    # - Build traces (:trace)
     # - Build variables (:variables)
     # - GitLab Pages SSL cert/key info (:certificate, :encrypted_key)
     # - Webhook URLs (:hook)
@@ -75,6 +79,7 @@ module Gitlab
       key
       otp_attempt
       sentry_dsn
+      trace
       variables
     )
 
@@ -96,21 +101,25 @@ module Gitlab
 
     # Enable the asset pipeline
     config.assets.enabled = true
+
     # Support legacy unicode file named img emojis, `1F939.png`
     config.assets.paths << Gemojione.images_path
-    config.assets.paths << "vendor/assets/fonts"
-    config.assets.precompile << "*.png"
+    config.assets.paths << "#{config.root}/vendor/assets/fonts"
+
     config.assets.precompile << "print.css"
     config.assets.precompile << "notify.css"
     config.assets.precompile << "mailers/*.css"
-    config.assets.precompile << "katex.css"
-    config.assets.precompile << "katex.js"
     config.assets.precompile << "xterm/xterm.css"
     config.assets.precompile << "performance_bar.css"
     config.assets.precompile << "lib/ace.js"
-    config.assets.precompile << "vendor/assets/fonts/*"
     config.assets.precompile << "test.css"
     config.assets.precompile << "locale/**/app.js"
+
+    # Import gitlab-svgs directly from vendored directory
+    config.assets.paths << "#{config.root}/node_modules/@gitlab-org/gitlab-svgs/dist"
+    config.assets.precompile << "icons.svg"
+    config.assets.precompile << "icons.json"
+    config.assets.precompile << "illustrations/*.svg"
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
@@ -149,6 +158,7 @@ module Gitlab
       caching_config_hash[:pool_size] = Sidekiq.options[:concurrency] + 5
       caching_config_hash[:pool_timeout] = 1
     end
+
     config.cache_store = :redis_store, caching_config_hash
 
     config.active_record.raise_in_transactional_callbacks = true
@@ -187,5 +197,11 @@ module Gitlab
       Gitlab::Routing.add_helpers(project_url_helpers)
       Gitlab::Routing.add_helpers(MilestonesRoutingHelper)
     end
+  end
+
+  # This method is used for smooth upgrading from the current Rails 4.x to Rails 5.0.
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/14286
+  def self.rails5?
+    ENV["RAILS5"].in?(%w[1 true])
   end
 end

@@ -8,6 +8,12 @@ import '../../lib/utils/datetime_utility';
  */
 
 export default {
+  directives: {
+    tooltip,
+  },
+  mixins: [
+    timeagoMixin,
+  ],
   props: {
     time: {
       type: String,
@@ -26,14 +32,6 @@ export default {
       default: '',
     },
   },
-
-  mixins: [
-    timeagoMixin,
-  ],
-
-  directives: {
-    tooltip,
-  },
 };
 </script>
 <template>
@@ -43,6 +41,6 @@ export default {
     :title="tooltipTitle(time)"
     :data-placement="tooltipPlacement"
     data-container="body">
-    {{timeFormated(time)}}
+    {{ timeFormated(time) }}
   </time>
 </template>

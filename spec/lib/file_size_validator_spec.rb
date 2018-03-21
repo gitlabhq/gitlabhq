@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe FileSizeValidator do
   let(:validator) { described_class.new(options) }
-  let(:attachment) { AttachmentUploader.new }
   let(:note) { create(:note) }
+  let(:attachment) { AttachmentUploader.new(note) }
 
   describe 'options uses an integer' do
     let(:options) { { maximum: 10, attributes: { attachment: attachment } } }

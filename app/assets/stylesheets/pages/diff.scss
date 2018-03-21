@@ -652,14 +652,18 @@
   }
 
   .diff-changed-file-name,
-  .diff-changed-file-path {
+  .diff-changed-blank-file-name {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
+  .diff-changed-blank-file-name {
+    color: $gl-text-color-tertiary;
+    font-style: italic;
+  }
+
   .diff-changed-file-path {
-    direction: rtl;
     color: $gl-text-color-tertiary;
   }
 

@@ -127,6 +127,19 @@
               = link_to project_milestones_path(@project), title: 'Milestones' do
                 %span
                   Milestones
+      - if project_nav_tab? :external_issue_tracker
+        = nav_link do
+          - issue_tracker = @project.external_issue_tracker
+          = link_to issue_tracker.issue_tracker_path, class: 'shortcuts-external_tracker' do
+            .nav-icon-container
+              = sprite_icon('issue-external')
+            %span.nav-item-name
+              = issue_tracker.title
+          %ul.sidebar-sub-level-items.is-fly-out-only
+            = nav_link(html_options: { class: "fly-out-top-item" } ) do
+              = link_to issue_tracker.issue_tracker_path do
+                %strong.fly-out-top-item-name
+                  = issue_tracker.title
 
       - if project_nav_tab? :merge_requests
         = nav_link(controller: @project.issues_enabled? ? :merge_requests : [:merge_requests, :labels, :milestones]) do
@@ -184,10 +197,33 @@
                     Environments
 
             - if project_nav_tab? :clusters
+              - show_cluster_hint = show_gke_cluster_integration_callout?(@project)
               = nav_link(controller: [:clusters, :user, :gcp]) do
-                = link_to project_clusters_path(@project), title: 'Cluster', class: 'shortcuts-cluster' do
+                = link_to project_clusters_path(@project), title: _('Kubernetes'), class: 'shortcuts-cluster' do
                   %span
-                    Clusters
+                    = _('Kubernetes')
+                  - if show_cluster_hint
+                    .feature-highlight.js-feature-highlight{ disabled: true,
+                      data: { trigger: 'manual',
+                        container: 'body',
+                        toggle: 'popover',
+                        placement: 'right',
+                        highlight: UserCalloutsHelper::GKE_CLUSTER_INTEGRATION,
+                        highlight_priority: UserCallout.feature_names[:GKE_CLUSTER_INTEGRATION],
+                        dismiss_endpoint: user_callouts_path } }
+                - if show_cluster_hint
+                  .feature-highlight-popover-content
+                    = image_tag 'illustrations/cluster_popover.svg', class: 'feature-highlight-illustration'
+                    .feature-highlight-popover-sub-content
+                      %p= _('Allows you to add and manage Kubernetes clusters.')
+                      %p
+                        = _('Protip:')
+                        = link_to 'Auto DevOps', help_page_path('topics/autodevops/index.md')
+                        %span= _('uses Kubernetes clusters to deploy your code!')
+                      %hr
+                      %button.btn.btn-create.btn-xs.dismiss-feature-highlight{ type: 'button' }
+                        %span= _("Got it!")
+                        = sprite_icon('thumb-up')
 
             - if @project.feature_available?(:builds, current_user) && !@project.empty_repo?
               = nav_link(path: 'pipelines#charts') do
@@ -226,7 +262,7 @@
           = link_to edit_project_path(@project), class: 'shortcuts-tree' do
             .nav-icon-container
               = sprite_icon('settings')
-            %span.nav-item-name
+            %span.nav-item-name.qa-settings-item
               Settings
 
           %ul.sidebar-sub-level-items
@@ -299,9 +335,10 @@
             Charts
 
       -# Shortcut to Issues > New Issue
-      %li.hidden
-        = link_to new_project_issue_path(@project), class: 'shortcuts-new-issue' do
-          Create a new issue
+      - if project_nav_tab?(:issues)
+        %li.hidden
+          = link_to new_project_issue_path(@project), class: 'shortcuts-new-issue' do
+            Create a new issue
 
       -# Shortcut to Pipelines > Jobs
       - if project_nav_tab? :builds
@@ -316,5 +353,6 @@
             Commits
 
       -# Shortcut to issue boards
-      %li.hidden
-        = link_to 'Issue Boards', project_boards_path(@project), title: 'Issue Boards', class: 'shortcuts-issue-boards'
+      - if project_nav_tab?(:issues)
+        %li.hidden
+          = link_to 'Issue Boards', project_boards_path(@project), title: 'Issue Boards', class: 'shortcuts-issue-boards'

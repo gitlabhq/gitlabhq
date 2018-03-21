@@ -23,9 +23,20 @@ all the way through, from within the same platform.
 
 Please check this page for an overview on [GitLab's features](https://about.gitlab.com/features/).
 
+### Concepts
+
+For an overview on concepts involved when developing code on GitLab,
+read the articles on:
+
+- [Mastering Code Review With GitLab](https://about.gitlab.com/2017/03/17/demo-mastering-code-review-with-gitlab/).
+- [GitLab Workflow, an Overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/#gitlab-workflow-use-case-scenario).
+- [Tutorial: It's all connected in GitLab](https://about.gitlab.com/2016/03/08/gitlab-tutorial-its-all-connected/): an overview on code collaboration with GitLab.
+- [Trends in Version Control Land: Microservices](https://about.gitlab.com/2016/08/16/trends-in-version-control-land-microservices/).
+- [Trends in Version Control Land: Innersourcing](https://about.gitlab.com/2016/07/07/trends-version-control-innersourcing/).
+
 ## Use cases
 
-GitLab is a git-based platforms that integrates a great number of essential tools for software development and deployment, and project management:
+GitLab is a Git-based platform that integrates a great number of essential tools for software development and deployment, and project management:
 
 - Code hosting in repositories with version control
 - Track proposals for new implementations, bug reports, and feedback with a
@@ -57,12 +68,6 @@ and [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.
 - Leverage your continuous delivery method with [Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html)
 
 You can also [integrate](project/integrations/project_services.md) GitLab with numerous third-party applications, such as Mattermost, Microsoft Teams, HipChat, Trello, Slack, Bamboo CI, JIRA, and a lot more.
-
-### Articles
-
-For a complete workflow use case please check [GitLab Workflow, an Overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/#gitlab-workflow-use-case-scenario).
-
-For more use cases please check our [Technical Articles](../articles/index.md).
 
 ## Projects
 
@@ -102,6 +107,8 @@ personal access tokens, authorized applications, etc.
 methods available in GitLab.
 - [Permissions](permissions.md): Learn the different set of permissions levels for each
 user type (guest, reporter, developer, master, owner).
+- [Feature highlight](feature_highlight.md): Learn more about the little blue dots
+around the app that explain certain features
 
 ## Groups
 

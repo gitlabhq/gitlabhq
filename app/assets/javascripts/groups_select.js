@@ -1,13 +1,15 @@
+import $ from 'jquery';
+import axios from './lib/utils/axios_utils';
 import Api from './api';
-import { normalizeCRLFHeaders } from './lib/utils/common_utils';
+import { normalizeHeaders } from './lib/utils/common_utils';
 
 export default function groupsSelect() {
   // Needs to be accessible in rspec
   window.GROUP_SELECT_PER_PAGE = 20;
   $('.ajax-groups-select').each(function setAjaxGroupsSelect2() {
     const $select = $(this);
-    const allAvailable = $select.data('all-available');
-    const skipGroups = $select.data('skip-groups') || [];
+    const allAvailable = $select.data('allAvailable');
+    const skipGroups = $select.data('skipGroups') || [];
     $select.select2({
       placeholder: 'Search for a group',
       multiple: $select.hasClass('multiselect'),
@@ -17,24 +19,23 @@ export default function groupsSelect() {
         dataType: 'json',
         quietMillis: 250,
         transport(params) {
-          return $.ajax(params)
-            .then((data, status, xhr) => {
-              const results = data || [];
-
-              const headers = normalizeCRLFHeaders(xhr.getAllResponseHeaders());
+          axios[params.type.toLowerCase()](params.url, {
+            params: params.data,
+          })
+            .then((res) => {
+              const results = res.data || [];
+              const headers = normalizeHeaders(res.headers);
               const currentPage = parseInt(headers['X-PAGE'], 10) || 0;
               const totalPages = parseInt(headers['X-TOTAL-PAGES'], 10) || 0;
               const more = currentPage < totalPages;
 
-              return {
+              params.success({
                 results,
                 pagination: {
                   more,
                 },
-              };
-            })
-            .then(params.success)
-            .fail(params.error);
+              });
+            }).catch(params.error);
         },
         data(search, page) {
           return {

@@ -503,3 +503,34 @@
     :versions:
     - 1.0.9
     :when: 2017-11-16 13:02:06.765282000 Z
+- - :license
+  - JSONStream
+  - MIT
+  - :who: Tim Zallmann
+    :why: https://github.com/dominictarr/JSONStream/blob/master/LICENSE.MIT
+    :versions: []
+    :when: 2018-01-17 22:46:12.367554000 Z
+- - :approve
+  - uws
+  - :who: Tim Zallmann
+    :why: zlib license + Development Lib + https://github.com/uNetworking/uWebSockets/blob/master/LICENSE
+    :versions: []
+    :when: 2018-01-17 23:46:12.367554000 Z
+- - :approve
+  - atob
+  - :who: Mike Greiling
+    :why: https://github.com/node-browser-compat/atob/blob/master/LICENSE
+    :versions: []
+    :when: 2018-02-20 19:42:08.409887000 Z
+- - :approve
+  - cyclist
+  - :who: Mike Greiling
+    :why: https://github.com/mafintosh/cyclist/blob/master/LICENSE
+    :versions: []
+    :when: 2018-02-20 21:37:43.774978000 Z
+- - :approve
+  - bitsyntax
+  - :who: Mike Greiling
+    :why: https://github.com/squaremo/bitsyntax-js/blob/master/LICENSE-MIT
+    :versions: []
+    :when: 2018-02-20 22:20:25.958123000 Z

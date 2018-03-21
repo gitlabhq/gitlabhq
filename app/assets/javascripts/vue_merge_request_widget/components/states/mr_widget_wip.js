@@ -1,4 +1,5 @@
-import statusIcon from '../mr_widget_status_icon';
+import $ from 'jquery';
+import statusIcon from '../mr_widget_status_icon.vue';
 import tooltip from '../../../vue_shared/directives/tooltip';
 import eventHub from '../../event_hub';
 
@@ -23,9 +24,9 @@ export default {
     removeWIP() {
       this.isMakingRequest = true;
       this.service.removeWIP()
-        .then(res => res.json())
-        .then((res) => {
-          eventHub.$emit('UpdateWidgetData', res);
+        .then(res => res.data)
+        .then((data) => {
+          eventHub.$emit('UpdateWidgetData', data);
           new window.Flash('The merge request can now be merged.', 'notice'); // eslint-disable-line
           $('.merge-request .detail-page-description .title').text(this.mr.title);
         })
@@ -37,7 +38,7 @@ export default {
   },
   template: `
     <div class="mr-widget-body media">
-      <status-icon status="failed" :show-disabled-button="Boolean(mr.removeWIPPath)" />
+      <status-icon status="warning" :show-disabled-button="Boolean(mr.removeWIPPath)" />
       <div class="media-body space-children">
         <span class="bold">
           This is a Work in Progress

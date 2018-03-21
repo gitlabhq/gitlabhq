@@ -25,6 +25,7 @@ module LoadedInGroupList
 
       base_count = projects.project(Arel.star.count.as('preloaded_project_count'))
                      .where(projects[:namespace_id].eq(namespaces[:id]))
+
       if archived == 'only'
         base_count.where(projects[:archived].eq(true))
       elsif Gitlab::Utils.to_boolean(archived)

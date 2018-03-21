@@ -164,7 +164,7 @@ Feature: Project Issues
     Given project "Shop" have "Release 0.4" open issue
     When I visit issue page "Release 0.4"
     Then I should see that I am subscribed
-    When I click button "Unsubscribe"
+    When I click the subscription toggle
     Then I should see that I am unsubscribed
 
   @javascript

@@ -3,7 +3,7 @@ import Vue from 'vue';
 import searchComponent from '~/projects_dropdown/components/search.vue';
 import eventHub from '~/projects_dropdown/event_hub';
 
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 const createComponent = () => {
   const Component = Vue.extend(searchComponent);

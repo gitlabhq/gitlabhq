@@ -37,7 +37,7 @@ module Gitlab
       end
 
       def archive_file
-        @archive_file ||= File.join(@shared.export_path, '..', Gitlab::ImportExport.export_filename(project: @project))
+        @archive_file ||= File.join(@shared.archive_path, Gitlab::ImportExport.export_filename(project: @project))
       end
     end
   end

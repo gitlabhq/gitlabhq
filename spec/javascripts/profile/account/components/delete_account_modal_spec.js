@@ -2,7 +2,7 @@ import Vue from 'vue';
 
 import deleteAccountModal from '~/profile/account/components/delete_account_modal.vue';
 
-import mountComponent from '../../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('DeleteAccountModal component', () => {
   const actionUrl = `${gl.TEST_HOST}/delete/user`;
@@ -51,7 +51,7 @@ describe('DeleteAccountModal component', () => {
       Vue.nextTick()
         .then(() => {
           expect(vm.enteredPassword).toBe(input.value);
-          expect(submitButton).toHaveClass('disabled');
+          expect(submitButton).toHaveAttr('disabled', 'disabled');
           submitButton.click();
           expect(form.submit).not.toHaveBeenCalled();
         })
@@ -68,7 +68,7 @@ describe('DeleteAccountModal component', () => {
       Vue.nextTick()
         .then(() => {
           expect(vm.enteredPassword).toBe(input.value);
-          expect(submitButton).not.toHaveClass('disabled');
+          expect(submitButton).not.toHaveAttr('disabled', 'disabled');
           submitButton.click();
           expect(form.submit).toHaveBeenCalled();
         })
@@ -101,7 +101,7 @@ describe('DeleteAccountModal component', () => {
       Vue.nextTick()
         .then(() => {
           expect(vm.enteredUsername).toBe(input.value);
-          expect(submitButton).toHaveClass('disabled');
+          expect(submitButton).toHaveAttr('disabled', 'disabled');
           submitButton.click();
           expect(form.submit).not.toHaveBeenCalled();
         })
@@ -118,7 +118,7 @@ describe('DeleteAccountModal component', () => {
       Vue.nextTick()
         .then(() => {
           expect(vm.enteredUsername).toBe(input.value);
-          expect(submitButton).not.toHaveClass('disabled');
+          expect(submitButton).not.toHaveAttr('disabled', 'disabled');
           submitButton.click();
           expect(form.submit).toHaveBeenCalled();
         })

@@ -1,6 +1,5 @@
 - page_title "Account"
 - @content_class = "limit-container-width" unless fluid_layout
-= render 'profiles/head'
 
 - if current_user.ldap_user?
   .alert.alert-info
@@ -17,10 +16,6 @@
       Status: #{current_user.two_factor_enabled? ? 'Enabled' : 'Disabled'}
     - if current_user.two_factor_enabled?
       = link_to 'Manage two-factor authentication', profile_two_factor_auth_path, class: 'btn btn-info'
-      = link_to 'Disable', profile_two_factor_auth_path,
-                method: :delete,
-                data: { confirm: "Are you sure? This will invalidate your registered applications and U2F devices." },
-                class: 'btn btn-danger'
     - else
       .append-bottom-10
         = link_to 'Enable two-factor authentication', profile_two_factor_auth_path, class: 'btn btn-success'
@@ -88,11 +83,13 @@
         = s_('Profiles|Deleting an account has the following effects:')
       = render 'users/deletion_guidance', user: current_user
 
+      %button#delete-account-button.btn.btn-danger.disabled{ data: { toggle: 'modal',
+        target: '#delete-account-modal' } }
+        = s_('Profiles|Delete account')
+
       #delete-account-modal{ data: { action_url: user_registration_path,
         confirm_with_password: ('true' if current_user.confirm_deletion_with_password?),
         username: current_user.username } }
-        %button.btn.btn-danger.disabled
-          = s_('Profiles|Delete account')
     - else
       - if @user.solo_owned_groups.present?
         %p
@@ -104,6 +101,3 @@
         %p
           = s_("Profiles|You don't have access to delete this user.")
 .append-bottom-default
-
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag('account')

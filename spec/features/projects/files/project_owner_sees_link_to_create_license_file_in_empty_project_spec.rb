@@ -2,16 +2,16 @@ require 'spec_helper'
 
 feature 'project owner sees a link to create a license file in empty project', :js do
   let(:project_master) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project_empty_repo) }
+
   background do
-    project.team << [project_master, :master]
+    project.add_master(project_master)
     sign_in(project_master)
   end
 
   scenario 'project master creates a license file from a template' do
     visit project_path(project)
-    click_link 'Create empty bare repository'
-    click_on 'LICENSE'
+    click_on 'Add License'
     expect(page).to have_content('New file')
 
     expect(current_path).to eq(
@@ -26,8 +26,6 @@ feature 'project owner sees a link to create a license file in empty project', :
     expect(file_content).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
 
     fill_in :commit_message, with: 'Add a LICENSE file', visible: true
-    # Remove pre-receive hook so we can push without auth
-    FileUtils.rm_f(File.join(project.repository.path, 'hooks', 'pre-receive'))
     click_button 'Commit changes'
 
     expect(current_path).to eq(

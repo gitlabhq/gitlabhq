@@ -9,8 +9,8 @@ export default class ProtectedBranchAccessDropdown {
     $dropdown.glDropdown({
       data,
       selectable: true,
-      inputId: $dropdown.data('input-id'),
-      fieldName: $dropdown.data('field-name'),
+      inputId: $dropdown.data('inputId'),
+      fieldName: $dropdown.data('fieldName'),
       toggleLabel(item, $el) {
         if ($el.is('.is-active')) {
           return item.text;

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import participants from '~/sidebar/components/participants/participants.vue';
-import mountComponent from '../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 const PARTICIPANT = {
   id: 1,

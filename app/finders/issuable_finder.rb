@@ -19,36 +19,51 @@
 #     non_archived: boolean
 #     iids: integer[]
 #     my_reaction_emoji: string
+#     created_after: datetime
+#     created_before: datetime
+#     updated_after: datetime
+#     updated_before: datetime
 #
 class IssuableFinder
+  prepend FinderWithCrossProjectAccess
+  include FinderMethods
   include CreatedAtFilter
+
+  requires_cross_project_access unless: -> { project? }
 
   NONE = '0'.freeze
 
-  SCALAR_PARAMS = %i[
-    assignee_id
-    assignee_username
-    author_id
-    author_username
-    authorized_only
-    due_date
-    group_id
-    iids
-    label_name
-    milestone_title
-    my_reaction_emoji
-    non_archived
-    project_id
-    scope
-    search
-    sort
-    state
-  ].freeze
-  ARRAY_PARAMS = { label_name: [], iids: [], assignee_username: [] }.freeze
-
-  VALID_PARAMS = (SCALAR_PARAMS + [ARRAY_PARAMS]).freeze
-
   attr_accessor :current_user, :params
+
+  def self.scalar_params
+    @scalar_params ||= %i[
+      assignee_id
+      assignee_username
+      author_id
+      author_username
+      authorized_only
+      group_id
+      iids
+      label_name
+      milestone_title
+      my_reaction_emoji
+      non_archived
+      project_id
+      scope
+      search
+      sort
+      state
+      include_subgroups
+    ]
+  end
+
+  def self.array_params
+    @array_params ||= { label_name: [], iids: [], assignee_username: [] }
+  end
+
+  def self.valid_params
+    @valid_params ||= scalar_params + [array_params]
+  end
 
   def initialize(current_user, params = {})
     @current_user = current_user
@@ -57,31 +72,28 @@ class IssuableFinder
 
   def execute
     items = init_collection
+    items = filter_items(items)
+
+    # Filtering by project HAS TO be the last because we use the project IDs yielded by the issuable query thus far
+    items = by_project(items)
+
+    sort(items)
+  end
+
+  def filter_items(items)
     items = by_scope(items)
     items = by_created_at(items)
+    items = by_updated_at(items)
     items = by_state(items)
     items = by_group(items)
     items = by_search(items)
     items = by_assignee(items)
     items = by_author(items)
-    items = by_due_date(items)
     items = by_non_archived(items)
     items = by_iids(items)
     items = by_milestone(items)
     items = by_label(items)
-    items = by_my_reaction_emoji(items)
-
-    # Filtering by project HAS TO be the last because we use the project IDs yielded by the issuable query thus far
-    items = by_project(items)
-    sort(items)
-  end
-
-  def find(*params)
-    execute.find(*params)
-  end
-
-  def find_by(*params)
-    execute.find_by(*params)
+    by_my_reaction_emoji(items)
   end
 
   def row_count
@@ -111,10 +123,6 @@ class IssuableFinder
     counts[:all] = counts.values.sum
 
     counts
-  end
-
-  def find_by!(*params)
-    execute.find_by!(*params)
   end
 
   def group
@@ -148,7 +156,8 @@ class IssuableFinder
       if current_user && params[:authorized_only].presence && !current_user_related?
         current_user.authorized_projects
       elsif group
-        GroupProjectsFinder.new(group: group, current_user: current_user).execute
+        finder_options = { include_subgroups: params[:include_subgroups], only_owned: true }
+        GroupProjectsFinder.new(group: group, current_user: current_user, options: finder_options).execute
       else
         ProjectsFinder.new(current_user: current_user, project_ids_relation: item_project_ids(items)).execute
       end
@@ -279,6 +288,13 @@ class IssuableFinder
     end
   end
 
+  def by_updated_at(items)
+    items = items.updated_after(params[:updated_after]) if params[:updated_after].present?
+    items = items.updated_before(params[:updated_before]) if params[:updated_before].present?
+
+    items
+  end
+
   def by_state(items)
     case params[:state].to_s
     when 'closed'
@@ -374,19 +390,14 @@ class IssuableFinder
   end
 
   def by_label(items)
-    if labels?
-      if filter_by_no_label?
-        items = items.without_label
-      else
-        items = items.with_label(label_names, params[:sort])
-        items_projects = projects(items)
+    return items unless labels?
 
-        if items_projects
-          label_ids = LabelsFinder.new(current_user, project_ids: items_projects).execute(skip_authorization: true).select(:id)
-          items = items.where(labels: { id: label_ids })
-        end
+    items =
+      if filter_by_no_label?
+        items.without_label
+      else
+        items.with_label(label_names, params[:sort])
       end
-    end
 
     items
   end
@@ -397,42 +408,6 @@ class IssuableFinder
     end
 
     items
-  end
-
-  def by_due_date(items)
-    if due_date?
-      if filter_by_no_due_date?
-        items = items.without_due_date
-      elsif filter_by_overdue?
-        items = items.due_before(Date.today)
-      elsif filter_by_due_this_week?
-        items = items.due_between(Date.today.beginning_of_week, Date.today.end_of_week)
-      elsif filter_by_due_this_month?
-        items = items.due_between(Date.today.beginning_of_month, Date.today.end_of_month)
-      end
-    end
-
-    items
-  end
-
-  def filter_by_no_due_date?
-    due_date? && params[:due_date] == Issue::NoDueDate.name
-  end
-
-  def filter_by_overdue?
-    due_date? && params[:due_date] == Issue::Overdue.name
-  end
-
-  def filter_by_due_this_week?
-    due_date? && params[:due_date] == Issue::DueThisWeek.name
-  end
-
-  def filter_by_due_this_month?
-    due_date? && params[:due_date] == Issue::DueThisMonth.name
-  end
-
-  def due_date?
-    params[:due_date].present? && klass.column_names.include?('due_date')
   end
 
   def label_names

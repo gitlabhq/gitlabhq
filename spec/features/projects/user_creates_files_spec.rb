@@ -12,7 +12,7 @@ describe 'User creates files' do
   let(:user) { create(:user) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 
@@ -33,7 +33,7 @@ describe 'User creates files' do
 
     context 'when an user does not have write access' do
       before do
-        project2.team << [user, :reporter]
+        project2.add_reporter(user)
         visit(project2_tree_path_root_ref)
       end
 
@@ -131,15 +131,22 @@ describe 'User creates files' do
 
     context 'when an user does not have write access' do
       before do
-        project2.team << [user, :reporter]
+        project2.add_reporter(user)
         visit(project2_tree_path_root_ref)
+
+        find('.add-to-tree').click
+        click_link('New file')
+      end
+
+      it 'shows a message saying the file will be committed in a fork' do
+        message = "A new branch will be created in your fork and a new merge request will be started."
+
+        expect(page).to have_content(message)
       end
 
       it 'creates and commit new file in forked project', :js do
-        find('.add-to-tree').click
-        click_link('New file')
-
         expect(page).to have_selector('.file-editor')
+        expect(page).to have_content
 
         find('#editor')
         execute_script("ace.edit('editor').setValue('*.rbca')")

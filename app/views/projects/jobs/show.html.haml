@@ -54,48 +54,61 @@
             Job has been erased by #{link_to(@build.erased_by_name, user_path(@build.erased_by))} #{time_ago_with_tooltip(@build.erased_at)}
           - else
             Job has been erased #{time_ago_with_tooltip(@build.erased_at)}
+    - if @build.started?
+      .build-trace-container.prepend-top-default
+        .top-bar.js-top-bar
+          .js-truncated-info.truncated-info.hidden-xs.pull-left.hidden<
+            Showing last
+            %span.js-truncated-info-size.truncated-info-size><
+            of log -
+            %a.js-raw-link.raw-link{ href: raw_project_job_path(@project, @build) }>< Complete Raw
 
-    .build-trace-container.prepend-top-default
-      .top-bar.js-top-bar
-        .js-truncated-info.truncated-info.hidden-xs.pull-left.hidden<
-          Showing last
-          %span.js-truncated-info-size.truncated-info-size><
-          KiB of log -
-          %a.js-raw-link.raw-link{ href: raw_project_job_path(@project, @build) }>< Complete Raw
+          .controllers.pull-right
+            - if @build.has_trace?
+              = link_to raw_project_job_path(@project, @build),
+                      title: 'Show complete raw',
+                      data: { placement: 'top', container: 'body' },
+                      class: 'js-raw-link-controller has-tooltip controllers-buttons' do
+                = icon('file-text-o')
 
-        .controllers.pull-right
-          - if @build.has_trace?
-            = link_to raw_project_job_path(@project, @build),
-                    title: 'Show complete raw',
-                    data: { placement: 'top', container: 'body' },
-                    class: 'js-raw-link-controller has-tooltip controllers-buttons' do
-              = icon('file-text-o')
+            - if @build.erasable? && can?(current_user, :erase_build, @build)
+              = link_to erase_project_job_path(@project, @build),
+                        method: :post,
+                        data: { confirm: 'Are you sure you want to erase this build?', placement: 'top', container: 'body' },
+                        title: 'Erase job log',
+                        class: 'has-tooltip js-erase-link controllers-buttons' do
+                = icon('trash')
+            .has-tooltip.controllers-buttons{ title: 'Scroll to top', data: { placement: 'top', container: 'body'} }
+              %button.js-scroll-up.btn-scroll.btn-transparent.btn-blank{ type: 'button', disabled: true }
+                = custom_icon('scroll_up')
+            .has-tooltip.controllers-buttons{ title: 'Scroll to bottom', data: { placement: 'top', container: 'body'} }
+              %button.js-scroll-down.btn-scroll.btn-transparent.btn-blank{ type: 'button', disabled: true }
+                = custom_icon('scroll_down')
 
-          - if @build.erasable? && can?(current_user, :erase_build, @build)
-            = link_to erase_project_job_path(@project, @build),
-                      method: :post,
-                      data: { confirm: 'Are you sure you want to erase this build?', placement: 'top', container: 'body' },
-                      title: 'Erase job log',
-                      class: 'has-tooltip js-erase-link controllers-buttons' do
-              = icon('trash')
-          .has-tooltip.controllers-buttons{ title: 'Scroll to top', data: { placement: 'top', container: 'body'} }
-            %button.js-scroll-up.btn-scroll.btn-transparent.btn-blank{ type: 'button', disabled: true }
-              = custom_icon('scroll_up')
-          .has-tooltip.controllers-buttons{ title: 'Scroll to bottom', data: { placement: 'top', container: 'body'} }
-            %button.js-scroll-down.btn-scroll.btn-transparent.btn-blank{ type: 'button', disabled: true }
-              = custom_icon('scroll_down')
-
-      %pre.build-trace#build-trace
-        %code.bash.js-build-output
-        .build-loader-animation.js-build-refresh
-
-
+        %pre.build-trace#build-trace
+          %code.bash.js-build-output
+          .build-loader-animation.js-build-refresh
+    - elsif @build.playable?
+      = render 'empty_state',
+        illustration: 'illustrations/manual_action.svg',
+        illustration_size: 'svg-394',
+        title: _('This job requires a manual action'),
+        content: _('This job depends on a user to trigger its process. Often they are used to deploy code to production environments'),
+        action: ( link_to _('Trigger this manual action'), play_project_job_path(@project, @build), method: :post, class: 'btn btn-primary', title: _('Trigger this manual action') )
+    - elsif @build.created?
+      = render 'empty_state',
+        illustration: 'illustrations/job_not_triggered.svg',
+        illustration_size: 'svg-306',
+        title: _('This job has not been triggered yet'),
+        content: _('This job depends on upstream jobs that need to succeed in order for this job to be triggered')
+    - else
+      = render 'empty_state',
+        illustration: 'illustrations/pending_job_empty.svg',
+        illustration_size: 'svg-430',
+        title: _('This job has not started yet'),
+        content: _('This job is in pending state and is waiting to be picked by a runner')
   = render "sidebar"
 
 .js-build-options{ data: javascript_build_options }
 
 #js-job-details-vue{ data: { endpoint: project_job_path(@project, @build, format: :json) } }
-
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag('common_vue')
-  = webpack_bundle_tag('job_details')

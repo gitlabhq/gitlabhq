@@ -1,12 +1,15 @@
 /* eslint-disable */
 export const notesDataMock = {
   discussionsPath: '/gitlab-org/gitlab-ce/issues/26/discussions.json',
-  lastFetchedAt: '1501862675',
+  lastFetchedAt: 1501862675,
   markdownDocsPath: '/help/user/markdown',
   newSessionPath: '/users/sign_in?redirect_to_referer=yes',
   notesPath: '/gitlab-org/gitlab-ce/noteable/issue/98/notes',
   quickActionsDocsPath: '/help/user/project/quick_actions',
   registerPath: '/users/sign_in?redirect_to_referer=yes#register-pane',
+  totalNotes: 1,
+  closePath: '/twitter/flight/issues/9.json?issue%5Bstate_event%5D=close',
+  reopenPath: '/twitter/flight/issues/9.json?issue%5Bstate_event%5D=reopen',
 };
 
 export const userDataMock = {
@@ -29,7 +32,6 @@ export const noteableDataMock = {
     can_create_note: true,
     can_update: true,
   },
-  deleted_at: null,
   description: '',
   due_date: null,
   human_time_estimate: null,
@@ -108,7 +110,7 @@ export const note = {
     "name": "Administrator",
     "username": "root",
     "state": "active",
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+    "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
     "path": "/root"
   },
   "created_at": "2017-08-10T15:24:03.087Z",
@@ -283,7 +285,6 @@ export const loggedOutnoteableData = {
   "updated_by_id": 1,
   "created_at": "2017-02-07T10:11:18.395Z",
   "updated_at": "2017-08-08T10:22:51.564Z",
-  "deleted_at": null,
   "time_estimate": 0,
   "total_time_spent": 0,
   "human_time_estimate": null,

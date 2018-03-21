@@ -7,7 +7,7 @@ feature "Pipelines settings" do
 
   background do
     sign_in(user)
-    project.team << [user, role]
+    project.add_role(user, role)
   end
 
   context 'for developer' do

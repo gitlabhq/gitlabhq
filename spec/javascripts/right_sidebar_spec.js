@@ -1,6 +1,9 @@
 /* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, new-parens, no-return-assign, new-cap, vars-on-top, max-len */
 
+import $ from 'jquery';
+import MockAdapter from 'axios-mock-adapter';
 import '~/commons/bootstrap';
+import axios from '~/lib/utils/axios_utils';
 import Sidebar from '~/right_sidebar';
 
 (function() {
@@ -35,16 +38,23 @@ import Sidebar from '~/right_sidebar';
       var fixtureName = 'issues/open-issue.html.raw';
       preloadFixtures(fixtureName);
       loadJSONFixtures('todos/todos.json');
+      let mock;
 
       beforeEach(function() {
         loadFixtures(fixtureName);
-        this.sidebar = new Sidebar;
+        mock = new MockAdapter(axios);
+        this.sidebar = new Sidebar();
         $aside = $('.right-sidebar');
         $page = $('.layout-page');
         $icon = $aside.find('i');
         $toggle = $aside.find('.js-sidebar-toggle');
         return $labelsIcon = $aside.find('.sidebar-collapsed-icon');
       });
+
+      afterEach(() => {
+        mock.restore();
+      });
+
       it('should expand/collapse the sidebar when arrow is clicked', function() {
         assertSidebarState('expanded');
         $toggle.click();
@@ -63,20 +73,19 @@ import Sidebar from '~/right_sidebar';
         return assertSidebarState('collapsed');
       });
 
-      it('should broadcast todo:toggle event when add todo clicked', function() {
+      it('should broadcast todo:toggle event when add todo clicked', function(done) {
         var todos = getJSONFixture('todos/todos.json');
-        spyOn(jQuery, 'ajax').and.callFake(function() {
-          var d = $.Deferred();
-          var response = todos;
-          d.resolve(response);
-          return d.promise();
-        });
+        mock.onPost(/(.*)\/todos$/).reply(200, todos);
 
         var todoToggleSpy = spyOnEvent(document, 'todo:toggle');
 
         $('.issuable-sidebar-header .js-issuable-todo').click();
 
-        expect(todoToggleSpy.calls.count()).toEqual(1);
+        setTimeout(() => {
+          expect(todoToggleSpy.calls.count()).toEqual(1);
+
+          done();
+        });
       });
 
       it('should not hide collapsed icons', () => {

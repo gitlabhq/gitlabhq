@@ -455,7 +455,7 @@ Mappings are defined as entries in the root YAML array, and are identified by a 
       - Literal periods (`.`) should be escaped as `\.`.
 - `public`
     - a string, starting and ending with `'`.
-      - Can include `\N` expressions to refer to capture groups in the `source` regular expression in order of their occurence, starting with `\1`.
+      - Can include `\N` expressions to refer to capture groups in the `source` regular expression in order of their occurrence, starting with `\1`.
 
 The public path for a source path is determined by finding the first `source` expression that matches it, and returning the corresponding `public` path, replacing the `\N` expressions with the values of the `()` capture groups if appropriate.
 

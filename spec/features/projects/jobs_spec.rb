@@ -7,7 +7,7 @@ feature 'Jobs' do
   let(:project) { create(:project, :repository) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
-  let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
+  let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
   let(:job2) { create(:ci_build) }
 
   let(:artifacts_file) do
@@ -15,7 +15,7 @@ feature 'Jobs' do
   end
 
   before do
-    project.team << [user, user_access_level]
+    project.add_role(user, user_access_level)
     sign_in(user)
   end
 
@@ -369,6 +369,56 @@ feature 'Jobs' do
         end
       end
     end
+
+    context 'Playable manual action' do
+      let(:job) { create(:ci_build, :playable, pipeline: pipeline) }
+
+      before do
+        project.add_developer(user)
+        visit project_job_path(project, job)
+      end
+
+      it 'shows manual action empty state' do
+        expect(page).to have_content('This job requires a manual action')
+        expect(page).to have_content('This job depends on a user to trigger its process. Often they are used to deploy code to production environments')
+        expect(page).to have_link('Trigger this manual action')
+      end
+
+      it 'plays manual action and shows pending status', :js do
+        click_link 'Trigger this manual action'
+
+        wait_for_requests
+        expect(page).to have_content('This job has not started yet')
+        expect(page).to have_content('This job is in pending state and is waiting to be picked by a runner')
+        expect(page).to have_content('pending')
+      end
+    end
+
+    context 'Non triggered job' do
+      let(:job) { create(:ci_build, :created, pipeline: pipeline) }
+
+      before do
+        visit project_job_path(project, job)
+      end
+
+      it 'shows empty state' do
+        expect(page).to have_content('This job has not been triggered yet')
+        expect(page).to have_content('This job depends on upstream jobs that need to succeed in order for this job to be triggered')
+      end
+    end
+
+    context 'Pending job' do
+      let(:job) { create(:ci_build, :pending, pipeline: pipeline) }
+
+      before do
+        visit project_job_path(project, job)
+      end
+
+      it 'shows pending empty state' do
+        expect(page).to have_content('This job has not started yet')
+        expect(page).to have_content('This job is in pending state and is waiting to be picked by a runner')
+      end
+    end
   end
 
   describe "POST /:project/jobs/:id/cancel", :js do
@@ -440,18 +490,34 @@ feature 'Jobs' do
   describe 'GET /:project/jobs/:id/raw', :js do
     context 'access source' do
       context 'job from project' do
-        before do
-          job.run!
-        end
-
-        it 'sends the right headers' do
-          requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
-            visit raw_project_job_path(project, job)
+        context 'when job is running' do
+          before do
+            job.run!
           end
 
-          expect(requests.first.status_code).to eq(200)
-          expect(requests.first.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
-          expect(requests.first.response_headers['X-Sendfile']).to eq(job.trace.send(:current_path))
+          it 'sends the right headers' do
+            requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
+              visit raw_project_job_path(project, job)
+            end
+
+            expect(requests.first.status_code).to eq(200)
+            expect(requests.first.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
+            expect(requests.first.response_headers['X-Sendfile']).to eq(job.trace.send(:current_path))
+          end
+        end
+
+        context 'when job is complete' do
+          let(:job) { create(:ci_build, :success, :trace_artifact, pipeline: pipeline) }
+
+          it 'sends the right headers' do
+            requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
+              visit raw_project_job_path(project, job)
+            end
+
+            expect(requests.first.status_code).to eq(200)
+            expect(requests.first.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
+            expect(requests.first.response_headers['X-Sendfile']).to eq(job.job_artifacts_trace.file.path)
+          end
         end
       end
 

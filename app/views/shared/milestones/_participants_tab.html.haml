@@ -2,7 +2,7 @@
   - users.each do |user|
     %li
       = link_to user, title: user.name, class: "darken" do
-        = image_tag avatar_icon(user, 32), class: "avatar s32"
+        = image_tag avatar_icon_for_user(user, 32), class: "avatar s32"
         %strong= truncate(user.name, length: 40)
         %div
           %small.cgray= user.username

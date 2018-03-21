@@ -1,6 +1,8 @@
 - visibility_level = params.dig(:project, :visibility_level) || default_project_visibility
+- ci_cd_only = local_assigns.fetch(:ci_cd_only, false)
 
 .row{ id: project_name_id }
+  = f.hidden_field :ci_cd_only, value: ci_cd_only
   .form-group.project-path.col-sm-6
     = f.label :namespace_id, class: 'label-light' do
       %span
@@ -9,7 +11,7 @@
       - if current_user.can_select_namespace?
         .input-group-addon
           = root_url
-        = f.select :namespace_id, namespaces_options(namespace_id_from(params) || :current_user, display_path: true, extra_group: namespace_id_from(params)), {}, { class: 'select2 js-select-namespace', tabindex: 1}
+        = f.select :namespace_id, namespaces_options(namespace_id_from(params) || :current_user, display_path: true, extra_group: namespace_id_from(params)), {}, { class: 'select2 js-select-namespace qa-project-namespace-select', tabindex: 1}
 
       - else
         .input-group-addon.static-namespace
@@ -34,7 +36,7 @@
 .form-group.visibility-level-setting
   = f.label :visibility_level, class: 'label-light' do
     Visibility Level
-    = link_to icon('question-circle'), help_page_path("public_access/public_access"), aria: { label: 'Documentation for Visibility Level' }
+    = link_to icon('question-circle'), help_page_path("public_access/public_access"), aria: { label: 'Documentation for Visibility Level' }, target: '_blank', rel: 'noopener noreferrer'
   = render 'shared/visibility_level', f: f, visibility_level: visibility_level.to_i, can_change_visibility_level: true, form_model: @project, with_label: false
 
 = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4

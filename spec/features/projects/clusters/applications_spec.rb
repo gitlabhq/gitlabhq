@@ -22,7 +22,7 @@ feature 'Clusters Applications', :js do
       scenario 'user is unable to install applications' do
         page.within('.js-cluster-application-row-helm') do
           expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
-          expect(page.find(:css, '.js-cluster-application-install-button').text).to eq('Install')
+          expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Install')
         end
       end
     end
@@ -33,13 +33,13 @@ feature 'Clusters Applications', :js do
       scenario 'user can install applications' do
         page.within('.js-cluster-application-row-helm') do
           expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to be_nil
-          expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Install')
+          expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Install')
         end
       end
 
       context 'when user installs Helm' do
         before do
-          allow(ClusterInstallAppWorker).to receive(:perform_async).and_return(nil)
+          allow(ClusterInstallAppWorker).to receive(:perform_async)
 
           page.within('.js-cluster-application-row-helm') do
             page.find(:css, '.js-cluster-application-install-button').click
@@ -50,32 +50,35 @@ feature 'Clusters Applications', :js do
           page.within('.js-cluster-application-row-helm') do
             # FE sends request and gets the response, then the buttons is "Install"
             expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
-            expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Install')
+            expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Install')
 
             Clusters::Cluster.last.application_helm.make_installing!
 
             # FE starts polling and update the buttons to "Installing"
             expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
-            expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Installing')
+            expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
 
             Clusters::Cluster.last.application_helm.make_installed!
 
             expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
-            expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Installed')
+            expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installed')
           end
 
-          expect(page).to have_content('Helm Tiller was successfully installed on your cluster')
+          expect(page).to have_content('Helm Tiller was successfully installed on your Kubernetes cluster')
         end
       end
 
       context 'when user installs Ingress' do
         context 'when user installs application: Ingress' do
           before do
-            allow(ClusterInstallAppWorker).to receive(:perform_async).and_return(nil)
+            allow(ClusterInstallAppWorker).to receive(:perform_async)
+            allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)
+            allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
 
-            create(:cluster_applications_helm, :installed, cluster: cluster)
+            create(:clusters_applications_helm, :installed, cluster: cluster)
 
             page.within('.js-cluster-application-row-ingress') do
+              expect(page).to have_css('.js-cluster-application-install-button:not([disabled])')
               page.find(:css, '.js-cluster-application-install-button').click
             end
           end
@@ -83,22 +86,31 @@ feature 'Clusters Applications', :js do
           it 'he sees status transition' do
             page.within('.js-cluster-application-row-ingress') do
               # FE sends request and gets the response, then the buttons is "Install"
-              expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
-              expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Install')
+              expect(page).to have_css('.js-cluster-application-install-button[disabled]')
+              expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Install')
 
               Clusters::Cluster.last.application_ingress.make_installing!
 
               # FE starts polling and update the buttons to "Installing"
-              expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
-              expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Installing')
+              expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
+              expect(page).to have_css('.js-cluster-application-install-button[disabled]')
 
+              # The application becomes installed but we keep waiting for external IP address
               Clusters::Cluster.last.application_ingress.make_installed!
 
-              expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
-              expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Installed')
+              expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installed')
+              expect(page).to have_css('.js-cluster-application-install-button[disabled]')
+              expect(page).to have_selector('.js-no-ip-message')
+              expect(page.find('.js-ip-address').value).to eq('?')
+
+              # We receive the external IP address and display
+              Clusters::Cluster.last.application_ingress.update!(external_ip: '192.168.1.100')
+
+              expect(page).not_to have_selector('.js-no-ip-message')
+              expect(page.find('.js-ip-address').value).to eq('192.168.1.100')
             end
 
-            expect(page).to have_content('Ingress was successfully installed on your cluster')
+            expect(page).to have_content('Ingress was successfully installed on your Kubernetes cluster')
           end
         end
       end

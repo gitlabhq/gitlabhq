@@ -32,7 +32,7 @@ export default {
       class="btn btn-default append-right-10"
       @click="toggleForm"
     >
-      Cancel
+      {{ __('Cancel') }}
     </button>
     <button
       type="button"

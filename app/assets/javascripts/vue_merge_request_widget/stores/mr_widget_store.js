@@ -1,9 +1,9 @@
 import Timeago from 'timeago.js';
 import { getStateKey } from '../dependencies';
+import { stateKey } from './state_maps';
 import { formatDate } from '../../lib/utils/datetime_utility';
 
 export default class MergeRequestStore {
-
   constructor(data) {
     this.sha = data.diff_head_sha;
     this.gitlabLogo = data.gitlabLogo;
@@ -25,6 +25,7 @@ export default class MergeRequestStore {
     this.divergedCommitsCount = data.diverged_commits_count;
     this.pipeline = data.pipeline || {};
     this.deployments = this.deployments || data.deployments || [];
+    this.initRebase(data);
 
     if (data.issues_links) {
       const links = data.issues_links;
@@ -38,9 +39,8 @@ export default class MergeRequestStore {
     }
 
     this.updatedAt = data.updated_at;
-    this.mergedEvent = MergeRequestStore.getEventObject(data.merge_event);
-    this.closedEvent = MergeRequestStore.getEventObject(data.closed_event);
-    this.setToMWPSBy = MergeRequestStore.getAuthorObject({ author: data.merge_user || {} });
+    this.metrics = MergeRequestStore.buildMetrics(data.metrics);
+    this.setToMWPSBy = MergeRequestStore.formatUserObject(data.merge_user || {});
     this.mergeUserId = data.merge_user_id;
     this.currentUserId = gon.current_user_id;
     this.sourceBranchPath = data.source_branch_path;
@@ -76,6 +76,7 @@ export default class MergeRequestStore {
     this.canBeMerged = data.can_be_merged || false;
     this.isMergeAllowed = data.mergeable || false;
     this.mergeOngoing = data.merge_ongoing;
+    this.maintainerEditAllowed = data.allow_maintainer_to_push;
 
     // Cherry-pick and Revert actions related
     this.canCherryPickInCurrentMR = currentUser.can_cherry_pick_on_current_merge_request || false;
@@ -120,43 +121,56 @@ export default class MergeRequestStore {
     }
   }
 
-  static getEventObject(event) {
-    return {
-      author: MergeRequestStore.getAuthorObject(event),
-      updatedAt: formatDate(MergeRequestStore.getEventUpdatedAtDate(event)),
-      formattedUpdatedAt: MergeRequestStore.getEventDate(event),
-    };
+  get isNothingToMergeState() {
+    return this.state === stateKey.nothingToMerge;
   }
 
-  static getAuthorObject(event) {
-    if (!event) {
+  get isMergedState() {
+    return this.state === stateKey.merged;
+  }
+
+  initRebase(data) {
+    this.canPushToSourceBranch = data.can_push_to_source_branch;
+    this.rebaseInProgress = data.rebase_in_progress;
+    this.approvalsLeft = !data.approved;
+    this.rebasePath = data.rebase_path;
+  }
+
+  static buildMetrics(metrics) {
+    if (!metrics) {
       return {};
     }
 
     return {
-      name: event.author.name || '',
-      username: event.author.username || '',
-      webUrl: event.author.web_url || '',
-      avatarUrl: event.author.avatar_url || '',
+      mergedBy: MergeRequestStore.formatUserObject(metrics.merged_by),
+      closedBy: MergeRequestStore.formatUserObject(metrics.closed_by),
+      mergedAt: formatDate(metrics.merged_at),
+      closedAt: formatDate(metrics.closed_at),
+      readableMergedAt: MergeRequestStore.getReadableDate(metrics.merged_at),
+      readableClosedAt: MergeRequestStore.getReadableDate(metrics.closed_at),
     };
   }
 
-  static getEventUpdatedAtDate(event) {
-    if (!event) {
+  static formatUserObject(user) {
+    if (!user) {
+      return {};
+    }
+
+    return {
+      name: user.name || '',
+      username: user.username || '',
+      webUrl: user.web_url || '',
+      avatarUrl: user.avatar_url || '',
+    };
+  }
+
+  static getReadableDate(date) {
+    if (!date) {
       return '';
     }
 
-    return event.updated_at;
-  }
-
-  static getEventDate(event) {
     const timeagoInstance = new Timeago();
 
-    if (!event) {
-      return '';
-    }
-
-    return timeagoInstance.format(MergeRequestStore.getEventUpdatedAtDate(event));
+    return timeagoInstance.format(date);
   }
-
 }

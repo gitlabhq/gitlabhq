@@ -1,3 +1,5 @@
+- board = local_assigns.fetch(:board, nil)
+- group = local_assigns.fetch(:group, false)
 - @no_breadcrumb_container = true
 - @no_container = true
 - @content_class = "issue-boards-content"
@@ -5,10 +7,8 @@
 - page_title "Boards"
 
 - content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'common_vue'
-  = webpack_bundle_tag 'filtered_search'
-  = webpack_bundle_tag 'boards'
 
+  -# haml-lint:disable InlineJavaScript
   %script#js-board-template{ type: "text/x-template" }= render "shared/boards/components/board"
   %script#js-board-modal-filter{ type: "text/x-template" }= render "shared/issuable/search_bar", type: :boards_modal
 
@@ -27,8 +27,8 @@
       ":issue-link-base" => "issueLinkBase",
       ":root-path" => "rootPath",
       ":board-id" => "boardId",
-      ":key" => "_uid" }
-  = render "shared/boards/components/sidebar"
+      ":key" => "list.id" }
+  = render "shared/boards/components/sidebar", group: group
   - if @project
     %board-add-issues-modal{ "new-issue-path" => new_project_issue_path(@project),
       "milestone-path" => milestones_filter_dropdown_path,

@@ -3,24 +3,14 @@
 
 - page_title @blob.path, @ref
 
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'blob'
-
-  - if show_new_repo?
-    = webpack_bundle_tag 'common_vue'
-    = webpack_bundle_tag 'repo'
-
-= render 'projects/last_push'
-
 %div{ class: container_class }
-  - if show_new_repo?
-    = render 'projects/files', commit: @last_commit, project: @project, ref: @ref, content_url: project_blob_path(@project, @id)
-  - else
-    #tree-holder.tree-holder
-      = render 'blob', blob: @blob
+  = render 'projects/last_push'
+
+  #tree-holder.tree-holder
+    = render 'blob', blob: @blob
 
     - if can_modify_blob?(@blob)
       = render 'projects/blob/remove'
 
-      - title = "Replace #{@blob.name}"
-      = render 'projects/blob/upload', title: title, placeholder: title, button_title: 'Replace file', form_path: project_update_blob_path(@project, @id), method: :put
+    - title = "Replace #{@blob.name}"
+    = render 'projects/blob/upload', title: title, placeholder: title, button_title: 'Replace file', form_path: project_update_blob_path(@project, @id), method: :put

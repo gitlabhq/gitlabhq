@@ -4,7 +4,7 @@
 
 - if current_user.todos.any?
   .top-area
-    %ul.nav-links
+    %ul.nav-links.mobile-separator
       %li.todos-pending{ class: active_when(params[:state].blank? || params[:state] == 'pending') }>
         = link_to todos_filter_path(state: 'pending') do
           %span

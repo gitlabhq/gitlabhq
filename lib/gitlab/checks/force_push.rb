@@ -15,8 +15,8 @@ module Gitlab
               .ancestor?(oldrev, newrev)
           else
             Gitlab::Git::RevList.new(
-              path_to_repo: project.repository.path_to_repo,
-              oldrev: oldrev, newrev: newrev).missed_ref.present?
+              project.repository.raw, oldrev: oldrev, newrev: newrev
+            ).missed_ref.present?
           end
         end
       end

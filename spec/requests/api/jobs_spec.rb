@@ -11,7 +11,7 @@ describe API::Jobs do
                                ref: project.default_branch)
   end
 
-  let!(:job) { create(:ci_build, pipeline: pipeline) }
+  let!(:job) { create(:ci_build, :success, pipeline: pipeline) }
 
   let(:user) { create(:user) }
   let(:api_user) { user }
@@ -25,8 +25,10 @@ describe API::Jobs do
   describe 'GET /projects/:id/jobs' do
     let(:query) { Hash.new }
 
-    before do
-      get api("/projects/#{project.id}/jobs", api_user), query
+    before do |example|
+      unless example.metadata[:skip_before_request]
+        get api("/projects/#{project.id}/jobs", api_user), query
+      end
     end
 
     context 'authorized user' do
@@ -49,6 +51,23 @@ describe API::Jobs do
         expect(json_job['pipeline']['ref']).to eq job.pipeline.ref
         expect(json_job['pipeline']['sha']).to eq job.pipeline.sha
         expect(json_job['pipeline']['status']).to eq job.pipeline.status
+      end
+
+      it 'avoids N+1 queries', :skip_before_request do
+        first_build = create(:ci_build, :artifacts, pipeline: pipeline)
+        first_build.runner = create(:ci_runner)
+        first_build.user = create(:user)
+        first_build.save
+
+        control_count = ActiveRecord::QueryRecorder.new { go }.count
+
+        second_pipeline = create(:ci_empty_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
+        second_build = create(:ci_build, :artifacts, pipeline: second_pipeline)
+        second_build.runner = create(:ci_runner)
+        second_build.user = create(:user)
+        second_build.save
+
+        expect { go }.not_to exceed_query_limit(control_count)
       end
 
       context 'filter project with one scope element' do
@@ -82,6 +101,10 @@ describe API::Jobs do
       it 'does not return project jobs' do
         expect(response).to have_gitlab_http_status(401)
       end
+    end
+
+    def go
+      get api("/projects/#{project.id}/jobs", api_user), query
     end
   end
 
@@ -277,44 +300,53 @@ describe API::Jobs do
   end
 
   describe 'GET /projects/:id/jobs/:job_id/artifacts' do
-    before do
-      get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
-    end
-
-    context 'job with artifacts' do
-      let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
-
-      context 'authorized user' do
-        let(:download_headers) do
-          { 'Content-Transfer-Encoding' => 'binary',
-            'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
-        end
-
-        it 'returns specific job artifacts' do
-          expect(response).to have_gitlab_http_status(200)
-          expect(response.headers).to include(download_headers)
-          expect(response.body).to match_file(job.artifacts_file.file.file)
-        end
+    shared_examples 'downloads artifact' do
+      let(:download_headers) do
+        { 'Content-Transfer-Encoding' => 'binary',
+          'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
       end
 
-      context 'when anonymous user is accessing private artifacts' do
-        let(:api_user) { nil }
+      it 'returns specific job artifacts' do
+        expect(response).to have_gitlab_http_status(200)
+        expect(response.headers).to include(download_headers)
+        expect(response.body).to match_file(job.artifacts_file.file.file)
+      end
+    end
 
-        it 'hides artifacts and rejects request' do
-          expect(project).to be_private
+    context 'normal authentication' do
+      context 'job with artifacts' do
+        context 'when artifacts are stored locally' do
+          let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
+
+          before do
+            get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+          end
+
+          context 'authorized user' do
+            it_behaves_like 'downloads artifact'
+          end
+
+          context 'unauthorized user' do
+            let(:api_user) { nil }
+
+            it 'does not return specific job artifacts' do
+              expect(response).to have_gitlab_http_status(404)
+            end
+          end
+        end
+
+        it 'does not return job artifacts if not uploaded' do
+          get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+
           expect(response).to have_gitlab_http_status(404)
         end
       end
-    end
-
-    it 'does not return job artifacts if not uploaded' do
-      expect(response).to have_gitlab_http_status(404)
     end
   end
 
   describe 'GET /projects/:id/artifacts/:ref_name/download?job=name' do
     let(:api_user) { reporter }
-    let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
+    let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user) }
 
     before do
       job.success
@@ -373,14 +405,16 @@ describe API::Jobs do
 
     context 'find proper job' do
       shared_examples 'a valid file' do
-        let(:download_headers) do
-          { 'Content-Transfer-Encoding' => 'binary',
-            'Content-Disposition' =>
-              "attachment; filename=#{job.artifacts_file.filename}" }
-        end
+        context 'when artifacts are stored locally' do
+          let(:download_headers) do
+            { 'Content-Transfer-Encoding' => 'binary',
+              'Content-Disposition' =>
+                "attachment; filename=#{job.artifacts_file.filename}" }
+          end
 
-        it { expect(response).to have_gitlab_http_status(200) }
-        it { expect(response.headers).to include(download_headers) }
+          it { expect(response).to have_gitlab_http_status(200) }
+          it { expect(response.headers).to include(download_headers) }
+        end
       end
 
       context 'with regular branch' do
@@ -412,16 +446,27 @@ describe API::Jobs do
   end
 
   describe 'GET /projects/:id/jobs/:job_id/trace' do
-    let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
-
     before do
       get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
     end
 
     context 'authorized user' do
-      it 'returns specific job trace' do
-        expect(response).to have_gitlab_http_status(200)
-        expect(response.body).to eq(job.trace.raw)
+      context 'when trace is artifact' do
+        let(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+
+        it 'returns specific job trace' do
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.body).to eq(job.trace.raw)
+        end
+      end
+
+      context 'when trace is file' do
+        let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
+
+        it 'returns specific job trace' do
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.body).to eq(job.trace.raw)
+        end
       end
     end
 
@@ -443,7 +488,7 @@ describe API::Jobs do
       context 'user with :update_build persmission' do
         it 'cancels running or pending job' do
           expect(response).to have_gitlab_http_status(201)
-          expect(project.builds.first.status).to eq('canceled')
+          expect(project.builds.first.status).to eq('success')
         end
       end
 
@@ -503,17 +548,17 @@ describe API::Jobs do
     let(:role) { :master }
 
     before do
-      project.team << [user, role]
+      project.add_role(user, role)
 
       post api("/projects/#{project.id}/jobs/#{job.id}/erase", user)
     end
 
     context 'job is erasable' do
-      let(:job) { create(:ci_build, :trace, :artifacts, :success, project: project, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :trace_artifact, :artifacts, :success, project: project, pipeline: pipeline) }
 
       it 'erases job content' do
         expect(response).to have_gitlab_http_status(201)
-        expect(job).not_to have_trace
+        expect(job.trace.exist?).to be_falsy
         expect(job.artifacts_file.exists?).to be_falsy
         expect(job.artifacts_metadata.exists?).to be_falsy
       end
@@ -527,7 +572,7 @@ describe API::Jobs do
     end
 
     context 'job is not erasable' do
-      let(:job) { create(:ci_build, :trace, project: project, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :trace_live, project: project, pipeline: pipeline) }
 
       it 'responds with forbidden' do
         expect(response).to have_gitlab_http_status(403)
@@ -536,7 +581,7 @@ describe API::Jobs do
 
     context 'when a developer erases a build' do
       let(:role) { :developer }
-      let(:job) { create(:ci_build, :trace, :artifacts, :success, project: project, pipeline: pipeline, user: owner) }
+      let(:job) { create(:ci_build, :trace_artifact, :artifacts, :success, project: project, pipeline: pipeline, user: owner) }
 
       context 'when the build was created by the developer' do
         let(:owner) { user }
@@ -559,7 +604,7 @@ describe API::Jobs do
 
     context 'artifacts did not expire' do
       let(:job) do
-        create(:ci_build, :trace, :artifacts, :success,
+        create(:ci_build, :trace_artifact, :artifacts, :success,
                project: project, pipeline: pipeline, artifacts_expire_at: Time.now + 7.days)
       end
 

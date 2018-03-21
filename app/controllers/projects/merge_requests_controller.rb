@@ -7,9 +7,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include IssuableCollections
 
   skip_before_action :merge_request, only: [:index, :bulk_update]
+  before_action :whitelist_query_limiting, only: [:assign_related_issues, :update]
   before_action :authorize_update_issuable!, only: [:close, :edit, :update, :remove_wip, :sort]
   before_action :set_issuables_index, only: [:index]
   before_action :authenticate_user!, only: [:assign_related_issues]
+  before_action :check_user_can_push_to_source_branch!, only: [:rebase]
 
   def index
     @merge_requests = @issuables
@@ -48,10 +50,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
         set_pipeline_variables
 
-        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37432
-        Gitlab::GitalyClient.allow_n_plus_1_calls do
-          render
-        end
+        render
       end
 
       format.json do
@@ -131,7 +130,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       .new(project, current_user, wip_event: 'unwip')
       .execute(@merge_request)
 
-    render json: serializer.represent(@merge_request)
+    render json: serialize_widget(@merge_request)
   end
 
   def commit_change_content
@@ -147,7 +146,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       .new(@project, current_user)
       .cancel(@merge_request)
 
-    render json: serializer.represent(@merge_request)
+    render json: serialize_widget(@merge_request)
   end
 
   def merge
@@ -188,7 +187,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       begin
         @merge_request.environments_for(current_user).map do |environment|
           project = environment.project
-          deployment = environment.first_deployment_for(@merge_request.diff_head_commit)
+          deployment = environment.first_deployment_for(@merge_request.diff_head_sha)
 
           stop_url =
             if environment.stop_action? && can?(current_user, :create_deployment, environment)
@@ -221,6 +220,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       end
 
     render json: environments
+  end
+
+  def rebase
+    RebaseWorker.perform_async(@merge_request.id, current_user.id)
+
+    render nothing: true, status: 200
   end
 
   protected
@@ -304,6 +309,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     end
   end
 
+  def serialize_widget(merge_request)
+    serializer.represent(merge_request, serializer: 'widget')
+  end
+
   def serializer
     MergeRequestSerializer.new(current_user: current_user, project: merge_request.project)
   end
@@ -314,8 +323,22 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @target_branches = @merge_request.target_project.repository.branch_names
   end
 
-  def set_issuables_index
-    @finder_type = MergeRequestsFinder
-    super
+  def finder_type
+    MergeRequestsFinder
+  end
+
+  def check_user_can_push_to_source_branch!
+    return access_denied! unless @merge_request.source_branch_exists?
+
+    access_check = ::Gitlab::UserAccess
+      .new(current_user, project: @merge_request.source_project)
+      .can_push_to_branch?(@merge_request.source_branch)
+
+    access_denied! unless access_check
+  end
+
+  def whitelist_query_limiting
+    # Also see https://gitlab.com/gitlab-org/gitlab-ce/issues/42441
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42438')
   end
 end

@@ -11,6 +11,18 @@ module Projects
         define_auto_devops_variables
       end
 
+      def reset_cache
+        if ResetProjectCacheService.new(@project, current_user).execute
+          respond_to do |format|
+            format.json { head :ok }
+          end
+        else
+          respond_to do |format|
+            format.json { head :bad_request }
+          end
+        end
+      end
+
       private
 
       def define_runners_variables

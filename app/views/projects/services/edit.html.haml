@@ -2,4 +2,6 @@
 - page_title @service.title, "Services"
 - add_to_breadcrumbs("Settings", edit_project_path(@project))
 
+= render 'deprecated_message' if @service.deprecation_message
+
 = render 'form'

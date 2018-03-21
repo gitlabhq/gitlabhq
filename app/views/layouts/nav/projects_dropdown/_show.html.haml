@@ -1,9 +1,9 @@
-- project_meta = { id: @project.id, name: @project.name, namespace: @project.name_with_namespace, web_url: project_path(@project), avatar_url: @project.avatar_url } if @project&.persisted?
+- project_meta = { id: @project.id, name: @project.name, namespace: @project.full_name, web_url: project_path(@project), avatar_url: @project.avatar_url } if @project&.persisted?
 .projects-dropdown-container
-  .project-dropdown-sidebar
+  .project-dropdown-sidebar.qa-projects-dropdown-sidebar
     %ul
       = nav_link(path: 'dashboard/projects#index') do
-        = link_to dashboard_projects_path do
+        = link_to dashboard_projects_path, class: 'qa-your-projects-link' do
           = _('Your projects')
       = nav_link(path: 'projects#starred') do
         = link_to starred_dashboard_projects_path do

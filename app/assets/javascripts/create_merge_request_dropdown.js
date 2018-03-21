@@ -1,4 +1,6 @@
 /* eslint-disable no-new */
+import _ from 'underscore';
+import axios from './lib/utils/axios_utils';
 import Flash from './flash';
 import DropLab from './droplab/drop_lab';
 import ISetter from './droplab/plugins/input_setter';
@@ -73,60 +75,52 @@ export default class CreateMergeRequestDropdown {
   }
 
   checkAbilityToCreateBranch() {
-    return $.ajax({
-      type: 'GET',
-      dataType: 'json',
-      url: this.canCreatePath,
-      beforeSend: () => this.setUnavailableButtonState(),
-    })
-    .done((data) => {
-      this.setUnavailableButtonState(false);
+    this.setUnavailableButtonState();
 
-      if (data.can_create_branch) {
-        this.available();
-        this.enable();
+    axios.get(this.canCreatePath)
+      .then(({ data }) => {
+        this.setUnavailableButtonState(false);
 
-        if (!this.droplabInitialized) {
-          this.droplabInitialized = true;
-          this.initDroplab();
-          this.bindEvents();
+        if (data.can_create_branch) {
+          this.available();
+          this.enable();
+
+          if (!this.droplabInitialized) {
+            this.droplabInitialized = true;
+            this.initDroplab();
+            this.bindEvents();
+          }
+        } else if (data.has_related_branch) {
+          this.hide();
         }
-      } else if (data.has_related_branch) {
-        this.hide();
-      }
-    }).fail(() => {
-      this.unavailable();
-      this.disable();
-      new Flash('Failed to check if a new branch can be created.');
-    });
+      })
+      .catch(() => {
+        this.unavailable();
+        this.disable();
+        Flash('Failed to check if a new branch can be created.');
+      });
   }
 
   createBranch() {
-    return $.ajax({
-      method: 'POST',
-      dataType: 'json',
-      url: this.createBranchPath,
-      beforeSend: () => (this.isCreatingBranch = true),
-    })
-    .done((data) => {
-      this.branchCreated = true;
-      window.location.href = data.url;
-    })
-    .fail(() => new Flash('Failed to create a branch for this issue. Please try again.'));
+    this.isCreatingBranch = true;
+
+    return axios.post(this.createBranchPath)
+      .then(({ data }) => {
+        this.branchCreated = true;
+        window.location.href = data.url;
+      })
+      .catch(() => Flash('Failed to create a branch for this issue. Please try again.'));
   }
 
   createMergeRequest() {
-    return $.ajax({
-      method: 'POST',
-      dataType: 'json',
-      url: this.createMrPath,
-      beforeSend: () => (this.isCreatingMergeRequest = true),
-    })
-    .done((data) => {
-      this.mergeRequestCreated = true;
-      window.location.href = data.url;
-    })
-    .fail(() => new Flash('Failed to create Merge Request. Please try again.'));
+    this.isCreatingMergeRequest = true;
+
+    return axios.post(this.createMrPath)
+      .then(({ data }) => {
+        this.mergeRequestCreated = true;
+        window.location.href = data.url;
+      })
+      .catch(() => Flash('Failed to create Merge Request. Please try again.'));
   }
 
   disable() {
@@ -186,6 +180,7 @@ export default class CreateMergeRequestDropdown {
           valueAttribute: 'data-text',
         },
       ],
+      hideOnClick: false,
     };
   }
 
@@ -199,39 +194,33 @@ export default class CreateMergeRequestDropdown {
   getRef(ref, target = 'all') {
     if (!ref) return false;
 
-    return $.ajax({
-      method: 'GET',
-      dataType: 'json',
-      url: this.refsPath + ref,
-      beforeSend: () => {
-        this.isGettingRef = true;
-      },
-    })
-    .always(() => {
-      this.isGettingRef = false;
-    })
-    .done((data) => {
-      const branches = data[Object.keys(data)[0]];
-      const tags = data[Object.keys(data)[1]];
-      let result;
+    return axios.get(this.refsPath + ref)
+      .then(({ data }) => {
+        const branches = data[Object.keys(data)[0]];
+        const tags = data[Object.keys(data)[1]];
+        let result;
 
-      if (target === 'branch') {
-        result = CreateMergeRequestDropdown.findByValue(branches, ref);
-      } else {
-        result = CreateMergeRequestDropdown.findByValue(branches, ref, true) ||
-          CreateMergeRequestDropdown.findByValue(tags, ref, true);
-        this.suggestedRef = result;
-      }
+        if (target === 'branch') {
+          result = CreateMergeRequestDropdown.findByValue(branches, ref);
+        } else {
+          result = CreateMergeRequestDropdown.findByValue(branches, ref, true) ||
+            CreateMergeRequestDropdown.findByValue(tags, ref, true);
+          this.suggestedRef = result;
+        }
 
-      return this.updateInputState(target, ref, result);
-    })
-    .fail(() => {
-      this.unavailable();
-      this.disable();
-      new Flash('Failed to get ref.');
+        this.isGettingRef = false;
 
-      return false;
-    });
+        return this.updateInputState(target, ref, result);
+      })
+      .catch(() => {
+        this.unavailable();
+        this.disable();
+        new Flash('Failed to get ref.');
+
+        this.isGettingRef = false;
+
+        return false;
+      });
   }
 
   getTargetData(target) {
@@ -276,13 +265,13 @@ export default class CreateMergeRequestDropdown {
     let target;
     let value;
 
-    if (event.srcElement === this.branchInput) {
+    if (event.target === this.branchInput) {
       target = 'branch';
       value = this.branchInput.value;
-    } else if (event.srcElement === this.refInput) {
+    } else if (event.target === this.refInput) {
       target = 'ref';
-      value = event.srcElement.value.slice(0, event.srcElement.selectionStart) +
-        event.srcElement.value.slice(event.srcElement.selectionEnd);
+      value = event.target.value.slice(0, event.target.selectionStart) +
+        event.target.value.slice(event.target.selectionEnd);
     } else {
       return false;
     }
@@ -331,12 +320,12 @@ export default class CreateMergeRequestDropdown {
       xhr = this.createBranch();
     }
 
-    xhr.fail(() => {
+    xhr.catch(() => {
       this.isCreatingMergeRequest = false;
       this.isCreatingBranch = false;
-    });
 
-    xhr.always(() => this.enable());
+      this.enable();
+    });
 
     this.disable();
   }

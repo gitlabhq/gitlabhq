@@ -1,5 +1,6 @@
 /* eslint-disable comma-dangle, no-param-reassign, no-unused-expressions, max-len */
 
+import $ from 'jquery';
 import '~/gl_dropdown';
 import '~/lib/utils/common_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
@@ -64,8 +65,8 @@ describe('glDropdown', function describeDropdown() {
   });
 
   afterEach(() => {
-    $('body').unbind('keydown');
-    this.dropdownContainerElement.unbind('keyup');
+    $('body').off('keydown');
+    this.dropdownContainerElement.off('keyup');
   });
 
   it('should open on click', () => {

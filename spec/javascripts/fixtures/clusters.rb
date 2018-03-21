@@ -31,19 +31,4 @@ describe Projects::ClustersController, '(JavaScript fixtures)', type: :controlle
     expect(response).to be_success
     store_frontend_fixture(response, example.description)
   end
-
-  context 'rendering non-empty state' do
-    before do
-      cluster
-    end
-
-    it 'clusters/index_cluster.html.raw' do |example|
-      get :index,
-        namespace_id: namespace,
-        project_id: project
-
-      expect(response).to be_success
-      store_frontend_fixture(response, example.description)
-    end
-  end
 end

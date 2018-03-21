@@ -1,5 +1,0 @@
----
-title: Use app host instead of asset host when rendering image blob or diff
-merge_request:
-author:
-type: fixed

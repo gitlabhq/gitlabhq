@@ -12,7 +12,7 @@ feature 'Prioritize labels' do
 
   context 'when user belongs to project team' do
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
 
       sign_in user
     end
@@ -99,7 +99,7 @@ feature 'Prioritize labels' do
       expect(page).to have_content 'wontfix'
 
       # Sort labels
-      drag_to(selector: '.js-prioritized-labels', from_index: 1, to_index: 2)
+      drag_to(selector: '.label-list-item', from_index: 1, to_index: 2)
 
       page.within('.prioritized-labels') do
         expect(first('li')).to have_content('feature')

@@ -173,7 +173,7 @@
             Password authentication enabled for Git over HTTP(S)
             .help-block
               When disabled, a Personal Access Token
-              - if Gitlab::LDAP::Config.enabled?
+              - if Gitlab::Auth::LDAP::Config.enabled?
                 or LDAP password
               must be used to authenticate.
     - if omniauth_enabled? && button_based_providers.any?
@@ -237,6 +237,17 @@
       .col-sm-10
         = f.number_field :max_pages_size, class: 'form-control'
         .help-block 0 for unlimited
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :pages_domain_verification_enabled do
+            = f.check_box :pages_domain_verification_enabled
+            Require users to prove ownership of custom domains
+        .help-block
+          Domain verification is an essential security measure for public GitLab
+          sites. Users are required to demonstrate they control a domain before
+          it is enabled
+          = link_to icon('question-circle'), help_page_path('user/project/pages/getting_started_part_three.md', anchor: 'dns-txt-record')
 
   %fieldset
     %legend Continuous Integration and Deployment
@@ -249,7 +260,12 @@
         .help-block
           It will automatically build, test, and deploy applications based on a predefined CI/CD configuration
           = link_to icon('question-circle'), help_page_path('topics/autodevops/index.md')
-
+    .form-group
+      = f.label :auto_devops_domain, class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :auto_devops_domain, class: 'form-control', placeholder: 'domain.com'
+        .help-block
+          = s_("AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages.")
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
@@ -537,7 +553,8 @@
     .form-group
       = f.label :repository_storages, 'Storage paths for new projects', class: 'control-label col-sm-2'
       .col-sm-10
-        = f.select :repository_storages, repository_storages_options_for_select, {include_hidden: false}, multiple: true, class: 'form-control'
+        = f.select :repository_storages, repository_storages_options_for_select(@application_setting.repository_storages),
+          {include_hidden: false}, multiple: true, class: 'form-control'
         .help-block
           Manage repository storage paths. Learn more in the
           = succeed "." do
@@ -640,24 +657,26 @@
         .checkbox
           = f.label :version_check_enabled do
             = f.check_box :version_check_enabled
-            Version check enabled
+            Enable version check
           .help-block
-            Let GitLab inform you when an update is available.
+            GitLab will inform you if a new version is available.
+            = link_to 'Learn more', help_page_path("user/admin_area/settings/usage_statistics", anchor: "version-check")
+            about what information is shared with GitLab Inc.
     .form-group
       .col-sm-offset-2.col-sm-10
         - can_be_configured = @application_setting.usage_ping_can_be_configured?
         .checkbox
           = f.label :usage_ping_enabled do
             = f.check_box :usage_ping_enabled, disabled: !can_be_configured
-            Usage ping enabled
-            = link_to icon('question-circle'), help_page_path("user/admin_area/settings/usage_statistics", anchor: "usage-ping")
+            Enable usage ping
           .help-block
             - if can_be_configured
-              Every week GitLab will report license usage back to GitLab, Inc.
-              Disable this option if you do not want this to occur. To see the
-              JSON payload that will be sent, visit the
-              = succeed '.' do
-                = link_to "Cohorts page", admin_cohorts_path(anchor: 'usage-ping')
+              To help improve GitLab and its user experience, GitLab will
+              periodically collect usage information.
+              = link_to 'Learn more', help_page_path("user/admin_area/settings/usage_statistics", anchor: "usage-ping")
+              about what information is shared with GitLab Inc. Visit
+              = link_to 'Cohorts', admin_cohorts_path(anchor: 'usage-ping')
+              to see the JSON payload sent.
             - else
               The usage ping is disabled, and cannot be configured through this
               form. For more information, see the documentation on
@@ -773,6 +792,22 @@
           The default value (1) is a reasonable choice for the majority of GitLab
           installations. Set to 0 to completely disable polling.
           = link_to icon('question-circle'), help_page_path('administration/polling')
+
+  %fieldset
+    %legend Performance optimization
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :authorized_keys_enabled do
+            = f.check_box :authorized_keys_enabled
+            Write to "authorized_keys" file
+          .help-block
+            By default, we write to the "authorized_keys" file to support Git
+            over SSH without additional configuration. GitLab can be optimized
+            to authenticate SSH keys via the database file. Only uncheck this
+            if you have configured your OpenSSH server to use the
+            AuthorizedKeysCommand. Click on the help icon for more details.
+            = link_to icon('question-circle'), help_page_path('administration/operations/fast_ssh_key_lookup')
 
   %fieldset
     %legend User and IP Rate Limits

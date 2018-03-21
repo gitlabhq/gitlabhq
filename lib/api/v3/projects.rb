@@ -41,6 +41,7 @@ module API
             # private or internal, use the more conservative option, private.
             attrs[:visibility_level] = (publik == true) ? Gitlab::VisibilityLevel::PUBLIC : Gitlab::VisibilityLevel::PRIVATE
           end
+
           attrs
         end
 
@@ -172,9 +173,9 @@ module API
           use :sort_params
           use :pagination
         end
-        get "/search/:query", requirements: { query: /[^\/]+/ } do
-          search_service = Search::GlobalService.new(current_user, search: params[:query]).execute
-          projects = search_service.objects('projects', params[:page])
+        get "/search/:query", requirements: { query: %r{[^/]+} } do
+          search_service = ::Search::GlobalService.new(current_user, search: params[:query]).execute
+          projects = search_service.objects('projects', params[:page], false)
           projects = projects.reorder(params[:order_by] => params[:sort])
 
           present paginate(projects), with: ::API::V3::Entities::Project
@@ -201,6 +202,7 @@ module API
             if project.errors[:limit_reached].present?
               error!(project.errors[:limit_reached], 403)
             end
+
             render_validation_error!(project)
           end
         end

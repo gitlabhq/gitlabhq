@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :subscription do
-    user
     project
+    user { project.creator }
     subscribable factory: :issue
   end
 end

@@ -8,7 +8,7 @@ module QA
       def initialize
         @tty = false
         @tags = []
-        @files = ['qa/specs/features']
+        @files = [File.expand_path('./features', __dir__)]
       end
 
       def perform

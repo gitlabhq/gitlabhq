@@ -11,11 +11,13 @@ describe Admin::HooksController do
     it 'sets all parameters' do
       hook_params = {
         enable_ssl_verification: true,
+        token: "TEST TOKEN",
+        url: "http://example.com",
+
         push_events: true,
         tag_push_events: true,
         repository_update_events: true,
-        token: "TEST TOKEN",
-        url: "http://example.com"
+        merge_requests_events: true
       }
 
       post :create, hook: hook_params

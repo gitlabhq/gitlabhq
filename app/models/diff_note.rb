@@ -21,7 +21,7 @@ class DiffNote < Note
 
   before_validation :set_original_position, on: :create
   before_validation :update_position, on: :create, if: :on_text?
-  before_validation :set_line_code
+  before_validation :set_line_code, if: :on_text?
   after_save :keep_around_commits
 
   def discussion_class(*)
@@ -59,10 +59,6 @@ class DiffNote < Note
 
   def diff_line
     @diff_line ||= diff_file&.line_for_position(self.original_position)
-  end
-
-  def for_line?(line)
-    diff_file.position(line) == self.original_position
   end
 
   def original_line_code

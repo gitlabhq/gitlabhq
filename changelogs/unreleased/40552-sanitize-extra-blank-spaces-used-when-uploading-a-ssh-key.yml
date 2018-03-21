@@ -1,0 +1,5 @@
+---
+title: Sanitize extra blank spaces used when uploading a SSH key
+merge_request: 40552
+author:
+type: fixed

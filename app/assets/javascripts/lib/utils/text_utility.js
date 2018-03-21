@@ -64,3 +64,19 @@ export const truncate = (string, maxLength) => `${string.substr(0, (maxLength - 
 export function capitalizeFirstCharacter(text) {
   return `${text[0].toUpperCase()}${text.slice(1)}`;
 }
+
+/**
+ * Replaces all html tags from a string with the given replacement.
+ *
+ * @param {String} string
+ * @param {*} replace
+ * @returns {String}
+ */
+export const stripHtml = (string, replace = '') => string.replace(/<[^>]*>/g, replace);
+
+/**
+ * Converts snake_case string to camelCase
+ *
+ * @param {*} string
+ */
+export const convertToCamelCase = string => string.replace(/(_\w)/g, s => s[1].toUpperCase());

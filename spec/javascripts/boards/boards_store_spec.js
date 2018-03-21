@@ -1,25 +1,26 @@
 /* eslint-disable comma-dangle, one-var, no-unused-vars */
 /* global BoardService */
-/* global boardsMockInterceptor */
-/* global listObj */
-/* global listObjDuplicate */
 /* global ListIssue */
-/* global mockBoardService */
 
 import Vue from 'vue';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import Cookies from 'js-cookie';
 
+import '~/vue_shared/models/label';
 import '~/boards/models/issue';
-import '~/boards/models/label';
 import '~/boards/models/list';
 import '~/boards/models/assignee';
 import '~/boards/services/board_service';
 import '~/boards/stores/boards_store';
-import './mock_data';
+import { listObj, listObjDuplicate, boardsMockInterceptor, mockBoardService } from './mock_data';
 
 describe('Store', () => {
+  let mock;
+
   beforeEach(() => {
-    Vue.http.interceptors.push(boardsMockInterceptor);
+    mock = new MockAdapter(axios);
+    mock.onAny().reply(boardsMockInterceptor);
     gl.boardService = mockBoardService();
     gl.issueBoards.BoardsStore.create();
 
@@ -34,7 +35,7 @@ describe('Store', () => {
   });
 
   afterEach(() => {
-    Vue.http.interceptors = _.without(Vue.http.interceptors, boardsMockInterceptor);
+    mock.restore();
   });
 
   it('starts with a blank state', () => {

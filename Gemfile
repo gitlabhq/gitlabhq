@@ -12,7 +12,7 @@ gem 'sprockets', '~> 3.7.0'
 gem 'default_value_for', '~> 3.0.0'
 
 # Supported DBs
-gem 'mysql2', '~> 0.4.5', group: :mysql
+gem 'mysql2', '~> 0.4.10', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
 gem 'rugged', '~> 0.26.0'
@@ -22,8 +22,8 @@ gem 'faraday', '~> 0.12'
 
 # Authentication libraries
 gem 'devise', '~> 4.2'
-gem 'doorkeeper', '~> 4.2.0'
-gem 'doorkeeper-openid_connect', '~> 1.2.0'
+gem 'doorkeeper', '~> 4.3'
+gem 'doorkeeper-openid_connect', '~> 1.3'
 gem 'omniauth', '~> 1.4.2'
 gem 'omniauth-auth0', '~> 1.4.1'
 gem 'omniauth-azure-oauth2', '~> 0.0.9'
@@ -34,7 +34,7 @@ gem 'omniauth-gitlab', '~> 1.0.2'
 gem 'omniauth-google-oauth2', '~> 0.5.2'
 gem 'omniauth-kerberos', '~> 0.3.0', group: :kerberos
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
-gem 'omniauth-saml', '~> 1.7.0'
+gem 'omniauth-saml', '~> 1.10'
 gem 'omniauth-shibboleth', '~> 1.2.0'
 gem 'omniauth-twitter', '~> 1.2.0'
 gem 'omniauth_crowd', '~> 2.2.0'
@@ -69,16 +69,24 @@ gem 'net-ldap'
 
 # Git Wiki
 # Required manually in config/initializers/gollum.rb to control load order
+# Before updating this gem, check if
+# https://github.com/gollum/gollum-lib/pull/292 has been merged.
+# If it has, then remove the monkey patch for update_page, rename_page and raw_data_in_committer
+# in config/initializers/gollum.rb
 gem 'gollum-lib', '~> 4.2', require: false
+
+# Before updating this gem, check if
+# https://github.com/gollum/rugged_adapter/pull/28 has been merged.
+# If it has, then remove the monkey patch for tree_entry in config/initializers/gollum.rb
 gem 'gollum-rugged_adapter', '~> 0.4.4', require: false
 
 # Language detection
-gem 'github-linguist', '~> 4.7.0', require: 'linguist'
+gem 'github-linguist', '~> 5.3.3', require: 'linguist'
 
 # API
 gem 'grape', '~> 1.0'
 gem 'grape-entity', '~> 0.6.0'
-gem 'rack-cors', '~> 0.4.0', require: 'rack/cors'
+gem 'rack-cors', '~> 1.0.0', require: 'rack/cors'
 
 # Disable strong_params so that Mash does not respond to :permitted?
 gem 'hashie-forbidden_attributes'
@@ -96,7 +104,7 @@ gem 'carrierwave', '~> 1.2'
 gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for backups
-gem 'fog-aws', '~> 1.4'
+gem 'fog-aws', '~> 2.0'
 gem 'fog-core', '~> 1.44'
 gem 'fog-google', '~> 0.5'
 gem 'fog-local', '~> 0.3'
@@ -105,19 +113,20 @@ gem 'fog-rackspace', '~> 0.1.1'
 gem 'fog-aliyun', '~> 0.2.0'
 
 # for Google storage
-gem 'google-api-client', '~> 0.13.6'
+gem 'google-api-client', '~> 0.19.8'
 
 # for aws storage
 gem 'unf', '~> 0.1.4'
 
 # Seed data
-gem 'seed-fu', '2.3.6' # Upgrade to > 2.3.7 once https://github.com/mbleigh/seed-fu/issues/123 is solved
+gem 'seed-fu', '~> 2.3.7'
 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 1.11.0'
 gem 'deckar01-task_list', '2.0.0'
 gem 'gitlab-markup', '~> 1.6.2'
 gem 'redcarpet', '~> 3.4'
+gem 'commonmarker', '~> 0.17'
 gem 'RedCloth', '~> 4.3.2'
 gem 'rdoc', '~> 4.2'
 gem 'org-ruby', '~> 0.9.12'
@@ -128,7 +137,7 @@ gem 'asciidoctor-plantuml', '0.0.7'
 gem 'rouge', '~> 2.0'
 gem 'truncato', '~> 0.7.9'
 gem 'bootstrap_form', '~> 2.7.0'
-gem 'nokogiri', '~> 1.8.1'
+gem 'nokogiri', '~> 1.8.2'
 
 # Diffs
 gem 'diffy', '~> 3.1.0'
@@ -143,7 +152,7 @@ end
 gem 'state_machines-activerecord', '~> 0.4.0'
 
 # Issue tags
-gem 'acts-as-taggable-on', '~> 4.0'
+gem 'acts-as-taggable-on', '~> 5.0'
 
 # Background jobs
 gem 'sidekiq', '~> 5.0'
@@ -199,7 +208,7 @@ gem 'asana', '~> 0.6.0'
 gem 'ruby-fogbugz', '~> 0.2.1'
 
 # Kubernetes integration
-gem 'kubeclient', '~> 2.2.0'
+gem 'kubeclient', '~> 3.0'
 
 # d3
 gem 'd3_rails', '~> 3.5.0'
@@ -226,8 +235,8 @@ gem 'mousetrap-rails', '~> 1.4.6'
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.5'
 
-# Faster JSON
-gem 'oj', '~> 2.17.4'
+# Faster blank
+gem 'fast_blank'
 
 # Parse time & duration
 gem 'chronic', '~> 0.10.2'
@@ -245,14 +254,13 @@ gem 'font-awesome-rails', '~> 4.7'
 gem 'gemojione', '~> 3.3'
 gem 'gon', '~> 6.1.0'
 gem 'jquery-atwho-rails', '~> 1.3.2'
-gem 'jquery-rails', '~> 4.3.1'
 gem 'request_store', '~> 1.3'
 gem 'select2-rails', '~> 3.5.9'
 gem 'virtus', '~> 1.0.1'
 gem 'base32', '~> 0.3.0'
 
 # Sentry integration
-gem 'sentry-raven', '~> 2.5.3'
+gem 'sentry-raven', '~> 2.7'
 
 gem 'premailer-rails', '~> 1.9.7'
 
@@ -263,12 +271,11 @@ gem 'gettext_i18n_rails', '~> 1.8.0'
 gem 'gettext_i18n_rails_js', '~> 1.2.0'
 gem 'gettext', '~> 3.2.2', require: false, group: :development
 
-gem 'batch-loader'
+gem 'batch-loader', '~> 1.2.1'
 
 # Perf bar
 gem 'peek', '~> 1.0.1'
 gem 'peek-gc', '~> 0.0.2'
-gem 'peek-host', '~> 1.0.0'
 gem 'peek-mysql2', '~> 1.1.0', group: :mysql
 gem 'peek-performance_bar', '~> 1.3.0'
 gem 'peek-pg', '~> 1.3.0', group: :postgres
@@ -283,12 +290,12 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~> 0.7.0.beta43'
+  gem 'prometheus-client-mmap', '~> 0.9.1'
   gem 'raindrops', '~> 0.18'
 end
 
 group :development do
-  gem 'foreman', '~> 0.78.0'
+  gem 'foreman', '~> 0.84.0'
   gem 'brakeman', '~> 3.6.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
@@ -318,7 +325,7 @@ group :development, :test do
   gem 'spinach-rerun-reporter', '~> 0.0.2'
   gem 'rspec_profiling', '~> 0.0.5'
   gem 'rspec-set', '~> 0.1.3'
-  gem 'rspec-parameterized'
+  gem 'rspec-parameterized', require: false
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.7.0'
@@ -334,19 +341,21 @@ group :development, :test do
   gem 'spring-commands-rspec', '~> 1.0.4'
   gem 'spring-commands-spinach', '~> 1.1.0'
 
-  gem 'rubocop', '~> 0.49.1', require: false
-  gem 'rubocop-rspec', '~> 1.15.1', require: false
-  gem 'rubocop-gitlab-security', '~> 0.1.0', require: false
-  gem 'scss_lint', '~> 0.54.0', require: false
+  gem 'gitlab-styles', '~> 2.3', require: false
+  # Pin these dependencies, otherwise a new rule could break the CI pipelines
+  gem 'rubocop', '~> 0.52.1'
+  gem 'rubocop-rspec', '~> 1.22.1'
+
+  gem 'scss_lint', '~> 0.56.0', require: false
   gem 'haml_lint', '~> 0.26.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
-  gem 'flay', '~> 2.8.0', require: false
+  gem 'flay', '~> 2.10.0', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
 
   gem 'benchmark-ips', '~> 2.3.0', require: false
 
   gem 'license_finder', '~> 3.1', require: false
-  gem 'knapsack', '~> 1.11.0'
+  gem 'knapsack', '~> 1.16'
 
   gem 'activerecord_sane_schema_dumper', '0.2'
 
@@ -367,20 +376,17 @@ group :test do
   gem 'test-prof', '~> 0.2.5'
 end
 
-gem 'octokit', '~> 4.6.2'
+gem 'octokit', '~> 4.8'
 
 gem 'mail_room', '~> 0.9.1'
 
 gem 'email_reply_trimmer', '~> 0.1'
 gem 'html2text'
 
-gem 'ruby-prof', '~> 0.16.2'
+gem 'ruby-prof', '~> 0.17.0'
 
 # OAuth
 gem 'oauth2', '~> 1.4'
-
-# Soft deletion
-gem 'paranoia', '~> 2.3.1'
 
 # Health check
 gem 'health_check', '~> 2.6.0'
@@ -390,7 +396,8 @@ gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
 # SSH host key support
-gem 'net-ssh', '~> 4.1.0'
+gem 'net-ssh', '~> 4.2.0'
+gem 'sshkey', '~> 1.9.0'
 
 # Required for ED25519 SSH host key support
 group :ed25519 do
@@ -400,14 +407,18 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.61.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.88.0', require: 'gitaly'
+gem 'grpc', '~> 1.10.0'
 
-gem 'toml-rb', '~> 0.3.15', require: false
+# Locked until https://github.com/google/protobuf/issues/4210 is closed
+gem 'google-protobuf', '= 3.5.1'
+
+gem 'toml-rb', '~> 1.0.0', require: false
 
 # Feature toggles
-gem 'flipper', '~> 0.11.0'
-gem 'flipper-active_record', '~> 0.11.0'
-gem 'flipper-active_support_cache_store', '~> 0.11.0'
+gem 'flipper', '~> 0.13.0'
+gem 'flipper-active_record', '~> 0.13.0'
+gem 'flipper-active_support_cache_store', '~> 0.13.0'
 
 # Structured logging
 gem 'lograge', '~> 0.5'

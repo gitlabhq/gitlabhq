@@ -1,67 +1,79 @@
 <script>
-/* eslint-disable no-new, no-alert */
+  /* eslint-disable no-alert */
 
-import eventHub from '../event_hub';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
-import tooltip from '../../vue_shared/directives/tooltip';
+  import eventHub from '../event_hub';
+  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+  import icon from '../../vue_shared/components/icon.vue';
+  import tooltip from '../../vue_shared/directives/tooltip';
 
-export default {
-  props: {
-    endpoint: {
-      type: String,
-      required: true,
+  export default {
+    directives: {
+      tooltip,
     },
-    title: {
-      type: String,
-      required: true,
+    components: {
+      loadingIcon,
+      icon,
     },
-    icon: {
-      type: String,
-      required: true,
+    props: {
+      endpoint: {
+        type: String,
+        required: true,
+      },
+      title: {
+        type: String,
+        required: true,
+      },
+      icon: {
+        type: String,
+        required: true,
+      },
+      cssClass: {
+        type: String,
+        required: true,
+      },
+      pipelineId: {
+        type: Number,
+        required: true,
+      },
+      type: {
+        type: String,
+        required: true,
+      },
     },
-    cssClass: {
-      type: String,
-      required: true,
+    data() {
+      return {
+        isLoading: false,
+      };
     },
-    confirmActionMessage: {
-      type: String,
-      required: false,
+    computed: {
+      buttonClass() {
+        return `btn ${this.cssClass}`;
+      },
     },
-  },
-  directives: {
-    tooltip,
-  },
-  components: {
-    loadingIcon,
-  },
-  data() {
-    return {
-      isLoading: false,
-    };
-  },
-  computed: {
-    iconClass() {
-      return `fa fa-${this.icon}`;
+    created() {
+      // We're using eventHub to listen to the modal here instead of
+      // using props because it would would make the parent components
+      // much more complex to keep track of the loading state of each button
+      eventHub.$on('postAction', this.setLoading);
     },
-    buttonClass() {
-      return `btn ${this.cssClass}`;
+    beforeDestroy() {
+      eventHub.$off('postAction', this.setLoading);
     },
-  },
-  methods: {
-    onClick() {
-      if (this.confirmActionMessage && confirm(this.confirmActionMessage)) {
-        this.makeRequest();
-      } else if (!this.confirmActionMessage) {
-        this.makeRequest();
-      }
+    methods: {
+      onClick() {
+        eventHub.$emit('openConfirmationModal', {
+          pipelineId: this.pipelineId,
+          endpoint: this.endpoint,
+          type: this.type,
+        });
+      },
+      setLoading(endpoint) {
+        if (endpoint === this.endpoint) {
+          this.isLoading = true;
+        }
+      },
     },
-    makeRequest() {
-      this.isLoading = true;
-
-      eventHub.$emit('postAction', this.endpoint);
-    },
-  },
-};
+  };
 </script>
 
 <template>
@@ -75,10 +87,9 @@ export default {
     data-container="body"
     data-placement="top"
     :disabled="isLoading">
-    <i
-      :class="iconClass"
-      aria-hidden="true">
-    </i>
+    <icon
+      :name="icon"
+    />
     <loading-icon v-if="isLoading" />
   </button>
 </template>

@@ -125,10 +125,10 @@ describe IssuablesHelper do
   describe '#updated_at_by' do
     let(:user) { create(:user) }
     let(:unedited_issuable) { create(:issue) }
-    let(:edited_issuable) { create(:issue, last_edited_by: user, created_at: 3.days.ago, updated_at: 2.days.ago, last_edited_at: 2.days.ago) }
+    let(:edited_issuable) { create(:issue, last_edited_by: user, created_at: 3.days.ago, updated_at: 1.day.ago, last_edited_at: 2.days.ago) }
     let(:edited_updated_at_by) do
       {
-        updatedAt: edited_issuable.updated_at.to_time.iso8601,
+        updatedAt: edited_issuable.last_edited_at.to_time.iso8601,
         updatedBy: {
           name: user.name,
           path: user_path(user)
@@ -142,7 +142,7 @@ describe IssuablesHelper do
     context 'when updated by a deleted user' do
       let(:edited_updated_at_by) do
         {
-          updatedAt: edited_issuable.updated_at.to_time.iso8601,
+          updatedAt: edited_issuable.last_edited_at.to_time.iso8601,
           updatedBy: {
             name: User.ghost.name,
             path: user_path(User.ghost)
@@ -173,23 +173,52 @@ describe IssuablesHelper do
       @project = issue.project
 
       expected_data = {
-        'endpoint' => "/#{@project.full_path}/issues/#{issue.iid}",
-        'updateEndpoint' => "/#{@project.full_path}/issues/#{issue.iid}.json",
-        'canUpdate' => true,
-        'canDestroy' => true,
-        'issuableRef' => "##{issue.iid}",
-        'markdownPreviewPath' => "/#{@project.full_path}/preview_markdown",
-        'markdownDocsPath' => '/help/user/markdown',
-        'issuableTemplates' => [],
-        'projectPath' => @project.path,
-        'projectNamespace' => @project.namespace.path,
-        'initialTitleHtml' => issue.title,
-        'initialTitleText' => issue.title,
-        'initialDescriptionHtml' => '<p dir="auto">issue text</p>',
-        'initialDescriptionText' => 'issue text',
-        'initialTaskStatus' => '0 of 0 tasks completed'
+        endpoint: "/#{@project.full_path}/issues/#{issue.iid}",
+        updateEndpoint: "/#{@project.full_path}/issues/#{issue.iid}.json",
+        canUpdate: true,
+        canDestroy: true,
+        issuableRef: "##{issue.iid}",
+        markdownPreviewPath: "/#{@project.full_path}/preview_markdown",
+        markdownDocsPath: '/help/user/markdown',
+        issuableTemplates: [],
+        projectPath: @project.path,
+        projectNamespace: @project.namespace.path,
+        initialTitleHtml: issue.title,
+        initialTitleText: issue.title,
+        initialDescriptionHtml: '<p dir="auto">issue text</p>',
+        initialDescriptionText: 'issue text',
+        initialTaskStatus: '0 of 0 tasks completed'
       }
-      expect(JSON.parse(helper.issuable_initial_data(issue))).to eq(expected_data)
+      expect(helper.issuable_initial_data(issue)).to eq(expected_data)
+    end
+  end
+
+  describe '#selected_labels' do
+    context 'if label_name param is a string' do
+      it 'returns a new label with title' do
+        allow(helper).to receive(:params)
+          .and_return(ActionController::Parameters.new(label_name: 'test label'))
+
+        labels = helper.selected_labels
+
+        expect(labels).to be_an(Array)
+        expect(labels.size).to eq(1)
+        expect(labels.first.title).to eq('test label')
+      end
+    end
+
+    context 'if label_name param is an array' do
+      it 'returns a new label with title for each element' do
+        allow(helper).to receive(:params)
+          .and_return(ActionController::Parameters.new(label_name: ['test label 1', 'test label 2']))
+
+        labels = helper.selected_labels
+
+        expect(labels).to be_an(Array)
+        expect(labels.size).to eq(2)
+        expect(labels.first.title).to eq('test label 1')
+        expect(labels.second.title).to eq('test label 2')
+      end
     end
   end
 end

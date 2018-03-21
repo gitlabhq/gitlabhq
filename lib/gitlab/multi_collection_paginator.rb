@@ -37,6 +37,7 @@ module Gitlab
                  else
                    per_page - first_collection_last_page_size
                  end
+
         hash[page] = second_collection.page(second_collection_page)
                        .per(per_page - paginated_first_collection(page).size)
                        .padding(offset)

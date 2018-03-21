@@ -12,7 +12,7 @@ RSpec.describe 'Dashboard Issues' do
   let!(:other_issue) { create :issue, project: project }
 
   before do
-    [project, project_with_issues_disabled].each { |project| project.team << [current_user, :master] }
+    [project, project_with_issues_disabled].each { |project| project.add_master(current_user) }
     sign_in(current_user)
     visit issues_dashboard_path(assignee_id: current_user.id)
   end
@@ -74,8 +74,8 @@ RSpec.describe 'Dashboard Issues' do
       find('.new-project-item-select-button').click
 
       page.within('.select2-results') do
-        expect(page).to have_content(project.name_with_namespace)
-        expect(page).not_to have_content(project_with_issues_disabled.name_with_namespace)
+        expect(page).to have_content(project.full_name)
+        expect(page).not_to have_content(project_with_issues_disabled.full_name)
       end
     end
 
@@ -84,8 +84,8 @@ RSpec.describe 'Dashboard Issues' do
 
       wait_for_requests
 
-      project_path = "/#{project.path_with_namespace}"
-      project_json = { name: project.name_with_namespace, url: project_path }.to_json
+      project_path = "/#{project.full_path}"
+      project_json = { name: project.full_name, url: project_path }.to_json
 
       # simulate selection, and prevent overlap by dropdown menu
       first('.project-item-select', visible: false)

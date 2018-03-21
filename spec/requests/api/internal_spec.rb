@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::Internal do
   let(:user) { create(:user) }
   let(:key) { create(:key, user: user) }
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :repository, :wiki_repo) }
   let(:secret_token) { Gitlab::Shell.secret_token }
   let(:gl_repository) { "project-#{project.id}" }
   let(:reference_counter) { double('ReferenceCounter') }
@@ -147,7 +147,7 @@ describe API::Internal do
 
   describe "POST /internal/lfs_authenticate" do
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     context 'user key' do
@@ -192,6 +192,54 @@ describe API::Internal do
     end
   end
 
+  describe "GET /internal/authorized_keys" do
+    context "using an existing key's fingerprint" do
+      it "finds the key" do
+        get(api('/internal/authorized_keys'), fingerprint: key.fingerprint, secret_token: secret_token)
+
+        expect(response.status).to eq(200)
+        expect(json_response["key"]).to eq(key.key)
+      end
+    end
+
+    context "non existing key's fingerprint" do
+      it "returns 404" do
+        get(api('/internal/authorized_keys'), fingerprint: "no:t-:va:li:d0", secret_token: secret_token)
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context "using a partial fingerprint" do
+      it "returns 404" do
+        get(api('/internal/authorized_keys'), fingerprint: "#{key.fingerprint[0..5]}%", secret_token: secret_token)
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context "sending the key" do
+      it "finds the key" do
+        get(api('/internal/authorized_keys'), key: key.key.split[1], secret_token: secret_token)
+
+        expect(response.status).to eq(200)
+        expect(json_response["key"]).to eq(key.key)
+      end
+
+      it "returns 404 with a partial key" do
+        get(api('/internal/authorized_keys'), key: key.key.split[1][0...-3], secret_token: secret_token)
+
+        expect(response.status).to eq(404)
+      end
+
+      it "returns 404 with an not valid base64 string" do
+        get(api('/internal/authorized_keys'), key: "whatever!", secret_token: secret_token)
+
+        expect(response.status).to eq(404)
+      end
+    end
+  end
+
   describe "POST /internal/allowed", :clean_gitlab_redis_shared_state do
     context "access granted" do
       around do |example|
@@ -199,7 +247,7 @@ describe API::Internal do
       end
 
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       context 'with env passed as a JSON' do
@@ -269,54 +317,26 @@ describe API::Internal do
       end
 
       context "git pull" do
-        context "gitaly disabled", :disable_gitaly do
-          it "has the correct payload" do
-            pull(key, project)
+        it "has the correct payload" do
+          pull(key, project)
 
-            expect(response).to have_gitlab_http_status(200)
-            expect(json_response["status"]).to be_truthy
-            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
-            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
-            expect(json_response["gitaly"]).to be_nil
-            expect(user).to have_an_activity_record
-          end
-        end
-
-        context "gitaly enabled" do
-          it "has the correct payload" do
-            pull(key, project)
-
-            expect(response).to have_gitlab_http_status(200)
-            expect(json_response["status"]).to be_truthy
-            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
-            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
-            expect(json_response["gitaly"]).not_to be_nil
-            expect(json_response["gitaly"]["repository"]).not_to be_nil
-            expect(json_response["gitaly"]["repository"]["storage_name"]).to eq(project.repository.gitaly_repository.storage_name)
-            expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
-            expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
-            expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
-            expect(user).to have_an_activity_record
-          end
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response["status"]).to be_truthy
+          expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+          expect(json_response["gl_repository"]).to eq("project-#{project.id}")
+          expect(json_response["gitaly"]).not_to be_nil
+          expect(json_response["gitaly"]["repository"]).not_to be_nil
+          expect(json_response["gitaly"]["repository"]["storage_name"]).to eq(project.repository.gitaly_repository.storage_name)
+          expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
+          expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
+          expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
+          expect(user).to have_an_activity_record
         end
       end
 
       context "git push" do
-        context "gitaly disabled", :disable_gitaly do
-          it "has the correct payload" do
-            push(key, project)
-
-            expect(response).to have_gitlab_http_status(200)
-            expect(json_response["status"]).to be_truthy
-            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
-            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
-            expect(json_response["gitaly"]).to be_nil
-            expect(user).not_to have_an_activity_record
-          end
-        end
-
-        context "gitaly enabled" do
-          it "has the correct payload" do
+        context 'project as namespace/project' do
+          it do
             push(key, project)
 
             expect(response).to have_gitlab_http_status(200)
@@ -330,28 +350,6 @@ describe API::Internal do
             expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
             expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
             expect(user).not_to have_an_activity_record
-          end
-        end
-
-        context 'project as /namespace/project' do
-          it do
-            pull(key, project_with_repo_path('/' + project.full_path))
-
-            expect(response).to have_gitlab_http_status(200)
-            expect(json_response["status"]).to be_truthy
-            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
-            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
-          end
-        end
-
-        context 'project as namespace/project' do
-          it do
-            pull(key, project_with_repo_path(project.full_path))
-
-            expect(response).to have_gitlab_http_status(200)
-            expect(json_response["status"]).to be_truthy
-            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
-            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
           end
         end
       end
@@ -359,7 +357,7 @@ describe API::Internal do
 
     context "access denied" do
       before do
-        project.team << [user, :guest]
+        project.add_guest(user)
       end
 
       context "git pull" do
@@ -413,7 +411,7 @@ describe API::Internal do
 
     context "archived project" do
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
         project.archive!
       end
 
@@ -463,8 +461,10 @@ describe API::Internal do
     end
 
     context 'project does not exist' do
-      it do
-        pull(key, project_with_repo_path('gitlab/notexist'))
+      it 'returns a 200 response with status: false' do
+        project.destroy
+
+        pull(key, project)
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response["status"]).to be_falsey
@@ -527,7 +527,7 @@ describe API::Internal do
     context 'web actions are always allowed' do
       it 'allows WEB push' do
         stub_application_setting(enabled_git_access_protocol: 'ssh')
-        project.team << [user, :developer]
+        project.add_developer(user)
         push(key, project, 'web')
 
         expect(response.status).to eq(200)
@@ -536,11 +536,12 @@ describe API::Internal do
     end
 
     context 'the project path was changed' do
+      let(:project) { create(:project, :repository, :legacy_storage) }
       let!(:old_path_to_repo) { project.repository.path_to_repo }
       let!(:repository) { project.repository }
 
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
         project.path = 'new_path'
         project.save!
       end
@@ -566,7 +567,7 @@ describe API::Internal do
     let(:changes) { URI.escape("#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/new_branch") }
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     it 'returns link to create new merge request' do
@@ -701,7 +702,7 @@ describe API::Internal do
     end
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
       allow(described_class).to receive(:identify).and_return(user)
       allow_any_instance_of(Gitlab::Identifier).to receive(:identify).and_return(user)
     end
@@ -774,14 +775,37 @@ describe API::Internal do
 
     context 'with a redirected data' do
       it 'returns redirected message on the response' do
-        project_moved = Gitlab::Checks::ProjectMoved.new(project, user, 'foo/baz', 'http')
-        project_moved.add_redirect_message
+        project_moved = Gitlab::Checks::ProjectMoved.new(project, user, 'http', 'foo/baz')
+        project_moved.add_message
 
         post api("/internal/post_receive"), valid_params
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response["redirected_message"]).to be_present
-        expect(json_response["redirected_message"]).to eq(project_moved.redirect_message)
+        expect(json_response["redirected_message"]).to eq(project_moved.message)
+      end
+    end
+
+    context 'with new project data' do
+      it 'returns new project message on the response' do
+        project_created = Gitlab::Checks::ProjectCreated.new(project, user, 'http')
+        project_created.add_message
+
+        post api("/internal/post_receive"), valid_params
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response["project_created_message"]).to be_present
+        expect(json_response["project_created_message"]).to eq(project_created.message)
+      end
+    end
+
+    context 'with an orphaned write deploy key' do
+      it 'does not try to notify that project moved' do
+        allow_any_instance_of(Gitlab::Identifier).to receive(:identify).and_return(nil)
+
+        post api("/internal/post_receive"), valid_params
+
+        expect(response).to have_gitlab_http_status(200)
       end
     end
   end
@@ -802,9 +826,14 @@ describe API::Internal do
     end
   end
 
-  def project_with_repo_path(path)
-    double().tap do |fake_project|
-      allow(fake_project).to receive_message_chain('repository.path_to_repo' => path)
+  def gl_repository_for(project_or_wiki)
+    case project_or_wiki
+    when ProjectWiki
+      project_or_wiki.project.gl_repository(is_wiki: true)
+    when Project
+      project_or_wiki.gl_repository(is_wiki: false)
+    else
+      nil
     end
   end
 
@@ -812,18 +841,8 @@ describe API::Internal do
     post(
       api("/internal/allowed"),
       key_id: key.id,
-      project: project.repository.path_to_repo,
-      action: 'git-upload-pack',
-      secret_token: secret_token,
-      protocol: protocol
-    )
-  end
-
-  def pull_with_path(key, path_to_repo, protocol = 'ssh')
-    post(
-      api("/internal/allowed"),
-      key_id: key.id,
-      project: path_to_repo,
+      project: project.full_path,
+      gl_repository: gl_repository_for(project),
       action: 'git-upload-pack',
       secret_token: secret_token,
       protocol: protocol
@@ -835,20 +854,8 @@ describe API::Internal do
       api("/internal/allowed"),
       changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
       key_id: key.id,
-      project: project.repository.path_to_repo,
-      action: 'git-receive-pack',
-      secret_token: secret_token,
-      protocol: protocol,
-      env: env
-    )
-  end
-
-  def push_with_path(key, path_to_repo, protocol = 'ssh', env: nil)
-    post(
-      api("/internal/allowed"),
-      changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
-      key_id: key.id,
-      project: path_to_repo,
+      project: project.full_path,
+      gl_repository: gl_repository_for(project),
       action: 'git-receive-pack',
       secret_token: secret_token,
       protocol: protocol,
@@ -861,7 +868,8 @@ describe API::Internal do
       api("/internal/allowed"),
       ref: 'master',
       key_id: key.id,
-      project: project.repository.path_to_repo,
+      project: project.full_path,
+      gl_repository: gl_repository_for(project),
       action: 'git-upload-archive',
       secret_token: secret_token,
       protocol: 'ssh'
@@ -873,7 +881,7 @@ describe API::Internal do
       api("/internal/lfs_authenticate"),
       key_id: key_id,
       secret_token: secret_token,
-      project: project.repository.path_to_repo
+      project: project.full_path
     )
   end
 end

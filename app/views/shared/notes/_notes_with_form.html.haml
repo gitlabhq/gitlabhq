@@ -1,20 +1,21 @@
 - issuable = @issue || @merge_request
 - discussion_locked = issuable&.discussion_locked?
 
-%ul#notes-list.notes.main-notes-list.timeline
-  = render "shared/notes/notes"
+- unless has_vue_discussions_cookie?
+  %ul#notes-list.notes.main-notes-list.timeline
+    = render "shared/notes/notes"
 
 = render 'shared/notes/edit_form', project: @project
 
 - if can_create_note?
-  %ul.notes.notes-form.timeline
+  %ul.notes.notes-form.timeline{ :class => ('hidden' if has_vue_discussions_cookie?) }
     %li.timeline-entry
       .timeline-entry-inner
         .flash-container.timeline-content
 
         .timeline-icon.hidden-xs.hidden-sm
           %a.author_link{ href: user_path(current_user) }
-            = image_tag avatar_icon(current_user), alt: current_user.to_reference, class: 'avatar s40'
+            = image_tag avatar_icon_for_user(current_user), alt: current_user.to_reference, class: 'avatar s40'
         .timeline-content.timeline-content-form
           = render "shared/notes/form", view: diff_view, supports_autocomplete: autocomplete
 - elsif !current_user
@@ -34,4 +35,5 @@
         is locked. Only
         %b project members
         can comment.
+-# haml-lint:disable InlineJavaScript
 %script.js-notes-data{ type: "application/json" }= initial_notes_data(autocomplete).to_json.html_safe

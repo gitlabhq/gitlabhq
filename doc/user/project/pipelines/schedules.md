@@ -31,6 +31,20 @@ is installed on.
 
 ![Schedules list](img/pipeline_schedules_list.png)
 
+### Running a scheduled pipeline manually
+
+> [Introduced][ce-15700] in GitLab 10.4.
+
+To trigger a pipeline schedule manually, click the "Play" button:
+
+![Play Pipeline Schedule](img/pipeline_schedule_play.png)
+
+This will schedule a background job to run the pipeline schedule. A flash
+message will provide a link to the CI/CD Pipeline index page.
+
+To help avoid abuse, users are rate limited to triggering a pipeline once per
+minute.
+
 ### Making use of scheduled pipeline variables
 
 > [Introduced][ce-12328] in GitLab 9.4.
@@ -90,4 +104,5 @@ don't have admin access to the server, ask your administrator.
 [ce-10533]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10533
 [ce-10853]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10853
 [ce-12328]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12328
+[ce-15700]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15700
 [settings]: https://about.gitlab.com/gitlab-com/settings/#cron-jobs

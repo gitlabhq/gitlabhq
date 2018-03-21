@@ -11,6 +11,14 @@ class BareRepoOperations
     @path_to_repo = path_to_repo
   end
 
+  def commit_tree(tree_id, msg, parent: EMPTY_TREE_ID)
+    commit_tree_args = ['commit-tree', tree_id, '-m', msg]
+    commit_tree_args += ['-p', parent] unless parent == EMPTY_TREE_ID
+    commit_id = execute(commit_tree_args)
+
+    commit_id[0]
+  end
+
   # Based on https://stackoverflow.com/a/25556917/1856239
   def commit_file(file, dst_path, branch = 'master')
     head_id = execute(['show', '--format=format:%H', '--no-patch', branch], allow_failure: true)[0] || EMPTY_TREE_ID
@@ -26,11 +34,9 @@ class BareRepoOperations
 
     tree_id = execute(['write-tree'])
 
-    commit_tree_args = ['commit-tree', tree_id[0], '-m', "Add #{dst_path}"]
-    commit_tree_args += ['-p', head_id] unless head_id == EMPTY_TREE_ID
-    commit_id = execute(commit_tree_args)
+    commit_id = commit_tree(tree_id[0], "Add #{dst_path}", parent: head_id)
 
-    execute(['update-ref', "refs/heads/#{branch}", commit_id[0]])
+    execute(['update-ref', "refs/heads/#{branch}", commit_id])
   end
 
   private

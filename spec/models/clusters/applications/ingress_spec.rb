@@ -1,108 +1,78 @@
 require 'rails_helper'
 
 describe Clusters::Applications::Ingress do
-  it { is_expected.to belong_to(:cluster) }
-  it { is_expected.to validate_presence_of(:cluster) }
+  let(:ingress) { create(:clusters_applications_ingress) }
 
-  describe '#name' do
-    it 'is .application_name' do
-      expect(subject.name).to eq(described_class.application_name)
+  include_examples 'cluster application core specs', :clusters_applications_ingress
+  include_examples 'cluster application status specs', :cluster_application_ingress
+
+  before do
+    allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)
+    allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
+  end
+
+  describe '#make_installed!' do
+    before do
+      application.make_installed!
     end
 
-    it 'is recorded in Clusters::Cluster::APPLICATIONS' do
-      expect(Clusters::Cluster::APPLICATIONS[subject.name]).to eq(described_class)
+    let(:application) { create(:clusters_applications_ingress, :installing) }
+
+    it 'schedules a ClusterWaitForIngressIpAddressWorker' do
+      expect(ClusterWaitForIngressIpAddressWorker).to have_received(:perform_in)
+        .with(Clusters::Applications::Ingress::FETCH_IP_ADDRESS_DELAY, 'ingress', application.id)
     end
   end
 
-  describe '#status' do
-    let(:cluster) { create(:cluster, :provided_by_gcp) }
+  describe '#schedule_status_update' do
+    let(:application) { create(:clusters_applications_ingress, :installed) }
 
-    subject { described_class.new(cluster: cluster) }
-
-    it 'defaults to :not_installable' do
-      expect(subject.status_name).to be(:not_installable)
+    before do
+      application.schedule_status_update
     end
 
-    context 'when application helm is scheduled' do
-      before do
-        create(:cluster_applications_helm, :scheduled, cluster: cluster)
-      end
+    it 'schedules a ClusterWaitForIngressIpAddressWorker' do
+      expect(ClusterWaitForIngressIpAddressWorker).to have_received(:perform_async)
+        .with('ingress', application.id)
+    end
 
-      it 'defaults to :not_installable' do
-        expect(subject.status_name).to be(:not_installable)
+    context 'when the application is not installed' do
+      let(:application) { create(:clusters_applications_ingress, :installing) }
+
+      it 'does not schedule a ClusterWaitForIngressIpAddressWorker' do
+        expect(ClusterWaitForIngressIpAddressWorker).not_to have_received(:perform_async)
       end
     end
 
-    context 'when application helm is installed' do
-      before do
-        create(:cluster_applications_helm, :installed, cluster: cluster)
-      end
+    context 'when there is already an external_ip' do
+      let(:application) { create(:clusters_applications_ingress, :installed, external_ip: '111.222.222.111') }
 
-      it 'defaults to :installable' do
-        expect(subject.status_name).to be(:installable)
+      it 'does not schedule a ClusterWaitForIngressIpAddressWorker' do
+        expect(ClusterWaitForIngressIpAddressWorker).not_to have_received(:perform_in)
       end
     end
   end
 
   describe '#install_command' do
-    it 'has all the needed information' do
-      expect(subject.install_command).to have_attributes(name: subject.name, install_helm: false, chart: subject.chart)
+    subject { ingress.install_command }
+
+    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::InstallCommand) }
+
+    it 'should be initialized with ingress arguments' do
+      expect(subject.name).to eq('ingress')
+      expect(subject.chart).to eq('stable/nginx-ingress')
+      expect(subject.values).to eq(ingress.values)
     end
   end
 
-  describe 'status state machine' do
-    describe '#make_installing' do
-      subject { create(:cluster_applications_ingress, :scheduled) }
+  describe '#values' do
+    subject { ingress.values }
 
-      it 'is installing' do
-        subject.make_installing!
-
-        expect(subject).to be_installing
-      end
-    end
-
-    describe '#make_installed' do
-      subject { create(:cluster_applications_ingress, :installing) }
-
-      it 'is installed' do
-        subject.make_installed
-
-        expect(subject).to be_installed
-      end
-    end
-
-    describe '#make_errored' do
-      subject { create(:cluster_applications_ingress, :installing) }
-      let(:reason) { 'some errors' }
-
-      it 'is errored' do
-        subject.make_errored(reason)
-
-        expect(subject).to be_errored
-        expect(subject.status_reason).to eq(reason)
-      end
-    end
-
-    describe '#make_scheduled' do
-      subject { create(:cluster_applications_ingress, :installable) }
-
-      it 'is scheduled' do
-        subject.make_scheduled
-
-        expect(subject).to be_scheduled
-      end
-
-      describe 'when was errored' do
-        subject { create(:cluster_applications_ingress, :errored) }
-
-        it 'clears #status_reason' do
-          expect(subject.status_reason).not_to be_nil
-
-          subject.make_scheduled!
-
-          expect(subject.status_reason).to be_nil
-        end
-      end
+    it 'should include ingress valid keys' do
+      is_expected.to include('image')
+      is_expected.to include('repository')
+      is_expected.to include('stats')
+      is_expected.to include('podAnnotations')
     end
   end
 end

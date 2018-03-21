@@ -9,48 +9,27 @@ describe Groups::VariablesController do
     group.add_master(user)
   end
 
-  describe 'POST #create' do
-    context 'variable is valid' do
-      it 'shows a success flash message' do
-        post :create, group_id: group, variable: { key: "one", value: "two" }
+  describe 'GET #show' do
+    let!(:variable) { create(:ci_group_variable, group: group) }
 
-        expect(flash[:notice]).to include 'Variable was successfully created.'
-        expect(response).to redirect_to(group_settings_ci_cd_path(group))
-      end
+    subject do
+      get :show, group_id: group, format: :json
     end
 
-    context 'variable is invalid' do
-      it 'renders show' do
-        post :create, group_id: group, variable: { key: "..one", value: "two" }
-
-        expect(response).to render_template("groups/variables/show")
-      end
-    end
+    include_examples 'GET #show lists all variables'
   end
 
-  describe 'POST #update' do
-    let(:variable) { create(:ci_group_variable) }
+  describe 'PATCH #update' do
+    let!(:variable) { create(:ci_group_variable, group: group) }
+    let(:owner) { group }
 
-    context 'updating a variable with valid characters' do
-      before do
-        group.variables << variable
-      end
-
-      it 'shows a success flash message' do
-        post :update, group_id: group,
-                      id: variable.id, variable: { key: variable.key, value: 'two' }
-
-        expect(flash[:notice]).to include 'Variable was successfully updated.'
-        expect(response).to redirect_to(group_variables_path(group))
-      end
-
-      it 'renders the action #show if the variable key is invalid' do
-        post :update, group_id: group,
-                      id: variable.id, variable: { key: '?', value: variable.value }
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to render_template :show
-      end
+    subject do
+      patch :update,
+        group_id: group,
+        variables_attributes: variables_attributes,
+        format: :json
     end
+
+    include_examples 'PATCH #update updates variables'
   end
 end

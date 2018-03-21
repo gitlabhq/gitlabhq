@@ -1,6 +1,6 @@
 /* eslint-disable quotes, no-var, camelcase, object-property-newline, comma-dangle, max-len, vars-on-top, quote-props */
 
-import ContributorsStatGraphUtil from '~/graphs/stat_graph_contributors_util';
+import ContributorsStatGraphUtil from '~/pages/projects/graphs/show/stat_graph_contributors_util';
 
 describe("ContributorsStatGraphUtil", function () {
   describe("#parse_log", function () {

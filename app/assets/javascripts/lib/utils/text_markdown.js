@@ -1,26 +1,25 @@
 /* eslint-disable import/prefer-default-export, func-names, space-before-function-paren, wrap-iife, no-var, no-param-reassign, no-cond-assign, quotes, one-var, one-var-declaration-per-line, operator-assignment, no-else-return, prefer-template, prefer-arrow-callback, no-empty, max-len, consistent-return, no-unused-vars, no-return-assign, max-len, vars-on-top */
+import $ from 'jquery';
+import { insertText } from '~/lib/utils/common_utils';
 
-const textUtils = {};
-
-textUtils.selectedText = function(text, textarea) {
+function selectedText(text, textarea) {
   return text.substring(textarea.selectionStart, textarea.selectionEnd);
-};
+}
 
-textUtils.lineBefore = function(text, textarea) {
+function lineBefore(text, textarea) {
   var split;
   split = text.substring(0, textarea.selectionStart).trim().split('\n');
   return split[split.length - 1];
-};
+}
 
-textUtils.lineAfter = function(text, textarea) {
+function lineAfter(text, textarea) {
   return text.substring(textarea.selectionEnd).trim().split('\n')[0];
-};
+}
 
-textUtils.blockTagText = function(text, textArea, blockTag, selected) {
-  var lineAfter, lineBefore;
-  lineBefore = this.lineBefore(text, textArea);
-  lineAfter = this.lineAfter(text, textArea);
-  if (lineBefore === blockTag && lineAfter === blockTag) {
+function blockTagText(text, textArea, blockTag, selected) {
+  const before = lineBefore(text, textArea);
+  const after = lineAfter(text, textArea);
+  if (before === blockTag && after === blockTag) {
     // To remove the block tag we have to select the line before & after
     if (blockTag != null) {
       textArea.selectionStart = textArea.selectionStart - (blockTag.length + 1);
@@ -30,10 +29,30 @@ textUtils.blockTagText = function(text, textArea, blockTag, selected) {
   } else {
     return blockTag + "\n" + selected + "\n" + blockTag;
   }
-};
+}
 
-textUtils.insertText = function(textArea, text, tag, blockTag, selected, wrap) {
-  var insertText, inserted, selectedSplit, startChar, removedLastNewLine, removedFirstNewLine, currentLineEmpty, lastNewLine;
+function moveCursor(textArea, tag, wrapped, removedLastNewLine) {
+  var pos;
+  if (!textArea.setSelectionRange) {
+    return;
+  }
+  if (textArea.selectionStart === textArea.selectionEnd) {
+    if (wrapped) {
+      pos = textArea.selectionStart - tag.length;
+    } else {
+      pos = textArea.selectionStart;
+    }
+
+    if (removedLastNewLine) {
+      pos -= 1;
+    }
+
+    return textArea.setSelectionRange(pos, pos);
+  }
+}
+
+export function insertMarkdownText(textArea, text, tag, blockTag, selected, wrap) {
+  var textToInsert, inserted, selectedSplit, startChar, removedLastNewLine, removedFirstNewLine, currentLineEmpty, lastNewLine;
   removedLastNewLine = false;
   removedFirstNewLine = false;
   currentLineEmpty = false;
@@ -65,9 +84,9 @@ textUtils.insertText = function(textArea, text, tag, blockTag, selected, wrap) {
 
   if (selectedSplit.length > 1 && (!wrap || (blockTag != null && blockTag !== ''))) {
     if (blockTag != null && blockTag !== '') {
-      insertText = this.blockTagText(text, textArea, blockTag, selected);
+      textToInsert = blockTagText(text, textArea, blockTag, selected);
     } else {
-      insertText = selectedSplit.map(function(val) {
+      textToInsert = selectedSplit.map(function(val) {
         if (val.indexOf(tag) === 0) {
           return "" + (val.replace(tag, ''));
         } else {
@@ -76,78 +95,42 @@ textUtils.insertText = function(textArea, text, tag, blockTag, selected, wrap) {
       }).join('\n');
     }
   } else {
-    insertText = "" + startChar + tag + selected + (wrap ? tag : ' ');
+    textToInsert = "" + startChar + tag + selected + (wrap ? tag : ' ');
   }
 
   if (removedFirstNewLine) {
-    insertText = '\n' + insertText;
+    textToInsert = '\n' + textToInsert;
   }
 
   if (removedLastNewLine) {
-    insertText += '\n';
+    textToInsert += '\n';
   }
 
-  if (document.queryCommandSupported('insertText')) {
-    inserted = document.execCommand('insertText', false, insertText);
-  }
-  if (!inserted) {
-    try {
-      document.execCommand("ms-beginUndoUnit");
-    } catch (error) {}
-    textArea.value = this.replaceRange(text, textArea.selectionStart, textArea.selectionEnd, insertText);
-    try {
-      document.execCommand("ms-endUndoUnit");
-    } catch (error) {}
-  }
-  return this.moveCursor(textArea, tag, wrap, removedLastNewLine);
-};
+  insertText(textArea, textToInsert);
+  return moveCursor(textArea, tag, wrap, removedLastNewLine);
+}
 
-textUtils.moveCursor = function(textArea, tag, wrapped, removedLastNewLine) {
-  var pos;
-  if (!textArea.setSelectionRange) {
-    return;
-  }
-  if (textArea.selectionStart === textArea.selectionEnd) {
-    if (wrapped) {
-      pos = textArea.selectionStart - tag.length;
-    } else {
-      pos = textArea.selectionStart;
-    }
-
-    if (removedLastNewLine) {
-      pos -= 1;
-    }
-
-    return textArea.setSelectionRange(pos, pos);
-  }
-};
-
-textUtils.updateText = function(textArea, tag, blockTag, wrap) {
+function updateText(textArea, tag, blockTag, wrap) {
   var $textArea, selected, text;
   $textArea = $(textArea);
   textArea = $textArea.get(0);
   text = $textArea.val();
-  selected = this.selectedText(text, textArea);
+  selected = selectedText(text, textArea);
   $textArea.focus();
-  return this.insertText(textArea, text, tag, blockTag, selected, wrap);
-};
+  return insertMarkdownText(textArea, text, tag, blockTag, selected, wrap);
+}
 
-textUtils.init = function(form) {
-  var self;
-  self = this;
-  return $('.js-md', form).off('click').on('click', function() {
-    var $this;
-    $this = $(this);
-    return self.updateText($this.closest('.md-area').find('textarea'), $this.data('md-tag'), $this.data('md-block'), !$this.data('md-prepend'));
-  });
-};
-
-textUtils.removeListeners = function(form) {
-  return $('.js-md', form).off('click');
-};
-
-textUtils.replaceRange = function(s, start, end, substitute) {
+function replaceRange(s, start, end, substitute) {
   return s.substring(0, start) + substitute + s.substring(end);
-};
+}
 
-export default textUtils;
+export function addMarkdownListeners(form) {
+  return $('.js-md', form).off('click').on('click', function() {
+    const $this = $(this);
+    return updateText($this.closest('.md-area').find('textarea'), $this.data('mdTag'), $this.data('mdBlock'), !$this.data('mdPrepend'));
+  });
+}
+
+export function removeMarkdownListeners(form) {
+  return $('.js-md', form).off('click');
+}

@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -eo pipefail
+
+code_path=$(pwd)
+
+# docker run --tty will merge stderr and stdout, we don't need this on CI or
+# it will break codequality json file
+[ "$CI" != "" ] || docker_tty="--tty"
+
+# The codebase and instructions for the following image can be found at https://gitlab.com/gitlab-org/codeclimate-rubocop/wikis/home
+docker pull dev.gitlab.org:5005/gitlab/gitlab-build-images:gitlab-codeclimate-rubocop-0-52-1 > /dev/null
+docker tag dev.gitlab.org:5005/gitlab/gitlab-build-images:gitlab-codeclimate-rubocop-0-52-1 codeclimate/codeclimate-rubocop:gitlab-codeclimate-rubocop-0-52-1 > /dev/null
+
+exec docker run --rm $docker_tty --env CODECLIMATE_CODE="$code_path" \
+	--volume "$code_path":/code \
+	--volume /var/run/docker.sock:/var/run/docker.sock \
+	--volume /tmp/cc:/tmp/cc \
+	"codeclimate/codeclimate:${CODECLIMATE_VERSION:-0.71.1}" "$@"

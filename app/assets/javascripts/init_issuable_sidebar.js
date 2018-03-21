@@ -1,5 +1,6 @@
 /* eslint-disable no-new */
-/* global MilestoneSelect */
+
+import MilestoneSelect from './milestone_select';
 import LabelsSelect from './labels_select';
 import IssuableContext from './issuable_context';
 import Sidebar from './right_sidebar';

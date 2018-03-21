@@ -6,7 +6,9 @@ module Clusters
 
     APPLICATIONS = {
       Applications::Helm.application_name => Applications::Helm,
-      Applications::Ingress.application_name => Applications::Ingress
+      Applications::Ingress.application_name => Applications::Ingress,
+      Applications::Prometheus.application_name => Applications::Prometheus,
+      Applications::Runner.application_name => Applications::Runner
     }.freeze
 
     belongs_to :user
@@ -21,6 +23,8 @@ module Clusters
 
     has_one :application_helm, class_name: 'Clusters::Applications::Helm'
     has_one :application_ingress, class_name: 'Clusters::Applications::Ingress'
+    has_one :application_prometheus, class_name: 'Clusters::Applications::Prometheus'
+    has_one :application_runner, class_name: 'Clusters::Applications::Runner'
 
     accepts_nested_attributes_for :provider_gcp, update_only: true
     accepts_nested_attributes_for :platform_kubernetes, update_only: true
@@ -62,7 +66,9 @@ module Clusters
     def applications
       [
         application_helm || build_application_helm,
-        application_ingress || build_application_ingress
+        application_ingress || build_application_ingress,
+        application_prometheus || build_application_prometheus,
+        application_runner || build_application_runner
       ]
     end
 

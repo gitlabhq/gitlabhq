@@ -16,28 +16,21 @@
 
 @mixin set-visible {
   transform: translateY(0);
-  visibility: visible;
-  opacity: 1;
-  transition-duration: 100ms, 150ms, 25ms;
-  transition-delay: 35ms, 50ms, 25ms;
+  display: block;
 }
 
 @mixin set-invisible {
   transform: translateY(-10px);
-  visibility: hidden;
-  opacity: 0;
-  transition-property: opacity, transform, visibility;
-  transition-duration: 70ms, 250ms, 250ms;
-  transition-timing-function: linear, $dropdown-animation-timing;
-  transition-delay: 25ms, 50ms, 0ms;
+  display: none;
 }
 
 .open {
   .dropdown-menu,
   .dropdown-menu-nav {
     @include set-visible;
-    display: block;
-    min-height: 40px;
+    min-height: $dropdown-min-height;
+    max-height: $dropdown-max-height;
+    overflow-y: auto;
 
     @media (max-width: $screen-xs-max) {
       width: 100%;
@@ -55,6 +48,11 @@
   }
 }
 
+// Get search dropdown to line up with other nav dropdowns
+.search-input-container .dropdown-menu {
+  margin-top: 11px;
+}
+
 .dropdown-toggle {
   padding: 6px 8px 6px 10px;
   background-color: $white-light;
@@ -64,11 +62,6 @@
   border: 1px solid $border-color;
   border-radius: $border-radius-base;
   white-space: nowrap;
-
-  &[disabled] {
-    opacity: .65;
-    cursor: not-allowed;
-  }
 
   &.no-outline {
     outline: 0;
@@ -214,7 +207,6 @@
 .dropdown-menu,
 .dropdown-menu-nav {
   @include set-invisible;
-  display: block;
   position: absolute;
   width: auto;
   top: 100%;
@@ -280,7 +272,7 @@
 
   .divider {
     height: 1px;
-    margin: 6px 0;
+    margin: #{$grid-size / 2} 0;
     padding: 0;
     background-color: $dropdown-divider-color;
 
@@ -669,6 +661,16 @@
   }
 }
 
+.dropdown-create-new-item-button {
+  @include dropdown-link;
+
+  width: 100%;
+  background-color: transparent;
+  border: 0;
+  text-align: left;
+  text-overflow: ellipsis;
+}
+
 .dropdown-loading {
   position: absolute;
   top: 0;
@@ -732,10 +734,6 @@
   &.is-default {
     color: $gl-text-color-secondary;
   }
-}
-
-.droplab-item-ignore {
-  pointer-events: none;
 }
 
 .pika-single.animate-picker.is-bound,

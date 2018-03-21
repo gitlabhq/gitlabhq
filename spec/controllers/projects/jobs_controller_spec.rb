@@ -137,8 +137,8 @@ describe Projects::JobsController do
 
       it 'exposes needed information' do
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['raw_path']).to match(/jobs\/\d+\/raw\z/)
-        expect(json_response.dig('merge_request', 'path')).to match(/merge_requests\/\d+\z/)
+        expect(json_response['raw_path']).to match(%r{jobs/\d+/raw\z})
+        expect(json_response.dig('merge_request', 'path')).to match(%r{merge_requests/\d+\z})
         expect(json_response['new_issue_path'])
           .to include('/issues/new')
       end
@@ -159,8 +159,19 @@ describe Projects::JobsController do
       get_trace
     end
 
+    context 'when job has a trace artifact' do
+      let(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+
+      it 'returns a trace' do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq job.id
+        expect(json_response['status']).to eq job.status
+        expect(json_response['html']).to eq(job.trace.html)
+      end
+    end
+
     context 'when job has a trace' do
-      let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
 
       it 'returns a trace' do
         expect(response).to have_gitlab_http_status(:ok)
@@ -182,7 +193,7 @@ describe Projects::JobsController do
     end
 
     context 'when job has a trace with ANSI sequence and Unicode' do
-      let(:job) { create(:ci_build, :unicode_trace, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :unicode_trace_live, pipeline: pipeline) }
 
       it 'returns a trace with Unicode' do
         expect(response).to have_gitlab_http_status(:ok)
@@ -374,14 +385,14 @@ describe Projects::JobsController do
     let(:role) { :master }
 
     before do
-      project.team << [user, role]
+      project.add_role(user, role)
       sign_in(user)
 
       post_erase
     end
 
     context 'when job is erasable' do
-      let(:job) { create(:ci_build, :erasable, :trace, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :erasable, :trace_artifact, pipeline: pipeline) }
 
       it 'redirects to the erased job page' do
         expect(response).to have_gitlab_http_status(:found)
@@ -408,7 +419,7 @@ describe Projects::JobsController do
 
     context 'when user is developer' do
       let(:role) { :developer }
-      let(:job) { create(:ci_build, :erasable, :trace, pipeline: pipeline, user: triggered_by) }
+      let(:job) { create(:ci_build, :erasable, :trace_artifact, pipeline: pipeline, user: triggered_by) }
 
       context 'when triggered by same user' do
         let(:triggered_by) { user }
@@ -439,8 +450,18 @@ describe Projects::JobsController do
       get_raw
     end
 
+    context 'when job has a trace artifact' do
+      let(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+
+      it 'returns a trace' do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.content_type).to eq 'text/plain; charset=utf-8'
+        expect(response.body).to eq job.job_artifacts_trace.open.read
+      end
+    end
+
     context 'when job has a trace file' do
-      let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
 
       it 'send a trace file' do
         expect(response).to have_gitlab_http_status(:ok)

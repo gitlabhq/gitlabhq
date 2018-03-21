@@ -3,33 +3,27 @@ module Clusters
     class Ingress < ActiveRecord::Base
       self.table_name = 'clusters_applications_ingress'
 
+      include ::Clusters::Concerns::ApplicationCore
       include ::Clusters::Concerns::ApplicationStatus
-
-      belongs_to :cluster, class_name: 'Clusters::Cluster', foreign_key: :cluster_id
-
-      validates :cluster, presence: true
+      include ::Clusters::Concerns::ApplicationData
+      include AfterCommitQueue
 
       default_value_for :ingress_type, :nginx
       default_value_for :version, :nginx
-
-      after_initialize :set_initial_status
 
       enum ingress_type: {
         nginx: 1
       }
 
-      def self.application_name
-        self.to_s.demodulize.underscore
-      end
+      FETCH_IP_ADDRESS_DELAY = 30.seconds
 
-      def set_initial_status
-        return unless not_installable?
-
-        self.status = 'installable' if cluster&.application_helm_installed?
-      end
-
-      def name
-        self.class.application_name
+      state_machine :status do
+        before_transition any => [:installed] do |application|
+          application.run_after_commit do
+            ClusterWaitForIngressIpAddressWorker.perform_in(
+              FETCH_IP_ADDRESS_DELAY, application.name, application.id)
+          end
+        end
       end
 
       def chart
@@ -37,7 +31,18 @@ module Clusters
       end
 
       def install_command
-        Gitlab::Kubernetes::Helm::InstallCommand.new(name, false, chart)
+        Gitlab::Kubernetes::Helm::InstallCommand.new(
+          name,
+          chart: chart,
+          values: values
+        )
+      end
+
+      def schedule_status_update
+        return unless installed?
+        return if external_ip
+
+        ClusterWaitForIngressIpAddressWorker.perform_async(name, id)
       end
     end
   end

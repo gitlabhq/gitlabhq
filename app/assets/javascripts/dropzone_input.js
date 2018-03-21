@@ -1,7 +1,11 @@
+import $ from 'jquery';
 import Dropzone from 'dropzone';
 import _ from 'underscore';
 import './preview_markdown';
 import csrf from './lib/utils/csrf';
+import axios from './lib/utils/axios_utils';
+
+Dropzone.autoDiscover = false;
 
 export default function dropzoneInput(form) {
   const divHover = '<div class="div-dropzone-hover"></div>';
@@ -233,25 +237,21 @@ export default function dropzoneInput(form) {
   uploadFile = (item, filename) => {
     const formData = new FormData();
     formData.append('file', item, filename);
-    return $.ajax({
-      url: uploadsPath,
-      type: 'POST',
-      data: formData,
-      dataType: 'json',
-      processData: false,
-      contentType: false,
-      headers: csrf.headers,
-      beforeSend: () => {
-        showSpinner();
-        return closeAlertMessage();
-      },
-      success: (e, text, response) => {
-        const md = response.responseJSON.link.markdown;
+
+    showSpinner();
+    closeAlertMessage();
+
+    axios.post(uploadsPath, formData)
+      .then(({ data }) => {
+        const md = data.link.markdown;
+
         insertToTextArea(filename, md);
-      },
-      error: response => showError(response.responseJSON.message),
-      complete: () => closeSpinner(),
-    });
+        closeSpinner();
+      })
+      .catch((e) => {
+        showError(e.response.data.message);
+        closeSpinner();
+      });
   };
 
   updateAttachingMessage = (files, messageContainer) => {

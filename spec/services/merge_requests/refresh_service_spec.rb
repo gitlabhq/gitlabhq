@@ -55,11 +55,12 @@ describe MergeRequests::RefreshService do
 
       before do
         allow(refresh_service).to receive(:execute_hooks)
-        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
-        reload_mrs
       end
 
       it 'executes hooks with update action' do
+        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+        reload_mrs
+
         expect(refresh_service).to have_received(:execute_hooks)
           .with(@merge_request, 'update', old_rev: @oldrev)
 
@@ -71,6 +72,34 @@ describe MergeRequests::RefreshService do
         expect(@fork_merge_request.notes).to be_empty
         expect(@build_failed_todo).to be_done
         expect(@fork_build_failed_todo).to be_done
+      end
+
+      it 'reloads source branch MRs memoization' do
+        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+
+        expect { refresh_service.execute(@oldrev, @newrev, 'refs/heads/master') }.to change {
+          refresh_service.instance_variable_get("@source_merge_requests").first.merge_request_diff
+        }
+      end
+
+      context 'when source branch ref does not exists' do
+        before do
+          DeleteBranchService.new(@project, @user).execute(@merge_request.source_branch)
+        end
+
+        it 'closes MRs without source branch ref' do
+          expect { refresh_service.execute(@oldrev, @newrev, 'refs/heads/master') }
+            .to change { @merge_request.reload.state }
+            .from('opened')
+            .to('closed')
+
+          expect(@fork_merge_request.reload).to be_open
+        end
+
+        it 'does not change the merge request diff' do
+          expect { refresh_service.execute(@oldrev, @newrev, 'refs/heads/master') }
+            .not_to change { @merge_request.reload.merge_request_diff }
+        end
       end
     end
 
@@ -300,8 +329,8 @@ describe MergeRequests::RefreshService do
       let(:commit) { project.commit }
 
       before do
-        project.team << [commit_author, :developer]
-        project.team << [user, :developer]
+        project.add_developer(commit_author)
+        project.add_developer(user)
 
         allow(commit).to receive_messages(
           safe_message: "Closes #{issue.to_reference}",
@@ -371,37 +400,21 @@ describe MergeRequests::RefreshService do
       end
 
       it 'references the commit that caused the Work in Progress status' do
-        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
-        allow(refresh_service).to receive(:find_new_commits)
-        refresh_service.instance_variable_set("@commits", [
-          double(
-            id: 'aaaaaaa',
-            sha: '38008cb17ce1466d8fec2dfa6f6ab8dcfe5cf49e',
-            short_id: 'aaaaaaa',
-            title: 'Fix issue',
-            work_in_progress?: false
-          ),
-          double(
-            id: 'bbbbbbb',
-            sha: '498214de67004b1da3d820901307bed2a68a8ef6',
-            short_id: 'bbbbbbb',
-            title: 'fixup! Fix issue',
-            work_in_progress?: true,
-            to_reference: 'bbbbbbb'
-          ),
-          double(
-            id: 'ccccccc',
-            sha: '1b12f15a11fc6e62177bef08f47bc7b5ce50b141',
-            short_id: 'ccccccc',
-            title: 'fixup! Fix issue',
-            work_in_progress?: true,
-            to_reference: 'ccccccc'
-          )
-        ])
-        refresh_service.execute(@oldrev, @newrev, 'refs/heads/wip')
-        reload_mrs
-        expect(@merge_request.notes.last.note).to eq(
-          "marked as a **Work In Progress** from bbbbbbb"
+        wip_merge_request = create(:merge_request,
+                                   source_project: @project,
+                                   source_branch: 'wip',
+                                   target_branch: 'master',
+                                   target_project: @project)
+
+        commits = wip_merge_request.commits
+        oldrev = commits.last.id
+        newrev = commits.first.id
+        wip_commit = wip_merge_request.commits.find(&:work_in_progress?)
+
+        refresh_service.execute(oldrev, newrev, 'refs/heads/wip')
+
+        expect(wip_merge_request.reload.notes.last.note).to eq(
+          "marked as a **Work In Progress** from #{wip_commit.id}"
         )
       end
 

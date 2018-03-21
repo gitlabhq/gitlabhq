@@ -1,5 +1,6 @@
 require 'spec_helper'
 
+# Snippet visibility scenarios are included in more details in spec/support/snippet_visibility.rb
 describe PersonalSnippetPolicy do
   let(:regular_user) { create(:user) }
   let(:external_user) { create(:user, :external) }

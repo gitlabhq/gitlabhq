@@ -1,15 +1,17 @@
-import Project from '~/project';
+import Project from '~/pages/projects/project';
 import SmartInterval from '~/smart_interval';
 import Flash from '../flash';
 import {
   WidgetHeader,
   WidgetMergeHelp,
   WidgetPipeline,
-  WidgetDeployment,
+  Deployment,
+  WidgetMaintainerEdit,
   WidgetRelatedLinks,
   MergedState,
   ClosedState,
   MergingState,
+  RebaseState,
   WipState,
   ArchivedState,
   ConflictsState,
@@ -17,7 +19,7 @@ import {
   MissingBranchState,
   NotAllowedState,
   ReadyToMergeState,
-  SHAMismatchState,
+  ShaMismatchState,
   UnresolvedDiscussionsState,
   PipelineBlockedState,
   PipelineFailedState,
@@ -31,6 +33,7 @@ import {
   stateMaps,
   SquashBeforeMerge,
   notify,
+  SourceBranchRemovalStatus,
 } from './dependencies';
 import { setFavicon } from '../lib/utils/common_utils';
 
@@ -62,10 +65,11 @@ export default {
       return this.mr.hasCI;
     },
     shouldRenderRelatedLinks() {
-      return !!this.mr.relatedLinks;
+      return !!this.mr.relatedLinks && !this.mr.isNothingToMergeState;
     },
-    shouldRenderDeployments() {
-      return this.mr.deployments.length;
+    shouldRenderSourceBranchRemovalStatus() {
+      return !this.mr.canRemoveSourceBranch && this.mr.shouldRemoveSourceBranch &&
+        (!this.mr.isNothingToMergeState && !this.mr.isMergedState);
     },
   },
   methods: {
@@ -79,24 +83,23 @@ export default {
         ciEnvironmentsStatusPath: store.ciEnvironmentsStatusPath,
         statusPath: store.statusPath,
         mergeActionsContentPath: store.mergeActionsContentPath,
+        rebasePath: store.rebasePath,
       };
       return new MRWidgetService(endpoints);
     },
     checkStatus(cb) {
       return this.service.checkStatus()
-        .then(res => res.json())
-        .then((res) => {
-          this.handleNotification(res);
-          this.mr.setData(res);
+        .then(res => res.data)
+        .then((data) => {
+          this.handleNotification(data);
+          this.mr.setData(data);
           this.setFaviconHelper();
 
           if (cb) {
-            cb.call(null, res);
+            cb.call(null, data);
           }
         })
-        .catch(() => {
-          new Flash('Something went wrong. Please try again.'); // eslint-disable-line
-        });
+        .catch(() => new Flash('Something went wrong. Please try again.'));
     },
     initPolling() {
       this.pollingInterval = new SmartInterval({
@@ -124,10 +127,10 @@ export default {
     },
     fetchDeployments() {
       return this.service.fetchDeployments()
-        .then(res => res.json())
-        .then((res) => {
-          if (res.length) {
-            this.mr.deployments = res;
+        .then(res => res.data)
+        .then((data) => {
+          if (data.length) {
+            this.mr.deployments = data;
           }
         })
         .catch(() => {
@@ -137,19 +140,18 @@ export default {
     fetchActionsContent() {
       this.service.fetchMergeActionsContent()
         .then((res) => {
-          if (res.body) {
+          if (res.data) {
             const el = document.createElement('div');
-            el.innerHTML = res.body;
+            el.innerHTML = res.data;
             document.body.appendChild(el);
             Project.initRefSwitcher();
           }
         })
-        .catch(() => {
-          new Flash('Something went wrong. Please try again.'); // eslint-disable-line
-        });
+        .catch(() => new Flash('Something went wrong. Please try again.'));
     },
     handleNotification(data) {
       if (data.ci_status === this.mr.ciStatus) return;
+      if (!data.pipeline) return;
 
       const label = data.pipeline.details.status.label;
       const title = `Pipeline ${label}`;
@@ -211,7 +213,8 @@ export default {
     'mr-widget-header': WidgetHeader,
     'mr-widget-merge-help': WidgetMergeHelp,
     'mr-widget-pipeline': WidgetPipeline,
-    'mr-widget-deployment': WidgetDeployment,
+    Deployment,
+    'mr-widget-maintainer-edit': WidgetMaintainerEdit,
     'mr-widget-related-links': WidgetRelatedLinks,
     'mr-widget-merged': MergedState,
     'mr-widget-closed': ClosedState,
@@ -224,7 +227,7 @@ export default {
     'mr-widget-not-allowed': NotAllowedState,
     'mr-widget-missing-branch': MissingBranchState,
     'mr-widget-ready-to-merge': ReadyToMergeState,
-    'mr-widget-sha-mismatch': SHAMismatchState,
+    'mr-widget-sha-mismatch': ShaMismatchState,
     'mr-widget-squash-before-merge': SquashBeforeMerge,
     'mr-widget-checking': CheckingState,
     'mr-widget-unresolved-discussions': UnresolvedDiscussionsState,
@@ -232,6 +235,8 @@ export default {
     'mr-widget-pipeline-failed': PipelineFailedState,
     'mr-widget-merge-when-pipeline-succeeds': MergeWhenPipelineSucceedsState,
     'mr-widget-auto-merge-failed': AutoMergeFailed,
+    'mr-widget-rebase': RebaseState,
+    SourceBranchRemovalStatus,
   },
   template: `
     <div class="mr-state-widget prepend-top-default">
@@ -242,19 +247,25 @@ export default {
         :ci-status="mr.ciStatus"
         :has-ci="mr.hasCI"
         />
-      <mr-widget-deployment
-        v-if="shouldRenderDeployments"
-        :mr="mr"
-        :service="service" />
+      <deployment
+        v-for="deployment in mr.deployments"
+        :key="deployment.id"
+        :deployment="deployment"
+      />
       <div class="mr-widget-section">
         <component
           :is="componentName"
           :mr="mr"
           :service="service" />
+        <mr-widget-maintainer-edit
+          :maintainerEditAllowed="mr.maintainerEditAllowed" />
         <mr-widget-related-links
           v-if="shouldRenderRelatedLinks"
           :state="mr.state"
           :related-links="mr.relatedLinks" />
+        <source-branch-removal-status
+          v-if="shouldRenderSourceBranchRemovalStatus"
+        />
       </div>
       <div
         class="mr-widget-footer"

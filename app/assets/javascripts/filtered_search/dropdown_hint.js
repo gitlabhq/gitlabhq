@@ -1,14 +1,17 @@
 import Filter from '~/droplab/plugins/filter';
-import './filtered_search_dropdown';
+import FilteredSearchDropdown from './filtered_search_dropdown';
+import DropdownUtils from './dropdown_utils';
+import FilteredSearchDropdownManager from './filtered_search_dropdown_manager';
+import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
 
-class DropdownHint extends gl.FilteredSearchDropdown {
+export default class DropdownHint extends FilteredSearchDropdown {
   constructor(options = {}) {
     const { input, tokenKeys } = options;
     super(options);
     this.config = {
       Filter: {
         template: 'hint',
-        filterFunction: gl.DropdownUtils.filterHint.bind(null, {
+        filterFunction: DropdownUtils.filterHint.bind(null, {
           input,
           allowedKeys: tokenKeys.getKeys(),
         }),
@@ -45,10 +48,10 @@ class DropdownHint extends gl.FilteredSearchDropdown {
           });
 
           if (searchTerms.length > 0) {
-            gl.FilteredSearchVisualTokens.addSearchVisualToken(searchTerms.join(' '));
+            FilteredSearchVisualTokens.addSearchVisualToken(searchTerms.join(' '));
           }
 
-          gl.FilteredSearchDropdownManager.addWordToInput(token.replace(':', ''), '', false, this.container);
+          FilteredSearchDropdownManager.addWordToInput(token.replace(':', ''), '', false, this.container);
         }
         this.dismissDropdown();
         this.dispatchInputEvent();
@@ -73,6 +76,3 @@ class DropdownHint extends gl.FilteredSearchDropdown {
     this.droplab.addHook(this.input, this.dropdown, [Filter], this.config).init();
   }
 }
-
-window.gl = window.gl || {};
-gl.DropdownHint = DropdownHint;

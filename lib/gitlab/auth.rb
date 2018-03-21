@@ -14,8 +14,6 @@ module Gitlab
     DEFAULT_SCOPES = [:api].freeze
 
     class << self
-      include Gitlab::CurrentSettings
-
       def find_for_git_client(login, password, project:, ip:)
         raise "Must provide an IP for rate limiting" if ip.nil?
 
@@ -42,8 +40,8 @@ module Gitlab
       end
 
       def find_with_user_password(login, password)
-        # Avoid resource intensive login checks if password is not provided
-        return unless password.present?
+        # Avoid resource intensive checks if login credentials are not provided
+        return unless login.present? && password.present?
 
         # Nothing to do here if internal auth is disabled and LDAP is
         # not configured
@@ -52,14 +50,26 @@ module Gitlab
         Gitlab::Auth::UniqueIpsLimiter.limit_user! do
           user = User.by_login(login)
 
-          # If no user is found, or it's an LDAP server, try LDAP.
-          #   LDAP users are only authenticated via LDAP
-          if user.nil? || user.ldap_user?
-            # Second chance - try LDAP authentication
-            Gitlab::LDAP::Authentication.login(login, password)
-          elsif current_application_settings.password_authentication_enabled_for_git?
-            user if user.active? && user.valid_password?(password)
+          return if user && !user.active?
+
+          authenticators = []
+
+          if user
+            authenticators << Gitlab::Auth::OAuth::Provider.authentication(user, 'database')
+
+            # Add authenticators for all identities if user is not nil
+            user&.identities&.each do |identity|
+              authenticators << Gitlab::Auth::OAuth::Provider.authentication(user, identity.provider)
+            end
+          else
+            # If no user is provided, try LDAP.
+            #   LDAP users are only authenticated via LDAP
+            authenticators << Gitlab::Auth::LDAP::Authentication
           end
+
+          authenticators.compact!
+
+          user if authenticators.find { |auth| auth.login(login, password) }
         end
       end
 
@@ -87,7 +97,7 @@ module Gitlab
       private
 
       def authenticate_using_internal_or_ldap_password?
-        current_application_settings.password_authentication_enabled_for_git? || Gitlab::LDAP::Config.enabled?
+        Gitlab::CurrentSettings.password_authentication_enabled_for_git? || Gitlab::Auth::LDAP::Config.enabled?
       end
 
       def service_request_check(login, password, project)

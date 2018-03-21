@@ -66,7 +66,7 @@ describe MigrateOldArtifacts do
         end
 
         it 'all files do have artifacts' do
-          Ci::Build.with_artifacts do |build|
+          Ci::Build.with_artifacts_archive do |build|
             expect(build).to have_artifacts
           end
         end

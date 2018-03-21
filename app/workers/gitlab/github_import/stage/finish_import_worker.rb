@@ -16,7 +16,7 @@ module Gitlab
 
         def report_import_time(project)
           duration = Time.zone.now - project.created_at
-          path = project.path_with_namespace
+          path = project.full_path
 
           histogram.observe({ project: path }, duration)
           counter.increment

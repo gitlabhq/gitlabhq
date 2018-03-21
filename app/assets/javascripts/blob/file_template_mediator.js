@@ -1,4 +1,6 @@
 /* eslint-disable class-methods-use-this */
+
+import $ from 'jquery';
 import Flash from '../flash';
 import FileTemplateTypeSelector from './template_selectors/type_selector';
 import BlobCiYamlSelector from './template_selectors/ci_yaml_selector';
@@ -235,7 +237,7 @@ export default class FileTemplateMediator {
   }
 
   setFilename(name) {
-    this.$filenameInput.val(name);
+    this.$filenameInput.val(name).trigger('change');
   }
 
   getSelected() {

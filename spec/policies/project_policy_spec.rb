@@ -92,7 +92,7 @@ describe ProjectPolicy do
 
   it 'does not include the read_issue permission when the issue author is not a member of the private project' do
     project = create(:project, :private)
-    issue   = create(:issue, project: project)
+    issue   = create(:issue, project: project, author: create(:user))
     user    = issue.author
 
     expect(project.team.member?(issue.author)).to be false
@@ -308,4 +308,41 @@ describe ProjectPolicy do
   it_behaves_like 'project policies as master'
   it_behaves_like 'project policies as owner'
   it_behaves_like 'project policies as admin'
+
+  context 'when a public project has merge requests allowing access' do
+    include ProjectForksHelper
+    let(:user) { create(:user) }
+    let(:target_project) { create(:project, :public) }
+    let(:project) { fork_project(target_project) }
+    let!(:merge_request) do
+      create(
+        :merge_request,
+        target_project: target_project,
+        source_project: project,
+        allow_maintainer_to_push: true
+      )
+    end
+    let(:maintainer_abilities) do
+      %w(create_build update_build create_pipeline update_pipeline)
+    end
+
+    subject { described_class.new(user, project) }
+
+    it 'does not allow pushing code' do
+      expect_disallowed(*maintainer_abilities)
+    end
+
+    it 'allows pushing if the user is a member with push access to the target project' do
+      target_project.add_developer(user)
+
+      expect_allowed(*maintainer_abilities)
+    end
+
+    it 'dissallows abilities to a maintainer if the merge request was closed' do
+      target_project.add_developer(user)
+      merge_request.close!
+
+      expect_disallowed(*maintainer_abilities)
+    end
+  end
 end

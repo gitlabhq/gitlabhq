@@ -26,15 +26,15 @@
 }
 
 .ci-status-icon-canceled,
-.ci-status-icon-disabled,
-.ci-status-icon-not-found {
+.ci-status-icon-disabled {
   svg {
     fill: $gl-text-color;
   }
 }
 
 .ci-status-icon-created,
-.ci-status-icon-skipped {
+.ci-status-icon-skipped,
+.ci-status-icon-notfound {
   svg {
     fill: $gray-darkest;
   }

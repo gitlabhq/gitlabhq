@@ -1,9 +1,12 @@
 require 'base64'
 
 require 'gitaly'
+require 'grpc/health/v1/health_pb'
+require 'grpc/health/v1/health_services_pb'
 
 module Gitlab
   module GitalyClient
+    include Gitlab::Metrics::Methods
     module MigrationStatus
       DISABLED = 1
       OPT_IN = 2
@@ -31,8 +34,6 @@ module Gitlab
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
 
     MUTEX = Mutex.new
-    METRICS_MUTEX = Mutex.new
-    private_constant :MUTEX, :METRICS_MUTEX
 
     class << self
       attr_accessor :query_time
@@ -40,28 +41,14 @@ module Gitlab
 
     self.query_time = 0
 
-    def self.migrate_histogram
-      @migrate_histogram ||=
-        METRICS_MUTEX.synchronize do
-          # If a thread was blocked on the mutex, the value was set already
-          return @migrate_histogram if @migrate_histogram
-
-          Gitlab::Metrics.histogram(:gitaly_migrate_call_duration_seconds,
-                                    "Gitaly migration call execution timings",
-                                    gitaly_enabled: nil, feature: nil)
-        end
+    define_histogram :gitaly_migrate_call_duration_seconds do
+      docstring "Gitaly migration call execution timings"
+      base_labels gitaly_enabled: nil, feature: nil
     end
 
-    def self.gitaly_call_histogram
-      @gitaly_call_histogram ||=
-        METRICS_MUTEX.synchronize do
-          # If a thread was blocked on the mutex, the value was set already
-          return @gitaly_call_histogram if @gitaly_call_histogram
-
-          Gitlab::Metrics.histogram(:gitaly_controller_action_duration_seconds,
-                                    "Gitaly endpoint histogram by controller and action combination",
-                                    Gitlab::Metrics::Transaction::BASE_LABELS.merge(gitaly_service: nil, rpc: nil))
-        end
+    define_histogram :gitaly_controller_action_duration_seconds do
+      docstring "Gitaly endpoint histogram by controller and action combination"
+      base_labels Gitlab::Metrics::Transaction::BASE_LABELS.merge(gitaly_service: nil, rpc: nil)
     end
 
     def self.stub(name, storage)
@@ -69,12 +56,25 @@ module Gitlab
         @stubs ||= {}
         @stubs[storage] ||= {}
         @stubs[storage][name] ||= begin
-          klass = Gitaly.const_get(name.to_s.camelcase.to_sym).const_get(:Stub)
-          addr = address(storage)
-          addr = addr.sub(%r{^tcp://}, '') if URI(addr).scheme == 'tcp'
+          klass = stub_class(name)
+          addr = stub_address(storage)
           klass.new(addr, :this_channel_is_insecure)
         end
       end
+    end
+
+    def self.stub_class(name)
+      if name == :health_check
+        Grpc::Health::V1::Health::Stub
+      else
+        Gitaly.const_get(name.to_s.camelcase.to_sym).const_get(:Stub)
+      end
+    end
+
+    def self.stub_address(storage)
+      addr = address(storage)
+      addr = addr.sub(%r{^tcp://}, '') if URI(addr).scheme == 'tcp'
+      addr
     end
 
     def self.clear_stubs!
@@ -119,21 +119,51 @@ module Gitlab
     #
     def self.call(storage, service, rpc, request, remote_storage: nil, timeout: nil)
       start = Gitlab::Metrics::System.monotonic_time
+      request_hash = request.is_a?(Google::Protobuf::MessageExts) ? request.to_h : {}
+      @current_call_id ||= SecureRandom.uuid
+
       enforce_gitaly_request_limits(:call)
 
       kwargs = request_kwargs(storage, timeout, remote_storage: remote_storage)
       kwargs = yield(kwargs) if block_given?
 
       stub(service, storage).__send__(rpc, request, kwargs) # rubocop:disable GitlabSecurity/PublicSend
+    rescue GRPC::Unavailable => ex
+      handle_grpc_unavailable!(ex)
     ensure
       duration = Gitlab::Metrics::System.monotonic_time - start
 
       # Keep track, seperately, for the performance bar
       self.query_time += duration
-      gitaly_call_histogram.observe(
+      gitaly_controller_action_duration_seconds.observe(
         current_transaction_labels.merge(gitaly_service: service.to_s, rpc: rpc.to_s),
         duration)
+
+      add_call_details(id: @current_call_id, feature: service, duration: duration, request: request_hash)
+
+      @current_call_id = nil
     end
+
+    def self.handle_grpc_unavailable!(ex)
+      status = ex.to_status
+      raise ex unless status.details == 'Endpoint read failed'
+
+      # There is a bug in grpc 1.8.x that causes a client process to get stuck
+      # always raising '14:Endpoint read failed'. The only thing that we can
+      # do to recover is to restart the process.
+      #
+      # See https://gitlab.com/gitlab-org/gitaly/issues/1029
+
+      if Sidekiq.server?
+        raise Gitlab::SidekiqMiddleware::Shutdown::WantShutdown.new(ex.to_s)
+      else
+        # SIGQUIT requests a Unicorn worker to shut down gracefully after the current request.
+        Process.kill('QUIT', Process.pid)
+      end
+
+      raise ex
+    end
+    private_class_method :handle_grpc_unavailable!
 
     def self.current_transaction_labels
       Gitlab::Metrics::Transaction.current&.labels || {}
@@ -229,12 +259,16 @@ module Gitlab
           feature_stack.unshift(feature)
           begin
             start = Gitlab::Metrics::System.monotonic_time
+            @current_call_id = SecureRandom.uuid
+            call_details = { id: @current_call_id }
             yield is_enabled
           ensure
             total_time = Gitlab::Metrics::System.monotonic_time - start
-            migrate_histogram.observe({ gitaly_enabled: is_enabled, feature: feature }, total_time)
+            gitaly_migrate_call_duration_seconds.observe({ gitaly_enabled: is_enabled, feature: feature }, total_time)
             feature_stack.shift
             Thread.current[:gitaly_feature_stack] = nil if feature_stack.empty?
+
+            add_call_details(call_details.merge(feature: feature, duration: total_time))
           end
         end
       end
@@ -321,6 +355,22 @@ module Gitlab
       end
     end
 
+    def self.add_call_details(details)
+      id = details.delete(:id)
+
+      return unless id && RequestStore.active? && RequestStore.store[:peek_enabled]
+
+      RequestStore.store['gitaly_call_details'] ||= {}
+      RequestStore.store['gitaly_call_details'][id] ||= {}
+      RequestStore.store['gitaly_call_details'][id].merge!(details)
+    end
+
+    def self.list_call_details
+      return {} unless RequestStore.active? && RequestStore.store[:peek_enabled]
+
+      RequestStore.store['gitaly_call_details'] || {}
+    end
+
     def self.expected_server_version
       path = Rails.root.join(SERVER_VERSION_FILE)
       path.read.chomp
@@ -328,22 +378,6 @@ module Gitlab
 
     def self.timestamp(t)
       Google::Protobuf::Timestamp.new(seconds: t.to_i)
-    end
-
-    def self.encode(s)
-      return "" if s.nil?
-
-      s.dup.force_encoding(Encoding::ASCII_8BIT)
-    end
-
-    def self.binary_stringio(s)
-      io = StringIO.new(s || '')
-      io.set_encoding(Encoding::ASCII_8BIT)
-      io
-    end
-
-    def self.encode_repeated(a)
-      Google::Protobuf::RepeatedField.new(:bytes, a.map { |s| self.encode(s) } )
     end
 
     # The default timeout on all Gitaly calls

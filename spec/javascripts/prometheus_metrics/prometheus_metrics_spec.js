@@ -1,3 +1,5 @@
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import PrometheusMetrics from '~/prometheus_metrics/prometheus_metrics';
 import PANEL_STATE from '~/prometheus_metrics/constants';
 import { metrics, missingVarMetrics } from './mock_data';
@@ -83,7 +85,7 @@ describe('PrometheusMetrics', () => {
       expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeTruthy();
       expect(prometheusMetrics.$monitoredMetricsList.hasClass('hidden')).toBeFalsy();
 
-      expect(prometheusMetrics.$monitoredMetricsCount.text()).toEqual('12');
+      expect(prometheusMetrics.$monitoredMetricsCount.text()).toEqual('3 exporters with 12 metrics were found');
       expect($metricsListLi.length).toEqual(metrics.length);
       expect($metricsListLi.first().find('.badge').text()).toEqual(`${metrics[0].active_metrics}`);
     });
@@ -102,25 +104,38 @@ describe('PrometheusMetrics', () => {
 
   describe('loadActiveMetrics', () => {
     let prometheusMetrics;
+    let mock;
+
+    function mockSuccess() {
+      mock.onGet(prometheusMetrics.activeMetricsEndpoint).reply(200, {
+        data: metrics,
+        success: true,
+      });
+    }
+
+    function mockError() {
+      mock.onGet(prometheusMetrics.activeMetricsEndpoint).networkError();
+    }
 
     beforeEach(() => {
+      spyOn(axios, 'get').and.callThrough();
+
       prometheusMetrics = new PrometheusMetrics('.js-prometheus-metrics-monitoring');
+
+      mock = new MockAdapter(axios);
+    });
+
+    afterEach(() => {
+      mock.restore();
     });
 
     it('should show loader animation while response is being loaded and hide it when request is complete', (done) => {
-      const deferred = $.Deferred();
-      spyOn($, 'ajax').and.returnValue(deferred.promise());
+      mockSuccess();
 
       prometheusMetrics.loadActiveMetrics();
 
       expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeFalsy();
-      expect($.ajax).toHaveBeenCalledWith({
-        url: prometheusMetrics.activeMetricsEndpoint,
-        dataType: 'json',
-        global: false,
-      });
-
-      deferred.resolve({ data: metrics, success: true });
+      expect(axios.get).toHaveBeenCalledWith(prometheusMetrics.activeMetricsEndpoint);
 
       setTimeout(() => {
         expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeTruthy();
@@ -129,13 +144,9 @@ describe('PrometheusMetrics', () => {
     });
 
     it('should show empty state if response failed to load', (done) => {
-      const deferred = $.Deferred();
-      spyOn($, 'ajax').and.returnValue(deferred.promise());
-      spyOn(prometheusMetrics, 'populateActiveMetrics');
+      mockError();
 
       prometheusMetrics.loadActiveMetrics();
-
-      deferred.reject();
 
       setTimeout(() => {
         expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeTruthy();
@@ -145,13 +156,10 @@ describe('PrometheusMetrics', () => {
     });
 
     it('should populate metrics list once response is loaded', (done) => {
-      const deferred = $.Deferred();
-      spyOn($, 'ajax').and.returnValue(deferred.promise());
       spyOn(prometheusMetrics, 'populateActiveMetrics');
+      mockSuccess();
 
       prometheusMetrics.loadActiveMetrics();
-
-      deferred.resolve({ data: metrics, success: true });
 
       setTimeout(() => {
         expect(prometheusMetrics.populateActiveMetrics).toHaveBeenCalledWith(metrics);

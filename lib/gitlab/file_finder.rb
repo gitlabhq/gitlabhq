@@ -28,7 +28,7 @@ module Gitlab
 
     def find_by_content(query)
       results = repository.search_files_by_content(query, ref).first(BATCH_SIZE)
-      results.map { |result| Gitlab::ProjectSearchResults.parse_search_result(result) }
+      results.map { |result| Gitlab::ProjectSearchResults.parse_search_result(result, project) }
     end
 
     def find_by_filename(query, except: [])
@@ -45,7 +45,8 @@ module Gitlab
           basename: File.basename(blob.path),
           ref: ref,
           startline: 1,
-          data: blob.data
+          data: blob.data,
+          project: project
         )
       end
     end

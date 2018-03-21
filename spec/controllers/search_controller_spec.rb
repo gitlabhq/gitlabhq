@@ -16,6 +16,32 @@ describe SearchController do
     expect(assigns[:search_objects].first).to eq note
   end
 
+  context 'when the user cannot read cross project' do
+    before do
+      allow(Ability).to receive(:allowed?).and_call_original
+      allow(Ability).to receive(:allowed?)
+                          .with(user, :read_cross_project, :global) { false }
+    end
+
+    it 'still allows accessing the search page' do
+      get :show
+
+      expect(response).to have_gitlab_http_status(200)
+    end
+
+    it 'still blocks searches without a project_id' do
+      get :show, search: 'hello'
+
+      expect(response).to have_gitlab_http_status(404)
+    end
+
+    it 'allows searches with a project_id' do
+      get :show, search: 'hello', project_id: create(:project, :public).id
+
+      expect(response).to have_gitlab_http_status(200)
+    end
+  end
+
   context 'on restricted projects' do
     context 'when signed out' do
       before do

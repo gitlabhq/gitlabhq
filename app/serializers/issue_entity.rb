@@ -2,7 +2,14 @@ class IssueEntity < IssuableEntity
   include TimeTrackableEntity
 
   expose :state
-  expose :deleted_at
+  expose :milestone_id
+  expose :updated_by_id
+  expose :created_at
+  expose :updated_at
+  expose :milestone, using: API::Entities::Milestone
+  expose :labels, using: LabelEntity
+  expose :lock_version
+  expose :author_id
   expose :confidential
   expose :discussion_locked
   expose :assignees, using: API::Entities::UserBasic

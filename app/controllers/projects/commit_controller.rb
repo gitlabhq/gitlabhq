@@ -12,7 +12,7 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :authorize_download_code!
   before_action :authorize_read_pipeline!, only: [:pipelines]
   before_action :commit
-  before_action :define_commit_vars, only: [:show, :diff_for_path, :pipelines]
+  before_action :define_commit_vars, only: [:show, :diff_for_path, :pipelines, :merge_requests]
   before_action :define_note_vars, only: [:show, :diff_for_path]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
 
@@ -48,6 +48,18 @@ class Projects::CommitController < Projects::ApplicationController
             all: @pipelines.count
           }
         }
+      end
+    end
+  end
+
+  def merge_requests
+    @merge_requests = @commit.merge_requests.map do |mr|
+      { iid: mr.iid, path: merge_request_path(mr), title: mr.title }
+    end
+
+    respond_to do |format|
+      format.json do
+        render json: @merge_requests.to_json
       end
     end
   end

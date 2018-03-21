@@ -4,8 +4,7 @@
 - page_title    'New Project'
 - header_title  "Projects", dashboard_projects_path
 - visibility_level = params.dig(:project, :visibility_level) || default_project_visibility
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'project_new'
+- active_tab = local_assigns.fetch(:active_tab, 'blank')
 
 .project-edit-container
   .project-edit-errors
@@ -13,45 +12,57 @@
   .row.prepend-top-default
     .col-lg-3.profile-settings-sidebar
       %h4.prepend-top-0
-        New project
+        = _('New project')
       %p
-        A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), #{link_to 'among other things', help_page_path("user/project/index.md", anchor: "projects-features"), target: '_blank'}.
+        - among_other_things_link = link_to _('among other things'), help_page_path("user/project/index.md", anchor: "projects-features"), target: '_blank'
+        = _('A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), %{among_other_things_link}.').html_safe % { among_other_things_link: among_other_things_link }
       %p
-        All features are enabled when you create a project, but you can disable the ones you don’t need in the project settings.
+        = _('All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings.')
+      -# EE-specific start
+      -# EE-specific end
       .md
         = brand_new_project_guidelines
+      %p
+        %strong= _("Tip:")
+        = _("You can also create a project from the command line.")
+        %a.push-new-project-tip{ data: { title: _("Push to create a project") }, href: help_page_path('gitlab-basics/create-project', anchor: 'push-to-create-a-new-project'), target: "_blank", rel: "noopener noreferrer" }
+          = _("Show command")
+        %template.push-new-project-tip-template= render partial: "new_project_push_tip"
+
     .col-lg-9.js-toggle-container
       %ul.nav-links.gitlab-tabs{ role: 'tablist' }
-        %li.active{ role: 'presentation' }
+        %li{ class: active_when(active_tab == 'blank'), role: 'presentation' }
           %a{ href: '#blank-project-pane', id: 'blank-project-tab', data: { toggle: 'tab' }, role: 'tab' }
             %span.hidden-xs Blank project
             %span.visible-xs Blank
-        %li{ role: 'presentation' }
+        %li{ class: active_when(active_tab == 'template'), role: 'presentation' }
           %a{ href: '#create-from-template-pane', id: 'create-from-template-tab', data: { toggle: 'tab' }, role: 'tab' }
             %span.hidden-xs Create from template
             %span.visible-xs Template
-        %li{ role: 'presentation' }
+        %li{ class: active_when(active_tab == 'import'), role: 'presentation' }
           %a{ href: '#import-project-pane', id: 'import-project-tab', data: { toggle: 'tab' }, role: 'tab' }
             %span.hidden-xs Import project
             %span.visible-xs Import
+        -# EE-specific start
+        -# EE-specific end
 
       .tab-content.gitlab-tab-content
-        .tab-pane.active{ id: 'blank-project-pane', role: 'tabpanel' }
+        .tab-pane{ id: 'blank-project-pane', class: active_when(active_tab == 'blank'), role: 'tabpanel' }
           = form_for @project, html: { class: 'new_project' } do |f|
             = render 'new_project_fields', f: f, project_name_id: "blank-project-name"
 
-        .tab-pane.no-padding{ id: 'create-from-template-pane', role: 'tabpanel' }
+        .tab-pane.no-padding{ id: 'create-from-template-pane', class: active_when(active_tab == 'template'), role: 'tabpanel' }
           = form_for @project, html: { class: 'new_project' } do |f|
             .project-template
               .form-group
                 %div
                   = render 'project_templates', f: f
 
-        .tab-pane.import-project-pane{ id: 'import-project-pane', role: 'tabpanel' }
+        .tab-pane.import-project-pane.js-toggle-container{ id: 'import-project-pane', class: active_when(active_tab == 'import'), role: 'tabpanel' }
           = form_for @project, html: { class: 'new_project' } do |f|
             - if import_sources_enabled?
               .project-import.row
-                .col-sm-12
+                .col-lg-12
                   .form-group.import-btn-container.clearfix
                     = f.label :visibility_level, class: 'label-light' do #the label here seems wrong
                       Import project from
@@ -62,7 +73,7 @@
                             = icon('gitlab', text: 'GitLab export')
                       %div
                         - if github_import_enabled?
-                          = link_to new_import_github_path, class: 'btn import_github' do
+                          = link_to new_import_github_path, class: 'btn js-import-github' do
                             = icon('github', text: 'GitHub')
                       %div
                         - if bitbucket_import_enabled?
@@ -91,13 +102,17 @@
                             Gitea
                       %div
                         - if git_import_enabled?
-                          %button.btn.js-toggle-button.import_git{ type: "button" }
+                          %button.btn.js-toggle-button.js-import-git-toggle-button{ type: "button", data: { toggle_open_class: 'active' } }
                             = icon('git', text: 'Repo by URL')
                 .col-lg-12
-                  .js-toggle-content.hide.toggle-import-form
+                  .js-toggle-content.toggle-import-form{ class: ('hide' if active_tab != 'import') }
                     %hr
                       = render "shared/import_form", f: f
                       = render 'new_project_fields', f: f, project_name_id: "import-url-name"
+
+
+        -# EE-specific start
+        -# EE-specific end
 
 .save-project-loader.hide
   .center

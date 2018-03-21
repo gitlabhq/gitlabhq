@@ -45,7 +45,7 @@ module IssuableActions
     }
 
     if issuable.edited?
-      response[:updated_at] = issuable.updated_at
+      response[:updated_at] = issuable.last_edited_at.to_time.iso8601
       response[:updated_by_name] = issuable.last_edited_by.name
       response[:updated_by_path] = user_path(issuable.last_edited_by)
     end
@@ -55,7 +55,6 @@ module IssuableActions
 
   def destroy
     Issuable::DestroyService.new(issuable.project, current_user).execute(issuable)
-    TodoService.new.destroy_issuable(issuable, current_user)
 
     name = issuable.human_class_name
     flash[:notice] = "The #{name} was successfully deleted."
@@ -76,6 +75,20 @@ module IssuableActions
     quantity = result[:count]
 
     render json: { notice: "#{quantity} #{resource_name.pluralize(quantity)} updated" }
+  end
+
+  def discussions
+    notes = issuable.notes
+      .inc_relations_for_view
+      .includes(:noteable)
+      .fresh
+
+    notes = prepare_notes_for_rendering(notes)
+    notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
+
+    discussions = Discussion.build_collection(notes, issuable)
+
+    render json: DiscussionSerializer.new(project: project, noteable: issuable, current_user: current_user).represent(discussions, context: self)
   end
 
   private

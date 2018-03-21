@@ -102,6 +102,11 @@ running:
 kubectl get svc ruby-app-nginx-ingress-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
 ```
 
+NOTE: **Note:**
+If your ingress controller has been installed in a different way, you can find
+how to get the external IP address in the
+[Cluster documentation](../../user/project/clusters/index.md#getting-the-external-ip-address).
+
 Use this IP address to configure your DNS. This part heavily depends on your
 preferences and domain provider. But in case you are not sure, just create an
 A record with a wildcard host like `*.<your-domain>`.

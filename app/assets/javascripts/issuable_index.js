@@ -1,3 +1,7 @@
+import $ from 'jquery';
+import axios from './lib/utils/axios_utils';
+import flash from './flash';
+import { __ } from './locale';
 import IssuableBulkUpdateSidebar from './issuable_bulk_update_sidebar';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
 
@@ -20,23 +24,24 @@ export default class IssuableIndex {
   }
 
   static resetIncomingEmailToken() {
-    $('.incoming-email-token-reset').on('click', (e) => {
+    const $resetToken = $('.incoming-email-token-reset');
+
+    $resetToken.on('click', (e) => {
       e.preventDefault();
 
-      $.ajax({
-        type: 'PUT',
-        url: $('.incoming-email-token-reset').attr('href'),
-        dataType: 'json',
-        success(response) {
-          $('#issuable_email').val(response.new_address).focus();
-        },
-        beforeSend() {
-          $('.incoming-email-token-reset').text('resetting...');
-        },
-        complete() {
-          $('.incoming-email-token-reset').text('reset it');
-        },
-      });
+      $resetToken.text('resetting...');
+
+      axios.put($resetToken.attr('href'))
+        .then(({ data }) => {
+          $('#issuable_email').val(data.new_address).focus();
+
+          $resetToken.text('reset it');
+        })
+        .catch(() => {
+          flash(__('There was an error when reseting email token.'));
+
+          $resetToken.text('reset it');
+        });
     });
   }
 }

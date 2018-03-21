@@ -17,11 +17,11 @@ describe TodoService do
   let(:service) { described_class.new }
 
   before do
-    project.team << [guest, :guest]
-    project.team << [author, :developer]
-    project.team << [member, :developer]
-    project.team << [john_doe, :developer]
-    project.team << [skipped, :developer]
+    project.add_guest(guest)
+    project.add_developer(author)
+    project.add_developer(member)
+    project.add_developer(john_doe)
+    project.add_developer(skipped)
   end
 
   describe 'Issues' do
@@ -248,11 +248,26 @@ describe TodoService do
       end
     end
 
-    describe '#destroy_issuable' do
-      it 'refresh the todos count cache for the user' do
-        expect(john_doe).to receive(:update_todos_count_cache).and_call_original
+    describe '#destroy_target' do
+      it 'refreshes the todos count cache for users with todos on the target' do
+        create(:todo, target: issue, user: john_doe, author: john_doe, project: issue.project)
 
-        service.destroy_issuable(issue, john_doe)
+        expect_any_instance_of(User).to receive(:update_todos_count_cache).and_call_original
+
+        service.destroy_target(issue) { }
+      end
+
+      it 'does not refresh the todos count cache for users with only done todos on the target' do
+        create(:todo, :done, target: issue, user: john_doe, author: john_doe, project: issue.project)
+
+        expect_any_instance_of(User).not_to receive(:update_todos_count_cache)
+
+        service.destroy_target(issue) { }
+      end
+
+      it 'yields the target to the caller' do
+        expect { |b| service.destroy_target(issue, &b) }
+          .to yield_with_args(issue)
       end
     end
 
@@ -928,7 +943,8 @@ describe TodoService do
 
       described_class.new.mark_todos_as_done_by_ids(todo, john_doe)
 
-      expect_any_instance_of(TodosFinder).not_to receive(:execute)
+      # Make sure no TodosFinder is inialized to perform counting
+      expect(TodosFinder).not_to receive(:new)
 
       expect(john_doe.todos_done_count).to eq(1)
       expect(john_doe.todos_pending_count).to eq(1)

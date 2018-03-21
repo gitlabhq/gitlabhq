@@ -31,12 +31,20 @@ class TodoService
     mark_pending_todos_as_done(issue, current_user)
   end
 
-  # When we destroy an issuable we should:
+  # When we destroy a todo target we should:
   #
-  #  * refresh the todos count cache for the current user
+  #  * refresh the todos count cache for all users with todos on the target
   #
-  def destroy_issuable(issuable, user)
-    user.update_todos_count_cache
+  # This needs to yield back to the caller to destroy the target, because it
+  # collects the todo users before the todos themselves are deleted, then
+  # updates the todo counts for those users.
+  #
+  def destroy_target(target)
+    todo_users = User.where(id: target.todos.pending.select(:user_id)).to_a
+
+    yield target
+
+    todo_users.each(&:update_todos_count_cache)
   end
 
   # When we reassign an issue we should:
@@ -233,8 +241,7 @@ class TodoService
   end
 
   def handle_note(note, author, skip_users = [])
-    # Skip system notes, and notes on project snippet
-    return if note.system? || note.for_snippet?
+    return unless note.can_create_todo?
 
     project = note.project
     target  = note.noteable

@@ -14,25 +14,25 @@
           = link_to search_filter_path(scope: 'issues') do
             Issues
             %span.badge
-              = @search_results.issues_count
+              = limited_count(@search_results.limited_issues_count)
       - if project_search_tabs?(:merge_requests)
         %li{ class: active_when(@scope == 'merge_requests') }
           = link_to search_filter_path(scope: 'merge_requests') do
             Merge requests
             %span.badge
-              = @search_results.merge_requests_count
+              = limited_count(@search_results.limited_merge_requests_count)
       - if project_search_tabs?(:milestones)
         %li{ class: active_when(@scope == 'milestones') }
           = link_to search_filter_path(scope: 'milestones') do
             Milestones
             %span.badge
-              = @search_results.milestones_count
+              = limited_count(@search_results.limited_milestones_count)
       - if project_search_tabs?(:notes)
         %li{ class: active_when(@scope == 'notes') }
           = link_to search_filter_path(scope: 'notes') do
             Comments
             %span.badge
-              = @search_results.notes_count
+              = limited_count(@search_results.limited_notes_count)
       - if project_search_tabs?(:wiki)
         %li{ class: active_when(@scope == 'wiki_blobs') }
           = link_to search_filter_path(scope: 'wiki_blobs') do
@@ -57,25 +57,24 @@
           Titles and Filenames
           %span.badge
             = @search_results.snippet_titles_count
-
     - else
       %li{ class: active_when(@scope == 'projects') }
         = link_to search_filter_path(scope: 'projects') do
           Projects
           %span.badge
-            = @search_results.projects_count
+            = limited_count(@search_results.limited_projects_count)
       %li{ class: active_when(@scope == 'issues') }
         = link_to search_filter_path(scope: 'issues') do
           Issues
           %span.badge
-            = @search_results.issues_count
+            = limited_count(@search_results.limited_issues_count)
       %li{ class: active_when(@scope == 'merge_requests') }
         = link_to search_filter_path(scope: 'merge_requests') do
           Merge requests
           %span.badge
-            = @search_results.merge_requests_count
+            = limited_count(@search_results.limited_merge_requests_count)
       %li{ class: active_when(@scope == 'milestones') }
         = link_to search_filter_path(scope: 'milestones') do
           Milestones
           %span.badge
-            = @search_results.milestones_count
+            = limited_count(@search_results.limited_milestones_count)

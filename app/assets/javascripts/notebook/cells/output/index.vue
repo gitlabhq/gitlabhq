@@ -1,9 +1,14 @@
 <script>
 import CodeCell from '../code/index.vue';
-import Html from './html.vue';
-import Image from './image.vue';
+import HtmlOutput from './html.vue';
+import ImageOutput from './image.vue';
 
 export default {
+  components: {
+    CodeCell,
+    HtmlOutput,
+    ImageOutput,
+  },
   props: {
     codeCssClass: {
       type: String,
@@ -17,13 +22,8 @@ export default {
     },
     outputs: {
       type: Array,
-      requred: true,
+      required: true,
     },
-  },
-  components: {
-    'code-cell': CodeCell,
-    'html-output': Html,
-    'image-output': Image,
   },
   data() {
     return {
@@ -77,7 +77,7 @@ export default {
       v-for="(output, index) in outputs"
       :is="componentName(output)"
       type="output"
-      :outputType="outputType"
+      :output-type="outputType"
       :count="count"
       :index="index"
       :raw-code="rawCode(output)"

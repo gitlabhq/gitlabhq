@@ -81,7 +81,7 @@ module Ci
     end
 
     def related_merge_requests
-      MergeRequest.opened.where(source_project: pipeline.project, source_branch: pipeline.ref)
+      pipeline.project.source_of_merge_requests.opened.where(source_branch: pipeline.ref)
     end
   end
 end

@@ -2,6 +2,9 @@
 import Prompt from '../prompt.vue';
 
 export default {
+  components: {
+    Prompt,
+  },
   props: {
     count: {
       type: Number,
@@ -20,8 +23,10 @@ export default {
       required: true,
     },
   },
-  components: {
-    prompt: Prompt,
+  computed: {
+    imgSrc() {
+      return `data:${this.outputType};base64,${this.rawCode}`;
+    },
   },
 };
 </script>
@@ -34,6 +39,7 @@ export default {
       :show-output="index === 0"
     />
     <img
-      :src="'data:' + outputType + ';base64,' + rawCode" />
+      :src="imgSrc"
+    />
   </div>
 </template>

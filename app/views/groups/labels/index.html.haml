@@ -1,8 +1,10 @@
 - page_title 'Labels'
 
+- issuables = ['issues', 'merge requests']
+
 .top-area.adjust
   .nav-text
-    Labels can be applied to issues and merge requests. Group labels are available for any project within the group.
+    = _("Labels can be applied to %{features}. Group labels are available for any project within the group.") % { features: issuables.to_sentence }
 
   .nav-controls
     - if can?(current_user, :admin_label, @group)
@@ -16,4 +18,4 @@
         = paginate @labels, theme: 'gitlab'
     - else
       .nothing-here-block
-        No labels created yet.
+        = _("No labels created yet.")

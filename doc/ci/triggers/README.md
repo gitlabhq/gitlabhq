@@ -219,7 +219,7 @@ removed with one of the future versions of GitLab. You are advised to
 
 [ee-2017]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2017
 [ci-229]: https://gitlab.com/gitlab-org/gitlab-ci/merge_requests/229
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/
 [variables]: ../variables/README.md
 [predef]: ../variables/README.md#predefined-variables-environment-variables
 [registry]: ../../user/project/container_registry.md

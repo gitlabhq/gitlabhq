@@ -9,15 +9,15 @@
 
 - else
   .row-content-block.second-block.center
-    %h3.page-title
+    %h4
       This project does not have a README yet
+
     - if can?(current_user, :push_code, @project)
       %p
         A
         %code README
         file contains information about other files in a repository and is commonly
         distributed with computer software, forming part of its documentation.
+        GitLab will render it here instead of this message.
       %p
-        We recommend you to
-        = link_to "add a README", add_special_file_path(@project, file_name: 'README.md')
-        file to the repository and GitLab will render it here instead of this message.
+        = link_to "Add Readme", @project.add_readme_path, class: 'btn btn-new'

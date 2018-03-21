@@ -2,15 +2,13 @@ import Vue from 'vue';
 import mrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import notify from '~/lib/utils/notify';
+import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import mockData from './mock_data';
-import mountComponent from '../helpers/vue_mount_component_helper';
 
 const returnPromise = data => new Promise((resolve) => {
   resolve({
-    json() {
-      return data;
-    },
-    body: data,
+    data,
   });
 });
 
@@ -83,14 +81,46 @@ describe('mrWidgetOptions', () => {
       });
     });
 
-    describe('shouldRenderDeployments', () => {
-      it('should return false for the initial data', () => {
-        expect(vm.shouldRenderDeployments).toBeFalsy();
+    describe('shouldRenderSourceBranchRemovalStatus', () => {
+      beforeEach(() => {
+        vm.mr.state = 'readyToMerge';
       });
 
-      it('should return true if there is deployments', () => {
-        vm.mr.deployments.push({}, {});
-        expect(vm.shouldRenderDeployments).toBeTruthy();
+      it('should return true when cannot remove source branch and branch will be removed', () => {
+        vm.mr.canRemoveSourceBranch = false;
+        vm.mr.shouldRemoveSourceBranch = true;
+
+        expect(vm.shouldRenderSourceBranchRemovalStatus).toEqual(true);
+      });
+
+      it('should return false when can remove source branch and branch will be removed', () => {
+        vm.mr.canRemoveSourceBranch = true;
+        vm.mr.shouldRemoveSourceBranch = true;
+
+        expect(vm.shouldRenderSourceBranchRemovalStatus).toEqual(false);
+      });
+
+      it('should return false when cannot remove source branch and branch will not be removed', () => {
+        vm.mr.canRemoveSourceBranch = false;
+        vm.mr.shouldRemoveSourceBranch = false;
+
+        expect(vm.shouldRenderSourceBranchRemovalStatus).toEqual(false);
+      });
+
+      it('should return false when in merged state', () => {
+        vm.mr.canRemoveSourceBranch = false;
+        vm.mr.shouldRemoveSourceBranch = true;
+        vm.mr.state = 'merged';
+
+        expect(vm.shouldRenderSourceBranchRemovalStatus).toEqual(false);
+      });
+
+      it('should return false when in nothing to merge state', () => {
+        vm.mr.canRemoveSourceBranch = false;
+        vm.mr.shouldRemoveSourceBranch = true;
+        vm.mr.state = 'nothingToMerge';
+
+        expect(vm.shouldRenderSourceBranchRemovalStatus).toEqual(false);
       });
     });
   });
@@ -148,16 +178,16 @@ describe('mrWidgetOptions', () => {
 
     describe('fetchDeployments', () => {
       it('should fetch deployments', (done) => {
-        spyOn(vm.service, 'fetchDeployments').and.returnValue(returnPromise([{ deployment: 1 }]));
+        spyOn(vm.service, 'fetchDeployments').and.returnValue(returnPromise([{ id: 1 }]));
 
         vm.fetchDeployments();
 
         setTimeout(() => {
           expect(vm.service.fetchDeployments).toHaveBeenCalled();
           expect(vm.mr.deployments.length).toEqual(1);
-          expect(vm.mr.deployments[0].deployment).toEqual(1);
+          expect(vm.mr.deployments[0].id).toBe(1);
           done();
-        }, 333);
+        });
       });
     });
 
@@ -297,6 +327,15 @@ describe('mrWidgetOptions', () => {
 
         expect(notify.notifyMe).not.toHaveBeenCalled();
       });
+
+      it('should not notify if no pipeline provided', () => {
+        vm.handleNotification({
+          ...data,
+          pipeline: undefined,
+        });
+
+        expect(notify.notifyMe).not.toHaveBeenCalled();
+      });
     });
 
     describe('resumePolling', () => {
@@ -318,30 +357,92 @@ describe('mrWidgetOptions', () => {
     });
   });
 
-  describe('components', () => {
-    it('should register all components', () => {
-      const comps = mrWidgetOptions.components;
-      expect(comps['mr-widget-header']).toBeDefined();
-      expect(comps['mr-widget-merge-help']).toBeDefined();
-      expect(comps['mr-widget-pipeline']).toBeDefined();
-      expect(comps['mr-widget-deployment']).toBeDefined();
-      expect(comps['mr-widget-related-links']).toBeDefined();
-      expect(comps['mr-widget-merged']).toBeDefined();
-      expect(comps['mr-widget-closed']).toBeDefined();
-      expect(comps['mr-widget-merging']).toBeDefined();
-      expect(comps['mr-widget-failed-to-merge']).toBeDefined();
-      expect(comps['mr-widget-wip']).toBeDefined();
-      expect(comps['mr-widget-archived']).toBeDefined();
-      expect(comps['mr-widget-conflicts']).toBeDefined();
-      expect(comps['mr-widget-nothing-to-merge']).toBeDefined();
-      expect(comps['mr-widget-not-allowed']).toBeDefined();
-      expect(comps['mr-widget-missing-branch']).toBeDefined();
-      expect(comps['mr-widget-ready-to-merge']).toBeDefined();
-      expect(comps['mr-widget-checking']).toBeDefined();
-      expect(comps['mr-widget-unresolved-discussions']).toBeDefined();
-      expect(comps['mr-widget-pipeline-blocked']).toBeDefined();
-      expect(comps['mr-widget-pipeline-failed']).toBeDefined();
-      expect(comps['mr-widget-merge-when-pipeline-succeeds']).toBeDefined();
+  describe('rendering relatedLinks', () => {
+    beforeEach((done) => {
+      vm.mr.relatedLinks = {
+        assignToMe: null,
+        closing: `
+          <a class="close-related-link" href="#'>
+            Close
+          </a>
+        `,
+        mentioned: '',
+      };
+      Vue.nextTick(done);
+    });
+
+    it('renders if there are relatedLinks', () => {
+      expect(vm.$el.querySelector('.close-related-link')).toBeDefined();
+    });
+
+    it('does not render if state is nothingToMerge', (done) => {
+      vm.mr.state = stateKey.nothingToMerge;
+      Vue.nextTick(() => {
+        expect(vm.$el.querySelector('.close-related-link')).toBeNull();
+        done();
+      });
+    });
+  });
+
+  describe('rendering source branch removal status', () => {
+    it('renders when user cannot remove branch and branch should be removed', (done) => {
+      vm.mr.canRemoveSourceBranch = false;
+      vm.mr.shouldRemoveSourceBranch = true;
+      vm.mr.state = 'readyToMerge';
+
+      vm.$nextTick(() => {
+        const tooltip = vm.$el.querySelector('.fa-question-circle');
+
+        expect(vm.$el.textContent).toContain('Removes source branch');
+        expect(tooltip.getAttribute('data-original-title')).toBe(
+          'A user with write access to the source branch selected this option',
+        );
+
+        done();
+      });
+    });
+
+    it('does not render in merged state', (done) => {
+      vm.mr.canRemoveSourceBranch = false;
+      vm.mr.shouldRemoveSourceBranch = true;
+      vm.mr.state = 'merged';
+
+      vm.$nextTick(() => {
+        expect(vm.$el.textContent).toContain('The source branch has been removed');
+        expect(vm.$el.textContent).not.toContain('Removes source branch');
+
+        done();
+      });
+    });
+  });
+
+  describe('rendering deployments', () => {
+    const deploymentMockData = {
+      id: 15,
+      name: 'review/diplo',
+      url: '/root/acets-review-apps/environments/15',
+      stop_url: '/root/acets-review-apps/environments/15/stop',
+      metrics_url: '/root/acets-review-apps/environments/15/deployments/1/metrics',
+      metrics_monitoring_url: '/root/acets-review-apps/environments/15/metrics',
+      external_url: 'http://diplo.',
+      external_url_formatted: 'diplo.',
+      deployed_at: '2017-03-22T22:44:42.258Z',
+      deployed_at_formatted: 'Mar 22, 2017 10:44pm',
+    };
+
+    beforeEach((done) => {
+      vm.mr.deployments.push({
+        ...deploymentMockData,
+      }, {
+        ...deploymentMockData,
+        id: deploymentMockData.id + 1,
+      });
+
+      vm.$nextTick(done);
+    });
+
+    it('renders multiple deployments', () => {
+      expect(vm.$el.querySelectorAll('.deploy-heading').length).toBe(2);
     });
   });
 });

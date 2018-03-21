@@ -10,7 +10,7 @@ describe('Import Gitlab project', () => {
       <input class="js-path-name" />
     `);
 
-    projectImportGitlab.bindEvents();
+    projectImportGitlab();
   });
 
   afterEach(() => {

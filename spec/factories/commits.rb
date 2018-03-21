@@ -23,7 +23,7 @@ FactoryBot.define do
     end
 
     after(:build) do |commit, evaluator|
-      allow(commit).to receive(:author).and_return(evaluator.author || build(:author))
+      allow(commit).to receive(:author).and_return(evaluator.author || build_stubbed(:author))
     end
 
     trait :without_author do

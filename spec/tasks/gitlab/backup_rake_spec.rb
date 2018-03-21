@@ -165,7 +165,7 @@ describe 'gitlab:app namespace rake task' do
         expect(tar_contents).to match('pages.tar.gz')
         expect(tar_contents).to match('lfs.tar.gz')
         expect(tar_contents).to match('registry.tar.gz')
-        expect(tar_contents).not_to match(/^.{4,9}[rwx].* (database.sql.gz|uploads.tar.gz|repositories|builds.tar.gz|pages.tar.gz|artifacts.tar.gz|registry.tar.gz)\/$/)
+        expect(tar_contents).not_to match(%r{^.{4,9}[rwx].* (database.sql.gz|uploads.tar.gz|repositories|builds.tar.gz|pages.tar.gz|artifacts.tar.gz|registry.tar.gz)/$})
       end
 
       it 'deletes temp directories' do

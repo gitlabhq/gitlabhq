@@ -62,12 +62,12 @@ describe Member do
       @owner_user = create(:user).tap { |u| group.add_owner(u) }
       @owner = group.members.find_by(user_id: @owner_user.id)
 
-      @master_user = create(:user).tap { |u| project.team << [u, :master] }
+      @master_user = create(:user).tap { |u| project.add_master(u) }
       @master = project.members.find_by(user_id: @master_user.id)
 
       @blocked_user = create(:user).tap do |u|
-        project.team << [u, :master]
-        project.team << [u, :developer]
+        project.add_master(u)
+        project.add_developer(u)
 
         u.block!
       end
@@ -488,7 +488,7 @@ describe Member do
       member.accept_invite!(user)
     end
 
-    it "refreshes user's authorized projects", :truncate do
+    it "refreshes user's authorized projects", :delete do
       project = member.source
 
       expect(user.authorized_projects).not_to include(project)
@@ -523,11 +523,11 @@ describe Member do
     end
   end
 
-  describe "destroying a record", :truncate do
+  describe "destroying a record", :delete do
     it "refreshes user's authorized projects" do
       project = create(:project, :private)
       user    = create(:user)
-      member  = project.team << [user, :reporter]
+      member  = project.add_reporter(user)
 
       member.destroy
 

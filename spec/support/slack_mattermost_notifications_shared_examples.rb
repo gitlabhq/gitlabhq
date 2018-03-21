@@ -57,6 +57,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
       @issue = issue_service.execute
       @issues_sample_data = issue_service.hook_data(@issue, 'open')
 
+      project.add_developer(user)
       opts = {
         title: 'Awesome merge_request',
         description: 'please fix',
@@ -336,6 +337,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
 
         before do
           chat_service.notify_only_default_branch = true
+          WebMock.stub_request(:post, webhook_url)
         end
 
         it 'does not call the Slack/Mattermost API for pipeline events' do
@@ -343,6 +345,23 @@ RSpec.shared_examples 'slack or mattermost notifications' do
           result = chat_service.execute(data)
 
           expect(result).to be_falsy
+        end
+
+        it 'does not notify push events if they are not for the default branch' do
+          ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}test"
+          push_sample_data = Gitlab::DataBuilder::Push.build(project, user, nil, nil, ref, [])
+
+          chat_service.execute(push_sample_data)
+
+          expect(WebMock).not_to have_requested(:post, webhook_url)
+        end
+
+        it 'notifies about push events for the default branch' do
+          push_sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
+
+          chat_service.execute(push_sample_data)
+
+          expect(WebMock).to have_requested(:post, webhook_url).once
         end
       end
 

@@ -11,7 +11,7 @@ describe API::Pipelines do
   end
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   describe 'GET /projects/:id/pipelines ' do
@@ -424,7 +424,7 @@ describe API::Pipelines do
       let!(:reporter) { create(:user) }
 
       before do
-        project.team << [reporter, :reporter]
+        project.add_reporter(reporter)
       end
 
       it 'rejects the action' do

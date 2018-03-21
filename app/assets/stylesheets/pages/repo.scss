@@ -16,15 +16,10 @@
   display: inline-block;
 }
 
-@media (min-width: $screen-md-min) {
-  .blob-viewer[data-type="rich"] {
-    margin: 20px;
-  }
-}
-
-.multi-file {
+.ide-view {
   display: flex;
-  height: calc(100vh - 145px);
+  height: calc(100vh - #{$header-height});
+  color: $almost-black;
   border-top: 1px solid $white-dark;
   border-bottom: 1px solid $white-dark;
 
@@ -37,10 +32,41 @@
 
 .ide-file-list {
   flex: 1;
-  overflow: scroll;
 
   .file {
     cursor: pointer;
+
+    &.file-open {
+      background: $white-normal;
+    }
+
+    .repo-file-name {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .unsaved-icon {
+      color: $indigo-700;
+      float: right;
+      font-size: smaller;
+      line-height: 20px;
+    }
+
+    .repo-new-btn {
+      display: none;
+      margin-top: -4px;
+      margin-bottom: -4px;
+    }
+
+    &:hover {
+      .repo-new-btn {
+        display: block;
+      }
+
+      .unsaved-icon {
+        display: none;
+      }
+    }
   }
 
   a {
@@ -55,17 +81,41 @@
 
 .multi-file-table-name,
 .multi-file-table-col-commit-message {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow: visible;
   max-width: 0;
+  padding: 6px 12px;
 }
 
-.multi-file-table-name {
+.multi-file-loading-container {
+  margin-top: 10px;
+  padding: 10px;
+
+  .animation-container {
+    background: $gray-light;
+
+    div {
+      background: $gray-light;
+    }
+  }
+}
+
+table.table tr td.multi-file-table-name {
   width: 350px;
+  padding: 6px 12px;
+
+  svg {
+    vertical-align: middle;
+    margin-right: 2px;
+  }
+
+  .loading-container {
+    margin-right: 4px;
+    display: inline-block;
+  }
 }
 
 .multi-file-table-col-commit-message {
+  white-space: nowrap;
   width: 50%;
 }
 
@@ -79,7 +129,7 @@
 
 .multi-file-tabs {
   display: flex;
-  overflow: scroll;
+  overflow-x: auto;
   background-color: $white-normal;
   box-shadow: inset 0 -1px $white-dark;
 
@@ -95,6 +145,10 @@
   border-right: 1px solid $white-dark;
   border-bottom: 1px solid $white-dark;
   cursor: pointer;
+
+  svg {
+    vertical-align: middle;
+  }
 
   &.active {
     background-color: $white-light;
@@ -128,19 +182,44 @@
   height: 0;
 }
 
+.blob-editor-container {
+  flex: 1;
+  height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .vertical-center {
+    min-height: auto;
+  }
+}
+
+.multi-file-editor-holder {
+  height: 100%;
+}
+
 .multi-file-editor-btn-group {
-  padding: $grid-size;
+  padding: $gl-bar-padding $gl-padding;
   border-top: 1px solid $white-dark;
+  border-bottom: 1px solid $white-dark;
+  background: $white-light;
+}
+
+.ide-status-bar {
+  padding: $gl-bar-padding $gl-padding;
+  background: $white-light;
+  display: flex;
+  justify-content: space-between;
+
+  svg {
+    vertical-align: middle;
+  }
 }
 
 // Not great, but this is to deal with our current output
 .multi-file-preview-holder {
   height: 100%;
   overflow: scroll;
-
-  .blob-viewer {
-    height: 100%;
-  }
 
   .file-content.code {
     display: flex;
@@ -162,18 +241,106 @@
   }
 }
 
+.file-content.blob-no-preview {
+  a {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 .multi-file-commit-panel {
   display: flex;
+  position: relative;
   flex-direction: column;
-  height: 100%;
   width: 290px;
-  padding: $gl-padding;
+  padding: 0;
   background-color: $gray-light;
-  border-left: 1px solid $white-dark;
+  padding-right: 3px;
+
+  .projects-sidebar {
+    display: flex;
+    flex-direction: column;
+
+    .context-header {
+      width: auto;
+      margin-right: 0;
+    }
+  }
+
+  .multi-file-commit-panel-inner {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .multi-file-commit-panel-inner-scroll {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    overflow: auto;
+  }
 
   &.is-collapsed {
     width: 60px;
-    padding: 0;
+
+    .multi-file-commit-list {
+      padding-top: $gl-padding;
+      overflow: hidden;
+    }
+
+    .multi-file-context-bar-icon {
+      align-items: center;
+
+      svg {
+        float: none;
+        margin: 0;
+      }
+    }
+  }
+
+  .branch-container {
+    border-left: 4px solid $indigo-700;
+    margin-bottom: $gl-bar-padding;
+  }
+
+  .branch-header {
+    background: $white-dark;
+    display: flex;
+  }
+
+  .branch-header-title {
+    flex: 1;
+    padding: $grid-size $gl-padding;
+    color: $indigo-700;
+    font-weight: $gl-font-weight-bold;
+
+    svg {
+      vertical-align: middle;
+    }
+  }
+
+  .branch-header-btns {
+    padding: $gl-vert-padding $gl-padding;
+  }
+
+  .left-collapse-btn {
+    display: none;
+    background: $gray-light;
+    text-align: left;
+    border-top: 1px solid $white-dark;
+
+    svg {
+      vertical-align: middle;
+    }
+  }
+}
+
+.multi-file-context-bar-icon {
+  padding: 10px;
+
+  svg {
+    margin-right: 10px;
+    float: left;
   }
 }
 
@@ -186,9 +353,9 @@
 .multi-file-commit-panel-header {
   display: flex;
   align-items: center;
-  padding: 0 0 12px;
   margin-bottom: 12px;
   border-bottom: 1px solid $white-dark;
+  padding: $gl-btn-padding 0;
 
   &.is-collapsed {
     border-bottom: 1px solid $white-dark;
@@ -197,23 +364,33 @@
       margin-left: auto;
       margin-right: auto;
     }
+
+    .multi-file-commit-panel-collapse-btn {
+      margin-right: auto;
+      margin-left: auto;
+      border-left: 0;
+    }
+  }
+}
+
+.multi-file-commit-panel-header-title {
+  display: flex;
+  flex: 1;
+  padding: $gl-btn-padding;
+
+  svg {
+    margin-right: $gl-btn-padding;
   }
 }
 
 .multi-file-commit-panel-collapse-btn {
-  padding-top: 0;
-  padding-bottom: 0;
-  margin-left: auto;
-  font-size: 20px;
-
-  &.is-collapsed {
-    margin-right: auto;
-  }
+  border-left: 1px solid $white-dark;
 }
 
 .multi-file-commit-list {
   flex: 1;
-  overflow: scroll;
+  overflow: auto;
+  padding: $gl-padding;
 }
 
 .multi-file-commit-list-item {
@@ -244,7 +421,7 @@
 }
 
 .multi-file-commit-form {
-  padding-top: 12px;
+  padding: $gl-padding;
   border-top: 1px solid $white-dark;
 }
 
@@ -293,5 +470,120 @@
       height: 1px;
       background-color: rgba($red-500, .5);
     }
+  }
+}
+
+.ide-loading {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+
+.ide-empty-state {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+
+.repo-new-btn {
+  .dropdown-toggle svg {
+    margin-top: -2px;
+    margin-bottom: 2px;
+  }
+
+  .dropdown-menu {
+    left: auto;
+    right: 0;
+
+    label {
+      font-weight: $gl-font-weight-normal;
+      padding: 5px 8px;
+      margin-bottom: 0;
+    }
+  }
+}
+
+.ide.nav-only {
+  .flash-container {
+    margin-top: $header-height;
+    margin-bottom: 0;
+  }
+
+  .alert-wrapper .flash-container .flash-alert:last-child,
+  .alert-wrapper .flash-container .flash-notice:last-child {
+    margin-bottom: 0;
+  }
+
+  .content {
+    margin-top: $header-height;
+  }
+
+  .multi-file-commit-panel .multi-file-commit-panel-inner-scroll {
+    max-height: calc(100vh - #{$header-height + $context-header-height});
+  }
+
+  &.flash-shown {
+    .content {
+      margin-top: 0;
+    }
+
+    .ide-view {
+      height: calc(100vh - #{$header-height + $flash-height});
+    }
+
+    .multi-file-commit-panel .multi-file-commit-panel-inner-scroll {
+      max-height: calc(100vh - #{$header-height + $flash-height + $context-header-height});
+    }
+  }
+}
+
+.with-performance-bar .ide.nav-only {
+  .flash-container {
+    margin-top: #{$header-height + $performance-bar-height};
+  }
+
+  .content {
+    margin-top: #{$header-height + $performance-bar-height};
+  }
+
+  .ide-view {
+    height: calc(100vh - #{$header-height + $performance-bar-height});
+  }
+
+  .multi-file-commit-panel .multi-file-commit-panel-inner-scroll {
+    max-height: calc(100vh - #{$header-height + $performance-bar-height + 60});
+  }
+
+  &.flash-shown {
+    .content {
+      margin-top: 0;
+    }
+
+    .ide-view {
+      height: calc(100vh - #{$header-height + $performance-bar-height + $flash-height});
+    }
+
+    .multi-file-commit-panel .multi-file-commit-panel-inner-scroll {
+      max-height: calc(100vh - #{$header-height + $performance-bar-height + $flash-height + $context-header-height});
+    }
+  }
+}
+
+
+.dragHandle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: $white-dark;
+
+  &.dragright {
+    right: 0;
+  }
+
+  &.dragleft {
+    left: 0;
   }
 }

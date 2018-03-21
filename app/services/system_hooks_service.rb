@@ -8,9 +8,11 @@ class SystemHooksService
   end
 
   def execute_hooks(data, hooks_scope = :all)
-    SystemHook.public_send(hooks_scope).find_each do |hook| # rubocop:disable GitlabSecurity/PublicSend
+    SystemHook.hooks_for(hooks_scope).find_each do |hook|
       hook.async_execute(data, 'system_hooks')
     end
+
+    Gitlab::Plugin.execute_all_async(data)
   end
 
   private
@@ -18,8 +20,8 @@ class SystemHooksService
   def build_event_data(model, event)
     data = {
       event_name: build_event_name(model, event),
-      created_at: model.created_at.xmlschema,
-      updated_at: model.updated_at.xmlschema
+      created_at: model.created_at&.xmlschema,
+      updated_at: model.updated_at&.xmlschema
     }
 
     case model
@@ -41,8 +43,11 @@ class SystemHooksService
     when User
       data.merge!(user_data(model))
 
-      if event == :rename
+      case event
+      when :rename
         data[:old_username] = model.username_was
+      when :failed_login
+        data[:state] = model.state
       end
     when ProjectMember
       data.merge!(project_member_data(model))

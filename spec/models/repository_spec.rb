@@ -36,26 +36,49 @@ describe Repository do
   end
 
   describe '#branch_names_contains' do
-    subject { repository.branch_names_contains(sample_commit.id) }
+    shared_examples '#branch_names_contains' do
+      set(:project) { create(:project, :repository) }
+      let(:repository) { project.repository }
 
-    it { is_expected.to include('master') }
-    it { is_expected.not_to include('feature') }
-    it { is_expected.not_to include('fix') }
+      subject { repository.branch_names_contains(sample_commit.id) }
 
-    describe 'when storage is broken', :broken_storage  do
-      it 'should raise a storage error' do
-        expect_to_raise_storage_error do
-          broken_repository.branch_names_contains(sample_commit.id)
+      it { is_expected.to include('master') }
+      it { is_expected.not_to include('feature') }
+      it { is_expected.not_to include('fix') }
+
+      describe 'when storage is broken', :broken_storage  do
+        it 'should raise a storage error' do
+          expect_to_raise_storage_error do
+            broken_repository.branch_names_contains(sample_commit.id)
+          end
         end
       end
+    end
+
+    context 'when gitaly is enabled' do
+      it_behaves_like '#branch_names_contains'
+    end
+
+    context 'when gitaly is disabled', :skip_gitaly_mock do
+      it_behaves_like '#branch_names_contains'
     end
   end
 
   describe '#tag_names_contains' do
-    subject { repository.tag_names_contains(sample_commit.id) }
+    shared_examples '#tag_names_contains' do
+      subject { repository.tag_names_contains(sample_commit.id) }
 
-    it { is_expected.to include('v1.1.0') }
-    it { is_expected.not_to include('v1.0.0') }
+      it { is_expected.to include('v1.1.0') }
+      it { is_expected.not_to include('v1.0.0') }
+    end
+
+    context 'when gitaly is enabled' do
+      it_behaves_like '#tag_names_contains'
+    end
+
+    context 'when gitaly is enabled', :skip_gitaly_mock do
+      it_behaves_like '#tag_names_contains'
+    end
   end
 
   describe 'tags_sorted_by' do
@@ -219,23 +242,121 @@ describe Repository do
   end
 
   describe '#commits' do
-    it 'sets follow when path is a single path' do
-      expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: true)).and_call_original.twice
-
-      repository.commits('master', path: 'README.md')
-      repository.commits('master', path: ['README.md'])
+    context 'when neither the all flag nor a ref are specified' do
+      it 'returns every commit from default branch' do
+        expect(repository.commits(limit: 60).size).to eq(37)
+      end
     end
 
-    it 'does not set follow when path is multiple paths' do
-      expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
+    context 'when ref is passed' do
+      it 'returns every commit from the specified ref' do
+        expect(repository.commits('master', limit: 60).size).to eq(37)
+      end
 
-      repository.commits('master', path: ['README.md', 'CHANGELOG'])
+      context 'when all' do
+        it 'returns every commit from the repository' do
+          expect(repository.commits('master', limit: 60, all: true).size).to eq(60)
+        end
+      end
+
+      context 'with path' do
+        it 'sets follow when it is a single path' do
+          expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: true)).and_call_original.twice
+
+          repository.commits('master', limit: 1, path: 'README.md')
+          repository.commits('master', limit: 1, path: ['README.md'])
+        end
+
+        it 'does not set follow when it is multiple paths' do
+          expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
+
+          repository.commits('master', limit: 1, path: ['README.md', 'CHANGELOG'])
+        end
+      end
+
+      context 'without path' do
+        it 'does not set follow' do
+          expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
+
+          repository.commits('master', limit: 1)
+        end
+      end
     end
 
-    it 'does not set follow when there are no paths' do
-      expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
+    context "when 'all' flag is set" do
+      it 'returns every commit from the repository' do
+        expect(repository.commits(all: true, limit: 60).size).to eq(60)
+      end
+    end
+  end
 
-      repository.commits('master')
+  describe '#new_commits' do
+    let(:new_refs) do
+      double(:git_rev_list, new_refs: %w[
+        c1acaa58bbcbc3eafe538cb8274ba387047b69f8
+        5937ac0a7beb003549fc5fd26fc247adbce4a52e
+      ])
+    end
+
+    it 'delegates to Gitlab::Git::RevList' do
+      expect(Gitlab::Git::RevList).to receive(:new).with(
+        repository.raw,
+        newrev: 'aaaabbbbccccddddeeeeffffgggghhhhiiiijjjj').and_return(new_refs)
+
+      commits = repository.new_commits('aaaabbbbccccddddeeeeffffgggghhhhiiiijjjj')
+
+      expect(commits).to eq([
+        repository.commit('c1acaa58bbcbc3eafe538cb8274ba387047b69f8'),
+        repository.commit('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
+      ])
+    end
+  end
+
+  describe '#commits_by' do
+    set(:project) { create(:project, :repository) }
+
+    shared_examples 'batch commits fetching' do
+      let(:oids) { TestEnv::BRANCH_SHA.values }
+
+      subject { project.repository.commits_by(oids: oids) }
+
+      it 'finds each commit' do
+        expect(subject).not_to include(nil)
+        expect(subject.size).to eq(oids.size)
+      end
+
+      it 'returns only Commit instances' do
+        expect(subject).to all( be_a(Commit) )
+      end
+
+      context 'when some commits are not found ' do
+        let(:oids) do
+          ['deadbeef'] + TestEnv::BRANCH_SHA.values.first(10)
+        end
+
+        it 'returns only found commits' do
+          expect(subject).not_to include(nil)
+          expect(subject.size).to eq(10)
+        end
+      end
+
+      context 'when no oids are passed' do
+        let(:oids) { [] }
+
+        it 'does not call #batch_by_oid' do
+          expect(Gitlab::Git::Commit).not_to receive(:batch_by_oid)
+
+          subject
+        end
+      end
+    end
+
+    context 'when Gitaly list_commits_by_oid is enabled' do
+      it_behaves_like 'batch commits fetching'
+    end
+
+    context 'when Gitaly list_commits_by_oid is enabled', :disable_gitaly do
+      it_behaves_like 'batch commits fetching'
     end
   end
 
@@ -310,28 +431,44 @@ describe Repository do
   end
 
   describe '#can_be_merged?' do
-    context 'mergeable branches' do
-      subject { repository.can_be_merged?('0b4bc9a49b562e85de7cc9e834518ea6828729b9', 'master') }
+    shared_examples 'can be merged' do
+      context 'mergeable branches' do
+        subject { repository.can_be_merged?('0b4bc9a49b562e85de7cc9e834518ea6828729b9', 'master') }
 
-      it { is_expected.to be_truthy }
+        it { is_expected.to be_truthy }
+      end
+
+      context 'non-mergeable branches without conflict sides missing' do
+        subject { repository.can_be_merged?('bb5206fee213d983da88c47f9cf4cc6caf9c66dc', 'feature') }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'non-mergeable branches with conflict sides missing' do
+        subject { repository.can_be_merged?('conflict-missing-side', 'conflict-start') }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'non merged branch' do
+        subject { repository.merged_to_root_ref?('fix') }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'non existent branch' do
+        subject { repository.merged_to_root_ref?('non_existent_branch') }
+
+        it { is_expected.to be_nil }
+      end
     end
 
-    context 'non-mergeable branches' do
-      subject { repository.can_be_merged?('bb5206fee213d983da88c47f9cf4cc6caf9c66dc', 'feature') }
-
-      it { is_expected.to be_falsey }
+    context 'when Gitaly can_be_merged feature is enabled' do
+      it_behaves_like 'can be merged'
     end
 
-    context 'non merged branch' do
-      subject { repository.merged_to_root_ref?('fix') }
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'non existent branch' do
-      subject { repository.merged_to_root_ref?('non_existent_branch') }
-
-      it { is_expected.to be_nil }
+    context 'when Gitaly can_be_merged feature is disabled', :disable_gitaly do
+      it_behaves_like 'can be merged'
     end
   end
 
@@ -364,12 +501,34 @@ describe Repository do
     end
   end
 
+  describe '#create_hooks' do
+    let(:hook_path) { File.join(repository.path_to_repo, 'hooks') }
+
+    it 'symlinks the global hooks directory' do
+      repository.create_hooks
+
+      expect(File.symlink?(hook_path)).to be true
+      expect(File.readlink(hook_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
+    end
+
+    it 'replaces existing symlink with the right directory' do
+      FileUtils.mkdir_p(hook_path)
+
+      expect(File.symlink?(hook_path)).to be false
+
+      repository.create_hooks
+
+      expect(File.symlink?(hook_path)).to be true
+      expect(File.readlink(hook_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
+    end
+  end
+
   describe "#create_dir" do
     it "commits a change that creates a new directory" do
       expect do
         repository.create_dir(user, 'newdir',
           message: 'Create newdir', branch_name: 'master')
-      end.to change { repository.commits('master').count }.by(1)
+      end.to change { repository.count_commits(ref: 'master') }.by(1)
 
       newdir = repository.tree('master', 'newdir')
       expect(newdir.path).to eq('newdir')
@@ -383,7 +542,7 @@ describe Repository do
           repository.create_dir(user, 'newdir',
             message: 'Create newdir', branch_name: 'patch',
             start_branch_name: 'master', start_project: forked_project)
-        end.to change { repository.commits('master').count }.by(0)
+        end.to change { repository.count_commits(ref: 'master') }.by(0)
 
         expect(repository.branch_exists?('patch')).to be_truthy
         expect(forked_project.repository.branch_exists?('patch')).to be_falsy
@@ -400,7 +559,7 @@ describe Repository do
             message: 'Add newdir',
             branch_name: 'master',
             author_email: author_email, author_name: author_name)
-        end.to change { repository.commits('master').count }.by(1)
+        end.to change { repository.count_commits(ref: 'master') }.by(1)
 
         last_commit = repository.commit
 
@@ -416,7 +575,7 @@ describe Repository do
         repository.create_file(user, 'NEWCHANGELOG', 'Changelog!',
                                message: 'Create changelog',
                                branch_name: 'master')
-      end.to change { repository.commits('master').count }.by(1)
+      end.to change { repository.count_commits(ref: 'master') }.by(1)
 
       blob = repository.blob_at('master', 'NEWCHANGELOG')
 
@@ -428,7 +587,7 @@ describe Repository do
         repository.create_file(user, 'new_dir/new_file.txt', 'File!',
                                message: 'Create new_file with new_dir',
                                branch_name: 'master')
-      end.to change { repository.commits('master').count }.by(1)
+      end.to change { repository.count_commits(ref: 'master') }.by(1)
 
       expect(repository.tree('master', 'new_dir').path).to eq('new_dir')
       expect(repository.blob_at('master', 'new_dir/new_file.txt').data).to eq('File!')
@@ -452,7 +611,7 @@ describe Repository do
                                  branch_name: 'master',
                                  author_email: author_email,
                                  author_name: author_name)
-        end.to change { repository.commits('master').count }.by(1)
+        end.to change { repository.count_commits(ref: 'master') }.by(1)
 
         last_commit = repository.commit
 
@@ -468,7 +627,7 @@ describe Repository do
         repository.update_file(user, 'CHANGELOG', 'Changelog!',
                                message: 'Update changelog',
                                branch_name: 'master')
-      end.to change { repository.commits('master').count }.by(1)
+      end.to change { repository.count_commits(ref: 'master') }.by(1)
 
       blob = repository.blob_at('master', 'CHANGELOG')
 
@@ -481,7 +640,7 @@ describe Repository do
                                      branch_name: 'master',
                                      previous_path: 'LICENSE',
                                      message: 'Changes filename')
-      end.to change { repository.commits('master').count }.by(1)
+      end.to change { repository.count_commits(ref: 'master') }.by(1)
 
       files = repository.ls_files('master')
 
@@ -498,7 +657,7 @@ describe Repository do
                                  message: 'Update README',
                                  author_email: author_email,
                                  author_name: author_name)
-        end.to change { repository.commits('master').count }.by(1)
+        end.to change { repository.count_commits(ref: 'master') }.by(1)
 
         last_commit = repository.commit
 
@@ -513,7 +672,7 @@ describe Repository do
       expect do
         repository.delete_file(user, 'README',
           message: 'Remove README', branch_name: 'master')
-      end.to change { repository.commits('master').count }.by(1)
+      end.to change { repository.count_commits(ref: 'master') }.by(1)
 
       expect(repository.blob_at('master', 'README')).to be_nil
     end
@@ -524,44 +683,12 @@ describe Repository do
           repository.delete_file(user, 'README',
             message: 'Remove README', branch_name: 'master',
             author_email: author_email, author_name: author_name)
-        end.to change { repository.commits('master').count }.by(1)
+        end.to change { repository.count_commits(ref: 'master') }.by(1)
 
         last_commit = repository.commit
 
         expect(last_commit.author_email).to eq(author_email)
         expect(last_commit.author_name).to eq(author_name)
-      end
-    end
-  end
-
-  describe '#get_committer_and_author' do
-    it 'returns the committer and author data' do
-      options = repository.get_committer_and_author(user)
-      expect(options[:committer][:email]).to eq(user.email)
-      expect(options[:author][:email]).to eq(user.email)
-    end
-
-    context 'when the email/name are given' do
-      it 'returns an object containing the email/name' do
-        options = repository.get_committer_and_author(user, email: author_email, name: author_name)
-        expect(options[:author][:email]).to eq(author_email)
-        expect(options[:author][:name]).to eq(author_name)
-      end
-    end
-
-    context 'when the email is given but the name is not' do
-      it 'returns the committer as the author' do
-        options = repository.get_committer_and_author(user, email: author_email)
-        expect(options[:author][:email]).to eq(user.email)
-        expect(options[:author][:name]).to eq(user.name)
-      end
-    end
-
-    context 'when the name is given but the email is not' do
-      it 'returns nil' do
-        options = repository.get_committer_and_author(user, name: author_name)
-        expect(options[:author][:email]).to eq(user.email)
-        expect(options[:author][:name]).to eq(user.name)
       end
     end
   end
@@ -609,7 +736,7 @@ describe Repository do
       subject { results.first }
 
       it { is_expected.to be_an String }
-      it { expect(subject.lines[2]).to eq("master:CHANGELOG:190:  - Feature: Replace teams with group membership\n") }
+      it { expect(subject.lines[2]).to eq("master:CHANGELOG\x00190\x00  - Feature: Replace teams with group membership\n") }
     end
   end
 
@@ -618,6 +745,18 @@ describe Repository do
 
     it 'returns result' do
       expect(results.first).to eq('files/html/500.html')
+    end
+
+    it 'ignores leading slashes' do
+      results = repository.search_files_by_name('/files', 'master')
+
+      expect(results.first).to eq('files/html/500.html')
+    end
+
+    it 'properly handles when query is only slashes' do
+      results = repository.search_files_by_name('//', 'master')
+
+      expect(results).to match_array([])
     end
 
     it 'properly handles when query is not present' do
@@ -706,8 +845,7 @@ describe Repository do
         user, 'LICENSE', 'Copyright!',
         message: 'Add LICENSE', branch_name: 'master')
 
-      allow(repository).to receive(:file_on_head)
-        .and_raise(Rugged::ReferenceError)
+      allow(repository).to receive(:root_ref).and_raise(Gitlab::Git::Repository::NoRepository)
 
       expect(repository.license_blob).to be_nil
     end
@@ -759,6 +897,18 @@ describe Repository do
     it 'returns nil when the content is not recognizable' do
       repository.create_file(user, 'LICENSE', 'Copyright!',
         message: 'Add LICENSE', branch_name: 'master')
+
+      expect(repository.license_key).to be_nil
+    end
+
+    it 'returns nil when the commit SHA does not exist' do
+      allow(repository.head_commit).to receive(:sha).and_return('1' * 40)
+
+      expect(repository.license_key).to be_nil
+    end
+
+    it 'returns nil when master does not exist' do
+      repository.rm_branch(user, 'master')
 
       expect(repository.license_key).to be_nil
     end
@@ -819,7 +969,7 @@ describe Repository do
     end
 
     it 'returns nil for empty repository' do
-      allow(repository).to receive(:file_on_head).and_raise(Rugged::ReferenceError)
+      allow(repository).to receive(:root_ref).and_raise(Gitlab::Git::Repository::NoRepository)
       expect(repository.gitlab_ci_yml).to be_nil
     end
   end
@@ -854,7 +1004,7 @@ describe Repository do
       end
     end
 
-    context 'with Gitaly disabled', :skip_gitaly_mock do
+    context 'with Gitaly disabled', :disable_gitaly do
       context 'when pre hooks were successful' do
         it 'runs without errors' do
           hook = double(trigger: [true, nil])
@@ -894,19 +1044,19 @@ describe Repository do
   end
 
   describe '#find_branch' do
-    it 'loads a branch with a fresh repo' do
-      expect(Gitlab::Git::Repository).to receive(:new).twice.and_call_original
+    context 'fresh_repo is true' do
+      it 'delegates the call to raw_repository' do
+        expect(repository.raw_repository).to receive(:find_branch).with('master', true)
 
-      2.times do
-        expect(repository.find_branch('feature')).not_to be_nil
+        repository.find_branch('master', fresh_repo: true)
       end
     end
 
-    it 'loads a branch with a cached repo' do
-      expect(Gitlab::Git::Repository).to receive(:new).once.and_call_original
+    context 'fresh_repo is false' do
+      it 'delegates the call to raw_repository' do
+        expect(repository.raw_repository).to receive(:find_branch).with('master', false)
 
-      2.times do
-        expect(repository.find_branch('feature', fresh_repo: false)).not_to be_nil
+        repository.find_branch('master', fresh_repo: false)
       end
     end
   end
@@ -1064,15 +1214,15 @@ describe Repository do
         allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, ''])
       end
 
-      it 'expires branch cache' do
-        expect(repository).not_to receive(:expire_exists_cache)
-        expect(repository).not_to receive(:expire_root_ref_cache)
-        expect(repository).not_to receive(:expire_emptiness_caches)
-        expect(repository).to     receive(:expire_branches_cache)
-
-        repository.with_branch(user, 'new-feature') do
+      subject do
+        Gitlab::Git::OperationService.new(git_user, repository.raw_repository).with_branch('new-feature') do
           new_rev
         end
+      end
+
+      it 'returns branch_created as true' do
+        expect(subject).not_to be_repo_created
+        expect(subject).to     be_branch_created
       end
     end
 
@@ -1160,6 +1310,15 @@ describe Repository do
 
       expect(repository.branch_exists?('foobar')).to eq(true)
       expect(repository.branch_exists?('master')).to eq(false)
+    end
+  end
+
+  describe '#tag_exists?' do
+    it 'uses tag_names' do
+      allow(repository).to receive(:tag_names).and_return(['foobar'])
+
+      expect(repository.tag_exists?('foobar')).to eq(true)
+      expect(repository.tag_exists?('master')).to eq(false)
     end
   end
 
@@ -1288,7 +1447,6 @@ describe Repository do
     it 'expires the caches for an empty repository' do
       allow(repository).to receive(:empty?).and_return(true)
 
-      expect(cache).to receive(:expire).with(:empty?)
       expect(cache).to receive(:expire).with(:has_visible_content?)
 
       repository.expire_emptiness_caches
@@ -1297,7 +1455,6 @@ describe Repository do
     it 'does not expire the cache for a non-empty repository' do
       allow(repository).to receive(:empty?).and_return(false)
 
-      expect(cache).not_to receive(:expire).with(:empty?)
       expect(cache).not_to receive(:expire).with(:has_visible_content?)
 
       repository.expire_emptiness_caches
@@ -1737,7 +1894,7 @@ describe Repository do
       it_behaves_like 'adding tag'
     end
 
-    context 'when Gitaly operation_user_add_tag feature is disabled', :skip_gitaly_mock do
+    context 'when Gitaly operation_user_add_tag feature is disabled', :disable_gitaly do
       it_behaves_like 'adding tag'
 
       it 'passes commit SHA to pre-receive and update hooks and tag SHA to post-receive hook' do
@@ -1796,7 +1953,7 @@ describe Repository do
       end
     end
 
-    context 'with gitaly disabled', :skip_gitaly_mock do
+    context 'with gitaly disabled', :disable_gitaly do
       it_behaves_like "user deleting a branch"
 
       let(:old_rev) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' } # git rev-parse feature
@@ -1862,8 +2019,7 @@ describe Repository do
 
   describe '#avatar' do
     it 'returns nil if repo does not exist' do
-      expect(repository).to receive(:file_on_head)
-        .and_raise(Rugged::ReferenceError)
+      allow(repository).to receive(:root_ref).and_raise(Gitlab::Git::Repository::NoRepository)
 
       expect(repository.avatar).to eq(nil)
     end
@@ -1921,23 +2077,6 @@ describe Repository do
       expect(repository.kept_around?(sample_commit.id)).to be_falsey
 
       File.delete(path)
-    end
-
-    it "attempting to call keep_around when exists a lock does not fail" do
-      ref = repository.send(:keep_around_ref_name, sample_commit.id)
-      path = File.join(repository.path, ref)
-      lock_path = "#{path}.lock"
-
-      FileUtils.mkdir_p(File.dirname(path))
-      File.open(lock_path, 'w') { |f| f.write('') }
-
-      begin
-        expect { repository.keep_around(sample_commit.id) }.not_to raise_error(Gitlab::Git::Repository::GitError)
-
-        expect(File.exist?(lock_path)).to be_falsey
-      ensure
-        File.delete(path)
-      end
     end
   end
 
@@ -2027,15 +2166,6 @@ describe Repository do
         .with(%i(size commit_count))
 
       repository.expire_statistics_caches
-    end
-  end
-
-  describe '#expire_method_caches' do
-    it 'expires the caches of the given methods' do
-      expect_any_instance_of(RepositoryCache).to receive(:expire).with(:readme)
-      expect_any_instance_of(RepositoryCache).to receive(:expire).with(:gitignore)
-
-      repository.expire_method_caches(%i(readme gitignore))
     end
   end
 
@@ -2175,63 +2305,12 @@ describe Repository do
     end
   end
 
-  describe '#cache_method_output', :use_clean_rails_memory_store_caching do
-    let(:fallback) { 10 }
+  describe '#diverging_commit_counts' do
+    it 'returns the commit counts behind and ahead of default branch' do
+      result = repository.diverging_commit_counts(
+        repository.find_branch('fix'))
 
-    context 'with a non-existing repository' do
-      let(:project) { create(:project) } # No repository
-
-      subject do
-        repository.cache_method_output(:cats, fallback: fallback) do
-          repository.cats_call_stub
-        end
-      end
-
-      it 'returns the fallback value' do
-        expect(subject).to eq(fallback)
-      end
-
-      it 'avoids calling the original method' do
-        expect(repository).not_to receive(:cats_call_stub)
-
-        subject
-      end
-    end
-
-    context 'with a method throwing a non-existing-repository error' do
-      subject do
-        repository.cache_method_output(:cats, fallback: fallback) do
-          raise Gitlab::Git::Repository::NoRepository
-        end
-      end
-
-      it 'returns the fallback value' do
-        expect(subject).to eq(fallback)
-      end
-
-      it 'does not cache the data' do
-        subject
-
-        expect(repository.instance_variable_defined?(:@cats)).to eq(false)
-        expect(repository.send(:cache).exist?(:cats)).to eq(false)
-      end
-    end
-
-    context 'with an existing repository' do
-      it 'caches the output' do
-        object = double
-
-        expect(object).to receive(:number).once.and_return(10)
-
-        2.times do
-          val = repository.cache_method_output(:cats) { object.number }
-
-          expect(val).to eq(10)
-        end
-
-        expect(repository.send(:cache).exist?(:cats)).to eq(true)
-        expect(repository.instance_variable_get(:@cats)).to eq(10)
-      end
+      expect(result).to eq(behind: 29, ahead: 2)
     end
   end
 
@@ -2289,7 +2368,7 @@ describe Repository do
     let(:commit) { repository.commit }
     let(:ancestor) { commit.parents.first }
 
-    context 'with Gitaly enabled' do
+    shared_examples '#ancestor?' do
       it 'it is an ancestor' do
         expect(repository.ancestor?(ancestor.id, commit.id)).to eq(true)
       end
@@ -2302,28 +2381,20 @@ describe Repository do
         expect(repository.ancestor?(nil, commit.id)).to eq(false)
         expect(repository.ancestor?(ancestor.id, nil)).to eq(false)
         expect(repository.ancestor?(nil, nil)).to eq(false)
+      end
+
+      it 'returns false for invalid commit IDs' do
+        expect(repository.ancestor?(commit.id, Gitlab::Git::BLANK_SHA)).to eq(false)
+        expect(repository.ancestor?( Gitlab::Git::BLANK_SHA, commit.id)).to eq(false)
       end
     end
 
-    context 'with Gitaly disabled' do
-      before do
-        allow(Gitlab::GitalyClient).to receive(:enabled?).and_return(false)
-        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:is_ancestor).and_return(false)
-      end
+    context 'with Gitaly enabled' do
+      it_behaves_like('#ancestor?')
+    end
 
-      it 'it is an ancestor' do
-        expect(repository.ancestor?(ancestor.id, commit.id)).to eq(true)
-      end
-
-      it 'it is not an ancestor' do
-        expect(repository.ancestor?(commit.id, ancestor.id)).to eq(false)
-      end
-
-      it 'returns false on nil-values' do
-        expect(repository.ancestor?(nil, commit.id)).to eq(false)
-        expect(repository.ancestor?(ancestor.id, nil)).to eq(false)
-        expect(repository.ancestor?(nil, nil)).to eq(false)
-      end
+    context 'with Gitaly disabled', :skip_gitaly_mock do
+      it_behaves_like('#ancestor?')
     end
   end
 

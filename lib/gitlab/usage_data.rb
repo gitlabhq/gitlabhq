@@ -1,8 +1,6 @@
 module Gitlab
   class UsageData
     class << self
-      include Gitlab::CurrentSettings
-
       def data(force_refresh: false)
         Rails.cache.fetch('usage_data', force: force_refresh, expires_in: 2.weeks) { uncached_data }
       end
@@ -11,6 +9,7 @@ module Gitlab
         license_usage_data.merge(system_usage_data)
                           .merge(features_usage_data)
                           .merge(components_usage_data)
+                          .merge(cycle_analytics_usage_data)
       end
 
       def to_json(force_refresh: false)
@@ -19,7 +18,7 @@ module Gitlab
 
       def license_usage_data
         usage_data = {
-          uuid: current_application_settings.uuid,
+          uuid: Gitlab::CurrentSettings.uuid,
           hostname: Gitlab.config.gitlab.host,
           version: Gitlab::VERSION,
           active_user_count: User.active.count,
@@ -73,15 +72,19 @@ module Gitlab
         }
       end
 
+      def cycle_analytics_usage_data
+        Gitlab::CycleAnalytics::UsageData.new.to_json
+      end
+
       def features_usage_data
         features_usage_data_ce
       end
 
       def features_usage_data_ce
         {
-          signup: current_application_settings.allow_signup?,
+          signup: Gitlab::CurrentSettings.allow_signup?,
           ldap: Gitlab.config.ldap.enabled,
-          gravatar: current_application_settings.gravatar_enabled?,
+          gravatar: Gitlab::CurrentSettings.gravatar_enabled?,
           omniauth: Gitlab.config.omniauth.enabled,
           reply_by_email: Gitlab::IncomingEmail.enabled?,
           container_registry: Gitlab.config.registry.enabled,

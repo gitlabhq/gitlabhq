@@ -27,7 +27,7 @@ module RuboCop
             # data in these tables yet.
             next if new_tables.include?(first_arg)
 
-            add_offense(send_node, :selector)
+            add_offense(send_node, location: :selector)
           end
         end
 

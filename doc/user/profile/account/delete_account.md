@@ -1,7 +1,7 @@
 # Deleting a User Account
 
 - As a user, you can delete your own account by navigating to **Settings** > **Account** and selecting **Delete account**
-- As an admin, you can delete a user account by navigating to the **Admin Area**, selecting the **Users** tab, selecting a user, and clicking on **Remove user**
+- As an admin, you can delete a user account by navigating to the **Admin Area**, selecting the **Users** tab, selecting a user, and clicking on **Delete user**
 
 ## Associated Records
 

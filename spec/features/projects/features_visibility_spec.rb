@@ -8,7 +8,7 @@ describe 'Edit Project Settings' do
 
   describe 'project features visibility selectors', :js do
     before do
-      project.team << [member, :master]
+      project.add_master(member)
       sign_in(member)
     end
 
@@ -165,7 +165,7 @@ describe 'Edit Project Settings' do
 
   describe 'repository visibility', :js do
     before do
-      project.team << [member, :master]
+      project.add_master(member)
       sign_in(member)
       visit edit_project_path(project)
     end
@@ -261,7 +261,7 @@ describe 'Edit Project Settings' do
     let!(:project) { create(:project, :private) }
 
     before do
-      project.team << [member, :guest]
+      project.add_guest(member)
       sign_in(member)
       visit project_path(project)
     end

@@ -7,36 +7,24 @@ class ProjectTeam
     @project = project
   end
 
-  # Shortcut to add users
-  #
-  # Use:
-  #   @team << [@user, :master]
-  #   @team << [@users, :master]
-  #
-  def <<(args)
-    users, access, current_user = *args
-
-    if users.respond_to?(:each)
-      add_users(users, access, current_user: current_user)
-    else
-      add_user(users, access, current_user: current_user)
-    end
-  end
-
   def add_guest(user, current_user: nil)
-    self << [user, :guest, current_user]
+    add_user(user, :guest, current_user: current_user)
   end
 
   def add_reporter(user, current_user: nil)
-    self << [user, :reporter, current_user]
+    add_user(user, :reporter, current_user: current_user)
   end
 
   def add_developer(user, current_user: nil)
-    self << [user, :developer, current_user]
+    add_user(user, :developer, current_user: current_user)
   end
 
   def add_master(user, current_user: nil)
-    self << [user, :master, current_user]
+    add_user(user, :master, current_user: current_user)
+  end
+
+  def add_role(user, role, current_user: nil)
+    send(:"add_#{role}", user, current_user: current_user) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def find_member(user_id)
@@ -95,6 +83,15 @@ class ProjectTeam
 
   def masters
     @masters ||= fetch_members(Gitlab::Access::MASTER)
+  end
+
+  def owners
+    @owners ||=
+      if group
+        group.owners
+      else
+        [project.owner]
+      end
   end
 
   def import(source_project, current_user = nil)

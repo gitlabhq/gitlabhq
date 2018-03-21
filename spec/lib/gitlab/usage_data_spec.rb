@@ -36,6 +36,7 @@ describe Gitlab::UsageData do
         gitlab_shared_runners
         git
         database
+        avg_cycle_analytics
       ))
     end
 
@@ -103,9 +104,9 @@ describe Gitlab::UsageData do
     subject { described_class.features_usage_data_ce }
 
     it 'gathers feature usage data' do
-      expect(subject[:signup]).to eq(current_application_settings.allow_signup?)
+      expect(subject[:signup]).to eq(Gitlab::CurrentSettings.allow_signup?)
       expect(subject[:ldap]).to eq(Gitlab.config.ldap.enabled)
-      expect(subject[:gravatar]).to eq(current_application_settings.gravatar_enabled?)
+      expect(subject[:gravatar]).to eq(Gitlab::CurrentSettings.gravatar_enabled?)
       expect(subject[:omniauth]).to eq(Gitlab.config.omniauth.enabled)
       expect(subject[:reply_by_email]).to eq(Gitlab::IncomingEmail.enabled?)
       expect(subject[:container_registry]).to eq(Gitlab.config.registry.enabled)
@@ -129,7 +130,7 @@ describe Gitlab::UsageData do
     subject { described_class.license_usage_data }
 
     it "gathers license data" do
-      expect(subject[:uuid]).to eq(current_application_settings.uuid)
+      expect(subject[:uuid]).to eq(Gitlab::CurrentSettings.uuid)
       expect(subject[:version]).to eq(Gitlab::VERSION)
       expect(subject[:active_user_count]).to eq(User.active.count)
       expect(subject[:recorded_at]).to be_a(Time)

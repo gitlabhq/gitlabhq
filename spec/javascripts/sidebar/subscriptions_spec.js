@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import subscriptions from '~/sidebar/components/subscriptions/subscriptions.vue';
-import mountComponent from '../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('Subscriptions', function () {
   let vm;
@@ -20,23 +20,23 @@ describe('Subscriptions', function () {
       subscribed: undefined,
     });
 
-    expect(vm.$refs.loadingButton.loading).toBe(true);
-    expect(vm.$refs.loadingButton.label).toBeUndefined();
+    expect(vm.$refs.toggleButton.isLoading).toBe(true);
+    expect(vm.$refs.toggleButton.$el.querySelector('.project-feature-toggle')).toHaveClass('is-loading');
   });
 
-  it('has "Subscribe" text when currently not subscribed', () => {
+  it('is toggled "off" when currently not subscribed', () => {
     vm = mountComponent(Subscriptions, {
       subscribed: false,
     });
 
-    expect(vm.$refs.loadingButton.label).toBe('Subscribe');
+    expect(vm.$refs.toggleButton.$el.querySelector('.project-feature-toggle')).not.toHaveClass('is-checked');
   });
 
-  it('has "Unsubscribe" text when currently not subscribed', () => {
+  it('is toggled "on" when currently subscribed', () => {
     vm = mountComponent(Subscriptions, {
       subscribed: true,
     });
 
-    expect(vm.$refs.loadingButton.label).toBe('Unsubscribe');
+    expect(vm.$refs.toggleButton.$el.querySelector('.project-feature-toggle')).toHaveClass('is-checked');
   });
 });

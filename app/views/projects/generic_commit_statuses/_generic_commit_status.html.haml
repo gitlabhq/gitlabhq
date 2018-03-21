@@ -19,7 +19,7 @@
     - if ref
       - if generic_commit_status.ref
         .icon-container
-          = generic_commit_status.tags.any? ? icon('tag') : icon('code-fork')
+          = generic_commit_status.tags.any? ? icon('tag') : sprite_icon('fork', size: 10)
         = link_to generic_commit_status.ref, project_commits_path(generic_commit_status.project, generic_commit_status.ref)
       - else
         .light none
@@ -53,7 +53,7 @@
   - if admin
     %td
       - if generic_commit_status.project
-        = link_to generic_commit_status.project.name_with_namespace, admin_project_path(generic_commit_status.project)
+        = link_to generic_commit_status.project.full_name, admin_project_path(generic_commit_status.project)
     %td
       - if generic_commit_status.try(:runner)
         = runner_link(generic_commit_status.runner)

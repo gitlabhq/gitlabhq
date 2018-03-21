@@ -11,7 +11,7 @@ feature 'Issues > Labels bulk assignment' do
 
   context 'as an allowed user', :js do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
 
       sign_in user
     end
@@ -377,6 +377,7 @@ feature 'Issues > Labels bulk assignment' do
       items.map do |item|
         click_link item
       end
+
       if unmark
         items.map do |item|
           # Make sure we are unmarking the item no matter the state it has currently

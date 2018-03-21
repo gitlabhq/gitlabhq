@@ -55,7 +55,7 @@ class Member < ActiveRecord::Base
   scope :active_without_invites, -> do
     left_join_users
       .where(users: { state: 'active' })
-      .where(requested_at: nil)
+      .non_request
       .reorder(nil)
   end
 
@@ -85,6 +85,7 @@ class Member < ActiveRecord::Base
   after_create :create_notification_setting, unless: [:pending?, :importing?]
   after_create :post_create_hook, unless: [:pending?, :importing?]
   after_update :post_update_hook, unless: [:pending?, :importing?]
+  after_destroy :destroy_notification_setting
   after_destroy :post_destroy_hook, unless: :pending?
   after_commit :refresh_member_authorized_projects
 
@@ -128,7 +129,7 @@ class Member < ActiveRecord::Base
       find_by(invite_token: invite_token)
     end
 
-    def add_user(source, user, access_level, existing_members: nil, current_user: nil, expires_at: nil)
+    def add_user(source, user, access_level, existing_members: nil, current_user: nil, expires_at: nil, ldap: false)
       # `user` can be either a User object, User ID or an email to be invited
       member = retrieve_member(source, user, existing_members)
       access_level = retrieve_access_level(access_level)
@@ -143,11 +144,13 @@ class Member < ActiveRecord::Base
 
       if member.request?
         ::Members::ApproveAccessRequestService.new(
-          source,
           current_user,
-          id: member.id,
           access_level: access_level
-        ).execute
+        ).execute(
+          member,
+          skip_authorization: ldap,
+          skip_log_audit_event: ldap
+        )
       else
         member.save
       end
@@ -313,8 +316,12 @@ class Member < ActiveRecord::Base
     user.notification_settings.find_or_create_for(source)
   end
 
+  def destroy_notification_setting
+    notification_setting&.destroy
+  end
+
   def notification_setting
-    @notification_setting ||= user.notification_settings_for(source)
+    @notification_setting ||= user&.notification_settings_for(source)
   end
 
   def notifiable?(type, opts = {})

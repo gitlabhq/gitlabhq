@@ -1,5 +1,0 @@
----
-title: Add a gitlab:tcp_check rake task
-merge_request: 15759
-author:
-type: added

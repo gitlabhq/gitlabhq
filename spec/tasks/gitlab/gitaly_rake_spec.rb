@@ -76,7 +76,11 @@ describe 'gitlab:gitaly namespace rake task' do
         end
 
         context 'when Rails.env is test' do
-          let(:command) { %w[make BUNDLE_FLAGS=--no-deployment] }
+          let(:command) do
+            %W[make
+               BUNDLE_FLAGS=--no-deployment
+               BUNDLE_PATH=#{Bundler.bundle_path}]
+          end
 
           before do
             allow(Rails.env).to receive(:test?).and_return(true)
@@ -128,7 +132,7 @@ describe 'gitlab:gitaly namespace rake task' do
       expect { run_rake_task('gitlab:gitaly:storage_config')}
         .to output(expected_output).to_stdout
 
-      parsed_output = TOML.parse(expected_output)
+      parsed_output = TomlRB.parse(expected_output)
       config.each do |name, params|
         expect(parsed_output['storage']).to include({ 'name' => name, 'path' => params['path'] })
       end

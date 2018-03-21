@@ -16,7 +16,7 @@ ul.notes {
 
   .note-created-ago,
   .note-updated-at {
-    white-space: nowrap;
+    white-space: normal;
   }
 
   .discussion-body {
@@ -139,12 +139,6 @@ ul.notes {
         // Reset ul style types since we're nested inside a ul already
         @include bulleted-list;
         word-wrap: break-word;
-
-        ul.task-list {
-          ul:not(.task-list) {
-            padding-left: 1.3em;
-          }
-        }
 
         table {
           @include markdown-table;
@@ -723,7 +717,7 @@ ul.notes {
 .line-resolve-all {
   vertical-align: middle;
   display: inline-block;
-  padding: 5px 10px 6px;
+  padding: 6px 10px;
   background-color: $gray-light;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;

@@ -1,6 +1,7 @@
 class GroupChildEntity < Grape::Entity
   include ActionView::Helpers::NumberHelper
   include RequestAwareEntity
+  include MarkupHelper
 
   expose :id, :name, :description, :visibility, :full_name,
          :created_at, :updated_at, :avatar_url
@@ -10,9 +11,7 @@ class GroupChildEntity < Grape::Entity
   end
 
   expose :can_edit do |instance|
-    return false unless request.respond_to?(:current_user)
-
-    can?(request.current_user, "admin_#{type}", instance)
+    can_edit?
   end
 
   expose :edit_path do |instance|
@@ -59,6 +58,10 @@ class GroupChildEntity < Grape::Entity
     number_with_delimiter(instance.member_count)
   end
 
+  expose :markdown_description do |instance|
+    markdown_description
+  end
+
   private
 
   def membership
@@ -73,5 +76,22 @@ class GroupChildEntity < Grape::Entity
 
   def type
     object.class.name.downcase
+  end
+
+  def markdown_description
+    markdown_field(object, :description)
+  end
+
+  def can_edit?
+    return false unless request.respond_to?(:current_user)
+
+    if project?
+      # Avoid checking rights for each project, as it might be expensive if the
+      # user cannot read cross project.
+      can?(request.current_user, :read_cross_project) &&
+        can?(request.current_user, :admin_project, object)
+    else
+      can?(request.current_user, :admin_group, object)
+    end
   end
 end

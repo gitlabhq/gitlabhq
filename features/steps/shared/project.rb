@@ -4,13 +4,13 @@ module SharedProject
   # Create a project without caring about what it's called
   step "I own a project" do
     @project = create(:project, :repository, namespace: @user.namespace)
-    @project.team << [@user, :master]
+    @project.add_master(@user)
   end
 
   step "I own a project in some group namespace" do
     @group = create(:group, name: 'some group')
     @project = create(:project, namespace: @group)
-    @project.team << [@user, :master]
+    @project.add_master(@user)
   end
 
   step "project exists in some group namespace" do
@@ -22,7 +22,7 @@ module SharedProject
   step 'I own project "Shop"' do
     @project = Project.find_by(name: "Shop")
     @project ||= create(:project, :repository, name: "Shop", namespace: @user.namespace)
-    @project.team << [@user, :master]
+    @project.add_master(@user)
   end
 
   step 'I disable snippets in project' do
@@ -40,7 +40,7 @@ module SharedProject
   step 'I add a user to project "Shop"' do
     @project = Project.find_by(name: "Shop")
     other_user = create(:user, name: 'Alpha')
-    @project.team << [other_user, :master]
+    @project.add_master(other_user)
   end
 
   # Create another specific project called "Forum"
@@ -49,14 +49,13 @@ module SharedProject
     @project ||= create(:project, :repository, name: "Forum", namespace: @user.namespace, path: 'forum_project')
     @project.build_project_feature
     @project.project_feature.save
-    @project.team << [@user, :master]
+    @project.add_master(@user)
   end
 
   # Create an empty project without caring about the name
   step 'I own an empty project' do
-    @project = create(:project,
-                      name: 'Empty Project', namespace: @user.namespace)
-    @project.team << [@user, :master]
+    @project = create(:project, name: 'Empty Project', namespace: @user.namespace)
+    @project.add_master(@user)
   end
 
   step 'I visit my empty project page' do
@@ -83,7 +82,7 @@ module SharedProject
 
   step 'I should see project "Shop" activity feed' do
     project = Project.find_by(name: "Shop")
-    expect(page).to have_content "#{@user.name} pushed new branch fix at #{project.name_with_namespace}"
+    expect(page).to have_content "#{@user.name} pushed new branch fix at #{project.full_name}"
   end
 
   step 'I should see project settings' do
@@ -101,11 +100,11 @@ module SharedProject
   # ----------------------------------------
 
   step 'I am member of a project with a guest role' do
-    @project.team << [@user, Gitlab::Access::GUEST]
+    @project.add_guest(@user)
   end
 
   step 'I am member of a project with a reporter role' do
-    @project.team << [@user, Gitlab::Access::REPORTER]
+    @project.add_reporter(@user)
   end
 
   # ----------------------------------------
@@ -114,12 +113,12 @@ module SharedProject
 
   step 'I should not see project "Archive"' do
     project = Project.find_by(name: "Archive")
-    expect(page).not_to have_content project.name_with_namespace
+    expect(page).not_to have_content project.full_name
   end
 
   step 'I should see project "Archive"' do
     project = Project.find_by(name: "Archive")
-    expect(page).to have_content project.name_with_namespace
+    expect(page).to have_content project.full_name
   end
 
   # ----------------------------------------
@@ -245,6 +244,6 @@ module SharedProject
     user = user_exists(user_name, username: user_name.gsub(/\s/, '').underscore)
     project = Project.find_by(name: project_name)
     project ||= create(:project, visibility, name: project_name, namespace: user.namespace)
-    project.team << [user, :master]
+    project.add_master(user)
   end
 end

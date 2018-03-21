@@ -902,7 +902,7 @@ describe Gitlab::Database::MigrationHelpers do
   describe '#check_trigger_permissions!' do
     it 'does nothing when the user has the correct permissions' do
       expect { model.check_trigger_permissions!('users') }
-        .not_to raise_error(RuntimeError)
+        .not_to raise_error
     end
 
     it 'raises RuntimeError when the user does not have the correct permissions' do
@@ -1006,12 +1006,12 @@ describe Gitlab::Database::MigrationHelpers do
       context 'with batch_size option' do
         it 'queues jobs correctly' do
           Sidekiq::Testing.fake! do
-            model.queue_background_migration_jobs_by_range_at_intervals(User, 'FooJob', 10.seconds, batch_size: 2)
+            model.queue_background_migration_jobs_by_range_at_intervals(User, 'FooJob', 10.minutes, batch_size: 2)
 
             expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id2]])
-            expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(10.seconds.from_now.to_f)
+            expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(10.minutes.from_now.to_f)
             expect(BackgroundMigrationWorker.jobs[1]['args']).to eq(['FooJob', [id3, id3]])
-            expect(BackgroundMigrationWorker.jobs[1]['at']).to eq(20.seconds.from_now.to_f)
+            expect(BackgroundMigrationWorker.jobs[1]['at']).to eq(20.minutes.from_now.to_f)
           end
         end
       end
@@ -1019,10 +1019,10 @@ describe Gitlab::Database::MigrationHelpers do
       context 'without batch_size option' do
         it 'queues jobs correctly' do
           Sidekiq::Testing.fake! do
-            model.queue_background_migration_jobs_by_range_at_intervals(User, 'FooJob', 10.seconds)
+            model.queue_background_migration_jobs_by_range_at_intervals(User, 'FooJob', 10.minutes)
 
             expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id3]])
-            expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(10.seconds.from_now.to_f)
+            expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(10.minutes.from_now.to_f)
           end
         end
       end
@@ -1034,6 +1034,95 @@ describe Gitlab::Database::MigrationHelpers do
           model.queue_background_migration_jobs_by_range_at_intervals(ProjectAuthorization, 'FooJob', 10.seconds)
         end.to raise_error(StandardError, /does not have an ID/)
       end
+    end
+  end
+
+  describe '#change_column_type_using_background_migration' do
+    let!(:issue) { create(:issue, :closed, closed_at: Time.zone.now) }
+
+    let(:issue_model) do
+      Class.new(ActiveRecord::Base) do
+        self.table_name = 'issues'
+        include EachBatch
+      end
+    end
+
+    it 'changes the type of a column using a background migration' do
+      expect(model)
+        .to receive(:add_column)
+        .with('issues', 'closed_at_for_type_change', :datetime_with_timezone)
+
+      expect(model)
+        .to receive(:install_rename_triggers)
+        .with('issues', :closed_at, 'closed_at_for_type_change')
+
+      expect(BackgroundMigrationWorker)
+        .to receive(:perform_in)
+        .ordered
+        .with(
+          10.minutes,
+          'CopyColumn',
+          ['issues', :closed_at, 'closed_at_for_type_change', issue.id, issue.id]
+        )
+
+      expect(BackgroundMigrationWorker)
+        .to receive(:perform_in)
+        .ordered
+        .with(
+          1.hour + 10.minutes,
+          'CleanupConcurrentTypeChange',
+          ['issues', :closed_at, 'closed_at_for_type_change']
+        )
+
+      expect(Gitlab::BackgroundMigration)
+        .to receive(:steal)
+        .ordered
+        .with('CopyColumn')
+
+      expect(Gitlab::BackgroundMigration)
+        .to receive(:steal)
+        .ordered
+        .with('CleanupConcurrentTypeChange')
+
+      model.change_column_type_using_background_migration(
+        issue_model.all,
+        :closed_at,
+        :datetime_with_timezone
+      )
+    end
+  end
+
+  describe '#perform_background_migration_inline?' do
+    it 'returns true in a test environment' do
+      allow(Rails.env)
+        .to receive(:test?)
+        .and_return(true)
+
+      expect(model.perform_background_migration_inline?).to eq(true)
+    end
+
+    it 'returns true in a development environment' do
+      allow(Rails.env)
+        .to receive(:test?)
+        .and_return(false)
+
+      allow(Rails.env)
+        .to receive(:development?)
+        .and_return(true)
+
+      expect(model.perform_background_migration_inline?).to eq(true)
+    end
+
+    it 'returns false in a production environment' do
+      allow(Rails.env)
+        .to receive(:test?)
+        .and_return(false)
+
+      allow(Rails.env)
+        .to receive(:development?)
+        .and_return(false)
+
+      expect(model.perform_background_migration_inline?).to eq(false)
     end
   end
 end

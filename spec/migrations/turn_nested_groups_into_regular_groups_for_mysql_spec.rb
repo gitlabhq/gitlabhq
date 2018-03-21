@@ -4,7 +4,7 @@ require Rails.root.join('db', 'migrate', '20170503140202_turn_nested_groups_into
 describe TurnNestedGroupsIntoRegularGroupsForMysql do
   let!(:parent_group) { create(:group) }
   let!(:child_group) { create(:group, parent: parent_group) }
-  let!(:project) { create(:project, :empty_repo, namespace: child_group) }
+  let!(:project) { create(:project, :legacy_storage, :empty_repo, namespace: child_group) }
   let!(:member) { create(:user) }
   let(:migration) { described_class.new }
 

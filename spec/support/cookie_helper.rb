@@ -8,6 +8,10 @@ module CookieHelper
     page.driver.browser.manage.add_cookie(name: name, value: value, **options)
   end
 
+  def get_cookie(name)
+    page.driver.browser.manage.cookie_named(name)
+  end
+
   private
 
   def on_a_page?

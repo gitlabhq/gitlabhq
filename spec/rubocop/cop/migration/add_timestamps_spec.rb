@@ -53,7 +53,7 @@ describe RuboCop::Cop::Migration::AddTimestamps do
     end
 
     it 'registers an offense when the "add_timestamps" method is used' do
-      inspect_source(cop, migration_with_add_timestamps)
+      inspect_source(migration_with_add_timestamps)
 
       aggregate_failures do
         expect(cop.offenses.size).to eq(1)
@@ -62,7 +62,7 @@ describe RuboCop::Cop::Migration::AddTimestamps do
     end
 
     it 'does not register an offense when the "add_timestamps" method is not used' do
-      inspect_source(cop, migration_without_add_timestamps)
+      inspect_source(migration_without_add_timestamps)
 
       aggregate_failures do
         expect(cop.offenses.size).to eq(0)
@@ -70,7 +70,7 @@ describe RuboCop::Cop::Migration::AddTimestamps do
     end
 
     it 'does not register an offense when the "add_timestamps_with_timezone" method is used' do
-      inspect_source(cop, migration_with_add_timestamps_with_timezone)
+      inspect_source(migration_with_add_timestamps_with_timezone)
 
       aggregate_failures do
         expect(cop.offenses.size).to eq(0)
@@ -80,9 +80,9 @@ describe RuboCop::Cop::Migration::AddTimestamps do
 
   context 'outside of migration' do
     it 'registers no offense' do
-      inspect_source(cop, migration_with_add_timestamps)
-      inspect_source(cop, migration_without_add_timestamps)
-      inspect_source(cop, migration_with_add_timestamps_with_timezone)
+      inspect_source(migration_with_add_timestamps)
+      inspect_source(migration_without_add_timestamps)
+      inspect_source(migration_with_add_timestamps_with_timezone)
 
       expect(cop.offenses.size).to eq(0)
     end

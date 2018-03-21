@@ -4,8 +4,10 @@ describe Projects::CreateFromTemplateService do
   let(:user) { create(:user) }
   let(:project_params) do
     {
-      path: user.to_param,
-      template_name: 'rails'
+        path: user.to_param,
+        template_name: 'rails',
+        description: 'project description',
+        visibility_level: Gitlab::VisibilityLevel::PRIVATE
     }
   end
 
@@ -22,5 +24,7 @@ describe Projects::CreateFromTemplateService do
 
     expect(project).to be_saved
     expect(project.scheduled?).to be(true)
+    expect(project.description).to match('project description')
+    expect(project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
   end
 end

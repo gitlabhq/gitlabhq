@@ -5,15 +5,16 @@ class Projects::BlobController < Projects::ApplicationController
   include RendersBlob
   include ActionView::Helpers::SanitizeHelper
 
-  # Raised when given an invalid file path
-  InvalidPathError = Class.new(StandardError)
-
   prepend_before_action :authenticate_user!, only: [:edit]
 
   before_action :require_non_empty_project, except: [:new, :create]
   before_action :authorize_download_code!
-  before_action :authorize_edit_tree!, only: [:new, :create, :update, :destroy]
+
+  # We need to assign the blob vars before `authorize_edit_tree!` so we can
+  # validate access to a specific ref.
   before_action :assign_blob_vars
+  before_action :authorize_edit_tree!, only: [:new, :create, :update, :destroy]
+
   before_action :commit, except: [:new, :create]
   before_action :blob, except: [:new, :create]
   before_action :require_branch_head, only: [:edit, :update]
@@ -41,7 +42,7 @@ class Projects::BlobController < Projects::ApplicationController
       end
 
       format.json do
-        page_title @blob.path, @ref, @project.name_with_namespace
+        page_title @blob.path, @ref, @project.full_name
 
         show_json
       end
@@ -49,7 +50,7 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def edit
-    if can_collaborate_with_project?
+    if can_collaborate_with_project?(project, ref: @ref)
       blob.load_all_data!
     else
       redirect_to action: 'show'
@@ -61,7 +62,6 @@ class Projects::BlobController < Projects::ApplicationController
     create_commit(Files::UpdateService, success_path: -> { after_edit_path },
                                         failure_view: :edit,
                                         failure_path: project_blob_path(@project, @id))
-
   rescue Files::UpdateService::FileChangedError
     @conflict = true
     render :edit
@@ -132,13 +132,12 @@ class Projects::BlobController < Projects::ApplicationController
   def assign_blob_vars
     @id = params[:id]
     @ref, @path = extract_ref(@id)
-
   rescue InvalidPathError
     render_404
   end
 
   def after_edit_path
-    from_merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).execute.find_by(iid: params[:from_merge_request_iid])
+    from_merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).find_by(iid: params[:from_merge_request_iid])
     if from_merge_request && @branch_name == @ref
       diffs_project_merge_request_path(from_merge_request.target_project, from_merge_request) +
         "##{hexdigest(@path)}"
@@ -155,6 +154,7 @@ class Projects::BlobController < Projects::ApplicationController
         if params[:file].present?
           params[:file_name] = params[:file].original_filename
         end
+
         File.join(@path, params[:file_name])
       elsif params[:file_path].present?
         params[:file_path]

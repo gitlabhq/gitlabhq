@@ -89,7 +89,7 @@ gl.issueBoards.IssuesModal = Vue.extend({
         page: this.page,
         per: this.perPage,
       }))
-      .then(resp => resp.json())
+      .then(res => res.data)
       .then((data) => {
         if (clearIssues) {
           this.issues = [];

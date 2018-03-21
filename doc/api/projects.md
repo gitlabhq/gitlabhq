@@ -37,6 +37,7 @@ GET /projects
 | `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
 | `statistics` | boolean | no | Include project statistics |
+| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
 | `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
 
@@ -220,6 +221,7 @@ GET /users/:user_id/projects
 | `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
 | `statistics` | boolean | no | Include project statistics |
+| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
 | `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
 
@@ -388,6 +390,7 @@ GET /projects/:id
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `statistics` | boolean | no | Include project statistics |
+| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 
 ```json
 {
@@ -664,6 +667,7 @@ GET /projects/:id/forks
 | `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
 | `statistics` | boolean | no | Include project statistics |
+| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
 | `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
 
@@ -982,7 +986,7 @@ Example response:
 ## Unarchive a project
 
 Unarchives the project if the user is either admin or the project owner of this project. This action is
-idempotent, thus unarchiving an non-archived project will not change the project.
+idempotent, thus unarchiving a non-archived project will not change the project.
 
 ```
 POST /projects/:id/unarchive
@@ -1190,6 +1194,7 @@ GET /projects/:id/hooks/:hook_id
   "project_id": 3,
   "push_events": true,
   "issues_events": true,
+  "confidential_issues_events": true,
   "merge_requests_events": true,
   "tag_push_events": true,
   "note_events": true,
@@ -1215,12 +1220,13 @@ POST /projects/:id/hooks
 | `url` | string | yes | The hook URL |
 | `push_events` | boolean | no | Trigger hook on push events |
 | `issues_events` | boolean | no | Trigger hook on issues events |
+| `confidential_issues_events` | boolean | no | Trigger hook on confidential issues events |
 | `merge_requests_events` | boolean | no | Trigger hook on merge requests events |
 | `tag_push_events` | boolean | no | Trigger hook on tag push events |
 | `note_events` | boolean | no | Trigger hook on note events |
 | `job_events` | boolean | no | Trigger hook on job events |
 | `pipeline_events` | boolean | no | Trigger hook on pipeline events |
-| `wiki_events` | boolean | no | Trigger hook on wiki events |
+| `wiki_page_events` | boolean | no | Trigger hook on wiki events |
 | `enable_ssl_verification` | boolean | no | Do SSL verification when triggering the hook |
 | `token` | string | no | Secret token to validate received payloads; this will not be returned in the response |
 
@@ -1239,6 +1245,7 @@ PUT /projects/:id/hooks/:hook_id
 | `url` | string | yes | The hook URL |
 | `push_events` | boolean | no | Trigger hook on push events |
 | `issues_events` | boolean | no | Trigger hook on issues events |
+| `confidential_issues_events` | boolean | no | Trigger hook on confidential issues events |
 | `merge_requests_events` | boolean | no | Trigger hook on merge requests events |
 | `tag_push_events` | boolean | no | Trigger hook on tag push events |
 | `note_events` | boolean | no | Trigger hook on note events |
@@ -1326,6 +1333,14 @@ POST /projects/:id/housekeeping
 
 Read more in the [Branches](branches.md) documentation.
 
+## Project Import/Export
+
+Read more in the [Project import/export](project_import_export.md) documentation.
+
 ## Project members
 
 Read more in the [Project members](members.md) documentation.
+
+## Project badges
+
+Read more in the [Project Badges](project_badges.md) documentation.

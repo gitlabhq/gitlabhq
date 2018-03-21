@@ -1,0 +1,5 @@
+---
+title: Don't cache a nil repository root ref to prevent caching issues
+merge_request:
+author:
+type: fixed

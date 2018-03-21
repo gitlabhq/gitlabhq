@@ -20,6 +20,16 @@ describe DiscussionOnDiff do
         expect(truncated_lines).not_to include(be_meta)
       end
     end
+
+    context "when the diff line does not exist on a legacy diff note" do
+      it "returns an empty array" do
+        legacy_note = LegacyDiffNote.new
+
+        allow(subject).to receive(:first_note).and_return(legacy_note)
+
+        expect(truncated_lines).to eq([])
+      end
+    end
   end
 
   describe '#line_code_in_diffs' do

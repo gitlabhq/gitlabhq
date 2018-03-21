@@ -1,7 +1,9 @@
 class Projects::Clusters::GcpController < Projects::ApplicationController
   before_action :authorize_read_cluster!
   before_action :authorize_google_api, except: [:login]
+  before_action :authorize_google_project_billing, only: [:new, :create]
   before_action :authorize_create_cluster!, only: [:new, :create]
+  before_action :verify_billing, only: [:create]
 
   def login
     begin
@@ -35,10 +37,26 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
 
   private
 
+  def verify_billing
+    case google_project_billing_status
+    when nil
+      flash.now[:alert] = _('We could not verify that one of your projects on GCP has billing enabled. Please try again.')
+    when false
+      flash.now[:alert] = _('Please <a href=%{link_to_billing} target="_blank" rel="noopener noreferrer">enable billing for one of your projects to be able to create a Kubernetes cluster</a>, then try again.').html_safe % { link_to_billing: "https://console.cloud.google.com/freetrial?utm_campaign=2018_cpanel&utm_source=gitlab&utm_medium=referral" }
+    when true
+      return
+    end
+
+    @cluster = ::Clusters::Cluster.new(create_params)
+
+    render :new
+  end
+
   def create_params
     params.require(:cluster).permit(
       :enabled,
       :name,
+      :environment_scope,
       provider_gcp_attributes: [
         :gcp_project_id,
         :zone,
@@ -55,6 +73,15 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
                                            .validate_token(expires_at_in_session)
       redirect_to action: 'login'
     end
+  end
+
+  def authorize_google_project_billing
+    redis_token_key = CheckGcpProjectBillingWorker.store_session_token(token_in_session)
+    CheckGcpProjectBillingWorker.perform_async(redis_token_key)
+  end
+
+  def google_project_billing_status
+    CheckGcpProjectBillingWorker.get_billing_state(token_in_session)
   end
 
   def token_in_session

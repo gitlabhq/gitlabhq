@@ -65,6 +65,7 @@ class Admin::RunnersController < Admin::ApplicationController
       else
         Project.all
       end
+
     @projects = @projects.where.not(id: runner.projects.select(:id)) if runner.projects.any?
     @projects = @projects.page(params[:page]).per(30)
   end

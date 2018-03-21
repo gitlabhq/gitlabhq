@@ -121,6 +121,9 @@ running feature tests (i.e. using Capybara) against it.
 The actual test scenarios and steps are [part of GitLab Rails] so that they're
 always in-sync with the codebase.
 
+Read a separate document about [end-to-end tests](end_to_end_tests.md) to
+learn more.
+
 [multiple pieces]: ../architecture.md#components
 [GitLab Shell]: https://gitlab.com/gitlab-org/gitlab-shell
 [GitLab Workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse
@@ -130,6 +133,10 @@ always in-sync with the codebase.
 [GitLab Omnibus]: https://gitlab.com/gitlab-org/omnibus-gitlab
 [GitLab QA]: https://gitlab.com/gitlab-org/gitlab-qa
 [part of GitLab Rails]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/qa
+
+## EE-specific tests
+
+EE-specific tests follows the same organization, but under the `ee/spec` folder.
 
 ## How to test at the correct level?
 

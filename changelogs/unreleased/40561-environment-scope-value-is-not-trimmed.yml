@@ -1,5 +1,0 @@
----
-title: Strip leading & trailing whitespaces in CI/CD secret variable keys
-merge_request: 15615
-author:
-type: fixed

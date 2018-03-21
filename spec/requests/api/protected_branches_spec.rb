@@ -80,6 +80,12 @@ describe API::ProtectedBranches do
 
         it_behaves_like 'protected branch'
       end
+
+      context 'when protected branch contains a period' do
+        let(:protected_name) { 'my.feature' }
+
+        it_behaves_like 'protected branch'
+      end
     end
 
     context 'when authenticated as a guest' do

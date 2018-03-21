@@ -28,6 +28,13 @@ describe Ci::Pipeline, :mailer do
   it { is_expected.to respond_to :short_sha }
   it { is_expected.to delegate_method(:full_path).to(:project).with_prefix }
 
+  describe 'associations' do
+    it 'has a bidirectional relationship with projects' do
+      expect(described_class.reflect_on_association(:project).has_inverse?).to eq(:pipelines)
+      expect(Project.reflect_on_association(:pipelines).has_inverse?).to eq(:project)
+    end
+  end
+
   describe '#source' do
     context 'when creating new pipeline' do
       let(:pipeline) do
@@ -163,12 +170,10 @@ describe Ci::Pipeline, :mailer do
   describe '#predefined_variables' do
     subject { pipeline.predefined_variables }
 
-    it { is_expected.to be_an(Array) }
+    it 'includes all predefined variables in a valid order' do
+      keys = subject.map { |variable| variable[:key] }
 
-    it 'includes the defined keys' do
-      keys = subject.map { |v| v[:key] }
-
-      expect(keys).to include('CI_PIPELINE_ID', 'CI_CONFIG_PATH', 'CI_PIPELINE_SOURCE')
+      expect(keys).to eq %w[CI_PIPELINE_ID CI_CONFIG_PATH CI_PIPELINE_SOURCE]
     end
   end
 
@@ -1440,7 +1445,7 @@ describe Ci::Pipeline, :mailer do
     end
 
     before do
-      project.team << [pipeline.user, Gitlab::Access::DEVELOPER]
+      project.add_developer(pipeline.user)
 
       pipeline.user.global_notification_setting
         .update(level: 'custom', failed_pipeline: true, success_pipeline: true)

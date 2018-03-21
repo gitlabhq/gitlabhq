@@ -17,7 +17,7 @@ When you create a project in GitLab, you'll have access to a large number of
 
 - [Issue tracker](issues/index.md): Discuss implementations with your team within issues
   - [Issue Boards](issue_board.md): Organize and prioritize your workflow
-  - [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards) (**EES/EEP**): Allow your teams to create their own workflows (Issue Boards) for the same project
+  - [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards) (**Starter/Premium**): Allow your teams to create their own workflows (Issue Boards) for the same project
 - [Repositories](repository/index.md): Host your code in a fully
 integrated platform
   - [Branches](repository/branches/index.md): use Git branching strategies to
@@ -29,7 +29,7 @@ integrated platform
   - [Signing commits](gpg_signed_commits/index.md): use GPG to sign your commits
 - [Merge Requests](merge_requests/index.md): Apply your branching
 strategy and get reviewed by your team
-  - [Merge Request Approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) (**EES/EEP**): Ask for approval before
+  - [Merge Request Approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) (**Starter/Premium**): Ask for approval before
   implementing a change
   - [Fix merge conflicts from the UI](merge_requests/resolve_conflicts.md):
   Your Git diff tool right from GitLab's UI
@@ -93,6 +93,9 @@ from your fork to the upstream project
 
 ## Project settings
 
+Set the project's visibility level and  the access levels to its various pages
+and perform actions like archiving, renaming or transferring a project.
+
 Read through the documentation on [project settings](settings/index.md).
 
 ## Import or export a project
@@ -116,3 +119,31 @@ when a project is part of a group (under a
 [group namespace](../group/index.md#namespaces)).
 If you choose to leave a project you will no longer be a project
 member, therefore, unable to contribute.
+
+## Redirects when changing repository paths
+
+When a repository path changes, it is essential to smoothly transition from the
+old location to the new one. GitLab provides two kinds of redirects: the web UI
+and Git push/pull redirects.
+
+Depending on the situation, different things apply.
+
+When [renaming a user](../profile/index.md#changing-your-username) or
+[changing a group path](../group/index.md#changing-a-group-s-path):
+
+- **The redirect to the new URL is permanent**, which means that the original
+  namespace can't be claimed again by any group or user.
+- Existing web URLs for the namespace and anything under it (e.g., projects) will
+  redirect to the new URLs.
+- Starting with GitLab 10.3, existing Git remote URLs for projects under the
+  namespace will redirect to the new remote URL. Every time you push/pull to a
+  repository that has changed its location, a warning message to update
+  your remote will be displayed instead of rejecting your action.
+  This means that any automation scripts, or Git clients will continue to
+  work after a rename, making any transition a lot smoother.
+  To avoid pulling from or pushing to an entirely incorrect repository, the old
+  path will be reserved.
+
+When [renaming-a-repository](settings/index.md#renaming-a-repository), the same
+things apply, except for the Git push/pull actions which will be rejected with a
+warning message to change to the new remote URL.

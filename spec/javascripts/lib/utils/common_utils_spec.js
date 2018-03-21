@@ -1,6 +1,7 @@
 /* eslint-disable promise/catch-or-return */
-
+import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
+import MockAdapter from 'axios-mock-adapter';
 
 describe('common_utils', () => {
   describe('parseUrl', () => {
@@ -162,6 +163,21 @@ describe('common_utils', () => {
       expect(commonUtils.parseQueryStringIntoObject('scope=all&page=2')).toEqual({ scope: 'all', page: '2' });
       expect(commonUtils.parseQueryStringIntoObject('scope=all')).toEqual({ scope: 'all' });
       expect(commonUtils.parseQueryStringIntoObject()).toEqual({});
+    });
+  });
+
+  describe('objectToQueryString', () => {
+    it('returns empty string when `param` is undefined, null or empty string', () => {
+      expect(commonUtils.objectToQueryString()).toBe('');
+      expect(commonUtils.objectToQueryString('')).toBe('');
+    });
+
+    it('returns query string with values of `params`', () => {
+      const singleQueryParams = { foo: true };
+      const multipleQueryParams = { foo: true, bar: true };
+
+      expect(commonUtils.objectToQueryString(singleQueryParams)).toBe('foo=true');
+      expect(commonUtils.objectToQueryString(multipleQueryParams)).toBe('foo=true&bar=true');
     });
   });
 
@@ -413,48 +429,48 @@ describe('common_utils', () => {
 
   describe('setCiStatusFavicon', () => {
     const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/-/jobs/1/status.json`;
+    let mock;
 
     beforeEach(() => {
       const favicon = document.createElement('link');
       favicon.setAttribute('id', 'favicon');
       document.body.appendChild(favicon);
+      mock = new MockAdapter(axios);
     });
 
     afterEach(() => {
+      mock.restore();
       document.body.removeChild(document.getElementById('favicon'));
     });
 
-    it('should reset favicon in case of error', () => {
-      const favicon = document.getElementById('favicon');
-      spyOn($, 'ajax').and.callFake(function (options) {
-        options.error();
-        expect(favicon.getAttribute('href')).toEqual('null');
-      });
+    it('should reset favicon in case of error', (done) => {
+      mock.onGet(BUILD_URL).networkError();
 
-      commonUtils.setCiStatusFavicon(BUILD_URL);
+      commonUtils.setCiStatusFavicon(BUILD_URL)
+        .then(() => {
+          const favicon = document.getElementById('favicon');
+          expect(favicon.getAttribute('href')).toEqual('null');
+          done();
+        })
+        // Error is already caught in catch() block of setCiStatusFavicon,
+        // It won't throw another error for us to catch
+        .catch(done.fail);
     });
 
-    it('should set page favicon to CI status favicon based on provided status', () => {
+    it('should set page favicon to CI status favicon based on provided status', (done) => {
       const FAVICON_PATH = '//icon_status_success';
-      const favicon = document.getElementById('favicon');
 
-      spyOn($, 'ajax').and.callFake(function (options) {
-        options.success({ favicon: FAVICON_PATH });
-        expect(favicon.getAttribute('href')).toEqual(FAVICON_PATH);
+      mock.onGet(BUILD_URL).reply(200, {
+        favicon: FAVICON_PATH,
       });
 
-      commonUtils.setCiStatusFavicon(BUILD_URL);
-    });
-  });
-
-  describe('ajaxPost', () => {
-    it('should perform `$.ajax` call and do `POST` request', () => {
-      const requestURL = '/some/random/api';
-      const data = { keyname: 'value' };
-      const ajaxSpy = spyOn($, 'ajax').and.callFake(() => {});
-
-      commonUtils.ajaxPost(requestURL, data);
-      expect(ajaxSpy.calls.allArgs()[0][0].type).toEqual('POST');
+      commonUtils.setCiStatusFavicon(BUILD_URL)
+        .then(() => {
+          const favicon = document.getElementById('favicon');
+          expect(favicon.getAttribute('href')).toEqual(FAVICON_PATH);
+          done();
+        })
+        .catch(done.fail);
     });
   });
 
@@ -477,6 +493,35 @@ describe('common_utils', () => {
 
     it('should set svg className when passed', () => {
       expect(commonUtils.spriteIcon('test', 'fa fa-test')).toEqual('<svg class="fa fa-test"><use xlink:href="icons.svg#test" /></svg>');
+    });
+  });
+
+  describe('convertObjectPropsToCamelCase', () => {
+    it('returns new object with camelCase property names by converting object with snake_case names', () => {
+      const snakeRegEx = /(_\w)/g;
+      const mockObj = {
+        id: 1,
+        group_name: 'GitLab.org',
+        absolute_web_url: 'https://gitlab.com/gitlab-org/',
+      };
+      const mappings = {
+        id: 'id',
+        groupName: 'group_name',
+        absoluteWebUrl: 'absolute_web_url',
+      };
+
+      const convertedObj = commonUtils.convertObjectPropsToCamelCase(mockObj);
+
+      Object.keys(convertedObj).forEach((prop) => {
+        expect(snakeRegEx.test(prop)).toBeFalsy();
+        expect(convertedObj[prop]).toBe(mockObj[mappings[prop]]);
+      });
+    });
+
+    it('return empty object if method is called with null or undefined', () => {
+      expect(Object.keys(commonUtils.convertObjectPropsToCamelCase(null)).length).toBe(0);
+      expect(Object.keys(commonUtils.convertObjectPropsToCamelCase()).length).toBe(0);
+      expect(Object.keys(commonUtils.convertObjectPropsToCamelCase({})).length).toBe(0);
     });
   });
 });

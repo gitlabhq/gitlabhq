@@ -13,6 +13,8 @@ in the table below.
 | `issues_url`    | The URL to the issue in the issue tracker project that is linked to this GitLab project. Note that the `issues_url` requires `:id` in the URL. This ID is used by GitLab as a placeholder to replace the issue number. For example, `https://customissuetracker.com/project-name/:id`. |
 | `new_issue_url` | Currently unused. Will be changed in a future release. |
 
+Once you have configured and enabled Custom Issue Tracker Service you'll see a link on the GitLab project pages that takes you to that custom issue tracker.
+
 
 ## Referencing issues
 

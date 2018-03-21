@@ -6,7 +6,7 @@
     = render 'callout'
 
   .prepend-top-default
-  - if !current_application_settings.usage_ping_enabled
+  - if !Gitlab::CurrentSettings.usage_ping_enabled
     = render 'disabled'
   - elsif @metric.blank?
     = render 'no_data'

@@ -3,7 +3,7 @@ FactoryBot.define do
     skip_create
 
     project
-    user factory: :user
+    user { project.creator }
     initialize_with { new(project, user) }
   end
 end

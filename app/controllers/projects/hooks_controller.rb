@@ -21,6 +21,7 @@ class Projects::HooksController < Projects::ApplicationController
       @hooks = @project.hooks.select(&:persisted?)
       flash[:alert] = @hook.errors.full_messages.join.html_safe
     end
+
     redirect_to project_settings_integrations_path(@project)
   end
 
@@ -63,18 +64,10 @@ class Projects::HooksController < Projects::ApplicationController
 
   def hook_params
     params.require(:hook).permit(
-      :job_events,
-      :pipeline_events,
       :enable_ssl_verification,
-      :issues_events,
-      :confidential_issues_events,
-      :merge_requests_events,
-      :note_events,
-      :push_events,
-      :tag_push_events,
       :token,
       :url,
-      :wiki_page_events
+      *ProjectHook.triggers.values
     )
   end
 end

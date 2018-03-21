@@ -1,10 +1,6 @@
 - page_title "Merge Requests"
 
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'common_vue'
-  = webpack_bundle_tag 'filtered_search'
-
-- if @group_merge_requests.empty?
+- if group_merge_requests_count(state: 'all').zero?
   = render 'shared/empty_states/merge_requests', project_select_button: true
 - else
   .top-area

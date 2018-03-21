@@ -1,59 +1,76 @@
 %ul.list-unstyled.navbar-sub-nav
-  = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: { id: 'nav-projects-dropdown', class: "home dropdown header-projects" }) do
-    %a{ href: "#", data: { toggle: "dropdown" } }
-      Projects
-      = sprite_icon('angle-down', css_class: 'caret-down')
-    .dropdown-menu.projects-dropdown-menu
-      = render "layouts/nav/projects_dropdown/show"
+  - if dashboard_nav_link?(:projects)
+    = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: { id: 'nav-projects-dropdown', class: "home dropdown header-projects qa-projects-dropdown" }) do
+      %a{ href: "#", data: { toggle: "dropdown" } }
+        Projects
+        = sprite_icon('angle-down', css_class: 'caret-down')
+      .dropdown-menu.projects-dropdown-menu
+        = render "layouts/nav/projects_dropdown/show"
 
-  = nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { class: "hidden-xs" }) do
-    = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups', title: 'Groups' do
-      Groups
+  - if dashboard_nav_link?(:groups)
+    = nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { class: "hidden-xs" }) do
+      = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups qa-groups-link', title: 'Groups' do
+        Groups
 
-  = nav_link(path: 'dashboard#activity', html_options: { class: "visible-lg" }) do
-    = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity', title: 'Activity' do
-      Activity
+  - if dashboard_nav_link?(:activity)
+    = nav_link(path: 'dashboard#activity', html_options: { class: "visible-lg" }) do
+      = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity', title: 'Activity' do
+        Activity
 
-  = nav_link(controller: 'dashboard/milestones', html_options: { class: "visible-lg" }) do
-    = link_to dashboard_milestones_path, class: 'dashboard-shortcuts-milestones', title: 'Milestones' do
-      Milestones
+  - if dashboard_nav_link?(:milestones)
+    = nav_link(controller: 'dashboard/milestones', html_options: { class: "visible-lg" }) do
+      = link_to dashboard_milestones_path, class: 'dashboard-shortcuts-milestones', title: 'Milestones' do
+        Milestones
 
-  = nav_link(controller: 'dashboard/snippets', html_options: { class: "visible-lg" }) do
-    = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets', title: 'Snippets' do
-      Snippets
+  - if dashboard_nav_link?(:snippets)
+    = nav_link(controller: 'dashboard/snippets', html_options: { class: "visible-lg" }) do
+      = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets', title: 'Snippets' do
+        Snippets
 
-  %li.header-more.dropdown.hidden-lg
-    %a{ href: "#", data: { toggle: "dropdown" } }
-      More
-      = sprite_icon('angle-down', css_class: 'caret-down')
-    .dropdown-menu
-      %ul
-        = nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { class: "visible-xs" }) do
-          = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups', title: 'Groups' do
-            Groups
+  - if any_dashboard_nav_link?([:groups, :milestones, :activity, :snippets])
+    %li.header-more.dropdown.hidden-lg
+      %a{ href: "#", data: { toggle: "dropdown" } }
+        More
+        = sprite_icon('angle-down', css_class: 'caret-down')
+      .dropdown-menu
+        %ul
+          - if dashboard_nav_link?(:groups)
+            = nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { class: "visible-xs" }) do
+              = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups', title: 'Groups' do
+                Groups
 
-        = nav_link(path: 'dashboard#activity') do
-          = link_to activity_dashboard_path, title: 'Activity' do
-            Activity
+          - if dashboard_nav_link?(:activity)
+            = nav_link(path: 'dashboard#activity') do
+              = link_to activity_dashboard_path, title: 'Activity' do
+                Activity
 
-        = nav_link(controller: 'dashboard/milestones') do
-          = link_to dashboard_milestones_path, class: 'dashboard-shortcuts-milestones', title: 'Milestones' do
-            Milestones
+          - if dashboard_nav_link?(:milestones)
+            = nav_link(controller: 'dashboard/milestones') do
+              = link_to dashboard_milestones_path, class: 'dashboard-shortcuts-milestones', title: 'Milestones' do
+                Milestones
 
-        = nav_link(controller: 'dashboard/snippets') do
-          = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets', title: 'Snippets' do
-            Snippets
+          - if dashboard_nav_link?(:snippets)
+            = nav_link(controller: 'dashboard/snippets') do
+              = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets', title: 'Snippets' do
+                Snippets
 
   -# Shortcut to Dashboard > Projects
-  %li.hidden
-    = link_to dashboard_projects_path, title: 'Projects', class: 'dashboard-shortcuts-projects' do
-      Projects
+  - if dashboard_nav_link?(:projects)
+    %li.hidden
+      = link_to dashboard_projects_path, title: 'Projects', class: 'dashboard-shortcuts-projects' do
+        Projects
+
+  - if current_controller?('ide')
+    %li.line-separator.hidden-xs
+      = nav_link(controller: 'ide') do
+        = link_to '#', class: 'dashboard-shortcuts-web-ide', title: 'Web IDE' do
+          Web IDE
 
   - if current_user.admin? || Gitlab::Sherlock.enabled?
     %li.line-separator.hidden-xs
   - if current_user.admin?
     = nav_link(controller: 'admin/dashboard') do
-      = link_to admin_root_path, class: 'admin-icon', title: 'Admin area', aria: { label: "Admin area" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+      = link_to admin_root_path, class: 'admin-icon qa-admin-area-link', title: 'Admin area', aria: { label: "Admin area" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
         = sprite_icon('admin', size: 18)
   - if Gitlab::Sherlock.enabled?
     %li

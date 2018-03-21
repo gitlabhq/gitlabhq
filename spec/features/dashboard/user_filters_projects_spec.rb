@@ -7,14 +7,14 @@ describe 'Dashboard > User filters projects' do
   let(:project2) { create(:project, name: 'Treasure', namespace: user2.namespace) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
 
     sign_in(user)
   end
 
   describe 'filtering personal projects' do
     before do
-      project2.team << [user, :developer]
+      project2.add_developer(user)
 
       visit dashboard_projects_path
     end

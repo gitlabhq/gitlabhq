@@ -4,7 +4,7 @@
   .limit-container-width{ class: container_class }
     .avatar-container.s70.project-avatar
       = project_icon(@project, alt: @project.name, class: 'avatar s70 avatar-tile')
-    %h1.project-title
+    %h1.project-title.qa-project-name
       = @project.name
       %span.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@project) }
         = visibility_level_icon(@project.visibility_level, fw: false)
@@ -22,6 +22,12 @@
           - else
             - deleted_message = s_('ForkedFromProjectPath|Forked from %{project_name} (deleted)')
             = deleted_message % { project_name: fork_source_name(@project) }
+
+    .project-badges
+      - @project.badges.each do |badge|
+        - badge_link_url = badge.rendered_link_url(@project)
+        %a{ href: badge_link_url, target: '_blank', rel: 'noopener noreferrer' }
+          %img{ src: badge.rendered_image_url(@project), alt: badge_link_url }
 
     .project-repo-buttons
       .count-buttons

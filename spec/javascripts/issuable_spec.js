@@ -1,3 +1,6 @@
+import $ from 'jquery';
+import MockAdaptor from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import IssuableIndex from '~/issuable_index';
 
 describe('Issuable', () => {
@@ -19,6 +22,8 @@ describe('Issuable', () => {
   });
 
   describe('resetIncomingEmailToken', () => {
+    let mock;
+
     beforeEach(() => {
       const element = document.createElement('a');
       element.classList.add('incoming-email-token-reset');
@@ -30,14 +35,28 @@ describe('Issuable', () => {
       document.body.appendChild(input);
 
       Issuable = new IssuableIndex('issue_');
+
+      mock = new MockAdaptor(axios);
+
+      mock.onPut('foo').reply(200, {
+        new_address: 'testing123',
+      });
     });
 
-    it('should send request to reset email token', () => {
-      spyOn(jQuery, 'ajax').and.callThrough();
+    afterEach(() => {
+      mock.restore();
+    });
+
+    it('should send request to reset email token', (done) => {
+      spyOn(axios, 'put').and.callThrough();
       document.querySelector('.incoming-email-token-reset').click();
 
-      expect(jQuery.ajax).toHaveBeenCalled();
-      expect(jQuery.ajax.calls.argsFor(0)[0].url).toEqual('foo');
+      setTimeout(() => {
+        expect(axios.put).toHaveBeenCalledWith('foo');
+        expect($('#issuable_email').val()).toBe('testing123');
+
+        done();
+      });
     });
   });
 });

@@ -1,9 +1,11 @@
+# Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/954
+#
 namespace :gitlab do
   namespace :cleanup do
     HASHED_REPOSITORY_NAME = '@hashed'.freeze
 
     desc "GitLab | Cleanup | Clean namespaces"
-    task dirs: :environment  do
+    task dirs: :gitlab_environment do
       warn_user_is_not_gitlab
       remove_flag = ENV['REMOVE']
 
@@ -47,7 +49,7 @@ namespace :gitlab do
     end
 
     desc "GitLab | Cleanup | Clean repositories"
-    task repos: :environment  do
+    task repos: :gitlab_environment do
       warn_user_is_not_gitlab
 
       move_suffix = "+orphaned+#{Time.now.to_i}"
@@ -76,7 +78,7 @@ namespace :gitlab do
     end
 
     desc "GitLab | Cleanup | Block users that have been removed in LDAP"
-    task block_removed_ldap_users: :environment  do
+    task block_removed_ldap_users: :gitlab_environment do
       warn_user_is_not_gitlab
       block_flag = ENV['BLOCK']
 
@@ -84,7 +86,8 @@ namespace :gitlab do
         next unless user.ldap_user?
 
         print "#{user.name} (#{user.ldap_identity.extern_uid}) ..."
-        if Gitlab::LDAP::Access.allowed?(user)
+
+        if Gitlab::Auth::LDAP::Access.allowed?(user)
           puts " [OK]".color(:green)
         else
           if block_flag
@@ -106,7 +109,7 @@ namespace :gitlab do
     # released. So likely this should only be run once on gitlab.com
     # Faulty refs are moved so they are kept around, else some features break.
     desc 'GitLab | Cleanup | Remove faulty deployment refs'
-    task move_faulty_deployment_refs: :environment do
+    task move_faulty_deployment_refs: :gitlab_environment do
       projects = Project.where(id: Deployment.select(:project_id).distinct)
 
       projects.find_each do |project|

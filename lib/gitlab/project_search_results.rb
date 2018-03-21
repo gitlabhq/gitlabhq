@@ -2,11 +2,12 @@ module Gitlab
   class ProjectSearchResults < SearchResults
     attr_reader :project, :repository_ref
 
-    def initialize(current_user, project, query, repository_ref = nil)
+    def initialize(current_user, project, query, repository_ref = nil, per_page: 20)
       @current_user = current_user
       @project = project
       @repository_ref = repository_ref.presence || project.default_branch
       @query = query
+      @per_page = per_page
     end
 
     def objects(scope, page = nil)
@@ -20,7 +21,7 @@ module Gitlab
       when 'commits'
         Kaminari.paginate_array(commits).page(page).per(per_page)
       else
-        super
+        super(scope, page, false)
       end
     end
 
@@ -28,8 +29,18 @@ module Gitlab
       @blobs_count ||= blobs.count
     end
 
-    def notes_count
-      @notes_count ||= notes.count
+    def limited_notes_count
+      return @limited_notes_count if defined?(@limited_notes_count)
+
+      types = %w(issue merge_request commit snippet)
+      @limited_notes_count = 0
+
+      types.each do |type|
+        @limited_notes_count += notes_finder(type).limit(count_limit).count
+        break if @limited_notes_count >= count_limit
+      end
+
+      @limited_notes_count
     end
 
     def wiki_blobs_count
@@ -40,29 +51,24 @@ module Gitlab
       @commits_count ||= commits.count
     end
 
-    def self.parse_search_result(result)
+    def self.parse_search_result(result, project = nil)
       ref = nil
       filename = nil
       basename = nil
+      data = ""
       startline = 0
 
       result.each_line.each_with_index do |line, index|
-        matches = line.match(/^(?<ref>[^:]*):(?<filename>.*):(?<startline>\d+):/)
-        if matches
+        prefix ||= line.match(/^(?<ref>[^:]*):(?<filename>.*)\x00(?<startline>\d+)\x00/)&.tap do |matches|
           ref = matches[:ref]
           filename = matches[:filename]
           startline = matches[:startline]
           startline = startline.to_i - index
           extname = Regexp.escape(File.extname(filename))
           basename = filename.sub(/#{extname}$/, '')
-          break
         end
-      end
 
-      data = ""
-
-      result.each_line do |line|
-        data << line.sub(ref, '').sub(filename, '').sub(/^:-\d+-/, '').sub(/^::\d+:/, '')
+        data << line.sub(prefix.to_s, '')
       end
 
       FoundBlob.new(
@@ -70,16 +76,18 @@ module Gitlab
         basename: basename,
         ref: ref,
         startline: startline,
-        data: data
+        data: data,
+        project_id: project ? project.id : nil
       )
     end
 
     def single_commit_result?
-      commits_count == 1 && total_result_count == 1
-    end
+      return false if commits_count != 1
 
-    def total_result_count
-      issues_count + merge_requests_count + milestones_count + notes_count + blobs_count + wiki_blobs_count + commits_count
+      counts = %i(limited_milestones_count limited_notes_count
+                  limited_merge_requests_count limited_issues_count
+                  blobs_count wiki_blobs_count)
+      counts.all? { |count_method| public_send(count_method).zero? } # rubocop:disable GitlabSecurity/PublicSend
     end
 
     private
@@ -109,7 +117,11 @@ module Gitlab
     end
 
     def notes
-      @notes ||= NotesFinder.new(project, @current_user, search: query).execute.user.order('updated_at DESC')
+      @notes ||= notes_finder(nil)
+    end
+
+    def notes_finder(type)
+      NotesFinder.new(project, @current_user, search: query, target_type: type).execute.user.order('updated_at DESC')
     end
 
     def commits

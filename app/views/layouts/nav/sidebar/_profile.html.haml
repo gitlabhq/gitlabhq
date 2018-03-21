@@ -28,7 +28,7 @@
             = link_to profile_account_path do
               %strong.fly-out-top-item-name
                 #{ _('Account') }
-      - if current_application_settings.user_oauth_applications?
+      - if Gitlab::CurrentSettings.user_oauth_applications?
         = nav_link(controller: 'oauth/applications') do
           = link_to applications_profile_path do
             .nav-icon-container

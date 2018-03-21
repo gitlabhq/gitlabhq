@@ -10,7 +10,7 @@ describe API::V3::Pipelines do
                                ref: project.default_branch)
   end
 
-  before { project.team << [user, :master] }
+  before { project.add_master(user) }
 
   shared_examples 'a paginated resources' do
     before do
@@ -188,7 +188,7 @@ describe API::V3::Pipelines do
     context 'user without proper access rights' do
       let!(:reporter) { create(:user) }
 
-      before { project.team << [reporter, :reporter] }
+      before { project.add_reporter(reporter) }
 
       it 'rejects the action' do
         post v3_api("/projects/#{project.id}/pipelines/#{pipeline.id}/cancel", reporter)

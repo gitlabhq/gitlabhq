@@ -6,15 +6,15 @@ module QA
           raise ArgumentError unless traits.include?(:enabled)
 
           Page::Main::Login.act { sign_in_using_credentials }
-          Page::Main::Menu.act { go_to_admin_area }
-          Page::Admin::Menu.act { go_to_settings }
+          Page::Menu::Main.act { go_to_admin_area }
+          Page::Menu::Admin.act { go_to_settings }
 
           Page::Admin::Settings.act do
             enable_hashed_storage
             save_settings
           end
 
-          QA::Page::Main::Menu.act { sign_out }
+          QA::Page::Menu::Main.act { sign_out }
         end
       end
     end

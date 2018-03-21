@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 function expandSection($section) {
   $section.find('.js-settings-toggle').text('Collapse');
   $section.find('.settings-content').off('scroll.expandSection').scrollTop(0);
@@ -42,7 +44,7 @@ export default function initSettingsPanels() {
 
   if (location.hash) {
     const $target = $(location.hash);
-    if ($target.length && $target.hasClass('.settings')) {
+    if ($target.length && $target.hasClass('settings')) {
       expandSection($target);
     }
   }

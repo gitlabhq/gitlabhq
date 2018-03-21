@@ -9,7 +9,7 @@ module RuboCop
         include MigrationHelpers
 
         def_node_matcher :add_column_with_default?, <<~PATTERN
-          (send nil :add_column_with_default $...)
+          (send nil? :add_column_with_default $...)
         PATTERN
 
         def_node_matcher :defines_change?, <<~PATTERN
@@ -26,7 +26,7 @@ module RuboCop
           node.each_ancestor(:def) do |def_node|
             next unless defines_change?(def_node)
 
-            add_offense(def_node, :name)
+            add_offense(def_node, location: :name)
           end
         end
       end

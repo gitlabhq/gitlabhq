@@ -1,33 +1,35 @@
 - page_title 'System Hooks'
-%h3.page-title
-  System hooks
+.row.prepend-top-default
+  .col-lg-4
+    %h4.prepend-top-0
+      = page_title
+    %p
+      #{link_to 'System hooks ', help_page_path('system_hooks/system_hooks'), class: 'vlink'} can be
+      used for binding events when GitLab creates a User or Project.
 
-%p.light
-  #{link_to 'System hooks ', help_page_path('system_hooks/system_hooks'), class: 'vlink'} can be
-  used for binding events when GitLab creates a User or Project.
+  .col-lg-8.append-bottom-default
+    = form_for @hook, as: :hook, url: admin_hooks_path do |f|
+      = render partial: 'form', locals: { form: f, hook: @hook }
+      = f.submit 'Add system hook', class: 'btn btn-create'
 
-%hr
+    %hr
 
-= form_for @hook, as: :hook, url: admin_hooks_path, html: { class: 'form-horizontal' } do |f|
-  = render partial: 'form', locals: { form: f, hook: @hook }
-  .form-actions
-    = f.submit 'Add system hook', class: 'btn btn-create'
-%hr
+    - if @hooks.any?
+      .panel.panel-default
+        .panel-heading
+          System hooks (#{@hooks.count})
+        %ul.content-list
+          - @hooks.each do |hook|
+            %li
+              .controls
+                = render 'shared/web_hooks/test_button', triggers: SystemHook.triggers, hook: hook, button_class: 'btn-sm'
+                = link_to 'Edit', edit_admin_hook_path(hook), class: 'btn btn-sm'
+                = link_to 'Remove', admin_hook_path(hook), data: { confirm: 'Are you sure?' }, method: :delete, class: 'btn btn-remove btn-sm'
+              .monospace= hook.url
+              %div
+                - SystemHook.triggers.each_value do |event|
+                  - if hook.public_send(event)
+                    %span.label.label-gray= event.to_s.titleize
+                %span.label.label-gray SSL Verification: #{hook.enable_ssl_verification ? 'enabled' : 'disabled'}
 
-- if @hooks.any?
-  .panel.panel-default
-    .panel-heading
-      System hooks (#{@hooks.count})
-    %ul.content-list
-      - @hooks.each do |hook|
-        %li
-          .controls
-            = render 'shared/web_hooks/test_button', triggers: SystemHook::TRIGGERS, hook: hook, button_class: 'btn-sm'
-            = link_to 'Edit', edit_admin_hook_path(hook), class: 'btn btn-sm'
-            = link_to 'Remove', admin_hook_path(hook), data: { confirm: 'Are you sure?' }, method: :delete, class: 'btn btn-remove btn-sm'
-          .monospace= hook.url
-          %div
-            - SystemHook::TRIGGERS.each_value do |event|
-              - if hook.public_send(event)
-                %span.label.label-gray= event.to_s.titleize
-            %span.label.label-gray SSL Verification: #{hook.enable_ssl_verification ? 'enabled' : 'disabled'}
+= render 'shared/plugins/index'

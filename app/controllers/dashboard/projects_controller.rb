@@ -4,6 +4,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
 
   before_action :set_non_archived_param
   before_action :default_sorting
+  skip_cross_project_access_check :index, :starred
 
   def index
     @projects = load_projects(params.merge(non_public: true)).page(params[:page])

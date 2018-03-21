@@ -1,112 +1,226 @@
 require 'spec_helper'
 
 describe Members::DestroyService do
-  let(:user) { create(:user) }
+  let(:current_user) { create(:user) }
   let(:member_user) { create(:user) }
-  let(:project) { create(:project, :public) }
   let(:group) { create(:group, :public) }
+  let(:group_project) { create(:project, :public, group: group) }
+  let(:opts) { {} }
 
   shared_examples 'a service raising ActiveRecord::RecordNotFound' do
     it 'raises ActiveRecord::RecordNotFound' do
-      expect { described_class.new(source, user, params).execute }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { described_class.new(current_user).execute(member) }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 
   shared_examples 'a service raising Gitlab::Access::AccessDeniedError' do
     it 'raises Gitlab::Access::AccessDeniedError' do
-      expect { described_class.new(source, user, params).execute }.to raise_error(Gitlab::Access::AccessDeniedError)
+      expect { described_class.new(current_user).execute(member) }.to raise_error(Gitlab::Access::AccessDeniedError)
     end
   end
 
   shared_examples 'a service destroying a member' do
     it 'destroys the member' do
-      expect { described_class.new(source, user, params).execute }.to change { source.members.count }.by(-1)
+      expect { described_class.new(current_user).execute(member, opts) }.to change { member.source.members_and_requesters.count }.by(-1)
     end
 
-    context 'when the given member is an access requester' do
-      before do
-        source.members.find_by(user_id: member_user).destroy
-        source.update_attributes(request_access_enabled: true)
-        source.request_access(member_user)
-      end
-      let(:access_requester) { source.requesters.find_by(user_id: member_user) }
-
-      it_behaves_like 'a service raising ActiveRecord::RecordNotFound'
-
-      %i[requesters all].each do |scope|
-        context "and #{scope} scope is passed" do
-          it 'destroys the access requester' do
-            expect { described_class.new(source, user, params).execute(scope) }.to change { source.requesters.count }.by(-1)
-          end
-
-          it 'calls Member#after_decline_request' do
-            expect_any_instance_of(NotificationService).to receive(:decline_access_request).with(access_requester)
-
-            described_class.new(source, user, params).execute(scope)
-          end
-
-          context 'when current user is the member' do
-            it 'does not call Member#after_decline_request' do
-              expect_any_instance_of(NotificationService).not_to receive(:decline_access_request).with(access_requester)
-
-              described_class.new(source, member_user, params).execute(scope)
-            end
-          end
-        end
+    it 'destroys member notification_settings' do
+      if member_user.notification_settings.any?
+        expect { described_class.new(current_user).execute(member, opts) }
+          .to change { member_user.notification_settings.count }.by(-1)
+      else
+        expect { described_class.new(current_user).execute(member, opts) }
+          .not_to change { member_user.notification_settings.count }
       end
     end
   end
 
-  context 'when no member are found' do
-    let(:params) { { user_id: 42 } }
+  shared_examples 'a service destroying a member with access' do
+    it_behaves_like 'a service destroying a member'
 
-    it_behaves_like 'a service raising ActiveRecord::RecordNotFound' do
-      let(:source) { project }
-    end
+    it 'invalidates cached counts for todos and assigned issues and merge requests', :aggregate_failures do
+      create(:issue, project: group_project, assignees: [member_user])
+      create(:merge_request, source_project: group_project, assignee: member_user)
+      create(:todo, :pending, project: group_project, user: member_user)
+      create(:todo, :done, project: group_project, user: member_user)
 
-    it_behaves_like 'a service raising ActiveRecord::RecordNotFound' do
-      let(:source) { group }
+      expect(member_user.assigned_open_merge_requests_count).to be(1)
+      expect(member_user.assigned_open_issues_count).to be(1)
+      expect(member_user.todos_pending_count).to be(1)
+      expect(member_user.todos_done_count).to be(1)
+
+      described_class.new(current_user).execute(member, opts)
+
+      expect(member_user.assigned_open_merge_requests_count).to be(0)
+      expect(member_user.assigned_open_issues_count).to be(0)
+      expect(member_user.todos_pending_count).to be(0)
+      expect(member_user.todos_done_count).to be(0)
     end
   end
 
-  context 'when a member is found' do
+  shared_examples 'a service destroying an access requester' do
+    it_behaves_like 'a service destroying a member'
+
+    it 'calls Member#after_decline_request' do
+      expect_any_instance_of(NotificationService).to receive(:decline_access_request).with(member)
+
+      described_class.new(current_user).execute(member)
+    end
+
+    context 'when current user is the member' do
+      it 'does not call Member#after_decline_request' do
+        expect_any_instance_of(NotificationService).not_to receive(:decline_access_request).with(member)
+
+        described_class.new(member_user).execute(member)
+      end
+    end
+  end
+
+  context 'with a member with access' do
     before do
-      project.team << [member_user, :developer]
-      group.add_developer(member_user)
+      group_project.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+      group.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
     end
-    let(:params) { { user_id: member_user.id } }
 
     context 'when current user cannot destroy the given member' do
-      it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
-        let(:source) { project }
+      context 'with a project member' do
+        let(:member) { group_project.members.find_by(user_id: member_user.id) }
+
+        before do
+          group_project.add_developer(member_user)
+        end
+
+        it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError'
+
+        it_behaves_like 'a service destroying a member with access' do
+          let(:opts) { { skip_authorization: true } }
+        end
       end
 
-      it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
-        let(:source) { group }
+      context 'with a group member' do
+        let(:member) { group.members.find_by(user_id: member_user.id) }
+
+        before do
+          group.add_developer(member_user)
+        end
+
+        it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError'
+
+        it_behaves_like 'a service destroying a member with access' do
+          let(:opts) { { skip_authorization: true } }
+        end
       end
     end
 
     context 'when current user can destroy the given member' do
       before do
-        project.team << [user, :master]
-        group.add_owner(user)
+        group_project.add_master(current_user)
+        group.add_owner(current_user)
       end
 
-      it_behaves_like 'a service destroying a member' do
-        let(:source) { project }
-      end
+      context 'with a project member' do
+        let(:member) { group_project.members.find_by(user_id: member_user.id) }
 
-      it_behaves_like 'a service destroying a member' do
-        let(:source) { group }
-      end
-
-      context 'when given a :id' do
-        let(:params) { { id: project.members.find_by!(user_id: user.id).id } }
-
-        it 'destroys the member' do
-          expect { described_class.new(project, user, params).execute }
-            .to change { project.members.count }.by(-1)
+        before do
+          group_project.add_developer(member_user)
         end
+
+        it_behaves_like 'a service destroying a member with access'
+      end
+
+      context 'with a group member' do
+        let(:member) { group.members.find_by(user_id: member_user.id) }
+
+        before do
+          group.add_developer(member_user)
+        end
+
+        it_behaves_like 'a service destroying a member with access'
+      end
+    end
+  end
+
+  context 'with an access requester' do
+    before do
+      group_project.update_attributes(request_access_enabled: true)
+      group.update_attributes(request_access_enabled: true)
+      group_project.request_access(member_user)
+      group.request_access(member_user)
+    end
+
+    context 'when current user cannot destroy the given access requester' do
+      it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
+        let(:member) { group_project.requesters.find_by(user_id: member_user.id) }
+      end
+
+      it_behaves_like 'a service destroying a member' do
+        let(:opts) { { skip_authorization: true } }
+        let(:member) { group_project.requesters.find_by(user_id: member_user.id) }
+      end
+
+      it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
+        let(:member) { group.requesters.find_by(user_id: member_user.id) }
+      end
+
+      it_behaves_like 'a service destroying a member' do
+        let(:opts) { { skip_authorization: true } }
+        let(:member) { group.requesters.find_by(user_id: member_user.id) }
+      end
+    end
+
+    context 'when current user can destroy the given access requester' do
+      before do
+        group_project.add_master(current_user)
+        group.add_owner(current_user)
+      end
+
+      it_behaves_like 'a service destroying an access requester' do
+        let(:member) { group_project.requesters.find_by(user_id: member_user.id) }
+      end
+
+      it_behaves_like 'a service destroying an access requester' do
+        let(:member) { group.requesters.find_by(user_id: member_user.id) }
+      end
+    end
+  end
+
+  context 'with an invited user' do
+    let(:project_invited_member) { create(:project_member, :invited, project: group_project) }
+    let(:group_invited_member) { create(:group_member, :invited, group: group) }
+
+    context 'when current user cannot destroy the given invited user' do
+      it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
+        let(:member) { project_invited_member }
+      end
+
+      it_behaves_like 'a service destroying a member' do
+        let(:opts) { { skip_authorization: true } }
+        let(:member) { project_invited_member }
+      end
+
+      it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
+        let(:member) { group_invited_member }
+      end
+
+      it_behaves_like 'a service destroying a member' do
+        let(:opts) { { skip_authorization: true } }
+        let(:member) { group_invited_member }
+      end
+    end
+
+    context 'when current user can destroy the given invited user' do
+      before do
+        group_project.add_master(current_user)
+        group.add_owner(current_user)
+      end
+
+      # Regression spec for issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/32504
+      it_behaves_like 'a service destroying a member' do
+        let(:member) { project_invited_member }
+      end
+
+      it_behaves_like 'a service destroying a member' do
+        let(:member) { group_invited_member }
       end
     end
   end

@@ -152,6 +152,12 @@ production: &base
     # The location where LFS objects are stored (default: shared/lfs-objects).
     # storage_path: shared/lfs-objects
 
+  ## Uploads (attachments, avatars, etc...)
+  uploads:
+    # The location where uploads objects are stored (default: public/).
+    # storage_path: public/
+    # base_dir: uploads/-/system
+
   ## GitLab Pages
   pages:
     enabled: false
@@ -175,14 +181,16 @@ production: &base
     host: 'https://mattermost.example.com'
 
   ## Gravatar
-  ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
+  ## If using gravatar.com, there's nothing to change here. For Libravatar
+  ## you'll need to provide the custom URLs. For more information,
+  ## see: https://docs.gitlab.com/ee/customization/libravatar.html
   gravatar:
-    # gravatar urls: possible placeholders: %{hash} %{size} %{email} %{username}
-    # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
+    # Gravatar/Libravatar URLs: possible placeholders: %{hash} %{size} %{email} %{username}
+    # plain_url: "http://..."     # default: https://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
     # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
 
   ## Auxiliary jobs
-  # Periodically executed jobs, to self-heal Gitlab, do external synchronizations, etc.
+  # Periodically executed jobs, to self-heal GitLab, do external synchronizations, etc.
   # Please read here for more information: https://github.com/ondrejbartas/sidekiq-cron#adding-cron-job
   cron_jobs:
     # Flag stuck CI jobs as failed
@@ -205,6 +213,10 @@ production: &base
     # Remove outdated repository archives
     repository_archive_cache_worker:
       cron: "0 * * * *"
+
+    # Verify custom GitLab Pages domains
+    pages_domain_verification_cron_worker:
+      cron: "*/15 * * * *"
 
   registry:
     # enabled: true
@@ -361,6 +373,9 @@ production: &base
           name:       'cn'
           first_name: 'givenName'
           last_name:  'sn'
+
+        # If lowercase_usernames is enabled, GitLab will lower case the username.
+        lowercase_usernames: false
 
       # GitLab EE only: add more LDAP servers
       # Choose an ID made of a-z and 0-9 . This ID will be stored in the database
@@ -640,6 +655,10 @@ test:
     enabled: true
   lfs:
     enabled: false
+  artifacts:
+    path: tmp/tests/artifacts
+  uploads:
+    storage_path: tmp/tests/public
   gitlab:
     host: localhost
     port: 80
@@ -650,8 +669,6 @@ test:
     # user: YOUR_USERNAME
   pages:
     path: tmp/tests/pages
-  artifacts:
-    path: tmp/tests/artifacts
   repositories:
     storages:
       default:

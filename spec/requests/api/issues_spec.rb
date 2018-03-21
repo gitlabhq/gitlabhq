@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::Issues, :mailer do
+describe API::Issues do
   set(:user) { create(:user) }
   set(:project) do
     create(:project, :public, creator_id: user.id, namespace: user.namespace)
@@ -58,8 +58,8 @@ describe API::Issues, :mailer do
   let(:no_milestone_title) { URI.escape(Milestone::None.title) }
 
   before(:all) do
-    project.team << [user, :reporter]
-    project.team << [guest, :guest]
+    project.add_reporter(user)
+    project.add_guest(guest)
   end
 
   describe "GET /issues" do
@@ -161,6 +161,42 @@ describe API::Issues, :mailer do
 
         expect_paginated_array_response(size: 1)
         expect(first_issue['id']).to eq(issue.id)
+      end
+
+      context 'filtering before a specific date' do
+        let!(:issue2) { create(:issue, project: project, author: user, created_at: Date.new(2000, 1, 1), updated_at: Date.new(2000, 1, 1)) }
+
+        it 'returns issues created before a specific date' do
+          get api('/issues?created_before=2000-01-02T00:00:00.060Z', user)
+
+          expect(json_response.size).to eq(1)
+          expect(first_issue['id']).to eq(issue2.id)
+        end
+
+        it 'returns issues updated before a specific date' do
+          get api('/issues?updated_before=2000-01-02T00:00:00.060Z', user)
+
+          expect(json_response.size).to eq(1)
+          expect(first_issue['id']).to eq(issue2.id)
+        end
+      end
+
+      context 'filtering after a specific date' do
+        let!(:issue2) { create(:issue, project: project, author: user, created_at: 1.week.from_now, updated_at: 1.week.from_now) }
+
+        it 'returns issues created after a specific date' do
+          get api("/issues?created_after=#{issue2.created_at}", user)
+
+          expect(json_response.size).to eq(1)
+          expect(first_issue['id']).to eq(issue2.id)
+        end
+
+        it 'returns issues updated after a specific date' do
+          get api("/issues?updated_after=#{issue2.updated_at}", user)
+
+          expect(json_response.size).to eq(1)
+          expect(first_issue['id']).to eq(issue2.id)
+        end
       end
 
       it 'returns an array of labeled issues' do
@@ -344,7 +380,7 @@ describe API::Issues, :mailer do
     let!(:group_note) { create(:note_on_issue, author: user, project: group_project, noteable: group_issue) }
 
     before do
-      group_project.team << [user, :reporter]
+      group_project.add_reporter(user)
     end
     let(:base_url) { "/groups/#{group.id}/issues" }
 
@@ -847,6 +883,15 @@ describe API::Issues, :mailer do
         expect(json_response['assignee']['name']).to eq(user2.name)
         expect(json_response['assignees'].first['name']).to eq(user2.name)
       end
+
+      it 'creates a new project issue when assignee_id is empty' do
+        post api("/projects/#{project.id}/issues", user),
+          title: 'new issue', assignee_id: ''
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['title']).to eq('new issue')
+        expect(json_response['assignee']).to be_nil
+      end
     end
 
     context 'single assignee restrictions' do
@@ -923,18 +968,6 @@ describe API::Issues, :mailer do
       expect(json_response['error']).to eq('confidential is invalid')
     end
 
-    it "sends notifications for subscribers of newly added labels" do
-      label = project.labels.first
-      label.toggle_subscription(user2, project)
-
-      perform_enqueued_jobs do
-        post api("/projects/#{project.id}/issues", user),
-          title: 'new issue', labels: label.title
-      end
-
-      should_email(user2)
-    end
-
     it "returns a 400 bad request if title not given" do
       post api("/projects/#{project.id}/issues", user), labels: 'label, label2'
       expect(response).to have_gitlab_http_status(400)
@@ -967,7 +1000,7 @@ describe API::Issues, :mailer do
       let(:project) { merge_request.source_project }
 
       before do
-        project.team << [user, :master]
+        project.add_master(user)
       end
 
       context 'resolving all discussions in a merge request' do
@@ -1237,18 +1270,6 @@ describe API::Issues, :mailer do
       expect(json_response['labels']).to eq([label.title])
     end
 
-    it "sends notifications for subscribers of newly added labels when issue is updated" do
-      label = create(:label, title: 'foo', color: '#FFAABB', project: project)
-      label.toggle_subscription(user2, project)
-
-      perform_enqueued_jobs do
-        put api("/projects/#{project.id}/issues/#{issue.iid}", user),
-          title: 'updated title', labels: label.title
-      end
-
-      should_email(user2)
-    end
-
     it 'removes all labels' do
       put api("/projects/#{project.id}/issues/#{issue.iid}", user), labels: ''
 
@@ -1371,7 +1392,7 @@ describe API::Issues, :mailer do
   end
 
   describe '/projects/:id/issues/:issue_iid/move' do
-    let!(:target_project) { create(:project, path: 'project2', creator_id: user.id, namespace: user.namespace ) }
+    let!(:target_project) { create(:project, creator_id: user.id, namespace: user.namespace ) }
     let!(:target_project2) { create(:project, creator_id: non_member.id, namespace: non_member.namespace ) }
 
     it 'moves an issue' do
@@ -1432,7 +1453,7 @@ describe API::Issues, :mailer do
 
     context 'when source project does not exist' do
       it 'returns 404 when trying to move an issue' do
-        post api("/projects/123/issues/#{issue.iid}/move", user),
+        post api("/projects/0/issues/#{issue.iid}/move", user),
                  to_project_id: target_project.id
 
         expect(response).to have_gitlab_http_status(404)
@@ -1443,7 +1464,7 @@ describe API::Issues, :mailer do
     context 'when target project does not exist' do
       it 'returns 404 when trying to move an issue' do
         post api("/projects/#{project.id}/issues/#{issue.iid}/move", user),
-                 to_project_id: 123
+                 to_project_id: 0
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -1581,5 +1602,17 @@ describe API::Issues, :mailer do
     expect(response).to include_pagination_headers
     expect(json_response).to be_an Array
     expect(json_response.length).to eq(size) if size
+  end
+
+  describe 'GET projects/:id/issues/:issue_iid/participants' do
+    it_behaves_like 'issuable participants endpoint' do
+      let(:entity) { issue }
+    end
+
+    it 'returns 404 if the issue is confidential' do
+      post api("/projects/#{project.id}/issues/#{confidential_issue.iid}/participants", non_member)
+
+      expect(response).to have_gitlab_http_status(404)
+    end
   end
 end

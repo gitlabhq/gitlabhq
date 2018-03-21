@@ -1,11 +1,13 @@
+import _ from 'underscore';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import UsersCache from '~/lib/utils/users_cache';
 
-import '~/filtered_search/filtered_search_visual_tokens';
+import FilteredSearchVisualTokens from '~/filtered_search/filtered_search_visual_tokens';
+import DropdownUtils from '~/filtered_search//dropdown_utils';
 import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
 
 describe('Filtered Search Visual Tokens', () => {
-  const subject = gl.FilteredSearchVisualTokens;
+  const subject = FilteredSearchVisualTokens;
 
   const findElements = (tokenElement) => {
     const tokenNameElement = tokenElement.querySelector('.name');
@@ -123,6 +125,24 @@ describe('Filtered Search Visual Tokens', () => {
         expect(lastVisualToken).toEqual(document.querySelector('.filtered-search-token'));
         expect(isLastVisualTokenValid).toEqual(false);
       });
+    });
+  });
+
+  describe('getEndpointWithQueryParams', () => {
+    it('returns `endpoint` string as is when second param `endpointQueryParams` is undefined, null or empty string', () => {
+      const endpoint = 'foo/bar/labels.json';
+      expect(subject.getEndpointWithQueryParams(endpoint)).toBe(endpoint);
+      expect(subject.getEndpointWithQueryParams(endpoint, null)).toBe(endpoint);
+      expect(subject.getEndpointWithQueryParams(endpoint, '')).toBe(endpoint);
+    });
+
+    it('returns `endpoint` string with values of `endpointQueryParams`', () => {
+      const endpoint = 'foo/bar/labels.json';
+      const singleQueryParams = '{"foo":"true"}';
+      const multipleQueryParams = '{"foo":"true","bar":"true"}';
+
+      expect(subject.getEndpointWithQueryParams(endpoint, singleQueryParams)).toBe(`${endpoint}?foo=true`);
+      expect(subject.getEndpointWithQueryParams(endpoint, multipleQueryParams)).toBe(`${endpoint}?foo=true&bar=true`);
     });
   });
 
@@ -859,25 +879,25 @@ describe('Filtered Search Visual Tokens', () => {
     it('does not preprocess more than once', () => {
       let labels = [];
 
-      spyOn(gl.DropdownUtils, 'duplicateLabelPreprocessing').and.callFake(() => []);
+      spyOn(DropdownUtils, 'duplicateLabelPreprocessing').and.callFake(() => []);
 
-      labels = gl.FilteredSearchVisualTokens.preprocessLabel(endpoint, labels);
-      gl.FilteredSearchVisualTokens.preprocessLabel(endpoint, labels);
+      labels = FilteredSearchVisualTokens.preprocessLabel(endpoint, labels);
+      FilteredSearchVisualTokens.preprocessLabel(endpoint, labels);
 
-      expect(gl.DropdownUtils.duplicateLabelPreprocessing.calls.count()).toEqual(1);
+      expect(DropdownUtils.duplicateLabelPreprocessing.calls.count()).toEqual(1);
     });
 
     describe('not preprocessed before', () => {
       it('returns preprocessed labels', () => {
         let labels = [];
         expect(labels.preprocessed).not.toEqual(true);
-        labels = gl.FilteredSearchVisualTokens.preprocessLabel(endpoint, labels);
+        labels = FilteredSearchVisualTokens.preprocessLabel(endpoint, labels);
         expect(labels.preprocessed).toEqual(true);
       });
 
       it('overrides AjaxCache with preprocessed results', () => {
         spyOn(AjaxCache, 'override').and.callFake(() => {});
-        gl.FilteredSearchVisualTokens.preprocessLabel(endpoint, []);
+        FilteredSearchVisualTokens.preprocessLabel(endpoint, []);
         expect(AjaxCache.override.calls.count()).toEqual(1);
       });
     });
@@ -925,7 +945,7 @@ describe('Filtered Search Visual Tokens', () => {
     };
 
     const findLabel = tokenValue => labelData.find(
-      label => tokenValue === `~${gl.DropdownUtils.getEscapedText(label.title)}`,
+      label => tokenValue === `~${DropdownUtils.getEscapedText(label.title)}`,
     );
 
     it('updates the color of a label token', (done) => {

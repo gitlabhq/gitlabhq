@@ -10,14 +10,19 @@ class GroupsController < Groups::ApplicationController
   before_action :group, except: [:index, :new, :create]
 
   # Authorize
-  before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects]
+  before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects, :transfer]
   before_action :authorize_create_group!, only: [:new]
 
   before_action :group_projects, only: [:projects, :activity, :issues, :merge_requests]
-  before_action :group_merge_requests, only: [:merge_requests]
   before_action :event_filter, only: [:activity]
 
   before_action :user_actions, only: [:show, :subgroups]
+
+  skip_cross_project_access_check :index, :new, :create, :edit, :update,
+                                  :destroy, :projects
+  # When loading show as an atom feed, we render events that could leak cross
+  # project information
+  skip_cross_project_access_check :show, if: -> { request.format.html? }
 
   layout :determine_layout
 
@@ -94,6 +99,19 @@ class GroupsController < Groups::ApplicationController
     redirect_to root_path, status: 302, alert: "Group '#{@group.name}' was scheduled for deletion."
   end
 
+  def transfer
+    parent_group = Group.find_by(id: params[:new_parent_group_id])
+    service = ::Groups::TransferService.new(@group, current_user)
+
+    if service.execute(parent_group)
+      flash[:notice] = "Group '#{@group.name}' was successfully transferred."
+      redirect_to group_path(@group)
+    else
+      flash.now[:alert] = service.error
+      render :edit
+    end
+  end
+
   protected
 
   def authorize_create_group!
@@ -118,10 +136,10 @@ class GroupsController < Groups::ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(group_params_ce)
+    params.require(:group).permit(group_params_attributes)
   end
 
-  def group_params_ce
+  def group_params_attributes
     [
       :avatar,
       :description,
@@ -150,7 +168,6 @@ class GroupsController < Groups::ApplicationController
     @projects = GroupProjectsFinder.new(params: params, group: group, options: options, current_user: current_user)
                   .execute
                   .includes(:namespace)
-                  .page(params[:page])
 
     @events = EventCollection
       .new(@projects, offset: params[:offset].to_i, filter: event_filter)

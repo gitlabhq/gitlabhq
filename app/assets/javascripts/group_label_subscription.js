@@ -1,3 +1,8 @@
+import $ from 'jquery';
+import axios from './lib/utils/axios_utils';
+import flash from './flash';
+import { __ } from './locale';
+
 export default class GroupLabelSubscription {
   constructor(container) {
     const $container = $(container);
@@ -13,14 +18,12 @@ export default class GroupLabelSubscription {
     event.preventDefault();
 
     const url = this.$unsubscribeButtons.attr('data-url');
-
-    $.ajax({
-      type: 'POST',
-      url,
-    }).done(() => {
-      this.toggleSubscriptionButtons();
-      this.$unsubscribeButtons.removeAttr('data-url');
-    });
+    axios.post(url)
+      .then(() => {
+        this.toggleSubscriptionButtons();
+        this.$unsubscribeButtons.removeAttr('data-url');
+      })
+      .catch(() => flash(__('There was an error when unsubscribing from this label.')));
   }
 
   subscribe(event) {
@@ -31,12 +34,9 @@ export default class GroupLabelSubscription {
 
     this.$unsubscribeButtons.attr('data-url', url);
 
-    $.ajax({
-      type: 'POST',
-      url,
-    }).done(() => {
-      this.toggleSubscriptionButtons();
-    });
+    axios.post(url)
+      .then(() => this.toggleSubscriptionButtons())
+      .catch(() => flash(__('There was an error when subscribing to this label.')));
   }
 
   toggleSubscriptionButtons() {

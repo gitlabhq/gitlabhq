@@ -3,6 +3,8 @@ module Gitlab
     module Pipeline
       module Chain
         class Skip < Chain::Base
+          include ::Gitlab::Utils::StrongMemoize
+
           SKIP_PATTERN = /\[(ci[ _-]skip|skip[ _-]ci)\]/i
 
           def perform!
@@ -24,7 +26,9 @@ module Gitlab
           def commit_message_skips_ci?
             return false unless @pipeline.git_commit_message
 
-            @skipped ||= !!(@pipeline.git_commit_message =~ SKIP_PATTERN)
+            strong_memoize(:commit_message_skips_ci) do
+              !!(@pipeline.git_commit_message =~ SKIP_PATTERN)
+            end
           end
         end
       end

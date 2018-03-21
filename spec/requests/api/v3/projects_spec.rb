@@ -1,14 +1,12 @@
 require 'spec_helper'
 
 describe API::V3::Projects do
-  include Gitlab::CurrentSettings
-
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
   let(:admin) { create(:admin) }
   let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
-  let(:project2) { create(:project, path: 'project2', creator_id: user.id, namespace: user.namespace) }
+  let(:project2) { create(:project, creator_id: user.id, namespace: user.namespace) }
   let(:snippet) { create(:project_snippet, :public, author: user, project: project, title: 'example') }
   let(:project_member) { create(:project_member, :developer, user: user3, project: project) }
   let(:user4) { create(:user) }
@@ -403,7 +401,7 @@ describe API::V3::Projects do
       post v3_api('/projects', user), project
 
       project.each_pair do |k, v|
-        next if %i[has_external_issue_tracker issues_enabled merge_requests_enabled wiki_enabled].include?(k)
+        next if %i[storage_version has_external_issue_tracker issues_enabled merge_requests_enabled wiki_enabled].include?(k)
 
         expect(json_response[k.to_s]).to eq(v)
       end
@@ -547,7 +545,7 @@ describe API::V3::Projects do
 
       expect(response).to have_gitlab_http_status(201)
       project.each_pair do |k, v|
-        next if %i[has_external_issue_tracker path].include?(k)
+        next if %i[storage_version has_external_issue_tracker path].include?(k)
 
         expect(json_response[k.to_s]).to eq(v)
       end
@@ -753,7 +751,7 @@ describe API::V3::Projects do
 
       describe 'permissions' do
         context 'all projects' do
-          before { project.team << [user, :master] }
+          before { project.add_master(user) }
 
           it 'contains permission information' do
             get v3_api("/projects", user)
@@ -767,7 +765,7 @@ describe API::V3::Projects do
 
         context 'personal project' do
           it 'sets project access and returns 200' do
-            project.team << [user, :master]
+            project.add_master(user)
             get v3_api("/projects/#{project.id}", user)
 
             expect(response).to have_gitlab_http_status(200)
@@ -1362,7 +1360,7 @@ describe API::V3::Projects do
 
     context 'user without archiving rights to the project' do
       before do
-        project.team << [user3, :developer]
+        project.add_developer(user3)
       end
 
       it 'rejects the action' do
@@ -1398,7 +1396,7 @@ describe API::V3::Projects do
 
     context 'user without archiving rights to the project' do
       before do
-        project.team << [user3, :developer]
+        project.add_developer(user3)
       end
 
       it 'rejects the action' do
@@ -1466,7 +1464,7 @@ describe API::V3::Projects do
 
       it 'does not remove a project if not an owner' do
         user3 = create(:user)
-        project.team << [user3, :developer]
+        project.add_developer(user3)
         delete v3_api("/projects/#{project.id}", user3)
         expect(response).to have_gitlab_http_status(403)
       end

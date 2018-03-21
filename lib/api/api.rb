@@ -13,7 +13,8 @@ module API
         formatter: Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp.new,
         include: [
           GrapeLogging::Loggers::FilterParameters.new,
-          GrapeLogging::Loggers::ClientEnv.new
+          GrapeLogging::Loggers::ClientEnv.new,
+          Gitlab::GrapeLogging::Loggers::UserLogger.new
         ]
 
     allow_access_with_scope :api
@@ -105,7 +106,9 @@ module API
 
     # Keep in alphabetical order
     mount ::API::AccessRequests
+    mount ::API::Applications
     mount ::API::AwardEmoji
+    mount ::API::Badges
     mount ::API::Boards
     mount ::API::Branches
     mount ::API::BroadcastMessages
@@ -118,7 +121,9 @@ module API
     mount ::API::Events
     mount ::API::Features
     mount ::API::Files
+    mount ::API::GroupBoards
     mount ::API::Groups
+    mount ::API::GroupMilestones
     mount ::API::Internal
     mount ::API::Issues
     mount ::API::Jobs
@@ -129,21 +134,24 @@ module API
     mount ::API::Members
     mount ::API::MergeRequestDiffs
     mount ::API::MergeRequests
-    mount ::API::ProjectMilestones
-    mount ::API::GroupMilestones
     mount ::API::Namespaces
     mount ::API::Notes
+    mount ::API::Discussions
     mount ::API::NotificationSettings
     mount ::API::PagesDomains
     mount ::API::Pipelines
     mount ::API::PipelineSchedules
+    mount ::API::ProjectExport
+    mount ::API::ProjectImport
     mount ::API::ProjectHooks
     mount ::API::Projects
+    mount ::API::ProjectMilestones
     mount ::API::ProjectSnippets
     mount ::API::ProtectedBranches
     mount ::API::Repositories
     mount ::API::Runner
     mount ::API::Runners
+    mount ::API::Search
     mount ::API::Services
     mount ::API::Settings
     mount ::API::SidekiqMetrics

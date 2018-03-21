@@ -2,6 +2,7 @@
 /* global DiscussionMixins */
 /* global CommentsStore */
 
+import $ from 'jquery';
 import Vue from 'vue';
 
 import '../mixins/discussion';
@@ -197,7 +198,7 @@ const JumpToDiscussion = Vue.extend({
       }
 
       $.scrollTo($target, {
-        offset: 0
+        offset: -150
       });
     }
   },

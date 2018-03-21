@@ -10,6 +10,7 @@ module API
         requires :url, type: String, desc: "The URL to send the request to"
         optional :push_events, type: Boolean, desc: "Trigger hook on push events"
         optional :issues_events, type: Boolean, desc: "Trigger hook on issues events"
+        optional :confidential_issues_events, type: Boolean, desc: "Trigger hook on confidential issues events"
         optional :merge_requests_events, type: Boolean, desc: "Trigger hook on merge request events"
         optional :tag_push_events, type: Boolean, desc: "Trigger hook on tag push events"
         optional :note_events, type: Boolean, desc: "Trigger hook on note(comment) events"

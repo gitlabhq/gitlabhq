@@ -1,4 +1,5 @@
 <script>
+  import $ from 'jquery';
   import animateMixin from '../mixins/animate';
   import TaskList from '../../task_list';
   import recaptchaModalImplementor from '../../vue_shared/mixins/recaptcha_modal_implementor';
@@ -56,7 +57,10 @@
         this.updateTaskStatusText();
       },
     },
-
+    mounted() {
+      this.renderGFM();
+      this.updateTaskStatusText();
+    },
     methods: {
       renderGFM() {
         $(this.$refs['gfm-content']).renderGFM();
@@ -75,6 +79,7 @@
       taskListUpdateSuccess(data) {
         try {
           this.checkForSpam(data);
+          this.closeRecaptcha();
         } catch (error) {
           if (error && error.name === 'SpamError') this.openRecaptcha();
         }
@@ -88,16 +93,16 @@
 
         if (taskRegexMatches) {
           $tasks.text(this.taskStatus);
-          $tasksShort.text(`${taskRegexMatches[1]}/${taskRegexMatches[2]} task${taskRegexMatches[2] > 1 ? 's' : ''}`);
+          $tasksShort.text(
+            `${taskRegexMatches[1]}/${taskRegexMatches[2]} task${taskRegexMatches[2] > 1 ?
+            's' :
+            ''}`,
+          );
         } else {
           $tasks.text('');
           $tasksShort.text('');
         }
       },
-    },
-    mounted() {
-      this.renderGFM();
-      this.updateTaskStatusText();
     },
   };
 </script>
@@ -108,7 +113,8 @@
     class="description"
     :class="{
       'js-task-list-container': canUpdate
-    }">
+    }"
+  >
     <div
       class="wiki"
       :class="{

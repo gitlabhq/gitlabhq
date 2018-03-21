@@ -115,7 +115,7 @@ namespace :gemojione do
         end
       end
 
-      style_path = Rails.root.join(*%w(app assets stylesheets framework emoji-sprites.scss))
+      style_path = Rails.root.join(*%w(app assets stylesheets framework emoji_sprites.scss))
 
       # Combine the resized assets into a packed sprite and re-generate the SCSS
       SpriteFactory.cssurl = "image-url('$IMAGE')"

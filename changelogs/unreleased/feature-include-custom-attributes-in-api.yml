@@ -1,0 +1,5 @@
+---
+title: Allow including custom attributes in API responses
+merge_request: 16526
+author: Markus Koller
+type: changed

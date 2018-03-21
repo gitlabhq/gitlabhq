@@ -97,6 +97,29 @@ describe 'Gitaly Request count tests' do
 end
 ```
 
+## Running tests with a locally modified version of Gitaly
+
+Normally, gitlab-ce/ee tests use a local clone of Gitaly in `tmp/tests/gitaly`
+pinned at the version specified in GITALY_SERVER_VERSION. If you want
+to run tests locally against a modified version of Gitaly you can
+replace `tmp/tests/gitaly` with a symlink.
+
+```shell
+rm -rf tmp/tests/gitaly
+ln -s /path/to/gitaly tmp/tests/gitaly
+```
+
+Make sure you run `make` in your local Gitaly directory before running
+tests. Otherwise, Gitaly will fail to boot.
+
+If you make changes to your local Gitaly in between test runs you need
+to manually run `make` again.
+
+Note that CI tests will not use your locally modified version of
+Gitaly. To use a custom Gitaly version in CI you need to update
+GITALY_SERVER_VERSION. You can use the format `=revision` to use a
+non-tagged commit from https://gitlab.com/gitlab-org/gitaly in CI.
+
 ---
 
 [Return to Development documentation](README.md)

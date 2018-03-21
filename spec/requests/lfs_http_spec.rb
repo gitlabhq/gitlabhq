@@ -63,7 +63,7 @@ describe 'Git LFS API and storage' do
 
     context 'with LFS disabled globally' do
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         allow(Gitlab.config.lfs).to receive(:enabled).and_return(false)
       end
 
@@ -106,7 +106,7 @@ describe 'Git LFS API and storage' do
 
     context 'with LFS enabled globally' do
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         enable_lfs
       end
 
@@ -234,7 +234,7 @@ describe 'Git LFS API and storage' do
 
           context 'and does have project access' do
             let(:update_permissions) do
-              project.team << [user, :master]
+              project.add_master(user)
               project.lfs_objects << lfs_object
             end
 
@@ -259,7 +259,7 @@ describe 'Git LFS API and storage' do
 
           context 'when user allowed' do
             let(:update_permissions) do
-              project.team << [user, :master]
+              project.add_master(user)
               project.lfs_objects << lfs_object
             end
 
@@ -295,7 +295,7 @@ describe 'Git LFS API and storage' do
               let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
               let(:update_permissions) do
-                project.team << [user, :reporter]
+                project.add_reporter(user)
                 project.lfs_objects << lfs_object
               end
 
@@ -517,7 +517,7 @@ describe 'Git LFS API and storage' do
         let(:authorization) { authorize_user }
 
         let(:update_user_permissions) do
-          project.team << [user, role]
+          project.add_role(user, role)
         end
 
         it_behaves_like 'an authorized requests' do
@@ -553,7 +553,7 @@ describe 'Git LFS API and storage' do
             let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
             let(:update_user_permissions) do
-              project.team << [user, :reporter]
+              project.add_reporter(user)
             end
 
             it_behaves_like 'an authorized requests'
@@ -673,7 +673,7 @@ describe 'Git LFS API and storage' do
           let(:authorization) { authorize_user }
 
           let(:update_user_permissions) do
-            project.team << [user, :developer]
+            project.add_developer(user)
           end
 
           context 'when pushing an lfs object that already exists' do
@@ -781,11 +781,11 @@ describe 'Git LFS API and storage' do
         end
 
         context 'when deploy key has project push access' do
-          let(:key) { create(:deploy_key, can_push: true) }
+          let(:key) { create(:deploy_key) }
           let(:authorization) { authorize_deploy_key }
 
           let(:update_user_permissions) do
-            project.deploy_keys << key
+            project.deploy_keys_projects.create(deploy_key: key, can_push: true)
           end
 
           it_behaves_like 'pushes new LFS objects'
@@ -795,7 +795,7 @@ describe 'Git LFS API and storage' do
       context 'when user is not authenticated' do
         context 'when user has push access' do
           let(:update_user_permissions) do
-            project.team << [user, :master]
+            project.add_master(user)
           end
 
           it 'responds with status 401' do
@@ -840,7 +840,7 @@ describe 'Git LFS API and storage' do
 
     before do
       allow(Gitlab::Database).to receive(:read_only?) { true }
-      project.team << [user, :master]
+      project.add_master(user)
       enable_lfs
     end
 
@@ -935,7 +935,7 @@ describe 'Git LFS API and storage' do
 
         describe 'when user has push access to the project' do
           before do
-            project.team << [user, :developer]
+            project.add_developer(user)
           end
 
           context 'and the request bypassed workhorse' do
@@ -958,7 +958,7 @@ describe 'Git LFS API and storage' do
             end
 
             it 'responds with status 200, location of lfs store and object details' do
-              expect(json_response['StoreLFSPath']).to eq("#{Gitlab.config.shared.path}/lfs-objects/tmp/upload")
+              expect(json_response['StoreLFSPath']).to eq(LfsObjectUploader.workhorse_upload_path)
               expect(json_response['LfsOid']).to eq(sample_oid)
               expect(json_response['LfsSize']).to eq(sample_size)
             end
@@ -993,7 +993,7 @@ describe 'Git LFS API and storage' do
 
         describe 'and user does not have push access' do
           before do
-            project.team << [user, :reporter]
+            project.add_reporter(user)
           end
 
           it_behaves_like 'forbidden'
@@ -1010,7 +1010,7 @@ describe 'Git LFS API and storage' do
             let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
             before do
-              project.team << [user, :developer]
+              project.add_developer(user)
               put_authorize
             end
 
@@ -1062,7 +1062,7 @@ describe 'Git LFS API and storage' do
 
         describe 'when user has push access to the project' do
           before do
-            project.team << [user, :developer]
+            project.add_developer(user)
           end
 
           context 'and request is sent by gitlab-workhorse to authorize the request' do
@@ -1075,7 +1075,7 @@ describe 'Git LFS API and storage' do
             end
 
             it 'with location of lfs store and object details' do
-              expect(json_response['StoreLFSPath']).to eq("#{Gitlab.config.shared.path}/lfs-objects/tmp/upload")
+              expect(json_response['StoreLFSPath']).to eq(LfsObjectUploader.workhorse_upload_path)
               expect(json_response['LfsOid']).to eq(sample_oid)
               expect(json_response['LfsSize']).to eq(sample_size)
             end
@@ -1149,7 +1149,7 @@ describe 'Git LFS API and storage' do
         let(:authorization) { authorize_user }
 
         before do
-          second_project.team << [user, :master]
+          second_project.add_master(user)
           upstream_project.lfs_objects << lfs_object
         end
 
@@ -1208,7 +1208,7 @@ describe 'Git LFS API and storage' do
   end
 
   def post_lfs_json(url, body = nil, headers = nil)
-    post(url, body.try(:to_json), (headers || {}).merge('Content-Type' => 'application/vnd.git-lfs+json'))
+    post(url, body.try(:to_json), (headers || {}).merge('Content-Type' => LfsRequest::CONTENT_TYPE))
   end
 
   def json_response

@@ -1,17 +1,16 @@
 require 'spec_helper'
 
 describe User do
-  include Gitlab::CurrentSettings
   include ProjectForksHelper
 
   describe 'modules' do
     subject { described_class }
 
     it { is_expected.to include_module(Gitlab::ConfigHelper) }
-    it { is_expected.to include_module(Gitlab::CurrentSettings) }
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
     it { is_expected.to include_module(TokenAuthenticatable) }
+    it { is_expected.to include_module(BlocksJsonSerialization) }
   end
 
   describe 'delegations' do
@@ -21,18 +20,19 @@ describe User do
   describe 'associations' do
     it { is_expected.to have_one(:namespace) }
     it { is_expected.to have_many(:snippets).dependent(:destroy) }
-    it { is_expected.to have_many(:project_members).dependent(:destroy) }
+    it { is_expected.to have_many(:members) }
+    it { is_expected.to have_many(:project_members) }
+    it { is_expected.to have_many(:group_members) }
     it { is_expected.to have_many(:groups) }
     it { is_expected.to have_many(:keys).dependent(:destroy) }
     it { is_expected.to have_many(:deploy_keys).dependent(:destroy) }
     it { is_expected.to have_many(:events).dependent(:destroy) }
-    it { is_expected.to have_many(:recent_events).class_name('Event') }
     it { is_expected.to have_many(:issues).dependent(:destroy) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
     it { is_expected.to have_many(:identities).dependent(:destroy) }
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
-    it { is_expected.to have_many(:todos).dependent(:destroy) }
+    it { is_expected.to have_many(:todos) }
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
     it { is_expected.to have_many(:triggers).dependent(:destroy) }
     it { is_expected.to have_many(:builds).dependent(:nullify) }
@@ -100,7 +100,7 @@ describe User do
         user = build(:user, username: 'dashboard')
 
         expect(user).not_to be_valid
-        expect(user.errors.values).to eq [['dashboard is a reserved name']]
+        expect(user.errors.messages[:username]).to eq ['dashboard is a reserved name']
       end
 
       it 'allows child names' do
@@ -115,12 +115,6 @@ describe User do
         expect(user).to be_valid
       end
 
-      it 'validates uniqueness' do
-        user = build(:user)
-
-        expect(user).to validate_uniqueness_of(:username).case_insensitive
-      end
-
       context 'when username is changed' do
         let(:user) { build_stubbed(:user, username: 'old_path', namespace: build_stubbed(:namespace)) }
 
@@ -131,6 +125,45 @@ describe User do
           expect(user.errors.messages[:username].first).to match('cannot be changed if a personal project has container registry tags')
         end
       end
+
+      context 'when the username was used by another user before' do
+        let(:username) { 'foo' }
+        let!(:other_user) { create(:user, username: username) }
+
+        before do
+          other_user.username = 'bar'
+          other_user.save!
+        end
+
+        it 'is invalid' do
+          user = build(:user, username: username)
+
+          expect(user).not_to be_valid
+          expect(user.errors.full_messages).to eq(['Username has been taken before'])
+        end
+      end
+
+      context 'when the username is in use by another user' do
+        let(:username) { 'foo' }
+        let!(:other_user) { create(:user, username: username) }
+
+        it 'is invalid' do
+          user = build(:user, username: username)
+
+          expect(user).not_to be_valid
+          expect(user.errors.full_messages).to eq(['Username has already been taken'])
+        end
+      end
+    end
+
+    it 'has a DB-level NOT NULL constraint on projects_limit' do
+      user = create(:user)
+
+      expect(user.persisted?).to eq(true)
+
+      expect do
+        user.update_columns(projects_limit: nil)
+      end.to raise_error(ActiveRecord::StatementInvalid)
     end
 
     it { is_expected.to validate_presence_of(:projects_limit) }
@@ -462,6 +495,14 @@ describe User do
         user2.update_tracked_fields!(request)
       end.to change { user2.reload.current_sign_in_at }
     end
+
+    it 'does not write if the DB is in read-only mode' do
+      expect(Gitlab::Database).to receive(:read_only?).and_return(true)
+
+      expect do
+        user.update_tracked_fields!(request)
+      end.not_to change { user.reload.current_sign_in_at }
+    end
   end
 
   shared_context 'user keys' do
@@ -547,7 +588,7 @@ describe User do
         stub_config_setting(default_can_create_group: true)
 
         expect { user.update_attributes(external: false) }.to change { user.can_create_group }.to(true)
-          .and change { user.projects_limit }.to(current_application_settings.default_projects_limit)
+          .and change { user.projects_limit }.to(Gitlab::CurrentSettings.default_projects_limit)
       end
     end
 
@@ -759,7 +800,7 @@ describe User do
 
     before do
       # add user to project
-      project.team << [user, :master]
+      project.add_master(user)
 
       # create invite to projet
       create(:project_member, :developer, project: project, invite_token: '1234', invite_email: 'inviteduser1@example.com')
@@ -804,9 +845,16 @@ describe User do
         expect(user.can_create_group).to be_falsey
         expect(user.theme_id).to eq(1)
       end
+
+      it 'does not undo projects_limit setting if it matches old DB default of 10' do
+        # If the real default project limit is 10 then this test is worthless
+        expect(Gitlab.config.gitlab.default_projects_limit).not_to eq(10)
+        user = described_class.new(projects_limit: 10)
+        expect(user.projects_limit).to eq(10)
+      end
     end
 
-    context 'when current_application_settings.user_default_external is true' do
+    context 'when Gitlab::CurrentSettings.user_default_external is true' do
       before do
         stub_application_setting(user_default_external: true)
       end
@@ -849,6 +897,14 @@ describe User do
 
         expect(key.user.require_ssh_key?).to eq(false)
       end
+    end
+  end
+
+  describe '.find_for_database_authentication' do
+    it 'strips whitespace from login' do
+      user = create(:user)
+
+      expect(described_class.find_for_database_authentication({ login: " #{user.username} " })).to eq user
     end
   end
 
@@ -946,6 +1002,14 @@ describe User do
         expect(described_class.search(user3.username.upcase)).to eq([user3])
       end
     end
+
+    it 'returns no matches for an empty string' do
+      expect(described_class.search('')).to be_empty
+    end
+
+    it 'returns no matches for nil' do
+      expect(described_class.search(nil)).to be_empty
+    end
   end
 
   describe '.search_with_secondary_emails' do
@@ -999,6 +1063,14 @@ describe User do
 
     it 'does not return users with a matching part of secondary email' do
       expect(search_with_secondary_emails(email.email[1..4])).not_to include([email.user])
+    end
+
+    it 'returns no matches for an empty string' do
+      expect(search_with_secondary_emails('')).to be_empty
+    end
+
+    it 'returns no matches for nil' do
+      expect(search_with_secondary_emails(nil)).to be_empty
     end
   end
 
@@ -1399,28 +1471,34 @@ describe User do
   describe '#sort' do
     before do
       described_class.delete_all
-      @user = create :user, created_at: Date.today, last_sign_in_at: Date.today, name: 'Alpha'
-      @user1 = create :user, created_at: Date.today - 1, last_sign_in_at: Date.today - 1, name: 'Omega'
-      @user2 = create :user, created_at: Date.today - 2, last_sign_in_at: nil, name: 'Beta'
+      @user = create :user, created_at: Date.today, current_sign_in_at: Date.today, name: 'Alpha'
+      @user1 = create :user, created_at: Date.today - 1, current_sign_in_at: Date.today - 1, name: 'Omega'
+      @user2 = create :user, created_at: Date.today - 2, name: 'Beta'
     end
 
     context 'when sort by recent_sign_in' do
-      it 'sorts users by the recent sign-in time' do
-        expect(described_class.sort('recent_sign_in').first).to eq(@user)
+      let(:users) { described_class.sort('recent_sign_in') }
+
+      it 'sorts users by recent sign-in time' do
+        expect(users.first).to eq(@user)
+        expect(users.second).to eq(@user1)
       end
 
       it 'pushes users who never signed in to the end' do
-        expect(described_class.sort('recent_sign_in').third).to eq(@user2)
+        expect(users.third).to eq(@user2)
       end
     end
 
     context 'when sort by oldest_sign_in' do
+      let(:users) { described_class.sort('oldest_sign_in') }
+
       it 'sorts users by the oldest sign-in time' do
-        expect(described_class.sort('oldest_sign_in').first).to eq(@user1)
+        expect(users.first).to eq(@user1)
+        expect(users.second).to eq(@user)
       end
 
       it 'pushes users who never signed in to the end' do
-        expect(described_class.sort('oldest_sign_in').third).to eq(@user2)
+        expect(users.third).to eq(@user2)
       end
     end
 
@@ -1447,8 +1525,8 @@ describe User do
     let!(:merge_event) { create(:event, :created, project: project3, target: merge_request, author: subject) }
 
     before do
-      project1.team << [subject, :master]
-      project2.team << [subject, :master]
+      project1.add_master(subject)
+      project2.add_master(subject)
     end
 
     it "includes IDs for projects the user has pushed to" do
@@ -1523,17 +1601,66 @@ describe User do
   describe '#authorized_groups' do
     let!(:user) { create(:user) }
     let!(:private_group) { create(:group) }
+    let!(:child_group) { create(:group, parent: private_group) }
+
+    let!(:project_group) { create(:group) }
+    let!(:project) { create(:project, group: project_group) }
 
     before do
       private_group.add_user(user, Gitlab::Access::MASTER)
+      project.add_master(user)
     end
 
     subject { user.authorized_groups }
 
-    it { is_expected.to eq([private_group]) }
+    it { is_expected.to contain_exactly private_group, project_group }
   end
 
-  describe '#authorized_projects', :truncate do
+  describe '#membership_groups' do
+    let!(:user) { create(:user) }
+    let!(:parent_group) { create(:group) }
+    let!(:child_group) { create(:group, parent: parent_group) }
+
+    before do
+      parent_group.add_user(user, Gitlab::Access::MASTER)
+    end
+
+    subject { user.membership_groups }
+
+    if Group.supports_nested_groups?
+      it { is_expected.to contain_exactly parent_group, child_group }
+    else
+      it { is_expected.to contain_exactly parent_group }
+    end
+  end
+
+  describe '#authorizations_for_projects' do
+    let!(:user) { create(:user) }
+    subject { Project.where("EXISTS (?)", user.authorizations_for_projects) }
+
+    it 'includes projects that belong to a user, but no other projects' do
+      owned = create(:project, :private, namespace: user.namespace)
+      member = create(:project, :private).tap { |p| p.add_master(user) }
+      other = create(:project)
+
+      expect(subject).to include(owned)
+      expect(subject).to include(member)
+      expect(subject).not_to include(other)
+    end
+
+    it 'includes projects a user has access to, but no other projects' do
+      other_user = create(:user)
+      accessible = create(:project, :private, namespace: other_user.namespace) do |project|
+        project.add_developer(user)
+      end
+      other = create(:project)
+
+      expect(subject).to include(accessible)
+      expect(subject).not_to include(other)
+    end
+  end
+
+  describe '#authorized_projects', :delete do
     context 'with a minimum access level' do
       it 'includes projects for which the user is an owner' do
         user = create(:user)
@@ -1547,7 +1674,7 @@ describe User do
         user = create(:user)
         project = create(:project, :private)
 
-        project.team << [user, Gitlab::Access::MASTER]
+        project.add_master(user)
 
         expect(user.authorized_projects(Gitlab::Access::REPORTER))
           .to contain_exactly(project)
@@ -1566,7 +1693,7 @@ describe User do
       user2   = create(:user)
       project = create(:project, :private, namespace: user1.namespace)
 
-      project.team << [user2, Gitlab::Access::DEVELOPER]
+      project.add_developer(user2)
 
       expect(user2.authorized_projects).to include(project)
     end
@@ -1611,7 +1738,7 @@ describe User do
       user2   = create(:user)
       project = create(:project, :private, namespace: user1.namespace)
 
-      project.team << [user2, Gitlab::Access::DEVELOPER]
+      project.add_developer(user2)
 
       expect(user2.authorized_projects).to include(project)
 
@@ -1701,7 +1828,7 @@ describe User do
     shared_examples :member do
       context 'when the user is a master' do
         before do
-          add_user(Gitlab::Access::MASTER)
+          add_user(:master)
         end
 
         it 'loads' do
@@ -1711,7 +1838,7 @@ describe User do
 
       context 'when the user is a developer' do
         before do
-          add_user(Gitlab::Access::DEVELOPER)
+          add_user(:developer)
         end
 
         it 'does not load' do
@@ -1735,7 +1862,7 @@ describe User do
       let(:project) { create(:project) }
 
       def add_user(access)
-        project.team << [user, access]
+        project.add_role(user, access)
       end
 
       it_behaves_like :member
@@ -1748,8 +1875,8 @@ describe User do
     let(:user) { create(:user) }
 
     before do
-      project1.team << [user, :reporter]
-      project2.team << [user, :guest]
+      project1.add_reporter(user)
+      project2.add_guest(user)
     end
 
     it 'returns the projects when using a single project ID' do
@@ -1891,8 +2018,8 @@ describe User do
     let(:user) { create(:user) }
 
     before do
-      project1.team << [user, :reporter]
-      project2.team << [user, :guest]
+      project1.add_reporter(user)
+      project2.add_guest(user)
 
       user.project_authorizations.delete_all
       user.refresh_authorized_projects
@@ -2230,17 +2357,17 @@ describe User do
           end
 
           context 'when there is a validation error (namespace name taken) while updating namespace' do
-            let!(:conflicting_namespace) { create(:group, name: new_username, path: 'quz') }
+            let!(:conflicting_namespace) { create(:group, path: new_username) }
 
             it 'causes the user save to fail' do
               expect(user.update_attributes(username: new_username)).to be_falsey
-              expect(user.namespace.errors.messages[:name].first).to eq('has already been taken')
+              expect(user.namespace.errors.messages[:path].first).to eq('has already been taken')
             end
 
             it 'adds the namespace errors to the user' do
               user.update_attributes(username: new_username)
 
-              expect(user.errors.full_messages.first).to eq('Namespace name has already been taken')
+              expect(user.errors.full_messages.first).to eq('Username has already been taken')
             end
           end
         end
@@ -2583,7 +2710,7 @@ describe User do
 
       it 'should raise an ActiveRecord::RecordInvalid exception' do
         user2 = build(:user, username: 'foo')
-        expect { user2.save! }.to raise_error(ActiveRecord::RecordInvalid, /Path foo has been taken before/)
+        expect { user2.save! }.to raise_error(ActiveRecord::RecordInvalid, /Username has been taken before/)
       end
     end
 

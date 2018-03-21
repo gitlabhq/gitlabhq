@@ -48,7 +48,7 @@
       }
 
       .dropdown-menu {
-        max-height: 250px;
+        max-height: $dropdown-max-height;
         overflow-y: auto;
       }
 
@@ -67,13 +67,6 @@
           .btn-default {
             background-color: $white-normal;
             border-color: $border-white-normal;
-          }
-        }
-
-        .btn {
-          .icon-play {
-            height: 13px;
-            width: 12px;
           }
         }
       }
@@ -128,7 +121,7 @@
 
     .ref-name {
       font-weight: $gl-font-weight-bold;
-      max-width: 120px;
+      max-width: 100px;
       overflow: hidden;
       display: inline-block;
       white-space: nowrap;
@@ -141,6 +134,12 @@
       width: 14px;
       vertical-align: middle;
       fill: $gl-text-color-secondary;
+    }
+
+    .sprite {
+      width: 12px;
+      height: 12px;
+      fill: $gl-text-color;
     }
 
     .fa {
@@ -229,7 +228,7 @@
 .stage-cell {
   &.table-section {
     @media (min-width: $screen-md-min) {
-      min-width: 148px;
+      min-width: 160px; /* Hack alert: Without this the mini graph pipeline won't work properly*/
       margin-right: -4px;
     }
   }
@@ -321,14 +320,17 @@
   }
 }
 
-// Pipeline graph
-.pipeline-graph {
+.pipeline-tab-content {
   width: 100%;
   background-color: $gray-light;
   padding: $gl-padding;
+  overflow: auto;
+}
+
+// Pipeline graph
+.pipeline-graph {
   white-space: nowrap;
   transition: max-height 0.3s, padding 0.3s;
-  overflow: auto;
 
   .stage-column-list,
   .builds-container > ul {
@@ -792,7 +794,6 @@ button.mini-pipeline-graph-dropdown-toggle {
 
     // link to the build
     .mini-pipeline-graph-dropdown-item {
-      padding: 3px 7px 4px;
       align-items: center;
       clear: both;
       display: flex;
@@ -986,4 +987,12 @@ button.mini-pipeline-graph-dropdown-toggle {
 .autodevops-title {
   font-weight: $gl-font-weight-normal;
   line-height: 1.5;
+}
+
+.legend-all {
+  color: $gl-text-color-secondary;
+}
+
+.legend-success {
+  color: $green-500;
 }

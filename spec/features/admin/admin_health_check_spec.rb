@@ -17,7 +17,7 @@ feature "Admin Health Check", :feature do
       page.has_text? 'Health Check'
       page.has_text? 'Health information can be retrieved'
 
-      token = current_application_settings.health_check_access_token
+      token = Gitlab::CurrentSettings.health_check_access_token
 
       expect(page).to have_content("Access token is #{token}")
       expect(page).to have_selector('#health-check-token', text: token)
@@ -25,7 +25,7 @@ feature "Admin Health Check", :feature do
 
     describe 'reload access token' do
       it 'changes the access token' do
-        orig_token = current_application_settings.health_check_access_token
+        orig_token = Gitlab::CurrentSettings.health_check_access_token
         click_button 'Reset health check access token'
 
         expect(page).to have_content('New health check access token has been generated!')

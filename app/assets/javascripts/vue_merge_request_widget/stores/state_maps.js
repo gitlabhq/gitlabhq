@@ -16,7 +16,8 @@ const stateToComponentMap = {
   mergeWhenPipelineSucceeds: 'mr-widget-merge-when-pipeline-succeeds',
   failedToMerge: 'mr-widget-failed-to-merge',
   autoMergeFailed: 'mr-widget-auto-merge-failed',
-  shaMismatch: 'mr-widget-sha-mismatch',
+  shaMismatch: 'sha-mismatch',
+  rebase: 'mr-widget-rebase',
 };
 
 const statesToShowHelpWidget = [
@@ -29,7 +30,27 @@ const statesToShowHelpWidget = [
   'pipelineFailed',
   'pipelineBlocked',
   'autoMergeFailed',
+  'rebase',
 ];
+
+export const stateKey = {
+  archived: 'archived',
+  missingBranch: 'missingBranch',
+  nothingToMerge: 'nothingToMerge',
+  checking: 'checking',
+  conflicts: 'conflicts',
+  workInProgress: 'workInProgress',
+  pipelineFailed: 'pipelineFailed',
+  unresolvedDiscussions: 'unresolvedDiscussions',
+  pipelineBlocked: 'pipelineBlocked',
+  shaMismatch: 'shaMismatch',
+  autoMergeFailed: 'autoMergeFailed',
+  mergeWhenPipelineSucceeds: 'mergeWhenPipelineSucceeds',
+  notAllowedToMerge: 'notAllowedToMerge',
+  readyToMerge: 'readyToMerge',
+  rebase: 'rebase',
+  merged: 'merged',
+};
 
 export default {
   stateToComponentMap,

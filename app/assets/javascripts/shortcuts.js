@@ -1,5 +1,7 @@
+import $ from 'jquery';
 import Cookies from 'js-cookie';
 import Mousetrap from 'mousetrap';
+import axios from './lib/utils/axios_utils';
 import { refreshCurrentPage, visitUrl } from './lib/utils/url_utility';
 import findAndFollowLink from './shortcuts_dashboard_navigation';
 
@@ -13,12 +15,10 @@ Mousetrap.stopCallback = (e, element, combo) => {
 };
 
 export default class Shortcuts {
-  constructor(skipResetBindings) {
+  constructor() {
     this.onToggleHelp = this.onToggleHelp.bind(this);
     this.enabledHelp = [];
-    if (!skipResetBindings) {
-      Mousetrap.reset();
-    }
+
     Mousetrap.bind('?', this.onToggleHelp);
     Mousetrap.bind('s', Shortcuts.focusSearch);
     Mousetrap.bind('f', this.focusFilter.bind(this));
@@ -51,7 +51,10 @@ export default class Shortcuts {
   }
 
   onToggleHelp(e) {
-    e.preventDefault();
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
+
     Shortcuts.toggleHelp(this.enabledHelp);
   }
 
@@ -59,7 +62,7 @@ export default class Shortcuts {
     e.preventDefault();
     const performanceBarCookieName = 'perf_bar_enabled';
     if (Cookies.get(performanceBarCookieName) === 'true') {
-      Cookies.remove(performanceBarCookieName, { path: '/' });
+      Cookies.set(performanceBarCookieName, 'false', { path: '/' });
     } else {
       Cookies.set(performanceBarCookieName, 'true', { path: '/' });
     }
@@ -84,21 +87,21 @@ export default class Shortcuts {
       $modal.modal('toggle');
     }
 
-    $.ajax({
-      url: gon.shortcuts_path,
-      dataType: 'script',
-      success() {
-        if (location && location.length > 0) {
-          const results = [];
-          for (let i = 0, len = location.length; i < len; i += 1) {
-            results.push($(location[i]).show());
-          }
-          return results;
-        }
+    return axios.get(gon.shortcuts_path, {
+      responseType: 'text',
+    }).then(({ data }) => {
+      $.globalEval(data);
 
-        $('.hidden-shortcut').show();
-        return $('.js-more-help-button').remove();
-      },
+      if (location && location.length > 0) {
+        const results = [];
+        for (let i = 0, len = location.length; i < len; i += 1) {
+          results.push($(location[i]).show());
+        }
+        return results;
+      }
+
+      $('.hidden-shortcut').show();
+      return $('.js-more-help-button').remove();
     });
   }
 
@@ -112,6 +115,9 @@ export default class Shortcuts {
 
   static focusSearch(e) {
     $('#search').focus();
-    e.preventDefault();
+
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
   }
 }

@@ -1,7 +1,5 @@
 import Vue from 'vue';
-import VueResource from 'vue-resource';
-
-Vue.use(VueResource);
+import '../../vue_shared/vue_resource_interceptor';
 
 export default class GroupsService {
   constructor(endpoint) {

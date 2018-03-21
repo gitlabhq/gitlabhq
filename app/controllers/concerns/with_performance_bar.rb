@@ -6,13 +6,22 @@ module WithPerformanceBar
   end
 
   def peek_enabled?
-    return true if Rails.env.development?
     return false unless Gitlab::PerformanceBar.enabled?(current_user)
 
     if RequestStore.active?
-      RequestStore.fetch(:peek_enabled) { cookies[:perf_bar_enabled].present? }
+      RequestStore.fetch(:peek_enabled) { cookie_or_default_value }
     else
-      cookies[:perf_bar_enabled].present?
+      cookie_or_default_value
+    end
+  end
+
+  private
+
+  def cookie_or_default_value
+    if cookies[:perf_bar_enabled].present?
+      cookies[:perf_bar_enabled] == 'true'
+    else
+      cookies[:perf_bar_enabled] = 'true' if Rails.env.development?
     end
   end
 end

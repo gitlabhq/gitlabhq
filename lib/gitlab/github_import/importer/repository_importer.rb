@@ -29,7 +29,7 @@ module Gitlab
             # this code, e.g. because we had to retry this job after
             # `import_wiki?` raised a rate limit error. In this case we'll skip
             # re-importing the main repository.
-            if project.repository.empty_repo?
+            if project.empty_repo?
               import_repository
             else
               true
@@ -63,6 +63,7 @@ module Gitlab
           true
         rescue Gitlab::Shell::Error => e
           if e.message !~ /repository not exported/
+            project.create_wiki
             fail_import("Failed to import the wiki: #{e.message}")
           else
             true

@@ -1,8 +1,15 @@
 <script>
   import actionBtn from './action_btn.vue';
   import { getTimeago } from '../../lib/utils/datetime_utility';
+  import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
+    components: {
+      actionBtn,
+    },
+    directives: {
+      tooltip,
+    },
     props: {
       deployKey: {
         type: Object,
@@ -17,9 +24,6 @@
         required: true,
       },
     },
-    components: {
-      actionBtn,
-    },
     computed: {
       timeagoDate() {
         return getTimeago().format(this.deployKey.created_at);
@@ -31,6 +35,9 @@
     methods: {
       isEnabled(id) {
         return this.store.findEnabledKey(id) !== undefined;
+      },
+      tooltipTitle(project) {
+        return project.can_push ? 'Write access allowed' : 'Read access only';
       },
     },
   };
@@ -46,26 +53,29 @@
       </i>
     </div>
     <div class="deploy-key-content key-list-item-info">
-      <strong class="title">
+      <strong class="title qa-key-title">
         {{ deployKey.title }}
       </strong>
-      <div class="description">
+      <div class="description qa-key-fingerprint">
         {{ deployKey.fingerprint }}
-      </div>
-      <div
-        v-if="deployKey.can_push"
-        class="write-access-allowed"
-      >
-        Write access allowed
       </div>
     </div>
     <div class="deploy-key-content prepend-left-default deploy-key-projects">
       <a
-        v-for="project in deployKey.projects"
+        v-for="(deployKeysProject, i) in deployKey.deploy_keys_projects"
+        :key="i"
         class="label deploy-project-label"
-        :href="project.full_path"
+        :href="deployKeysProject.project.full_path"
+        :title="tooltipTitle(deployKeysProject)"
+        v-tooltip
       >
-        {{ project.full_name }}
+        {{ deployKeysProject.project.full_name }}
+        <i
+          v-if="!deployKeysProject.can_push"
+          aria-hidden="true"
+          class="fa fa-lock"
+        >
+        </i>
       </a>
     </div>
     <div class="deploy-key-content">

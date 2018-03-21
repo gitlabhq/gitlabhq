@@ -1,7 +1,6 @@
-/* eslint-disable no-new */
-
 import Vue from 'vue';
 import Flash from '../../../flash';
+import { __ } from '../../../locale';
 
 const Store = gl.issueBoards.BoardsStore;
 
@@ -25,7 +24,7 @@ gl.issueBoards.RemoveIssueBtn = Vue.extend({
   },
   computed: {
     updateUrl() {
-      return this.issueUpdate;
+      return this.issueUpdate.replace(':project_path', this.issue.project.path);
     },
   },
   methods: {
@@ -33,19 +32,23 @@ gl.issueBoards.RemoveIssueBtn = Vue.extend({
       const issue = this.issue;
       const lists = issue.getLists();
       const listLabelIds = lists.map(list => list.label.id);
-      let labelIds = this.issue.labels
+
+      let labelIds = issue.labels
         .map(label => label.id)
         .filter(id => !listLabelIds.includes(id));
       if (labelIds.length === 0) {
         labelIds = [''];
       }
+
       const data = {
         issue: {
           label_ids: labelIds,
         },
       };
+
+      // Post the remove data
       Vue.http.patch(this.updateUrl, data).catch(() => {
-        new Flash('Failed to remove issue from board, please try again.', 'alert');
+        Flash(__('Failed to remove issue from board, please try again.'));
 
         lists.forEach((list) => {
           list.addIssue(issue);

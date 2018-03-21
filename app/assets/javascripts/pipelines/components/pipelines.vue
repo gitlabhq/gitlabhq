@@ -1,18 +1,28 @@
 <script>
   import _ from 'underscore';
+  import { __, sprintf, s__ } from '../../locale';
+  import createFlash from '../../flash';
   import PipelinesService from '../services/pipelines_service';
   import pipelinesMixin from '../mixins/pipelines';
-  import tablePagination from '../../vue_shared/components/table_pagination.vue';
-  import navigationTabs from '../../vue_shared/components/navigation_tabs.vue';
-  import navigationControls from './nav_controls.vue';
+  import TablePagination from '../../vue_shared/components/table_pagination.vue';
+  import NavigationTabs from '../../vue_shared/components/navigation_tabs.vue';
+  import NavigationControls from './nav_controls.vue';
   import {
-    convertPermissionToBoolean,
     getParameterByName,
     parseQueryStringIntoObject,
   } from '../../lib/utils/common_utils';
   import CIPaginationMixin from '../../vue_shared/mixins/ci_pagination_api_mixin';
 
   export default {
+    components: {
+      TablePagination,
+      NavigationTabs,
+      NavigationControls,
+    },
+    mixins: [
+      pipelinesMixin,
+      CIPaginationMixin,
+    ],
     props: {
       store: {
         type: Object,
@@ -27,119 +37,187 @@
         required: false,
         default: 'root',
       },
+      endpoint: {
+        type: String,
+        required: true,
+      },
+      helpPagePath: {
+        type: String,
+        required: true,
+      },
+      emptyStateSvgPath: {
+        type: String,
+        required: true,
+      },
+      errorStateSvgPath: {
+        type: String,
+        required: true,
+      },
+      noPipelinesSvgPath: {
+        type: String,
+        required: true,
+      },
+      autoDevopsPath: {
+        type: String,
+        required: true,
+      },
+      hasGitlabCi: {
+        type: Boolean,
+        required: true,
+      },
+      canCreatePipeline: {
+        type: Boolean,
+        required: true,
+      },
+      ciLintPath: {
+        type: String,
+        required: false,
+        default: null,
+      },
+      resetCachePath: {
+        type: String,
+        required: false,
+        default: null,
+      },
+      newPipelinePath: {
+        type: String,
+        required: false,
+        default: null,
+      },
     },
-    components: {
-      tablePagination,
-      navigationTabs,
-      navigationControls,
-    },
-    mixins: [
-      pipelinesMixin,
-      CIPaginationMixin,
-    ],
     data() {
-      const pipelinesData = document.querySelector('#pipelines-list-vue').dataset;
-
       return {
-        endpoint: pipelinesData.endpoint,
-        helpPagePath: pipelinesData.helpPagePath,
-        emptyStateSvgPath: pipelinesData.emptyStateSvgPath,
-        errorStateSvgPath: pipelinesData.errorStateSvgPath,
-        autoDevopsPath: pipelinesData.helpAutoDevopsPath,
-        newPipelinePath: pipelinesData.newPipelinePath,
-        canCreatePipeline: pipelinesData.canCreatePipeline,
-        hasCi: pipelinesData.hasCi,
-        ciLintPath: pipelinesData.ciLintPath,
+        // Start with loading state to avoid a glitch when the empty state will be rendered
+        isLoading: true,
         state: this.store.state,
         scope: getParameterByName('scope') || 'all',
         page: getParameterByName('page') || '1',
         requestData: {},
+        isResetCacheButtonLoading: false,
       };
     },
+    stateMap: {
+      // with tabs
+      loading: 'loading',
+      tableList: 'tableList',
+      error: 'error',
+      emptyTab: 'emptyTab',
+
+      // without tabs
+      emptyState: 'emptyState',
+    },
+    scopes: {
+      all: 'all',
+      pending: 'pending',
+      running: 'running',
+      finished: 'finished',
+      branches: 'branches',
+      tags: 'tags',
+    },
     computed: {
-      canCreatePipelineParsed() {
-        return convertPermissionToBoolean(this.canCreatePipeline);
-      },
-
       /**
-      * The empty state should only be rendered when the request is made to fetch all pipelines
-      * and none is returned.
-      *
-      * @return {Boolean}
-      */
-      shouldRenderEmptyState() {
-        return !this.isLoading &&
-          !this.hasError &&
-          this.hasMadeRequest &&
-          !this.state.pipelines.length &&
-          (this.scope === 'all' || this.scope === null);
-      },
-      /**
-       * When a specific scope does not have pipelines we render a message.
-       *
-       * @return {Boolean}
+       * `hasGitlabCi` handles both internal and external CI.
+       * The order on which  the checks are made in this method is
+       * important to guarantee we handle all the corner cases.
        */
-      shouldRenderNoPipelinesMessage() {
-        return !this.isLoading &&
-          !this.hasError &&
-          !this.state.pipelines.length &&
-          this.scope !== 'all' &&
-          this.scope !== null;
-      },
+      stateToRender() {
+        const { stateMap } = this.$options;
 
-      shouldRenderTable() {
-        return !this.hasError &&
-          !this.isLoading && this.state.pipelines.length;
+        if (this.isLoading) {
+          return stateMap.loading;
+        }
+
+        if (this.hasError) {
+          return stateMap.error;
+        }
+
+        if (this.state.pipelines.length) {
+          return stateMap.tableList;
+        }
+
+        if ((this.scope !== 'all' && this.scope !== null) || this.hasGitlabCi) {
+          return stateMap.emptyTab;
+        }
+
+        return stateMap.emptyState;
       },
       /**
-      * Pagination should only be rendered when there is more than one page.
-      *
-      * @return {Boolean}
-      */
+       * Tabs are rendered in all states except empty state.
+       * They are not rendered before the first request to avoid a flicker on first load.
+       */
+      shouldRenderTabs() {
+        const { stateMap } = this.$options;
+        return this.hasMadeRequest &&
+          [
+            stateMap.loading,
+            stateMap.tableList,
+            stateMap.error,
+            stateMap.emptyTab,
+          ].includes(this.stateToRender);
+      },
+
+      shouldRenderButtons() {
+        return (this.newPipelinePath ||
+          this.resetCachePath ||
+          this.ciLintPath) && this.shouldRenderTabs;
+      },
+
       shouldRenderPagination() {
         return !this.isLoading &&
           this.state.pipelines.length &&
           this.state.pageInfo.total > this.state.pageInfo.perPage;
       },
-      hasCiEnabled() {
-        return this.hasCi !== undefined;
+
+      emptyTabMessage() {
+        const { scopes } = this.$options;
+        const possibleScopes = [scopes.pending, scopes.running, scopes.finished];
+
+        if (possibleScopes.includes(this.scope)) {
+          return sprintf(s__('Pipelines|There are currently no %{scope} pipelines.'), {
+            scope: this.scope,
+          });
+        }
+
+        return s__('Pipelines|There are currently no pipelines.');
       },
 
       tabs() {
         const { count } = this.state;
+        const { scopes } = this.$options;
+
         return [
           {
-            name: 'All',
-            scope: 'all',
+            name: __('All'),
+            scope: scopes.all,
             count: count.all,
             isActive: this.scope === 'all',
           },
           {
-            name: 'Pending',
-            scope: 'pending',
+            name: __('Pending'),
+            scope: scopes.pending,
             count: count.pending,
             isActive: this.scope === 'pending',
           },
           {
-            name: 'Running',
-            scope: 'running',
+            name: __('Running'),
+            scope: scopes.running,
             count: count.running,
             isActive: this.scope === 'running',
           },
           {
-            name: 'Finished',
-            scope: 'finished',
+            name: __('Finished'),
+            scope: scopes.finished,
             count: count.finished,
             isActive: this.scope === 'finished',
           },
           {
-            name: 'Branches',
-            scope: 'branches',
+            name: __('Branches'),
+            scope: scopes.branches,
             isActive: this.scope === 'branches',
           },
           {
-            name: 'Tags',
-            scope: 'tags',
+            name: __('Tags'),
+            scope: scopes.tags,
             isActive: this.scope === 'tags',
           },
         ];
@@ -186,7 +264,24 @@
             this.errorCallback();
 
             // restart polling
-            this.poll.restart();
+            this.poll.restart({ data: this.requestData });
+          });
+      },
+
+      handleResetRunnersCache(endpoint) {
+        this.isResetCacheButtonLoading = true;
+
+        this.service.postAction(endpoint)
+          .then(() => {
+            this.isResetCacheButtonLoading = false;
+            createFlash(
+              s__('Pipelines|Project cache successfully reset.'),
+              'notice',
+            );
+          })
+          .catch(() => {
+            this.isResetCacheButtonLoading = false;
+            createFlash(s__('Pipelines|Something went wrong while cleaning runners cache.'));
           });
       },
     },
@@ -196,80 +291,87 @@
   <div class="pipelines-container">
     <div
       class="top-area scrolling-tabs-container inner-page-scroll-tabs"
-      v-if="!shouldRenderEmptyState">
+      v-if="shouldRenderTabs || shouldRenderButtons"
+    >
       <div class="fade-left">
         <i
           class="fa fa-angle-left"
-          aria-hidden="true">
+          aria-hidden="true"
+        >
         </i>
       </div>
       <div class="fade-right">
         <i
           class="fa fa-angle-right"
-          aria-hidden="true">
+          aria-hidden="true"
+        >
         </i>
       </div>
 
       <navigation-tabs
+        v-if="shouldRenderTabs"
         :tabs="tabs"
         @onChangeTab="onChangeTab"
         scope="pipelines"
-        />
+      />
 
       <navigation-controls
+        v-if="shouldRenderButtons"
         :new-pipeline-path="newPipelinePath"
-        :has-ci-enabled="hasCiEnabled"
-        :help-page-path="helpPagePath"
+        :reset-cache-path="resetCachePath"
         :ci-lint-path="ciLintPath"
-        :can-create-pipeline="canCreatePipelineParsed "
-        />
+        @resetRunnersCache="handleResetRunnersCache"
+        :is-reset-cache-button-loading="isResetCacheButtonLoading"
+      />
     </div>
 
     <div class="content-list pipelines">
 
       <loading-icon
-        label="Loading Pipelines"
+        v-if="stateToRender === $options.stateMap.loading"
+        :label="s__('Pipelines|Loading Pipelines')"
         size="3"
-        v-if="isLoading"
         class="prepend-top-20"
-        />
+      />
 
       <empty-state
-        v-if="shouldRenderEmptyState"
+        v-else-if="stateToRender === $options.stateMap.emptyState"
         :help-page-path="helpPagePath"
         :empty-state-svg-path="emptyStateSvgPath"
-        />
+        :can-set-ci="canCreatePipeline"
+      />
 
-      <error-state
-        v-if="shouldRenderErrorState"
-        :error-state-svg-path="errorStateSvgPath"
-        />
+      <svg-blank-state
+        v-else-if="stateToRender === $options.stateMap.error"
+        :svg-path="errorStateSvgPath"
+        :message="s__(`Pipelines|There was an error fetching the pipelines.
+        Try again in a few moments or contact your support team.`)"
+      />
 
-      <div
-        class="blank-state-row"
-        v-if="shouldRenderNoPipelinesMessage">
-        <div class="blank-state-center">
-          <h2 class="blank-state-title js-blank-state-title">No pipelines to show.</h2>
-        </div>
-      </div>
+      <svg-blank-state
+        v-else-if="stateToRender === $options.stateMap.emptyTab"
+        :svg-path="noPipelinesSvgPath"
+        :message="emptyTabMessage"
+      />
 
       <div
         class="table-holder"
-        v-if="shouldRenderTable">
+        v-else-if="stateToRender === $options.stateMap.tableList"
+      >
 
         <pipelines-table-component
           :pipelines="state.pipelines"
           :update-graph-dropdown="updateGraphDropdown"
           :auto-devops-help-path="autoDevopsPath"
           :view-type="viewType"
-          />
+        />
       </div>
 
       <table-pagination
         v-if="shouldRenderPagination"
         :change="onChangePage"
         :page-info="state.pageInfo"
-        />
+      />
     </div>
   </div>
 </template>

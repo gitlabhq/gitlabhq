@@ -1,12 +1,14 @@
 require 'spec_helper'
 
 describe IssuablePolicy, models: true do
+  let(:user) { create(:user) }
+  let(:project) { create(:project, :public) }
+  let(:issue) { create(:issue, project: project) }
+  let(:policies) { described_class.new(user, issue) }
+
   describe '#rules' do
     context 'when discussion is locked for the issuable' do
-      let(:user) { create(:user) }
-      let(:project) { create(:project, :public) }
       let(:issue) { create(:issue, project: project, discussion_locked: true) }
-      let(:policies) { described_class.new(user, issue) }
 
       context 'when the user is not a project member' do
         it 'can not create a note' do

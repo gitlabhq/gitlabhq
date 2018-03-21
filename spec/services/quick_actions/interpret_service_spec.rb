@@ -12,7 +12,7 @@ describe QuickActions::InterpretService do
   let(:service) { described_class.new(project, developer) }
 
   before do
-    project.team << [developer, :developer]
+    project.add_developer(developer)
   end
 
   describe '#execute' do
@@ -209,7 +209,7 @@ describe QuickActions::InterpretService do
 
         expect(updates).to eq(spend_time: {
                                 duration: 3600,
-                                user: developer,
+                                user_id: developer.id,
                                 spent_at: DateTime.now.to_date
                               })
       end
@@ -221,7 +221,7 @@ describe QuickActions::InterpretService do
 
         expect(updates).to eq(spend_time: {
                                 duration: -1800,
-                                user: developer,
+                                user_id: developer.id,
                                 spent_at: DateTime.now.to_date
                               })
       end
@@ -233,7 +233,7 @@ describe QuickActions::InterpretService do
 
         expect(updates).to eq(spend_time: {
                                 duration: 1800,
-                                user: developer,
+                                user_id: developer.id,
                                 spent_at: Date.parse(date)
                               })
       end
@@ -267,7 +267,7 @@ describe QuickActions::InterpretService do
       it 'populates spend_time: :reset if content contains /remove_time_spent' do
         _, updates = service.execute(content, issuable)
 
-        expect(updates).to eq(spend_time: { duration: :reset, user: developer })
+        expect(updates).to eq(spend_time: { duration: :reset, user_id: developer.id })
       end
     end
 
@@ -440,7 +440,7 @@ describe QuickActions::InterpretService do
       let(:content) { "/assign @#{developer.username} @#{developer2.username}" }
 
       before do
-        project.team << [developer2, :developer]
+        project.add_developer(developer2)
       end
 
       context 'Issue' do
@@ -520,6 +520,22 @@ describe QuickActions::InterpretService do
     it_behaves_like 'milestone command' do
       let(:content) { "/milestone %#{milestone.title}" }
       let(:issuable) { merge_request }
+    end
+
+    context 'only group milestones available' do
+      let(:group) { create(:group) }
+      let(:project) { create(:project, :public, namespace: group) }
+      let(:milestone) { create(:milestone, group: group, title: '10.0') }
+
+      it_behaves_like 'milestone command' do
+        let(:content) { "/milestone %#{milestone.title}" }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'milestone command' do
+        let(:content) { "/milestone %#{milestone.title}" }
+        let(:issuable) { merge_request }
+      end
     end
 
     it_behaves_like 'remove_milestone command' do

@@ -11,7 +11,8 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
       import_source: 'foo/bar',
       repository_storage_path: 'foo',
       disk_path: 'foo',
-      repository: repository
+      repository: repository,
+      create_wiki: true
     )
   end
 
@@ -70,7 +71,7 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
 
   describe '#execute' do
     it 'imports the repository and wiki' do
-      expect(repository)
+      expect(project)
         .to receive(:empty_repo?)
         .and_return(true)
 
@@ -93,7 +94,7 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
     end
 
     it 'does not import the repository if it already exists' do
-      expect(repository)
+      expect(project)
         .to receive(:empty_repo?)
         .and_return(false)
 
@@ -115,7 +116,7 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
     end
 
     it 'does not import the wiki if it is disabled' do
-      expect(repository)
+      expect(project)
         .to receive(:empty_repo?)
         .and_return(true)
 
@@ -137,7 +138,7 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
     end
 
     it 'does not import the wiki if the repository could not be imported' do
-      expect(repository)
+      expect(project)
         .to receive(:empty_repo?)
         .and_return(true)
 
@@ -192,7 +193,7 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
       expect(importer.import_wiki_repository).to eq(true)
     end
 
-    it 'marks the import as failed if an error was raised' do
+    it 'marks the import as failed and creates an empty repo if an error was raised' do
       expect(importer.gitlab_shell)
         .to receive(:import_repository)
         .and_raise(Gitlab::Shell::Error)
@@ -200,6 +201,9 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
       expect(importer)
         .to receive(:fail_import)
         .and_return(false)
+
+      expect(project)
+        .to receive(:create_wiki)
 
       expect(importer.import_wiki_repository).to eq(false)
     end

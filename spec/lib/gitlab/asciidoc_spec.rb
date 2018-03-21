@@ -95,6 +95,14 @@ module Gitlab
           expect(render(input, context)).to include('<p><code data-math-style="inline" class="code math js-render-math">2+2</code> is 4</p>')
         end
       end
+
+      context 'outfilesuffix' do
+        it 'defaults to adoc' do
+          output = render("Inter-document reference <<README.adoc#>>", context)
+
+          expect(output).to include("a href=\"README.adoc\"")
+        end
+      end
     end
 
     def render(*args)

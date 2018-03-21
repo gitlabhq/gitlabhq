@@ -1,6 +1,7 @@
+import _ from 'underscore';
 import Vue from 'vue';
 import registry from '~/registry/components/app.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { reposServerResponse } from '../mock_data';
 
 describe('Registry List', () => {
@@ -89,7 +90,7 @@ describe('Registry List', () => {
     it('should render empty message', (done) => {
       setTimeout(() => {
         expect(
-          vm.$el.querySelector('p').textContent.trim(),
+          vm.$el.querySelector('p').textContent.trim().replace(/[\r\n]+/g, ' '),
         ).toEqual('No container images stored for this project. Add one by following the instructions above.');
         done();
       }, 0);

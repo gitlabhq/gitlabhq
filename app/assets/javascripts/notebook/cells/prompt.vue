@@ -1,21 +1,28 @@
 <script>
-  export default {
-    props: {
-      type: {
-        type: String,
-        required: false,
-      },
-      count: {
-        type: Number,
-        required: false,
-      },
-      showOutput: {
-        type: Boolean,
-        required: false,
-        default: true,
-      },
+export default {
+  props: {
+    type: {
+      type: String,
+      required: false,
+      default: '',
     },
-  };
+    count: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+  },
+  computed: {
+    hasKeys() {
+      return this.type !== '' && this.count;
+    },
+    showOutput: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
+};
 </script>
 
 <template>

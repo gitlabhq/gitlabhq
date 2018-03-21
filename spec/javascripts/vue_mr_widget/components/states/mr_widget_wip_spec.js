@@ -50,9 +50,7 @@ describe('MRWidgetWIP', () => {
         spyOn(eventHub, '$emit');
         spyOn(vm.service, 'removeWIP').and.returnValue(new Promise((resolve) => {
           resolve({
-            json() {
-              return mrObj;
-            },
+            data: mrObj,
           });
         }));
 

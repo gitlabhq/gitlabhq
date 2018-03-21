@@ -5,10 +5,10 @@
 - show_label_merge_requests_link = show_label_issuables_link?(label, :merge_requests, project: @project)
 - show_label_issues_link = show_label_issuables_link?(label, :issues, project: @project)
 
-%li{ id: label_css_id, data: { id: label.id } }
+%li.label-list-item{ id: label_css_id, data: { id: label.id } }
   = render "shared/label_row", label: label
 
-  .visible-xs.visible-sm-inline-block.visible-md-inline-block.dropdown
+  .visible-xs.visible-sm-inline-block.dropdown
     %button.btn.btn-default.label-options-toggle{ type: 'button', data: { toggle: "dropdown" } }
       Options
       = icon('caret-down')
@@ -46,14 +46,27 @@
               data: {confirm: 'Remove this label? Are you sure?'},
               class: 'text-danger'
 
-  .pull-right.hidden-xs.hidden-sm.hidden-md
-    - if show_label_merge_requests_link
-      = link_to_label(label, subject: subject, type: :merge_request, css_class: 'btn btn-transparent btn-action btn-link') do
-        view merge requests
-    - if show_label_issues_link
-      = link_to_label(label, subject: subject, css_class: 'btn btn-transparent btn-action btn-link') do
-        view open issues
-
+  .pull-right.hidden-xs.hidden-sm
+    - if label.is_a?(ProjectLabel) && label.project.group && can?(current_user, :admin_label, label.project.group)
+      %button.js-promote-project-label-button.btn.btn-transparent.btn-action.has-tooltip{ title: _('Promote to Group Label'),
+        disabled: true,
+        type: 'button',
+        data: { url: promote_project_label_path(label.project, label),
+                label_title: label.title,
+                label_color: label.color,
+                label_text_color: label.text_color,
+                target: '#promote-label-modal',
+                container: 'body',
+                toggle: 'modal' } }
+        = sprite_icon('level-up')
+    - if can?(current_user, :admin_label, label)
+      = link_to edit_label_path(label), title: "Edit", class: 'btn btn-transparent btn-action', data: {toggle: "tooltip"} do
+        %span.sr-only Edit
+        = sprite_icon('pencil')
+      %span{ data: { toggle: 'modal', target: "#modal-delete-label-#{label.id}" } }
+        = link_to "#", title: "Delete", class: 'btn btn-transparent btn-action remove-row', data: { toggle: "tooltip" } do
+          %span.sr-only Delete
+          = sprite_icon('remove')
     - if current_user
       .label-subscription.inline
         - if can_subscribe_to_label_in_different_levels?(label)
@@ -76,14 +89,4 @@
             %span= label_subscription_toggle_button_text(label, @project)
             = icon('spinner spin', class: 'label-subscribe-button-loading')
 
-    - if label.is_a?(ProjectLabel) && label.project.group && can?(current_user, :admin_label, label.project.group)
-      = link_to promote_project_label_path(label.project, label), title: "Promote to Group Label", class: 'btn btn-transparent btn-action', data: {confirm: "Promoting this label will make this label available to all projects inside this group. Existing project labels with the same name will be merged. Are you sure?", toggle: "tooltip"}, method: :post do
-        %span.sr-only Promote to Group
-        = icon('level-up')
-    - if can?(current_user, :admin_label, label)
-      = link_to edit_label_path(label), title: "Edit", class: 'btn btn-transparent btn-action', data: {toggle: "tooltip"} do
-        %span.sr-only Edit
-        = icon('pencil-square-o')
-      = link_to destroy_label_path(label), title: "Delete", class: 'btn btn-transparent btn-action remove-row', method: :delete, data: {confirm: label_deletion_confirm_text(label), toggle: "tooltip"} do
-        %span.sr-only Delete
-        = icon('trash-o')
+= render 'shared/delete_label_modal', label: label

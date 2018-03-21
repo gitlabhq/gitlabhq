@@ -12,7 +12,7 @@
         %tr
           %th.col-sm-2 Title
           %th.col-sm-4 Fingerprint
-          %th.col-sm-2 Write access allowed
+          %th.col-sm-2 Projects with write access
           %th.col-sm-2 Added at
           %th.col-sm-2
       %tbody
@@ -23,10 +23,8 @@
             %td
               %code.key-fingerprint= deploy_key.fingerprint
             %td
-              - if deploy_key.can_push?
-                Yes
-              - else
-                No
+              - deploy_key.projects_with_write_access.each do |project|
+                = link_to project.full_name, admin_project_path(project), class: 'label deploy-project-label'
             %td
               %span.cgray
                 added #{time_ago_with_tooltip(deploy_key.created_at)}

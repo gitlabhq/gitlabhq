@@ -1,13 +1,13 @@
-- breadcrumb_title "Cluster"
-- page_title _("Cluster")
+- breadcrumb_title 'Kubernetes'
+- page_title _("Kubernetes Cluster")
 
 .row.prepend-top-default
   .col-sm-4
     = render 'sidebar'
   .col-sm-8
-    %h4.prepend-top-0= s_('ClusterIntegration|Choose how to set up cluster integration')
+    %h4.prepend-top-0= s_('ClusterIntegration|Choose how to set up Kubernetes cluster integration')
 
-    %p= s_('ClusterIntegration|Create a new cluster on Google Kubernetes Engine right from GitLab')
+    %p= s_('ClusterIntegration|Create a new Kubernetes cluster on Google Kubernetes Engine right from GitLab')
     = link_to s_('ClusterIntegration|Create on GKE'), gcp_new_namespace_project_clusters_path(@project.namespace, @project), class: 'btn append-bottom-20'
     %p= s_('ClusterIntegration|Enter the details for an existing Kubernetes cluster')
-    = link_to s_('ClusterIntegration|Add an existing cluster'), user_new_namespace_project_clusters_path(@project.namespace, @project), class: 'btn append-bottom-20'
+    = link_to s_('ClusterIntegration|Add an existing Kubernetes cluster'), user_new_namespace_project_clusters_path(@project.namespace, @project), class: 'btn append-bottom-20'

@@ -1,0 +1,5 @@
+---
+title: Fix squashing when a file is renamed
+merge_request:
+author:
+type: fixed

@@ -16,6 +16,10 @@ module API
           render_api_error!('The branch refname is invalid', 400)
         end
       end
+
+      params :filter_params do
+        optional :search, type: String, desc: 'Return list of branches matching the search criteria'
+      end
     end
 
     params do
@@ -27,13 +31,23 @@ module API
       end
       params do
         use :pagination
+        use :filter_params
       end
       get ':id/repository/branches' do
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42329')
+
         repository = user_project.repository
-        branches = ::Kaminari.paginate_array(repository.branches.sort_by(&:name))
+
+        branches = BranchesFinder.new(repository, declared_params(include_missing: false)).execute
+
         merged_branch_names = repository.merged_branch_names(branches.map(&:name))
 
-        present paginate(branches), with: Entities::Branch, project: user_project, merged_branch_names: merged_branch_names
+        present(
+          paginate(::Kaminari.paginate_array(branches)),
+          with: Entities::Branch,
+          project: user_project,
+          merged_branch_names: merged_branch_names
+        )
       end
 
       resource ':id/repository/branches/:branch', requirements: BRANCH_ENDPOINT_REQUIREMENTS do

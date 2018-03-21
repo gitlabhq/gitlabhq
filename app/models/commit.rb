@@ -9,6 +9,7 @@ class Commit
   include Mentionable
   include Referable
   include StaticModel
+  include ::Gitlab::Utils::StrongMemoize
 
   attr_mentionable :safe_message, pipeline: :single_line
 
@@ -19,6 +20,7 @@ class Commit
   attr_accessor :project, :author
   attr_accessor :redacted_description_html
   attr_accessor :redacted_title_html
+  attr_reader :gpg_commit
 
   DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines]
 
@@ -86,6 +88,20 @@ class Commit
     def valid_hash?(key)
       !!(/\A#{COMMIT_SHA_PATTERN}\z/ =~ key)
     end
+
+    def lazy(project, oid)
+      BatchLoader.for({ project: project, oid: oid }).batch do |items, loader|
+        items_by_project = items.group_by { |i| i[:project] }
+
+        items_by_project.each do |project, commit_ids|
+          oids = commit_ids.map { |i| i[:oid] }
+
+          project.repository.commits_by(oids: oids).each do |commit|
+            loader.call({ project: commit.project, oid: commit.id }, commit) if commit
+          end
+        end
+      end
+    end
   end
 
   attr_accessor :raw
@@ -96,14 +112,19 @@ class Commit
     @raw = raw_commit
     @project = project
     @statuses = {}
+    @gpg_commit = Gitlab::Gpg::Commit.new(self) if project
   end
 
   def id
     raw.id
   end
 
+  def project_id
+    project.id
+  end
+
   def ==(other)
-    (self.class === other) && (raw == other.raw)
+    other.is_a?(self.class) && raw == other.raw
   end
 
   def self.reference_prefix
@@ -205,11 +226,13 @@ class Commit
   end
 
   def parents
-    @parents ||= parent_ids.map { |id| project.commit(id) }
+    @parents ||= parent_ids.map { |oid| Commit.lazy(project, oid) }
   end
 
   def parent
-    @parent ||= project.commit(self.parent_id) if self.parent_id
+    strong_memoize(:parent) do
+      project.commit_by(oid: self.parent_id) if self.parent_id
+    end
   end
 
   def notes
@@ -224,8 +247,12 @@ class Commit
     notes.includes(:author)
   end
 
-  def method_missing(m, *args, &block)
-    @raw.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
+  def merge_requests
+    @merge_requests ||= project.merge_requests.by_commit_sha(sha)
+  end
+
+  def method_missing(method, *args, &block)
+    @raw.__send__(method, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def respond_to_missing?(method, include_private = false)
@@ -328,10 +355,11 @@ class Commit
     @merged_merge_request_hash[current_user]
   end
 
-  def has_been_reverted?(current_user, noteable = self)
+  def has_been_reverted?(current_user, notes_association = nil)
     ext = all_references(current_user)
+    notes_association ||= notes_with_associations
 
-    noteable.notes_with_associations.system.each do |note|
+    notes_association.system.each do |note|
       note.all_references(current_user, extractor: ext)
     end
 
@@ -353,19 +381,19 @@ class Commit
   #   uri_type('doc/README.md') # => :blob
   #   uri_type('doc/logo.png')  # => :raw
   #   uri_type('doc/api')       # => :tree
-  #   uri_type('not/found')     # => :nil
+  #   uri_type('not/found')     # => nil
   #
   # Returns a symbol
   def uri_type(path)
-    entry = @raw.tree.path(path)
+    entry = @raw.tree_entry(path)
+    return unless entry
+
     if entry[:type] == :blob
       blob = ::Blob.decorate(Gitlab::Git::Blob.new(name: entry[:name]), @project)
       blob.image? || blob.video? ? :raw : :blob
     else
       entry[:type]
     end
-  rescue Rugged::TreeError
-    nil
   end
 
   def raw_diffs(*args)
@@ -392,6 +420,10 @@ class Commit
 
   def work_in_progress?
     !!(title =~ WIP_REGEX)
+  end
+
+  def merged_merge_request?(user)
+    !!merged_merge_request(user)
   end
 
   private
@@ -422,15 +454,7 @@ class Commit
     changes
   end
 
-  def merged_merge_request?(user)
-    !!merged_merge_request(user)
-  end
-
   def merged_merge_request_no_cache(user)
     MergeRequestsFinder.new(user, project_id: project.id).find_by(merge_commit_sha: id) if merge_commit?
-  end
-
-  def gpg_commit
-    @gpg_commit ||= Gitlab::Gpg::Commit.new(self)
   end
 end

@@ -20,4 +20,5 @@
     = f.submit 'Create pipeline', class: 'btn btn-create', tabindex: 3
     = link_to 'Cancel', project_pipelines_path(@project), class: 'btn btn-cancel'
 
+-# haml-lint:disable InlineJavaScript
 %script#availableRefs{ type: "application/json" }= @project.repository.ref_names.to_json.html_safe

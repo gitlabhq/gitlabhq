@@ -108,7 +108,7 @@ describe Projects::ForkService do
         let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
 
         before do
-          gitlab_shell.add_repository(repository_storage, "#{@to_user.namespace.full_path}/#{@from_project.path}")
+          gitlab_shell.create_repository(repository_storage, "#{@to_user.namespace.full_path}/#{@from_project.path}")
         end
 
         after do
@@ -139,10 +139,10 @@ describe Projects::ForkService do
             stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL])
           end
 
-          it "creates fork with highest allowed level" do
+          it "creates fork with lowest level" do
             forked_project = fork_project(@from_project, @to_user)
 
-            expect(forked_project.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
+            expect(forked_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
           end
         end
 
@@ -207,6 +207,19 @@ describe Projects::ForkService do
           expect(existing_project.persisted?).to be_truthy
           expect(to_project.errors[:name]).to eq(['has already been taken'])
           expect(to_project.errors[:path]).to eq(['has already been taken'])
+        end
+      end
+
+      context 'when the namespace has a lower visibility level than the project' do
+        it 'creates the project with the lower visibility level' do
+          public_project = create(:project, :public)
+          private_group = create(:group, :private)
+          group_owner = create(:user)
+          private_group.add_owner(group_owner)
+
+          forked_project = fork_project(public_project, group_owner, namespace: private_group)
+
+          expect(forked_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
         end
       end
     end
