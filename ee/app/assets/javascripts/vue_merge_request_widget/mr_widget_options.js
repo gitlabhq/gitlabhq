@@ -304,6 +304,7 @@ export default {
               head: data,
               headBlobPath: this.mr.headBlobPath,
             });
+            this.isLoadingDependencyScanning = false;
           })
           .catch(() => {
             this.isLoadingDependencyScanning = false;
