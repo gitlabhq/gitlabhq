@@ -53,7 +53,7 @@ class Member < ActiveRecord::Base
   end
 
   # Like active, but without invites. For when a User is required.
-  scope :active_without_invites, -> do
+  scope :active_without_invites_and_requests, -> do
     left_join_users
       .where(users: { state: 'active' })
       .non_request

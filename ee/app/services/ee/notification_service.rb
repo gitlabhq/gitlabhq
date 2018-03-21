@@ -24,10 +24,10 @@ module EE
     end
 
     def mirror_was_hard_failed(project)
-      recipients = project.members.active_without_invites.owners_and_masters
+      recipients = project.members.active_without_invites_and_requests.owners_and_masters
 
-      unless recipients.present?
-        recipients = project.group.members.active_without_invites.owners_and_masters
+      if recipients.empty? && project.group
+        recipients = project.group.members.active_without_invites_and_requests.owners_and_masters
       end
 
       recipients.each do |recipient|
