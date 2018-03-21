@@ -53,6 +53,22 @@ module Gitlab
           }.compact }
       end
 
+      # REFACTORING, this needs improvement
+      #
+      def build_seed_attributes(stage)
+        selected = @jobs.values.select do |job|
+          job[:stage] == stage
+        end
+
+        selected.map do |job|
+          build_attributes(job[:name])
+            .merge(only: job.fetch(:only, {}))
+            .merge(except: job.fetch(:except, {}))
+        end
+      end
+
+      # REFACTORING, slated for removal
+      #
       def pipeline_stage_builds(stage, pipeline)
         selected_jobs = @jobs.select do |_, job|
           next unless job[:stage] == stage
@@ -69,13 +85,24 @@ module Gitlab
         selected_jobs.map { |_, job| build_attributes(job[:name]) }
       end
 
+      def stage_seed_attributes(stage)
+        { name: stage,
+          index: @stages.index(stage),
+          builds: build_seed_attributes(stage) }
+      end
+
+      # REFACTORING, slated for removal
+      #  * WARNING this method is currently evaluating only/except policies
+      #    in two places - Seed::Build, and in pipeline_stage_builds
+      #  * WARNING it needs to be refactored to use SSOT
+      #
       def stage_seeds(pipeline)
         seeds = @stages.uniq.map do |stage|
           builds = pipeline_stage_builds(stage, pipeline)
 
           if builds.any?
             Gitlab::Ci::Pipeline::Seed::Stage
-              .new(pipeline, stage, builds)
+              .new(pipeline, stage_seed_attributes(stage))
           end
         end
 
