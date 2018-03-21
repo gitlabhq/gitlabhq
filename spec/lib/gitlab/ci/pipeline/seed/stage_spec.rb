@@ -65,9 +65,9 @@ describe Gitlab::Ci::Pipeline::Seed::Stage do
     end
   end
 
-  describe '#create!' do
-    it 'creates all stages and builds' do
-      subject.create!
+  describe '#to_resource' do
+    it 'builds a valid stage object with all builds' do
+      subject.to_resource.save!
 
       expect(pipeline.reload.stages.count).to eq 1
       expect(pipeline.reload.builds.count).to eq 2
