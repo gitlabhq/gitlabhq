@@ -16,10 +16,14 @@ module Gitlab
             ##
             # Populate pipeline with all stages and builds from pipeline seeds.
             #
-            pipeline.stage_seeds.each do |seed|
-              seed.user = current_user
+            pipeline.stage_seeds.each do |stage|
+              stage.user = current_user
 
-              pipeline.stages << seed.to_resource
+              pipeline.stages << stage.to_resource
+
+              stage.seeds.each do |build|
+                pipeline.builds << build.to_resource
+              end
             end
 
             if pipeline.stages.none?
