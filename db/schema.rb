@@ -184,7 +184,6 @@ ActiveRecord::Schema.define(version: 20180320182229) do
     t.string "external_authorization_service_url"
     t.string "external_authorization_service_default_label"
     t.boolean "pages_domain_verification_enabled", default: true, null: false
-<<<<<<< HEAD
     t.float "external_authorization_service_timeout", default: 0.5, null: false
     t.boolean "allow_local_requests_from_hooks_and_services", default: false, null: false
   end
@@ -215,9 +214,6 @@ ActiveRecord::Schema.define(version: 20180320182229) do
     t.integer "user_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-=======
-    t.boolean "allow_local_requests_from_hooks_and_services", default: false, null: false
->>>>>>> upstream/master
   end
 
   add_index "approvers", ["target_id", "target_type"], name: "index_approvers_on_target_id_and_target_type", using: :btree
