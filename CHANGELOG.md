@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.5.6 (2018-03-16)
+
+### Security (2 changes)
+
+- Fixed some SSRF vulnerabilities in services, hooks and integrations. !2337
+- Fix GitLab Auth0 integration signing in the wrong user.
+
+
 ## 10.5.5 (2018-03-15)
 
 ### Fixed (3 changes)
@@ -261,6 +269,14 @@ entry.
 - Adds empty state illustration for pending job.
 
 
+## 10.4.6 (2018-03-16)
+
+### Security (2 changes)
+
+- Fixed some SSRF vulnerabilities in services, hooks and integrations. !2337
+- Fix GitLab Auth0 integration signing in the wrong user.
+
+
 ## 10.4.5 (2018-03-01)
 
 ### Security (1 change)
@@ -490,6 +506,15 @@ entry.
 - Update Browse file to Choose file in all occurences.
 - Bump mysql2 gem version from 0.4.5 to 0.4.10. (asaparov)
 - Use a background migration for issues.closed_at.
+
+
+## 10.3.9 (2018-03-16)
+
+### Security (3 changes)
+
+- Fixed some SSRF vulnerabilities in services, hooks and integrations. !2337
+- Update nokogiri to 1.8.2. !16807
+- Fix GitLab Auth0 integration signing in the wrong user.
 
 
 ## 10.3.8 (2018-03-01)
