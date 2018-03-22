@@ -60,8 +60,6 @@ class DiffFileEntity < Grape::Entity
   expose :edit_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
     merge_request = options[:merge_request]
 
-    # TODO: need optional options arg for diff_file_header Edit button
-    # link_opts = @merge_request.persisted? ? { from_merge_request_iid: @merge_request.iid } : {}
     edit_blob_path(merge_request.source_project, merge_request.source_branch, diff_file.new_path)
   end
 
