@@ -12,10 +12,10 @@ shared_examples 'ChronicDurationAttribute reader' do
   end
 
   context 'when value is set to nil' do
-    it 'outputs empty string' do
+    it 'outputs nil' do
       subject.send("#{source_field}=", nil)
 
-      expect(subject.send(virtual_field)).to be_empty
+      expect(subject.send(virtual_field)).to be_nil
     end
   end
 end
@@ -25,15 +25,15 @@ shared_examples 'ChronicDurationAttribute writer' do
     expect(subject.class).to be_public_method_defined("#{virtual_field}=")
   end
 
-  it 'parses chronic duration input' do
+  before do
     subject.send("#{virtual_field}=", '10m')
+  end
 
+  it 'parses chronic duration input' do
     expect(subject.send(source_field)).to eq(600)
   end
 
   it 'passes validation' do
-    subject.send("#{virtual_field}=", '10m')
-
     expect(subject.valid?).to be_truthy
   end
 
@@ -54,33 +54,34 @@ shared_examples 'ChronicDurationAttribute writer' do
       subject.send("#{virtual_field}=", '-10m')
 
       expect(subject.valid?).to be_falsey
+      expect(subject.errors&.messages).to include(virtual_field => ['is not a correct duration'])
     end
   end
 
   context 'when empty input is used' do
-    it 'writes nil' do
+    before do
       subject.send("#{virtual_field}=", '')
+    end
 
+    it 'writes nil' do
       expect(subject.send(source_field)).to be_nil
     end
 
     it 'passes validation' do
-      subject.send("#{virtual_field}=", '')
-
       expect(subject.valid?).to be_truthy
     end
   end
 
   context 'when nil input is used' do
-    it 'writes nil' do
+    before do
       subject.send("#{virtual_field}=", nil)
+    end
 
+    it 'writes nil' do
       expect(subject.send(source_field)).to be_nil
     end
 
     it 'passes validation' do
-      subject.send("#{virtual_field}=", nil)
-
       expect(subject.valid?).to be_truthy
     end
 
@@ -103,6 +104,7 @@ end
 describe 'ChronicDurationAttribute - reader' do
   let(:source_field) {:timeout}
   let(:virtual_field) {:timeout_human_readable}
+
   subject {Ci::BuildMetadata.new}
 
   it "doesn't contain dynamically created writer method" do
