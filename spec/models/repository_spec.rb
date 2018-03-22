@@ -927,7 +927,7 @@ describe Repository do
     end
 
     it 'returns nil when the content is not recognizable' do
-      repository.create_file(user, 'LICENSE', 'Copyright!',
+      repository.create_file(user, 'LICENSE', 'Gitlab B.V.',
         message: 'Add LICENSE', branch_name: 'master')
 
       expect(repository.license_key).to be_nil
@@ -971,7 +971,7 @@ describe Repository do
     end
 
     it 'returns nil when the content is not recognizable' do
-      repository.create_file(user, 'LICENSE', 'Copyright!',
+      repository.create_file(user, 'LICENSE', 'Gitlab B.V.',
         message: 'Add LICENSE', branch_name: 'master')
 
       expect(repository.license).to be_nil

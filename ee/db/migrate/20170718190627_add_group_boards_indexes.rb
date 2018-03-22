@@ -6,7 +6,7 @@ class AddGroupBoardsIndexes < ActiveRecord::Migration
   DOWNTIME = false
 
   def up
-    return if foreign_key_exists?(:boards, :group_id)
+    return if foreign_key_exists?(:boards, :groups, column: :group_id)
 
     add_concurrent_foreign_key :boards, :namespaces, column: :group_id, on_delete: :cascade
 
@@ -14,18 +14,10 @@ class AddGroupBoardsIndexes < ActiveRecord::Migration
   end
 
   def down
-    return unless foreign_key_exists?(:boards, :group_id)
+    return unless foreign_key_exists?(:boards, :groups, column: :group_id)
 
     remove_foreign_key :boards, column: :group_id
 
     remove_concurrent_index :boards, :group_id
-  end
-
-  private
-
-  def foreign_key_exists?(table, column)
-    foreign_keys(table).any? do |key|
-      key.options[:column] == column.to_s
-    end
   end
 end
