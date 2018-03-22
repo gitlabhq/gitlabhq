@@ -1809,9 +1809,11 @@ export default class Notes {
       }
     }
 
+    $closeBtn.text($closeBtn.data('originalText'));
+
     /* eslint-disable promise/catch-or-return */
     // Make request to submit comment on server
-    axios
+    return axios
       .post(`${formAction}?html=true`, formData)
       .then(res => {
         const note = res.data;
@@ -1928,8 +1930,6 @@ export default class Notes {
         this.reenableTargetFormSubmitButton(e);
         this.addNoteError($form);
       });
-
-    return $closeBtn.text($closeBtn.data('originalText'));
   }
 
   /**
