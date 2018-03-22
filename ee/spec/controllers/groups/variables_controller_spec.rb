@@ -13,7 +13,7 @@ describe Groups::VariablesController do
 
   context 'with external authorization enabled' do
     before do
-      enable_external_authorization_service
+      enable_external_authorization_service_check
     end
 
     describe 'GET #show' do

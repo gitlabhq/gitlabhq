@@ -12,7 +12,7 @@ describe 'User page' do
 
   describe 'when external authorization is enabled' do
     before do
-      enable_external_authorization_service
+      enable_external_authorization_service_check
     end
 
     it 'hides the most recent activity' do

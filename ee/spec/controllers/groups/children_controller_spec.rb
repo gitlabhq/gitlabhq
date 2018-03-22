@@ -12,7 +12,7 @@ describe Groups::ChildrenController do
   end
 
   it 'works when external authorization service is enabled' do
-    enable_external_authorization_service
+    enable_external_authorization_service_check
 
     get :index, group_id: group, format: :json
 

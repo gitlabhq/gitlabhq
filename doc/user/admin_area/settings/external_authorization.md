@@ -37,7 +37,9 @@ admin area under the settings page:
 
 The available required properties are:
 
-- **Service URL**: The URL to make authorization requests to
+- **Service URL**: The URL to make authorization requests to. When leaving the
+  URL blank, cross project features will remain available while still being able
+  to specify classification labels for projects.
 - **External authorization request timeout**: The timeout after which an
   authorization request is aborted. When a request times out, access is denied
   to the user.

@@ -4,7 +4,7 @@ module EE
 
     prepended do
       condition(:external_authorization_enabled, scope: :global, score: 0) do
-        ::EE::Gitlab::ExternalAuthorization.enabled?
+        ::EE::Gitlab::ExternalAuthorization.perform_check?
       end
 
       rule { external_authorization_enabled & ~admin & ~auditor }.policy do

@@ -30,9 +30,9 @@ describe ApplicationSetting do
         setting.external_authorization_service_enabled = true
       end
 
-      it { is_expected.not_to allow_value(nil).for(:external_authorization_service_url) }
       it { is_expected.not_to allow_value('not a URL').for(:external_authorization_service_url) }
       it { is_expected.to allow_value('https://example.com').for(:external_authorization_service_url) }
+      it { is_expected.to allow_value('').for(:external_authorization_service_url) }
       it { is_expected.not_to allow_value(nil).for(:external_authorization_service_default_label) }
       it { is_expected.not_to allow_value(11).for(:external_authorization_service_timeout) }
       it { is_expected.not_to allow_value(0).for(:external_authorization_service_timeout) }

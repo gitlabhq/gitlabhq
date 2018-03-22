@@ -33,7 +33,7 @@ describe EE::Gitlab::ExternalAuthorization, :request_store do
 
   describe '#access_for_user_to_label' do
     it 'only loads the access once per request' do
-      enable_external_authorization_service
+      enable_external_authorization_service_check
 
       expect(EE::Gitlab::ExternalAuthorization::Access)
         .to receive(:new).with(user, label).once.and_call_original

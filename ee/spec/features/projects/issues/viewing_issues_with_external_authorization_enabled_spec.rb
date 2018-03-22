@@ -73,7 +73,7 @@ describe 'viewing an issue with cross project references' do
 
   context 'when an external authorization service is enabled' do
     before do
-      enable_external_authorization_service
+      enable_external_authorization_service_check
     end
 
     it 'only hits the external service for the project the user is viewing' do

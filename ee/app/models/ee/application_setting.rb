@@ -40,14 +40,12 @@ module EE
                 presence: { message: "can't be blank when using aws hosted elasticsearch" },
                 if: ->(setting) { setting.elasticsearch_indexing? && setting.elasticsearch_aws? }
 
-      validates :external_authorization_service_url,
-                :external_authorization_service_default_label,
-                :external_authorization_service_timeout,
+      validates :external_authorization_service_default_label,
                 presence: true,
                 if: :external_authorization_service_enabled?
 
       validates :external_authorization_service_url,
-                url: true,
+                url: true, allow_blank: true,
                 if: :external_authorization_service_enabled?
 
       validates :external_authorization_service_timeout,

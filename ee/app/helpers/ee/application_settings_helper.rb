@@ -13,6 +13,12 @@ module EE
         "denied.")
     end
 
+    def external_authorization_url_help_text
+      _("When leaving the URL blank, classification labels can still be "\
+        "specified whitout disabling cross project features or performing "\
+        "external authorization checks.")
+    end
+
     override :visible_attributes
     def visible_attributes
       super + [
