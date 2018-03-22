@@ -42,7 +42,7 @@ export default {
         n__(
           '1 %{type} addition',
           '%d %{type} additions',
-          this.modifiedFilesLength,
+          this.addedFilesLength,
         ),
         { type: this.title.toLowerCase() },
       );

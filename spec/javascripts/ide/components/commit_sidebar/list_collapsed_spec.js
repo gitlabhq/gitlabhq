@@ -19,6 +19,7 @@ describe('Multi-file editor commit sidebar list collapsed', () => {
         file('file2'),
       ],
       icon: 'staged',
+      title: 'Staged',
     });
 
     vm.$mount();

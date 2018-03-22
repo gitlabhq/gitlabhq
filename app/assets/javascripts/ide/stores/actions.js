@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Vue from 'vue';
 import { visitUrl } from '~/lib/utils/url_utility';
 import flash from '~/flash';
@@ -33,7 +34,16 @@ export const setPanelCollapsedStatus = ({ commit }, { side, collapsed }) => {
   }
 };
 
-export const toggleRightPanelCollapsed = ({ dispatch, state }) => {
+export const toggleRightPanelCollapsed = (
+  { dispatch, state },
+  e = undefined,
+) => {
+  if (e) {
+    $(e.currentTarget)
+      .tooltip('hide')
+      .blur();
+  }
+
   dispatch('setPanelCollapsedStatus', {
     side: 'right',
     collapsed: !state.rightPanelCollapsed,

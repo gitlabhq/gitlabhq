@@ -40,6 +40,8 @@ export default {
       } else if (this.file.changed && this.file.staged) {
         return `unstaged and staged ${pluralize(type)}`;
       }
+
+      return undefined;
     },
   },
 };
