@@ -1,5 +1,0 @@
----
-title: 'Geo: Ignore remote stored objects when calculating counts'
-merge_request: 4864
-author:
-type: fixed

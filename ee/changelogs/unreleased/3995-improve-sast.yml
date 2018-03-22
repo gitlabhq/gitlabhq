@@ -1,6 +1,0 @@
----
-title: Adds support to show added, fixed and all vulnerabilties for SAST in merge
-  request widget
-merge_request:
-author:
-type: changed

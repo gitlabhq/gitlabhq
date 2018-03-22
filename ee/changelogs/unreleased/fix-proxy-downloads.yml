@@ -1,5 +1,0 @@
----
-title: Fix proxy_download support for lfs controller
-merge_request:
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Cache column_exists? for Elasticsearch columns
-merge_request:
-author:
-type: performance

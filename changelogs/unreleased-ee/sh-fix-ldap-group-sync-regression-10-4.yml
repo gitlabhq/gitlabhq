@@ -1,5 +1,0 @@
----
-title: Fix LDAP group sync no longer configurable for regular users
-merge_request:
-author:
-type: fixed

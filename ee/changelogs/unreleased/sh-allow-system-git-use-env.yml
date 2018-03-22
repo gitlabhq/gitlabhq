@@ -1,5 +1,0 @@
----
-title: Allow use of system git for git fetch if USE_SYSTEM_GIT_FOR_FETCH is defined
-merge_request:
-author:
-type: other

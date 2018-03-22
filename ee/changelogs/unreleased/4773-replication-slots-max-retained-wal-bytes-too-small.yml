@@ -1,5 +1,0 @@
----
-title: Fix 500 errors caused by large replication slot wal retention
-merge_request: 4347
-author:
-type: fixed
