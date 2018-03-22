@@ -18,21 +18,20 @@ module EE
             def exceeded?
               return false unless enabled?
 
-              excessive_pipeline_size > 0
+              excessive_seeds_count > 0
             end
 
             def message
               return unless exceeded?
 
               'Pipeline size limit exceeded by ' \
-                "#{pluralize(excessive_pipeline_size, 'job')}!"
+                "#{pluralize(excessive_seeds_count, 'job')}!"
             end
 
             private
 
-            def excessive_pipeline_size
-              TODO fix size quota
-              @excessive ||= @pipeline.builds.size - @namespace.max_pipeline_size
+            def excessive_seeds_count
+              @excessive ||= @pipeline.seeds_size - @namespace.max_pipeline_size
             end
           end
         end
