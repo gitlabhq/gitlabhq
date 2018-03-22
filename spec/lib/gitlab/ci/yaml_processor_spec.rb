@@ -978,13 +978,13 @@ module Gitlab
 
         context 'when template is a job' do
           let(:config) do
-            <<EOT
-job1: &JOBTMPL
-  stage: build
-  script: execute-script-for-job
+            <<~EOT
+            job1: &JOBTMPL
+              stage: build
+              script: execute-script-for-job
 
-job2: *JOBTMPL
-EOT
+            job2: *JOBTMPL
+            EOT
           end
 
           it_behaves_like 'job_templates_handling'
@@ -992,15 +992,15 @@ EOT
 
         context 'when template is a hidden job' do
           let(:config) do
-            <<EOT
-.template: &JOBTMPL
-  stage: build
-  script: execute-script-for-job
+            <<~EOT
+            .template: &JOBTMPL
+              stage: build
+              script: execute-script-for-job
 
-job1: *JOBTMPL
+            job1: *JOBTMPL
 
-job2: *JOBTMPL
-EOT
+            job2: *JOBTMPL
+            EOT
           end
 
           it_behaves_like 'job_templates_handling'
@@ -1008,18 +1008,18 @@ EOT
 
         context 'when job adds its own keys to a template definition' do
           let(:config) do
-            <<EOT
-.template: &JOBTMPL
-  stage: build
+            <<~EOT
+            .template: &JOBTMPL
+              stage: build
 
-job1:
-  <<: *JOBTMPL
-  script: execute-script-for-job
+            job1:
+              <<: *JOBTMPL
+              script: execute-script-for-job
 
-job2:
-  <<: *JOBTMPL
-  script: execute-script-for-job
-EOT
+            job2:
+              <<: *JOBTMPL
+              script: execute-script-for-job
+            EOT
           end
 
           it_behaves_like 'job_templates_handling'
@@ -1357,10 +1357,6 @@ EOT
 
           it { is_expected.to be_nil }
         end
-      end
-
-      def pipeline(**attributes)
-        build_stubbed(:ci_empty_pipeline, **attributes)
       end
     end
   end
