@@ -1,6 +1,6 @@
+/config/
 /node_modules/
 /public/
 /vendor/
 karma.config.js
 webpack.config.js
-svg.config.js
