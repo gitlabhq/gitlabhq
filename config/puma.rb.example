@@ -46,7 +46,17 @@ stdout_redirect '/home/git/gitlab/log/puma.stdout.log',
 #
 # The default is "0, 16".
 #
-threads 32, 64
+threads 1, 1
+
+# By default, workers accept all requests and queue them to pass to handlers.
+# When false, workers accept the number of simultaneous requests configured.
+#
+# Queueing requests generally improves performance, but can cause deadlocks if
+# the app is waiting on a request to itself. See https://github.com/puma/puma/issues/612
+#
+# When set to false this may require a reverse proxy to handle slow clients and
+# queue requests before they reach puma. This is due to disabling HTTP keepalive
+queue_requests false
 
 # Bind the server to "url". "tcp://", "unix://" and "ssl://" are the only
 # accepted protocols.
