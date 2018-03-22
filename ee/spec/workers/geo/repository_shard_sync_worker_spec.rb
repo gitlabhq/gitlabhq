@@ -64,6 +64,18 @@ describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cach
       subject.perform(shard_name)
     end
 
+    it 'does not schedule a job twice for the same project' do
+      scheduled_jobs = [
+        { job_id: 1, project_id: unsynced_project.id },
+        { job_id: 2, project_id: unsynced_project_in_restricted_group.id }
+      ]
+
+      is_expected.to receive(:scheduled_jobs).and_return(scheduled_jobs).at_least(:once)
+      is_expected.not_to receive(:schedule_job)
+
+      Sidekiq::Testing.inline! { subject.perform(shard_name) }
+    end
+
     it 'does not perform Geo::ProjectSyncWorker when no geo database is configured' do
       allow(Gitlab::Geo).to receive(:geo_database_configured?) { false }
 
