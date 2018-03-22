@@ -159,9 +159,9 @@ feature 'Pipeline Schedules', :js do
         visit_pipelines_schedules
         click_link 'New schedule'
         fill_in_schedule_form
-        all('[name="schedule[variables_attributes][][secret_key]"]')[0].set('AAA')
+        all('[name="schedule[variables_attributes][][key]"]')[0].set('AAA')
         all('[name="schedule[variables_attributes][][secret_value]"]')[0].set('AAA123')
-        all('[name="schedule[variables_attributes][][secret_key]"]')[1].set('BBB')
+        all('[name="schedule[variables_attributes][][key]"]')[1].set('BBB')
         all('[name="schedule[variables_attributes][][secret_value]"]')[1].set('BBB123')
         save_pipeline_schedule
       end

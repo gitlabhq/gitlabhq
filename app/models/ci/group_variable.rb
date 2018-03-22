@@ -6,7 +6,6 @@ module Ci
 
     belongs_to :group
 
-    alias_attribute :secret_key, :key
     alias_attribute :secret_value, :value
 
     validates :key, uniqueness: {

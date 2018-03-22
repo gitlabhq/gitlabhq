@@ -29,7 +29,7 @@ export default class VariableList {
         selector: '.js-ci-variable-input-id',
         default: '',
       },
-      secret_key: {
+      key: {
         selector: '.js-ci-variable-input-key',
         default: '',
       },
@@ -174,7 +174,7 @@ export default class VariableList {
   }
 
   toggleEnableRow(isEnabled = true) {
-    this.$container.find(this.inputMap.secret_key.selector).attr('disabled', !isEnabled);
+    this.$container.find(this.inputMap.key.selector).attr('disabled', !isEnabled);
     this.$container.find('.js-row-remove-button').attr('disabled', !isEnabled);
   }
 

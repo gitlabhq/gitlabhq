@@ -15,12 +15,12 @@ end
 shared_examples 'PATCH #update updates variables' do
   let(:variable_attributes) do
     { id: variable.id,
-      secret_key: variable.key,
+      key: variable.key,
       secret_value: variable.value,
       protected: variable.protected?.to_s }
   end
   let(:new_variable_attributes) do
-    { secret_key: 'new_key',
+    { key: 'new_key',
       secret_value: 'dummy_value',
       protected: 'false' }
   end
@@ -29,7 +29,7 @@ shared_examples 'PATCH #update updates variables' do
     let(:variables_attributes) do
       [
         variable_attributes.merge(secret_value: 'other_value'),
-        new_variable_attributes.merge(secret_key: '...?')
+        new_variable_attributes.merge(key: '...?')
       ]
     end
 

@@ -19,7 +19,7 @@ describe('NativeFormVariableList', () => {
   describe('onFormSubmit', () => {
     it('should clear out the `name` attribute on the inputs for the last empty row on form submission (avoid BE validation)', () => {
       const $row = $wrapper.find('.js-row');
-      expect($row.find('.js-ci-variable-input-key').attr('name')).toBe('schedule[variables_attributes][][secret_key]');
+      expect($row.find('.js-ci-variable-input-key').attr('name')).toBe('schedule[variables_attributes][][key]');
       expect($row.find('.js-ci-variable-input-value').attr('name')).toBe('schedule[variables_attributes][][secret_value]');
 
       $wrapper.closest('form').trigger('trigger-submit');
