@@ -1,5 +1,0 @@
----
-title: Dry up CI/CD gitlab-ci.yml configuration by allowing inclusion of external files
-merge_request: 4262
-author:
-type: added

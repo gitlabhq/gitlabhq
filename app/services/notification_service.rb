@@ -231,9 +231,9 @@ class NotificationService
   def new_access_request(member)
     return true unless member.notifiable?(:subscription)
 
-    recipients = member.source.members.active_without_invites.owners_and_masters
+    recipients = member.source.members.active_without_invites_and_requests.owners_and_masters
     if fallback_to_group_owners_masters?(recipients, member)
-      recipients = member.source.group.members.active_without_invites.owners_and_masters
+      recipients = member.source.group.members.active_without_invites_and_requests.owners_and_masters
     end
 
     recipients.each { |recipient| deliver_access_request_email(recipient, member) }

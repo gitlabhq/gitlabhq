@@ -1,5 +1,0 @@
----
-title: Prevent new push rules from using non-RE2 regexes
-merge_request:
-author:
-type: security

@@ -1,5 +1,0 @@
----
-title: Fix Epics not getting created in a Group with existing Epics
-merge_request: 4865
-author:
-type: fixed

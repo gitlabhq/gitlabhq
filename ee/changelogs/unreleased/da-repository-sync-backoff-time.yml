@@ -1,5 +1,0 @@
----
-title: Geo - Respect backoff time when repository have never been synced successfully
-merge_request:
-author:
-type: fixed

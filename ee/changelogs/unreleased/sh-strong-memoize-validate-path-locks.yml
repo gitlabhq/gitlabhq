@@ -1,5 +1,0 @@
----
-title: Properly memoize ChangeAccess#validate_path_locks? to avoid excessive queries
-merge_request:
-author:
-type: performance

@@ -1,6 +1,0 @@
----
-title: Support SendURL for performing indirect download of artifacts if clients does
-  not specify that it supports that
-merge_request:
-author:
-type: fixed

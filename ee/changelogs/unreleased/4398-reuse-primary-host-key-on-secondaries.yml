@@ -1,6 +1,0 @@
----
-title: Update Geo documentation to reuse the primary node SSH host key on secondary
-  node
-merge_request: 4198
-author:
-type: fixed

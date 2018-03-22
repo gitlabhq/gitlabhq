@@ -76,6 +76,7 @@ learn how to leverage its potential even more.
   more Kubernetes clusters to your project
 - [Deploy Boards](../user/project/deploy_boards.md) - Check the current health
   and status of each CI/CD environment running on Kubernetes
+- [ChatOps](chatops/README.md) - Trigger CI jobs from chat, with results sent back to the channel.
 
 ## GitLab CI/CD for Docker
 

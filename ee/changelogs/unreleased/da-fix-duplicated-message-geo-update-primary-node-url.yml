@@ -1,5 +1,0 @@
----
-title: Geo - Remove duplicated message on on geo:update_primary_node_url rake task
-merge_request:
-author:
-type: fixed

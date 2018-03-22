@@ -1,5 +1,0 @@
----
-title: FIx N+1 queries with /api/v4/groups endpoint
-merge_request:
-author:
-type: performance

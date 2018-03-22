@@ -1,6 +1,0 @@
----
-title: Project can no longer be shared between groups when both member and group locks
-  are active
-merge_request:
-author:
-type: security

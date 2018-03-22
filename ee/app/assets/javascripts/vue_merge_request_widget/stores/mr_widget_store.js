@@ -1,6 +1,6 @@
 import CEMergeRequestStore from '~/vue_merge_request_widget/stores/mr_widget_store';
 import {
-  parseIssues,
+  parseCodeclimateMetrics,
   filterByKey,
   setSastContainerReport,
   setSastReport,
@@ -114,8 +114,8 @@ export default class MergeRequestStore extends CEMergeRequestStore {
   }
 
   compareCodeclimateMetrics(headIssues, baseIssues, headBlobPath, baseBlobPath) {
-    const parsedHeadIssues = parseIssues(headIssues, headBlobPath);
-    const parsedBaseIssues = parseIssues(baseIssues, baseBlobPath);
+    const parsedHeadIssues = parseCodeclimateMetrics(headIssues, headBlobPath);
+    const parsedBaseIssues = parseCodeclimateMetrics(baseIssues, baseBlobPath);
 
     this.codeclimateMetrics.newIssues = filterByKey(
       parsedHeadIssues,
