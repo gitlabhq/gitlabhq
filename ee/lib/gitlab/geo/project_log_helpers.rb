@@ -8,6 +8,7 @@ module Gitlab
           class: self.class.name,
           project_id: project.id,
           project_path: project.full_path,
+          storage_version: project.storage_version,
           message: message
         }
       end
