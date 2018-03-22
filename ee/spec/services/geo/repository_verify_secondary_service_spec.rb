@@ -12,7 +12,7 @@ describe Geo::RepositoryVerifySecondaryService, :geo do
   shared_examples 'verify checksums for repositories/wikis' do |type|
     let(:checksum) { instance_double('Gitlab::Git::Checksum') }
     let(:storage) { project.repository_storage }
-    let(:relative_path) { registry.repository_path(type) }
+    let(:relative_path) { service.send(:repository_path) }
 
     subject(:service)  { described_class.new(registry, type) }
 
