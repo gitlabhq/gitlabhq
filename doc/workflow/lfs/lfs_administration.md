@@ -45,19 +45,20 @@ In `config/gitlab.yml`:
     storage_path: /mnt/storage/lfs-objects
 ```
 
-## Setting up S3 compatible object storage
+## Storing the LFS objects in an S3-compatible object storage
 
-> **Note:** [Introduced][ee-2760] in [GitLab Premium][eep] 10.0.
+> [Introduced][ee-2760] in [GitLab Premium][eep] 10.0.
 
-It is possible to store LFS objects on remote object storage instead of on a local disk.
+It is possible to store LFS objects on a remote object storage which allows you
+to offload storage to an external AWS S3 compatible service, freeing up disk
+space locally. You can also host your own S3 compatible storage decoupled from
+GitLab, with with a service such as [Minio](https://www.minio.io/).
 
-This allows you to offload storage to an external AWS S3 compatible service, freeing up disk space locally. You can also host your own S3 compatible storage decoupled from GitLab, with with a service such as [Minio](https://www.minio.io/).
+Object storage currently transfers files first to GitLab, and then on the
+object storage in a second stage. This can be done either by using a rake task
+to transfer existing objects, or in a background job after each file is received.
 
-Object storage currently transfers files first to GitLab, and then on the object storage in a second stage. This can be done either by using a rake task to transfer existing objects, or in a background job after each file is received.
-
-### Object Storage Settings
-
-For source installations the following settings are nested under `lfs:` and then `object_store:`. On omnibus installs they are prefixed by `lfs_object_store_`.
+The following general settings are supported.
 
 | Setting | Description | Default |
 |---------|-------------|---------|
@@ -68,9 +69,7 @@ For source installations the following settings are nested under `lfs:` and then
 | `proxy_download` | Set to true to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data | `false` |
 | `connection` | Various connection options described below | |
 
-#### S3 compatible connection settings
-
-The connection settings match those provided by [Fog](https://github.com/fog), and are as follows:
+The `connection` settings match those provided by [Fog](https://github.com/fog).
 
 | Setting | Description | Default |
 |---------|-------------|---------|
@@ -82,8 +81,45 @@ The connection settings match those provided by [Fog](https://github.com/fog), a
 | `endpoint` | Can be used when configuring an S3 compatible service such as [Minio](https://www.minio.io), by entering a URL such as `http://127.0.0.1:9000` | (optional) |
 | `path_style` | Set to true to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Leave as false for AWS S3 | false |
 
+**For Omnibus installations**
 
-### From source
+On Omnibus installations, the settings are prefixed by `lfs_object_store_`:
+
+1. Edit `/etc/gitlab/gitlab.rb` and add the following lines by replacing with
+   the values you want:
+
+	```ruby
+	gitlab_rails['lfs_object_store_enabled'] = true
+	gitlab_rails['lfs_object_store_remote_directory'] = "lfs-objects"
+	gitlab_rails['lfs_object_store_connection'] = {
+	  'provider' => 'AWS',
+	  'region' => 'eu-central-1',
+	  'aws_access_key_id' => '1ABCD2EFGHI34JKLM567N',
+	  'aws_secret_access_key' => 'abcdefhijklmnopQRSTUVwxyz0123456789ABCDE',
+	  # The below options configure an S3 compatible host instead of AWS
+	  'host' => 'localhost',
+	  'endpoint' => 'http://127.0.0.1:9000',
+	  'path_style' => true
+	}
+	```
+
+1. Save the file and [reconfigure GitLab]s for the changes to take effect.
+1. Migrate any existing local LFS objects to the object storage:
+
+    ```bash
+    gitlab-rake gitlab:lfs:migrate
+    ```
+
+    This will migrate existing LFS objects to object storage. New LFS objects
+    will be forwarded to object storage unless
+    `gitlab_rails['lfs_object_store_background_upload']` is set to false.
+
+---
+
+**For installations from source**
+
+For source installations the settings are nested under `lfs:` and then
+`object_store:`:
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
    lines:
@@ -108,44 +144,13 @@ The connection settings match those provided by [Fog](https://github.com/fog), a
 1. Save the file and [restart GitLab][] for the changes to take effect.
 1. Migrate any existing local LFS objects to the object storage:
 
-	```bash
-	sudo -u git -H bundle exec rake gitlab:lfs:migrate RAILS_ENV=production
-	```
+    ```bash
+    sudo -u git -H bundle exec rake gitlab:lfs:migrate RAILS_ENV=production
+    ```
 
-	This will migrate existing LFS objects to object storage. New LFS objects
-	will be forwarded to object storage unless
-	`gitlab_rails['lfs_object_store_background_upload']` is set to false.
-
-### In Omnibus
-
-1. Edit `/etc/gitlab/gitlab.rb` and add the following lines by replacing with
-   the values you want:
-
-	```ruby
-	gitlab_rails['lfs_object_store_enabled'] = true
-	gitlab_rails['lfs_object_store_remote_directory'] = "lfs-objects"
-	gitlab_rails['lfs_object_store_connection'] = {
-	  'provider' => 'AWS',
-	  'region' => 'eu-central-1',
-	  'aws_access_key_id' => '1ABCD2EFGHI34JKLM567N',
-	  'aws_secret_access_key' => 'abcdefhijklmnopQRSTUVwxyz0123456789ABCDE',
-	  # The below options configure an S3 compatible host instead of AWS
-	  'host' => 'localhost',
-	  'endpoint' => 'http://127.0.0.1:9000',
-	  'path_style' => true
-	}
-	```
-
-1. Save the file and [reconfigure GitLab]s for the changes to take effect.
-1. Migrate any existing local LFS objects to the object storage:
-
-      ```bash
-      gitlab-rake gitlab:lfs:migrate
-      ```
-
-      This will migrate existing LFS objects to object storage. New LFS objects
-      will be forwarded to object storage unless
-      `gitlab_rails['lfs_object_store_background_upload']` is set to false.
+    This will migrate existing LFS objects to object storage. New LFS objects
+    will be forwarded to object storage unless `background_upload` is set to
+    false.
 
 ## Storage statistics
 
