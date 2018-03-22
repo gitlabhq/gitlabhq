@@ -1,5 +1,0 @@
----
-title: Encode branch name as binary before creating a RPC request to copy attributes
-merge_request: 17291
-author:
-type: fixed

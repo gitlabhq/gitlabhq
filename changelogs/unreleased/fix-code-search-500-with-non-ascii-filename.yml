@@ -1,5 +1,0 @@
----
-title: Fix code and wiki search results when filename is non-ASCII
-merge_request:
-author:
-type: fixed

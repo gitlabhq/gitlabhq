@@ -1,4 +1,0 @@
----
-title: Moved o_auth/saml/ldap modules under gitlab/auth
-merge_request: 17359
-author: Horatiu Eugen Vlad

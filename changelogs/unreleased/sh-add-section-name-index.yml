@@ -1,5 +1,0 @@
----
-title: Add index on section_name_id on ci_build_trace_sections table
-merge_request:
-author:
-type: performance
