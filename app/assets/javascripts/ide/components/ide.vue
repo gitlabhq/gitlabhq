@@ -60,6 +60,7 @@ export default {
         v-if="activeFile"
       >
         <repo-tabs
+          :active-file="activeFile"
           :files="tabs"
           :viewer="viewer"
           :has-changes="hasChanges"

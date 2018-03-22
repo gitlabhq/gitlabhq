@@ -5,6 +5,13 @@ export default {
     Object.assign(state.entries[path], {
       active,
     });
+
+    Object.assign(state, {
+      pendingTabs: state.pendingTabs.map(f => ({
+        ...f,
+        active: false,
+      })),
+    });
   },
   [types.TOGGLE_FILE_OPEN](state, path) {
     Object.assign(state.entries[path], {

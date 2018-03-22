@@ -1,7 +1,6 @@
 <script>
 import { mapActions } from 'vuex';
 import icon from '~/vue_shared/components/icon.vue';
-import router from '../../ide_router';
 
 export default {
   components: {
@@ -26,7 +25,6 @@ export default {
     openFileInEditor(file) {
       return this.updateViewer('diff').then(() => {
         this.openPendingTab(file);
-        router.push(`/project/${file.projectId}/tree/master/`);
       });
     },
   },

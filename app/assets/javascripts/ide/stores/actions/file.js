@@ -18,9 +18,9 @@ export const closeFile = ({ commit, state, getters, dispatch }, file) => {
     commit(types.TOGGLE_FILE_OPEN, path);
     commit(types.SET_FILE_ACTIVE, { path, active: false });
 
-    if (state.openFiles.length > 0 && fileWasActive) {
+    if (getters.tabs.length > 0 && fileWasActive) {
       const nextIndexToOpen = indexOfClosedFile === 0 ? 0 : indexOfClosedFile - 1;
-      const nextFileToOpen = state.entries[state.openFiles[nextIndexToOpen].path];
+      const nextFileToOpen = state.openFiles[nextIndexToOpen];
 
       router.push(`/project${nextFileToOpen.url}`);
     } else if (!state.openFiles.length) {
@@ -133,6 +133,12 @@ export const discardFileChanges = ({ state, commit }, path) => {
   eventHub.$emit(`editor.update.model.content.${file.path}`, file.raw);
 };
 
-export const openPendingTab = ({ commit }, file) => {
+export const openPendingTab = ({ commit, state }, file) => {
   commit(types.ADD_PENDING_TAB, file);
+
+  router.push(`/project/${file.projectId}/tree/${state.currentBranchId}/`);
+};
+
+export const removePendingTab = ({ commit }, file) => {
+  commit(types.REMOVE_PENDING_TAB, file);
 };
