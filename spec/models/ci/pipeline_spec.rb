@@ -181,6 +181,24 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#protected_ref?' do
+    it 'delegates method to project' do
+      expect(pipeline).not_to be_protected_ref
+    end
+  end
+
+  describe '#legacy_trigger' do
+    let(:trigger_request) { create(:ci_trigger_request) }
+
+    before do
+      pipeline.trigger_requests << trigger_request
+    end
+
+    it 'returns first trigger request' do
+      expect(pipeline.legacy_trigger).to eq trigger_request
+    end
+  end
+
   describe '#auto_canceled?' do
     subject { pipeline.auto_canceled? }
 
