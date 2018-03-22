@@ -46,10 +46,7 @@
 
   @media (max-width: $screen-xs-max) {
     .input-group > div {
-<<<<<<< HEAD
 
-=======
->>>>>>> upstream/master
       &:last-child {
         margin-bottom: 0;
       }
@@ -956,7 +953,11 @@ a.allowed-to-push {
       border-right: solid 1px transparent;
     }
   }
-<<<<<<< HEAD
+
+  .dropdown-menu-toggle {
+    width: 100%;
+    max-width: 300px;
+  }
 
   .flash-container {
     padding: 0;
@@ -965,16 +966,6 @@ a.allowed-to-push {
 
 .disabled-item {
   @extend .btn.disabled;
-}
-
-.protected-tags-list {
-=======
-
->>>>>>> upstream/master
-  .dropdown-menu-toggle {
-    width: 100%;
-    max-width: 300px;
-  }
 }
 
 .custom-notifications-form {
