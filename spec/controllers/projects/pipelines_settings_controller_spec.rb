@@ -48,10 +48,6 @@ describe Projects::PipelinesSettingsController do
         end
 
         context 'when the project repository is empty' do
-          before do
-            allow_any_instance_of(Project).to receive(:empty_repo?).and_return(true)
-          end
-
           it 'sets a warning flash' do
             expect(subject).to set_flash[:warning]
           end
@@ -64,9 +60,7 @@ describe Projects::PipelinesSettingsController do
         end
 
         context 'when the project repository is not empty' do
-          before do
-            allow_any_instance_of(Project).to receive(:empty_repo?).and_return(false)
-          end
+          let(:project) { create(:project, :repository) }
 
           it 'sets a success flash' do
             allow(CreatePipelineWorker).to receive(:perform_async).with(project.id, user.id, project.default_branch, :web, any_args)
