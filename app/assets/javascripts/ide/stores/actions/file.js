@@ -6,21 +6,26 @@ import * as types from '../mutation_types';
 import router from '../../ide_router';
 import { setPageTitle } from '../utils';
 
-export const closeFile = ({ commit, state, getters, dispatch }, path) => {
-  const indexOfClosedFile = state.openFiles.findIndex(f => f.path === path);
-  const file = state.entries[path];
-  const fileWasActive = file.active;
+export const closeFile = ({ commit, state, getters, dispatch }, file) => {
+  const path = file.path;
 
-  commit(types.TOGGLE_FILE_OPEN, path);
-  commit(types.SET_FILE_ACTIVE, { path, active: false });
+  if (file.pending) {
+    commit(types.REMOVE_PENDING_TAB, file);
+  } else {
+    const indexOfClosedFile = state.openFiles.findIndex(f => f.path === path);
+    const fileWasActive = file.active;
 
-  if (state.openFiles.length > 0 && fileWasActive) {
-    const nextIndexToOpen = indexOfClosedFile === 0 ? 0 : indexOfClosedFile - 1;
-    const nextFileToOpen = state.entries[state.openFiles[nextIndexToOpen].path];
+    commit(types.TOGGLE_FILE_OPEN, path);
+    commit(types.SET_FILE_ACTIVE, { path, active: false });
 
-    router.push(`/project${nextFileToOpen.url}`);
-  } else if (!state.openFiles.length) {
-    router.push(`/project/${file.projectId}/tree/${file.branchId}/`);
+    if (state.openFiles.length > 0 && fileWasActive) {
+      const nextIndexToOpen = indexOfClosedFile === 0 ? 0 : indexOfClosedFile - 1;
+      const nextFileToOpen = state.entries[state.openFiles[nextIndexToOpen].path];
+
+      router.push(`/project${nextFileToOpen.url}`);
+    } else if (!state.openFiles.length) {
+      router.push(`/project/${file.projectId}/tree/${file.branchId}/`);
+    }
   }
 
   eventHub.$emit(`editor.update.model.dispose.${file.path}`);
@@ -66,14 +71,7 @@ export const getFileData = ({ state, commit, dispatch }, file) => {
     })
     .catch(() => {
       commit(types.TOGGLE_LOADING, { entry: file });
-      flash(
-        'Error loading file data. Please try again.',
-        'alert',
-        document,
-        null,
-        false,
-        true,
-      );
+      flash('Error loading file data. Please try again.', 'alert', document, null, false, true);
     });
 };
 
@@ -84,14 +82,7 @@ export const getRawFileData = ({ commit, dispatch }, file) =>
       commit(types.SET_FILE_RAW_DATA, { file, raw });
     })
     .catch(() =>
-      flash(
-        'Error loading file content. Please try again.',
-        'alert',
-        document,
-        null,
-        false,
-        true,
-      ),
+      flash('Error loading file content. Please try again.', 'alert', document, null, false, true),
     );
 
 export const changeFileContent = ({ state, commit }, { path, content }) => {
@@ -119,10 +110,7 @@ export const setFileEOL = ({ getters, commit }, { eol }) => {
   }
 };
 
-export const setEditorPosition = (
-  { getters, commit },
-  { editorRow, editorColumn },
-) => {
+export const setEditorPosition = ({ getters, commit }, { editorRow, editorColumn }) => {
   if (getters.activeFile) {
     commit(types.SET_FILE_POSITION, {
       file: getters.activeFile,
@@ -143,4 +131,8 @@ export const discardFileChanges = ({ state, commit }, path) => {
   }
 
   eventHub.$emit(`editor.update.model.content.${file.path}`, file.raw);
+};
+
+export const openPendingTab = ({ commit }, file) => {
+  commit(types.ADD_PENDING_TAB, file);
 };

@@ -80,4 +80,18 @@ export default {
       changed,
     });
   },
+  [types.ADD_PENDING_TAB](state, file) {
+    Object.assign(state, {
+      pendingTabs: state.pendingTabs.concat({
+        ...file,
+        active: true,
+        pending: true,
+      }),
+    });
+  },
+  [types.REMOVE_PENDING_TAB](state, file) {
+    Object.assign(state, {
+      pendingTabs: state.pendingTabs.filter(f => f.path !== file.path),
+    });
+  },
 };

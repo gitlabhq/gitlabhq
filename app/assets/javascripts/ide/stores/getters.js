@@ -1,10 +1,10 @@
-export const activeFile = state =>
-  state.openFiles.find(file => file.active) || null;
+export const tabs = state => state.openFiles.concat(state.pendingTabs);
+
+export const activeFile = state => tabs(state).find(file => file.active) || null;
 
 export const addedFiles = state => state.changedFiles.filter(f => f.tempFile);
 
-export const modifiedFiles = state =>
-  state.changedFiles.filter(f => !f.tempFile);
+export const modifiedFiles = state => state.changedFiles.filter(f => !f.tempFile);
 
 export const projectsWithTrees = state =>
   Object.keys(state.projects).map(projectId => {

@@ -1,51 +1,51 @@
 <script>
-  import { mapState, mapGetters } from 'vuex';
-  import ideSidebar from './ide_side_bar.vue';
-  import ideContextbar from './ide_context_bar.vue';
-  import repoTabs from './repo_tabs.vue';
-  import repoFileButtons from './repo_file_buttons.vue';
-  import ideStatusBar from './ide_status_bar.vue';
-  import repoEditor from './repo_editor.vue';
+import { mapState, mapGetters } from 'vuex';
+import ideSidebar from './ide_side_bar.vue';
+import ideContextbar from './ide_context_bar.vue';
+import repoTabs from './repo_tabs.vue';
+import repoFileButtons from './repo_file_buttons.vue';
+import ideStatusBar from './ide_status_bar.vue';
+import repoEditor from './repo_editor.vue';
 
-  export default {
-    components: {
-      ideSidebar,
-      ideContextbar,
-      repoTabs,
-      repoFileButtons,
-      ideStatusBar,
-      repoEditor,
+export default {
+  components: {
+    ideSidebar,
+    ideContextbar,
+    repoTabs,
+    repoFileButtons,
+    ideStatusBar,
+    repoEditor,
+  },
+  props: {
+    emptyStateSvgPath: {
+      type: String,
+      required: true,
     },
-    props: {
-      emptyStateSvgPath: {
-        type: String,
-        required: true,
-      },
-      noChangesStateSvgPath: {
-        type: String,
-        required: true,
-      },
-      committedStateSvgPath: {
-        type: String,
-        required: true,
-      },
+    noChangesStateSvgPath: {
+      type: String,
+      required: true,
     },
-    computed: {
-      ...mapState(['changedFiles', 'openFiles', 'viewer']),
-      ...mapGetters(['activeFile', 'hasChanges']),
+    committedStateSvgPath: {
+      type: String,
+      required: true,
     },
-    mounted() {
-      const returnValue = 'Are you sure you want to lose unsaved changes?';
-      window.onbeforeunload = e => {
-        if (!this.changedFiles.length) return undefined;
+  },
+  computed: {
+    ...mapState(['changedFiles', 'openFiles', 'viewer']),
+    ...mapGetters(['activeFile', 'hasChanges', 'tabs']),
+  },
+  mounted() {
+    const returnValue = 'Are you sure you want to lose unsaved changes?';
+    window.onbeforeunload = e => {
+      if (!this.changedFiles.length) return undefined;
 
-        Object.assign(e, {
-          returnValue,
-        });
-        return returnValue;
-      };
-    },
-  };
+      Object.assign(e, {
+        returnValue,
+      });
+      return returnValue;
+    };
+  },
+};
 </script>
 
 <template>
@@ -60,7 +60,7 @@
         v-if="activeFile"
       >
         <repo-tabs
-          :files="openFiles"
+          :files="tabs"
           :viewer="viewer"
           :has-changes="hasChanges"
         />
