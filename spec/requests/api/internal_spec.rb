@@ -447,6 +447,12 @@ describe API::Internal do
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_truthy
+          expect(json_response["gitaly"]).not_to be_nil
+          expect(json_response["gitaly"]["repository"]).not_to be_nil
+          expect(json_response["gitaly"]["repository"]["storage_name"]).to eq(project.repository.gitaly_repository.storage_name)
+          expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
+          expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
+          expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
         end
       end
 

@@ -27,12 +27,21 @@ export default {
       required: true,
     },
   },
+  computed: {
+    metricDetails() {
+      return this.currentRequest.details[this.metric];
+    },
+    detailsList() {
+      return this.metricDetails[this.details];
+    },
+  },
 };
 </script>
 <template>
   <div
     :id="`peek-view-${metric}`"
     class="view"
+    v-if="currentRequest.details"
   >
     <button
       :data-target="`#modal-peek-${metric}-details`"
@@ -40,35 +49,40 @@ export default {
       type="button"
       data-toggle="modal"
     >
-      <span
-        v-if="currentRequest.details"
-        class="bold"
-      >
-        {{ currentRequest.details[metric].duration }}
-        /
-        {{ currentRequest.details[metric].calls }}
-      </span>
+      {{ metricDetails.duration }}
+      /
+      {{ metricDetails.calls }}
     </button>
     <gl-modal
-      v-if="currentRequest.details"
       :id="`modal-peek-${metric}-details`"
       :header-title-text="header"
       class="performance-bar-modal"
     >
-      <table class="table">
-        <tr
-          v-for="(item, index) in currentRequest.details[metric][details]"
-          :key="index"
-        >
-          <td><strong>{{ item.duration }}ms</strong></td>
-          <td
-            v-for="key in keys"
-            :key="key"
-            class="break-all"
+      <table
+        class="table"
+      >
+        <template v-if="detailsList.length">
+          <tr
+            v-for="(item, index) in detailsList"
+            :key="index"
           >
-            {{ item[key] }}
-          </td>
-        </tr>
+            <td><strong>{{ item.duration }}ms</strong></td>
+            <td
+              v-for="key in keys"
+              :key="key"
+              class="break-all"
+            >
+              {{ item[key] }}
+            </td>
+          </tr>
+        </template>
+        <template v-else>
+          <tr>
+            <td>
+              No {{ header.toLowerCase() }} for this request.
+            </td>
+          </tr>
+        </template>
       </table>
 
       <div slot="footer">
