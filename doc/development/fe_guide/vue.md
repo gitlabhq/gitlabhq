@@ -1,28 +1,6 @@
 # Vue
 
-For more complex frontend features, we recommend using Vue.js. It shares
-some ideas with React.js as well as Angular.
-
 To get started with Vue, read through [their documentation][vue-docs].
-
-## When to use Vue.js
-
-We recommend using Vue for more complex features. Here are some guidelines for when to use Vue.js:
-
-- If you are starting a new feature or refactoring an old one that highly interacts with the DOM;
-- For real time data updates;
-- If you are creating a component that will be reused elsewhere;
-
-## When not to use Vue.js
-
-We don't want to refactor all GitLab frontend code into Vue.js, here are some guidelines for
-when not to use Vue.js:
-
-- Adding or changing static information;
-- Features that highly depend on jQuery will be hard to work with Vue.js;
-- Features without reactive data;
-
-As always, the Frontend Architectural Experts are available to help with any Vue or JavaScript questions.
 
 ## Vue architecture
 
@@ -57,15 +35,15 @@ new_feature
 │   └── ...
 ├── stores
 │  └── new_feature_store.js
-├── services
+├── services # only when not using vuex
 │  └── new_feature_service.js
-├── new_feature_bundle.js
+├── index.js
 ```
 _For consistency purposes, we recommend you to follow the same structure._
 
 Let's look into each of them:
 
-### A `*_bundle.js` file
+### A `index.js` file
 
 This is the index file of your new feature. This is where the root Vue instance
 of the new feature should be.
@@ -144,30 +122,15 @@ in one table would not be a good use of this pattern.
 You can read more about components in Vue.js site, [Component System][component-system]
 
 #### Components Gotchas
-1. Using SVGs in components: To use an SVG in a template we need to make it a property we can access through the component.
-A `prop` and a property returned by the `data` functions require `vue` to set a `getter` and a `setter` for each of them.
-The SVG should be a computed property in order to improve performance, note that computed properties are cached based on their dependencies.
-
-```javascript
-// bad
-import svg from 'svg.svg';
-data() {
-  return {
-    myIcon: svg,
-  };
-};
-
-// good
-import svg from 'svg.svg';
-computed: {
-  myIcon() {
-    return svg;
-  }
-}
-```
+1. Using SVGs icons in components: To use an SVG icon in a template use the `icon.vue`
+1. Using SVGs illustrations in components: To use an SVG illustrations in a template provide the path as a prop.
 
 ### A folder for the Store
 
+#### Vuex
+Check this [page](vuex.md) for more details.
+
+#### Flux like state management
 The Store is a class that allows us to manage the state in a single
 source of truth. It is not aware of the service or the components.
 
@@ -175,6 +138,8 @@ The concept we are trying to follow is better explained by Vue documentation
 itself, please read this guide: [State Management][state-management]
 
 ### A folder for the Service
+
+**If you are using Vuex you won't need this step**
 
 The Service is a class used only to communicate with the server.
 It does not store or manipulate any data. It is not aware of the store or the components.
@@ -273,6 +238,9 @@ import Store from 'store';
 import Service from 'service';
 import TodoComponent from 'todoComponent';
 export default {
+  components: {
+    todo: TodoComponent,
+  },
   /**
    * Although most data belongs in the store, each component it's own state.
    * We want to show a loading spinner while we are fetching the todos, this state belong
@@ -289,10 +257,6 @@ export default {
       store: store,
       todos: store.todos,
     };
-  },
-
-  components: {
-    todo: TodoComponent,
   },
 
   created() {
@@ -476,200 +440,6 @@ need to test the rendered output. [Vue][vue-test] guide's to unit test show us e
 Refer to [mock axios](axios.md#mock-axios-response-on-tests)
 
 
-## Vuex
-To manage the state of an application you may use [Vuex][vuex-docs].
-
-_Note:_ All of the below is explained in more detail in the official [Vuex documentation][vuex-docs].
-
-### Separation of concerns
-Vuex is composed of State, Getters, Mutations, Actions and Modules.
-
-When a user clicks on an action, we need to `dispatch` it. This action will `commit` a mutation that will change the state.
-_Note:_ The action itself will not update the state, only a mutation should update the state.
-
-#### File structure
-When using Vuex at GitLab, separate this concerns into different files to improve readability. If you can, separate the Mutation Types as well:
-
-```
-└── store
-  ├── index.js          # where we assemble modules and export the store
-  ├── actions.js        # actions
-  ├── mutations.js      # mutations
-  ├── getters.js        # getters
-  └── mutation_types.js # mutation types
-```
-The following examples show an application that lists and adds users to the state.
-
-##### `index.js`
-This is the entry point for our store. You can use the following as a guide:
-
-```javascript
-import Vue from 'vue';
-import Vuex from 'vuex';
-import * as actions from './actions';
-import * as getters from './getters';
-import mutations from './mutations';
-
-Vue.use(Vuex);
-
-export default new Vuex.Store({
-  actions,
-  getters,
-  mutations,
-  state: {
-    users: [],
-  },
-});
-```
-_Note:_ If the state of the application is too complex, an individual file for the state may be better.
-
-#### `actions.js`
-An action commits a mutatation. In this file, we will write the actions that will call the respective mutation:
-
-```javascript
-  import * as types from './mutation_types';
-
-  export const addUser = ({ commit }, user) => {
-    commit(types.ADD_USER, user);
-  };
-```
-
-To dispatch an action from a component, use the `mapActions` helper:
-```javascript
-import { mapActions } from 'vuex';
-
-{
-  methods: {
-    ...mapActions([
-      'addUser',
-    ]),
-    onClickUser(user) {
-      this.addUser(user);
-    },
-  },
-};
-```
-
-#### `getters.js`
-Sometimes we may need to get derived state based on store state, like filtering for a specific prop. This can be done through the `getters`:
-
-```javascript
-// get all the users with pets
-export getUsersWithPets = (state, getters) => {
-  return state.users.filter(user => user.pet !== undefined);
-};
-```
-
-To access a getter from a component, use the `mapGetters` helper:
-```javascript
-import { mapGetters } from 'vuex';
-
-{
-  computed: {
-    ...mapGetters([
-      'getUsersWithPets',
-    ]),
-  },
-};
-```
-
-#### `mutations.js`
-The only way to actually change state in a Vuex store is by committing a mutation.
-
-```javascript
-  import * as types from './mutation_types';
-
-  export default {
-    [types.ADD_USER](state, user) {
-      state.users.push(user);
-    },
-  };
-```
-
-#### `mutations_types.js`
-From [vuex mutations docs][vuex-mutations]:
-> It is a commonly seen pattern to use constants for mutation types in various Flux implementations. This allows the code to take advantage of tooling like linters, and putting all constants in a single file allows your collaborators to get an at-a-glance view of what mutations are possible in the entire application.
-
-```javascript
-export const ADD_USER = 'ADD_USER';
-```
-
-### How to include the store in your application
-The store should be included in the main component of your application:
-```javascript
-  // app.vue
-  import store from 'store'; // it will include the index.js file
-
-  export default {
-    name: 'application',
-    store,
-    ...
-  };
-```
-
-### Vuex Gotchas
-1. Avoid calling a mutation directly. Always use an action to commit a mutation. Doing so will keep consistency through out the application. From Vuex docs:
-
-  >  why don't we just call store.commit('action') directly? Well, remember that mutations must be synchronous? Actions aren't. We can perform asynchronous operations inside an action.
-
-  ```javascript
-    // component.vue
-
-    // bad
-    created() {
-      this.$store.commit('mutation');
-    }
-
-    // good
-    created() {
-      this.$store.dispatch('action');
-    }
-  ```
-1. When possible, use mutation types instead of hardcoding strings. It will be less error prone.
-1. The State will be accessible in all components descending from the use where the store is instantiated.
-
-### Testing Vuex
-#### Testing Vuex concerns
-Refer to [vuex docs][vuex-testing] regarding testing Actions, Getters and Mutations.
-
-#### Testing components that need a store
-Smaller components might use `store` properties to access the data.
-In order to write unit tests for those components, we need to include the store and provide the correct state:
-
-```javascript
-//component_spec.js
-import Vue from 'vue';
-import store from './store';
-import component from './component.vue'
-
-describe('component', () => {
-  let vm;
-  let Component;
-
-  beforeEach(() => {
-    Component = Vue.extend(issueActions);
-  });
-
-  afterEach(() => {
-    vm.$destroy();
-  });
-
-  it('should show a user', () => {
-    const user = {
-      name: 'Foo',
-      age: '30',
-    };
-
-    // populate the store
-    store.dipatch('addUser', user);
-
-    vm = new Component({
-      store,
-      propsData: props,
-    }).$mount();
-  });
-});
-```
 
 [vue-docs]: http://vuejs.org/guide/index.html
 [issue-boards]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/assets/javascripts/boards
@@ -681,9 +451,5 @@ describe('component', () => {
 [vue-test]: https://vuejs.org/v2/guide/unit-testing.html
 [issue-boards-service]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/boards/services/board_service.js.es6
 [flux]: https://facebook.github.io/flux
-[vuex-docs]: https://vuex.vuejs.org
-[vuex-structure]: https://vuex.vuejs.org/en/structure.html
-[vuex-mutations]: https://vuex.vuejs.org/en/mutations.html
-[vuex-testing]: https://vuex.vuejs.org/en/testing.html
 [axios]: https://github.com/axios/axios
 [axios-interceptors]: https://github.com/axios/axios#interceptors
