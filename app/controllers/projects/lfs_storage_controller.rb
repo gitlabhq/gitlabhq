@@ -72,12 +72,6 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
     end
   end
 
-  def move_tmp_file_to_storage(object, path)
-    object.file = File.open(path)
-    object.file.store!
-    object.save
-  end
-
   def link_to_project!(object)
     if object && !object.projects.exists?(storage_project.id)
       object.projects << storage_project
