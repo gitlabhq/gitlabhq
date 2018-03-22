@@ -76,7 +76,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   def promote
     promoted_milestone = Milestones::PromoteService.new(project, current_user).execute(milestone)
 
-    flash[:notice] = "#{milestone.title} promoted to <a href=#{group_milestone_path(project.group, promoted_milestone.iid)}>group milestone.</a>".html_safe
+    flash[:notice] = "#{milestone.title} promoted to <a href=\"#{group_milestone_path(project.group, promoted_milestone.iid)}\">group milestone</a>.".html_safe
     respond_to do |format|
       format.html do
         redirect_to project_milestones_path(project)

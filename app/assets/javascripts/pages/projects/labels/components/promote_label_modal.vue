@@ -1,4 +1,5 @@
 <script>
+  import _ from 'underscore';
   import axios from '~/lib/utils/axios_utils';
   import createFlash from '~/flash';
   import GlModal from '~/vue_shared/components/gl_modal.vue';
@@ -44,9 +45,9 @@
         const label = `<span
           class="label color-label"
           style="background-color: ${this.labelColor}; color: ${this.labelTextColor};"
-        >${this.labelTitle}</span>`;
+        >${_.escape(this.labelTitle)}</span>`;
 
-        return sprintf(s__('Labels|Promote label %{labelTitle} to Group Label?'), {
+        return sprintf(s__('Labels|<span>Promote label</span> %{labelTitle} <span>to Group Label?</span>'), {
           labelTitle: label,
         }, false);
       },
@@ -76,6 +77,7 @@
   >
     <div
       slot="title"
+      class="modal-title-with-label"
       v-html="title"
     >
       {{ title }}
