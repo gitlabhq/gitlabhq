@@ -1132,7 +1132,7 @@ job1:
 
 ## `retry`
 
-> [Introduced][ce-3442] in GitLab 9.5.
+> [Introduced][ce-12909] in GitLab 9.5.
 
 `retry` allows you to configure how many times a job is going to be retried in
 case of a failure.
@@ -1688,7 +1688,7 @@ CI with various languages.
 [variables]: ../variables/README.md
 [ce-7983]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7983
 [ce-7447]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7447
-[ce-3442]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3442
+[ce-12909]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12909
 [schedules]: ../../user/project/pipelines/schedules.md
 [ee]: https://about.gitlab.com/gitlab-ee/
 [gitlab-versions]: https://about.gitlab.com/products/

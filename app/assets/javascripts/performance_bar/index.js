@@ -4,9 +4,9 @@ import Vue from 'vue';
 import performanceBarApp from './components/performance_bar_app.vue';
 import PerformanceBarStore from './stores/performance_bar_store';
 
-export default () =>
+export default ({ container }) =>
   new Vue({
-    el: '#js-peek',
+    el: container,
     components: {
       performanceBarApp,
     },

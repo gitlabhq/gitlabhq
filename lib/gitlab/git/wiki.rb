@@ -29,7 +29,6 @@ module Gitlab
         @repository.gitaly_migrate(:wiki_write_page) do |is_enabled|
           if is_enabled
             gitaly_write_page(name, format, content, commit_details)
-            gollum_wiki.clear_cache
           else
             gollum_write_page(name, format, content, commit_details)
           end
@@ -40,7 +39,6 @@ module Gitlab
         @repository.gitaly_migrate(:wiki_delete_page) do |is_enabled|
           if is_enabled
             gitaly_delete_page(page_path, commit_details)
-            gollum_wiki.clear_cache
           else
             gollum_delete_page(page_path, commit_details)
           end
@@ -51,7 +49,6 @@ module Gitlab
         @repository.gitaly_migrate(:wiki_update_page) do |is_enabled|
           if is_enabled
             gitaly_update_page(page_path, title, format, content, commit_details)
-            gollum_wiki.clear_cache
           else
             gollum_update_page(page_path, title, format, content, commit_details)
           end

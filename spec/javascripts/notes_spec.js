@@ -549,6 +549,20 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         });
       });
 
+      it('should disable the submit button when comment button is clicked', (done) => {
+        expect($form.find('.js-comment-submit-button').is(':disabled')).toEqual(false);
+
+        mockNotesPost();
+        $('.js-comment-button').click();
+        expect($form.find('.js-comment-submit-button').is(':disabled')).toEqual(true);
+
+        setTimeout(() => {
+          expect($form.find('.js-comment-submit-button').is(':disabled')).toEqual(false);
+
+          done();
+        });
+      });
+
       it('should show actual note element when new comment is done posting', (done) => {
         mockNotesPost();
 
