@@ -1727,6 +1727,7 @@ export default class Notes {
 
     // Get Form metadata
     const $submitBtn = $(e.target);
+    $submitBtn.prop('disabled', true);
     let $form = $submitBtn.parents('form');
     const $closeBtn = $form.find('.js-note-target-close');
     const isDiscussionNote =
@@ -1761,7 +1762,6 @@ export default class Notes {
     // If comment is to resolve discussion, disable submit buttons while
     // comment posting is finished.
     if (isDiscussionResolve) {
-      $submitBtn.disable();
       $form.find('.js-comment-submit-button').disable();
     }
 
@@ -1816,6 +1816,7 @@ export default class Notes {
       .then(res => {
         const note = res.data;
 
+        $submitBtn.prop('disabled', false);
         // Submission successful! remove placeholder
         $notesContainer.find(`#${noteUniqueId}`).remove();
 
@@ -1899,7 +1900,7 @@ export default class Notes {
       .catch(() => {
         // Submission failed, remove placeholder note and show Flash error message
         $notesContainer.find(`#${noteUniqueId}`).remove();
-
+        $submitBtn.prop('disabled', false);
         const blurEvent = new CustomEvent('blur.imageDiff', {
           detail: e,
         });

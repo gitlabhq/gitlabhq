@@ -146,24 +146,7 @@ To protect/unprotect Runners:
 
 ## Manually clearing the Runners cache
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/41249) in GitLab 10.4.
-
-GitLab Runners use [cache](../yaml/README.md#cache) to speed up the execution
-of your jobs by reusing existing data. This however, can sometimes lead to an
-inconsistent behavior.
-
-To start with a fresh copy of the cache, you can easily do it via GitLab's UI:
-
-1. Navigate to your project's **CI/CD > Pipelines** page.
-1. Click on the **Clear Runner caches** to clean up the cache.
-1. On the next push, your CI/CD job will use a new cache.
-
-That way, you don't have to change the [cache key](../yaml/README.md#cache-key)
-in your `.gitlab-ci.yml`.
-
-Behind the scenes, this works by increasing a counter in the database, and the
-value of that counter is used to create the key for the cache. After a push, a
-new key is generated and the old cache is not valid anymore.
+Read [clearing the cache](../caching/index.md#clearing-the-cache).
 
 ## How shared Runners pick jobs
 
@@ -227,15 +210,16 @@ that it may encounter on the projects it's shared over. This would be
 problematic for large amounts of projects, if it wasn't for tags.
 
 By tagging a Runner for the types of jobs it can handle, you can make sure
-shared Runners will only run the jobs they are equipped to run.
+shared Runners will [only run the jobs they are equipped to run](../yaml/README.md#tags).
 
 For instance, at GitLab we have Runners tagged with "rails" if they contain
 the appropriate dependencies to run Rails test suites.
 
 ### Preventing Runners with tags from picking jobs without tags
 
-You can configure a Runner to prevent it from picking jobs with tags when
-the Runner does not have tags assigned. This setting can be enabled the first
+You can configure a Runner to prevent it from picking
+[jobs with tags](../yaml/README.md#tags) when the Runner does not have tags
+assigned. This setting can be enabled the first
 time you [register a Runner][register] and can be changed afterwards under
 each Runner's settings.
 

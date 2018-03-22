@@ -43,6 +43,7 @@ export default {
         'file-open': this.isBlob && this.file.opened,
         'file-active': this.isBlob && this.file.active,
         folder: this.isTree,
+        'is-open': this.file.opened,
       };
     },
   },

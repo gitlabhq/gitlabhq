@@ -37,7 +37,7 @@ export default {
 <template>
   <div
     id="peek-request-selector"
-    class="append-right-5 pull-right"
+    class="pull-right"
   >
     <select v-model="currentRequestId">
       <option
