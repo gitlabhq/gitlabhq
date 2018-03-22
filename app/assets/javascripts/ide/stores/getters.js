@@ -29,3 +29,7 @@ export const collapseButtonIcon = state =>
 
 export const hasChanges = state =>
   !!state.changedFiles.length || !!state.stagedFiles.length;
+
+// eslint-disable-next-line no-confusing-arrow
+export const collapseButtonTooltip = state =>
+  state.rightPanelCollapsed ? 'Expand sidebar' : 'Collapse sidebar';

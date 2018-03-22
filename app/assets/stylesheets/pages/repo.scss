@@ -64,6 +64,10 @@
 
     .ide-file-changed-icon {
       margin-left: auto;
+
+      > svg {
+        display: block;
+      }
     }
 
     .ide-new-btn {
@@ -488,6 +492,7 @@
 
   svg {
     margin-right: $gl-btn-padding;
+    color: $theme-gray-700;
   }
 }
 
@@ -544,7 +549,8 @@
   flex-direction: column;
   padding: $gl-padding 0;
 
-  > svg {
+  svg {
+    display: block;
     margin-left: auto;
     margin-right: auto;
     color: $theme-gray-700;

@@ -13,6 +13,7 @@ export const dataStructure = () => ({
   opened: false,
   active: false,
   changed: false,
+  staged: false,
   lastCommitPath: '',
   lastCommit: {
     id: '',

@@ -1,10 +1,14 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
+import tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
   components: {
     Icon,
+  },
+  directives: {
+    tooltip,
   },
   props: {
     noChangesStateSvgPath: {
@@ -18,7 +22,7 @@ export default {
   },
   computed: {
     ...mapState(['lastCommitMsg', 'rightPanelCollapsed']),
-    ...mapGetters(['collapseButtonIcon']),
+    ...mapGetters(['collapseButtonIcon', 'collapseButtonTooltip']),
     statusSvg() {
       return this.lastCommitMsg
         ? this.committedStateSvgPath
@@ -42,6 +46,10 @@ export default {
       }"
     >
       <button
+        v-tooltip
+        :title="collapseButtonTooltip"
+        data-container="body"
+        data-placement="left"
         type="button"
         class="btn btn-transparent multi-file-commit-panel-collapse-btn"
         :aria-label="__('Toggle sidebar')"

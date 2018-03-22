@@ -80,6 +80,12 @@ export default {
 
     Object.assign(state, {
       changedFiles: state.changedFiles.filter(f => f.path !== path),
+      entries: Object.assign(state.entries, {
+        [path]: Object.assign(state.entries[path], {
+          staged: true,
+          changed: false,
+        }),
+      }),
     });
 
     if (stagedFile) {
@@ -111,6 +117,11 @@ export default {
 
     Object.assign(state, {
       stagedFiles: state.stagedFiles.filter(f => f.path !== path),
+      entries: Object.assign(state.entries, {
+        [path]: Object.assign(state.entries[path], {
+          staged: false,
+        }),
+      }),
     });
   },
   [types.TOGGLE_FILE_CHANGED](state, { file, changed }) {

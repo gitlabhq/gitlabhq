@@ -1,65 +1,65 @@
 <script>
-  import { mapActions, mapState, mapGetters } from 'vuex';
-  import icon from '~/vue_shared/components/icon.vue';
-  import listItem from './list_item.vue';
-  import listCollapsed from './list_collapsed.vue';
+import { mapActions, mapState, mapGetters } from 'vuex';
+import icon from '~/vue_shared/components/icon.vue';
+import tooltip from '~/vue_shared/directives/tooltip';
+import listItem from './list_item.vue';
+import listCollapsed from './list_collapsed.vue';
 
-  export default {
-    components: {
-      icon,
-      listItem,
-      listCollapsed,
+export default {
+  components: {
+    icon,
+    listItem,
+    listCollapsed,
+  },
+  directives: {
+    tooltip,
+  },
+  props: {
+    title: {
+      type: String,
+      required: true,
     },
-    props: {
-      title: {
-        type: String,
-        required: true,
-      },
-      fileList: {
-        type: Array,
-        required: true,
-      },
-      showToggle: {
-        type: Boolean,
-        required: false,
-        default: true,
-      },
-      icon: {
-        type: String,
-        required: true,
-      },
-      action: {
-        type: String,
-        required: true,
-      },
-      actionBtnText: {
-        type: String,
-        required: true,
-      },
-      itemActionComponent: {
-        type: String,
-        required: true,
-      },
+    fileList: {
+      type: Array,
+      required: true,
     },
-    computed: {
-      ...mapState([
-        'rightPanelCollapsed',
-      ]),
-      ...mapGetters([
-        'collapseButtonIcon',
-      ]),
+    showToggle: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
-    methods: {
-      ...mapActions([
-        'toggleRightPanelCollapsed',
-        'stageAllChanges',
-        'unstageAllChanges',
-      ]),
-      actionBtnClicked() {
-        this[this.action]();
-      },
+    icon: {
+      type: String,
+      required: true,
     },
-  };
+    action: {
+      type: String,
+      required: true,
+    },
+    actionBtnText: {
+      type: String,
+      required: true,
+    },
+    itemActionComponent: {
+      type: String,
+      required: true,
+    },
+  },
+  computed: {
+    ...mapState(['rightPanelCollapsed']),
+    ...mapGetters(['collapseButtonIcon', 'collapseButtonTooltip']),
+  },
+  methods: {
+    ...mapActions([
+      'toggleRightPanelCollapsed',
+      'stageAllChanges',
+      'unstageAllChanges',
+    ]),
+    actionBtnClicked() {
+      this[this.action]();
+    },
+  },
+};
 </script>
 
 <template>
@@ -87,7 +87,7 @@
           :name="icon"
           :size="18"
         />
-        {{ title }}
+        {{ title }} changes
         <button
           type="button"
           class="btn btn-blank btn-link ide-staged-action-btn"
@@ -98,6 +98,10 @@
       </div>
       <button
         v-if="showToggle"
+        v-tooltip
+        :title="collapseButtonTooltip"
+        data-container="body"
+        data-placement="left"
         type="button"
         class="btn btn-transparent multi-file-commit-panel-collapse-btn"
         :aria-label="__('Toggle sidebar')"
@@ -113,6 +117,7 @@
       v-if="rightPanelCollapsed"
       :files="fileList"
       :icon="icon"
+      :title="title"
     />
     <template v-else>
       <ul

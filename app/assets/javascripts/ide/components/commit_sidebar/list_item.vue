@@ -38,6 +38,9 @@ export default {
 
       router.push(`/project${file.url}`);
     },
+    stageFile() {
+      alert('a');
+    },
   },
 };
 </script>
@@ -47,7 +50,9 @@ export default {
     <button
       type="button"
       class="multi-file-commit-list-path"
-      @click="openFileInEditor(file)">
+      @dblclick="stageFile"
+      @click="openFileInEditor(file)"
+    >
       <span class="multi-file-commit-list-file-path">
         <icon
           :name="iconName"
