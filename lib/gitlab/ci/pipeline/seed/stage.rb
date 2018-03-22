@@ -3,7 +3,7 @@ module Gitlab
     module Pipeline
       module Seed
         class Stage < Seed::Base
-          attr_reader :pipeline, :seeds
+          include Gitlab::Utils::StrongMemoize
 
           delegate :size, to: :seeds
           delegate :dig, to: :seeds
@@ -27,10 +27,16 @@ module Gitlab
               project: @pipeline.project }
           end
 
+          def seeds
+            strong_memoize(:seeds_included) do
+              @seeds.select(&:included?)
+            end
+          end
+
           # TODO specs
           #
           def included?
-            @seeds.any?(&:included?)
+            seeds.any?
           end
 
           def to_resource

@@ -15,8 +15,6 @@ module Gitlab
             @except = attributes.delete(:except)
           end
 
-          # TODO find a different solution
-          #
           def user=(current_user)
             @attributes.merge!(user: current_user)
           end
@@ -43,7 +41,9 @@ module Gitlab
           end
 
           def to_resource
-            ::Ci::Build.new(attributes)
+            strong_memoize(:resource) do
+              ::Ci::Build.new(attributes)
+            end
           end
         end
       end
