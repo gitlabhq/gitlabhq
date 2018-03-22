@@ -53,60 +53,40 @@ module Gitlab
           }.compact }
       end
 
-      # REFACTORING, this needs improvement
+      # REFACTORING, this needs improvement, and specs
       #
-      def build_seed_attributes(stage)
+      def stage_attributes(stage)
         selected = @jobs.values.select do |job|
           job[:stage] == stage
         end
 
         selected.map do |job|
           build_attributes(job[:name])
+        end
+      end
+
+      # REFACTORING, needs specs
+      #
+      def seed_attributes(stage)
+        seeds = stage_attributes(stage).map do |attributes|
+          job = @jobs.fetch(attributes[:name].to_sym)
+
+          attributes
             .merge(only: job.fetch(:only, {}))
             .merge(except: job.fetch(:except, {}))
-        end
       end
 
-      # REFACTORING, slated for removal
-      #
-      def pipeline_stage_builds(stage, pipeline)
-        selected_jobs = @jobs.select do |_, job|
-          next unless job[:stage] == stage
-
-          only_specs = Gitlab::Ci::Build::Policy
-            .fabricate(job.fetch(:only, {}))
-          except_specs = Gitlab::Ci::Build::Policy
-            .fabricate(job.fetch(:except, {}))
-
-          only_specs.all? { |spec| spec.satisfied_by?(pipeline) } &&
-            except_specs.none? { |spec| spec.satisfied_by?(pipeline) }
-        end
-
-        selected_jobs.map { |_, job| build_attributes(job[:name]) }
-      end
-
-      def stage_seed_attributes(stage)
         { name: stage,
           index: @stages.index(stage),
-          builds: build_seed_attributes(stage) }
+          builds: seeds }
       end
 
-      # REFACTORING, slated for removal
-      #  * WARNING this method is currently evaluating only/except policies
-      #    in two places - Seed::Build, and in pipeline_stage_builds
-      #  * WARNING it needs to be refactored to use SSOT
+      # REFACTORING, needs specs
       #
-      def stage_seeds(pipeline)
-        seeds = @stages.uniq.map do |stage|
-          builds = pipeline_stage_builds(stage, pipeline)
-
-          if builds.any?
-            Gitlab::Ci::Pipeline::Seed::Stage
-              .new(pipeline, stage_seed_attributes(stage))
-          end
+      def stages
+        @stages.uniq.map do |stage|
+          seed_attributes(stage)
         end
-
-        seeds.compact
       end
 
       def self.validation_message(content)
