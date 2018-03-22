@@ -2,7 +2,7 @@ require 'rake_helper'
 
 describe 'gitlab:artifacts namespace rake task' do
   before(:context) do
-    Rake.application.rake_require 'tasks/gitlab/artifacts'
+    Rake.application.rake_require 'tasks/gitlab/artifacts/migrate'
   end
 
   let(:object_storage_enabled) { false }

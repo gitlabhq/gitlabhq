@@ -21,7 +21,6 @@ describe API::Jobs do
   let(:guest) { create(:project_member, :guest, project: project).user }
 
   before do
-    stub_licensed_features(cross_project_pipelines: true)
     project.add_developer(user)
   end
 
