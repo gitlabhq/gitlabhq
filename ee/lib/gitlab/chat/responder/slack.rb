@@ -16,7 +16,7 @@ module Gitlab
         #
         # output - The output to send back to Slack, as a Hash.
         def send_response(output)
-          HTTParty.post(
+          Gitlab::HTTP.post(
             pipeline.chat_data.response_url,
             {
               headers: { Accept: 'application/json' },

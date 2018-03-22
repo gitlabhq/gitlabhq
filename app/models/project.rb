@@ -41,6 +41,9 @@ class Project < ActiveRecord::Base
     attachments: 2
   }.freeze
 
+  # Valids ports to import from
+  VALID_IMPORT_PORTS = [22, 80, 443].freeze
+
   cache_markdown_field :description, pipeline: :description
 
   delegate :feature_available?, :builds_enabled?, :wiki_enabled?,

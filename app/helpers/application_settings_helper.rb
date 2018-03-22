@@ -246,7 +246,8 @@ module ApplicationSettingsHelper
       :usage_ping_enabled,
       :user_default_external,
       :user_oauth_applications,
-      :version_check_enabled
+      :version_check_enabled,
+      :allow_local_requests_from_hooks_and_services
     ]
   end
 end

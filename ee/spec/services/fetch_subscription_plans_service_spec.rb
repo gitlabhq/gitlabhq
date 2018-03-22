@@ -9,8 +9,8 @@ describe FetchSubscriptionPlansService do
       it 'returns parsed JSON' do
         json_mock = double(body: [{ 'foo' => 'bar' }].to_json)
 
-        expect(HTTParty).to receive(:get)
-                              .with(endpoint_url, query: { plan: 'bronze' }, headers: { 'Accept' => 'application/json' })
+        expect(Gitlab::HTTP).to receive(:get)
+                              .with(endpoint_url, allow_local_requests: true, query: { plan: 'bronze' }, headers: { 'Accept' => 'application/json' })
                               .and_return(json_mock)
 
         is_expected.to eq([Hashie::Mash.new('foo' => 'bar')])
@@ -19,7 +19,7 @@ describe FetchSubscriptionPlansService do
 
     context 'when failing to fetch plans data' do
       before do
-        expect(HTTParty).to receive(:get).and_raise(HTTParty::Error.new('Error message'))
+        expect(Gitlab::HTTP).to receive(:get).and_raise(Gitlab::HTTP::Error.new('Error message'))
       end
 
       it 'logs failure' do
