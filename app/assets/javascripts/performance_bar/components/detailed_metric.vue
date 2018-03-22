@@ -70,7 +70,7 @@ export default {
             <td
               v-for="key in keys"
               :key="key"
-              class="break-all"
+              class="break-word"
             >
               {{ item[key] }}
             </td>
