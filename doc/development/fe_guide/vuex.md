@@ -1,17 +1,16 @@
-
-## Vuex
+# Vuex
 To manage the state of an application you may use [Vuex][vuex-docs].
 
 _Note:_ All of the below is explained in more detail in the official [Vuex documentation][vuex-docs].
 
-### Separation of concerns
+## Separation of concerns
 Vuex is composed of State, Getters, Mutations, Actions and Modules.
 
 When a user clicks on an action, we need to `dispatch` it. This action will `commit` a mutation that will change the state.
 _Note:_ The action itself will not update the state, only a mutation should update the state.
 
-#### File structure
-When using Vuex at GitLab, separate this concerns into different files to improve readability. If you can, separate the Mutation Types as well:
+## File structure
+When using Vuex at GitLab, separate this concerns into different files to improve readability:
 
 ```
 └── store
@@ -19,11 +18,12 @@ When using Vuex at GitLab, separate this concerns into different files to improv
   ├── actions.js        # actions
   ├── mutations.js      # mutations
   ├── getters.js        # getters
+  ├── state.js        # getters
   └── mutation_types.js # mutation types
 ```
-The following examples show an application that lists and adds users to the state.
+The following example shows an application that lists and adds users to the state.
 
-##### `index.js`
+### `index.js`
 This is the entry point for our store. You can use the following as a guide:
 
 ```javascript
@@ -32,6 +32,7 @@ import Vuex from 'vuex';
 import * as actions from './actions';
 import * as getters from './getters';
 import mutations from './mutations';
+import state from './state';
 
 Vue.use(Vuex);
 
@@ -39,19 +40,38 @@ export default new Vuex.Store({
   actions,
   getters,
   mutations,
-  state: {
-    users: [],
-  },
+  state,
 });
 ```
-_Note:_ If the state of the application is too complex, an individual file for the state may be better.
 
-#### `actions.js`
+### `state.js`
+The first thing you should do before writing any code is to design the state.
+
+Often we need to provide data from haml to our Vue application. Let's store it in the state for better access.
+
+```javascript
+  export default {
+    endpoint: null,
+
+    isLoading: false,
+    error: null,
+
+    isAddingUser: false,
+    errorAddingUser: false,
+
+    users: [],
+  };
+```
+
+#### Access `state` properties
+You can use `mapState` to access state properties in the components.
+
+### `actions.js`
 An action is a playload of information to send data from our application to our store.
 They are the only source of information for the store.
 
 An action is usually composed by a `type` and a `payload` and they describe what happened.
-By enforcing that every change is described as an action lets us have a clear understantid of what is going on in the app.
+Enforcing that every change is described as an action lets us have a clear understanting of what is going on in the app.
 
 An action represents something that will trigger a state change, for example, when the user enters the page we need to load resources.
 
@@ -84,10 +104,9 @@ In this file, we will write the actions (both sync and async) that will call the
       .then(({ data }) => dispatch('receiveAddUserSuccess', data))
       .catch((error) => dispatch('receiveAddUserError', error));
   }
-
 ```
 
-##### Actions Pattern: `request` and `receive` namespaces
+#### Actions Pattern: `request` and `receive` namespaces
 When a request is made we often want to show a loading state to the user.
 
 Instead of creating an action to toggle the loading state and dispatch it in the component,
@@ -107,7 +126,7 @@ By following this patter we guarantee:
 1. Unit tests are easier
 1. Actions are simple and straightforward
 
-##### Dispatching actions
+#### Dispatching actions
 To dispatch an action from a component, use the `mapActions` helper:
 ```javascript
 import { mapActions } from 'vuex';
@@ -124,6 +143,9 @@ import { mapActions } from 'vuex';
 };
 ```
 
+#### Handling errors with `createFlash`
+// TODO
+
 #### `mutations.js`
 The mutations specify how the application state changes in response to actions sent to the store.
 The only way to actually change state in a Vuex store is by committing a mutation.
@@ -138,13 +160,28 @@ Remember that actions only describe the fact that something happened, they don't
   import * as types from './mutation_types';
 
   export default {
-    [types.ADD_USER](state, user) {
+    [types.REQUEST_USERS](state) {
+      Object.assign(state, { isLoading: true });
+    },
+    [types.RECEIVE_USERS_SUCCESS](state, data) {
+      // Do any needed data transformation to the received payload here
+      Object.assign(state, { users: data, isLoading: false });
+    },
+    [types.REQUEST_USERS_ERROR](state, error) {
+      Object.assign(state, { isLoading: false, error});
+    },
+    [types.REQUEST_ADD_USER](state, user) {
+     Object.assign(state, { isAddingUser: true });
+    },
+    [types.RECEIVE_ADD_USER_SUCCESS](state, user) {
+      Object.assign(state, { isAddingUser: false });
       state.users.push(user);
+    },
+    [types.REQUEST_ADD_USER_ERROR](state, error) {
+      Object.assign(state, { isAddingUser: true , errorAddingUser: error});
     },
   };
 ```
-
-
 
 #### `getters.js`
 Sometimes we may need to get derived state based on store state, like filtering for a specific prop.
@@ -189,6 +226,62 @@ The store should be included in the main component of your application:
     store,
     ...
   };
+```
+
+### Communicating with the Store
+```javascript
+<script>
+import { mapActions, mapState, mapGetters } from 'vuex';
+import store from './store';
+
+export default {
+  store,
+  computed: {
+    ...mapGetters([
+      'getUsersWithPets'
+    ]),
+    ...mapState([
+      'isLoading',
+      'users',
+      'error',
+    ]),
+  },
+  methods: {
+    ...mapActions([
+      'fetchUsers',
+      'addUser',
+    ]),
+
+    onClickAddUser(data) {
+      this.addUser(data);
+    }
+  },
+
+  created() {
+    this.fetchUsers()
+      .catch(() => {
+        // TODO - Decide where to handle the `createFlash`
+      })
+  }
+}
+</script>
+<template>
+  <ul>
+    <li v-if="isLoading">
+      Loading...
+    </li>
+    <li v-else-if="error">
+      {{ error }}
+    </li>
+    <li
+      v-else
+      v-for="user in users"
+      :key="user.id"
+    >
+      {{ user }}
+    </li>
+  </ul>
+</template>
 ```
 
 ### Vuex Gotchas

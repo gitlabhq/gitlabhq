@@ -73,6 +73,11 @@ Vue specific design patterns and practices.
 
 ---
 
+## [Vuex](vuex.md)
+Vuex specific design patterns and practices.
+
+---
+
 ## [Axios](axios.md)
 Axios specific practices and gotchas.
 
