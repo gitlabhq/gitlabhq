@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.5.6 (2018-03-16)
+
+- No changes.
+
 ## 10.5.5 (2018-03-15)
 
 ### Fixed (1 change)
@@ -115,6 +119,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Remove unaproved typo check in sast:container report.
 
 
+## 10.4.6 (2018-03-16)
+
+- No changes.
+
 ## 10.4.5 (2018-03-01)
 
 ### Security (2 changes)
@@ -227,6 +235,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Move geo status check after db replication to avoid anticipated failures. !3941
 - Make scoped issue board specs more reliable.
 
+
+## 10.3.9 (2018-03-16)
+
+- No changes.
 
 ## 10.3.8 (2018-03-01)
 
