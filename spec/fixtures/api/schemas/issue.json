@@ -9,6 +9,7 @@
     "id": { "type": "integer" },
     "iid": { "type": "integer" },
     "project_id": { "type": ["integer", "null"] },
+    "weight": { "type": ["integer", "null"] },
     "title": { "type": "string" },
     "confidential": { "type": "boolean" },
     "due_date": { "type": ["date", "null"] },

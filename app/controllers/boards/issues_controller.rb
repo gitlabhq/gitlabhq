@@ -94,7 +94,7 @@ module Boards
 
     def serialize_as_json(resource)
       resource.as_json(
-        only: [:id, :iid, :project_id, :title, :confidential, :due_date, :relative_position],
+        only: [:id, :iid, :project_id, :title, :confidential, :due_date, :relative_position, :weight],
         labels: true,
         sidebar_endpoints: true,
         include: {
