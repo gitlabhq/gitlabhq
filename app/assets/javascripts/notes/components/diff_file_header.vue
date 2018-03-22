@@ -76,7 +76,7 @@ export default {
         :is="titleTag"
         :href="`#${diffFile.fileHash}`"
       >
-        <span v-html="diffFile.blobIcon"></span>
+        <i class="fa fa-fw" :class="`fa-${diffFile.blob.icon}`"></i>
         <span v-if="diffFile.renamedFile">
           <strong
             class="file-title-name has-tooltip"
@@ -121,5 +121,47 @@ export default {
         {{ diffFile.aMode }} → {{ diffFile.bMode }}
       </small>
     </template>
+
+
+    <div
+      v-if="!diffFile.submodule"
+      class="file-actions hidden-xs"
+    >
+      <template
+        v-if="diffFile.blob && diffFile.blob.readableText"
+      >
+        <button
+          class="js-toggle-diff-comments btn"
+          title="Toggle comments for this file"
+          type="button"
+          :class="{
+            active: 'todo'
+          }"
+        >
+          <icon name="comment" />
+        </button>
+
+        <a
+          :href="diffFile.editPath"
+          class="btn btn-default js-edit-blob"
+        >
+          Edit
+        </a>
+      </template>
+
+      <a
+        class="btn view-file js-view-file"
+        :href="diffFile.viewShaPath"
+      >
+        View file @ <span class="commit-sha">{{ diffFile.truncatedSha }}</span>
+      </a>
+
+      <button
+        v-if="diffFile.environment"
+      >
+        View on environment
+        <!-- = view_on_environment_button(diff_file.content_sha, diff_file.file_path, environment) if environment -->
+      </button>
+    </div>
   </div>
 </template>
