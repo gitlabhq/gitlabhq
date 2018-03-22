@@ -313,13 +313,6 @@ Settings.artifacts['object_store']['proxy_download'] = false if Settings.artifac
 # Convert upload connection settings to use string keys, to make Fog happy
 Settings.artifacts['object_store']['connection']&.deep_stringify_keys!
 
-Settings.artifacts['object_store'] ||= Settingslogic.new({})
-Settings.artifacts['object_store']['enabled'] = false if Settings.artifacts['object_store']['enabled'].nil?
-Settings.artifacts['object_store']['remote_directory'] ||= nil
-Settings.artifacts['object_store']['background_upload'] = true if Settings.artifacts['object_store']['background_upload'].nil?
-# Convert upload connection settings to use string keys, to make Fog happy
-Settings.artifacts['object_store']['connection']&.deep_stringify_keys!
-
 #
 # Registry
 #
