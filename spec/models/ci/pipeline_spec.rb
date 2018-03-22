@@ -335,6 +335,23 @@ describe Ci::Pipeline, :mailer do
       end
     end
 
+    describe '#seeds_size' do
+      context 'when refs policy is specified' do
+        let(:config) do
+          { production: { stage: 'deploy', script: 'cap prod', only: ['master'] },
+            spinach: { stage: 'test', script: 'spinach', only: ['tags'] } }
+        end
+
+        let(:pipeline) do
+          build(:ci_pipeline, ref: 'feature', tag: true, config: config)
+        end
+
+        it 'returns real seeds size' do
+          expect(pipeline.seeds_size).to eq 1
+        end
+      end
+    end
+
     describe 'legacy stages' do
       before do
         create(:commit_status, pipeline: pipeline,
