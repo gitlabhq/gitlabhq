@@ -1,5 +1,0 @@
----
-title: Store sha256 checksum to job artifacts
-merge_request: 17354
-author:
-type: performance
