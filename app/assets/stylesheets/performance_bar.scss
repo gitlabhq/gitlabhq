@@ -102,8 +102,14 @@
     }
   }
 
-  .performance-bar-modal .modal-footer {
-    display: none;
+  .performance-bar-modal {
+    .modal-footer {
+      display: none;
+    }
+
+    .modal-dialog {
+      width: 860px;
+    }
   }
 }
 
