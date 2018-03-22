@@ -1,0 +1,25 @@
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+  = form_errors(@application_setting)
+  .form-group
+    = f.label :help_text, class: 'control-label'
+    .col-sm-10
+      = f.text_area :help_text, class: 'form-control', rows: 4
+      .help-block Markdown enabled
+  .form-group
+    = f.label :help_page_text, class: 'control-label col-sm-2'
+    .col-sm-10
+      = f.text_area :help_page_text, class: 'form-control', rows: 4
+      .help-block Markdown enabled
+  .form-group
+    .col-sm-offset-2.col-sm-10
+      .checkbox
+        = f.label :help_page_hide_commercial_content do
+          = f.check_box :help_page_hide_commercial_content
+          Hide marketing-related entries from help
+  .form-group
+    = f.label :help_page_support_url, 'Support page URL', class: 'control-label col-sm-2'
+    .col-sm-10
+      = f.text_field :help_page_support_url, class: 'form-control', placeholder: 'http://company.example.com/getting-help', :'aria-describedby' => 'support_help_block'
+      %span.help-block#support_help_block Alternate support URL for help page
+  .form-actions
+    = f.submit 'Save changes', class: "btn btn-save"

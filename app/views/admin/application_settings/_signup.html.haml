@@ -1,0 +1,57 @@
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+  = form_errors(@application_setting)
+  .form-group
+    .col-sm-offset-2.col-sm-10
+      .checkbox
+        = f.label :signup_enabled do
+          = f.check_box :signup_enabled
+          Sign-up enabled
+  .form-group
+    .col-sm-offset-2.col-sm-10
+      .checkbox
+        = f.label :send_user_confirmation_email do
+          = f.check_box :send_user_confirmation_email
+          Send confirmation email on sign-up
+  .form-group
+    = f.label :domain_whitelist, 'Whitelisted domains for sign-ups', class: 'control-label col-sm-2'
+    .col-sm-10
+      = f.text_area :domain_whitelist_raw, placeholder: 'domain.com', class: 'form-control', rows: 8
+      .help-block ONLY users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com
+  .form-group
+    = f.label :domain_blacklist_enabled, 'Domain Blacklist', class: 'control-label col-sm-2'
+    .col-sm-10
+      .checkbox
+        = f.label :domain_blacklist_enabled do
+          = f.check_box :domain_blacklist_enabled
+          Enable domain blacklist for sign ups
+  .form-group
+    .col-sm-offset-2.col-sm-10
+      .radio
+        = label_tag :blacklist_type_file do
+          = radio_button_tag :blacklist_type, :file
+          .option-title
+            Upload blacklist file
+      .radio
+        = label_tag :blacklist_type_raw do
+          = radio_button_tag :blacklist_type, :raw, @application_setting.domain_blacklist.present? || @application_setting.domain_blacklist.blank?
+          .option-title
+            Enter blacklist manually
+  .form-group.blacklist-file
+    = f.label :domain_blacklist_file, 'Blacklist file', class: 'control-label col-sm-2'
+    .col-sm-10
+      = f.file_field :domain_blacklist_file, class: 'form-control', accept: '.txt,.conf'
+      .help-block Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines or commas for multiple entries.
+  .form-group.blacklist-raw
+    = f.label :domain_blacklist, 'Blacklisted domains for sign-ups', class: 'control-label col-sm-2'
+    .col-sm-10
+      = f.text_area :domain_blacklist_raw, placeholder: 'domain.com', class: 'form-control', rows: 8
+      .help-block Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com
+
+  .form-group
+    = f.label :after_sign_up_text, class: 'control-label col-sm-2'
+    .col-sm-10
+      = f.text_area :after_sign_up_text, class: 'form-control', rows: 4
+      .help-block Markdown enabled
+
+  .form-actions
+    = f.submit 'Save changes', class: "btn btn-save"
