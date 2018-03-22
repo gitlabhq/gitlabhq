@@ -21,9 +21,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # Extend the standard implementation to also increment
   # the number of failed sign in attempts
   def failure
-    user = User.find_by_username(params[:username])
+    if params[:username].present? && AuthHelper.form_based_provider?(failed_strategy.name)
+      user = User.by_login(params[:username])
 
-    user&.increment_failed_attempts!
+      user&.increment_failed_attempts!
+    end
 
     super
   end
