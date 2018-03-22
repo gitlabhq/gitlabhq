@@ -371,6 +371,10 @@ module Ci
       end
     end
 
+    def seeds_size
+      stage_seeds.sum(&:size)
+    end
+
     def has_kubernetes_active?
       project.deployment_platform&.active?
     end
