@@ -6,7 +6,7 @@ FactoryBot.define do
 
     trait :project do
       before(:create) do |cluster, evaluator|
-        cluster.projects << create(:project)
+        cluster.projects << create(:project, :repository)
       end
     end
 

@@ -269,7 +269,7 @@ describe Ci::Pipeline, :mailer do
 
       context 'when refs policy is specified' do
         let(:pipeline) do
-          build(:ci_pipeline, ref: 'feature', tag: true, config: config)
+          build(:ci_pipeline, ref: 'feature', tag: true, project: project, config: config)
         end
 
         let(:config) do
@@ -287,7 +287,9 @@ describe Ci::Pipeline, :mailer do
       end
 
       context 'when source policy is specified' do
-        let(:pipeline) { build(:ci_pipeline, source: :schedule, config: config) }
+        let(:pipeline) do
+          build(:ci_pipeline, source: :schedule, project: project, config: config)
+        end
 
         let(:config) do
           { production: { stage: 'deploy', script: 'cap prod', only: ['triggers'] },
@@ -327,7 +329,7 @@ describe Ci::Pipeline, :mailer do
           end
 
           context 'when user configured kubernetes from Integration > Kubernetes' do
-            let(:project) { create(:kubernetes_project) }
+            let(:project) { create(:kubernetes_project, :repository) }
             let(:pipeline) { build(:ci_pipeline, project: project, config: config) }
 
             it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
@@ -355,13 +357,15 @@ describe Ci::Pipeline, :mailer do
 
     describe '#seeds_size' do
       context 'when refs policy is specified' do
+        let(:project) { create(:project, :repository) }
+
         let(:config) do
           { production: { stage: 'deploy', script: 'cap prod', only: ['master'] },
             spinach: { stage: 'test', script: 'spinach', only: ['tags'] } }
         end
 
         let(:pipeline) do
-          build(:ci_pipeline, ref: 'feature', tag: true, config: config)
+          build(:ci_pipeline, ref: 'feature', tag: true, project: project, config: config)
         end
 
         it 'returns real seeds size' do
