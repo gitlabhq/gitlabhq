@@ -376,7 +376,13 @@ module Ci
     def stage_seeds
       return [] unless config_processor
 
-      @stage_seeds ||= config_processor.stage_seeds(self)
+      strong_memoize(:stage_seeds) do
+        seeds = config_processor.stages.map do |attributes|
+          Gitlab::Ci::Pipeline::Seed::Stage.new(self, attributes)
+        end
+
+        seeds.select(&:included?)
+      end
     end
 
     def has_kubernetes_active?

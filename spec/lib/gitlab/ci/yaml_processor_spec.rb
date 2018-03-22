@@ -203,7 +203,7 @@ module Gitlab
         let(:config_data) { YAML.dump(config) }
         let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config_data) }
 
-        subject { config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first }
+        subject { config_processor.stage_attributes('test').first }
 
         describe "before_script" do
           context "in global context" do
@@ -286,8 +286,8 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config)
 
-            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
-            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first).to eq({
+            expect(config_processor.stage_attributes("test").size).to eq(1)
+            expect(config_processor.stage_attributes("test").first).to eq({
               stage: "test",
               stage_idx: 1,
               name: "rspec",
@@ -321,8 +321,8 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config)
 
-            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
-            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first).to eq({
+            expect(config_processor.stage_attributes("test").size).to eq(1)
+            expect(config_processor.stage_attributes("test").first).to eq({
               stage: "test",
               stage_idx: 1,
               name: "rspec",
@@ -354,8 +354,8 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config)
 
-            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
-            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first).to eq({
+            expect(config_processor.stage_attributes("test").size).to eq(1)
+            expect(config_processor.stage_attributes("test").first).to eq({
               stage: "test",
               stage_idx: 1,
               name: "rspec",
@@ -383,8 +383,8 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config)
 
-            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
-            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first).to eq({
+            expect(config_processor.stage_attributes("test").size).to eq(1)
+            expect(config_processor.stage_attributes("test").first).to eq({
               stage: "test",
               stage_idx: 1,
               name: "rspec",
@@ -529,8 +529,8 @@ module Gitlab
                                })
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config)
+            builds = config_processor.stage_attributes("test")
 
-            builds = config_processor.pipeline_stage_builds("test", pipeline(ref: "master"))
             expect(builds.size).to eq(1)
             expect(builds.first[:when]).to eq(when_state)
           end
@@ -561,8 +561,8 @@ module Gitlab
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config)
 
-          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
-          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first[:options][:cache]).to eq(
+          expect(config_processor.stage_attributes("test").size).to eq(1)
+          expect(config_processor.stage_attributes("test").first[:options][:cache]).to eq(
             paths: ["logs/", "binaries/"],
             untracked: true,
             key: 'key',
@@ -580,8 +580,8 @@ module Gitlab
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config)
 
-          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
-          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first[:options][:cache]).to eq(
+          expect(config_processor.stage_attributes("test").size).to eq(1)
+          expect(config_processor.stage_attributes("test").first[:options][:cache]).to eq(
             paths: ["logs/", "binaries/"],
             untracked: true,
             key: 'key',
@@ -600,8 +600,8 @@ module Gitlab
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config)
 
-          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
-          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first[:options][:cache]).to eq(
+          expect(config_processor.stage_attributes("test").size).to eq(1)
+          expect(config_processor.stage_attributes("test").first[:options][:cache]).to eq(
             paths: ["test/"],
             untracked: false,
             key: 'local',
@@ -629,8 +629,8 @@ module Gitlab
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config)
 
-          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
-          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first).to eq({
+          expect(config_processor.stage_attributes("test").size).to eq(1)
+          expect(config_processor.stage_attributes("test").first).to eq({
             stage: "test",
             stage_idx: 1,
             name: "rspec",
@@ -666,8 +666,8 @@ module Gitlab
                                })
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config)
+            builds = config_processor.stage_attributes("test")
 
-            builds = config_processor.pipeline_stage_builds("test", pipeline(ref: "master"))
             expect(builds.size).to eq(1)
             expect(builds.first[:options][:artifacts][:when]).to eq(when_state)
           end
@@ -682,7 +682,7 @@ module Gitlab
         end
 
         let(:processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
-        let(:builds) { processor.pipeline_stage_builds('deploy', pipeline(ref: 'master')) }
+        let(:builds) { processor.stage_attributes('deploy') }
 
         context 'when a production environment is specified' do
           let(:environment) { 'production' }
@@ -839,7 +839,7 @@ module Gitlab
 
       describe "Hidden jobs" do
         let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config) }
-        subject { config_processor.pipeline_stage_builds("test", pipeline(ref: "master")) }
+        subject { config_processor.stage_attributes("test") }
 
         shared_examples 'hidden_job_handling' do
           it "doesn't create jobs that start with dot" do
@@ -887,7 +887,7 @@ module Gitlab
 
       describe "YAML Alias/Anchor" do
         let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config) }
-        subject { config_processor.pipeline_stage_builds("build", pipeline(ref: "master")) }
+        subject { config_processor.stage_attributes("build") }
 
         shared_examples 'job_templates_handling' do
           it "is correctly supported for jobs" do
