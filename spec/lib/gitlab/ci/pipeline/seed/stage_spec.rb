@@ -6,7 +6,9 @@ describe Gitlab::Ci::Pipeline::Seed::Stage do
   let(:attributes) do
     { name: 'test',
       index: 0,
-      builds: [{ name: 'rspec' }, { name: 'spinach' }] }
+      builds: [{ name: 'rspec' },
+               { name: 'spinach' },
+               { name: 'deploy', only: { refs: ['feature'] } }] }
   end
 
   subject do
@@ -27,7 +29,11 @@ describe Gitlab::Ci::Pipeline::Seed::Stage do
   end
 
   describe '#seeds' do
-    it 'returns hash attributes of all builds' do
+    it 'returns build seeds' do
+      expect(subject.seeds).to all(be_a Gitlab::Ci::Pipeline::Seed::Build)
+    end
+
+    it 'returns build seeds including valid attributes' do
       expect(subject.seeds.size).to eq 2
       expect(subject.seeds.map(&:attributes)).to all(include(ref: 'master'))
       expect(subject.seeds.map(&:attributes)).to all(include(tag: false))
@@ -53,6 +59,16 @@ describe Gitlab::Ci::Pipeline::Seed::Stage do
 
       it 'returns unprotected builds' do
         expect(subject.seeds.map(&:attributes)).to all(include(protected: false))
+      end
+    end
+
+    it 'filters seeds using only/except policies' do
+      expect(subject.seeds.map(&:attributes)).to satisfy do |seeds|
+        seeds.any? { |hash| hash.fetch(:name) == 'rspec' }
+      end
+
+      expect(subject.seeds.map(&:attributes)).not_to satisfy do |seeds|
+        seeds.any? { |hash| hash.fetch(:name) == 'deploy' }
       end
     end
   end

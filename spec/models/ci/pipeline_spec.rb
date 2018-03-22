@@ -215,135 +215,240 @@ describe Ci::Pipeline, :mailer do
   end
 
   describe 'pipeline stages' do
-    before do
-      create(:commit_status, pipeline: pipeline,
-                             stage: 'build',
-                             name: 'linux',
-                             stage_idx: 0,
-                             status: 'success')
-
-      create(:commit_status, pipeline: pipeline,
-                             stage: 'build',
-                             name: 'mac',
-                             stage_idx: 0,
-                             status: 'failed')
-
-      create(:commit_status, pipeline: pipeline,
-                             stage: 'deploy',
-                             name: 'staging',
-                             stage_idx: 2,
-                             status: 'running')
-
-      create(:commit_status, pipeline: pipeline,
-                             stage: 'test',
-                             name: 'rspec',
-                             stage_idx: 1,
-                             status: 'success')
-    end
-
     describe '#stage_seeds' do
-      let(:pipeline) do
-        build(:ci_pipeline, config: { rspec: { script: 'rake' } })
-      end
+      let(:pipeline) { build(:ci_pipeline, config: config) }
+      let(:config) { { rspec: { script: 'rake' } } }
 
       it 'returns preseeded stage seeds object' do
         expect(pipeline.stage_seeds)
           .to all(be_a Gitlab::Ci::Pipeline::Seed::Base)
         expect(pipeline.stage_seeds.count).to eq 1
       end
-    end
 
-    describe '#legacy_stages' do
-      subject { pipeline.legacy_stages }
+      context 'when no refs policy is specified' do
+        let(:config) do
+          { production: { stage: 'deploy', script: 'cap prod' },
+            rspec: { stage: 'test', script: 'rspec' },
+            spinach: { stage: 'test', script: 'spinach' } }
+        end
 
-      context 'stages list' do
-        it 'returns ordered list of stages' do
-          expect(subject.map(&:name)).to eq(%w[build test deploy])
+        it 'correctly fabricates a stage seeds object' do
+          seeds = pipeline.stage_seeds
+
+          expect(seeds.size).to eq 2
+          expect(seeds.first.attributes[:name]).to eq 'test'
+          expect(seeds.second.attributes[:name]).to eq 'deploy'
+          expect(seeds.dig(0, 0, :name)).to eq 'rspec'
+          expect(seeds.dig(0, 1, :name)).to eq 'spinach'
+          expect(seeds.dig(1, 0, :name)).to eq 'production'
         end
       end
 
-      context 'stages with statuses' do
-        let(:statuses) do
-          subject.map { |stage| [stage.name, stage.status] }
+      context 'when refs policy is specified' do
+        let(:pipeline) do
+          build(:ci_pipeline, ref: 'feature', tag: true, config: config)
         end
 
-        it 'returns list of stages with correct statuses' do
-          expect(statuses).to eq([%w(build failed),
-                                  %w(test success),
-                                  %w(deploy running)])
+        let(:config) do
+          { production: { stage: 'deploy', script: 'cap prod', only: ['master'] },
+            spinach: { stage: 'test', script: 'spinach', only: ['tags'] } }
         end
 
-        context 'when commit status is retried' do
-          before do
-            create(:commit_status, pipeline: pipeline,
-                                   stage: 'build',
-                                   name: 'mac',
-                                   stage_idx: 0,
-                                   status: 'success')
+        it 'returns stage seeds only assigned to master to master' do
+          seeds = pipeline.stage_seeds
 
-            pipeline.process!
+          expect(seeds.size).to eq 1
+          expect(seeds.first.attributes[:name]).to eq 'test'
+          expect(seeds.dig(0, 0, :name)).to eq 'spinach'
+        end
+      end
+
+      context 'when source policy is specified' do
+        let(:pipeline) { build(:ci_pipeline, source: :schedule, config: config) }
+
+        let(:config) do
+          { production: { stage: 'deploy', script: 'cap prod', only: ['triggers'] },
+            spinach: { stage: 'test', script: 'spinach', only: ['schedules'] } }
+        end
+
+        it 'returns stage seeds only assigned to schedules' do
+          seeds = pipeline.stage_seeds
+
+          expect(seeds.size).to eq 1
+          expect(seeds.first.attributes[:name]).to eq 'test'
+          expect(seeds.dig(0, 0, :name)).to eq 'spinach'
+        end
+      end
+
+      context 'when kubernetes policy is specified' do
+        let(:config) do
+          {
+            spinach: { stage: 'test', script: 'spinach' },
+            production: {
+              stage: 'deploy',
+              script: 'cap',
+              only: { kubernetes: 'active' }
+            }
+          }
+        end
+
+        context 'when kubernetes is active' do
+          shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+            it 'returns seeds for kubernetes dependent job' do
+              seeds = pipeline.stage_seeds
+
+              expect(seeds.size).to eq 2
+              expect(seeds.dig(0, 0, :name)).to eq 'spinach'
+              expect(seeds.dig(1, 0, :name)).to eq 'production'
+            end
           end
 
-          it 'ignores the previous state' do
-            expect(statuses).to eq([%w(build success),
+          context 'when user configured kubernetes from Integration > Kubernetes' do
+            let(:project) { create(:kubernetes_project) }
+            let(:pipeline) { build(:ci_pipeline, project: project, config: config) }
+
+            it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+          end
+
+          context 'when user configured kubernetes from CI/CD > Clusters' do
+            let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+            let(:project) { cluster.project }
+            let(:pipeline) { build(:ci_pipeline, project: project, config: config) }
+
+            it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+          end
+        end
+
+        context 'when kubernetes is not active' do
+          it 'does not return seeds for kubernetes dependent job' do
+            seeds = pipeline.stage_seeds
+
+            expect(seeds.size).to eq 1
+            expect(seeds.dig(0, 0, :name)).to eq 'spinach'
+          end
+        end
+      end
+    end
+
+    describe 'legacy stages' do
+      before do
+        create(:commit_status, pipeline: pipeline,
+                               stage: 'build',
+                               name: 'linux',
+                               stage_idx: 0,
+                               status: 'success')
+
+        create(:commit_status, pipeline: pipeline,
+                               stage: 'build',
+                               name: 'mac',
+                               stage_idx: 0,
+                               status: 'failed')
+
+        create(:commit_status, pipeline: pipeline,
+                               stage: 'deploy',
+                               name: 'staging',
+                               stage_idx: 2,
+                               status: 'running')
+
+        create(:commit_status, pipeline: pipeline,
+                               stage: 'test',
+                               name: 'rspec',
+                               stage_idx: 1,
+                               status: 'success')
+      end
+
+      describe '#legacy_stages' do
+        subject { pipeline.legacy_stages }
+
+        context 'stages list' do
+          it 'returns ordered list of stages' do
+            expect(subject.map(&:name)).to eq(%w[build test deploy])
+          end
+        end
+
+        context 'stages with statuses' do
+          let(:statuses) do
+            subject.map { |stage| [stage.name, stage.status] }
+          end
+
+          it 'returns list of stages with correct statuses' do
+            expect(statuses).to eq([%w(build failed),
                                     %w(test success),
                                     %w(deploy running)])
           end
+
+          context 'when commit status is retried' do
+            before do
+              create(:commit_status, pipeline: pipeline,
+                                     stage: 'build',
+                                     name: 'mac',
+                                     stage_idx: 0,
+                                     status: 'success')
+
+              pipeline.process!
+            end
+
+            it 'ignores the previous state' do
+              expect(statuses).to eq([%w(build success),
+                                      %w(test success),
+                                      %w(deploy running)])
+            end
+          end
+        end
+
+        context 'when there is a stage with warnings' do
+          before do
+            create(:commit_status, pipeline: pipeline,
+                                   stage: 'deploy',
+                                   name: 'prod:2',
+                                   stage_idx: 2,
+                                   status: 'failed',
+                                   allow_failure: true)
+          end
+
+          it 'populates stage with correct number of warnings' do
+            deploy_stage = pipeline.legacy_stages.third
+
+            expect(deploy_stage).not_to receive(:statuses)
+            expect(deploy_stage).to have_warnings
+          end
         end
       end
 
-      context 'when there is a stage with warnings' do
+      describe '#stages_count' do
+        it 'returns a valid number of stages' do
+          expect(pipeline.stages_count).to eq(3)
+        end
+      end
+
+      describe '#stages_names' do
+        it 'returns a valid names of stages' do
+          expect(pipeline.stages_names).to eq(%w(build test deploy))
+        end
+      end
+    end
+
+    describe '#legacy_stage' do
+      subject { pipeline.legacy_stage('test') }
+
+      context 'with status in stage' do
         before do
-          create(:commit_status, pipeline: pipeline,
-                                 stage: 'deploy',
-                                 name: 'prod:2',
-                                 stage_idx: 2,
-                                 status: 'failed',
-                                 allow_failure: true)
+          create(:commit_status, pipeline: pipeline, stage: 'test')
         end
 
-        it 'populates stage with correct number of warnings' do
-          deploy_stage = pipeline.legacy_stages.third
+        it { expect(subject).to be_a Ci::LegacyStage }
+        it { expect(subject.name).to eq 'test' }
+        it { expect(subject.statuses).not_to be_empty }
+      end
 
-          expect(deploy_stage).not_to receive(:statuses)
-          expect(deploy_stage).to have_warnings
+      context 'without status in stage' do
+        before do
+          create(:commit_status, pipeline: pipeline, stage: 'build')
         end
-      end
-    end
 
-    describe '#stages_count' do
-      it 'returns a valid number of stages' do
-        expect(pipeline.stages_count).to eq(3)
-      end
-    end
-
-    describe '#stages_names' do
-      it 'returns a valid names of stages' do
-        expect(pipeline.stages_names).to eq(%w(build test deploy))
-      end
-    end
-  end
-
-  describe '#legacy_stage' do
-    subject { pipeline.legacy_stage('test') }
-
-    context 'with status in stage' do
-      before do
-        create(:commit_status, pipeline: pipeline, stage: 'test')
-      end
-
-      it { expect(subject).to be_a Ci::LegacyStage }
-      it { expect(subject.name).to eq 'test' }
-      it { expect(subject.statuses).not_to be_empty }
-    end
-
-    context 'without status in stage' do
-      before do
-        create(:commit_status, pipeline: pipeline, stage: 'build')
-      end
-
-      it 'return stage object' do
-        is_expected.to be_nil
+        it 'return stage object' do
+          is_expected.to be_nil
+        end
       end
     end
   end

@@ -129,4 +129,6 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
       expect { step.perform! }.to raise_error(described_class::PopulateError)
     end
   end
+
+  pending 'populating pipeline according to policies'
 end
