@@ -30,6 +30,7 @@ module Gitlab
         usage_data
       end
 
+      # rubocop:disable Metrics/AbcSize
       def system_usage_data
         {
           counts: {
