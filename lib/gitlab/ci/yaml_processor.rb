@@ -27,7 +27,7 @@ module Gitlab
       end
 
       def build_attributes(name)
-        job = @jobs[name.to_sym] || {}
+        job = @jobs.fetch(name.to_sym, {})
 
         { stage_idx: @stages.index(job[:stage]),
           stage: job[:stage],
@@ -53,39 +53,23 @@ module Gitlab
           }.compact }
       end
 
-      # REFACTORING, this needs improvement, and specs
-      #
-      def stage_attributes(stage)
-        selected = @jobs.values.select do |job|
-          job[:stage] == stage
-        end
-
-        selected.map do |job|
-          build_attributes(job[:name])
-        end
+      def stage_builds_attributes(stage)
+        @jobs.values
+          .select { |job| job[:stage] == stage }
+          .map { |job| build_attributes(job[:name]) }
       end
 
-      # REFACTORING, needs specs
-      #
-      def seed_attributes(stage)
-        seeds = stage_attributes(stage).map do |attributes|
-          job = @jobs.fetch(attributes[:name].to_sym)
-
-          attributes
-            .merge(only: job.fetch(:only, {}))
-            .merge(except: job.fetch(:except, {}))
-      end
-
-        { name: stage,
-          index: @stages.index(stage),
-          builds: seeds }
-      end
-
-      # REFACTORING, needs specs
-      #
-      def stages
+      def stages_attributes
         @stages.uniq.map do |stage|
-          seed_attributes(stage)
+          seeds = stage_builds_attributes(stage).map do |attributes|
+            job = @jobs.fetch(attributes[:name].to_sym)
+
+            attributes
+              .merge(only: job.fetch(:only, {}))
+              .merge(except: job.fetch(:except, {}))
+          end
+
+          { name: stage, index: @stages.index(stage), builds: seeds }
         end
       end
 

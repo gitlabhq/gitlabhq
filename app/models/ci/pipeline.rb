@@ -363,7 +363,7 @@ module Ci
       return [] unless config_processor
 
       strong_memoize(:stage_seeds) do
-        seeds = config_processor.stages.map do |attributes|
+        seeds = config_processor.stages_attributes.map do |attributes|
           Gitlab::Ci::Pipeline::Seed::Stage.new(self, attributes)
         end
 

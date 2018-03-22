@@ -89,13 +89,13 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
 
     context 'when branch policy matches' do
       context 'when using only' do
-        let(:attributes) { { name: 'rspec', only: { refs: ['deploy', 'master'] } } }
+        let(:attributes) { { name: 'rspec', only: { refs: %w[deploy master] } } }
 
         it { is_expected.to be_included }
       end
 
       context 'when using except' do
-        let(:attributes) { { name: 'rspec', except: { refs: ['deploy', 'master'] } } }
+        let(:attributes) { { name: 'rspec', except: { refs: %w[deploy master] } } }
 
         it { is_expected.not_to be_included }
       end
@@ -130,12 +130,12 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
     end
 
     context 'when keywords and pipeline source policy matches' do
-      possibilities = [['pushes', 'push'],
-                       ['web', 'web'],
-                       ['triggers', 'trigger'],
-                       ['schedules', 'schedule'],
-                       ['api', 'api'],
-                       ['external', 'external']]
+      possibilities = [%w[pushes push],
+                       %w[web web],
+                       %w[triggers trigger],
+                       %w[schedules schedule],
+                       %w[api api],
+                       %w[external external]]
 
       context 'when using only' do
         possibilities.each do |keyword, source|
@@ -167,12 +167,12 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
     end
 
     context 'when keywords and pipeline source does not match' do
-      possibilities = [['pushes', 'web'],
-                       ['web', 'push'],
-                       ['triggers', 'schedule'],
-                       ['schedules', 'external'],
-                       ['api', 'trigger'],
-                       ['external', 'api']]
+      possibilities = [%w[pushes web],
+                       %w[web push],
+                       %w[triggers schedule],
+                       %w[schedules external],
+                       %w[api trigger],
+                       %w[external api]]
 
       context 'when using only' do
         possibilities.each do |keyword, source|
