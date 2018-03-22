@@ -32,14 +32,18 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['updateViewer']),
-    openFileInEditor(file) {
+    ...mapActions(['updateViewer', 'stageChange', 'unstageChange']),
+    openFileInEditor() {
       this.updateViewer('diff');
 
-      router.push(`/project${file.url}`);
+      router.push(`/project${this.file.url}`);
     },
-    stageFile() {
-      alert('a');
+    fileAction() {
+      if (this.file.staged) {
+        this.unstageChange(this.file.path);
+      } else {
+        this.stageChange(this.file.path);
+      }
     },
   },
 };
@@ -50,8 +54,8 @@ export default {
     <button
       type="button"
       class="multi-file-commit-list-path"
-      @dblclick="stageFile"
-      @click="openFileInEditor(file)"
+      @dblclick="fileAction"
+      @click="openFileInEditor"
     >
       <span class="multi-file-commit-list-file-path">
         <icon
