@@ -2,15 +2,20 @@ require 'spec_helper'
 
 describe 'User creates wiki page' do
   let(:user) { create(:user) }
+  let(:wiki) { ProjectWiki.new(project, user) }
+  let(:project) { create(:project) }
 
   before do
     project.add_master(user)
-    sign_in(user)
 
-    visit(project_wikis_path(project))
+    sign_in(user)
   end
 
   context 'when wiki is empty' do
+    before do
+      visit(project_wikis_path(project))
+    end
+
     context 'in a user namespace' do
       let(:project) { create(:project, namespace: user.namespace) }
 
@@ -126,7 +131,9 @@ describe 'User creates wiki page' do
 
   context 'when wiki is not empty', :js do
     before do
-      create(:wiki_page, wiki: create(:project, namespace: user.namespace).wiki, attrs: { title: 'home', content: 'Home page' })
+      create(:wiki_page, wiki: wiki, attrs: { title: 'home', content: 'Home page' })
+
+      visit(project_wikis_path(project))
     end
 
     context 'in a user namespace' do
@@ -238,6 +245,34 @@ describe 'User creates wiki page' do
           expect(page).to have_content("Last edited by #{user.name}")
           expect(page).to have_content('My awesome wiki!')
         end
+      end
+    end
+  end
+
+  context 'when wiki has two pages' do
+    before do
+      create(:wiki_page, wiki: wiki, attrs: { title: 'home', content: 'home' })
+      create(:wiki_page, wiki: wiki, attrs: { title: 'another', content: 'another' })
+    end
+
+    it 'renders a default sidebar when there is no customized sidebar' do
+      visit(project_wikis_path(project))
+
+      expect(page).to have_content('Another')
+      expect(page).to have_content('More Pages')
+    end
+
+    context 'when there is a customized sidebar' do
+      before do
+        create(:wiki_page, wiki: wiki, attrs: { title: '_sidebar', content: 'My customized sidebar' })
+      end
+
+      it 'renders my customized sidebar instead of the default one' do
+        visit(project_wikis_path(project))
+
+        expect(page).to have_content('My customized sidebar')
+        expect(page).not_to have_content('Another')
+        expect(page).not_to have_content('More Pages')
       end
     end
   end
