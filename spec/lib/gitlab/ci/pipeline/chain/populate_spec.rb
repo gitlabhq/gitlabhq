@@ -37,6 +37,8 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
     end
 
     it 'populates pipeline with builds' do
+      expect(pipeline.builds).to be_one
+      expect(pipeline.builds.first).not_to be_persisted
       expect(pipeline.stages.first.builds).to be_one
       expect(pipeline.stages.first.builds.first).not_to be_persisted
     end
@@ -130,5 +132,22 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
     end
   end
 
-  pending 'populating pipeline according to policies'
+  context 'when using only/except build policies' do
+    let(:config) do
+      { rspec: { script: 'rspec', stage: 'test', only: ['master'] },
+        prod: { script: 'cap prod', stage: 'deploy', only: ['tags'] } }
+    end
+
+    let(:pipeline) do
+      build(:ci_pipeline, ref: 'master', config: config)
+    end
+
+    it 'populates pipeline according to used policies' do
+      step.perform!
+
+      expect(pipeline.stages.size).to eq 1
+      expect(pipeline.builds.size).to eq 1
+      expect(pipeline.builds.first.name).to eq 'rspec'
+    end
+  end
 end

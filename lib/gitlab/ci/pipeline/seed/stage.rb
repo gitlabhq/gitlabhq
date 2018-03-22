@@ -33,18 +33,14 @@ module Gitlab
             end
           end
 
-          # TODO specs
-          #
           def included?
             seeds.any?
           end
 
           def to_resource
-            @stage ||= ::Ci::Stage.new(attributes).tap do |stage|
-              @seeds.each do |seed|
-                next unless seed.included?
-
-                stage.builds << seed.to_resource
+            strong_memoize(:stage) do
+              ::Ci::Stage.new(attributes).tap do |stage|
+                seeds.each { |seed| stage.builds << seed.to_resource }
               end
             end
           end

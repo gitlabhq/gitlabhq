@@ -28,6 +28,28 @@ describe Gitlab::Ci::Pipeline::Seed::Stage do
     end
   end
 
+  describe '#included?' do
+    context 'when it contains builds seeds' do
+      let(:attributes) do
+        { name: 'test',
+          index: 0,
+          builds: [{ name: 'deploy', only: { refs: ['master'] } }] }
+      end
+
+      it { is_expected.to be_included }
+    end
+
+    context 'when it does not contain build seeds' do
+      let(:attributes) do
+        { name: 'test',
+          index: 0,
+          builds: [{ name: 'deploy', only: { refs: ['feature'] } }] }
+      end
+
+      it { is_expected.not_to be_included }
+    end
+  end
+
   describe '#seeds' do
     it 'returns build seeds' do
       expect(subject.seeds).to all(be_a Gitlab::Ci::Pipeline::Seed::Build)
