@@ -7,6 +7,6 @@ class AddStoreColumnToUploads < ActiveRecord::Migration
   DOWNTIME = false
 
   def change
-    add_column :uploads, :store, :integer
+    add_column(:uploads, :store, :integer)
   end
 end

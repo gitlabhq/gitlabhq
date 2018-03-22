@@ -33,28 +33,14 @@ describe Ci::JobArtifact do
 
       context 'when object storage is enabled' do
         context 'when background upload is enabled' do
-          context 'when is licensed' do
-            before do
-              stub_artifacts_object_storage(background_upload: true)
-            end
-
-            it 'schedules the model for migration' do
-              expect(ObjectStorage::BackgroundMoveWorker).to receive(:perform_async).with('JobArtifactUploader', described_class.name, :file, kind_of(Numeric))
-
-              subject
-            end
+          before do
+            stub_artifacts_object_storage(background_upload: true)
           end
 
-          context 'when is unlicensed' do
-            before do
-              stub_artifacts_object_storage(background_upload: true, licensed: false)
-            end
+          it 'schedules the model for migration' do
+            expect(ObjectStorage::BackgroundMoveWorker).to receive(:perform_async).with('JobArtifactUploader', described_class.name, :file, kind_of(Numeric))
 
-            it 'does not schedule the migration' do
-              expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
-
-              subject
-            end
+            subject
           end
         end
 

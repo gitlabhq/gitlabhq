@@ -4,11 +4,7 @@ class AddFileStoreJobArtifacts < ActiveRecord::Migration
   disable_ddl_transaction!
   DOWNTIME = false
 
-  def up
+  def change
     add_column(:ci_job_artifacts, :file_store, :integer)
-  end
-
-  def down
-    remove_column(:ci_job_artifacts, :file_store)
   end
 end

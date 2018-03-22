@@ -270,16 +270,6 @@ describe ObjectStorage do
             end
           end
 
-          context 'when storage is unlicensed' do
-            before do
-              stub_artifacts_object_storage(licensed: false)
-            end
-
-            it "raises an error" do
-              expect { subject }.to raise_error(/Object Storage feature is missing/)
-            end
-          end
-
           context 'when credentials are set' do
             before do
               stub_artifacts_object_storage
@@ -348,50 +338,6 @@ describe ObjectStorage do
     subject { uploader.fog_public }
 
     it { is_expected.to eq(false) }
-  end
-
-  describe '#verify_license!' do
-    subject { uploader.verify_license!(nil) }
-
-    context 'when using local storage' do
-      before do
-        expect(object).to receive(:file_store) { described_class::Store::LOCAL }
-      end
-
-      it "does not raise an error" do
-        expect { subject }.not_to raise_error
-      end
-    end
-
-    context 'when using remote storage' do
-      before do
-        allow(uploader_class).to receive(:options) do
-          double(object_store: double(enabled: true))
-        end
-
-        expect(object).to receive(:file_store) { described_class::Store::REMOTE }
-      end
-
-      context 'feature is not available' do
-        before do
-          expect(License).to receive(:feature_available?).with(:object_storage).and_return(false)
-        end
-
-        it "does raise an error" do
-          expect { subject }.to raise_error(/Object Storage feature is missing/)
-        end
-      end
-
-      context 'feature is available' do
-        before do
-          expect(License).to receive(:feature_available?).with(:object_storage).and_return(true)
-        end
-
-        it "does not raise an error" do
-          expect { subject }.not_to raise_error
-        end
-      end
-    end
   end
 
   describe '.workhorse_authorize' do

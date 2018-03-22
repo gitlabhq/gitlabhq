@@ -1432,6 +1432,16 @@ module Gitlab
         output
       end
 
+      def can_be_merged?(source_sha, target_branch)
+        gitaly_migrate(:can_be_merged) do |is_enabled|
+          if is_enabled
+            gitaly_can_be_merged?(source_sha, find_branch(target_branch).target)
+          else
+            rugged_can_be_merged?(source_sha, target_branch)
+          end
+        end
+      end
+
       def last_commit_for_path(sha, path)
         gitaly_migrate(:last_commit_for_path) do |is_enabled|
           if is_enabled
@@ -2383,6 +2393,14 @@ module Gitlab
         gitaly_commit_client
           .commits_by_message(query, revision: ref, path: path, limit: limit, offset: offset)
           .map { |c| commit(c) }
+      end
+
+      def gitaly_can_be_merged?(their_commit, our_commit)
+        !gitaly_conflicts_client(our_commit, their_commit).conflicts?
+      end
+
+      def rugged_can_be_merged?(their_commit, our_commit)
+        !rugged.merge_commits(our_commit, their_commit).conflicts?
       end
 
       def last_commit_for_path_by_gitaly(sha, path)

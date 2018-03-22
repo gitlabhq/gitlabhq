@@ -1,15 +1,17 @@
 module StubConfiguration
   def stub_object_storage_uploader(
-    config:, uploader:, remote_directory:, enabled: true, licensed: true,
-    proxy_download: false,
-    background_upload: false, direct_upload: false
+        config:,
+        uploader:,
+        remote_directory:,
+        enabled: true,
+        proxy_download: false,
+        background_upload: false,
+        direct_upload: false
   )
     allow(config).to receive(:enabled) { enabled }
     allow(config).to receive(:proxy_download) { proxy_download }
     allow(config).to receive(:background_upload) { background_upload }
     allow(config).to receive(:direct_upload) { direct_upload }
-
-    stub_licensed_features(object_storage: licensed) unless licensed == :skip
 
     return unless enabled
 

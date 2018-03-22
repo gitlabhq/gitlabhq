@@ -21,6 +21,7 @@ describe API::Jobs do
   let(:guest) { create(:project_member, :guest, project: project).user }
 
   before do
+    stub_licensed_features(cross_project_pipelines: true)
     project.add_developer(user)
   end
 
@@ -114,6 +115,7 @@ describe API::Jobs do
     let(:query) { Hash.new }
 
     before do
+      job
       get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), query
     end
 
@@ -337,10 +339,55 @@ describe API::Jobs do
           end
         end
 
+        context 'when artifacts are stored remotely' do
+          let(:proxy_download) { false }
+
+          before do
+            stub_artifacts_object_storage(proxy_download: proxy_download)
+          end
+
+          let(:job) { create(:ci_build, pipeline: pipeline) }
+          let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: job) }
+
+          before do
+            job.reload
+
+            get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+          end
+
+          context 'when proxy download is enabled' do
+            let(:proxy_download) { true }
+
+            it 'responds with the workhorse send-url' do
+              expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("send-url:")
+            end
+          end
+
+          context 'when proxy download is disabled' do
+            it 'returns location redirect' do
+              expect(response).to have_gitlab_http_status(302)
+            end
+          end
+
+          context 'authorized user' do
+            it 'returns the file remote URL' do
+              expect(response).to redirect_to(artifact.file.url)
+            end
+          end
+
+          context 'unauthorized user' do
+            let(:api_user) { nil }
+
+            it 'does not return specific job artifacts' do
+              expect(response).to have_gitlab_http_status(404)
+            end
+          end
+        end
+
         it 'does not return job artifacts if not uploaded' do
           get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -351,6 +398,7 @@ describe API::Jobs do
     let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user) }
 
     before do
+      stub_artifacts_object_storage
       job.success
     end
 
@@ -414,8 +462,23 @@ describe API::Jobs do
                 "attachment; filename=#{job.artifacts_file.filename}" }
           end
 
-          it { expect(response).to have_gitlab_http_status(200) }
+          it { expect(response).to have_http_status(:ok) }
           it { expect(response.headers).to include(download_headers) }
+        end
+
+        context 'when artifacts are stored remotely' do
+          let(:job) { create(:ci_build, pipeline: pipeline, user: api_user) }
+          let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: job) }
+
+          before do
+            job.reload
+
+            get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+          end
+
+          it 'returns location redirect' do
+            expect(response).to have_http_status(:found)
+          end
         end
       end
 
@@ -443,6 +506,29 @@ describe API::Jobs do
         end
 
         it_behaves_like 'a valid file'
+      end
+
+      context 'when using job_token to authenticate' do
+        before do
+          pipeline.reload
+          pipeline.update(ref: 'master',
+                          sha: project.commit('master').sha)
+
+          get api("/projects/#{project.id}/jobs/artifacts/master/download"), job: job.name, job_token: job.token
+        end
+
+        context 'when user is reporter' do
+          it_behaves_like 'a valid file'
+        end
+
+        context 'when user is admin, but not member' do
+          let(:api_user) { create(:admin) }
+          let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user) }
+
+          it 'does not allow to see that artfiact is present' do
+            expect(response).to have_gitlab_http_status(404)
+          end
+        end
       end
     end
   end
