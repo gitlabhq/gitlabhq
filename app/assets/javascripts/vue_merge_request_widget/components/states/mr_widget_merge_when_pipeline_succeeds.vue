@@ -63,7 +63,7 @@
         };
 
         this.isRemovingSourceBranch = true;
-        this.service.mergeResource.save(options)
+        this.service.merge(options)
           .then(res => res.data)
           .then((data) => {
             if (data.status === 'merge_when_pipeline_succeeds') {

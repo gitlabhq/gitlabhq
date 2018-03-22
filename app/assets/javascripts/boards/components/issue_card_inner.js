@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Vue from 'vue';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import eventHub from '../eventhub';

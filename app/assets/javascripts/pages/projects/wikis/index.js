@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Wikis from './wikis';
 import ShortcutsWiki from '../../../shortcuts_wiki';
 import ZenMode from '../../../zen_mode';

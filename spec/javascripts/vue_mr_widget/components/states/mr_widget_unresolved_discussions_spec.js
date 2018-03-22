@@ -1,10 +1,10 @@
 import Vue from 'vue';
-import unresolvedDiscussionsComponent from '~/vue_merge_request_widget/components/states/mr_widget_unresolved_discussions';
+import UnresolvedDiscussions from '~/vue_merge_request_widget/components/states/unresolved_discussions.vue';
 
-describe('MRWidgetUnresolvedDiscussions', () => {
+describe('UnresolvedDiscussions', () => {
   describe('props', () => {
     it('should have props', () => {
-      const { mr } = unresolvedDiscussionsComponent.props;
+      const { mr } = UnresolvedDiscussions.props;
 
       expect(mr.type instanceof Object).toBeTruthy();
       expect(mr.required).toBeTruthy();
@@ -17,7 +17,7 @@ describe('MRWidgetUnresolvedDiscussions', () => {
     const path = 'foo/bar';
 
     beforeEach(() => {
-      const Component = Vue.extend(unresolvedDiscussionsComponent);
+      const Component = Vue.extend(UnresolvedDiscussions);
       const mr = {
         createIssueToResolveDiscussionsPath: path,
       };

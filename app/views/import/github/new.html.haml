@@ -10,7 +10,7 @@
   %p
     = import_github_authorize_message
 
-  = link_to _('List your GitHub repositories'), status_import_github_path, class: 'btn btn-success'
+  = link_to _('List your GitHub repositories'), status_import_github_path(ci_cd_only: params[:ci_cd_only]), class: 'btn btn-success'
 
   %hr
 

@@ -1,4 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, one-var, no-var, one-var-declaration-per-line, object-shorthand, comma-dangle, prefer-arrow-callback, no-else-return, newline-per-chained-call, wrap-iife, max-len */
+
+import $ from 'jquery';
 import { __ } from './locale';
 import axios from './lib/utils/axios_utils';
 import flash from './flash';

@@ -1,5 +1,0 @@
----
-title: Fix pages flaky failure by reloading stale object
-merge_request: 17522
-author:
-type: fixed

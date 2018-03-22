@@ -1,4 +1,6 @@
 /* eslint-disable no-new */
+
+import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
 import BlobViewer from '~/blob/viewer/index';
 import axios from '~/lib/utils/axios_utils';

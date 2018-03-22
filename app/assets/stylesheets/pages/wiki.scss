@@ -180,6 +180,11 @@ ul.wiki-pages-list.content-list {
   }
 }
 
+.wiki-holder {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
 .wiki {
   table {
     @include markdown-table;

@@ -137,12 +137,22 @@
   z-index: 200;
   overflow: hidden;
 
-  a:not(.btn-retry),
-  .btn-link {
+  a:not(.btn) {
     color: inherit;
+
+    &:hover {
+      color: $gl-link-hover-color;
+
+      .avatar {
+        border-color: rgba($avatar-border, .2);
+      }
+
+    }
+
   }
 
   .btn-link {
+    color: inherit;
     outline: none;
   }
 
@@ -214,7 +224,7 @@
 
       &:hover {
         text-decoration: underline;
-        color: $md-link-color;
+        color: $gl-link-hover-color;
       }
     }
   }
@@ -486,16 +496,6 @@
     }
   }
 
-  a:not(.btn-retry) {
-    &:hover {
-      color: $md-link-color;
-
-      .avatar {
-        border-color: rgba($avatar-border, .2);
-      }
-    }
-  }
-
   .dropdown-menu-toggle {
     width: 100%;
     padding-top: 6px;
@@ -503,6 +503,20 @@
 
   .dropdown-menu {
     width: 100%;
+
+    /*
+     * Overwrite hover style for dropdown items, so that they are not blue
+     * This should be removed during dev of https://gitlab.com/gitlab-org/gitlab-ce/issues/44040
+     */
+    li a {
+      &:hover,
+      &:active,
+      &:focus,
+      &.is-focused {
+        @include dropdown-item-hover;
+      }
+    }
+
   }
 }
 

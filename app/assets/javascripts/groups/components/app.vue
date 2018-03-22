@@ -1,6 +1,7 @@
 <script>
 /* global Flash */
 
+import $ from 'jquery';
 import { s__ } from '~/locale';
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import modal from '~/vue_shared/components/modal.vue';

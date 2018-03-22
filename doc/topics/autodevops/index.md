@@ -20,7 +20,7 @@ project in an easy and automatic way:
 1. [Auto Test](#auto-test)
 1. [Auto Code Quality](#auto-code-quality)
 1. [Auto SAST (Static Application Security Testing)](#auto-sast)
-1. [Auto SAST for Docker images](#auto-sast-for-docker-images)
+1. [Auto Container Scanning](#auto-container-scanning)
 1. [Auto Review Apps](#auto-review-apps)
 1. [Auto DAST (Dynamic Application Security Testing)](#auto-dast)
 1. [Auto Deploy](#auto-deploy)
@@ -217,7 +217,7 @@ check out.
 In GitLab Ultimate, any security warnings are also
 [shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/sast.html).
 
-### Auto SAST for Docker images
+### Auto Container Scanning
 
 > Introduced in GitLab 10.4.
 
@@ -228,7 +228,7 @@ created, it's uploaded as an artifact which you can later download and
 check out.
 
 In GitLab Ultimate, any security warnings are also
-[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/sast_docker.html).
+[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/container_scanning.html).
 
 ### Auto Review Apps
 
@@ -308,6 +308,18 @@ enable them.
 
 You can make use of [environment variables](#helm-chart-variables) to automatically
 scale your pod replicas.
+
+It's important to note that when a project is deployed to a Kubernetes cluster,
+it relies on a Docker image that has been pushed to the
+[GitLab Container Registry](../../user/project/container_registry.md). Kubernetes
+fetches this image and uses it to run the application. If the project is public,
+the image can be accessed by Kubernetes without any authentication, allowing us
+to have deployments more usable. If the project is private/internal, the
+Registry requires credentials to pull the image. Currently, this is addressed
+by providing `CI_JOB_TOKEN` as the password that can be used, but this token will
+no longer be valid as soon as the deployment job finishes. This means that
+Kubernetes can run the application, but in case it should be restarted or
+executed somewhere else, it cannot be accessed again.
 
 ### Auto Monitoring
 

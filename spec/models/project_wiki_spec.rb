@@ -74,7 +74,7 @@ describe ProjectWiki do
       # Create a fresh project which will not have a wiki
       project_wiki = described_class.new(create(:project), user)
       gitlab_shell = double(:gitlab_shell)
-      allow(gitlab_shell).to receive(:add_repository)
+      allow(gitlab_shell).to receive(:create_repository)
       allow(project_wiki).to receive(:gitlab_shell).and_return(gitlab_shell)
 
       expect { project_wiki.send(:wiki) }.to raise_exception(ProjectWiki::CouldNotCreateWikiError)

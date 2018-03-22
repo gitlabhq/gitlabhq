@@ -7,9 +7,9 @@
     = icon("caret-down", class: "prepend-left-5")
   %span.diff-stats-additions-deletions-expanded#diff-stats
     with
-    %strong.cgreen #{sum_added_lines} additions
+    %strong.cgreen= pluralize(sum_added_lines, 'addition')
     and
-    %strong.cred #{sum_removed_lines} deletions
+    %strong.cred= pluralize(sum_removed_lines, 'deletion')
   .diff-stats-additions-deletions-collapsed.pull-right.hidden-xs.hidden-sm{ "aria-hidden": "true", "aria-describedby": "diff-stats" }
     %strong.cgreen<
       +#{sum_added_lines}

@@ -1002,8 +1002,9 @@ module Gitlab
       # This only checks the root .gitattributes file,
       # it does not traverse subfolders to find additional .gitattributes files
       #
-      # This method is around 30 times slower than `attributes`,
-      # which uses `$GIT_DIR/info/attributes`
+      # This method is around 30 times slower than `attributes`, which uses
+      # `$GIT_DIR/info/attributes`. Consider caching AttributesAtRefParser
+      # and reusing that for multiple calls instead of this method.
       def attributes_at(ref, file_path)
         parser = AttributesAtRefParser.new(self, ref)
         parser.attributes(file_path)
@@ -1189,15 +1190,9 @@ module Gitlab
       end
 
       def fsck
-        gitaly_migrate(:git_fsck) do |is_enabled|
-          msg, status = if is_enabled
-                          gitaly_fsck
-                        else
-                          shell_fsck
-                        end
+        msg, status = gitaly_repository_client.fsck
 
-          raise GitError.new("Could not fsck repository: #{msg}") unless status.zero?
-        end
+        raise GitError.new("Could not fsck repository: #{msg}") unless status.zero?
       end
 
       def create_from_bundle(bundle_path)
@@ -1395,7 +1390,7 @@ module Gitlab
         offset = 2
         args = %W(grep -i -I -n -z --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
 
-        run_git(args).first.scrub.split(/^--$/)
+        run_git(args).first.scrub.split(/^--\n/)
       end
 
       def can_be_merged?(source_sha, target_branch)
@@ -1594,14 +1589,6 @@ module Gitlab
         worktree_info_path = File.join(worktree_git_path, 'info')
         FileUtils.mkdir_p(worktree_info_path)
         File.write(File.join(worktree_info_path, 'sparse-checkout'), files)
-      end
-
-      def gitaly_fsck
-        gitaly_repository_client.fsck
-      end
-
-      def shell_fsck
-        run_git(%W[--git-dir=#{path} fsck], nice: true)
       end
 
       def rugged_fetch_source_branch(source_repository, source_branch, local_ref)

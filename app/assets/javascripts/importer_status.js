@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import _ from 'underscore';
 import { __, sprintf } from './locale';
 import axios from './lib/utils/axios_utils';

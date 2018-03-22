@@ -1,4 +1,5 @@
 /* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, max-len */
+import $ from 'jquery';
 import _ from 'underscore';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
@@ -6,7 +7,7 @@ import * as urlUtils from '~/lib/utils/url_utility';
 import 'autosize';
 import '~/gl_form';
 import '~/lib/utils/text_utility';
-import '~/render_gfm';
+import '~/behaviors/markdown/render_gfm';
 import Notes from '~/notes';
 import timeoutPromise from './helpers/set_timeout_promise_helper';
 
@@ -543,6 +544,20 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
 
         setTimeout(() => {
           expect($notesContainer.find('.note.being-posted').length).toEqual(0);
+
+          done();
+        });
+      });
+
+      it('should disable the submit button when comment button is clicked', (done) => {
+        expect($form.find('.js-comment-submit-button').is(':disabled')).toEqual(false);
+
+        mockNotesPost();
+        $('.js-comment-button').click();
+        expect($form.find('.js-comment-submit-button').is(':disabled')).toEqual(true);
+
+        setTimeout(() => {
+          expect($form.find('.js-comment-submit-button').is(':disabled')).toEqual(false);
 
           done();
         });

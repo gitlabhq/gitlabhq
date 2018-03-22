@@ -70,6 +70,7 @@ module Gitlab
 
         update_user_references
         update_project_references
+        remove_duplicate_assignees
 
         reset_tokens!
         remove_encrypted_attributes!
@@ -81,6 +82,14 @@ module Gitlab
             @relation_hash[reference] = @members_mapper.map[@relation_hash[reference]]
           end
         end
+      end
+
+      def remove_duplicate_assignees
+        return unless @relation_hash['issue_assignees']
+
+        # When an assignee did not exist in the members mapper, the importer is
+        # assigned. We only need to assign each user once.
+        @relation_hash['issue_assignees'].uniq!(&:user_id)
       end
 
       def setup_note

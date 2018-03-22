@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Vue from 'vue';
 
 import * as utils from '~/lib/utils/url_utility';

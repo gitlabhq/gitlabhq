@@ -5,6 +5,7 @@
 /*= provides zen_mode:enter */
 /*= provides zen_mode:leave */
 
+import $ from 'jquery';
 import 'vendor/jquery.scrollTo';
 import Dropzone from 'dropzone';
 import Mousetrap from 'mousetrap';

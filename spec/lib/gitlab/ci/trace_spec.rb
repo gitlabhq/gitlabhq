@@ -510,6 +510,28 @@ describe Gitlab::Ci::Trace do
 
           it_behaves_like 'source trace in database stays intact', error: ActiveRecord::RecordInvalid
         end
+
+        context 'when there is a validation error on Ci::Build' do
+          before do
+            allow_any_instance_of(Ci::Build).to receive(:save).and_return(false)
+            allow_any_instance_of(Ci::Build).to receive_message_chain(:errors, :full_messages)
+              .and_return(%w[Error Error])
+          end
+
+          context "when erase old trace with 'save'" do
+            before do
+              build.send(:write_attribute, :trace, nil)
+              build.save
+            end
+
+            it 'old trace is not deleted' do
+              build.reload
+              expect(build.trace.raw).to eq(trace_content)
+            end
+          end
+
+          it_behaves_like 'archive trace in database'
+        end
       end
     end
 

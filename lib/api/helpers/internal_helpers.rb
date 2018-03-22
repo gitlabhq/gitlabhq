@@ -109,7 +109,7 @@ module API
 
       # Return the Gitaly Address if it is enabled
       def gitaly_payload(action)
-        return unless %w[git-receive-pack git-upload-pack].include?(action)
+        return unless %w[git-receive-pack git-upload-pack git-upload-archive].include?(action)
 
         {
           repository: repository.gitaly_repository,

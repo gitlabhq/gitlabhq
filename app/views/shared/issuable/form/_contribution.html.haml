@@ -14,7 +14,7 @@
     .checkbox
       = form.label :allow_maintainer_to_push do
         = form.check_box :allow_maintainer_to_push, disabled: !issuable.can_allow_maintainer_to_push?(current_user)
-        = _('Allow edits from maintainers')
+        = _('Allow edits from maintainers.')
         = link_to 'About this feature', help_page_path('user/project/merge_requests/maintainer_access')
         .help-block
           = allow_maintainer_push_unavailable_reason(issuable)

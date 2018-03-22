@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import LabelsSelect from '~/labels_select';
 
 const mockUrl = '/foo/bar/url';

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import _ from 'underscore';
 import axios from './lib/utils/axios_utils';
 import { visitUrl } from './lib/utils/url_utility';

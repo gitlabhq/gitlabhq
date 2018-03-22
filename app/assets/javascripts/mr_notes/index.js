@@ -4,13 +4,15 @@ import discussionCounter from '../notes/components/discussion_counter.vue';
 import store from '../notes/stores';
 
 export default function initMrNotes() {
-  new Vue({ // eslint-disable-line
+  // eslint-disable-next-line no-new
+  new Vue({
     el: '#js-vue-mr-discussions',
     components: {
       notesApp,
     },
     data() {
-      const notesDataset = document.getElementById('js-vue-mr-discussions').dataset;
+      const notesDataset = document.getElementById('js-vue-mr-discussions')
+        .dataset;
       return {
         noteableData: JSON.parse(notesDataset.noteableData),
         currentUserData: JSON.parse(notesDataset.currentUserData),
@@ -28,7 +30,8 @@ export default function initMrNotes() {
     },
   });
 
-  new Vue({ // eslint-disable-line
+  // eslint-disable-next-line no-new
+  new Vue({
     el: '#js-vue-discussion-counter',
     components: {
       discussionCounter,

@@ -17,7 +17,7 @@ describe MergeRequest do
   describe 'modules' do
     subject { described_class }
 
-    it { is_expected.to include_module(InternalId) }
+    it { is_expected.to include_module(NonatomicInternalId) }
     it { is_expected.to include_module(Issuable) }
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
@@ -1544,7 +1544,7 @@ describe MergeRequest do
     end
 
     it "executes diff cache service" do
-      expect_any_instance_of(MergeRequests::MergeRequestDiffCacheService).to receive(:execute).with(subject)
+      expect_any_instance_of(MergeRequests::MergeRequestDiffCacheService).to receive(:execute).with(subject, an_instance_of(MergeRequestDiff))
 
       subject.reload_diff
     end

@@ -1,4 +1,5 @@
 <script>
+import { __ } from '~/locale';
 import LabelsSelect from '~/labels_select';
 import LoadingIcon from '../../loading_icon.vue';
 
@@ -27,6 +28,11 @@ export default {
   },
   props: {
     showCreate: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isProject: {
       type: Boolean,
       required: false,
       default: false,
@@ -72,6 +78,20 @@ export default {
   computed: {
     hiddenInputName() {
       return this.showCreate ? `${this.abilityName}[label_names][]` : 'label_id[]';
+    },
+    createLabelTitle() {
+      if (this.isProject) {
+        return __('Create project label');
+      }
+
+      return __('Create group label');
+    },
+    manageLabelsTitle() {
+      if (this.isProject) {
+        return __('Manage project labels');
+      }
+
+      return __('Manage group labels');
     },
   },
   mounted() {
@@ -137,10 +157,14 @@ dropdown-menu-labels dropdown-menu-selectable"
             <dropdown-footer
               v-if="showCreate"
               :labels-web-url="labelsWebUrl"
+              :create-label-title="createLabelTitle"
+              :manage-labels-title="manageLabelsTitle"
             />
           </div>
           <dropdown-create-label
             v-if="showCreate"
+            :is-project="isProject"
+            :header-title="createLabelTitle"
           />
         </div>
       </div>

@@ -125,6 +125,10 @@ export default class MergeRequestStore {
     return this.state === stateKey.nothingToMerge;
   }
 
+  get isMergedState() {
+    return this.state === stateKey.merged;
+  }
+
   initRebase(data) {
     this.canPushToSourceBranch = data.can_push_to_source_branch;
     this.rebaseInProgress = data.rebase_in_progress;

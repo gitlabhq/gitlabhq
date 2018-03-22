@@ -35,6 +35,8 @@ module Gitlab
       end
 
       def restored_project
+        return @project unless @tree_hash
+
         @restored_project ||= restore_project
       end
 
@@ -81,9 +83,13 @@ module Gitlab
       end
 
       def restore_project
-        return @project unless @tree_hash
+        params = project_params
 
-        @project.update_columns(project_params)
+        if params[:description].present?
+          params[:description_html] = nil
+        end
+
+        @project.update_columns(params)
         @project
       end
 

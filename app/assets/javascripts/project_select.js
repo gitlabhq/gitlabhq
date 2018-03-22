@@ -1,4 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-var, comma-dangle, object-shorthand, one-var, one-var-declaration-per-line, no-else-return, quotes, max-len */
+
+import $ from 'jquery';
 import Api from './api';
 import ProjectSelectComboButton from './project_select_combo_button';
 

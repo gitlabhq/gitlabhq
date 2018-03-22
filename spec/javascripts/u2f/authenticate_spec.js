@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import U2FAuthenticate from '~/u2f/authenticate';
 import 'vendor/u2f';
 import MockU2FDevice from './mock_u2f_device';

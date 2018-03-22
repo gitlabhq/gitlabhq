@@ -1,4 +1,5 @@
 <script>
+  import $ from 'jquery';
   import tooltip from '../../directives/tooltip';
   import toolbarButton from './toolbar_button.vue';
   import icon from '../icon.vue';

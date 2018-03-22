@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-06 17:36+0100\n"
-"PO-Revision-Date: 2018-03-06 17:36+0100\n"
+"POT-Creation-Date: 2018-03-12 19:50+0100\n"
+"PO-Revision-Date: 2018-03-12 19:50+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -28,6 +28,11 @@ msgid_plural "%d commits behind"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d exporter"
+msgid_plural "%d exporters"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d issue"
 msgid_plural "%d issues"
 msgstr[0] ""
@@ -40,6 +45,11 @@ msgstr[1] ""
 
 msgid "%d merge request"
 msgid_plural "%d merge requests"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d metric"
+msgid_plural "%d metrics"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -102,6 +112,9 @@ msgstr ""
 msgid "2FA enabled"
 msgstr ""
 
+msgid "<strong>Removes</strong> source branch"
+msgstr ""
+
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr ""
 
@@ -109,6 +122,9 @@ msgid "A new branch will be created in your fork and a new merge request will be
 msgstr ""
 
 msgid "A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), %{among_other_things_link}."
+msgstr ""
+
+msgid "A user with write access to the source branch selected this option"
 msgstr ""
 
 msgid "About auto deploy"
@@ -213,7 +229,7 @@ msgstr ""
 msgid "All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings."
 msgstr ""
 
-msgid "Allow edits from maintainers"
+msgid "Allow edits from maintainers."
 msgstr ""
 
 msgid "Allows you to add and manage Kubernetes clusters."
@@ -857,6 +873,9 @@ msgstr ""
 msgid "ClusterIntegration|Learn more about environments"
 msgstr ""
 
+msgid "ClusterIntegration|Learn more about security configuration"
+msgstr ""
+
 msgid "ClusterIntegration|Machine type"
 msgstr ""
 
@@ -914,6 +933,9 @@ msgstr ""
 msgid "ClusterIntegration|Save changes"
 msgstr ""
 
+msgid "ClusterIntegration|Security"
+msgstr ""
+
 msgid "ClusterIntegration|See and edit the details for your Kubernetes cluster"
 msgstr ""
 
@@ -939,6 +961,9 @@ msgid "ClusterIntegration|Something went wrong while creating your Kubernetes cl
 msgstr ""
 
 msgid "ClusterIntegration|Something went wrong while installing %{title}"
+msgstr ""
+
+msgid "ClusterIntegration|The default cluster configuration grants access to a wide set of functionalities needed to successfully build and deploy a containerised application."
 msgstr ""
 
 msgid "ClusterIntegration|This account must have permissions to create a Kubernetes cluster in the %{link_to_container_project} specified below"
@@ -1182,6 +1207,9 @@ msgstr ""
 msgid "Create empty bare repository"
 msgstr ""
 
+msgid "Create group label"
+msgstr ""
+
 msgid "Create lists from labels. Issues with that label appear in that list."
 msgstr ""
 
@@ -1195,6 +1223,9 @@ msgid "Create new label"
 msgstr ""
 
 msgid "Create new..."
+msgstr ""
+
+msgid "Create project label"
 msgstr ""
 
 msgid "CreateNewFork|Fork"
@@ -1776,7 +1807,16 @@ msgstr ""
 msgid "Labels"
 msgstr ""
 
+msgid "Labels can be applied to %{features}. Group labels are available for any project within the group."
+msgstr ""
+
 msgid "Labels can be applied to issues and merge requests to categorize them."
+msgstr ""
+
+msgid "Labels|Promote Label"
+msgstr ""
+
+msgid "Labels|Promote label %{labelTitle} to Group Label?"
 msgstr ""
 
 msgid "Last %d day"
@@ -1850,7 +1890,13 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
+msgid "Manage group labels"
+msgstr ""
+
 msgid "Manage labels"
+msgstr ""
+
+msgid "Manage project labels"
 msgstr ""
 
 msgid "Mar"
@@ -1905,6 +1951,12 @@ msgid "Milestones|Failed to delete milestone %{milestoneTitle}"
 msgstr ""
 
 msgid "Milestones|Milestone %{milestoneTitle} was not found"
+msgstr ""
+
+msgid "Milestones|Promote %{milestoneTitle} to group milestone?"
+msgstr ""
+
+msgid "Milestones|Promote Milestone"
 msgstr ""
 
 msgid "MissingSSHKeyWarningLink|add an SSH key"
@@ -2000,6 +2052,9 @@ msgid "No estimate or time spent"
 msgstr ""
 
 msgid "No file chosen"
+msgstr ""
+
+msgid "No labels created yet."
 msgstr ""
 
 msgid "No repository"
@@ -2251,7 +2306,13 @@ msgstr ""
 msgid "Pipelines|Loading Pipelines"
 msgstr ""
 
+msgid "Pipelines|Project cache successfully reset."
+msgstr ""
+
 msgid "Pipelines|Run Pipeline"
+msgstr ""
+
+msgid "Pipelines|Something went wrong while cleaning runners cache."
 msgstr ""
 
 msgid "Pipelines|There are currently no %{scope} pipelines."
@@ -2380,9 +2441,6 @@ msgstr ""
 msgid "Project avatar in repository: %{link}"
 msgstr ""
 
-msgid "Project cache successfully reset."
-msgstr ""
-
 msgid "Project details"
 msgstr ""
 
@@ -2446,6 +2504,12 @@ msgstr ""
 msgid "ProjectsDropdown|This feature requires browser localStorage support"
 msgstr ""
 
+msgid "PrometheusService|%{exporters} with %{metrics} were found"
+msgstr ""
+
+msgid "PrometheusService|<p class=\"text-tertiary\">No <a href=\"%{docsUrl}\">common metrics</a> were found</p>"
+msgstr ""
+
 msgid "PrometheusService|Active"
 msgstr ""
 
@@ -2456,6 +2520,9 @@ msgid "PrometheusService|Automatically deploy and configure Prometheus on your c
 msgstr ""
 
 msgid "PrometheusService|By default, Prometheus listens on ‘http://localhost:9090’. It’s not recommended to change the default address and port as this might affect or conflict with other services running on the GitLab server."
+msgstr ""
+
+msgid "PrometheusService|Common metrics"
 msgstr ""
 
 msgid "PrometheusService|Finding and configuring metrics..."
@@ -2479,13 +2546,7 @@ msgstr ""
 msgid "PrometheusService|Missing environment variable"
 msgstr ""
 
-msgid "PrometheusService|Monitored"
-msgstr ""
-
 msgid "PrometheusService|More information"
-msgstr ""
-
-msgid "PrometheusService|No metrics are being monitored. To start monitoring, deploy to an environment."
 msgstr ""
 
 msgid "PrometheusService|Prometheus API Base URL, like http://prometheus.example.com/"
@@ -2503,7 +2564,16 @@ msgstr ""
 msgid "PrometheusService|To enable the installation of Prometheus on your clusters, deactivate the manual configuration below"
 msgstr ""
 
-msgid "PrometheusService|View environments"
+msgid "PrometheusService|Waiting for your first deployment to an environment to find common metrics"
+msgstr ""
+
+msgid "Promote"
+msgstr ""
+
+msgid "Promote to Group Label"
+msgstr ""
+
+msgid "Promote to Group Milestone"
 msgstr ""
 
 msgid "Protip:"
@@ -2513,9 +2583,6 @@ msgid "Public - The group and any public projects can be viewed without any auth
 msgstr ""
 
 msgid "Public - The project can be accessed without any authentication."
-msgstr ""
-
-msgid "Push access to this project is necessary in order to enable this option"
 msgstr ""
 
 msgid "Push events"
@@ -3338,9 +3405,6 @@ msgstr ""
 msgid "Trigger this manual action"
 msgstr ""
 
-msgid "Unable to reset project cache."
-msgstr ""
-
 msgid "Unlock"
 msgstr ""
 
@@ -3383,10 +3447,16 @@ msgstr ""
 msgid "View file @ "
 msgstr ""
 
+msgid "View group labels"
+msgstr ""
+
 msgid "View labels"
 msgstr ""
 
 msgid "View open merge request"
+msgstr ""
+
+msgid "View project labels"
 msgstr ""
 
 msgid "View replaced file @ "

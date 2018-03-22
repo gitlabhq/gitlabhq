@@ -5,7 +5,7 @@ import {
   WidgetHeader,
   WidgetMergeHelp,
   WidgetPipeline,
-  WidgetDeployment,
+  Deployment,
   WidgetMaintainerEdit,
   WidgetRelatedLinks,
   MergedState,
@@ -19,7 +19,7 @@ import {
   MissingBranchState,
   NotAllowedState,
   ReadyToMergeState,
-  SHAMismatchState,
+  ShaMismatchState,
   UnresolvedDiscussionsState,
   PipelineBlockedState,
   PipelineFailedState,
@@ -33,6 +33,7 @@ import {
   stateMaps,
   SquashBeforeMerge,
   notify,
+  SourceBranchRemovalStatus,
 } from './dependencies';
 import { setFavicon } from '../lib/utils/common_utils';
 
@@ -66,8 +67,9 @@ export default {
     shouldRenderRelatedLinks() {
       return !!this.mr.relatedLinks && !this.mr.isNothingToMergeState;
     },
-    shouldRenderDeployments() {
-      return this.mr.deployments.length;
+    shouldRenderSourceBranchRemovalStatus() {
+      return !this.mr.canRemoveSourceBranch && this.mr.shouldRemoveSourceBranch &&
+        (!this.mr.isNothingToMergeState && !this.mr.isMergedState);
     },
   },
   methods: {
@@ -211,7 +213,7 @@ export default {
     'mr-widget-header': WidgetHeader,
     'mr-widget-merge-help': WidgetMergeHelp,
     'mr-widget-pipeline': WidgetPipeline,
-    'mr-widget-deployment': WidgetDeployment,
+    Deployment,
     'mr-widget-maintainer-edit': WidgetMaintainerEdit,
     'mr-widget-related-links': WidgetRelatedLinks,
     'mr-widget-merged': MergedState,
@@ -225,7 +227,7 @@ export default {
     'mr-widget-not-allowed': NotAllowedState,
     'mr-widget-missing-branch': MissingBranchState,
     'mr-widget-ready-to-merge': ReadyToMergeState,
-    'mr-widget-sha-mismatch': SHAMismatchState,
+    'mr-widget-sha-mismatch': ShaMismatchState,
     'mr-widget-squash-before-merge': SquashBeforeMerge,
     'mr-widget-checking': CheckingState,
     'mr-widget-unresolved-discussions': UnresolvedDiscussionsState,
@@ -234,6 +236,7 @@ export default {
     'mr-widget-merge-when-pipeline-succeeds': MergeWhenPipelineSucceedsState,
     'mr-widget-auto-merge-failed': AutoMergeFailed,
     'mr-widget-rebase': RebaseState,
+    SourceBranchRemovalStatus,
   },
   template: `
     <div class="mr-state-widget prepend-top-default">
@@ -244,10 +247,11 @@ export default {
         :ci-status="mr.ciStatus"
         :has-ci="mr.hasCI"
         />
-      <mr-widget-deployment
-        v-if="shouldRenderDeployments"
-        :mr="mr"
-        :service="service" />
+      <deployment
+        v-for="deployment in mr.deployments"
+        :key="deployment.id"
+        :deployment="deployment"
+      />
       <div class="mr-widget-section">
         <component
           :is="componentName"
@@ -259,6 +263,9 @@ export default {
           v-if="shouldRenderRelatedLinks"
           :state="mr.state"
           :related-links="mr.relatedLinks" />
+        <source-branch-removal-status
+          v-if="shouldRenderSourceBranchRemovalStatus"
+        />
       </div>
       <div
         class="mr-widget-footer"

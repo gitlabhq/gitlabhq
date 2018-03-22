@@ -1,5 +1,6 @@
 /* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren */
 
+import $ from 'jquery';
 import _ from 'underscore';
 import Vue from 'vue';
 

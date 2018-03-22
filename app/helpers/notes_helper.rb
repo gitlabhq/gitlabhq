@@ -169,7 +169,7 @@ module NotesHelper
       reopenPath: reopen_issuable_path(issuable),
       notesPath: notes_url,
       totalNotes: issuable.discussions.length,
-      lastFetchedAt: Time.now
+      lastFetchedAt: Time.now.to_i
 
     }.to_json
   end

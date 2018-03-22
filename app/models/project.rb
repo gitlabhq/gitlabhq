@@ -544,7 +544,7 @@ class Project < ActiveRecord::Base
     latest_pipeline = pipelines.latest_successful_for(ref)
 
     if latest_pipeline
-      latest_pipeline.builds.latest.with_artifacts
+      latest_pipeline.builds.latest.with_artifacts_archive
     else
       builds.none
     end
@@ -1085,7 +1085,7 @@ class Project < ActiveRecord::Base
     # Forked import is handled asynchronously
     return if forked? && !force
 
-    if gitlab_shell.add_repository(repository_storage, disk_path)
+    if gitlab_shell.create_repository(repository_storage, disk_path)
       repository.after_create
       true
     else
@@ -1521,8 +1521,8 @@ class Project < ActiveRecord::Base
     @errors = original_errors
   end
 
-  def add_export_job(current_user:)
-    job_id = ProjectExportWorker.perform_async(current_user.id, self.id)
+  def add_export_job(current_user:, params: {})
+    job_id = ProjectExportWorker.perform_async(current_user.id, self.id, params)
 
     if job_id
       Rails.logger.info "Export job started for project ID #{self.id} with job ID #{job_id}"
@@ -1574,29 +1574,30 @@ class Project < ActiveRecord::Base
   end
 
   def predefined_variables
-    [
-      { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
-      { key: 'CI_PROJECT_NAME', value: path, public: true },
-      { key: 'CI_PROJECT_PATH', value: full_path, public: true },
-      { key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug, public: true },
-      { key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true },
-      { key: 'CI_PROJECT_URL', value: web_url, public: true },
-      { key: 'CI_PROJECT_VISIBILITY', value: Gitlab::VisibilityLevel.string_level(visibility_level), public: true }
-    ]
+    visibility = Gitlab::VisibilityLevel.string_level(visibility_level)
+
+    Gitlab::Ci::Variables::Collection.new
+      .append(key: 'CI_PROJECT_ID', value: id.to_s)
+      .append(key: 'CI_PROJECT_NAME', value: path)
+      .append(key: 'CI_PROJECT_PATH', value: full_path)
+      .append(key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug)
+      .append(key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path)
+      .append(key: 'CI_PROJECT_URL', value: web_url)
+      .append(key: 'CI_PROJECT_VISIBILITY', value: visibility)
+      .concat(container_registry_variables)
+      .concat(auto_devops_variables)
   end
 
   def container_registry_variables
-    return [] unless Gitlab.config.registry.enabled
+    Gitlab::Ci::Variables::Collection.new.tap do |variables|
+      return variables unless Gitlab.config.registry.enabled
 
-    variables = [
-      { key: 'CI_REGISTRY', value: Gitlab.config.registry.host_port, public: true }
-    ]
+      variables.append(key: 'CI_REGISTRY', value: Gitlab.config.registry.host_port)
 
-    if container_registry_enabled?
-      variables << { key: 'CI_REGISTRY_IMAGE', value: container_registry_url, public: true }
+      if container_registry_enabled?
+        variables.append(key: 'CI_REGISTRY_IMAGE', value: container_registry_url)
+      end
     end
-
-    variables
   end
 
   def secret_variables_for(ref:, environment: nil)
@@ -1616,16 +1617,14 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def deployment_variables
-    return [] unless deployment_platform
-
-    deployment_platform.predefined_variables
+  def deployment_variables(environment: nil)
+    deployment_platform(environment: environment)&.predefined_variables || []
   end
 
   def auto_devops_variables
     return [] unless auto_devops_enabled?
 
-    (auto_devops || build_auto_devops)&.variables
+    (auto_devops || build_auto_devops)&.predefined_variables
   end
 
   def append_or_update_attribute(name, value)

@@ -12,7 +12,7 @@ describe Gitlab::Diff::FileCollection::MergeRequestDiff do
     diff_files
   end
 
-  it 'does not files marked as undiffable in .gitattributes' do
+  it 'does not highlight files marked as undiffable in .gitattributes' do
     allow_any_instance_of(Gitlab::Diff::File).to receive(:diffable?).and_return(false)
 
     expect_any_instance_of(Gitlab::Diff::File).not_to receive(:highlighted_diff_lines)

@@ -1,4 +1,6 @@
 /* eslint-disable no-new */
+
+import $ from 'jquery';
 import GLForm from '~/gl_form';
 import IssuableForm from '~/issuable_form';
 import LabelsSelect from '~/labels_select';

@@ -1,4 +1,6 @@
 /* eslint-disable no-new */
+
+import $ from 'jquery';
 import Diff from '~/diff';
 import ZenMode from '~/zen_mode';
 import ShortcutsNavigation from '~/shortcuts_navigation';

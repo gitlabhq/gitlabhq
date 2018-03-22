@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import * as urlUtils from '~/lib/utils/url_utility';
 import Todos from '~/pages/dashboard/todos/index/todos';
 import '~/lib/utils/common_utils';

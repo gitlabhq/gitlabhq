@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
 import Activities from '~/activities';
 import { localTimeAgo } from '~/lib/utils/datetime_utility';

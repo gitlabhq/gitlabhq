@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180308052825) do
+ActiveRecord::Schema.define(version: 20180320182229) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -730,6 +730,7 @@ ActiveRecord::Schema.define(version: 20180308052825) do
   end
 
   add_index "events", ["action"], name: "index_events_on_action", using: :btree
+  add_index "events", ["author_id", "project_id"], name: "index_events_on_author_id_and_project_id", using: :btree
   add_index "events", ["author_id"], name: "index_events_on_author_id", using: :btree
   add_index "events", ["project_id", "id"], name: "index_events_on_project_id_and_id", using: :btree
   add_index "events", ["target_type", "target_id"], name: "index_events_on_target_type_and_target_id", using: :btree
@@ -868,6 +869,14 @@ ActiveRecord::Schema.define(version: 20180308052825) do
   end
 
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
+
+  create_table "internal_ids", id: :bigserial, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "usage", null: false
+    t.integer "last_value", null: false
+  end
+
+  add_index "internal_ids", ["usage", "project_id"], name: "index_internal_ids_on_usage_and_project_id", unique: true, using: :btree
 
   create_table "issue_assignees", id: false, force: :cascade do |t|
     t.integer "user_id", null: false
@@ -1782,6 +1791,8 @@ ActiveRecord::Schema.define(version: 20180308052825) do
   add_index "todos", ["note_id"], name: "index_todos_on_note_id", using: :btree
   add_index "todos", ["project_id"], name: "index_todos_on_project_id", using: :btree
   add_index "todos", ["target_type", "target_id"], name: "index_todos_on_target_type_and_target_id", using: :btree
+  add_index "todos", ["user_id", "id"], name: "index_todos_on_user_id_and_id_done", where: "((state)::text = 'done'::text)", using: :btree
+  add_index "todos", ["user_id", "id"], name: "index_todos_on_user_id_and_id_pending", where: "((state)::text = 'pending'::text)", using: :btree
   add_index "todos", ["user_id"], name: "index_todos_on_user_id", using: :btree
 
   create_table "trending_projects", force: :cascade do |t|
@@ -1858,6 +1869,7 @@ ActiveRecord::Schema.define(version: 20180308052825) do
   end
 
   add_index "user_interacted_projects", ["project_id", "user_id"], name: "index_user_interacted_projects_on_project_id_and_user_id", unique: true, using: :btree
+  add_index "user_interacted_projects", ["user_id"], name: "index_user_interacted_projects_on_user_id", using: :btree
 
   create_table "user_synced_attributes_metadata", force: :cascade do |t|
     t.boolean "name_synced", default: false
@@ -2061,6 +2073,7 @@ ActiveRecord::Schema.define(version: 20180308052825) do
   add_foreign_key "gpg_signatures", "gpg_keys", on_delete: :nullify
   add_foreign_key "gpg_signatures", "projects", on_delete: :cascade
   add_foreign_key "group_custom_attributes", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "internal_ids", "projects", on_delete: :cascade
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade

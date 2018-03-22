@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Cookies from 'js-cookie';
 import Mousetrap from 'mousetrap';
 import axios from './lib/utils/axios_utils';

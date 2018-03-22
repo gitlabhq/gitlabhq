@@ -97,4 +97,15 @@ feature 'Milestone' do
       end
     end
   end
+
+  feature 'Deleting a milestone' do
+    scenario "The delete milestone button does not show for unauthorized users" do
+      create(:milestone, project: project, title: 8.7)
+      sign_out(user)
+
+      visit group_milestones_path(group)
+
+      expect(page).to have_selector('.js-delete-milestone-button', count: 0)
+    end
+  end
 end

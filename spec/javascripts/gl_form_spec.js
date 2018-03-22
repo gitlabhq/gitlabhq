@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import autosize from 'autosize';
 import GLForm from '~/gl_form';
 import '~/lib/utils/text_utility';

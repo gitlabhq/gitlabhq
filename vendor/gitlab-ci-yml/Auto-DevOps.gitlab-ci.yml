@@ -137,7 +137,7 @@ sast:container:
 dast:
   stage: dast
   allow_failure: true
-  image: owasp/zap2docker-stable
+  image: registry.gitlab.com/gitlab-org/security-products/zaproxy
   variables:
     POSTGRES_DB: "false"
   script:
@@ -285,8 +285,8 @@ production:
   export CI_APPLICATION_TAG=$CI_COMMIT_SHA
   export CI_CONTAINER_NAME=ci_job_build_${CI_JOB_ID}
   export TILLER_NAMESPACE=$KUBE_NAMESPACE
-  # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable" for Static Code Analysis
-  export SCA_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+  # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable" for Security Products
+  export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
 
   function sast_container() {
     if [[ -n "$CI_REGISTRY_USER" ]]; then
@@ -307,11 +307,10 @@ production:
   }
 
   function codeclimate() {
-    docker run --env CODECLIMATE_CODE="$PWD" \
+    docker run --env SOURCE_CODE="$PWD" \
                --volume "$PWD":/code \
                --volume /var/run/docker.sock:/var/run/docker.sock \
-               --volume /tmp/cc:/tmp/cc \
-               "registry.gitlab.com/gitlab-org/security-products/codequality/codeclimate:${SCA_VERSION}" analyze -f json > codeclimate.json
+               "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
   }
 
   function sast() {
@@ -328,7 +327,7 @@ production:
                    --env SAST_DISABLE_REMOTE_CHECKS="${SAST_DISABLE_REMOTE_CHECKS:-false}" \
                    --volume "$PWD:/code" \
                    --volume /var/run/docker.sock:/var/run/docker.sock \
-                   "registry.gitlab.com/gitlab-org/security-products/sast:$SCA_VERSION" /app/bin/run /code
+                   "registry.gitlab.com/gitlab-org/security-products/sast:$SP_VERSION" /app/bin/run /code
         ;;
       *)
         echo "GitLab EE is required"
