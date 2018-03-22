@@ -28,6 +28,10 @@ module Projects
       success
     end
 
+    def chat_responder
+      Gitlab::Chat::Responder::Slack
+    end
+
     private
 
     def make_sure_chat_name_created(slack_data)
