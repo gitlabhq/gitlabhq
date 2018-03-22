@@ -1,0 +1,5 @@
+---
+title: Fixed personal snippets uploads when background upload is enabled.
+merge_request: 5049
+author:
+type: fixed
