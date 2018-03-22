@@ -43,10 +43,7 @@ export default {
         'file-open': this.isBlob && this.file.opened,
         'file-active': this.isBlob && this.file.active,
         folder: this.isTree,
-<<<<<<< HEAD
-=======
         'is-open': this.file.opened,
->>>>>>> upstream/master
       };
     },
   },
