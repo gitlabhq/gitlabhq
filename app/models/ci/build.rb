@@ -162,7 +162,7 @@ module Ci
     end
 
     def ensure_metadata
-      metadata || build_metadata
+      metadata || build_metadata(project: project)
     end
 
     def detailed_status(current_user)

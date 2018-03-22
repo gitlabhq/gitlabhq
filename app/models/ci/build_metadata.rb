@@ -11,9 +11,9 @@ module Ci
     belongs_to :build, class_name: 'Ci::Build'
     belongs_to :project
 
-    chronic_duration_attr_reader :timeout_human_readable, :timeout
+    validates :project, presence: true
 
-    after_initialize :set_project_id
+    chronic_duration_attr_reader :timeout_human_readable, :timeout
 
     enum timeout_source: {
         unknown_timeout_source: 1,
@@ -24,19 +24,11 @@ module Ci
     def save_timeout_state!
       return unless build.runner.present?
 
-      project_timeout = build.project&.build_timeout
+      project_timeout = project&.build_timeout
       timeout = [project_timeout, build.runner.maximum_timeout].compact.min
       timeout_source = timeout < project_timeout ? :runner_timeout_source : :project_timeout_source
 
-      update_attributes(timeout: timeout, timeout_source: timeout_source)
-    end
-
-    private
-
-    def set_project_id
-      return unless self.project_id.nil?
-
-      self.project_id = build&.project&.id
+      update!(timeout: timeout, timeout_source: timeout_source)
     end
   end
 end

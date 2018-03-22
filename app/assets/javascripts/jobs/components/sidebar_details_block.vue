@@ -44,10 +44,16 @@
       runnerId() {
         return `#${this.job.runner.id}`;
       },
+      hasTimeout() {
+        return this.job.metadata != null && this.job.metadata.timeout_human_readable !== '';
+      },
       timeout() {
-        let t = `${this.job.metadata.timeout_human_readable}`;
+        if (this.job.metadata == null) {
+          return '';
+        }
 
-        if (this.job.metadata.timeout_source != null) {
+        let t = this.job.metadata.timeout_human_readable;
+        if (this.job.metadata.timeout_source !== '') {
           t += ` (from ${this.job.metadata.timeout_source})`;
         }
 
@@ -130,7 +136,7 @@
         />
         <detail-row
           class="js-job-timeout"
-          v-if="job.metadata.timeout_human_readable"
+          v-if="hasTimeout"
           title="Timeout"
           :help-url="runnerHelpUrl"
           :value="timeout"

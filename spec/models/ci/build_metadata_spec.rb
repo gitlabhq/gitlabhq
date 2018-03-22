@@ -13,15 +13,7 @@ describe Ci::BuildMetadata do
   end
 
   let(:build) { create(:ci_build, pipeline: pipeline) }
-  let(:build_metadata) { described_class.create(build: build) }
-
-  context 'when creating' do
-    subject { build_metadata.project_id }
-
-    it 'saves project_id' do
-      is_expected.to eq(project.id)
-    end
-  end
+  let(:build_metadata) { create(:ci_build_metadata, build: build) }
 
   describe '#save_timeout_state!' do
     subject { build_metadata }
