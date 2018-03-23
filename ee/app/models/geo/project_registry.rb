@@ -60,17 +60,6 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     project.wiki_enabled? && (never_synced_wiki? || wiki_sync_needed?(scheduled_time))
   end
 
-  def repository_path(type)
-    repo_path = project.disk_path
-
-    case type
-    when :repository
-      repo_path
-    when :wiki
-      "#{repo_path}.wiki"
-    end
-  end
-
   private
 
   def never_synced_repository?

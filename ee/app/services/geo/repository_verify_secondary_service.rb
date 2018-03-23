@@ -73,7 +73,12 @@ module Geo
     end
 
     def repository_path
-      registry.repository_path(type)
+      case type
+      when :repository
+        registry.project.disk_path
+      when :wiki
+        registry.project.wiki.disk_path
+      end
     end
 
     def path_to_repo
