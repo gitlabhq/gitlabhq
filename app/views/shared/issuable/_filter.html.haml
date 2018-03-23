@@ -24,10 +24,6 @@
         .filter-item.inline.labels-filter
           = render "shared/issuable/label_dropdown", selected: selected_labels, use_id: false, selected_toggle: params[:label_name], data_options: { field_name: "label_name[]" }
 
-        - if issuable_filter_present?
-          .filter-item.inline.reset-filters
-            %a{ href: page_filter_path(without: issuable_filter_params) } Reset filters
-
         .pull-right
           = render 'shared/sort_dropdown'
 
