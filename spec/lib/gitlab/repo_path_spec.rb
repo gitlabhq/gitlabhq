@@ -48,8 +48,8 @@ describe ::Gitlab::RepoPath do
   describe '.strip_storage_path' do
     before do
       allow(Gitlab.config.repositories).to receive(:storages).and_return({
-        'storage1' => { 'path' => '/foo' },
-        'storage2' => { 'path' => '/bar' }
+        'storage1' => Gitlab::GitalyClient::StorageSettings.new('path' => '/foo'),
+        'storage2' => Gitlab::GitalyClient::StorageSettings.new('path' => '/bar')
       })
     end
 

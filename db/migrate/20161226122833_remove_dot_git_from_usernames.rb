@@ -71,7 +71,7 @@ class RemoveDotGitFromUsernames < ActiveRecord::Migration
     route_exists = route_exists?(path)
 
     Gitlab.config.repositories.storages.each_value do |storage|
-      if route_exists || path_exists?(path, storage['path'])
+      if route_exists || path_exists?(path, storage.legacy_disk_path)
         counter += 1
         path = "#{base}#{counter}"
 
@@ -84,7 +84,7 @@ class RemoveDotGitFromUsernames < ActiveRecord::Migration
 
   def move_namespace(namespace_id, path_was, path)
     repository_storage_paths = select_all("SELECT distinct(repository_storage) FROM projects WHERE namespace_id = #{namespace_id}").map do |row|
-      Gitlab.config.repositories.storages[row['repository_storage']]['path']
+      Gitlab.config.repositories.storages[row['repository_storage']].legacy_disk_path
     end.compact
 
     # Move the namespace directory in all storages paths used by member projects

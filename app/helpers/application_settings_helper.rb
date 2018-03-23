@@ -96,7 +96,7 @@ module ApplicationSettingsHelper
 
   def repository_storages_options_for_select(selected)
     options = Gitlab.config.repositories.storages.map do |name, storage|
-      ["#{name} - #{storage['path']}", name]
+      ["#{name} - #{storage.legacy_disk_path}", name]
     end
 
     options_for_select(options, selected)
