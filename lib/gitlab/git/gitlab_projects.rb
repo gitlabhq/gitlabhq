@@ -222,7 +222,7 @@ module Gitlab
       end
 
       def shard_name_from_shard_path(shard_path)
-        Gitlab.config.repositories.storages.find { |_, info| info['path'] == shard_path }&.first ||
+        Gitlab.config.repositories.storages.find { |_, info| info.legacy_disk_path == shard_path }&.first ||
           raise(ShardNameNotFoundError, "no shard found for path '#{shard_path}'")
       end
 

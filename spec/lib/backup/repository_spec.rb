@@ -33,7 +33,7 @@ describe Backup::Repository do
     let(:timestamp) { Time.utc(2017, 3, 22) }
     let(:temp_dirs) do
       Gitlab.config.repositories.storages.map do |name, storage|
-        File.join(storage['path'], '..', 'repositories.old.' + timestamp.to_i.to_s)
+        File.join(storage.legacy_disk_path, '..', 'repositories.old.' + timestamp.to_i.to_s)
       end
     end
 

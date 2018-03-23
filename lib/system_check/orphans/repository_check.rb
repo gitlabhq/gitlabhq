@@ -6,10 +6,12 @@ module SystemCheck
 
       def multi_check
         Gitlab.config.repositories.storages.each do |storage_name, repository_storage|
-          $stdout.puts
-          $stdout.puts "* Storage: #{storage_name} (#{repository_storage['path']})".color(:yellow)
+          storage_path = repository_storage.legacy_disk_path
 
-          repositories = disk_repositories(repository_storage['path'])
+          $stdout.puts
+          $stdout.puts "* Storage: #{storage_name} (#{storage_path})".color(:yellow)
+
+          repositories = disk_repositories(storage_path)
           orphans = (repositories - fetch_repositories(storage_name))
 
           print_orphans(orphans, storage_name)

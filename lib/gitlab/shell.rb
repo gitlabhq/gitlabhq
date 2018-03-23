@@ -82,7 +82,7 @@ module Gitlab
           repository.gitaly_repository_client.create_repository
           true
         else
-          repo_path = File.join(Gitlab.config.repositories.storages[storage]['path'], relative_path)
+          repo_path = File.join(Gitlab.config.repositories.storages[storage].legacy_disk_path, relative_path)
           Gitlab::Git::Repository.create(repo_path, bare: true, symlink_hooks_to: gitlab_shell_hooks_path)
         end
       end
@@ -131,7 +131,7 @@ module Gitlab
         if is_enabled
           repository.gitaly_repository_client.fetch_remote(remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, timeout: git_timeout, prune: prune)
         else
-          storage_path = Gitlab.config.repositories.storages[repository.storage]["path"]
+          storage_path = Gitlab.config.repositories.storages[repository.storage].legacy_disk_path
           local_fetch_remote(storage_path, repository.relative_path, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, prune: prune)
         end
       end
@@ -478,7 +478,7 @@ module Gitlab
 
     def gitaly_namespace_client(storage_path)
       storage, _value = Gitlab.config.repositories.storages.find do |storage, value|
-        value['path'] == storage_path
+        value.legacy_disk_path == storage_path
       end
 
       Gitlab::GitalyClient::NamespaceService.new(storage)
