@@ -4,7 +4,7 @@ self.addEventListener('message', e => {
   const data = e.data;
 
   self.postMessage({
-    key: data.key,
+    path: data.path,
     changes: computeDiff(data.originalContent, data.newContent),
   });
 });

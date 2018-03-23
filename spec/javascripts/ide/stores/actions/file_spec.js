@@ -29,7 +29,7 @@ describe('Multi-file store file actions', () => {
 
     it('closes open files', done => {
       store
-        .dispatch('closeFile', localFile.path)
+        .dispatch('closeFile', localFile)
         .then(() => {
           expect(localFile.opened).toBeFalsy();
           expect(localFile.active).toBeFalsy();
@@ -44,7 +44,7 @@ describe('Multi-file store file actions', () => {
       store.state.changedFiles.push(localFile);
 
       store
-        .dispatch('closeFile', localFile.path)
+        .dispatch('closeFile', localFile)
         .then(Vue.nextTick)
         .then(() => {
           expect(store.state.openFiles.length).toBe(0);
@@ -65,7 +65,7 @@ describe('Multi-file store file actions', () => {
       store.state.entries[f.path] = f;
 
       store
-        .dispatch('closeFile', localFile.path)
+        .dispatch('closeFile', localFile)
         .then(Vue.nextTick)
         .then(() => {
           expect(router.push).toHaveBeenCalledWith(`/project${f.url}`);

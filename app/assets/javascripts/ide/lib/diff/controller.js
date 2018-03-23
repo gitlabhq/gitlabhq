@@ -44,7 +44,7 @@ export default class DirtyDiffController {
 
   computeDiff(model) {
     this.dirtyDiffWorker.postMessage({
-      key: model.path,
+      path: model.path,
       originalContent: model.getOriginalModel().getValue(),
       newContent: model.getModel().getValue(),
     });
@@ -56,7 +56,7 @@ export default class DirtyDiffController {
 
   decorate({ data }) {
     const decorations = data.changes.map(change => getDecorator(change));
-    const model = this.modelManager.getModel(data.key);
+    const model = this.modelManager.getModel(data.path);
     this.decorationsController.addDecorations(model, 'dirtyDiff', decorations);
   }
 

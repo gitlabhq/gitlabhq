@@ -28,14 +28,14 @@ describe('Multi-file editor library model', () => {
 
   it('adds eventHub listener', () => {
     expect(eventHub.$on).toHaveBeenCalledWith(
-      `editor.update.model.dispose.${model.file.path}`,
+      `editor.update.model.dispose.${model.file.key}`,
       jasmine.anything(),
     );
   });
 
   describe('path', () => {
     it('returns file path', () => {
-      expect(model.path).toBe('path');
+      expect(model.path).toBe(model.file.key);
     });
   });
 
@@ -64,7 +64,7 @@ describe('Multi-file editor library model', () => {
       model.onChange(() => {});
 
       expect(model.events.size).toBe(1);
-      expect(model.events.keys().next().value).toBe('path');
+      expect(model.events.keys().next().value).toBe(model.file.key);
     });
 
     it('calls callback on change', done => {
@@ -105,7 +105,7 @@ describe('Multi-file editor library model', () => {
       model.dispose();
 
       expect(eventHub.$off).toHaveBeenCalledWith(
-        `editor.update.model.dispose.${model.file.path}`,
+        `editor.update.model.dispose.${model.file.key}`,
         jasmine.anything(),
       );
     });

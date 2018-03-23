@@ -64,7 +64,7 @@ export default class Model {
 
   onChange(cb) {
     this.events.set(
-      this.key,
+      this.path,
       this.disposable.add(this.model.onDidChangeContent(e => cb(this, e))),
     );
   }

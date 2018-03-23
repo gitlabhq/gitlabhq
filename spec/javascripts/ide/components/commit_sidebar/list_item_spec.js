@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import listItem from '~/ide/components/commit_sidebar/list_item.vue';
 import router from '~/ide/ide_router';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import store from '~/ide/stores';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { file } from '../../helpers';
 
 describe('Multi-file editor commit sidebar list item', () => {
@@ -13,9 +14,9 @@ describe('Multi-file editor commit sidebar list item', () => {
 
     f = file('test-file');
 
-    vm = mountComponent(Component, {
+    vm = createComponentWithStore(Component, store, {
       file: f,
-    });
+    }).$mount();
   });
 
   afterEach(() => {
@@ -36,20 +37,24 @@ describe('Multi-file editor commit sidebar list item', () => {
     expect(vm.discardFileChanges).toHaveBeenCalled();
   });
 
-  it('opens a closed file in the editor when clicking the file path', () => {
+  it('opens a closed file in the editor when clicking the file path', done => {
     spyOn(vm, 'openFileInEditor').and.callThrough();
-    spyOn(vm, 'updateViewer');
+    spyOn(vm, 'updateViewer').and.callThrough();
     spyOn(router, 'push');
 
     vm.$el.querySelector('.multi-file-commit-list-path').click();
 
-    expect(vm.openFileInEditor).toHaveBeenCalled();
-    expect(router.push).toHaveBeenCalled();
+    setTimeout(() => {
+      expect(vm.openFileInEditor).toHaveBeenCalled();
+      expect(router.push).toHaveBeenCalled();
+
+      done();
+    });
   });
 
   it('calls updateViewer with diff when clicking file', () => {
     spyOn(vm, 'openFileInEditor').and.callThrough();
-    spyOn(vm, 'updateViewer');
+    spyOn(vm, 'updateViewer').and.callThrough();
     spyOn(router, 'push');
 
     vm.$el.querySelector('.multi-file-commit-list-path').click();

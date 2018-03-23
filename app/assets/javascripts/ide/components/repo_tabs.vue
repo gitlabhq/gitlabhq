@@ -44,7 +44,7 @@ export default {
       this.updateViewer(viewer);
 
       if (this.activeFile.pending) {
-        this.removePendingTab(this.activeFile).then(() => {
+        return this.removePendingTab(this.activeFile).then(() => {
           router.push(`/project${this.activeFile.url}`);
         });
       }
