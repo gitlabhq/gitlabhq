@@ -1,31 +1,36 @@
 <script>
-  import Icon from '~/vue_shared/components/icon.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 
-  export default {
-    components: {
-      Icon,
+export default {
+  components: {
+    Icon,
+  },
+  props: {
+    hasChanges: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
-    props: {
-      hasChanges: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      viewer: {
-        type: String,
-        required: true,
-      },
-      showShadow: {
-        type: Boolean,
-        required: true,
-      },
+    hasMergeRequest: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
-    methods: {
-      changeMode(mode) {
-        this.$emit('click', mode);
-      },
+    viewer: {
+      type: String,
+      required: true,
     },
-  };
+    showShadow: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  methods: {
+    changeMode(mode) {
+      this.$emit('click', mode);
+    },
+  },
+};
 </script>
 
 <template>
@@ -43,7 +48,10 @@
       }"
       data-toggle="dropdown"
     >
-      <template v-if="viewer === 'editor'">
+      <template v-if="viewer === 'mrdiff'">
+        {{ __('Reviewing (merge request)') }}
+      </template>
+      <template v-else-if="viewer === 'editor'">
         {{ __('Editing') }}
       </template>
       <template v-else>
@@ -57,6 +65,21 @@
     </button>
     <div class="dropdown-menu dropdown-menu-selectable dropdown-open-left">
       <ul>
+        <li v-if="hasMergeRequest">
+          <a
+            href="#"
+            @click.prevent="changeMode('mrdiff')"
+            :class="{
+              'is-active': viewer === 'mrdiff',
+            }"
+          >
+            <strong class="dropdown-menu-inner-title">{{ __('Reviewing (merge request)') }}</strong>
+            <span class="dropdown-menu-inner-content">
+              {{ __('Compare changes of the merge request') }}
+            </span>
+          </a>
+        </li>
+        <li v-if="hasMergeRequest" role="separator" class="divider"></li>
         <li>
           <a
             href="#"

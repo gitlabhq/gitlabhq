@@ -70,7 +70,9 @@ export default {
 
       this.getRawFileData(this.file)
         .then(() => {
-          const viewerPromise = this.delayViewerUpdated ? this.updateViewer('editor') : Promise.resolve();
+          const viewerPromise = this.delayViewerUpdated
+            ? this.updateViewer('editor')
+            : Promise.resolve();
 
           return viewerPromise;
         })
@@ -78,8 +80,15 @@ export default {
           this.updateDelayViewerUpdated(false);
           this.createEditorInstance();
         })
-        .catch((err) => {
-          flash('Error setting up monaco. Please try again.', 'alert', document, null, false, true);
+        .catch(err => {
+          flash(
+            'Error setting up monaco. Please try again.',
+            'alert',
+            document,
+            null,
+            false,
+            true,
+          );
           throw err;
         });
     },
@@ -101,9 +110,13 @@ export default {
 
       this.model = this.editor.createModel(this.file);
 
-      this.editor.attachModel(this.model);
+      if (this.viewer === 'mrdiff') {
+        this.editor.attachMergeRequestModel(this.model);
+      } else {
+        this.editor.attachModel(this.model);
+      }
 
-      this.model.onChange((model) => {
+      this.model.onChange(model => {
         const { file } = model;
 
         if (file.active) {

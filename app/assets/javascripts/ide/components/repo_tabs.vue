@@ -1,42 +1,47 @@
 <script>
-  import { mapActions } from 'vuex';
-  import RepoTab from './repo_tab.vue';
-  import EditorMode from './editor_mode_dropdown.vue';
+import { mapActions } from 'vuex';
+import RepoTab from './repo_tab.vue';
+import EditorMode from './editor_mode_dropdown.vue';
 
-  export default {
-    components: {
-      RepoTab,
-      EditorMode,
+export default {
+  components: {
+    RepoTab,
+    EditorMode,
+  },
+  props: {
+    files: {
+      type: Array,
+      required: true,
     },
-    props: {
-      files: {
-        type: Array,
-        required: true,
-      },
-      viewer: {
-        type: String,
-        required: true,
-      },
-      hasChanges: {
-        type: Boolean,
-        required: true,
-      },
+    viewer: {
+      type: String,
+      required: true,
     },
-    data() {
-      return {
-        showShadow: false,
-      };
+    hasChanges: {
+      type: Boolean,
+      required: true,
     },
-    updated() {
-      if (!this.$refs.tabsScroller) return;
+    hasMergeRequest: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+  },
+  data() {
+    return {
+      showShadow: false,
+    };
+  },
+  updated() {
+    if (!this.$refs.tabsScroller) return;
 
-      this.showShadow =
-        this.$refs.tabsScroller.scrollWidth > this.$refs.tabsScroller.offsetWidth;
-    },
-    methods: {
-      ...mapActions(['updateViewer']),
-    },
-  };
+    this.showShadow =
+      this.$refs.tabsScroller.scrollWidth > this.$refs.tabsScroller.offsetWidth;
+  },
+  methods: {
+    ...mapActions(['updateViewer']),
+  },
+};
 </script>
 
 <template>
@@ -55,6 +60,7 @@
       :viewer="viewer"
       :show-shadow="showShadow"
       :has-changes="hasChanges"
+      :has-merge-request="hasMergeRequest"
       @click="updateViewer"
     />
   </div>

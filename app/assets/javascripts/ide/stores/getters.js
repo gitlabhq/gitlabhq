@@ -28,3 +28,5 @@ export const currentIcon = state =>
   state.rightPanelCollapsed ? 'angle-double-left' : 'angle-double-right';
 
 export const hasChanges = state => !!state.changedFiles.length;
+
+export const hasMergeRequest = state => !!state.currentMergeRequestId;

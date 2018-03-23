@@ -1,10 +1,12 @@
 import { normalizeHeaders } from '~/lib/utils/common_utils';
+import { parsePatch, applyPatches } from 'diff';
+import { revertPatch } from '../../lib/diff/revert_patch';
 import flash from '~/flash';
 import eventHub from '../../eventhub';
 import service from '../../services';
 import * as types from '../mutation_types';
 import router from '../../ide_router';
-import { setPageTitle } from '../utils';
+import { setPageTitle, createTemp, findIndexOfFile } from '../utils';
 
 export const closeFile = ({ commit, state, getters, dispatch }, path) => {
   const indexOfClosedFile = state.openFiles.findIndex(f => f.path === path);
@@ -46,53 +48,140 @@ export const setFileActive = ({ commit, state, getters, dispatch }, path) => {
   commit(types.SET_CURRENT_BRANCH, file.branchId);
 };
 
-export const getFileData = ({ state, commit, dispatch }, file) => {
-  commit(types.TOGGLE_LOADING, { entry: file });
+export const getFileData = ({ state, commit, dispatch }, path) => {
+  const file = state.entries[path];
+  return new Promise((resolve, reject) => {
+    commit(types.TOGGLE_LOADING, { entry: file });
+    service
+      .getFileData(file.url)
+      .then(res => {
+        const pageTitle = decodeURI(
+          normalizeHeaders(res.headers)['PAGE-TITLE'],
+        );
 
-  return service
-    .getFileData(file.url)
-    .then(res => {
-      const pageTitle = decodeURI(normalizeHeaders(res.headers)['PAGE-TITLE']);
+        setPageTitle(pageTitle);
 
-      setPageTitle(pageTitle);
-
-      return res.json();
-    })
-    .then(data => {
-      commit(types.SET_FILE_DATA, { data, file });
-      commit(types.TOGGLE_FILE_OPEN, file.path);
-      dispatch('setFileActive', file.path);
-      commit(types.TOGGLE_LOADING, { entry: file });
-    })
-    .catch(() => {
-      commit(types.TOGGLE_LOADING, { entry: file });
-      flash(
-        'Error loading file data. Please try again.',
-        'alert',
-        document,
-        null,
-        false,
-        true,
-      );
-    });
+        return res.json();
+      })
+      .then(data => {
+        commit(types.SET_FILE_DATA, { data, file });
+        commit(types.TOGGLE_FILE_OPEN, path);
+        dispatch('setFileActive', file.path);
+        commit(types.TOGGLE_LOADING, { entry: file });
+      })
+      .catch(err => {
+        console.log('Error : ', err);
+        commit(types.TOGGLE_LOADING, { entry: file });
+        flash(
+          'Error loading file data. Please try again.',
+          'alert',
+          document,
+          null,
+          false,
+          true,
+        );
+      });
+  });
 };
 
-export const getRawFileData = ({ commit, dispatch }, file) =>
-  service
-    .getRawFileData(file)
-    .then(raw => {
-      commit(types.SET_FILE_RAW_DATA, { file, raw });
-    })
-    .catch(() =>
-      flash(
-        'Error loading file content. Please try again.',
-        'alert',
-        document,
-        null,
-        false,
-        true,
-      ),
-    );
+export const preloadFileTab = ({ state, commit, dispatch }, file) => {
+  return new Promise((resolve, reject) => {
+    commit(types.TOGGLE_LOADING, { entry: file });
+    service
+      .getFileData(file.url)
+      .then(data => {
+        commit(types.SET_FILE_DATA, { data, file });
+        commit(types.TOGGLE_FILE_OPEN, file);
+        commit(types.TOGGLE_LOADING, { entry: file });
+      })
+      .catch(() => {
+        commit(types.TOGGLE_LOADING, { entry: file });
+        flash(
+          'Error loading file data. Please try again.',
+          'alert',
+          document,
+          null,
+          false,
+          true,
+        );
+      });
+  });
+};
+
+export const setFileTargetBranch = (
+  { state, commit },
+  { file, targetBranch },
+) => {
+  commit(types.SET_FILE_TARGET_BRANCH, {
+    file,
+    targetBranch,
+    targetRawPath: file.rawPath.replace(file.branchId, targetBranch),
+  });
+};
+
+export const processFileMrDiff = ({ state, commit }, file) => {
+  const patchObj = parsePatch(file.mrDiff);
+  const transformedContent = applyPatch(file.raw, file.mrDiff);
+  debugger;
+};
+
+export const setFileMrDiff = ({ state, commit }, { file, mrDiff }) => {
+  commit(types.SET_FILE_MR_DIFF, { file, mrDiff });
+};
+
+export const getRawFileData = ({ commit, dispatch }, file) => {
+  return new Promise((resolve, reject) => {
+    service
+      .getRawFileData(file)
+      .then(raw => {
+        commit(types.SET_FILE_RAW_DATA, { file, raw });
+        if (file.mrDiff) {
+          const patchObj = parsePatch(file.mrDiff);
+          patchObj[0].hunks.forEach(hunk => {
+            console.log('H ', hunk);
+            /*hunk.lines.forEach((line) => {
+                  if (line.substr(0, 1) === '+') {
+                    line = '-' + line.substr(1);
+                  } else if (line.substr(0, 1) === '-') {
+                    line = '+' + line.substr(1);
+                  }
+                })*/
+          });
+
+          console.log('PATCH OBJ : ' + JSON.stringify(patchObj));
+
+          const transformedContent = revertPatch(raw, patchObj, {
+            compareLine: (lineNumber, line, operation, patchContent) => {
+              const tempLine = line;
+              //line = patchContent;
+              //patchContent = tempLine;
+              if (operation === '-') {
+                operation = '+';
+              } else if (operation === '+') {
+                operation = '-';
+              }
+              console.log(
+                'COMPARE : ' + line + ' - ' + operation + ' - ' + patchContent,
+              );
+              return true;
+            },
+          });
+          console.log('TRANSFORMED : ', transformedContent);
+          commit(types.SET_FILE_TARGET_RAW_DATA, {
+            file,
+            raw: transformedContent,
+          });
+          resolve(raw);
+        } else {
+          resolve(raw);
+        }
+      })
+      .catch(() => {
+        flash('Error loading file content. Please try again.');
+        reject();
+      });
+  });
+};
 
 export const changeFileContent = ({ state, commit }, { path, content }) => {
   const file = state.entries[path];

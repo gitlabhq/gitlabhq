@@ -20,11 +20,18 @@ export default {
       return Promise.resolve(file.raw);
     }
 
-    return Vue.http.get(file.rawPath, { params: { format: 'json' } })
+    return Vue.http
+      .get(file.rawPath, { params: { format: 'json' } })
       .then(res => res.text());
   },
   getProjectData(namespace, project) {
     return Api.project(`${namespace}/${project}`);
+  },
+  getProjectMergeRequestData(projectId, mergeRequestId) {
+    return Api.mergeRequest(projectId, mergeRequestId);
+  },
+  getProjectMergeRequestChanges(projectId, mergeRequestId) {
+    return Api.mergeRequestChanges(projectId, mergeRequestId);
   },
   getBranchData(projectId, currentBranchId) {
     return Api.branchSingle(projectId, currentBranchId);

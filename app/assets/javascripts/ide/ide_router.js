@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import flash from '~/flash';
 import store from './stores';
+import { getTreeEntry } from './stores/utils';
 
 Vue.use(VueRouter);
 
@@ -44,7 +45,7 @@ const router = new VueRouter({
           component: EmptyRouterComponent,
         },
         {
-          path: 'mr/:mrid',
+          path: 'merge_requests/:mrid',
           component: EmptyRouterComponent,
         },
       ],
@@ -94,6 +95,84 @@ router.beforeEach((to, from, next) => {
                 false,
                 true,
               );
+              throw e;
+            });
+        } else if (to.params.mrid) {
+          store.dispatch('updateViewer', 'mrdiff');
+
+          store
+            .dispatch('getMergeRequestData', {
+              projectId: fullProjectId,
+              mergeRequestId: to.params.mrid,
+            })
+            .then(mr => {
+              store.dispatch('getBranchData', {
+                projectId: fullProjectId,
+                branchId: mr.source_branch,
+              });
+
+              store
+                .dispatch('getFiles', {
+                  projectId: fullProjectId,
+                  branchId: mr.source_branch,
+                })
+                .then(() => {
+                  store
+                    .dispatch('getMergeRequestChanges', {
+                      projectId: fullProjectId,
+                      mergeRequestId: to.params.mrid,
+                    })
+                    .then(mrChanges => {
+                      if (mrChanges.changes.length > 0) {
+                      }
+                      mrChanges.changes.forEach((change, ind) => {
+                        console.log(`CHANGE : ${ind} : `, change);
+
+                        const changeTreeEntry =
+                          store.state.entries[change.new_path];
+
+                        console.log(
+                          'Tree Entry for the change ',
+                          changeTreeEntry,
+                          change.diff,
+                        );
+
+                        if (changeTreeEntry) {
+                          store.dispatch('setFileMrDiff', {
+                            file: changeTreeEntry,
+                            mrDiff: change.diff,
+                          });
+                          store.dispatch('setFileTargetBranch', {
+                            file: changeTreeEntry,
+                            targetBranch: mrChanges.target_branch,
+                          });
+
+                          if (ind === 0) {
+                            store.dispatch('getFileData', change.new_path);
+                          } else {
+                            // TODO : Implement Tab reloading
+                            store.dispatch('preloadFileTab', changeTreeEntry);
+                          }
+                        } else {
+                          console.warn(`No Tree Entry for ${change.new_path}`);
+                        }
+                      });
+                    })
+                    .catch(e => {
+                      flash(
+                        'Error while loading the merge request changes. Please try again.',
+                      );
+                      throw e;
+                    });
+                })
+                .catch(e => {
+                  flash(
+                    'Error while loading the branch files. Please try again.',
+                  );
+                  throw e;
+                });
+            })
+            .catch(e => {
               throw e;
             });
         }

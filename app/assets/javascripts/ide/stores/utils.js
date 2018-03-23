@@ -38,7 +38,7 @@ export const dataStructure = () => ({
   eol: '',
 });
 
-export const decorateData = (entity) => {
+export const decorateData = entity => {
   const {
     id,
     projectId,
@@ -57,7 +57,6 @@ export const decorateData = (entity) => {
     base64 = false,
 
     file_lock,
-
   } = entity;
 
   return {
@@ -80,17 +79,45 @@ export const decorateData = (entity) => {
     base64,
 
     file_lock,
-
   };
 };
 
-export const findEntry = (tree, type, name, prop = 'name') => tree.find(
-  f => f.type === type && f[prop] === name,
-);
+/*
+  Takes the multi-dimensional tree and returns a flattened array.
+  This allows for the table to recursively render the table rows but keeps the data
+  structure nested to make it easier to add new files/directories.
+*/
+export const treeList = (state, treeId) => {
+  const baseTree = state.trees[treeId];
+  if (baseTree) {
+    const mapTree = arr =>
+      !arr.tree || !arr.tree.length
+        ? []
+        : _.map(arr.tree, a => [a, mapTree(a)]);
 
-export const findIndexOfFile = (state, file) => state.findIndex(f => f.path === file.path);
+    return _.chain(baseTree.tree)
+      .map(arr => [arr, mapTree(arr)])
+      .flatten()
+      .value();
+  }
+  return [];
+};
 
-export const setPageTitle = (title) => {
+export const getTree = state => (namespace, projectId, branch) =>
+  state.trees[`${namespace}/${projectId}/${branch}`];
+
+export const getTreeEntry = (store, treeId, path) => {
+  const fileList = treeList(store.state, treeId);
+  return fileList ? fileList.find(file => file.path === path) : null;
+};
+
+export const findEntry = (tree, type, name, prop = 'name') =>
+  tree.find(f => f.type === type && f[prop] === name);
+
+export const findIndexOfFile = (state, file) =>
+  state.findIndex(f => f.path === file.path);
+
+export const setPageTitle = title => {
   document.title = title;
 };
 
@@ -120,6 +147,11 @@ const sortTreesByTypeAndName = (a, b) => {
   return 0;
 };
 
-export const sortTree = sortedTree => sortedTree.map(entity => Object.assign(entity, {
-  tree: entity.tree.length ? sortTree(entity.tree) : [],
-})).sort(sortTreesByTypeAndName);
+export const sortTree = sortedTree =>
+  sortedTree
+    .map(entity =>
+      Object.assign(entity, {
+        tree: entity.tree.length ? sortTree(entity.tree) : [],
+      }),
+    )
+    .sort(sortTreesByTypeAndName);

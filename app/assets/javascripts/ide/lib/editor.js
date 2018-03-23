@@ -109,6 +109,13 @@ export default class Editor {
     if (this.dirtyDiffController) this.dirtyDiffController.reDecorate(model);
   }
 
+  attachMergeRequestModel(model) {
+    this.instance.setModel({
+      original: model.getTargetModel(),
+      modified: model.getModel(),
+    });
+  }
+
   setupMonacoTheme() {
     this.monaco.editor.defineTheme(
       gitlabTheme.themeName,

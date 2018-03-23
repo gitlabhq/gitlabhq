@@ -1,5 +1,6 @@
 import * as types from './mutation_types';
 import projectMutations from './mutations/project';
+import mergeRequestMutation from './mutations/merge_request';
 import fileMutations from './mutations/file';
 import treeMutations from './mutations/tree';
 import branchMutations from './mutations/branch';
@@ -100,6 +101,7 @@ export default {
     });
   },
   ...projectMutations,
+  ...mergeRequestMutation,
   ...fileMutations,
   ...treeMutations,
   ...branchMutations,
