@@ -2,13 +2,15 @@ require 'spec_helper'
 
 describe Ci::ProcessPipelineService, '#execute' do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   let(:pipeline) do
     create(:ci_empty_pipeline, ref: 'master', project: project)
   end
 
   before do
+    stub_ci_pipeline_to_return_yaml_file
+
     stub_not_protect_default_branch
 
     project.add_developer(user)

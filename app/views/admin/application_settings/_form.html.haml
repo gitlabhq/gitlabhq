@@ -937,6 +937,15 @@
       .col-sm-10
         = f.number_field :throttle_authenticated_web_period_in_seconds, class: 'form-control'
 
+  %fieldset
+    %legend Outbound requests
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :allow_local_requests_from_hooks_and_services do
+            = f.check_box :allow_local_requests_from_hooks_and_services
+            Allow requests to the local network from hooks and services
+
   - if License.feature_available?(:external_authorization_service)
     = render partial: 'external_authorization_service_form', locals: { f: f }
 
