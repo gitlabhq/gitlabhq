@@ -267,6 +267,7 @@ class Project < ActiveRecord::Base
   validate :visibility_level_allowed_by_group
   validate :visibility_level_allowed_as_fork
   validate :check_wiki_path_conflict
+  validate :validate_pages_https_only, if: -> { changes.has_key?(:pages_https_only) }
   validates :repository_storage,
     presence: true,
     inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
@@ -734,6 +735,26 @@ class Project < ActiveRecord::Base
 
     if Project.where(namespace_id: namespace_id, path: path_to_check).exists?
       errors.add(:name, 'has already been taken')
+    end
+  end
+
+  def pages_https_only
+    return false unless Gitlab.config.pages.external_https
+
+    super
+  end
+
+  def pages_https_only?
+    return false unless Gitlab.config.pages.external_https
+
+    super
+  end
+
+  def validate_pages_https_only
+    return unless pages_https_only?
+
+    unless pages_domains.all?(&:https?)
+      errors.add(:pages_https_only, "cannot be enabled unless all domains have TLS certificates")
     end
   end
 

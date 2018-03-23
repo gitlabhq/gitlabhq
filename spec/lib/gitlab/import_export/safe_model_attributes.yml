@@ -458,6 +458,7 @@ Project:
 - merge_requests_ff_only_enabled
 - merge_requests_rebase_enabled
 - jobs_cache_index
+- pages_https_only
 Author:
 - name
 ProjectFeature:
