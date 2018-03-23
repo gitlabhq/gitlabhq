@@ -1,6 +1,5 @@
-/config/
+/app/assets/javascripts/locale/**/app.js
 /node_modules/
 /public/
 /vendor/
-karma.config.js
-webpack.config.js
+/tmp/

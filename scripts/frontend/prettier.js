@@ -1,4 +1,3 @@
-/* eslint import/no-commonjs: "off", import/no-extraneous-dependencies: "off", no-console: "off" */
 const glob = require('glob');
 const prettier = require('prettier');
 const fs = require('fs');
@@ -22,9 +21,7 @@ const availableExtensions = Object.keys(config.parsers);
 
 console.log(`Loading ${allFiles ? 'All' : 'Staged'} Files ...`);
 
-const stagedFiles = allFiles
-  ? null
-  : getStagedFiles(availableExtensions.map(ext => `*.${ext}`));
+const stagedFiles = allFiles ? null : getStagedFiles(availableExtensions.map(ext => `*.${ext}`));
 
 if (stagedFiles) {
   if (!stagedFiles.length || (stagedFiles.length === 1 && !stagedFiles[0])) {
@@ -41,15 +38,10 @@ let files;
 if (allFiles) {
   const ignore = config.ignore;
   const patterns = config.patterns;
-  const globPattern =
-    patterns.length > 1 ? `{${patterns.join(',')}}` : `${patterns.join(',')}`;
-  files = glob
-    .sync(globPattern, { ignore })
-    .filter(f => allFiles || stagedFiles.includes(f));
+  const globPattern = patterns.length > 1 ? `{${patterns.join(',')}}` : `${patterns.join(',')}`;
+  files = glob.sync(globPattern, { ignore }).filter(f => allFiles || stagedFiles.includes(f));
 } else {
-  files = stagedFiles.filter(f =>
-    availableExtensions.includes(f.split('.').pop()),
-  );
+  files = stagedFiles.filter(f => availableExtensions.includes(f.split('.').pop()));
 }
 
 if (!files.length) {
@@ -81,7 +73,7 @@ prettier
         } else if (!prettier.check(input, options)) {
           if (!didWarn) {
             console.log(
-              '\n===============================\nGitLab uses Prettier to format all JavaScript code.\nPlease format each file listed below or run "yarn prettier-staged-save"\n===============================\n',
+              '\n===============================\nGitLab uses Prettier to format all JavaScript code.\nPlease format each file listed below or run "yarn prettier-staged-save"\n===============================\n'
             );
             didWarn = true;
           }
