@@ -12,7 +12,7 @@ export const closeFile = ({ commit, state, getters, dispatch }, file) => {
   if (file.pending) {
     commit(types.REMOVE_PENDING_TAB, file);
   } else {
-    const indexOfClosedFile = state.openFiles.findIndex(f => f.path === path);
+    const indexOfClosedFile = getters.tabs.findIndex(f => f.path === path);
     const fileWasActive = file.active;
 
     commit(types.TOGGLE_FILE_OPEN, path);
@@ -21,9 +21,13 @@ export const closeFile = ({ commit, state, getters, dispatch }, file) => {
     if (getters.tabs.length > 0 && fileWasActive) {
       const nextIndexToOpen =
         indexOfClosedFile === 0 ? 0 : indexOfClosedFile - 1;
-      const nextFileToOpen = state.openFiles[nextIndexToOpen];
+      const nextFileToOpen = getters.tabs[nextIndexToOpen];
 
-      router.push(`/project${nextFileToOpen.url}`);
+      if (nextFileToOpen.pending) {
+        dispatch('openPendingTab', nextFileToOpen);
+      } else {
+        router.push(`/project${nextFileToOpen.url}`);
+      }
     } else if (!state.openFiles.length) {
       router.push(`/project/${file.projectId}/tree/${file.branchId}/`);
     }
@@ -151,8 +155,10 @@ export const discardFileChanges = ({ state, commit }, path) => {
   eventHub.$emit(`editor.update.model.content.${file.path}`, file.raw);
 };
 
-export const openPendingTab = ({ commit, state }, file) => {
+export const openPendingTab = ({ commit, dispatch, state }, file) => {
   commit(types.ADD_PENDING_TAB, file);
+
+  dispatch('scrollToTab');
 
   router.push(`/project/${file.projectId}/tree/${state.currentBranchId}/`);
 };

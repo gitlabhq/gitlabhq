@@ -88,14 +88,29 @@ export default {
     });
   },
   [types.ADD_PENDING_TAB](state, file) {
-    Object.assign(state, {
-      pendingTabs: state.pendingTabs.concat({
-        ...file,
-        active: true,
-        pending: true,
-        key: `pending-${file.key}`,
-      }),
-    });
+    const pendingTab = state.pendingTabs.find(f => f.path === file.path);
+
+    if (pendingTab) {
+      Object.assign(state, {
+        pendingTabs: state.pendingTabs.map(tab => ({
+          ...tab,
+          active: !!pendingTab,
+        })),
+      });
+    } else {
+      Object.assign(state, {
+        pendingTabs: state.pendingTabs.concat({
+          ...file,
+          active: true,
+          pending: true,
+          key: `pending-${file.key}`,
+        }),
+        openFiles: state.openFiles.map(f => ({
+          ...f,
+          active: false,
+        })),
+      });
+    }
   },
   [types.REMOVE_PENDING_TAB](state, file) {
     Object.assign(state, {
