@@ -17,7 +17,7 @@ class StorageShard
   # The key is the shard name, and the values are the parameters for that shard.
   def self.all
     Settings.repositories.storages.map do |name, params|
-      config = params.symbolize_keys.merge(name: name)
+      config = params.symbolize_keys.merge(name: name, path: params.legacy_disk_path)
       config.slice!(*allowed_params)
       StorageShard.new(config)
     end

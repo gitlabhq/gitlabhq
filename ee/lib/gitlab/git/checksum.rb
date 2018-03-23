@@ -11,7 +11,7 @@ module Gitlab
 
       def initialize(storage, relative_path)
         @storage       = storage
-        @storage_path  = Gitlab.config.repositories.storages[storage]['path']
+        @storage_path  = Gitlab.config.repositories.storages[storage].legacy_disk_path
         @relative_path = "#{relative_path}.git"
         @path          = File.join(storage_path, @relative_path)
       end

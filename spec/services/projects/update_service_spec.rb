@@ -191,7 +191,7 @@ describe Projects::UpdateService, '#execute' do
 
     context 'when renaming a project' do
       let(:repository_storage) { 'default' }
-      let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
+      let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
 
       context 'with legacy storage' do
         let(:project) { create(:project, :legacy_storage, :repository, creator: user, namespace: user.namespace) }

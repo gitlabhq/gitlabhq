@@ -47,7 +47,7 @@ RSpec.describe Geo::DeletedProject, type: :model do
 
   describe '#repository_storage_path' do
     it 'returns the repository storage path' do
-      expect(subject.repository_storage_path).to eq('tmp/tests/storage_foo')
+      expect(subject.repository_storage_path).to eq(File.absolute_path('tmp/tests/storage_foo'))
     end
   end
 

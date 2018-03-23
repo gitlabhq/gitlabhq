@@ -226,7 +226,7 @@ module TestEnv
   end
 
   def repos_path
-    Gitlab.config.repositories.storages.default['path']
+    Gitlab.config.repositories.storages.default.legacy_disk_path
   end
 
   def backup_path
