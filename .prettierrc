@@ -4,7 +4,7 @@
   "trailingComma": "es5",
   "overrides": [
     {
-      "files": ["**/app/assets/javascripts/**/*", "**/spec/javascripts/**/*"],
+      "files": ["**/app/**/*", "**/spec/**/*"],
       "options": {
         "trailingComma": "all"
       }
