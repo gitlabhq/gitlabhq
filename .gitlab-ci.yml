@@ -544,7 +544,7 @@ migration:path-mysql:
 .db-rollback: &db-rollback
   <<: *dedicated-no-docs-pull-cache-job
   script:
-    - bundle exec rake db:rollback STEP=119
+    - bundle exec rake db:migrate VERSION=20170523121229
     - bundle exec rake db:migrate
 
 db:rollback-pg:

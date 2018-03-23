@@ -122,14 +122,10 @@ describe Banzai::Filter::AutolinkFilter do
     end
 
     it 'does not include trailing punctuation' do
-      doc = filter("See #{link}.")
-      expect(doc.at_css('a').text).to eq link
-
-      doc = filter("See #{link}, ok?")
-      expect(doc.at_css('a').text).to eq link
-
-      doc = filter("See #{link}...")
-      expect(doc.at_css('a').text).to eq link
+      ['.', ', ok?', '...', '?', '!', ': is that ok?'].each do |trailing_punctuation|
+        doc = filter("See #{link}#{trailing_punctuation}")
+        expect(doc.at_css('a').text).to eq link
+      end
     end
 
     it 'includes trailing punctuation when part of a balanced pair' do

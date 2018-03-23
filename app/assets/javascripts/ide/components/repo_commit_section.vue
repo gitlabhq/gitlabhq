@@ -2,7 +2,7 @@
 import { mapState, mapActions, mapGetters } from 'vuex';
 import tooltip from '~/vue_shared/directives/tooltip';
 import icon from '~/vue_shared/components/icon.vue';
-import modal from '~/vue_shared/components/modal.vue';
+import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import commitFilesList from './commit_sidebar/list.vue';
 import * as consts from '../stores/modules/commit/constants';
@@ -10,7 +10,7 @@ import Actions from './commit_sidebar/actions.vue';
 
 export default {
   components: {
-    modal,
+    DeprecatedModal,
     icon,
     commitFilesList,
     Actions,
@@ -37,23 +37,20 @@ export default {
       'lastCommitMsg',
       'changedFiles',
     ]),
-    ...mapState('commit', [
-      'commitMessage',
-      'submitCommitLoading',
-    ]),
+    ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
     ...mapGetters('commit', [
       'commitButtonDisabled',
       'discardDraftButtonDisabled',
       'branchName',
     ]),
     statusSvg() {
-      return this.lastCommitMsg ? this.committedStateSvgPath : this.noChangesStateSvgPath;
+      return this.lastCommitMsg
+        ? this.committedStateSvgPath
+        : this.noChangesStateSvgPath;
     },
   },
   methods: {
-    ...mapActions([
-      'setPanelCollapsedStatus',
-    ]),
+    ...mapActions(['setPanelCollapsedStatus']),
     ...mapActions('commit', [
       'updateCommitMessage',
       'discardDraft',
@@ -67,8 +64,9 @@ export default {
       });
     },
     forceCreateNewBranch() {
-      return this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH)
-        .then(() => this.commitChanges());
+      return this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH).then(() =>
+        this.commitChanges(),
+      );
     },
   },
 };
@@ -81,7 +79,7 @@ export default {
       'multi-file-commit-empty-state-container': !changedFiles.length
     }"
   >
-    <modal
+    <deprecated-modal
       id="ide-create-branch-modal"
       :primary-button-label="__('Create new branch')"
       kind="success"
@@ -92,7 +90,7 @@ export default {
         {{ __(`This branch has changed since you started editing.
           Would you like to create a new branch?`) }}
       </template>
-    </modal>
+    </deprecated-modal>
     <commit-files-list
       title="Staged"
       :file-list="changedFiles"

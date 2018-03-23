@@ -5,6 +5,8 @@ export default {
       .getElementById('peek-view-performance-bar')
       .cloneNode(true);
 
+    upstreamPerformanceBar.classList.remove('hidden');
+
     this.$refs.wrapper.appendChild(upstreamPerformanceBar);
   },
 };

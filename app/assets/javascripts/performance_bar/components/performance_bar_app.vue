@@ -113,27 +113,21 @@ export default {
     id="js-peek"
     :class="env"
   >
-    <request-selector
-      v-if="currentRequest"
-      :current-request="currentRequest"
-      :requests="requests"
-      @change-current-request="changeCurrentRequest"
-    />
     <div
-      id="peek-view-host"
-      class="view prepend-left-5"
+      v-if="currentRequest"
+      class="container-fluid container-limited"
     >
-      <span
-        v-if="currentRequest && currentRequest.details"
-        class="current-host"
+      <div
+        id="peek-view-host"
+        class="view"
       >
-        {{ currentRequest.details.host.hostname }}
-      </span>
-    </div>
-    <div
-      v-if="currentRequest"
-      class="wrapper"
-    >
+        <span
+          v-if="currentRequest.details"
+          class="current-host"
+        >
+          {{ currentRequest.details.host.hostname }}
+        </span>
+      </div>
       <upstream-performance-bar
         v-if="initialRequest && currentRequest.details"
       />
@@ -186,6 +180,12 @@ export default {
           gc
         </span>
       </div>
+      <request-selector
+        v-if="currentRequest"
+        :current-request="currentRequest"
+        :requests="requests"
+        @change-current-request="changeCurrentRequest"
+      />
     </div>
   </div>
 </template>

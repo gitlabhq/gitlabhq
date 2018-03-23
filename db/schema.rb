@@ -157,6 +157,7 @@ ActiveRecord::Schema.define(version: 20180320182229) do
     t.boolean "authorized_keys_enabled", default: true, null: false
     t.string "auto_devops_domain"
     t.boolean "pages_domain_verification_enabled", default: true, null: false
+    t.boolean "allow_local_requests_from_hooks_and_services", default: false, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -1512,6 +1513,7 @@ ActiveRecord::Schema.define(version: 20180320182229) do
     t.boolean "merge_requests_ff_only_enabled", default: false
     t.boolean "merge_requests_rebase_enabled", default: false, null: false
     t.integer "jobs_cache_index"
+    t.boolean "pages_https_only", default: true
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree

@@ -38,7 +38,7 @@ gem 'devise', '~> 4.2'
 gem 'doorkeeper', '~> 4.3'
 gem 'doorkeeper-openid_connect', '~> 1.3'
 gem 'omniauth', '~> 1.8'
-gem 'omniauth-auth0', '~> 1.4.1'
+gem 'omniauth-auth0', '~> 2.0.0'
 gem 'omniauth-azure-oauth2', '~> 0.0.9'
 gem 'omniauth-cas3', '~> 1.1.4'
 gem 'omniauth-facebook', '~> 4.0.0'
@@ -231,7 +231,7 @@ gem 'sanitize', '~> 2.0'
 gem 'babosa', '~> 1.0.2'
 
 # Sanitizes SVG input
-gem 'loofah', '~> 2.0.3'
+gem 'loofah', '~> 2.2'
 
 # Working with license
 gem 'licensee', '~> 8.9'
