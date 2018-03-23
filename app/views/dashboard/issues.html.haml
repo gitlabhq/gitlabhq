@@ -5,7 +5,7 @@
   = auto_discovery_link_tag(:atom, params.merge(rss_url_options), title: "#{current_user.name} issues")
 
 .top-area
-  = render 'shared/issuable/nav', type: :issues
+  = render 'shared/issuable/nav', type: :issues, display_count: !@no_filters_set
   .nav-controls
     = link_to params.merge(rss_url_options), class: 'btn has-tooltip', data: { container: 'body' }, title: 'Subscribe' do
       = icon('rss')
