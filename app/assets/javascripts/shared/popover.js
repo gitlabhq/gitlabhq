@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 export default class Popover {
   constructor(trigger, content) {
     this.isOpen = false;
@@ -41,13 +43,15 @@ export default class Popover {
   }
 
   closePopoverMouseleave() {
-    setTimeout(() => {
-      if (this.$popover.is(':hover') ||
-        (this.$popover.siblings('.popover').length > 0 &&
-        this.$popover.siblings('.popover').is(':hover'))) return;
+    if (this.$popover.is(':hover') ||
+      (this.$popover.siblings('.popover').length > 0 &&
+      this.$popover.siblings('.popover').is(':hover'))) return;
 
-      this.closePopover();
-    }, 1500);
+    this.closePopover();
+  }
+
+  closePopoverMouseleaveDelayed() {
+    setTimeout(this.closePopoverMouseleave.bind(this), 1500);
   }
 
   registerClickOpenListener() {
@@ -59,8 +63,8 @@ export default class Popover {
   }
 
   registerMouseleaveCloseListener() {
-    this.$popover.on('mouseleave.glPopover.close', this.closePopoverMouseleave.bind(this));
-    this.$popover.siblings('.popover').on('mouseleave.glPopover.close', this.closePopoverMouseleave.bind(this));
+    this.$popover.on('mouseleave.glPopover.close', this.closePopoverMouseleaveDelayed.bind(this));
+    this.$popover.siblings('.popover').on('mouseleave.glPopover.close', this.closePopoverMouseleaveDelayed.bind(this));
   }
 
   destroyMouseleaveCloseListener() {
