@@ -496,14 +496,10 @@ module Ci
       end
     end
 
-    # TODO specs
-    #
     def protected_ref?
       strong_memoize(:protected_ref) { project.protected_for?(ref) }
     end
 
-    # TODO specs
-    #
     def legacy_trigger
       strong_memoize(:legacy_trigger) { trigger_requests.first }
     end
