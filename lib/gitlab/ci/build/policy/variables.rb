@@ -7,7 +7,7 @@ module Gitlab
             @expressions = Array(expressions)
           end
 
-          def satisfied_by?(pipeline, attributes)
+          def satisfied_by?(pipeline, build)
             statements = @expressions.map do |statement|
               ::Gitlab::Ci::Pipeline::Expression::Statement
                 .new(statement, pipeline)

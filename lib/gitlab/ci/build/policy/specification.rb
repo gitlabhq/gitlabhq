@@ -15,7 +15,7 @@ module Gitlab
             @spec = spec
           end
 
-          def satisfied_by?(pipeline, attributes = nil)
+          def satisfied_by?(pipeline, build = nil)
             raise NotImplementedError
           end
         end

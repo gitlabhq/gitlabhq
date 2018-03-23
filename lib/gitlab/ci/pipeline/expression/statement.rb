@@ -19,10 +19,10 @@ module Gitlab
 
             return if pipeline.nil?
 
-            # temporary refactoring stubs
+            # REFACTORING, temporary refactoring stubs
             #
             @variables = pipeline.project.predefined_variables.map do |variable|
-              [variable.fetch(:key), variable.fetch(:value)]
+              [variable[:key], variable[:value]]
             end
 
             @variables += pipeline.variables.map do |variable|
@@ -30,7 +30,7 @@ module Gitlab
             end
 
             @variables += pipeline.predefined_variables.map do |variable|
-              [variable.fetch(:key), variable.fetch(:value)]
+              [variable[:key], variable[:value]]
             end
           end
 
