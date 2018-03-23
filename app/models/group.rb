@@ -206,6 +206,7 @@ class Group < Namespace
     owners.include?(user) && owners.size == 1
   end
 
+<<<<<<< HEAD
   def human_ldap_access
     Gitlab::Access.options_with_owner.key ldap_access
   end
@@ -223,6 +224,8 @@ class Group < Namespace
     Gitlab.config.ldap.enabled && ldap_group_links.any?(&:active?)
   end
 
+=======
+>>>>>>> upstream/master
   def post_create_hook
     Gitlab::AppLogger.info("Group \"#{name}\" was created")
 

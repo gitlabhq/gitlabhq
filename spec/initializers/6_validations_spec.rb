@@ -19,7 +19,11 @@ describe '6_validations' do
 
     context 'when one of the settings is incorrect' do
       before do
+<<<<<<< HEAD
         mock_storages('foo' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c', 'failure_count_threshold' => 'not a number'))
+=======
+        mock_storages('foo' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c'), 'bar' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/d'))
+>>>>>>> upstream/master
       end
 
       it 'throws an error' do

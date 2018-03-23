@@ -474,8 +474,12 @@ Project:
 - merge_requests_ff_only_enabled
 - merge_requests_rebase_enabled
 - jobs_cache_index
+<<<<<<< HEAD
 - external_authorization_classification_label
 - external_webhook_token
+=======
+- pages_https_only
+>>>>>>> upstream/master
 Author:
 - name
 ProjectFeature:
