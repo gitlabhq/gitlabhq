@@ -107,19 +107,60 @@ RSpec.describe Geo::ProjectSyncWorker do
 
       before do
         project.update!(wiki_enabled: false)
-        subject.perform(project.id, Time.now)
       end
 
       it 'syncs the project repository' do
+        subject.perform(project.id, Time.now)
+
         expect(repository_sync_service).to have_received(:execute)
       end
 
       it 'does not sync the project wiki' do
+        subject.perform(project.id, Time.now)
+
         expect(wiki_sync_service).not_to have_received(:execute)
       end
 
-      it 'unflags wiki for sync, to remove it from Geo wiki queries' do
-        expect(registry.reload.resync_wiki).to be_falsey
+      context 'when the wiki has failed to sync before' do
+        let!(:registry) { create(:geo_project_registry, :wiki_sync_failed, project: project) }
+
+        it 'marks the wiki as synced, to remove it from failed Geo wiki queries' do
+          subject.perform(project.id, Time.now)
+
+          expect(registry.reload.resync_wiki).to be_falsey
+          expect(registry.reload.last_wiki_sync_failure).to be_nil
+          expect(registry.reload.last_wiki_synced_at).to be_present
+          expect(registry.reload.last_wiki_successful_sync_at).to be_present
+          expect(registry.reload.wiki_retry_count).to be_nil
+          expect(registry.reload.wiki_retry_at).to be_nil
+          expect(registry.reload.force_to_redownload_wiki).to be_falsey
+        end
+
+        it 'logs that the wiki was marked as not needing a sync' do
+          expect(subject).to receive(:log_info).with("Successfully marked disabled wiki as synced", registry_id: registry.id, project_id: registry.project_id)
+
+          subject.perform(project.id, Time.now)
+        end
+      end
+
+      context 'when the wiki has never been synced before' do
+        it 'marks the wiki as synced, to remove it from out-of-sync Geo wiki queries' do
+          subject.perform(project.id, Time.now)
+
+          expect(registry.reload.resync_wiki).to be_falsey
+          expect(registry.reload.last_wiki_sync_failure).to be_nil
+          expect(registry.reload.last_wiki_synced_at).to be_present
+          expect(registry.reload.last_wiki_successful_sync_at).to be_present
+          expect(registry.reload.wiki_retry_count).to be_nil
+          expect(registry.reload.wiki_retry_at).to be_nil
+          expect(registry.reload.force_to_redownload_wiki).to be_falsey
+        end
+
+        it 'logs that the wiki was marked as not needing a sync' do
+          expect(subject).to receive(:log_info).with("Successfully marked disabled wiki as synced", registry_id: registry.id, project_id: registry.project_id)
+
+          subject.perform(project.id, Time.now)
+        end
       end
     end
 

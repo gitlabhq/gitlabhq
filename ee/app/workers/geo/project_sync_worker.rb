@@ -2,6 +2,7 @@ module Geo
   class ProjectSyncWorker
     include ApplicationWorker
     include GeoQueue
+    include Gitlab::Geo::LogHelpers
 
     sidekiq_options retry: 3, dead: false
 
@@ -16,11 +17,11 @@ module Geo
       project = registry.project
 
       if project.nil?
-        Gitlab::Geo::Logger.error(class: self.class.name, message: "Couldn't find project, skipping syncing", project_id: project_id)
+        log_error("Couldn't find project, skipping syncing", project_id: project_id)
         return
       end
 
-      unflag_disabled_wiki(registry)
+      mark_disabled_wiki_as_synced(registry)
 
       Geo::RepositorySyncService.new(project).execute if registry.repository_sync_due?(scheduled_time)
       Geo::WikiSyncService.new(project).execute if registry.wiki_sync_due?(scheduled_time)
@@ -28,10 +29,21 @@ module Geo
 
     private
 
-    def unflag_disabled_wiki(registry)
-      return unless registry.resync_wiki?
+    def mark_disabled_wiki_as_synced(registry)
+      return if registry.project.wiki_enabled?
 
-      registry.update!(resync_wiki: false) unless registry.project.wiki_enabled?
+      registry.last_wiki_sync_failure = nil
+      registry.last_wiki_synced_at = DateTime.now
+      registry.last_wiki_successful_sync_at = DateTime.now
+      registry.resync_wiki = false
+      registry.wiki_retry_count = nil
+      registry.wiki_retry_at = nil
+      registry.force_to_redownload_wiki = false
+
+      if registry.changed?
+        success = registry.save
+        log_info("#{success ? 'Successfully marked' : 'Failed to mark'} disabled wiki as synced", registry_id: registry.id, project_id: registry.project_id)
+      end
     end
   end
 end
