@@ -85,9 +85,9 @@ describe API::Settings, 'EE Settings' do
         external_authorization_service_url: 'https://custom.service/',
         external_authorization_service_default_label: 'default',
         external_authorization_service_timeout: 9.99,
-        external_auth_client_cert: "certificate content",
-        external_auth_client_key: "certificate key",
-        external_auth_client_key_pass: "certificate key password"
+        external_auth_client_cert: File.read('ee/spec/fixtures/passphrase_x509_certificate.crt'),
+        external_auth_client_key: File.read('ee/spec/fixtures/passphrase_x509_certificate_pk.key'),
+        external_auth_client_key_pass: "5iveL!fe"
       }
     end
     let(:feature) { :external_authorization_service }
