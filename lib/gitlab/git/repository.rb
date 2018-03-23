@@ -516,10 +516,6 @@ module Gitlab
         end
       end
 
-      def sha_from_ref(ref)
-        rev_parse_target(ref).oid
-      end
-
       # Return the object that +revspec+ points to.  If +revspec+ is an
       # annotated tag, then return the tag's target instead.
       def rev_parse_target(revspec)
@@ -2430,6 +2426,10 @@ module Gitlab
 
       def rev_list_param(spec)
         spec == :all ? ['--all'] : spec
+      end
+
+      def sha_from_ref(ref)
+        rev_parse_target(ref).oid
       end
     end
   end

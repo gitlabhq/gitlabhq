@@ -216,9 +216,6 @@ const config = {
       names: ['main', 'common', 'webpack_runtime'],
     }),
 
-    // enable scope hoisting
-    new webpack.optimize.ModuleConcatenationPlugin(),
-
     // copy pre-compiled vendor libraries verbatim
     new CopyWebpackPlugin([
       {
@@ -274,6 +271,7 @@ if (IS_PRODUCTION) {
       minimize: true,
       debug: false
     }),
+    new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       sourceMap: true
     }),

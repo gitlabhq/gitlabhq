@@ -26,9 +26,15 @@
   }
 }
 
+.dropdown-menu-labels {
+  .dropdown-content {
+    max-height: 135px;
+  }
+}
+
 .dropdown-new-label {
   .dropdown-content {
-    max-height: 260px;
+    max-height: 136px;
   }
 }
 
