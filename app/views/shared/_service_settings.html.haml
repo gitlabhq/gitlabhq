@@ -13,12 +13,12 @@
       .col-sm-10
         = form.check_box :active, disabled: disable_fields_service?(@service)
 
-  - if @service.supported_events.present?
+  - if @service.configurable_events.present?
     .form-group
       = form.label :url, "Trigger", class: 'control-label'
 
       .col-sm-10
-        - @service.supported_events.each do |event|
+        - @service.configurable_events.each do |event|
           %div
             = form.check_box service_event_field_name(event), class: 'pull-left'
             .prepend-left-20

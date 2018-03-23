@@ -11,8 +11,7 @@
       = view_on_environment_button(@commit.sha, @path, @environment) if @environment
 
     .btn-group{ role: "group" }<
-      = edit_blob_link
-      = ide_blob_link
+      = edit_blob_button
       - if current_user
         = replace_blob_link
         = delete_blob_link

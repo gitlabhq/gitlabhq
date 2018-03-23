@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import imageDiffHelper from './helpers/index';
 import ImageBadge from './image_badge';
 import { isImageLoaded } from '../lib/utils/image_utility';

@@ -31,10 +31,11 @@ module Gitlab
         raise NotImplementedError
       end
 
-      attr_accessor :project, :current_user, :params
+      attr_accessor :project, :current_user, :params, :chat_name
 
-      def initialize(project, user, params = {})
-        @project, @current_user, @params = project, user, params.dup
+      def initialize(project, chat_name, params = {})
+        @project, @current_user, @params = project, chat_name.user, params.dup
+        @chat_name = chat_name
       end
 
       private

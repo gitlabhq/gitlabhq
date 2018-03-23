@@ -1,30 +1,27 @@
+import $ from 'jquery';
 import Autosave from '~/autosave';
 import AccessorUtilities from '~/lib/utils/accessor';
 
 describe('Autosave', () => {
   let autosave;
+  const field = $('<textarea></textarea>');
+  const key = 'key';
 
   describe('class constructor', () => {
-    const key = 'key';
-    const field = jasmine.createSpyObj('field', ['data', 'on']);
-
     beforeEach(() => {
       spyOn(AccessorUtilities, 'isLocalStorageAccessSafe').and.returnValue(true);
       spyOn(Autosave.prototype, 'restore');
-
-      autosave = new Autosave(field, key);
     });
 
     it('should set .isLocalStorageAvailable', () => {
+      autosave = new Autosave(field, key);
+
       expect(AccessorUtilities.isLocalStorageAccessSafe).toHaveBeenCalled();
       expect(autosave.isLocalStorageAvailable).toBe(true);
     });
   });
 
   describe('restore', () => {
-    const key = 'key';
-    const field = jasmine.createSpyObj('field', ['trigger']);
-
     beforeEach(() => {
       autosave = {
         field,
@@ -49,24 +46,53 @@ describe('Autosave', () => {
     describe('if .isLocalStorageAvailable is `true`', () => {
       beforeEach(() => {
         autosave.isLocalStorageAvailable = true;
-
-        Autosave.prototype.restore.call(autosave);
       });
 
       it('should call .getItem', () => {
+        Autosave.prototype.restore.call(autosave);
+
         expect(window.localStorage.getItem).toHaveBeenCalledWith(key);
+      });
+
+      it('triggers jquery event', () => {
+        spyOn(autosave.field, 'trigger').and.callThrough();
+
+        Autosave.prototype.restore.call(autosave);
+
+        expect(
+          field.trigger,
+        ).toHaveBeenCalled();
+      });
+
+      it('triggers native event', (done) => {
+        autosave.field.get(0).addEventListener('change', () => {
+          done();
+        });
+
+        Autosave.prototype.restore.call(autosave);
+      });
+    });
+
+    describe('if field gets deleted from DOM', () => {
+      beforeEach(() => {
+        autosave.field = $('.not-a-real-element');
+      });
+
+      it('does not trigger event', () => {
+        spyOn(field, 'trigger').and.callThrough();
+
+        expect(
+          field.trigger,
+        ).not.toHaveBeenCalled();
       });
     });
   });
 
   describe('save', () => {
-    const field = jasmine.createSpyObj('field', ['val']);
-
     beforeEach(() => {
       autosave = jasmine.createSpyObj('autosave', ['reset']);
       autosave.field = field;
-
-      field.val.and.returnValue('value');
+      field.val('value');
 
       spyOn(window.localStorage, 'setItem');
     });
@@ -97,8 +123,6 @@ describe('Autosave', () => {
   });
 
   describe('reset', () => {
-    const key = 'key';
-
     beforeEach(() => {
       autosave = {
         key,

@@ -3,7 +3,7 @@ module AuthHelper
   FORM_BASED_PROVIDERS = [/\Aldap/, 'crowd'].freeze
 
   def ldap_enabled?
-    Gitlab::LDAP::Config.enabled?
+    Gitlab::Auth::LDAP::Config.enabled?
   end
 
   def omniauth_enabled?
@@ -15,11 +15,11 @@ module AuthHelper
   end
 
   def auth_providers
-    Gitlab::OAuth::Provider.providers
+    Gitlab::Auth::OAuth::Provider.providers
   end
 
   def label_for_provider(name)
-    Gitlab::OAuth::Provider.label_for(name)
+    Gitlab::Auth::OAuth::Provider.label_for(name)
   end
 
   def form_based_provider?(name)

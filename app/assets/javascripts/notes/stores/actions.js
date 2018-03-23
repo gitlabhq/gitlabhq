@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Visibility from 'visibilityjs';
 import Flash from '../../flash';
 import Poll from '../../lib/utils/poll';
@@ -11,77 +12,115 @@ import { isInViewport, scrollToElement } from '../../lib/utils/common_utils';
 
 let eTagPoll;
 
-export const setNotesData = ({ commit }, data) => commit(types.SET_NOTES_DATA, data);
-export const setNoteableData = ({ commit }, data) => commit(types.SET_NOTEABLE_DATA, data);
-export const setUserData = ({ commit }, data) => commit(types.SET_USER_DATA, data);
-export const setLastFetchedAt = ({ commit }, data) => commit(types.SET_LAST_FETCHED_AT, data);
-export const setInitialNotes = ({ commit }, data) => commit(types.SET_INITIAL_NOTES, data);
-export const setTargetNoteHash = ({ commit }, data) => commit(types.SET_TARGET_NOTE_HASH, data);
-export const toggleDiscussion = ({ commit }, data) => commit(types.TOGGLE_DISCUSSION, data);
+export const setNotesData = ({ commit }, data) =>
+  commit(types.SET_NOTES_DATA, data);
+export const setNoteableData = ({ commit }, data) =>
+  commit(types.SET_NOTEABLE_DATA, data);
+export const setUserData = ({ commit }, data) =>
+  commit(types.SET_USER_DATA, data);
+export const setLastFetchedAt = ({ commit }, data) =>
+  commit(types.SET_LAST_FETCHED_AT, data);
+export const setInitialNotes = ({ commit }, data) =>
+  commit(types.SET_INITIAL_NOTES, data);
+export const setTargetNoteHash = ({ commit }, data) =>
+  commit(types.SET_TARGET_NOTE_HASH, data);
+export const toggleDiscussion = ({ commit }, data) =>
+  commit(types.TOGGLE_DISCUSSION, data);
 
-export const fetchNotes = ({ commit }, path) => service
-  .fetchNotes(path)
-  .then(res => res.json())
-  .then((res) => {
-    commit(types.SET_INITIAL_NOTES, res);
-  });
+export const fetchNotes = ({ commit }, path) =>
+  service
+    .fetchNotes(path)
+    .then(res => res.json())
+    .then(res => {
+      commit(types.SET_INITIAL_NOTES, res);
+    });
 
-export const deleteNote = ({ commit }, note) => service
-  .deleteNote(note.path)
-  .then(() => {
+export const deleteNote = ({ commit }, note) =>
+  service.deleteNote(note.path).then(() => {
     commit(types.DELETE_NOTE, note);
   });
 
-export const updateNote = ({ commit }, { endpoint, note }) => service
-  .updateNote(endpoint, note)
-  .then(res => res.json())
-  .then((res) => {
-    commit(types.UPDATE_NOTE, res);
-  });
+export const updateNote = ({ commit }, { endpoint, note }) =>
+  service
+    .updateNote(endpoint, note)
+    .then(res => res.json())
+    .then(res => {
+      commit(types.UPDATE_NOTE, res);
+    });
 
-export const replyToDiscussion = ({ commit }, { endpoint, data }) => service
-  .replyToDiscussion(endpoint, data)
-  .then(res => res.json())
-  .then((res) => {
-    commit(types.ADD_NEW_REPLY_TO_DISCUSSION, res);
+export const replyToDiscussion = ({ commit }, { endpoint, data }) =>
+  service
+    .replyToDiscussion(endpoint, data)
+    .then(res => res.json())
+    .then(res => {
+      commit(types.ADD_NEW_REPLY_TO_DISCUSSION, res);
 
-    return res;
-  });
+      return res;
+    });
 
-export const createNewNote = ({ commit }, { endpoint, data }) => service
-  .createNewNote(endpoint, data)
-  .then(res => res.json())
-  .then((res) => {
-    if (!res.errors) {
-      commit(types.ADD_NEW_NOTE, res);
-    }
-    return res;
-  });
+export const createNewNote = ({ commit }, { endpoint, data }) =>
+  service
+    .createNewNote(endpoint, data)
+    .then(res => res.json())
+    .then(res => {
+      if (!res.errors) {
+        commit(types.ADD_NEW_NOTE, res);
+      }
+      return res;
+    });
 
 export const removePlaceholderNotes = ({ commit }) =>
   commit(types.REMOVE_PLACEHOLDER_NOTES);
 
-export const closeIssue = ({ commit, dispatch, state }) => service
-  .toggleIssueState(state.notesData.closeIssuePath)
-  .then(res => res.json())
-  .then((data) => {
-    commit(types.CLOSE_ISSUE);
-    dispatch('emitStateChangedEvent', data);
-  });
+export const toggleResolveNote = (
+  { commit },
+  { endpoint, isResolved, discussion },
+) =>
+  service
+    .toggleResolveNote(endpoint, isResolved)
+    .then(res => res.json())
+    .then(res => {
+      const mutationType = discussion
+        ? types.UPDATE_DISCUSSION
+        : types.UPDATE_NOTE;
 
-export const reopenIssue = ({ commit, dispatch, state }) => service
-  .toggleIssueState(state.notesData.reopenIssuePath)
-  .then(res => res.json())
-  .then((data) => {
-    commit(types.REOPEN_ISSUE);
-    dispatch('emitStateChangedEvent', data);
-  });
+      commit(mutationType, res);
+    });
+
+export const closeIssue = ({ commit, dispatch, state }) => {
+  dispatch('toggleStateButtonLoading', true);
+  return service
+    .toggleIssueState(state.notesData.closePath)
+    .then(res => res.json())
+    .then(data => {
+      commit(types.CLOSE_ISSUE);
+      dispatch('emitStateChangedEvent', data);
+      dispatch('toggleStateButtonLoading', false);
+    });
+};
+
+export const reopenIssue = ({ commit, dispatch, state }) => {
+  dispatch('toggleStateButtonLoading', true);
+  return service
+    .toggleIssueState(state.notesData.reopenPath)
+    .then(res => res.json())
+    .then(data => {
+      commit(types.REOPEN_ISSUE);
+      dispatch('emitStateChangedEvent', data);
+      dispatch('toggleStateButtonLoading', false);
+    });
+};
+
+export const toggleStateButtonLoading = ({ commit }, value) =>
+  commit(types.TOGGLE_STATE_BUTTON_LOADING, value);
 
 export const emitStateChangedEvent = ({ commit, getters }, data) => {
-  const event = new CustomEvent('issuable_vue_app:change', { detail: {
-    data,
-    isClosed: getters.issueState === constants.CLOSED,
-  } });
+  const event = new CustomEvent('issuable_vue_app:change', {
+    detail: {
+      data,
+      isClosed: getters.openState === constants.CLOSED,
+    },
+  });
 
   document.dispatchEvent(event);
 };
@@ -123,59 +162,70 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
     });
   }
 
-  return dispatch(methodToDispatch, noteData)
-    .then((res) => {
-      const { errors } = res;
-      const commandsChanges = res.commands_changes;
+  return dispatch(methodToDispatch, noteData).then(res => {
+    const { errors } = res;
+    const commandsChanges = res.commands_changes;
 
-      if (hasQuickActions && errors && Object.keys(errors).length) {
-        eTagPoll.makeRequest();
+    if (hasQuickActions && errors && Object.keys(errors).length) {
+      eTagPoll.makeRequest();
 
-        $('.js-gfm-input').trigger('clear-commands-cache.atwho');
-        Flash('Commands applied', 'notice', noteData.flashContainer);
+      $('.js-gfm-input').trigger('clear-commands-cache.atwho');
+      Flash('Commands applied', 'notice', noteData.flashContainer);
+    }
+
+    if (commandsChanges) {
+      if (commandsChanges.emoji_award) {
+        const votesBlock = $('.js-awards-block').eq(0);
+
+        loadAwardsHandler()
+          .then(awardsHandler => {
+            awardsHandler.addAwardToEmojiBar(
+              votesBlock,
+              commandsChanges.emoji_award,
+            );
+            awardsHandler.scrollToAwards();
+          })
+          .catch(() => {
+            Flash(
+              'Something went wrong while adding your award. Please try again.',
+              'alert',
+              noteData.flashContainer,
+            );
+          });
       }
 
-      if (commandsChanges) {
-        if (commandsChanges.emoji_award) {
-          const votesBlock = $('.js-awards-block').eq(0);
-
-          loadAwardsHandler()
-            .then((awardsHandler) => {
-              awardsHandler.addAwardToEmojiBar(votesBlock, commandsChanges.emoji_award);
-              awardsHandler.scrollToAwards();
-            })
-            .catch(() => {
-              Flash(
-                'Something went wrong while adding your award. Please try again.',
-                'alert',
-                noteData.flashContainer,
-              );
-            });
-        }
-
-        if (commandsChanges.spend_time != null || commandsChanges.time_estimate != null) {
-          sidebarTimeTrackingEventHub.$emit('timeTrackingUpdated', res);
-        }
+      if (
+        commandsChanges.spend_time != null ||
+        commandsChanges.time_estimate != null
+      ) {
+        sidebarTimeTrackingEventHub.$emit('timeTrackingUpdated', res);
       }
+    }
 
-      if (errors && errors.commands_only) {
-        Flash(errors.commands_only, 'notice', noteData.flashContainer);
-      }
-      commit(types.REMOVE_PLACEHOLDER_NOTES);
+    if (errors && errors.commands_only) {
+      Flash(errors.commands_only, 'notice', noteData.flashContainer);
+    }
+    commit(types.REMOVE_PLACEHOLDER_NOTES);
 
-      return res;
-    });
+    return res;
+  });
 };
 
 const pollSuccessCallBack = (resp, commit, state, getters) => {
   if (resp.notes && resp.notes.length) {
     const { notesById } = getters;
 
-    resp.notes.forEach((note) => {
+    resp.notes.forEach(note => {
       if (notesById[note.id]) {
         commit(types.UPDATE_NOTE, note);
-      } else if (note.type === constants.DISCUSSION_NOTE) {
-        const discussion = utils.findNoteObjectById(state.notes, note.discussion_id);
+      } else if (
+        note.type === constants.DISCUSSION_NOTE ||
+        note.type === constants.DIFF_NOTE
+      ) {
+        const discussion = utils.findNoteObjectById(
+          state.notes,
+          note.discussion_id,
+        );
 
         if (discussion) {
           commit(types.ADD_NEW_REPLY_TO_DISCUSSION, note);
@@ -188,27 +238,28 @@ const pollSuccessCallBack = (resp, commit, state, getters) => {
     });
   }
 
-  commit(types.SET_LAST_FETCHED_AT, resp.lastFetchedAt);
+  commit(types.SET_LAST_FETCHED_AT, resp.last_fetched_at);
 
   return resp;
 };
 
 export const poll = ({ commit, state, getters }) => {
-  const requestData = { endpoint: state.notesData.notesPath, lastFetchedAt: state.lastFetchedAt };
-
   eTagPoll = new Poll({
     resource: service,
     method: 'poll',
-    data: requestData,
-    successCallback: resp => resp.json()
-      .then(data => pollSuccessCallBack(data, commit, state, getters)),
-    errorCallback: () => Flash('Something went wrong while fetching latest comments.'),
+    data: state,
+    successCallback: resp =>
+      resp
+        .json()
+        .then(data => pollSuccessCallBack(data, commit, state, getters)),
+    errorCallback: () =>
+      Flash('Something went wrong while fetching latest comments.'),
   });
 
   if (!Visibility.hidden()) {
     eTagPoll.makeRequest();
   } else {
-    service.poll(requestData);
+    service.poll(state);
   }
 
   Visibility.change(() => {
@@ -229,15 +280,22 @@ export const restartPolling = () => {
 };
 
 export const fetchData = ({ commit, state, getters }) => {
-  const requestData = { endpoint: state.notesData.notesPath, lastFetchedAt: state.lastFetchedAt };
+  const requestData = {
+    endpoint: state.notesData.notesPath,
+    lastFetchedAt: state.lastFetchedAt,
+  };
 
-  service.poll(requestData)
+  service
+    .poll(requestData)
     .then(resp => resp.json)
     .then(data => pollSuccessCallBack(data, commit, state, getters))
     .catch(() => Flash('Something went wrong while fetching latest comments.'));
 };
 
-export const toggleAward = ({ commit, state, getters, dispatch }, { awardName, noteId }) => {
+export const toggleAward = (
+  { commit, state, getters, dispatch },
+  { awardName, noteId },
+) => {
   commit(types.TOGGLE_AWARD, { awardName, note: getters.notesById[noteId] });
 };
 

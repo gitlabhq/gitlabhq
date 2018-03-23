@@ -1,3 +1,5 @@
+import $ from 'jquery';
+import Cookies from 'js-cookie';
 import axios from './axios_utils';
 import { getLocationHash } from './url_utility';
 import { convertToCamelCase } from './text_utility';
@@ -22,12 +24,17 @@ export const getGroupSlug = () => {
   return null;
 };
 
-export const isInIssuePage = () => {
-  const page = getPagePath(1);
-  const action = getPagePath(2);
+export const checkPageAndAction = (page, action) => {
+  const pagePath = getPagePath(1);
+  const actionPath = getPagePath(2);
 
-  return page === 'issues' && action === 'show';
+  return pagePath === page && actionPath === action;
 };
+
+export const isInIssuePage = () => checkPageAndAction('issues', 'show');
+export const isInMRPage = () => checkPageAndAction('merge_requests', 'show');
+export const isInNoteablePage = () => isInIssuePage() || isInMRPage();
+export const hasVueMRDiscussionsCookie = () => Cookies.get('vue_mr_discussions');
 
 export const ajaxGet = url => axios.get(url, {
   params: { format: 'js' },
@@ -133,7 +140,11 @@ export const isMetaKey = e => e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
 // 3) Middle-click or Mouse Wheel Click (e.which is 2)
 export const isMetaClick = e => e.metaKey || e.ctrlKey || e.which === 2;
 
-export const scrollToElement = ($el) => {
+export const scrollToElement = (element) => {
+  let $el = element;
+  if (!(element instanceof $)) {
+    $el = $(element);
+  }
   const top = $el.offset().top;
   const mrTabsHeight = $('.merge-request-tabs').height() || 0;
   const headerHeight = $('.navbar-gitlab').height() || 0;
@@ -290,6 +301,14 @@ export const parseQueryStringIntoObject = (query = '') => {
       return acc;
     }, {});
 };
+
+/**
+ * Converts object with key-value pairs
+ * into query-param string
+ *
+ * @param {Object} params
+ */
+export const objectToQueryString = (params = {}) => Object.keys(params).map(param => `${param}=${params[param]}`).join('&');
 
 export const buildUrlWithCurrentLocation = param => (param ? `${window.location.pathname}${param}` : window.location.pathname);
 

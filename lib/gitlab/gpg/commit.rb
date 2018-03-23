@@ -1,15 +1,29 @@
 module Gitlab
   module Gpg
     class Commit
+      include Gitlab::Utils::StrongMemoize
+
       def initialize(commit)
         @commit = commit
 
         repo = commit.project.repository.raw_repository
-        @signature_text, @signed_text = Gitlab::Git::Commit.extract_signature(repo, commit.sha)
+        @signature_data = Gitlab::Git::Commit.extract_signature_lazily(repo, commit.sha || commit.id)
+      end
+
+      def signature_text
+        strong_memoize(:signature_text) do
+          @signature_data&.itself && @signature_data[0]
+        end
+      end
+
+      def signed_text
+        strong_memoize(:signed_text) do
+          @signature_data&.itself && @signature_data[1]
+        end
       end
 
       def has_signature?
-        !!(@signature_text && @signed_text)
+        !!(signature_text && signed_text)
       end
 
       def signature
@@ -53,7 +67,7 @@ module Gitlab
       end
 
       def verified_signature
-        @verified_signature ||= GPGME::Crypto.new.verify(@signature_text, signed_text: @signed_text) do |verified_signature|
+        @verified_signature ||= GPGME::Crypto.new.verify(signature_text, signed_text: signed_text) do |verified_signature|
           break verified_signature
         end
       end

@@ -30,6 +30,11 @@
     .col-sm-10
       = f.text_field :token, class: 'form-control', readonly: true
   .form-group
+    = label_tag :ip_address, class: 'control-label' do
+      IP Address
+    .col-sm-10
+      = f.text_field :ip_address, class: 'form-control', readonly: true
+  .form-group
     = label_tag :description, class: 'control-label' do
       Description
     .col-sm-10

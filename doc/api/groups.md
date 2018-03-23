@@ -525,3 +525,7 @@ And to switch pages add:
 ```
 
 [ce-15142]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15142
+
+## Group badges
+
+Read more in the [Group Badges](group_badges.md) documentation.

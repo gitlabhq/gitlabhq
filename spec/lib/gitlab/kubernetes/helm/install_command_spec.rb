@@ -1,117 +1,56 @@
 require 'rails_helper'
 
 describe Gitlab::Kubernetes::Helm::InstallCommand do
-  let(:prometheus) { create(:clusters_applications_prometheus) }
+  let(:application) { create(:clusters_applications_prometheus) }
+  let(:namespace) { Gitlab::Kubernetes::Helm::NAMESPACE }
 
-  describe "#initialize" do
-    context "With all the params" do
-      subject { described_class.new(prometheus.name, install_helm: true, chart: prometheus.chart, chart_values_file: prometheus.chart_values_file) }
-
-      it 'should assign all parameters' do
-        expect(subject.name).to eq(prometheus.name)
-        expect(subject.install_helm).to be_truthy
-        expect(subject.chart).to eq(prometheus.chart)
-        expect(subject.chart_values_file).to eq("#{Rails.root}/vendor/prometheus/values.yaml")
-      end
-    end
-
-    context 'when install_helm is not set' do
-      subject { described_class.new(prometheus.name, chart: prometheus.chart, chart_values_file: true) }
-
-      it 'should set install_helm as false' do
-        expect(subject.install_helm).to be_falsy
-      end
-    end
-
-    context 'when chart is not set' do
-      subject { described_class.new(prometheus.name, install_helm: true) }
-
-      it 'should set chart as nil' do
-        expect(subject.chart).to be_falsy
-      end
-    end
-
-    context 'when chart_values_file is not set' do
-      subject { described_class.new(prometheus.name, install_helm: true, chart: prometheus.chart) }
-
-      it 'should set chart_values_file as nil' do
-        expect(subject.chart_values_file).to be_falsy
-      end
-    end
+  let(:install_command) do
+    described_class.new(
+      application.name,
+      chart: application.chart,
+      values: application.values
+    )
   end
 
-  describe "#generate_script" do
-    let(:install_command) { described_class.new(prometheus.name, install_helm: install_helm) }
-    let(:client) { double('kubernetes client') }
-    let(:namespace) { Gitlab::Kubernetes::Namespace.new(Gitlab::Kubernetes::Helm::NAMESPACE, client) }
-    subject { install_command.send(:generate_script, namespace.name) }
+  describe '#generate_script' do
+    let(:command) do
+      <<~MSG
+      set -eo pipefail
+      apk add -U ca-certificates openssl >/dev/null
+      wget -q -O - https://kubernetes-helm.storage.googleapis.com/helm-v2.7.0-linux-amd64.tar.gz | tar zxC /tmp >/dev/null
+      mv /tmp/linux-amd64/helm /usr/bin/
+      helm init --client-only >/dev/null
+      helm install #{application.chart} --name #{application.name} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
+      MSG
+    end
 
-    context 'when install helm is true' do
-      let(:install_helm) { true }
+    subject { install_command.generate_script }
+
+    it 'should return appropriate command' do
+      is_expected.to eq(command)
+    end
+
+    context 'with an application with a repository' do
+      let(:ci_runner) { create(:ci_runner) }
+      let(:application) { create(:clusters_applications_runner, runner: ci_runner) }
+      let(:install_command) do
+        described_class.new(
+          application.name,
+          chart: application.chart,
+          values: application.values,
+          repository: application.repository
+        )
+      end
+
       let(:command) do
         <<~MSG
         set -eo pipefail
         apk add -U ca-certificates openssl >/dev/null
         wget -q -O - https://kubernetes-helm.storage.googleapis.com/helm-v2.7.0-linux-amd64.tar.gz | tar zxC /tmp >/dev/null
         mv /tmp/linux-amd64/helm /usr/bin/
-
-        helm init >/dev/null
-        MSG
-      end
-
-      it 'should return appropriate command' do
-        is_expected.to eq(command)
-      end
-    end
-
-    context 'when install helm is false' do
-      let(:install_helm) { false }
-      let(:command) do
-        <<~MSG
-        set -eo pipefail
-        apk add -U ca-certificates openssl >/dev/null
-        wget -q -O - https://kubernetes-helm.storage.googleapis.com/helm-v2.7.0-linux-amd64.tar.gz | tar zxC /tmp >/dev/null
-        mv /tmp/linux-amd64/helm /usr/bin/
-
         helm init --client-only >/dev/null
-        MSG
-      end
-
-      it 'should return appropriate command' do
-        is_expected.to eq(command)
-      end
-    end
-
-    context 'when chart is present' do
-      let(:install_command) { described_class.new(prometheus.name, chart: prometheus.chart) }
-      let(:command) do
-        <<~MSG.chomp
-        set -eo pipefail
-        apk add -U ca-certificates openssl >/dev/null
-        wget -q -O - https://kubernetes-helm.storage.googleapis.com/helm-v2.7.0-linux-amd64.tar.gz | tar zxC /tmp >/dev/null
-        mv /tmp/linux-amd64/helm /usr/bin/
-
-        helm init --client-only >/dev/null
-        helm install #{prometheus.chart} --name #{prometheus.name} --namespace #{namespace.name} >/dev/null
-        MSG
-      end
-
-      it 'should return appropriate command' do
-        is_expected.to eq(command)
-      end
-    end
-
-    context 'when chart values file is present' do
-      let(:install_command) { described_class.new(prometheus.name, chart: prometheus.chart, chart_values_file: prometheus.chart_values_file) }
-      let(:command) do
-        <<~MSG.chomp
-        set -eo pipefail
-        apk add -U ca-certificates openssl >/dev/null
-        wget -q -O - https://kubernetes-helm.storage.googleapis.com/helm-v2.7.0-linux-amd64.tar.gz | tar zxC /tmp >/dev/null
-        mv /tmp/linux-amd64/helm /usr/bin/
-
-        helm init --client-only >/dev/null
-        helm install #{prometheus.chart} --name #{prometheus.name} --namespace #{namespace.name} -f /data/helm/#{prometheus.name}/config/values.yaml >/dev/null
+        helm repo add #{application.name} #{application.repository}
+        helm install #{application.chart} --name #{application.name} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
         MSG
       end
 
@@ -121,10 +60,27 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     end
   end
 
-  describe "#pod_name" do
-    let(:install_command) { described_class.new(prometheus.name, install_helm: true, chart: prometheus.chart, chart_values_file: true) }
-    subject { install_command.send(:pod_name) }
+  describe '#config_map?' do
+    subject { install_command.config_map? }
 
-    it { is_expected.to eq('install-prometheus') }
+    it { is_expected.to be_truthy }
+  end
+
+  describe '#config_map_resource' do
+    let(:metadata) do
+      {
+        name: "values-content-configuration-#{application.name}",
+        namespace: namespace,
+        labels: { name: "values-content-configuration-#{application.name}" }
+      }
+    end
+
+    let(:resource) { ::Kubeclient::Resource.new(metadata: metadata, data: { values: application.values }) }
+
+    subject { install_command.config_map_resource }
+
+    it 'returns a KubeClient resource with config map content for the application' do
+      is_expected.to eq(resource)
+    end
   end
 end

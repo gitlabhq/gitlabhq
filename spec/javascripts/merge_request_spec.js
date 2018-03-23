@@ -1,4 +1,6 @@
 /* eslint-disable space-before-function-paren, no-return-assign */
+
+import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import MergeRequest from '~/merge_request';
@@ -27,7 +29,7 @@ import IssuablesHelper from '~/helpers/issuables_helper';
       });
 
       it('modifies the Markdown field', function() {
-        spyOn(jQuery, 'ajax').and.stub();
+        spyOn($, 'ajax').and.stub();
         const changeEvent = document.createEvent('HTMLEvents');
         changeEvent.initEvent('change', true, true);
         $('input[type=checkbox]').attr('checked', true)[0].dispatchEvent(changeEvent);
@@ -48,7 +50,7 @@ import IssuablesHelper from '~/helpers/issuables_helper';
 
     describe('class constructor', () => {
       beforeEach(() => {
-        spyOn(jQuery, 'ajax').and.stub();
+        spyOn($, 'ajax').and.stub();
       });
 
       it('calls .initCloseReopenReport', () => {

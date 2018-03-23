@@ -26,6 +26,7 @@
     = _("Pipelines for last year")
   %canvas#yearChart.padded{ height: 250 }
 
+-# haml-lint:disable InlineJavaScript
 %script#pipelinesChartsData{ type: "application/json" }
   - chartData = []
   - [:week, :month, :year].each do |scope|

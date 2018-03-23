@@ -1,5 +1,0 @@
----
-title: Fix issue with cache key being empty when variable used as the key
-merge_request: 17260
-author:
-type: fixed

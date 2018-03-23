@@ -27,7 +27,7 @@ describe Projects::CycleAnalyticsController do
         milestone = create(:milestone, project: project, created_at: 5.days.ago)
         issue.update(milestone: milestone)
 
-        create_merge_request_closing_issue(issue)
+        create_merge_request_closing_issue(user, project, issue)
       end
 
       it 'is false' do

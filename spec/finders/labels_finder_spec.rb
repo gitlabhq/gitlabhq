@@ -5,6 +5,8 @@ describe LabelsFinder do
     let(:group_1) { create(:group) }
     let(:group_2) { create(:group) }
     let(:group_3) { create(:group) }
+    let(:private_group_1) { create(:group, :private) }
+    let(:private_subgroup_1) { create(:group, :private, parent: private_group_1) }
 
     let(:project_1) { create(:project, namespace: group_1) }
     let(:project_2) { create(:project, namespace: group_2) }
@@ -20,6 +22,8 @@ describe LabelsFinder do
     let!(:group_label_1) { create(:group_label, group: group_1, title: 'Label 1 (group)') }
     let!(:group_label_2) { create(:group_label, group: group_1, title: 'Group Label 2') }
     let!(:group_label_3) { create(:group_label, group: group_2, title: 'Group Label 3') }
+    let!(:private_group_label_1) { create(:group_label, group: private_group_1, title: 'Private Group Label 1') }
+    let!(:private_subgroup_label_1) { create(:group_label, group: private_subgroup_1, title: 'Private Sub Group Label 1') }
 
     let(:user) { create(:user) }
 
@@ -64,6 +68,44 @@ describe LabelsFinder do
           finder = described_class.new(user, group_id: group_1.id, only_group_labels: true)
 
           expect(finder.execute).to eq [group_label_2, group_label_1]
+        end
+      end
+
+      context 'when including labels from group ancestors', :nested_groups do
+        it 'returns labels from group and its ancestors' do
+          private_group_1.add_developer(user)
+          private_subgroup_1.add_developer(user)
+
+          finder = described_class.new(user, group_id: private_subgroup_1.id, only_group_labels: true, include_ancestor_groups: true)
+
+          expect(finder.execute).to eq [private_group_label_1, private_subgroup_label_1]
+        end
+
+        it 'ignores labels from groups which user can not read' do
+          private_subgroup_1.add_developer(user)
+
+          finder = described_class.new(user, group_id: private_subgroup_1.id, only_group_labels: true, include_ancestor_groups: true)
+
+          expect(finder.execute).to eq [private_subgroup_label_1]
+        end
+      end
+
+      context 'when including labels from group descendants', :nested_groups do
+        it 'returns labels from group and its descendants' do
+          private_group_1.add_developer(user)
+          private_subgroup_1.add_developer(user)
+
+          finder = described_class.new(user, group_id: private_group_1.id, only_group_labels: true, include_descendant_groups: true)
+
+          expect(finder.execute).to eq [private_group_label_1, private_subgroup_label_1]
+        end
+
+        it 'ignores labels from groups which user can not read' do
+          private_subgroup_1.add_developer(user)
+
+          finder = described_class.new(user, group_id: private_group_1.id, only_group_labels: true, include_descendant_groups: true)
+
+          expect(finder.execute).to eq [private_subgroup_label_1]
         end
       end
     end

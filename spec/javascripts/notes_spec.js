@@ -1,4 +1,5 @@
 /* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, max-len */
+import $ from 'jquery';
 import _ from 'underscore';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
@@ -34,6 +35,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
 
   describe('Notes', function() {
     const FLASH_TYPE_ALERT = 'alert';
+    const NOTES_POST_PATH = /(.*)\/notes\?html=true$/;
     var commentsTemplate = 'merge_requests/merge_request_with_comment.html.raw';
     preloadFixtures(commentsTemplate);
 
@@ -154,7 +156,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         $form.find('textarea.js-note-text').val(sampleComment);
 
         mock = new MockAdapter(axios);
-        mock.onPost(/(.*)\/notes$/).reply(200, noteEntity);
+        mock.onPost(NOTES_POST_PATH).reply(200, noteEntity);
       });
 
       afterEach(() => {
@@ -506,11 +508,11 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
       let mock;
 
       function mockNotesPost() {
-        mock.onPost(/(.*)\/notes$/).reply(200, note);
+        mock.onPost(NOTES_POST_PATH).reply(200, note);
       }
 
       function mockNotesPostError() {
-        mock.onPost(/(.*)\/notes$/).networkError();
+        mock.onPost(NOTES_POST_PATH).networkError();
       }
 
       beforeEach(() => {
@@ -631,7 +633,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
 
       beforeEach(() => {
         mock = new MockAdapter(axios);
-        mock.onPost(/(.*)\/notes$/).reply(200, note);
+        mock.onPost(NOTES_POST_PATH).reply(200, note);
 
         this.notes = new Notes('', []);
         window.gon.current_username = 'root';
@@ -684,7 +686,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
 
       beforeEach(() => {
         mock = new MockAdapter(axios);
-        mock.onPost(/(.*)\/notes$/).reply(200, note);
+        mock.onPost(NOTES_POST_PATH).reply(200, note);
 
         this.notes = new Notes('', []);
         window.gon.current_username = 'root';

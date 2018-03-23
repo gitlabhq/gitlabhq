@@ -6,6 +6,32 @@ module API
 
     helpers ::Gitlab::IssuableMetadata
 
+    # EE::API::MergeRequests would override the following helpers
+    helpers do
+      params :optional_params_ee do
+      end
+
+      params :merge_params_ee do
+      end
+
+      def update_merge_request_ee(merge_request)
+      end
+    end
+
+    def self.update_params_at_least_one_of
+      %i[
+        assignee_id
+        description
+        labels
+        milestone_id
+        remove_source_branch
+        state_event
+        target_branch
+        title
+        discussion_locked
+      ]
+    end
+
     helpers do
       def find_merge_requests(args = {})
         args = declared_params.merge(args)
@@ -31,6 +57,12 @@ module API
         mr.all_pipelines
       end
 
+      def check_sha_param!(params, merge_request)
+        if params[:sha] && merge_request.diff_head_sha != params[:sha]
+          render_api_error!("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}", 409)
+        end
+      end
+
       params :merge_requests_params do
         optional :state, type: String, values: %w[opened closed merged all], default: 'all',
                          desc: 'Return opened, closed, merged, or all merge requests'
@@ -42,12 +74,16 @@ module API
         optional :labels, type: String, desc: 'Comma-separated list of label names'
         optional :created_after, type: DateTime, desc: 'Return merge requests created after the specified time'
         optional :created_before, type: DateTime, desc: 'Return merge requests created before the specified time'
+        optional :updated_after, type: DateTime, desc: 'Return merge requests updated after the specified time'
+        optional :updated_before, type: DateTime, desc: 'Return merge requests updated before the specified time'
         optional :view, type: String, values: %w[simple], desc: 'If simple, returns the `iid`, URL, title, description, and basic state of merge request'
         optional :author_id, type: Integer, desc: 'Return merge requests which are authored by the user with the given ID'
         optional :assignee_id, type: Integer, desc: 'Return merge requests which are assigned to the user with the given ID'
         optional :scope, type: String, values: %w[created-by-me assigned-to-me all],
                          desc: 'Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`'
         optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
+        optional :source_branch, type: String, desc: 'Return merge requests with the given source branch'
+        optional :target_branch, type: String, desc: 'Return merge requests with the given target branch'
         optional :search, type: String, desc: 'Search merge requests for text present in the title or description'
         use :pagination
       end
@@ -102,16 +138,15 @@ module API
           render_api_error!(errors, 400)
         end
 
-        params :optional_params_ce do
+        params :optional_params do
           optional :description, type: String, desc: 'The description of the merge request'
           optional :assignee_id, type: Integer, desc: 'The ID of a user to assign the merge request'
           optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign the merge request'
           optional :labels, type: String, desc: 'Comma-separated list of label names'
           optional :remove_source_branch, type: Boolean, desc: 'Remove source branch when merging'
-        end
+          optional :allow_maintainer_to_push, type: Boolean, desc: 'Whether a maintainer of the target project can push to the source project'
 
-        params :optional_params do
-          use :optional_params_ce
+          use :optional_params_ee
         end
       end
 
@@ -220,7 +255,7 @@ module API
       get ':id/merge_requests/:merge_request_iid/changes' do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
-        present merge_request, with: Entities::MergeRequestChanges, current_user: current_user
+        present merge_request, with: Entities::MergeRequestChanges, current_user: current_user, project: user_project
       end
 
       desc 'Get the merge request pipelines' do
@@ -236,18 +271,6 @@ module API
         success Entities::MergeRequest
       end
       params do
-        # CE
-        at_least_one_of_ce = [
-          :assignee_id,
-          :description,
-          :labels,
-          :milestone_id,
-          :remove_source_branch,
-          :state_event,
-          :target_branch,
-          :title,
-          :discussion_locked
-        ]
         optional :title, type: String, allow_blank: false, desc: 'The title of the merge request'
         optional :target_branch, type: String, allow_blank: false, desc: 'The target branch'
         optional :state_event, type: String, values: %w[close reopen],
@@ -255,7 +278,7 @@ module API
         optional :discussion_locked, type: Boolean, desc: 'Whether the MR discussion is locked'
 
         use :optional_params
-        at_least_one_of(*at_least_one_of_ce)
+        at_least_one_of(*::API::MergeRequests.update_params_at_least_one_of)
       end
       put ':id/merge_requests/:merge_request_iid' do
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42318')
@@ -278,13 +301,14 @@ module API
         success Entities::MergeRequest
       end
       params do
-        # CE
         optional :merge_commit_message, type: String, desc: 'Custom merge commit message'
         optional :should_remove_source_branch, type: Boolean,
                                                desc: 'When true, the source branch will be deleted if possible'
         optional :merge_when_pipeline_succeeds, type: Boolean,
                                                 desc: 'When true, this merge request will be merged when the pipeline succeeds'
         optional :sha, type: String, desc: 'When present, must have the HEAD SHA of the source branch'
+
+        use :merge_params_ee
       end
       put ':id/merge_requests/:merge_request_iid/merge' do
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42317')
@@ -300,9 +324,9 @@ module API
 
         render_api_error!('Branch cannot be merged', 406) unless merge_request.mergeable?(skip_ci_check: merge_when_pipeline_succeeds)
 
-        if params[:sha] && merge_request.diff_head_sha != params[:sha]
-          render_api_error!("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}", 409)
-        end
+        check_sha_param!(params, merge_request)
+
+        update_merge_request_ee(merge_request)
 
         merge_params = {
           commit_message: params[:merge_commit_message],

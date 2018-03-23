@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import AjaxLoadingSpinner from '~/ajax_loading_spinner';
 
 describe('Ajax Loading Spinner', () => {
@@ -10,7 +11,7 @@ describe('Ajax Loading Spinner', () => {
   });
 
   it('change current icon with spinner icon and disable link while waiting ajax response', (done) => {
-    spyOn(jQuery, 'ajax').and.callFake((req) => {
+    spyOn($, 'ajax').and.callFake((req) => {
       const xhr = new XMLHttpRequest();
       const ajaxLoadingSpinner = document.querySelector('.js-ajax-loading-spinner');
       const icon = ajaxLoadingSpinner.querySelector('i');
@@ -33,7 +34,7 @@ describe('Ajax Loading Spinner', () => {
   });
 
   it('use original icon again and enabled the link after complete the ajax request', (done) => {
-    spyOn(jQuery, 'ajax').and.callFake((req) => {
+    spyOn($, 'ajax').and.callFake((req) => {
       const xhr = new XMLHttpRequest();
       const ajaxLoadingSpinner = document.querySelector('.js-ajax-loading-spinner');
 

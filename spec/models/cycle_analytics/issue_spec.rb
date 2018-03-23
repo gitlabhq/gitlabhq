@@ -26,8 +26,8 @@ describe 'CycleAnalytics#issue' do
                              end]],
     post_fn: -> (context, data) do
       if data[:issue].persisted?
-        context.create_merge_request_closing_issue(data[:issue].reload)
-        context.merge_merge_requests_closing_issue(data[:issue])
+        context.create_merge_request_closing_issue(context.user, context.project, data[:issue].reload)
+        context.merge_merge_requests_closing_issue(context.user, context.project, data[:issue])
       end
     end)
 
@@ -37,8 +37,8 @@ describe 'CycleAnalytics#issue' do
       issue = create(:issue, project: project)
       issue.update(label_ids: [regular_label.id])
 
-      create_merge_request_closing_issue(issue)
-      merge_merge_requests_closing_issue(issue)
+      create_merge_request_closing_issue(user, project, issue)
+      merge_merge_requests_closing_issue(user, project, issue)
 
       expect(subject[:issue].median).to be_nil
     end

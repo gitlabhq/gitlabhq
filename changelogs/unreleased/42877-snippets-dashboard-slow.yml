@@ -1,5 +1,0 @@
----
-title: Improve query performance for snippets dashboard.
-merge_request: 17088
-author:
-type: performance

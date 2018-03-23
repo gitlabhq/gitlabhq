@@ -29,7 +29,10 @@ describe('Importer Status', () => {
       `);
       spyOn(ImporterStatus.prototype, 'initStatusPage').and.callFake(() => {});
       spyOn(ImporterStatus.prototype, 'setAutoUpdate').and.callFake(() => {});
-      instance = new ImporterStatus('', importUrl);
+      instance = new ImporterStatus({
+        jobsUrl: '',
+        importUrl,
+      });
     });
 
     it('sets table row to active after post request', (done) => {
@@ -65,7 +68,9 @@ describe('Importer Status', () => {
 
       spyOn(ImporterStatus.prototype, 'initStatusPage').and.callFake(() => {});
       spyOn(ImporterStatus.prototype, 'setAutoUpdate').and.callFake(() => {});
-      instance = new ImporterStatus(jobsUrl);
+      instance = new ImporterStatus({
+        jobsUrl,
+      });
     });
 
     function setupMock(importStatus) {
@@ -86,17 +91,17 @@ describe('Importer Status', () => {
 
     it('sets the job status to done', (done) => {
       setupMock('finished');
-      expectJobStatus(done, 'done');
+      expectJobStatus(done, 'Done');
     });
 
     it('sets the job status to scheduled', (done) => {
       setupMock('scheduled');
-      expectJobStatus(done, 'scheduled');
+      expectJobStatus(done, 'Scheduled');
     });
 
     it('sets the job status to started', (done) => {
       setupMock('started');
-      expectJobStatus(done, 'started');
+      expectJobStatus(done, 'Started');
     });
 
     it('sets the job status to custom status', (done) => {

@@ -34,6 +34,8 @@ describe Oauth::AuthorizationsController do
     end
 
     context 'with valid params' do
+      render_views
+
       it 'returns 200 code and renders view' do
         get :new, params
 

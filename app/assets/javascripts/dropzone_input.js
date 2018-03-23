@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Dropzone from 'dropzone';
 import _ from 'underscore';
 import './preview_markdown';

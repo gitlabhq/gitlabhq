@@ -272,7 +272,7 @@
 
   .divider {
     height: 1px;
-    margin: 6px 0;
+    margin: #{$grid-size / 2} 0;
     padding: 0;
     background-color: $dropdown-divider-color;
 

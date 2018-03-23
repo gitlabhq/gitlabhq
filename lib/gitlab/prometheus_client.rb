@@ -1,8 +1,9 @@
 module Gitlab
-  PrometheusError = Class.new(StandardError)
-
   # Helper methods to interact with Prometheus network services & resources
   class PrometheusClient
+    Error = Class.new(StandardError)
+    QueryError = Class.new(Gitlab::PrometheusClient::Error)
+
     attr_reader :rest_client, :headers
 
     def initialize(rest_client)
@@ -22,10 +23,10 @@ module Gitlab
     def query_range(query, start: 8.hours.ago, stop: Time.now)
       get_result('matrix') do
         json_api_get('query_range',
-          query: query,
-          start: start.to_f,
-          end: stop.to_f,
-          step: 1.minute.to_i)
+                     query: query,
+                     start: start.to_f,
+                     end: stop.to_f,
+                     step: 1.minute.to_i)
       end
     end
 
@@ -43,22 +44,26 @@ module Gitlab
       path = ['api', 'v1', type].join('/')
       get(path, args)
     rescue JSON::ParserError
-      raise PrometheusError, 'Parsing response failed'
+      raise PrometheusClient::Error, 'Parsing response failed'
     rescue Errno::ECONNREFUSED
-      raise PrometheusError, 'Connection refused'
+      raise PrometheusClient::Error, 'Connection refused'
     end
 
     def get(path, args)
       response = rest_client[path].get(params: args)
       handle_response(response)
     rescue SocketError
-      raise PrometheusError, "Can't connect to #{rest_client.url}"
+      raise PrometheusClient::Error, "Can't connect to #{rest_client.url}"
     rescue OpenSSL::SSL::SSLError
-      raise PrometheusError, "#{rest_client.url} contains invalid SSL data"
+      raise PrometheusClient::Error, "#{rest_client.url} contains invalid SSL data"
     rescue RestClient::ExceptionWithResponse => ex
-      handle_exception_response(ex.response)
+      if ex.response
+        handle_exception_response(ex.response)
+      else
+        raise PrometheusClient::Error, "Network connection error"
+      end
     rescue RestClient::Exception
-      raise PrometheusError, "Network connection error"
+      raise PrometheusClient::Error, "Network connection error"
     end
 
     def handle_response(response)
@@ -66,16 +71,18 @@ module Gitlab
       if response.code == 200 && json_data['status'] == 'success'
         json_data['data'] || {}
       else
-        raise PrometheusError, "#{response.code} - #{response.body}"
+        raise PrometheusClient::Error, "#{response.code} - #{response.body}"
       end
     end
 
     def handle_exception_response(response)
-      if response.code == 400
+      if response.code == 200 && response['status'] == 'success'
+        response['data'] || {}
+      elsif response.code == 400
         json_data = JSON.parse(response.body)
-        raise PrometheusError, json_data['error'] || 'Bad data received'
+        raise PrometheusClient::QueryError, json_data['error'] || 'Bad data received'
       else
-        raise PrometheusError, "#{response.code} - #{response.body}"
+        raise PrometheusClient::Error, "#{response.code} - #{response.body}"
       end
     end
 

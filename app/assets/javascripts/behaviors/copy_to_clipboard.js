@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Clipboard from 'clipboard';
 
 function showTooltip(target, title) {

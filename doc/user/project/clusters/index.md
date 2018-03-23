@@ -109,6 +109,41 @@ you will be notified.
 You can now proceed to install some pre-defined applications and then
 enable the Kubernetes cluster integration.
 
+## Security implications
+
+CAUTION: **Important:**
+The whole cluster security is based on a model where [developers](../../permissions.md)
+are trusted, so **only trusted users should be allowed to control your clusters**.
+
+The default cluster configuration grants access to a wide set of
+functionalities needed to successfully build and deploy a containerized
+application. Bare in mind that the same credentials are used for all the
+applications running on the cluster.
+
+When GitLab creates the cluster, it enables and uses the legacy
+[Attribute-based access control (ABAC)](https://kubernetes.io/docs/admin/authorization/abac/).
+The newer [RBAC](https://kubernetes.io/docs/admin/authorization/rbac/)
+authorization will be supported in a
+[future release](https://gitlab.com/gitlab-org/gitlab-ce/issues/29398).
+
+### Security of GitLab Runners
+
+GitLab Runners have the [privileged mode](https://docs.gitlab.com/runner/executors/docker.html#the-privileged-mode)
+enabled by default, which allows them to execute special commands and running
+Docker in Docker. This functionality is needed to run some of the [Auto DevOps]
+jobs. This implies the containers are running in privileged mode and you should,
+therefore, be aware of some important details.
+
+The privileged flag gives all capabilities to the running container, which in
+turn can do almost everything that the host can do. Be aware of the
+inherent security risk associated with performing `docker run` operations on
+arbitrary images as they effectively have root access.
+
+If you don't want to use GitLab Runner in privileged mode, first make sure that
+you don't have it installed via the applications, and then use the
+[Runner's Helm chart](../../../install/kubernetes/gitlab_runner_chart.md) to
+install it manually.
+
 ## Installing applications
 
 GitLab provides a one-click install for various applications which will be
@@ -118,15 +153,16 @@ added directly to your configured cluster. Those applications are needed for
 | Application | GitLab version | Description |
 | ----------- | :------------: | ----------- |
 | [Helm Tiller](https://docs.helm.sh/) | 10.2+ | Helm is a package manager for Kubernetes and is required to install all the other applications. It will be automatically installed as a dependency when you try to install a different app. It is installed in its own pod inside the cluster which can run the `helm` CLI in a safe environment. |
-| [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) | 10.2+ | Ingress can provide load balancing, SSL termination, and name-based virtual hosting. It acts as a web proxy for your applications and is useful if you want to use [Auto DevOps](../../../topics/autodevops/index.md) or deploy your own web apps. |
+| [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) | 10.2+ | Ingress can provide load balancing, SSL termination, and name-based virtual hosting. It acts as a web proxy for your applications and is useful if you want to use [Auto DevOps] or deploy your own web apps. |
 | [Prometheus](https://prometheus.io/docs/introduction/overview/) | 10.4+ | Prometheus is an open-source monitoring and alerting system useful to supervise your deployed applications |
+| [GitLab Runner](https://docs.gitlab.com/runner/) | 10.6+ | GitLab Runner is the open source project that is used to run your jobs and send the results back to GitLab. It is used in conjunction with [GitLab CI/CD](https://about.gitlab.com/features/gitlab-ci-cd/), the open-source continuous integration service included with GitLab that coordinates the jobs. When installing the GitLab Runner via the applications, it will run in **privileged mode** by default. Make sure you read the [security implications](#security-implications) before doing so. |
 
 ## Getting the external IP address
 
 NOTE: **Note:**
 You need a load balancer installed in your cluster in order to obtain the
 external IP address with the following procedure. It can be deployed using the
-[**Ingress** application](#installing-appplications).
+[**Ingress** application](#installing-applications).
 
 In order to publish your web application, you first need to find the external IP
 address associated to your load balancer.
@@ -328,3 +364,4 @@ the deployment variables above, ensuring any pods you create are labelled with
 
 [permissions]: ../../permissions.md
 [ee]: https://about.gitlab.com/products/
+[Auto DevOps]: ../../../topics/autodevops/index.md

@@ -1,12 +1,13 @@
 /* eslint-disable comma-dangle, space-before-function-paren, no-new */
 
+import $ from 'jquery';
 import Vue from 'vue';
 import Flash from '../../flash';
 import { __ } from '../../locale';
 import Sidebar from '../../right_sidebar';
 import eventHub from '../../sidebar/event_hub';
-import assigneeTitle from '../../sidebar/components/assignees/assignee_title';
-import assignees from '../../sidebar/components/assignees/assignees';
+import assigneeTitle from '../../sidebar/components/assignees/assignee_title.vue';
+import assignees from '../../sidebar/components/assignees/assignees.vue';
 import DueDateSelectors from '../../due_date_select';
 import './sidebar/remove_issue';
 import IssuableContext from '../../issuable_context';

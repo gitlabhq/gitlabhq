@@ -18,11 +18,11 @@ describe 'CycleAnalytics#code' do
                                end]],
       end_time_conditions: [["merge request that closes issue is created",
                              -> (context, data) do
-                               context.create_merge_request_closing_issue(data[:issue])
+                               context.create_merge_request_closing_issue(context.user, context.project, data[:issue])
                              end]],
       post_fn: -> (context, data) do
-        context.merge_merge_requests_closing_issue(data[:issue])
-        context.deploy_master
+        context.merge_merge_requests_closing_issue(context.user, context.project, data[:issue])
+        context.deploy_master(context.user, context.project)
       end)
 
     context "when a regular merge request (that doesn't close the issue) is created" do
@@ -30,10 +30,10 @@ describe 'CycleAnalytics#code' do
         issue = create(:issue, project: project)
 
         create_commit_referencing_issue(issue)
-        create_merge_request_closing_issue(issue, message: "Closes nothing")
+        create_merge_request_closing_issue(user, project, issue, message: "Closes nothing")
 
-        merge_merge_requests_closing_issue(issue)
-        deploy_master
+        merge_merge_requests_closing_issue(user, project, issue)
+        deploy_master(user, project)
 
         expect(subject[:code].median).to be_nil
       end
@@ -50,10 +50,10 @@ describe 'CycleAnalytics#code' do
                                end]],
       end_time_conditions: [["merge request that closes issue is created",
                              -> (context, data) do
-                               context.create_merge_request_closing_issue(data[:issue])
+                               context.create_merge_request_closing_issue(context.user, context.project, data[:issue])
                              end]],
       post_fn: -> (context, data) do
-        context.merge_merge_requests_closing_issue(data[:issue])
+        context.merge_merge_requests_closing_issue(context.user, context.project, data[:issue])
       end)
 
     context "when a regular merge request (that doesn't close the issue) is created" do
@@ -61,9 +61,9 @@ describe 'CycleAnalytics#code' do
         issue = create(:issue, project: project)
 
         create_commit_referencing_issue(issue)
-        create_merge_request_closing_issue(issue, message: "Closes nothing")
+        create_merge_request_closing_issue(user, project, issue, message: "Closes nothing")
 
-        merge_merge_requests_closing_issue(issue)
+        merge_merge_requests_closing_issue(user, project, issue)
 
         expect(subject[:code].median).to be_nil
       end

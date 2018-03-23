@@ -61,6 +61,11 @@ class ProjectPolicy < BasePolicy
   desc "Project has request access enabled"
   condition(:request_access_enabled, scope: :subject) { project.request_access_enabled }
 
+  desc "Has merge requests allowing pushes to user"
+  condition(:has_merge_requests_allowing_pushes, scope: :subject) do
+    project.merge_requests_allowing_push_to_user(user).any?
+  end
+
   features = %w[
     merge_requests
     issues
@@ -289,6 +294,15 @@ class ProjectPolicy < BasePolicy
     prevent :update_issue
     prevent :admin_issue
     prevent :read_issue
+  end
+
+  # These rules are included to allow maintainers of projects to push to certain
+  # to run pipelines for the branches they have access to.
+  rule { can?(:public_access) & has_merge_requests_allowing_pushes }.policy do
+    enable :create_build
+    enable :update_build
+    enable :create_pipeline
+    enable :update_pipeline
   end
 
   private

@@ -1,4 +1,5 @@
 module LabelsHelper
+  extend self
   include ActionView::Helpers::TagHelper
 
   def show_label_issuables_link?(label, issuables_type, current_user: nil, project: nil)
@@ -170,6 +171,39 @@ module LabelsHelper
     case label
     when GroupLabel then 'Remove this label? This will affect all projects within the group. Are you sure?'
     when ProjectLabel then 'Remove this label? Are you sure?'
+    end
+  end
+
+  def create_label_title(subject)
+    case subject
+    when Group
+      _('Create group label')
+    when Project
+      _('Create project label')
+    else
+      _('Create new label')
+    end
+  end
+
+  def manage_labels_title(subject)
+    case subject
+    when Group
+      _('Manage group labels')
+    when Project
+      _('Manage project labels')
+    else
+      _('Manage labels')
+    end
+  end
+
+  def view_labels_title(subject)
+    case subject
+    when Group
+      _('View group labels')
+    when Project
+      _('View project labels')
+    else
+      _('View labels')
     end
   end
 

@@ -49,15 +49,13 @@ module TreeHelper
 
     return false unless on_top_of_branch?(project, ref)
 
-    can_collaborate_with_project?(project)
+    can_collaborate_with_project?(project, ref: ref)
   end
 
   def tree_edit_branch(project = @project, ref = @ref)
     return unless can_edit_tree?(project, ref)
 
-    project = project.present(current_user: current_user)
-
-    if project.can_current_user_push_to_branch?(ref)
+    if user_access(project).can_push_to_branch?(ref)
       ref
     else
       project = tree_edit_project(project)
@@ -83,8 +81,21 @@ module TreeHelper
       " A fork of this project has been created that you can make changes in, so you can submit a merge request."
   end
 
+  def edit_in_new_fork_notice_action(action)
+    edit_in_new_fork_notice + " Try to #{action} this file again."
+  end
+
   def commit_in_fork_help
-    "A new branch will be created in your fork and a new merge request will be started."
+    _("A new branch will be created in your fork and a new merge request will be started.")
+  end
+
+  def commit_in_single_accessible_branch
+    branch_name = html_escape(selected_branch)
+
+    message = _("Your changes can be committed to %{branch_name} because a merge "\
+                "request is open.") % { branch_name: "<strong>#{branch_name}</strong>" }
+
+    message.html_safe
   end
 
   def path_breadcrumbs(max_links = 6)
@@ -120,5 +131,9 @@ module TreeHelper
     else
       return tree.name
     end
+  end
+
+  def selected_branch
+    @branch_name || tree_edit_branch
   end
 end

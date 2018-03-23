@@ -31,6 +31,9 @@ class Group < Namespace
 
   has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
+  has_many :boards
+  has_many :badges, class_name: 'GroupBadge'
+
   accepts_nested_attributes_for :variables, allow_destroy: true
 
   validate :visibility_level_allowed_by_projects

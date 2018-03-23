@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars, space-before-function-paren, func-call-spacing, no-spaced-func, semi, max-len, quotes, space-infix-ops, padded-blocks */
 
+import $ from 'jquery';
 import Vue from 'vue';
 
 import timeTracker from '~/sidebar/components/time_tracking/time_tracker.vue';

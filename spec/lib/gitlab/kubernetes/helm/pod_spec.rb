@@ -5,13 +5,9 @@ describe Gitlab::Kubernetes::Helm::Pod do
     let(:cluster) { create(:cluster) }
     let(:app) {  create(:clusters_applications_prometheus, cluster: cluster) }
     let(:command) {  app.install_command }
-    let(:client) { double('kubernetes client') }
-    let(:namespace) { Gitlab::Kubernetes::Namespace.new(Gitlab::Kubernetes::Helm::NAMESPACE, client) }
-    subject { described_class.new(command, namespace.name, client) }
+    let(:namespace) { Gitlab::Kubernetes::Helm::NAMESPACE }
 
-    before do
-      allow(client).to receive(:create_config_map).and_return(nil)
-    end
+    subject { described_class.new(command, namespace) }
 
     shared_examples 'helm pod' do
       it 'should generate a Kubeclient::Resource' do
@@ -47,7 +43,7 @@ describe Gitlab::Kubernetes::Helm::Pod do
       end
     end
 
-    context 'with a configuration file' do
+    context 'with a install command' do
       it_behaves_like 'helm pod'
 
       it 'should include volumes for the container' do
@@ -62,14 +58,14 @@ describe Gitlab::Kubernetes::Helm::Pod do
       end
 
       it 'should mount configMap specification in the volume' do
-        spec = subject.generate.spec
-        expect(spec.volumes.first.configMap['name']).to eq("values-content-configuration-#{app.name}")
-        expect(spec.volumes.first.configMap['items'].first['key']).to eq('values')
-        expect(spec.volumes.first.configMap['items'].first['path']).to eq('values.yaml')
+        volume = subject.generate.spec.volumes.first
+        expect(volume.configMap['name']).to eq("values-content-configuration-#{app.name}")
+        expect(volume.configMap['items'].first['key']).to eq('values')
+        expect(volume.configMap['items'].first['path']).to eq('values.yaml')
       end
     end
 
-    context 'without a configuration file' do
+    context 'with a init command' do
       let(:app) { create(:clusters_applications_helm, cluster: cluster) }
 
       it_behaves_like 'helm pod'

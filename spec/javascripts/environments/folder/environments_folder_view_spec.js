@@ -1,9 +1,9 @@
 import _ from 'underscore';
 import Vue from 'vue';
 import environmentsFolderViewComponent from '~/environments/folder/environments_folder_view.vue';
+import { headersInterceptor } from 'spec/helpers/vue_resource_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { environmentsList } from '../mock_data';
-import { headersInterceptor } from '../../helpers/vue_resource_helper';
-import mountComponent from '../../helpers/vue_mount_component_helper';
 
 describe('Environments Folder View', () => {
   let Component;

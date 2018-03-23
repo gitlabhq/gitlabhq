@@ -1,0 +1,5 @@
+---
+title: Enable filtering MR list based on clicked label in MR sidebar
+merge_request: 17390
+author:
+type: fixed

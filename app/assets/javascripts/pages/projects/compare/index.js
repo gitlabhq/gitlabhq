@@ -1,5 +1,3 @@
 import initCompareAutocomplete from '~/compare_autocomplete';
 
-export default () => {
-  initCompareAutocomplete();
-};
+document.addEventListener('DOMContentLoaded', initCompareAutocomplete);

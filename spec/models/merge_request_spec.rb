@@ -1544,7 +1544,7 @@ describe MergeRequest do
     end
 
     it "executes diff cache service" do
-      expect_any_instance_of(MergeRequests::MergeRequestDiffCacheService).to receive(:execute).with(subject)
+      expect_any_instance_of(MergeRequests::MergeRequestDiffCacheService).to receive(:execute).with(subject, an_instance_of(MergeRequestDiff))
 
       subject.reload_diff
     end
@@ -2082,6 +2082,84 @@ describe MergeRequest do
 
     context 'when Gitaly rebase_in_progress is enabled', :disable_gitaly do
       it_behaves_like 'checking whether a rebase is in progress'
+    end
+  end
+
+  describe '#allow_maintainer_to_push' do
+    let(:merge_request) do
+      build(:merge_request, source_branch: 'fixes', allow_maintainer_to_push: true)
+    end
+
+    it 'is false when pushing by a maintainer is not possible' do
+      expect(merge_request).to receive(:maintainer_push_possible?) { false }
+
+      expect(merge_request.allow_maintainer_to_push).to be_falsy
+    end
+
+    it 'is true when pushing by a maintainer is possible' do
+      expect(merge_request).to receive(:maintainer_push_possible?) { true }
+
+      expect(merge_request.allow_maintainer_to_push).to be_truthy
+    end
+  end
+
+  describe '#maintainer_push_possible?' do
+    let(:merge_request) do
+      build(:merge_request, source_branch: 'fixes')
+    end
+
+    before do
+      allow(ProtectedBranch).to receive(:protected?) { false }
+    end
+
+    it 'does not allow maintainer to push if the source project is the same as the target' do
+      merge_request.target_project = merge_request.source_project = create(:project, :public)
+
+      expect(merge_request.maintainer_push_possible?).to be_falsy
+    end
+
+    it 'allows maintainer to push when both source and target are public' do
+      merge_request.target_project = build(:project, :public)
+      merge_request.source_project = build(:project, :public)
+
+      expect(merge_request.maintainer_push_possible?).to be_truthy
+    end
+
+    it 'is not available for protected branches' do
+      merge_request.target_project = build(:project, :public)
+      merge_request.source_project = build(:project, :public)
+
+      expect(ProtectedBranch).to receive(:protected?)
+                                   .with(merge_request.source_project, 'fixes')
+                                   .and_return(true)
+
+      expect(merge_request.maintainer_push_possible?).to be_falsy
+    end
+  end
+
+  describe '#can_allow_maintainer_to_push?' do
+    let(:target_project) { create(:project, :public) }
+    let(:source_project) { fork_project(target_project) }
+    let(:merge_request) do
+      create(:merge_request,
+             source_project: source_project,
+             source_branch: 'fixes',
+             target_project: target_project)
+    end
+    let(:user) { create(:user) }
+
+    before do
+      allow(merge_request).to receive(:maintainer_push_possible?) { true }
+    end
+
+    it 'is false if the user does not have push access to the source project' do
+      expect(merge_request.can_allow_maintainer_to_push?(user)).to be_falsy
+    end
+
+    it 'is true when the user has push access to the source project' do
+      source_project.add_developer(user)
+
+      expect(merge_request.can_allow_maintainer_to_push?(user)).to be_truthy
     end
   end
 end

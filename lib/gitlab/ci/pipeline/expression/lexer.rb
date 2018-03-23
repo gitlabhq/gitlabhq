@@ -3,6 +3,8 @@ module Gitlab
     module Pipeline
       module Expression
         class Lexer
+          include ::Gitlab::Utils::StrongMemoize
+
           LEXEMES = [
             Expression::Lexeme::Variable,
             Expression::Lexeme::String,
@@ -10,34 +12,45 @@ module Gitlab
             Expression::Lexeme::Equals
           ].freeze
 
-          MAX_CYCLES = 5
           SyntaxError = Class.new(Statement::StatementError)
 
-          def initialize(statement)
+          MAX_TOKENS = 100
+
+          def initialize(statement, max_tokens: MAX_TOKENS)
             @scanner = StringScanner.new(statement)
-            @tokens = []
+            @max_tokens = max_tokens
           end
 
           def tokens
-            return @tokens if @tokens.any?
-
-            MAX_CYCLES.times do
-              LEXEMES.each do |lexeme|
-                @scanner.skip(/\s+/) # ignore whitespace
-
-                lexeme.scan(@scanner).tap do |token|
-                  @tokens.push(token) if token.present?
-                end
-
-                return @tokens if @scanner.eos?
-              end
-            end
-
-            raise Lexer::SyntaxError unless @scanner.eos?
+            strong_memoize(:tokens) { tokenize }
           end
 
           def lexemes
             tokens.map(&:to_lexeme)
+          end
+
+          private
+
+          def tokenize
+            tokens = []
+
+            @max_tokens.times do
+              @scanner.skip(/\s+/) # ignore whitespace
+
+              return tokens if @scanner.eos?
+
+              lexeme = LEXEMES.find do |type|
+                type.scan(@scanner).tap do |token|
+                  tokens.push(token) if token.present?
+                end
+              end
+
+              unless lexeme.present?
+                raise Lexer::SyntaxError, 'Unknown lexeme found!'
+              end
+            end
+
+            raise Lexer::SyntaxError, 'Too many tokens!'
           end
         end
       end

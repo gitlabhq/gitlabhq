@@ -7,6 +7,7 @@ module Ci
                 Gitlab::Ci::Pipeline::Chain::Validate::Repository,
                 Gitlab::Ci::Pipeline::Chain::Validate::Config,
                 Gitlab::Ci::Pipeline::Chain::Skip,
+                Gitlab::Ci::Pipeline::Chain::Populate,
                 Gitlab::Ci::Pipeline::Chain::Create].freeze
 
     def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, &block)
@@ -81,7 +82,7 @@ module Ci
     end
 
     def related_merge_requests
-      MergeRequest.opened.where(source_project: pipeline.project, source_branch: pipeline.ref)
+      pipeline.project.source_of_merge_requests.opened.where(source_branch: pipeline.ref)
     end
   end
 end

@@ -34,6 +34,7 @@ describe Projects::UpdatePagesService do
           context 'with expiry date' do
             before do
               build.artifacts_expire_in = "2 days"
+              build.save!
             end
 
             it "doesn't delete artifacts" do
@@ -105,6 +106,7 @@ describe Projects::UpdatePagesService do
         context 'with expiry date' do
           before do
             build.artifacts_expire_in = "2 days"
+            build.save!
           end
 
           it "doesn't delete artifacts" do
@@ -158,6 +160,20 @@ describe Projects::UpdatePagesService do
         build.job_artifacts_archive.update_attributes(file: empty_file)
 
         expect(execute).not_to eq(:success)
+      end
+
+      context 'when timeout happens by DNS error' do
+        before do
+          allow_any_instance_of(described_class)
+            .to receive(:extract_zip_archive!).and_raise(SocketError)
+        end
+
+        it 'raises an error' do
+          expect { execute }.to raise_error(SocketError)
+
+          build.reload
+          expect(build.artifacts?).to eq(true)
+        end
       end
     end
   end

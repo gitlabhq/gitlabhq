@@ -28,8 +28,8 @@ feature 'Dashboard Merge Requests' do
       find('.new-project-item-select-button').click
 
       page.within('.select2-results') do
-        expect(page).to have_content(project.name_with_namespace)
-        expect(page).not_to have_content(project_with_disabled_merge_requests.name_with_namespace)
+        expect(page).to have_content(project.full_name)
+        expect(page).not_to have_content(project_with_disabled_merge_requests.full_name)
       end
     end
   end

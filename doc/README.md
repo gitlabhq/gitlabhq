@@ -1,5 +1,4 @@
 ---
-toc: false
 comments: false
 ---
 
@@ -8,15 +7,9 @@ comments: false
 Welcome to [GitLab](https://about.gitlab.com/), a Git-based fully featured
 platform for software development!
 
-GitLab offers the most scalable Git-based fully integrated platform for software development, with flexible products and subscription plans.
-
-With GitLab self-hosted, you deploy your own GitLab instance on-premises or on a private cloud of your choice. GitLab self-hosted is available for [free and with paid subscriptions](https://about.gitlab.com/products/): Libre, Starter, Premium, and Ultimate.
-
-Every feature available in Libre is also available in Starter, Premium, and Ultimate.
-Starter features are also available in Premium and Ultimate, and Premium features are also
-available in Ultimate.
-
-GitLab.com is our SaaS offering. It's hosted, managed, and administered by GitLab, with [free and paid plans](https://about.gitlab.com/gitlab-com/) for individuals and teams: Free, Bronze, Silver, and Gold.
+GitLab offers the most scalable Git-based fully integrated platform for
+software development, with flexible products and subscriptions.
+To understand what features you have access to, check the [GitLab subscriptions](#gitlab-subscriptions) below.
 
 ## Shortcuts to GitLab's most visited docs
 
@@ -84,6 +77,7 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
 - [Discussions](user/discussions/index.md): Threads, comments, and resolvable discussions in issues, commits, and  merge requests.
 - [Issues](user/project/issues/index.md)
 - [Project issue Board](user/project/issue_board.md)
+- [Group Issue Board](user/project/issue_board.md#group-issue-board)
 - [Issues and merge requests templates](user/project/description_templates.md): Create templates for submitting new issues and merge requests.
 - [Labels](user/project/labels.md): Categorize your issues or merge requests based on descriptive titles.
 - [Merge Requests](user/project/merge_requests/index.md)
@@ -124,8 +118,6 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
 - [GitLab Integration](integration/README.md): Integrate with multiple third-party services with GitLab to allow external issue trackers and external authentication.
 - [Trello Power-Up](integration/trello_power_up.md): Integrate with GitLab's Trello Power-Up
 
-----
-
 ## Administrator documentation
 
 [Administration documentation](administration/index.md) applies to admin users of GitLab
@@ -143,3 +135,42 @@ Learn how to contribute to GitLab:
 - [Development](development/README.md): All styleguides and explanations how to contribute.
 - [Legal](legal/README.md): Contributor license agreements.
 - [Writing documentation](development/writing_documentation.md): Contributing to GitLab Docs.
+
+## GitLab subscriptions
+
+You have two options to use GitLab:
+
+- GitLab self-hosted: Install, administer, and maintain your own GitLab instance.
+- GitLab.com: GitLab's SaaS offering. You don't need to install anything to use GitLab.com,
+you only need to [sign up](https://gitlab.com/users/sign_in) and start using GitLab
+straight away.
+
+### GitLab self-hosted
+
+With GitLab self-hosted, you deploy your own GitLab instance on-premises or on a private cloud of your choice. GitLab self-hosted is available for [free and with paid subscriptions](https://about.gitlab.com/products/): Libre, Starter, Premium, and Ultimate.
+
+Every feature available in Libre is also available in Starter, Premium, and Ultimate.
+Starter features are also available in Premium and Ultimate, and Premium features are also
+available in Ultimate.
+
+### GitLab.com
+
+GitLab.com is hosted, managed, and administered by GitLab, Inc., with
+[free and paid subscriptions](https://about.gitlab.com/gitlab-com/) for individuals
+and teams: Free, Bronze, Silver, and Gold.
+
+GitLab.com subscriptions grants access
+to the same features available in GitLab self-hosted, **expect
+[administration](administration/index.md) tools and settings**:
+
+- GitLab.com Free includes the same features available in GitLab Libre
+- GitLab.com Bronze includes the same features available in GitLab Starter
+- GitLab.com Silver includes the same features available in GitLab Premium
+- GitLab.com Gold includes the same features available in GitLab Ultimate
+
+For supporting the open source community and encouraging the development of
+open source projects, GitLab grants access to **Gold** features
+for all GitLab.com **public** projects, regardless of the subscription.
+
+To know more about GitLab subscriptions and licensing, please refer to the
+[GitLab Product Marketing Handbook](https://about.gitlab.com/handbook/marketing/product-marketing/#tiers).

@@ -129,6 +129,17 @@ class Service < ActiveRecord::Base
     fields
   end
 
+  def configurable_events
+    events = self.class.supported_events
+
+    # No need to disable individual triggers when there is only one
+    if events.count == 1
+      []
+    else
+      events
+    end
+  end
+
   def supported_events
     self.class.supported_events
   end
@@ -149,11 +160,6 @@ class Service < ActiveRecord::Base
 
   def can_test?
     true
-  end
-
-  # reason why service cannot be tested
-  def disabled_title
-    "Please setup a project repository."
   end
 
   # Provide convenient accessor methods

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import ProtectedTagAccessDropdown from './protected_tag_access_dropdown';
 import CreateItemDropdown from '../create_item_dropdown';
 

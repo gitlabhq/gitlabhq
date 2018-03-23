@@ -14,8 +14,8 @@ support through [webpack][webpack].
 We also utilize [webpack][webpack] to handle the bundling, minification, and
 compression of our assets.
 
-Working with our frontend assets requires Node (v4.3 or greater) and Yarn
-(v0.17 or greater).  You can find information on how to install these on our
+Working with our frontend assets requires Node (v6.0 or greater) and Yarn
+(v1.2 or greater).  You can find information on how to install these on our
 [installation guide][install].
 
 [jQuery][jquery] is used throughout the application's JavaScript, with

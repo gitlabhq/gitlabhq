@@ -75,6 +75,7 @@ describe('Clusters Store', () => {
             statusReason: mockResponseData.applications[1].status_reason,
             requestStatus: null,
             requestReason: null,
+            externalIp: null,
           },
           runner: {
             title: 'GitLab Runner',

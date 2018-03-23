@@ -1,18 +1,22 @@
 {
   "private": true,
   "scripts": {
-    "dev-server": "nodemon -w 'config/webpack.config.js' -w 'app/assets/javascripts/dispatcher.js' -w 'app/assets/javascripts/pages/**/index.js' --exec 'webpack-dev-server --config config/webpack.config.js'",
+    "dev-server": "nodemon -w 'config/webpack.config.js' --exec 'webpack-dev-server --config config/webpack.config.js'",
     "eslint": "eslint --max-warnings 0 --ext .js,.vue .",
     "eslint-fix": "eslint --max-warnings 0 --ext .js,.vue --fix .",
     "eslint-report": "eslint --max-warnings 0 --ext .js,.vue --format html --output-file ./eslint-report.html .",
     "karma": "karma start config/karma.config.js --single-run",
     "karma-coverage": "BABEL_ENV=coverage karma start config/karma.config.js --single-run",
     "karma-start": "karma start config/karma.config.js",
-    "svg": "node config/svg.config.js",
+    "prettier-staged": "node ./scripts/frontend/prettier.js",
+    "prettier-staged-save": "node ./scripts/frontend/prettier.js save",
+    "prettier-all": "node ./scripts/frontend/prettier.js check-all",
+    "prettier-all-save": "node ./scripts/frontend/prettier.js save-all",
     "webpack": "webpack --config config/webpack.config.js",
     "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js"
   },
   "dependencies": {
+    "@gitlab-org/gitlab-svgs": "^1.14.0",
     "autosize": "^4.0.0",
     "axios": "^0.17.1",
     "babel-core": "^6.26.0",
@@ -91,7 +95,6 @@
     "worker-loader": "^1.1.0"
   },
   "devDependencies": {
-    "@gitlab-org/gitlab-svgs": "^1.8.0",
     "axios-mock-adapter": "^1.10.0",
     "babel-eslint": "^8.0.2",
     "babel-plugin-istanbul": "^4.1.5",
@@ -115,7 +118,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "2.0.7",
     "nodemon": "^1.15.1",
-    "prettier": "1.9.2",
-    "webpack-dev-server": "^2.11.1"
+    "prettier": "1.11.1",
+    "webpack-dev-server": "^2.11.2"
   }
 }

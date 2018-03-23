@@ -37,33 +37,43 @@ Comments can be added to discuss a translation with the community.
 
 Remember to **Save** each translation.
 
-## Translation Guidelines
+## General Translation Guidelines
 
 Be sure to check the following guidelines before you translate any strings.
 
+### Namespaced strings
+
+When an externalized string is prepended with a namespace, e.g.
+`s_('OpenedNDaysAgo|Opened')`, the namespace should be removed from the final
+translation.
+For example in French `OpenedNDaysAgo|Opened` would be translated to
+`Ouvert•e`, not `OpenedNDaysAgo|Ouvert•e`.
+
 ### Technical terms
 
-Technical terms should be treated like proper nouns and not be translated.
-This helps maintain a logical connection and consistency between tools (e.g. `git` client) and
-GitLab.
+Some technical terms should be treated like proper nouns and not be translated.
 
-Technical terms that should always be in English are noted in the glossary when using
-[translate.gitlab.com](https://translate.gitlab.com).
+Technical terms that should always be in English are noted in the glossary when
+using [translate.gitlab.com](https://translate.gitlab.com).
+
+This helps maintain a logical connection and consistency between tools (e.g.
+`git` client) and GitLab.
 
 ### Formality
 
 The level of formality used in software varies by language.
-For example, in French we translate `you` as the informal `tu`.
+For example, in French we translate `you` as the formal `vous`.
 
-You can refer to other translated strings and notes in the glossary to assist determining a
-suitable level of formality.
+You can refer to other translated strings and notes in the glossary to assist
+determining a suitable level of formality.
 
 ### Inclusive language
 
 [Diversity] is one of GitLab's values.
-We ask you to avoid translations which exclude people based on their gender or ethnicity.
-In languages which distinguish between a male and female form,
-use both or choose a neutral formulation.
+We ask you to avoid translations which exclude people based on their gender or
+ethnicity.
+In languages which distinguish between a male and female form, use both or
+choose a neutral formulation.
 
 For example in German, the word "user" can be translated into "Benutzer" (male) or "Benutzerin" (female).
 Therefore "create a new user" would translate into "Benutzer(in) anlegen".
@@ -74,3 +84,14 @@ Therefore "create a new user" would translate into "Benutzer(in) anlegen".
 
 To propose additions to the glossary please
 [open an issue](https://gitlab.com/gitlab-org/gitlab-ce/issues).
+
+## French Translation Guidelines
+
+### Inclusive language in French
+
+In French, we should follow the guidelines from [ecriture-inclusive.fr]. For
+instance:
+
+- Utilisateur•rice•s
+
+[ecriture-inclusive.fr]: http://www.ecriture-inclusive.fr/

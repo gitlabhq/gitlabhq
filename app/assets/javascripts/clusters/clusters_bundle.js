@@ -37,10 +37,11 @@ export default class Clusters {
       clusterStatusReason,
       helpPath,
       ingressHelpPath,
+      ingressDnsHelpPath,
     } = document.querySelector('.js-edit-cluster-form').dataset;
 
     this.store = new ClustersStore();
-    this.store.setHelpPaths(helpPath, ingressHelpPath);
+    this.store.setHelpPaths(helpPath, ingressHelpPath, ingressDnsHelpPath);
     this.store.setManagePrometheusPath(managePrometheusPath);
     this.store.updateStatus(clusterStatus);
     this.store.updateStatusReason(clusterStatusReason);
@@ -98,6 +99,7 @@ export default class Clusters {
             helpPath: this.state.helpPath,
             ingressHelpPath: this.state.ingressHelpPath,
             managePrometheusPath: this.state.managePrometheusPath,
+            ingressDnsHelpPath: this.state.ingressDnsHelpPath,
           },
         });
       },

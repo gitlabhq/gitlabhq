@@ -17,8 +17,9 @@ module QA
 
       def self.populate!(factory)
         new.tap do |product|
-          factory.attributes.each_value do |attribute|
-            product.instance_exec(&attribute.block).tap do |value|
+          factory.class.attributes.each_value do |attribute|
+            product.instance_exec(factory, attribute.block) do |factory, block|
+              value = block.call(factory)
               product.define_singleton_method(attribute.name) { value }
             end
           end

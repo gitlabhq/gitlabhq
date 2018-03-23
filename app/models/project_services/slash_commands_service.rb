@@ -30,10 +30,10 @@ class SlashCommandsService < Service
   def trigger(params)
     return unless valid_token?(params[:token])
 
-    user = find_chat_user(params)
+    chat_user = find_chat_user(params)
 
-    if user
-      Gitlab::SlashCommands::Command.new(project, user, params).execute
+    if chat_user&.user
+      Gitlab::SlashCommands::Command.new(project, chat_user, params).execute
     else
       url = authorize_chat_name_url(params)
       Gitlab::SlashCommands::Presenters::Access.new(url).authorize

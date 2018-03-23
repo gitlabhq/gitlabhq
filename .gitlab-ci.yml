@@ -1,4 +1,4 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.6-golang-1.9-git-2.14-chrome-63.0-node-8.x-yarn-1.2-postgresql-9.6"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.6-golang-1.9-git-2.16-chrome-63.0-node-8.x-yarn-1.2-postgresql-9.6"
 
 .dedicated-runner: &dedicated-runner
   retry: 1
@@ -35,8 +35,14 @@ variables:
 
 before_script:
   - bundle --version
+  - date
   - source scripts/utils.sh
+  - date
   - source scripts/prepare_build.sh
+  - date
+
+after_script:
+  - date
 
 stages:
   - build
@@ -87,6 +93,26 @@ stages:
   except:
     - /(^docs[\/-].*|.*-docs$)/
     - /(^qa[\/-].*|.*-qa$)/
+
+# Jobs that only need to pull cache
+.dedicated-no-docs-pull-cache-job: &dedicated-no-docs-pull-cache-job
+  <<: *dedicated-runner
+  <<: *except-docs-and-qa
+  <<: *pull-cache
+  dependencies:
+    - setup-test-env
+  stage: test
+
+# Jobs that do not need a DB
+.dedicated-no-docs-no-db-pull-cache-job: &dedicated-no-docs-no-db-pull-cache-job
+  <<: *dedicated-no-docs-pull-cache-job
+  variables:
+    SETUP_DB: "false"
+
+.rake-exec: &rake-exec
+  <<: *dedicated-no-docs-no-db-pull-cache-job
+  script:
+    - bundle exec rake $CI_JOB_NAME
 
 .rspec-metadata: &rspec-metadata
   <<: *dedicated-runner
@@ -164,21 +190,23 @@ stages:
     - master@gitlab/gitlabhq
     - master@gitlab/gitlab-ee
 
-##
-# Trigger a package build in omnibus-gitlab repository
-#
-package-qa:
-  <<: *dedicated-runner
-  image: ruby:2.4-alpine
-  before_script: []
-  stage: build
-  cache: {}
-  when: manual
+.gitlab-setup: &gitlab-setup
+  <<: *dedicated-no-docs-pull-cache-job
+  <<: *use-pg
+  variables:
+    CREATE_DB_USER: "true"
   script:
-    - scripts/trigger-build-omnibus
-  only:
-    - //@gitlab-org/gitlab-ce
-    - //@gitlab-org/gitlab-ee
+    # Manually clone gitlab-test and only seed this project in
+    # db/fixtures/development/04_project.rb thanks to SIZE=1 below
+    - git clone https://gitlab.com/gitlab-org/gitlab-test.git
+       /home/git/repositories/gitlab-org/gitlab-test.git
+    - scripts/gitaly-test-spawn
+    - force=yes SIZE=1 FIXTURE_PATH="db/fixtures/development" bundle exec rake gitlab:setup
+  artifacts:
+    when: on_failure
+    expire_in: 1d
+    paths:
+      - log/development.log
 
 # Review docs base
 .review-docs: &review-docs
@@ -200,6 +228,47 @@ package-qa:
   when: manual
   only:
     - branches
+
+# DB migration, rollback, and seed jobs
+.db-migrate-reset: &db-migrate-reset
+  <<: *dedicated-no-docs-pull-cache-job
+  script:
+    - bundle exec rake db:migrate:reset
+
+.migration-paths: &migration-paths
+  <<: *dedicated-no-docs-pull-cache-job
+  variables:
+    CREATE_DB_USER: "true"
+  script:
+    - git fetch https://gitlab.com/gitlab-org/gitlab-ce.git v9.3.0
+    - git checkout -f FETCH_HEAD
+    - bundle install $BUNDLE_INSTALL_FLAGS
+    - date
+    - cp config/gitlab.yml.example config/gitlab.yml
+    - bundle exec rake db:drop db:create db:schema:load db:seed_fu
+    - date
+    - git checkout $CI_COMMIT_SHA
+    - bundle install $BUNDLE_INSTALL_FLAGS
+    - date
+    - . scripts/prepare_build.sh
+    - date
+    - bundle exec rake db:migrate
+
+##
+# Trigger a package build in omnibus-gitlab repository
+#
+package-and-qa:
+  <<: *dedicated-runner
+  image: ruby:2.4-alpine
+  before_script: []
+  stage: build
+  cache: {}
+  when: manual
+  script:
+    - scripts/trigger-build-omnibus
+  only:
+    - //@gitlab-org/gitlab-ce
+    - //@gitlab-org/gitlab-ee
 
 # Trigger a docs build in gitlab-docs
 # Useful to preview the docs changes live
@@ -265,7 +334,7 @@ update-tests-metadata:
 
 flaky-examples-check:
   <<: *dedicated-runner
-  image: ruby:2.3-alpine
+  image: ruby:2.4-alpine
   services: []
   before_script: []
   variables:
@@ -299,7 +368,9 @@ compile-assets:
     <<: *default-cache
   script:
     - node --version
+    - date
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
+    - date
     - bundle exec rake gitlab:assets:compile
   artifacts:
     expire_in: 7d
@@ -387,26 +458,11 @@ spinach-pg 1 2: *spinach-metadata-pg
 spinach-mysql 0 2: *spinach-metadata-mysql
 spinach-mysql 1 2: *spinach-metadata-mysql
 
-# Static analysis jobs
-.ruby-static-analysis: &ruby-static-analysis
-  variables:
-    SIMPLECOV: "false"
-    SETUP_DB: "false"
-
-.rake-exec: &rake-exec
-  <<: *dedicated-runner
-  <<: *except-docs-and-qa
-  <<: *pull-cache
-  <<: *ruby-static-analysis
-  stage: test
-  script:
-    - bundle exec rake $CI_JOB_NAME
-
 static-analysis:
-  <<: *dedicated-runner
-  <<: *except-docs
-  <<: *ruby-static-analysis
-  stage: test
+  <<: *dedicated-no-docs-no-db-pull-cache-job
+  dependencies:
+    - compile-assets
+    - setup-test-env
   script:
     - scripts/static-analysis
   cache:
@@ -463,15 +519,6 @@ ee_compat_check:
     paths:
       - ee_compat_check/patches/*.patch
 
-# DB migration, rollback, and seed jobs
-.db-migrate-reset: &db-migrate-reset
-  <<: *dedicated-runner
-  <<: *except-docs-and-qa
-  <<: *pull-cache
-  stage: test
-  script:
-    - bundle exec rake db:migrate:reset
-
 db:migrate:reset-pg:
   <<: *db-migrate-reset
   <<: *use-pg
@@ -486,25 +533,6 @@ db:check-schema-pg:
   script:
     - source scripts/schema_changed.sh
 
-.migration-paths: &migration-paths
-  <<: *dedicated-runner
-  <<: *except-docs-and-qa
-  <<: *pull-cache
-  stage: test
-  variables:
-    SETUP_DB: "false"
-    CREATE_DB_USER: "true"
-  script:
-    - git fetch https://gitlab.com/gitlab-org/gitlab-ce.git v9.3.0
-    - git checkout -f FETCH_HEAD
-    - bundle install $BUNDLE_INSTALL_FLAGS
-    - cp config/gitlab.yml.example config/gitlab.yml
-    - bundle exec rake db:drop db:create db:schema:load db:seed_fu
-    - git checkout $CI_COMMIT_SHA
-    - bundle install $BUNDLE_INSTALL_FLAGS
-    - . scripts/prepare_build.sh
-    - bundle exec rake db:migrate
-
 migration:path-pg:
   <<: *migration-paths
   <<: *use-pg
@@ -514,10 +542,7 @@ migration:path-mysql:
   <<: *use-mysql
 
 .db-rollback: &db-rollback
-  <<: *dedicated-runner
-  <<: *except-docs-and-qa
-  <<: *pull-cache
-  stage: test
+  <<: *dedicated-no-docs-pull-cache-job
   script:
     - bundle exec rake db:rollback STEP=119
     - bundle exec rake db:migrate
@@ -530,27 +555,6 @@ db:rollback-mysql:
   <<: *db-rollback
   <<: *use-mysql
 
-.gitlab-setup: &gitlab-setup
-  <<: *dedicated-runner
-  <<: *except-docs-and-qa
-  <<: *pull-cache
-  stage: test
-  variables:
-    SIZE: "1"
-    SETUP_DB: "false"
-    CREATE_DB_USER: "true"
-    FIXTURE_PATH: db/fixtures/development
-  script:
-    - git clone https://gitlab.com/gitlab-org/gitlab-test.git
-       /home/git/repositories/gitlab-org/gitlab-test.git
-    - scripts/gitaly-test-spawn
-    - force=yes bundle exec rake gitlab:setup
-  artifacts:
-    when: on_failure
-    expire_in: 1d
-    paths:
-      - log/development.log
-
 gitlab:setup-pg:
   <<: *gitlab-setup
   <<: *use-pg
@@ -561,10 +565,7 @@ gitlab:setup-mysql:
 
 # Frontend-related jobs
 gitlab:assets:compile:
-  <<: *dedicated-runner
-  <<: *except-docs-and-qa
-  <<: *pull-cache
-  stage: test
+  <<: *dedicated-no-docs-no-db-pull-cache-job
   dependencies: []
   variables:
     NODE_ENV: "production"
@@ -574,7 +575,9 @@ gitlab:assets:compile:
     WEBPACK_REPORT: "true"
     NO_COMPRESSION: "true"
   script:
+    - date
     - yarn install --frozen-lockfile --production --cache-folder .yarn-cache
+    - date
     - bundle exec rake gitlab:assets:compile
   artifacts:
     name: webpack-report
@@ -583,17 +586,16 @@ gitlab:assets:compile:
       - webpack-report/
 
 karma:
-  <<: *dedicated-runner
-  <<: *except-docs-and-qa
-  <<: *pull-cache
+  <<: *dedicated-no-docs-pull-cache-job
   <<: *use-pg
-  stage: test
-  variables:
-    BABEL_ENV: "coverage"
-    CHROME_LOG_FILE: "chrome_debug.log"
+  dependencies:
+    - compile-assets
+    - setup-test-env
   script:
+    - export BABEL_ENV=coverage CHROME_LOG_FILE=chrome_debug.log
+    - date
     - scripts/gitaly-test-spawn
-    - bundle exec rake gettext:po_to_json
+    - date
     - bundle exec rake karma
   coverage: '/^Statements *: (\d+\.\d+%)/'
   artifacts:
@@ -601,13 +603,11 @@ karma:
     expire_in: 31d
     when: always
     paths:
-    - chrome_debug.log
-    - coverage-javascript/
+      - chrome_debug.log
+      - coverage-javascript/
 
 codequality:
-  <<: *except-docs
-  <<: *pull-cache
-  stage: test
+  <<: *dedicated-no-docs-no-db-pull-cache-job
   image: docker:latest
   before_script: []
   services:
@@ -619,9 +619,10 @@ codequality:
   cache: {}
   dependencies: []
   script:
+    - apk update && apk add jq
     - ./scripts/codequality analyze -f json > raw_codeclimate.json || true
     # The following line keeps only the fields used in the MR widget, reducing the JSON artifact size
-    - cat raw_codeclimate.json | docker run -i stedolan/jq -c 'map({check_name,description,fingerprint,location})' > codeclimate.json
+    - jq -c 'map({check_name,description,fingerprint,location})' raw_codeclimate.json > codeclimate.json
   artifacts:
     paths: [codeclimate.json]
     expire_in: 1 week
@@ -638,11 +639,7 @@ sast:
     paths: [gl-sast-report.json]
 
 qa:internal:
-  <<: *dedicated-runner
-  <<: *except-docs
-  stage: test
-  variables:
-    SETUP_DB: "false"
+  <<: *dedicated-no-docs-no-db-pull-cache-job
   services: []
   script:
     - cd qa/
@@ -650,11 +647,7 @@ qa:internal:
     - bundle exec rspec
 
 qa:selectors:
-  <<: *dedicated-runner
-  <<: *except-docs
-  stage: test
-  variables:
-    SETUP_DB: "false"
+  <<: *dedicated-no-docs-no-db-pull-cache-job
   services: []
   script:
     - cd qa/
@@ -662,14 +655,8 @@ qa:selectors:
     - bundle exec bin/qa Test::Sanity::Selectors
 
 coverage:
-  <<: *dedicated-runner
-  <<: *except-docs-and-qa
-  <<: *pull-cache
+  <<: *dedicated-no-docs-no-db-pull-cache-job
   stage: post-test
-  services: []
-  variables:
-    SETUP_DB: "false"
-    USE_BUNDLE_INSTALL: "true"
   script:
     - bundle exec scripts/merge-simplecov
   coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
@@ -681,26 +668,25 @@ coverage:
     - coverage/assets/
 
 lint:javascript:report:
-  <<: *dedicated-runner
-  <<: *except-docs-and-qa
-  <<: *pull-cache
+  <<: *dedicated-no-docs-no-db-pull-cache-job
   stage: post-test
   dependencies:
     - compile-assets
     - setup-test-env
   before_script: []
   script:
+    - date
     - find app/ spec/ -name '*.js' -exec sed --in-place 's|/\* eslint-disable .*\*/||' {} \; # run report over all files
+    - date
     - yarn run eslint-report || true # ignore exit code
   artifacts:
     name: eslint-report
     expire_in: 31d
     paths:
-    - eslint-report.html
+      - eslint-report.html
 
 pages:
-  <<: *dedicated-runner
-  <<: *pull-cache
+  <<: *dedicated-no-docs-no-db-pull-cache-job
   before_script: []
   stage: pages
   dependencies:
@@ -725,10 +711,7 @@ pages:
 # Insurance in case a gem needed by one of our releases gets yanked from
 # rubygems.org in the future.
 cache gems:
-  <<: *dedicated-runner
-  <<: *pull-cache
-  variables:
-    SETUP_DB: "false"
+  <<: *dedicated-no-docs-no-db-pull-cache-job
   script:
     - bundle package --all --all-platforms
   artifacts:

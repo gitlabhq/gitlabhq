@@ -208,9 +208,9 @@ class NotificationService
   def new_access_request(member)
     return true unless member.notifiable?(:subscription)
 
-    recipients = member.source.members.owners_and_masters
+    recipients = member.source.members.active_without_invites.owners_and_masters
     if fallback_to_group_owners_masters?(recipients, member)
-      recipients = member.source.group.members.owners_and_masters
+      recipients = member.source.group.members.active_without_invites.owners_and_masters
     end
 
     recipients.each { |recipient| deliver_access_request_email(recipient, member) }
@@ -339,6 +339,30 @@ class NotificationService
     end
   end
 
+  def pages_domain_verification_succeeded(domain)
+    recipients_for_pages_domain(domain).each do |user|
+      mailer.pages_domain_verification_succeeded_email(domain, user).deliver_later
+    end
+  end
+
+  def pages_domain_verification_failed(domain)
+    recipients_for_pages_domain(domain).each do |user|
+      mailer.pages_domain_verification_failed_email(domain, user).deliver_later
+    end
+  end
+
+  def pages_domain_enabled(domain)
+    recipients_for_pages_domain(domain).each do |user|
+      mailer.pages_domain_enabled_email(domain, user).deliver_later
+    end
+  end
+
+  def pages_domain_disabled(domain)
+    recipients_for_pages_domain(domain).each do |user|
+      mailer.pages_domain_disabled_email(domain, user).deliver_later
+    end
+  end
+
   protected
 
   def new_resource_email(target, method)
@@ -432,6 +456,14 @@ class NotificationService
   end
 
   private
+
+  def recipients_for_pages_domain(domain)
+    project = domain.project
+
+    return [] unless project
+
+    notifiable_users(project.team.masters, :watch, target: project)
+  end
 
   def notifiable?(*args)
     NotificationRecipientService.notifiable?(*args)

@@ -1,6 +1,5 @@
 - content_for :page_specific_javascripts do
   = page_specific_javascript_tag('lib/ace.js')
-  = webpack_bundle_tag('snippet')
 
 .snippet-form-holder
   = form_for @snippet, url: url, html: { class: "form-horizontal snippet-form js-requires-input js-quick-submit common-note-form" } do |f|

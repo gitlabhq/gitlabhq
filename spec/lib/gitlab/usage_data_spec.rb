@@ -36,6 +36,7 @@ describe Gitlab::UsageData do
         gitlab_shared_runners
         git
         database
+        avg_cycle_analytics
       ))
     end
 

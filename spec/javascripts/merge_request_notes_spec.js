@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import _ from 'underscore';
 import 'autosize';
 import '~/gl_form';

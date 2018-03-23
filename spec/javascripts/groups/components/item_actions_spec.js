@@ -2,9 +2,8 @@ import Vue from 'vue';
 
 import itemActionsComponent from '~/groups/components/item_actions.vue';
 import eventHub from '~/groups/event_hub';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { mockParentGroupItem, mockChildren } from '../mock_data';
-
-import mountComponent from '../../helpers/vue_mount_component_helper';
 
 const createComponent = (group = mockParentGroupItem, parentGroup = mockChildren[0]) => {
   const Component = Vue.extend(itemActionsComponent);

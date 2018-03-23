@@ -60,7 +60,6 @@ feature 'Pages' do
             fill_in 'Domain', with: 'my.test.domain.com'
             click_button 'Create New Domain'
 
-            expect(page).to have_content('Domains (1)')
             expect(page).to have_content('my.test.domain.com')
           end
         end
@@ -159,8 +158,38 @@ feature 'Pages' do
           fill_in 'Key (PEM)', with: certificate_key
           click_button 'Create New Domain'
 
-          expect(page).to have_content('Domains (1)')
           expect(page).to have_content('my.test.domain.com')
+        end
+
+        describe 'updating the certificate for an existing domain' do
+          let!(:domain) do
+            create(:pages_domain, :with_key, :with_certificate, project: project)
+          end
+
+          it 'allows the certificate to be updated' do
+            visit project_pages_path(project)
+
+            within('#content-body') { click_link 'Details' }
+            click_link 'Edit'
+            click_button 'Save Changes'
+
+            expect(page).to have_content('Domain was updated')
+          end
+
+          context 'when the certificate is invalid' do
+            it 'tells the user what the problem is' do
+              visit project_pages_path(project)
+
+              within('#content-body') { click_link 'Details' }
+              click_link 'Edit'
+              fill_in 'Certificate (PEM)', with: 'invalid data'
+              click_button 'Save Changes'
+
+              expect(page).to have_content('Certificate must be a valid PEM certificate')
+              expect(page).to have_content('Certificate misses intermediates')
+              expect(page).to have_content("Key doesn't match the certificate")
+            end
+          end
         end
       end
     end
@@ -229,7 +258,7 @@ feature 'Pages' do
         end
 
         let(:ci_build) do
-          build(
+          create(
             :ci_build,
             project: project,
             pipeline: pipeline,

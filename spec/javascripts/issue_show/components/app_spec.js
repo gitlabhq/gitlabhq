@@ -6,8 +6,8 @@ import '~/render_gfm';
 import * as urlUtils from '~/lib/utils/url_utility';
 import issuableApp from '~/issue_show/components/app.vue';
 import eventHub from '~/issue_show/event_hub';
+import setTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 import issueShowData from '../mock_data';
-import setTimeoutPromise from '../../helpers/set_timeout_promise_helper';
 
 function formatText(text) {
   return text.trim().replace(/\s\s+/g, ' ');

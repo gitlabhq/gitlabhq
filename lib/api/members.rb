@@ -81,12 +81,16 @@ module API
           source = find_source(source_type, params.delete(:id))
           authorize_admin_source!(source_type, source)
 
-          member = source.members.find_by!(user_id: params.delete(:user_id))
+          member = source.members.find_by!(user_id: params[:user_id])
+          updated_member =
+            ::Members::UpdateService
+              .new(current_user, declared_params(include_missing: false))
+              .execute(member)
 
-          if member.update_attributes(declared_params(include_missing: false))
-            present member, with: Entities::Member
+          if updated_member.valid?
+            present updated_member, with: Entities::Member
           else
-            render_validation_error!(member)
+            render_validation_error!(updated_member)
           end
         end
 
@@ -99,7 +103,7 @@ module API
           member = source.members.find_by!(user_id: params[:user_id])
 
           destroy_conditionally!(member) do
-            ::Members::DestroyService.new(source, current_user, declared_params).execute
+            ::Members::DestroyService.new(current_user).execute(member)
           end
         end
       end

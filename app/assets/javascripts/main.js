@@ -1,5 +1,6 @@
 /* eslint-disable import/first */
 /* global ConfirmDangerModal */
+/* global $ */
 
 import jQuery from 'jquery';
 import Cookies from 'js-cookie';
@@ -36,8 +37,11 @@ import initBreadcrumbs from './breadcrumb';
 
 import initDispatcher from './dispatcher';
 
-// eslint-disable-next-line global-require, import/no-commonjs
-if (process.env.NODE_ENV !== 'production') require('./test_utils/');
+// inject test utilities if necessary
+if (process.env.NODE_ENV !== 'production' && gon && gon.test_env) {
+  $.fx.off = true;
+  import(/* webpackMode: "eager" */ './test_utils/');
+}
 
 svg4everybody();
 

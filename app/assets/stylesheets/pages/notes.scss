@@ -16,7 +16,7 @@ ul.notes {
 
   .note-created-ago,
   .note-updated-at {
-    white-space: nowrap;
+    white-space: normal;
   }
 
   .discussion-body {
@@ -723,7 +723,7 @@ ul.notes {
 .line-resolve-all {
   vertical-align: middle;
   display: inline-block;
-  padding: 5px 10px 6px;
+  padding: 6px 10px;
   background-color: $gray-light;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;

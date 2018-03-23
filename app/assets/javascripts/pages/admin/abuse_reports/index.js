@@ -1,3 +1,3 @@
 import AbuseReports from './abuse_reports';
 
-export default () => new AbuseReports();
+document.addEventListener('DOMContentLoaded', () => new AbuseReports());

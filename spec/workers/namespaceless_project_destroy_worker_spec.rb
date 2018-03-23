@@ -22,7 +22,9 @@ describe NamespacelessProjectDestroyWorker do
       end
     end
 
-    context 'project has no namespace' do
+    # Only possible with schema 20180222043024 and lower.
+    # Project#namespace_id has not null constraint since then
+    context 'project has no namespace', :migration, schema: 20180222043024 do
       let!(:project) do
         project = build(:project, namespace_id: nil)
         project.save(validate: false)

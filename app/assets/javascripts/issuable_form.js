@@ -1,6 +1,7 @@
 /* eslint-disable func-names, prefer-rest-params, wrap-iife, no-use-before-define, no-useless-escape, no-new, object-shorthand, no-unused-vars, comma-dangle, no-alert, consistent-return, no-else-return, prefer-template, one-var, one-var-declaration-per-line, curly, max-len */
 /* global GitLab */
 
+import $ from 'jquery';
 import Pikaday from 'pikaday';
 import Autosave from './autosave';
 import UsersSelect from './users_select';

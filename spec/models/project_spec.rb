@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Project do
+  include ProjectForksHelper
+
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
@@ -80,6 +82,7 @@ describe Project do
     it { is_expected.to have_many(:members_and_requesters) }
     it { is_expected.to have_many(:clusters) }
     it { is_expected.to have_many(:custom_attributes).class_name('ProjectCustomAttribute') }
+    it { is_expected.to have_many(:project_badges).class_name('ProjectBadge') }
     it { is_expected.to have_many(:lfs_file_locks) }
 
     context 'after initialized' do
@@ -516,6 +519,20 @@ describe Project do
 
       it 'returns the project\'s last update date if it has no events' do
         expect(project.last_activity_date).to eq(project.updated_at)
+      end
+
+      it 'returns the most recent timestamp' do
+        project.update_attributes(updated_at: nil,
+                                  last_activity_at: timestamp,
+                                  last_repository_updated_at: timestamp - 1.hour)
+
+        expect(project.last_activity_date).to eq(timestamp)
+
+        project.update_attributes(updated_at: timestamp,
+                                  last_activity_at: timestamp - 1.hour,
+                                  last_repository_updated_at: nil)
+
+        expect(project.last_activity_date).to eq(timestamp)
       end
     end
   end
@@ -1361,7 +1378,7 @@ describe Project do
 
     context 'using a regular repository' do
       it 'creates the repository' do
-        expect(shell).to receive(:add_repository)
+        expect(shell).to receive(:create_repository)
           .with(project.repository_storage, project.disk_path)
           .and_return(true)
 
@@ -1371,7 +1388,7 @@ describe Project do
       end
 
       it 'adds an error if the repository could not be created' do
-        expect(shell).to receive(:add_repository)
+        expect(shell).to receive(:create_repository)
           .with(project.repository_storage, project.disk_path)
           .and_return(false)
 
@@ -1385,7 +1402,7 @@ describe Project do
     context 'using a forked repository' do
       it 'does nothing' do
         expect(project).to receive(:forked?).and_return(true)
-        expect(shell).not_to receive(:add_repository)
+        expect(shell).not_to receive(:create_repository)
 
         project.create_repository
       end
@@ -1404,7 +1421,7 @@ describe Project do
       allow(project).to receive(:repository_exists?)
         .and_return(false)
 
-      allow(shell).to receive(:add_repository)
+      allow(shell).to receive(:create_repository)
         .with(project.repository_storage_path, project.disk_path)
         .and_return(true)
 
@@ -1428,7 +1445,7 @@ describe Project do
       allow(project).to receive(:repository_exists?)
         .and_return(false)
 
-      expect(shell).to receive(:add_repository)
+      expect(shell).to receive(:create_repository)
         .with(project.repository_storage, project.disk_path)
         .and_return(true)
 
@@ -2499,7 +2516,8 @@ describe Project do
     end
 
     it 'is a no-op when there is no namespace' do
-      project.update_column(:namespace_id, nil)
+      project.namespace.delete
+      project.reload
 
       expect_any_instance_of(Projects::UpdatePagesConfigurationService).not_to receive(:execute)
       expect_any_instance_of(Gitlab::PagesTransfer).not_to receive(:rename_project)
@@ -2531,7 +2549,8 @@ describe Project do
     it 'is a no-op on legacy projects when there is no namespace' do
       export_path = legacy_project.export_path
 
-      legacy_project.update_column(:namespace_id, nil)
+      legacy_project.namespace.delete
+      legacy_project.reload
 
       expect(FileUtils).not_to receive(:rm_rf).with(export_path)
 
@@ -2543,7 +2562,8 @@ describe Project do
     it 'runs on hashed storage projects when there is no namespace' do
       export_path = project.export_path
 
-      project.update_column(:namespace_id, nil)
+      project.namespace.delete
+      legacy_project.reload
 
       allow(FileUtils).to receive(:rm_rf).and_call_original
       expect(FileUtils).to receive(:rm_rf).with(export_path).and_call_original
@@ -3326,6 +3346,137 @@ describe Project do
           project.execute_hooks({ data: 'data' }, :merge_request_hooks)
         end
       end.not_to raise_error # Sidekiq::Worker::EnqueueFromTransactionError
+    end
+  end
+
+  describe '#badges' do
+    let(:project_group) { create(:group) }
+    let(:project) {  create(:project, path: 'avatar', namespace: project_group) }
+
+    before do
+      create_list(:project_badge, 2, project: project)
+      create(:group_badge, group: project_group)
+    end
+
+    it 'returns the project and the project group badges' do
+      create(:group_badge, group: create(:group))
+
+      expect(Badge.count).to eq 4
+      expect(project.badges.count).to eq 3
+    end
+
+    if Group.supports_nested_groups?
+      context 'with nested_groups' do
+        let(:parent_group) { create(:group) }
+
+        before do
+          create_list(:group_badge, 2, group: project_group)
+          project_group.update(parent: parent_group)
+        end
+
+        it 'returns the project and the project nested groups badges' do
+          expect(project.badges.count).to eq 5
+        end
+      end
+    end
+  end
+
+  context 'with cross project merge requests' do
+    let(:user) { create(:user) }
+    let(:target_project) { create(:project, :repository) }
+    let(:project) { fork_project(target_project, nil, repository: true) }
+    let!(:merge_request) do
+      create(
+        :merge_request,
+        target_project: target_project,
+        target_branch: 'target-branch',
+        source_project: project,
+        source_branch: 'awesome-feature-1',
+        allow_maintainer_to_push: true
+      )
+    end
+
+    before do
+      target_project.add_developer(user)
+    end
+
+    describe '#merge_requests_allowing_push_to_user' do
+      it 'returns open merge requests for which the user has developer access to the target project' do
+        expect(project.merge_requests_allowing_push_to_user(user)).to include(merge_request)
+      end
+
+      it 'does not include closed merge requests' do
+        merge_request.close
+
+        expect(project.merge_requests_allowing_push_to_user(user)).to be_empty
+      end
+
+      it 'does not include merge requests for guest users' do
+        guest = create(:user)
+        target_project.add_guest(guest)
+
+        expect(project.merge_requests_allowing_push_to_user(guest)).to be_empty
+      end
+
+      it 'does not include the merge request for other users' do
+        other_user = create(:user)
+
+        expect(project.merge_requests_allowing_push_to_user(other_user)).to be_empty
+      end
+
+      it 'is empty when no user is passed' do
+        expect(project.merge_requests_allowing_push_to_user(nil)).to be_empty
+      end
+    end
+
+    describe '#branch_allows_maintainer_push?' do
+      it 'allows access if the user can merge the merge request' do
+        expect(project.branch_allows_maintainer_push?(user, 'awesome-feature-1'))
+          .to be_truthy
+      end
+
+      it 'does not allow guest users access' do
+        guest = create(:user)
+        target_project.add_guest(guest)
+
+        expect(project.branch_allows_maintainer_push?(guest, 'awesome-feature-1'))
+          .to be_falsy
+      end
+
+      it 'does not allow access to branches for which the merge request was closed' do
+        create(:merge_request, :closed,
+               target_project: target_project,
+               target_branch: 'target-branch',
+               source_project: project,
+               source_branch: 'rejected-feature-1',
+               allow_maintainer_to_push: true)
+
+        expect(project.branch_allows_maintainer_push?(user, 'rejected-feature-1'))
+          .to be_falsy
+      end
+
+      it 'does not allow access if the user cannot merge the merge request' do
+        create(:protected_branch, :masters_can_push, project: target_project, name: 'target-branch')
+
+        expect(project.branch_allows_maintainer_push?(user, 'awesome-feature-1'))
+          .to be_falsy
+      end
+
+      it 'caches the result' do
+        control = ActiveRecord::QueryRecorder.new { project.branch_allows_maintainer_push?(user, 'awesome-feature-1') }
+
+        expect { 3.times { project.branch_allows_maintainer_push?(user, 'awesome-feature-1') } }
+          .not_to exceed_query_limit(control)
+      end
+
+      context 'when the requeststore is active', :request_store do
+        it 'only queries per project across instances' do
+          control = ActiveRecord::QueryRecorder.new { project.branch_allows_maintainer_push?(user, 'awesome-feature-1') }
+
+          expect { 2.times { described_class.find(project.id).branch_allows_maintainer_push?(user, 'awesome-feature-1') } }
+            .not_to exceed_query_limit(control).with_threshold(2)
+        end
+      end
     end
   end
 end

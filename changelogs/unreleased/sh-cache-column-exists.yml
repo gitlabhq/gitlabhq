@@ -1,0 +1,5 @@
+---
+title: Cache column_exists? for application settings
+merge_request:
+author:
+type: performance

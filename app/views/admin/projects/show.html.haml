@@ -1,8 +1,8 @@
 - add_to_breadcrumbs "Projects", admin_projects_path
-- breadcrumb_title @project.name_with_namespace
-- page_title @project.name_with_namespace, "Projects"
+- breadcrumb_title @project.full_name
+- page_title @project.full_name, "Projects"
 %h3.page-title
-  Project: #{@project.name_with_namespace}
+  Project: #{@project.full_name}
   = link_to edit_project_path(@project), class: "btn btn-nr pull-right" do
     %i.fa.fa-pencil-square-o
     Edit

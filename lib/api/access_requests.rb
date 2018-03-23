@@ -53,7 +53,10 @@ module API
         put ':id/access_requests/:user_id/approve' do
           source = find_source(source_type, params[:id])
 
-          member = ::Members::ApproveAccessRequestService.new(source, current_user, declared_params).execute
+          access_requester = source.requesters.find_by!(user_id: params[:user_id])
+          member = ::Members::ApproveAccessRequestService
+            .new(current_user, declared_params)
+            .execute(access_requester)
 
           status :created
           present member, with: Entities::Member
@@ -70,8 +73,7 @@ module API
           member = source.requesters.find_by!(user_id: params[:user_id])
 
           destroy_conditionally!(member) do
-            ::Members::DestroyService.new(source, current_user, params)
-              .execute(:requesters)
+            ::Members::DestroyService.new(current_user).execute(member)
           end
         end
       end

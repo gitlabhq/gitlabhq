@@ -1,0 +1,5 @@
+---
+title: Fix generated URL when listing repoitories for import
+merge_request: 17692
+author:
+type: fixed

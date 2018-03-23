@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import issueWarning from '~/vue_shared/components/issue/issue_warning.vue';
-import mountComponent from '../../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 const IssueWarning = Vue.extend(issueWarning);
 

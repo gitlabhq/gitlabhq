@@ -1,5 +1,7 @@
 class JiraService < IssueTrackerService
   include Gitlab::Routing
+  include ApplicationHelper
+  include ActionView::Helpers::AssetUrlHelper
 
   validates :url, url: true, presence: true, if: :activated?
   validates :api_url, url: true, allow_blank: true
@@ -159,11 +161,6 @@ class JiraService < IssueTrackerService
     add_comment(data, jira_issue)
   end
 
-  # reason why service cannot be tested
-  def disabled_title
-    "Please fill in Password and Username."
-  end
-
   def test(_)
     result = test_settings
     success = result.present?
@@ -268,7 +265,9 @@ class JiraService < IssueTrackerService
         url: url,
         title: title,
         status: status,
-        icon: { title: 'GitLab', url16x16: 'https://gitlab.com/favicon.ico' }
+        icon: {
+          title: 'GitLab', url16x16: asset_url('favicon.ico', host: gitlab_config.url)
+        }
       }
     }
   end

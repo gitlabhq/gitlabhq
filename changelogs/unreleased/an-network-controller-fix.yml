@@ -1,0 +1,5 @@
+---
+title: Prevent the graphs page from generating unnecessary Gitaly requests
+merge_request: 37602
+author:
+type: performance

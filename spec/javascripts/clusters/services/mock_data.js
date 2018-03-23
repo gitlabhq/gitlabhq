@@ -18,6 +18,7 @@ const CLUSTERS_MOCK_DATA = {
           name: 'ingress',
           status: APPLICATION_ERROR,
           status_reason: 'Cannot connect',
+          external_ip: null,
         }, {
           name: 'runner',
           status: APPLICATION_INSTALLING,

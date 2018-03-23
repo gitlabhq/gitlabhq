@@ -83,6 +83,12 @@ module Mattermost
       end
     end
 
+    def delete(path, options = {})
+      handle_exceptions do
+        self.class.delete(path, options.merge(headers: @headers))
+      end
+    end
+
     private
 
     def create

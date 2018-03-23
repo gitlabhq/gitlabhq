@@ -81,7 +81,7 @@ class Note < ActiveRecord::Base
   validates :author, presence: true
   validates :discussion_id, presence: true, format: { with: /\A\h{40}\z/ }
 
-  validate unless: [:for_commit?, :importing?, :for_personal_snippet?] do |note|
+  validate unless: [:for_commit?, :importing?, :skip_project_check?] do |note|
     unless note.noteable.try(:project) == note.project
       errors.add(:project, 'does not match noteable project')
     end
@@ -133,6 +133,7 @@ class Note < ActiveRecord::Base
 
     def find_discussion(discussion_id)
       notes = where(discussion_id: discussion_id).fresh.to_a
+
       return if notes.empty?
 
       Discussion.build(notes)
@@ -227,7 +228,7 @@ class Note < ActiveRecord::Base
   end
 
   def skip_project_check?
-    for_personal_snippet?
+    !for_project_noteable?
   end
 
   def commit
@@ -305,6 +306,11 @@ class Note < ActiveRecord::Base
 
   def can_be_discussion_note?
     self.noteable.supports_discussions? && !part_of_discussion?
+  end
+
+  def can_create_todo?
+    # Skip system notes, and notes on project snippet
+    !system? && !for_snippet?
   end
 
   def discussion_class(noteable = nil)

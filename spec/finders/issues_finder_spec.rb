@@ -10,9 +10,9 @@ describe IssuesFinder do
   set(:project3) { create(:project, group: subgroup) }
   set(:milestone) { create(:milestone, project: project1) }
   set(:label) { create(:label, project: project2) }
-  set(:issue1) { create(:issue, author: user, assignees: [user], project: project1, milestone: milestone, title: 'gitlab', created_at: 1.week.ago) }
-  set(:issue2) { create(:issue, author: user, assignees: [user], project: project2, description: 'gitlab') }
-  set(:issue3) { create(:issue, author: user2, assignees: [user2], project: project2, title: 'tanuki', description: 'tanuki', created_at: 1.week.from_now) }
+  set(:issue1) { create(:issue, author: user, assignees: [user], project: project1, milestone: milestone, title: 'gitlab', created_at: 1.week.ago, updated_at: 1.week.ago) }
+  set(:issue2) { create(:issue, author: user, assignees: [user], project: project2, description: 'gitlab', created_at: 1.week.from_now, updated_at: 1.week.from_now) }
+  set(:issue3) { create(:issue, author: user2, assignees: [user2], project: project2, title: 'tanuki', description: 'tanuki', created_at: 2.weeks.from_now, updated_at: 2.weeks.from_now) }
   set(:issue4) { create(:issue, project: project3) }
   set(:award_emoji1) { create(:award_emoji, name: 'thumbsup', user: user, awardable: issue1) }
   set(:award_emoji2) { create(:award_emoji, name: 'thumbsup', user: user2, awardable: issue2) }
@@ -275,10 +275,44 @@ describe IssuesFinder do
         end
 
         context 'through created_before' do
-          let(:params) { { created_before: issue1.created_at + 1.second } }
+          let(:params) { { created_before: issue1.created_at } }
 
           it 'returns issues created on or before the given date' do
             expect(issues).to contain_exactly(issue1)
+          end
+        end
+
+        context 'through created_after and created_before' do
+          let(:params) { { created_after: issue2.created_at, created_before: issue3.created_at } }
+
+          it 'returns issues created between the given dates' do
+            expect(issues).to contain_exactly(issue2, issue3)
+          end
+        end
+      end
+
+      context 'filtering by updated_at' do
+        context 'through updated_after' do
+          let(:params) { { updated_after: issue3.updated_at } }
+
+          it 'returns issues updated on or after the given date' do
+            expect(issues).to contain_exactly(issue3)
+          end
+        end
+
+        context 'through updated_before' do
+          let(:params) { { updated_before: issue1.updated_at } }
+
+          it 'returns issues updated on or before the given date' do
+            expect(issues).to contain_exactly(issue1)
+          end
+        end
+
+        context 'through updated_after and updated_before' do
+          let(:params) { { updated_after: issue2.updated_at, updated_before: issue3.updated_at } }
+
+          it 'returns issues updated between the given dates' do
+            expect(issues).to contain_exactly(issue2, issue3)
           end
         end
       end

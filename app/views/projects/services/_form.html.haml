@@ -5,6 +5,9 @@
       = boolean_to_icon @service.activated?
 
     %p= @service.description
+
+    - if @service.respond_to?(:detailed_description)
+      %p= @service.detailed_description
   .col-lg-9
     = form_for(@service, as: :service, url: project_service_path(@project, @service.to_param), method: :put, html: { class: 'gl-show-field-errors form-horizontal integration-settings-form js-integration-settings-form', data: { 'can-test' => @service.can_test?, 'test-url' => test_project_service_path(@project, @service) } }) do |form|
       = render 'shared/service_settings', form: form, subject: @service
@@ -12,11 +15,6 @@
         .footer-block.row-content-block
           = service_save_button(@service)
           &nbsp;
-          - if @service.valid? && @service.activated?
-            - unless @service.can_test?
-              - disabled_class = 'disabled'
-              - disabled_title = @service.disabled_title
-
           = link_to 'Cancel', project_settings_integrations_path(@project), class: 'btn btn-cancel'
 
 - if lookup_context.template_exists?('show', "projects/services/#{@service.to_param}", true)

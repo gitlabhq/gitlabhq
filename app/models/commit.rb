@@ -9,6 +9,7 @@ class Commit
   include Mentionable
   include Referable
   include StaticModel
+  include ::Gitlab::Utils::StrongMemoize
 
   attr_mentionable :safe_message, pipeline: :single_line
 
@@ -19,6 +20,7 @@ class Commit
   attr_accessor :project, :author
   attr_accessor :redacted_description_html
   attr_accessor :redacted_title_html
+  attr_reader :gpg_commit
 
   DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines]
 
@@ -110,6 +112,7 @@ class Commit
     @raw = raw_commit
     @project = project
     @statuses = {}
+    @gpg_commit = Gitlab::Gpg::Commit.new(self) if project
   end
 
   def id
@@ -223,11 +226,13 @@ class Commit
   end
 
   def parents
-    @parents ||= parent_ids.map { |id| project.commit(id) }
+    @parents ||= parent_ids.map { |oid| Commit.lazy(project, oid) }
   end
 
   def parent
-    @parent ||= project.commit(self.parent_id) if self.parent_id
+    strong_memoize(:parent) do
+      project.commit_by(oid: self.parent_id) if self.parent_id
+    end
   end
 
   def notes
@@ -451,9 +456,5 @@ class Commit
 
   def merged_merge_request_no_cache(user)
     MergeRequestsFinder.new(user, project_id: project.id).find_by(merge_commit_sha: id) if merge_commit?
-  end
-
-  def gpg_commit
-    @gpg_commit ||= Gitlab::Gpg::Commit.new(self)
   end
 end

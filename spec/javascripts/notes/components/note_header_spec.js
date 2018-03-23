@@ -32,6 +32,7 @@ describe('note_header component', () => {
           createdAt: '2017-08-02T10:51:58.559Z',
           includeToggle: false,
           noteId: 1394,
+          expanded: true,
         },
       }).$mount();
     });
@@ -68,6 +69,7 @@ describe('note_header component', () => {
           createdAt: '2017-08-02T10:51:58.559Z',
           includeToggle: true,
           noteId: 1395,
+          expanded: true,
         },
       }).$mount();
     });
@@ -76,17 +78,35 @@ describe('note_header component', () => {
       expect(vm.$el.querySelector('.js-vue-toggle-button')).toBeDefined();
     });
 
-    it('should toggle the disucssion icon', (done) => {
-      expect(
-        vm.$el.querySelector('.js-vue-toggle-button i').classList.contains('fa-chevron-up'),
-      ).toEqual(true);
+    it('emits toggle event on click', (done) => {
+      spyOn(vm, '$emit');
 
       vm.$el.querySelector('.js-vue-toggle-button').click();
 
       Vue.nextTick(() => {
+        expect(vm.$emit).toHaveBeenCalledWith('toggleHandler');
+        done();
+      });
+    });
+
+    it('renders up arrow when open', (done) => {
+      vm.expanded = true;
+
+      Vue.nextTick(() => {
         expect(
-          vm.$el.querySelector('.js-vue-toggle-button i').classList.contains('fa-chevron-down'),
-        ).toEqual(true);
+          vm.$el.querySelector('.js-vue-toggle-button i').classList,
+        ).toContain('fa-chevron-up');
+        done();
+      });
+    });
+
+    it('renders down arrow when closed', (done) => {
+      vm.expanded = false;
+
+      Vue.nextTick(() => {
+        expect(
+          vm.$el.querySelector('.js-vue-toggle-button i').classList,
+        ).toContain('fa-chevron-down');
         done();
       });
     });

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import autosize from 'autosize';
 import GfmAutoComplete from './gfm_auto_complete';
 import dropzoneInput from './dropzone_input';

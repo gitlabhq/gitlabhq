@@ -1,0 +1,6 @@
+---
+title: Optimize search queries on the search page by setting a limit for matching
+  records in project scope
+merge_request:
+author:
+type: performance

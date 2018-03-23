@@ -57,7 +57,7 @@ describe Gitlab::GitAccessWiki do
           # Sanity check for rm_rf
           expect(wiki_repo.exists?).to eq(false)
 
-          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'A repository for this project does not exist yet.')
+          expect { subject }.to raise_error(Gitlab::GitAccess::NotFoundError, 'A repository for this project does not exist yet.')
         end
       end
     end
