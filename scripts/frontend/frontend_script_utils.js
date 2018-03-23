@@ -1,4 +1,3 @@
-/* eslint import/no-commonjs: "off" */
 const execFileSync = require('child_process').execFileSync;
 
 const exec = (command, args) => {
