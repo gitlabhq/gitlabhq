@@ -26,4 +26,11 @@ export default class PipelineStore {
       setSastReport({ head: data, headBlobPath: blobPath }),
     );
   }
+
+  storeDependencyScanningReport(data, blobPath) {
+    Object.assign(
+      this.state.securityReports.dependencyScanning,
+      setSastReport({ head: data, headBlobPath: blobPath }),
+    );
+  }
 }

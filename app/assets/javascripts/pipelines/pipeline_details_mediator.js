@@ -67,4 +67,12 @@ export default class pipelinesMediator {
         this.store.storeSastReport(data, blobPath);
       });
   }
+
+  fetchDependencyScanningReport(endpoint, blobPath) {
+    return PipelineService.getSecurityReport(endpoint)
+      .then(response => response.json())
+      .then((data) => {
+        this.store.storeDependencyScanningReport(data, blobPath);
+      });
+  }
 }

@@ -25,17 +25,12 @@ request widget area.
 
 The following languages and frameworks are supported.
 
-| Language (package managers) / framework | Scan tool |
-| ---------------------- | --------- |
-| JavaScript ([npm](https://www.npmjs.com/), [yarn](https://yarnpkg.com/en/)) | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [Retire.js](https://retirejs.github.io/retire.js)
-| Python ([pip](https://pip.pypa.io/en/stable/)) | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [bandit](https://github.com/openstack/bandit) |
-| Ruby ([gem](https://rubygems.org/)) | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [bundler-audit](https://github.com/rubysec/bundler-audit) |
-| Ruby on Rails | [brakeman](https://brakemanscanner.org) |
-| Java ([Maven](https://maven.apache.org/)) | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [find-sec-bugs](https://find-sec-bugs.github.io/) |
-| PHP ([Composer](https://getcomposer.org/)) | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
-
-Some security scanners require to send a list of project dependencies to GitLab central servers to check for vulnerabilities. To learn more about this or to disable it please
-check [GitLab SAST documentation](https://gitlab.com/gitlab-org/security-products/sast#remote-checks).
+| Language / framework | Scan tool                                          |
+|----------------------|----------------------------------------------------|
+| C/C++                | [Flawfinder](https://www.dwheeler.com/flawfinder/) |
+| Python               | [bandit](https://github.com/openstack/bandit)      |
+| Ruby on Rails        | [brakeman](https://brakemanscanner.org)            |
+| Java                 | [find-sec-bugs](https://find-sec-bugs.github.io/)  |
 
 ## How it works
 
@@ -53,7 +48,7 @@ The `sast` job will perform an analysis on the running web application, the
 resulting JSON file will be uploaded as an artifact, and GitLab will then check
 this file and show the information inside the merge request.
 
-![SAST Widget](img/gemnasium.png)
+![SAST Widget](img/sast.png)
 
 ## Security report under pipelines
 

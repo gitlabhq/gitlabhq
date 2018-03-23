@@ -55,6 +55,20 @@ module EE
         end
       end
 
+      expose :dependency_scanning, if: -> (mr, _) { mr.expose_dependency_scanning_data? } do
+        expose :head_path, if: -> (mr, _) { can?(current_user, :read_build, mr.head_dependency_scanning_artifact) } do |merge_request|
+          raw_project_build_artifacts_url(merge_request.source_project,
+                                          merge_request.head_dependency_scanning_artifact,
+                                          path: Ci::Build::DEPENDENCY_SCANNING_FILE)
+        end
+
+        expose :base_path, if: -> (mr, _) { mr.base_has_dependency_scanning_data? && can?(current_user, :read_build, mr.base_dependency_scanning_artifact) } do |merge_request|
+          raw_project_build_artifacts_url(merge_request.target_project,
+                                          merge_request.base_dependency_scanning_artifact,
+                                          path: Ci::Build::DEPENDENCY_SCANNING_FILE)
+        end
+      end
+
       expose :sast_container, if: -> (mr, _) { mr.expose_sast_container_data? } do
         expose :head_path, if: -> (mr, _) { can?(current_user, :read_build, mr.head_sast_container_artifact) } do |merge_request|
           raw_project_build_artifacts_url(merge_request.source_project,

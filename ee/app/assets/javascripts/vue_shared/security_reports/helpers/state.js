@@ -16,4 +16,11 @@ export default {
     newIssues: [],
     resolvedIssues: [],
   },
+  dependencyScanning: {
+    isLoading: false,
+    hasError: false,
+    newIssues: [],
+    resolvedIssues: [],
+    allIssues: [],
+  },
 };

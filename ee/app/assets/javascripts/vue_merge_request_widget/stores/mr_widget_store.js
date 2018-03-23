@@ -20,6 +20,7 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.initSecurityReport(data);
     this.initDockerReport(data);
     this.initDastReport(data);
+    this.initDependencyScanningReport(data);
   }
 
   setData(data) {
@@ -95,6 +96,15 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.dastReport = [];
   }
 
+  initDependencyScanningReport(data) {
+    this.dependencyScanning = data.dependency_scanning;
+    this.dependencyScanningReport = {
+      newIssues: [],
+      resolvedIssues: [],
+      allIssues: [],
+    };
+  }
+
   setSecurityReport(data) {
     const report = setSastReport(data);
     this.securityReport.newIssues = report.newIssues;
@@ -111,6 +121,13 @@ export default class MergeRequestStore extends CEMergeRequestStore {
 
   setDastReport(data) {
     this.dastReport = setDastReport(data);
+  }
+
+  setDependencyScanningReport(data) {
+    const report = setSastReport(data);
+    this.dependencyScanningReport.newIssues = report.newIssues;
+    this.dependencyScanningReport.resolvedIssues = report.resolvedIssues;
+    this.dependencyScanningReport.allIssues = report.allIssues;
   }
 
   compareCodeclimateMetrics(headIssues, baseIssues, headBlobPath, baseBlobPath) {

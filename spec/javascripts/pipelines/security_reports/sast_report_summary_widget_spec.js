@@ -1,9 +1,8 @@
 import Vue from 'vue';
-import reportSummary from 'ee/pipelines/components/security_reports/sast_report_summary_widget.vue';
+import reportSummary from 'ee/pipelines/components/security_reports/report_summary_widget.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { parsedSastIssuesHead } from 'spec/vue_shared/security_reports/mock_data';
 
-describe('SAST report summary widget', () => {
+describe('Report summary widget', () => {
   let vm;
   let Component;
 
@@ -18,25 +17,40 @@ describe('SAST report summary widget', () => {
   describe('with vulnerabilities', () => {
     beforeEach(() => {
       vm = mountComponent(Component, {
-        unresolvedIssues: parsedSastIssuesHead,
+        sastIssues: 2,
+        dependencyScanningIssues: 4,
+        hasSast: true,
+        hasDependencyScanning: true,
       });
     });
 
-    it('renders summary text with warning icon', () => {
-      expect(vm.$el.textContent.trim().replace(/\s\s+/g, ' ')).toEqual('SAST degraded on 2 security vulnerabilities');
-      expect(vm.$el.querySelector('span').classList).toContain('ci-status-icon-warning');
+    it('renders summary text with warning icon for sast', () => {
+      expect(vm.$el.querySelector('.js-sast-summary').textContent.trim().replace(/\s\s+/g, ' ')).toEqual('SAST detected 2 vulnerabilities');
+      expect(vm.$el.querySelector('.js-sast-summary span').classList).toContain('ci-status-icon-warning');
+    });
+
+    it('renders summary text with warning icon for dependency scanning', () => {
+      expect(vm.$el.querySelector('.js-dss-summary').textContent.trim().replace(/\s\s+/g, ' ')).toEqual('Dependency scanning detected 4 vulnerabilities');
+      expect(vm.$el.querySelector('.js-dss-summary span').classList).toContain('ci-status-icon-warning');
     });
   });
 
   describe('without vulnerabilities', () => {
     beforeEach(() => {
       vm = mountComponent(Component, {
+        hasSast: true,
+        hasDependencyScanning: true,
       });
     });
 
-    it('render summary text with success icon', () => {
-      expect(vm.$el.textContent.trim().replace(/\s\s+/g, ' ')).toEqual('SAST detected no security vulnerabilities');
-      expect(vm.$el.querySelector('span').classList).toContain('ci-status-icon-success');
+    it('render summary text with success icon for sast', () => {
+      expect(vm.$el.querySelector('.js-sast-summary').textContent.trim().replace(/\s\s+/g, ' ')).toEqual('SAST detected no vulnerabilities');
+      expect(vm.$el.querySelector('.js-sast-summary span').classList).toContain('ci-status-icon-success');
+    });
+
+    it('render summary text with success icon for dependecy scanning', () => {
+      expect(vm.$el.querySelector('.js-dss-summary').textContent.trim().replace(/\s\s+/g, ' ')).toEqual('Dependency scanning detected no vulnerabilities');
+      expect(vm.$el.querySelector('.js-dss-summary span').classList).toContain('ci-status-icon-success');
     });
   });
 });

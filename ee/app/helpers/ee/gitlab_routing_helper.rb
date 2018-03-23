@@ -33,5 +33,11 @@ module EE
                                       pipeline.sast_artifact,
                                       path: Ci::Build::SAST_FILE)
     end
+
+    def dependency_scanning_artifact_url(pipeline)
+      raw_project_build_artifacts_url(pipeline.project,
+                                      pipeline.dependency_scanning_artifact,
+                                      path: Ci::Build::DEPENDENCY_SCANNING_FILE)
+    end
   end
 end
