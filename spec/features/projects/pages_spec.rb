@@ -244,10 +244,11 @@ feature 'Pages' do
     end
 
     context 'setting could not be updated' do
+      let(:service) { instance_double('Projects::UpdateService') }
+
       before do
-        allow_any_instance_of(Projects::UpdateService)
-          .to receive(:execute)
-          .and_return(status: :error)
+        allow(Projects::UpdateService).to receive(:new).and_return(service)
+        allow(service).to receive(:execute).and_return(status: :error)
       end
 
       scenario 'tries to change the setting' do
