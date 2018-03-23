@@ -5,7 +5,10 @@ import { getLocationHash } from './url_utility';
 import { convertToCamelCase } from './text_utility';
 import { isObject } from './type_utility';
 
-export const getPagePath = (index = 0) => $('body').attr('data-page').split(':')[index];
+export const getPagePath = (index = 0) =>
+  $('body')
+    .attr('data-page')
+    .split(':')[index];
 
 export const isInGroupsPage = () => getPagePath() === 'groups';
 
@@ -35,32 +38,39 @@ export const checkPageAndAction = (page, action) => {
 export const isInIssuePage = () => checkPageAndAction('issues', 'show');
 export const isInMRPage = () => checkPageAndAction('merge_requests', 'show');
 export const isInNoteablePage = () => isInIssuePage() || isInMRPage();
-export const hasVueMRDiscussionsCookie = () => Cookies.get('vue_mr_discussions');
 
-export const ajaxGet = url => axios.get(url, {
-  params: { format: 'js' },
-  responseType: 'text',
-}).then(({ data }) => {
-  $.globalEval(data);
-});
+export const ajaxGet = url =>
+  axios
+    .get(url, {
+      params: { format: 'js' },
+      responseType: 'text',
+    })
+    .then(({ data }) => {
+      $.globalEval(data);
+    });
 
-export const rstrip = (val) => {
+export const rstrip = val => {
   if (val) {
     return val.replace(/\s+$/, '');
   }
   return val;
 };
 
-export const updateTooltipTitle = ($tooltipEl, newTitle) => $tooltipEl.attr('title', newTitle).tooltip('fixTitle');
+export const updateTooltipTitle = ($tooltipEl, newTitle) =>
+  $tooltipEl.attr('title', newTitle).tooltip('fixTitle');
 
-export const disableButtonIfEmptyField = (fieldSelector, buttonSelector, eventName = 'input') => {
+export const disableButtonIfEmptyField = (
+  fieldSelector,
+  buttonSelector,
+  eventName = 'input',
+) => {
   const field = $(fieldSelector);
   const closestSubmit = field.closest('form').find(buttonSelector);
   if (rstrip(field.val()) === '') {
     closestSubmit.disable();
   }
   // eslint-disable-next-line func-names
-  return field.on(eventName, function () {
+  return field.on(eventName, function() {
     if (rstrip($(this).val()) === '') {
       return closestSubmit.disable();
     }
@@ -77,7 +87,9 @@ export const handleLocationHash = () => {
   // This is required to handle non-unicode characters in hash
   hash = decodeURIComponent(hash);
 
-  const target = document.getElementById(hash) || document.getElementById(`user-content-${hash}`);
+  const target =
+    document.getElementById(hash) ||
+    document.getElementById(`user-content-${hash}`);
   const fixedTabs = document.querySelector('.js-tabs-affix');
   const fixedDiffStats = document.querySelector('.js-diff-files-changed');
   const fixedNav = document.querySelector('.navbar-gitlab');
@@ -102,7 +114,7 @@ export const handleLocationHash = () => {
 
 // Check if element scrolled into viewport from above or below
 // Courtesy http://stackoverflow.com/a/7557433/414749
-export const isInViewport = (el) => {
+export const isInViewport = el => {
   const rect = el.getBoundingClientRect();
 
   return (
@@ -113,25 +125,31 @@ export const isInViewport = (el) => {
   );
 };
 
-export const parseUrl = (url) => {
+export const parseUrl = url => {
   const parser = document.createElement('a');
   parser.href = url;
   return parser;
 };
 
-export const parseUrlPathname = (url) => {
+export const parseUrlPathname = url => {
   const parsedUrl = parseUrl(url);
   // parsedUrl.pathname will return an absolute path for Firefox and a relative path for IE11
   // We have to make sure we always have an absolute path.
-  return parsedUrl.pathname.charAt(0) === '/' ? parsedUrl.pathname : `/${parsedUrl.pathname}`;
+  return parsedUrl.pathname.charAt(0) === '/'
+    ? parsedUrl.pathname
+    : `/${parsedUrl.pathname}`;
 };
 
 // We can trust that each param has one & since values containing & will be encoded
 // Remove the first character of search as it is always ?
-export const getUrlParamsArray = () => window.location.search.slice(1).split('&').map((param) => {
-  const split = param.split('=');
-  return [decodeURI(split[0]), split[1]].join('=');
-});
+export const getUrlParamsArray = () =>
+  window.location.search
+    .slice(1)
+    .split('&')
+    .map(param => {
+      const split = param.split('=');
+      return [decodeURI(split[0]), split[1]].join('=');
+    });
 
 export const isMetaKey = e => e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
 
@@ -141,7 +159,7 @@ export const isMetaKey = e => e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
 // 3) Middle-click or Mouse Wheel Click (e.which is 2)
 export const isMetaClick = e => e.metaKey || e.ctrlKey || e.which === 2;
 
-export const scrollToElement = (element) => {
+export const scrollToElement = element => {
   let $el = element;
   if (!(element instanceof $)) {
     $el = $(element);
@@ -150,9 +168,12 @@ export const scrollToElement = (element) => {
   const mrTabsHeight = $('.merge-request-tabs').height() || 0;
   const headerHeight = $('.navbar-gitlab').height() || 0;
 
-  return $('body, html').animate({
-    scrollTop: top - mrTabsHeight - headerHeight,
-  }, 200);
+  return $('body, html').animate(
+    {
+      scrollTop: top - mrTabsHeight - headerHeight,
+    },
+    200,
+  );
 };
 
 /**
@@ -191,13 +212,15 @@ export const insertText = (target, text) => {
   const textBefore = value.substring(0, selectionStart);
   const textAfter = value.substring(selectionEnd, value.length);
 
-  const insertedText = text instanceof Function ? text(textBefore, textAfter) : text;
+  const insertedText =
+    text instanceof Function ? text(textBefore, textAfter) : text;
   const newText = textBefore + insertedText + textAfter;
 
   // eslint-disable-next-line no-param-reassign
   target.value = newText;
   // eslint-disable-next-line no-param-reassign
-  target.selectionStart = target.selectionEnd = selectionStart + insertedText.length;
+  target.selectionStart = target.selectionEnd =
+    selectionStart + insertedText.length;
 
   // Trigger autosave
   target.dispatchEvent(new Event('input'));
@@ -209,7 +232,8 @@ export const insertText = (target, text) => {
 };
 
 export const nodeMatchesSelector = (node, selector) => {
-  const matches = Element.prototype.matches ||
+  const matches =
+    Element.prototype.matches ||
     Element.prototype.matchesSelector ||
     Element.prototype.mozMatchesSelector ||
     Element.prototype.msMatchesSelector ||
@@ -238,10 +262,10 @@ export const nodeMatchesSelector = (node, selector) => {
   this will take in the headers from an API response and normalize them
   this way we don't run into production issues when nginx gives us lowercased header keys
 */
-export const normalizeHeaders = (headers) => {
+export const normalizeHeaders = headers => {
   const upperCaseHeaders = {};
 
-  Object.keys(headers || {}).forEach((e) => {
+  Object.keys(headers || {}).forEach(e => {
     upperCaseHeaders[e.toUpperCase()] = headers[e];
   });
 
@@ -252,11 +276,11 @@ export const normalizeHeaders = (headers) => {
   this will take in the getAllResponseHeaders result and normalize them
   this way we don't run into production issues when nginx gives us lowercased header keys
 */
-export const normalizeCRLFHeaders = (headers) => {
+export const normalizeCRLFHeaders = headers => {
   const headersObject = {};
   const headersArray = headers.split('\n');
 
-  headersArray.forEach((header) => {
+  headersArray.forEach(header => {
     const keyValue = header.split(': ');
     headersObject[keyValue[0]] = keyValue[1];
   });
@@ -292,15 +316,13 @@ export const parseIntPagination = paginationInformation => ({
 export const parseQueryStringIntoObject = (query = '') => {
   if (query === '') return {};
 
-  return query
-    .split('&')
-    .reduce((acc, element) => {
-      const val = element.split('=');
-      Object.assign(acc, {
-        [val[0]]: decodeURIComponent(val[1]),
-      });
-      return acc;
-    }, {});
+  return query.split('&').reduce((acc, element) => {
+    const val = element.split('=');
+    Object.assign(acc, {
+      [val[0]]: decodeURIComponent(val[1]),
+    });
+    return acc;
+  }, {});
 };
 
 /**
@@ -309,9 +331,13 @@ export const parseQueryStringIntoObject = (query = '') => {
  *
  * @param {Object} params
  */
-export const objectToQueryString = (params = {}) => Object.keys(params).map(param => `${param}=${params[param]}`).join('&');
+export const objectToQueryString = (params = {}) =>
+  Object.keys(params)
+    .map(param => `${param}=${params[param]}`)
+    .join('&');
 
-export const buildUrlWithCurrentLocation = param => (param ? `${window.location.pathname}${param}` : window.location.pathname);
+export const buildUrlWithCurrentLocation = param =>
+  param ? `${window.location.pathname}${param}` : window.location.pathname;
 
 /**
  * Based on the current location and the string parameters provided
@@ -319,7 +345,7 @@ export const buildUrlWithCurrentLocation = param => (param ? `${window.location.
  *
  * @param {String} param
  */
-export const historyPushState = (newUrl) => {
+export const historyPushState = newUrl => {
   window.history.pushState({}, document.title, newUrl);
 };
 
@@ -368,7 +394,7 @@ export const backOff = (fn, timeout = 60000) => {
   let timeElapsed = 0;
 
   return new Promise((resolve, reject) => {
-    const stop = arg => ((arg instanceof Error) ? reject(arg) : resolve(arg));
+    const stop = arg => (arg instanceof Error ? reject(arg) : resolve(arg));
 
     const next = () => {
       if (timeElapsed < timeout) {
@@ -384,7 +410,7 @@ export const backOff = (fn, timeout = 60000) => {
   });
 };
 
-export const setFavicon = (faviconPath) => {
+export const setFavicon = faviconPath => {
   const faviconEl = document.getElementById('favicon');
   if (faviconEl && faviconPath) {
     faviconEl.setAttribute('href', faviconPath);
@@ -400,7 +426,8 @@ export const resetFavicon = () => {
 };
 
 export const setCiStatusFavicon = pageUrl =>
-  axios.get(pageUrl)
+  axios
+    .get(pageUrl)
     .then(({ data }) => {
       if (data && data.favicon) {
         setFavicon(data.favicon);
@@ -413,7 +440,9 @@ export const setCiStatusFavicon = pageUrl =>
 export const spriteIcon = (icon, className = '') => {
   const classAttribute = className.length > 0 ? `class="${className}"` : '';
 
-  return `<svg ${classAttribute}><use xlink:href="${gon.sprite_icons}#${icon}" /></svg>`;
+  return `<svg ${classAttribute}><use xlink:href="${
+    gon.sprite_icons
+  }#${icon}" /></svg>`;
 };
 
 /**
@@ -435,7 +464,10 @@ export const convertObjectPropsToCamelCase = (obj = {}, options = {}) => {
     const val = obj[prop];
 
     if (options.deep && (isObject(val) || Array.isArray(val))) {
-      result[convertToCamelCase(prop)] = convertObjectPropsToCamelCase(val, options);
+      result[convertToCamelCase(prop)] = convertObjectPropsToCamelCase(
+        val,
+        options,
+      );
     } else {
       result[convertToCamelCase(prop)] = obj[prop];
     }
@@ -443,15 +475,18 @@ export const convertObjectPropsToCamelCase = (obj = {}, options = {}) => {
   }, initial);
 };
 
-export const imagePath = imgUrl => `${gon.asset_host || ''}${gon.relative_url_root || ''}/assets/${imgUrl}`;
+export const imagePath = imgUrl =>
+  `${gon.asset_host || ''}${gon.relative_url_root || ''}/assets/${imgUrl}`;
 
 export const addSelectOnFocusBehaviour = (selector = '.js-select-on-focus') => {
   // Click a .js-select-on-focus field, select the contents
   // Prevent a mouseup event from deselecting the input
   $(selector).on('focusin', function selectOnFocusCallback() {
-    $(this).select().one('mouseup', (e) => {
-      e.preventDefault();
-    });
+    $(this)
+      .select()
+      .one('mouseup', e => {
+        e.preventDefault();
+      });
   });
 };
 
