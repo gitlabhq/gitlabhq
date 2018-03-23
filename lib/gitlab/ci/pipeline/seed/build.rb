@@ -17,15 +17,7 @@ module Gitlab
               .fabricate(attributes.delete(:except))
           end
 
-          # TODO, use pipeline.user ?
-          #
-          def user=(current_user)
-            @attributes.merge!(user: current_user)
-          end
-
           def included?
-            # TODO specs for passing a seed object for lazy resource evaluation
-            #
             strong_memoize(:inclusion) do
               @only.all? { |spec| spec.satisfied_by?(@pipeline, self) } &&
                 @except.none? { |spec| spec.satisfied_by?(@pipeline, self) }
@@ -36,6 +28,7 @@ module Gitlab
             @attributes.merge(
               pipeline: @pipeline,
               project: @pipeline.project,
+              user: @pipeline.user,
               ref: @pipeline.ref,
               tag: @pipeline.tag,
               trigger_request: @pipeline.legacy_trigger,
