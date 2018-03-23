@@ -27,6 +27,24 @@ export default {
     titleTag() {
       return this.diffFile.fileHash ? 'a' : 'span';
     },
+    baseSha() {
+      return this.diffFile.diffRefs.baseSha;
+    },
+    contentSha() {
+      return this.diffFile.contentSha;
+    },
+    truncatedBaseSha() {
+      return this.truncate(this.baseSha);
+    },
+    truncatedContentSha() {
+      return this.truncate(this.contentSha);
+    },
+    imageDiff() {
+      return !this.diffFile.text;
+    },
+    replacedFile() {
+      return !(this.diffFile.newFile || this.diffFile.deletedFile)
+    }
   },
   methods: {
     handleToggle(e, checkTarget) {
@@ -39,6 +57,9 @@ export default {
       }
     },
     noop() {},
+    truncate(sha) {
+      return sha.slice(0, 8);
+    }
   },
 };
 </script>
@@ -150,10 +171,17 @@ export default {
       </template>
 
       <a
+        v-if="imageDiff && replacedFile"
         class="btn view-file js-view-file"
-        :href="diffFile.viewShaPath"
+        :href="baseSha"
       >
-        View file @ <span class="commit-sha">{{ diffFile.truncatedSha }}</span>
+        View replaced file @ <span class="commit-sha">{{ truncatedBaseSha }}</span>
+      </a>
+      <a
+        class="btn view-file js-view-file"
+        :href="contentSha"
+      >
+        View file @ <span class="commit-sha">{{ truncatedContentSha }}</span>
       </a>
 
       <button
