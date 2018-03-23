@@ -547,16 +547,16 @@ module Ci
         variables.append(key: 'CI_SERVER_NAME', value: 'GitLab')
         variables.append(key: 'CI_SERVER_VERSION', value: Gitlab::VERSION)
         variables.append(key: 'CI_SERVER_REVISION', value: Gitlab::REVISION)
-        variables.append(key: 'CI_JOB_ID', value: id.to_s)
+        variables.append(key: 'CI_JOB_ID', value: id.to_s) if persisted?
         variables.append(key: 'CI_JOB_NAME', value: name)
         variables.append(key: 'CI_JOB_STAGE', value: stage)
-        variables.append(key: 'CI_JOB_TOKEN', value: token, public: false)
+        variables.append(key: 'CI_JOB_TOKEN', value: token, public: false) if persisted?
         variables.append(key: 'CI_COMMIT_SHA', value: sha)
         variables.append(key: 'CI_COMMIT_REF_NAME', value: ref)
         variables.append(key: 'CI_COMMIT_REF_SLUG', value: ref_slug)
-        variables.append(key: 'CI_REGISTRY_USER', value: CI_REGISTRY_USER)
-        variables.append(key: 'CI_REGISTRY_PASSWORD', value: token, public: false)
-        variables.append(key: 'CI_REPOSITORY_URL', value: repo_url, public: false)
+        variables.append(key: 'CI_REGISTRY_USER', value: CI_REGISTRY_USER) if persisted?
+        variables.append(key: 'CI_REGISTRY_PASSWORD', value: token, public: false) if persisted?
+        variables.append(key: 'CI_REPOSITORY_URL', value: repo_url, public: false) if persisted?
         variables.append(key: "CI_COMMIT_TAG", value: ref) if tag?
         variables.append(key: "CI_PIPELINE_TRIGGERED", value: 'true') if trigger_request
         variables.append(key: "CI_JOB_MANUAL", value: 'true') if action?
@@ -579,8 +579,11 @@ module Ci
 
     def legacy_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
-        variables.append(key: 'CI_BUILD_ID', value: id.to_s)
-        variables.append(key: 'CI_BUILD_TOKEN', value: token, public: false)
+        if persisted?
+          variables.append(key: 'CI_BUILD_ID', value: id.to_s)
+          variables.append(key: 'CI_BUILD_TOKEN', value: token, public: false)
+        end
+
         variables.append(key: 'CI_BUILD_REF', value: sha)
         variables.append(key: 'CI_BUILD_BEFORE_SHA', value: before_sha)
         variables.append(key: 'CI_BUILD_REF_NAME', value: ref)
