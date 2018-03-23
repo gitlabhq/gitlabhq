@@ -1,22 +1,18 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Pipeline::Expression::Statement do
-  let(:pipeline) { build(:ci_pipeline) }
-
   subject do
-    described_class.new(text, pipeline)
+    described_class.new(text, variables)
   end
 
-  before do
-    variables = [{ key: 'PRESENT_VARIABLE', value: 'my variable' },
-                 { key: 'EMPTY_VARIABLE', value: '' }]
-
-    pipeline.variables.build(variables)
+  let(:variables) do
+    { 'PRESENT_VARIABLE' => 'my variable',
+      EMPTY_VARIABLE: '' }
   end
 
   describe '.new' do
-    context 'when pipeline is not provided' do
-      it 'allows to properly initialize the statement' do
+    context 'when variables are not provided' do
+      it 'allows to properly initializes the statement' do
         statement = described_class.new('$PRESENT_VARIABLE')
 
         expect(statement.evaluate).to be_nil

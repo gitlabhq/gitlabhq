@@ -8,9 +8,13 @@ module Gitlab
           end
 
           def satisfied_by?(pipeline, build)
+            variables = Gitlab::Ci::Variables::Collection
+              .new(build.simple_variables)
+              .to_hash
+
             statements = @expressions.map do |statement|
               ::Gitlab::Ci::Pipeline::Expression::Statement
-                .new(statement, pipeline)
+                .new(statement, variables)
             end
 
             statements.any?(&:truthful?)

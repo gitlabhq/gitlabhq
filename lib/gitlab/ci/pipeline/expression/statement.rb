@@ -14,24 +14,9 @@ module Gitlab
             %w[variable]
           ].freeze
 
-          def initialize(statement, pipeline = nil)
+          def initialize(statement, variables = {})
             @lexer = Expression::Lexer.new(statement)
-
-            return if pipeline.nil?
-
-            # REFACTORING, temporary refactoring stubs
-            #
-            @variables = pipeline.project.predefined_variables.map do |variable|
-              [variable[:key], variable[:value]]
-            end
-
-            @variables += pipeline.variables.map do |variable|
-              [variable.key, variable.value]
-            end
-
-            @variables += pipeline.predefined_variables.map do |variable|
-              [variable[:key], variable[:value]]
-            end
+            @variables = variables.with_indifferent_access
           end
 
           def parse_tree
