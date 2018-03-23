@@ -45,9 +45,7 @@ function generateEntries() {
     cwd: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
   });
   eePageEntries.forEach(path => generateAutoEntries(path, 'ee'));
-  watchAutoEntries.concat(
-    path.join(ROOT_PATH, 'ee/app/assets/javascripts/pages/'),
-  );
+  watchAutoEntries.concat(path.join(ROOT_PATH, 'ee/app/assets/javascripts/pages/'));
 
   autoEntriesCount = Object.keys(autoEntries).length;
 
