@@ -2,16 +2,18 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %a.close{ href: '#', data: { dismiss: 'modal' } }
-        %h3= 'How to work faster with Geo'
+        %a.close{ href: "#", "data-dismiss" => "modal" } ×
+        %h3.page-title
+          How to work faster with Geo
       .modal-body
         %p
           %strong= 'Step 1.'
           Clone the repository from your secondary node:
-        = clipboard_button(target: 'pre#geo-info-1')
-        %pre#geo-info-1.dark
-          git clone
-          = default_url_to_repo()
+        .form-group
+          .input-group
+            %input#geo-info-1.form-control{ value: "git clone " + default_url_to_repo(), readonly: "readonly" }
+            .input-group-btn
+              = clipboard_button(target: '#geo-info-1', class: "btn-default", container: "#modal-geo-info")
         %p
           %strong= 'Step 2.'
           Go to the new directory and define
@@ -19,11 +21,11 @@
           repository URL as the
           %strong= 'push'
           remote:
-        = clipboard_button(target: 'pre#geo-info-2')
-        %pre#geo-info-2.dark
-          git remote set-url --push origin &lt;clone url for primary repository&gt;
-
-
+        .form-group
+          .input-group
+            %input#geo-info-2.form-control{ value: "git remote set-url --push origin &lt;clone url for primary repository&gt;", readonly: "readonly" }
+            .input-group-btn
+              = clipboard_button(target: '#geo-info-2', class: "btn-default", container: "#modal-geo-info")
         %p
           %strong= 'Done.'
           You can now commit and push code as you normally do, but with increased speed.

@@ -41,7 +41,7 @@
     }
 
     .fa.fa-chevron::before {
-      content: "\f077";
+      content: '\f077';
     }
 
     &.show-advanced {
@@ -54,7 +54,7 @@
       }
 
       .fa.fa-chevron::before {
-        content: "\f078";
+        content: '\f078';
       }
     }
   }
@@ -76,6 +76,39 @@
     justify-content: center;
   }
 }
+
 .classification-label {
   background-color: $common-red;
+}
+
+.load-wrapper {
+  position: absolute;
+  background: $black-transparent;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.project-mirror-text {
+  @media (min-width: $screen-sm-min) {
+    float: left;
+    line-height: 35px;
+  }
+}
+
+.project-mirror-button {
+  margin-top: 10px;
+
+  @media (min-width: $screen-sm-min) {
+    float: right;
+    margin-top: 0;
+  }
+}
+
+.git-clone-holder {
+  .btn-geo {
+    border-left: none;
+  }
 }

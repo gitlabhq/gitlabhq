@@ -59,8 +59,9 @@ feature 'Geo clone instructions', :js do
     secondary_remote = secondary_url(protocol)
 
     expect(page).to have_content('How to work faster with Geo')
-    expect(page).to have_content("git clone #{secondary_remote}")
-    expect(page).to have_content("git remote set-url --push origin #{primary_remote}")
+    expect(page.find('#geo-info-1').value).to eq "git clone #{secondary_remote}"
+    # the primary_url does not return the full url, but just the part up to the host:
+    expect(page.find('#geo-info-2').value).to start_with("git remote set-url --push origin #{primary_remote}")
   end
 
   def primary_url(protocol)
