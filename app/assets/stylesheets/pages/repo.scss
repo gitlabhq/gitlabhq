@@ -398,7 +398,7 @@
   }
 
   .branch-container {
-    border-left: 4px solid $indigo-700;
+    border-left: 4px solid;
     margin-bottom: $gl-bar-padding;
   }
 
@@ -410,7 +410,6 @@
   .branch-header-title {
     flex: 1;
     padding: $grid-size $gl-padding;
-    color: $indigo-700;
     font-weight: $gl-font-weight-bold;
 
     svg {
@@ -763,20 +762,7 @@
 
 .ide-sidebar-link {
   padding: $gl-padding-8 $gl-padding;
-  background: $indigo-700;
-  color: $white-light;
-  text-decoration: none;
   display: flex;
   align-items: center;
-
-  &:focus,
-  &:hover {
-    color: $white-light;
-    text-decoration: underline;
-    background: $indigo-500;
-  }
-
-  &:active {
-    background: $indigo-800;
-  }
+  font-weight: $gl-font-weight-bold;
 }
