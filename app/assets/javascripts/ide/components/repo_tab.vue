@@ -37,9 +37,15 @@ export default {
   },
 
   methods: {
-    ...mapActions(['closeFile']),
+    ...mapActions(['closeFile', 'updateDelayViewerUpdated', 'openPendingTab']),
     clickFile(tab) {
-      this.$router.push(`/project${tab.url}`);
+      this.updateDelayViewerUpdated(true);
+
+      if (tab.pending) {
+        this.openPendingTab(tab);
+      } else {
+        this.$router.push(`/project${tab.url}`);
+      }
     },
     mouseOverTab() {
       if (this.tab.changed) {

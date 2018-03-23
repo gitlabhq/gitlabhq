@@ -92,6 +92,14 @@ export default {
   [types.ADD_PENDING_TAB](state, file) {
     const pendingTab = state.pendingTabs.find(f => f.path === file.path);
 
+    Object.assign(state, {
+      openFiles: state.openFiles.map(f =>
+        Object.assign(f, {
+          active: false,
+        }),
+      ),
+    });
+
     if (pendingTab) {
       Object.assign(state, {
         pendingTabs: state.pendingTabs.map(tab => ({
@@ -107,11 +115,6 @@ export default {
           pending: true,
           key: `pending-${file.key}`,
         }),
-        openFiles: state.openFiles.map(f =>
-          Object.assign(f, {
-            active: false,
-          }),
-        ),
       });
     }
   },

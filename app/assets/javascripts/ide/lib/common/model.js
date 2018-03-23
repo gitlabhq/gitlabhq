@@ -80,7 +80,7 @@ export default class Model {
 
     eventHub.$off(`editor.update.model.dispose.${this.file.key}`, this.dispose);
     eventHub.$off(
-      `editor.update.model.content.${this.file.key}`,
+      `editor.update.model.content.${this.file.path}`,
       this.updateContent,
     );
   }
