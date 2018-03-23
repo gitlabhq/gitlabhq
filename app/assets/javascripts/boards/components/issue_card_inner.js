@@ -1,6 +1,9 @@
 import $ from 'jquery';
 import Vue from 'vue';
+<<<<<<< HEAD
 import IssueCardWeight from 'ee/boards/components/issue_card_weight.vue';
+=======
+>>>>>>> upstream/master
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import eventHub from '../eventhub';
 
@@ -47,7 +50,10 @@ gl.issueBoards.IssueCardInner = Vue.extend({
   },
   components: {
     UserAvatarLink,
+<<<<<<< HEAD
     IssueCardWeight,
+=======
+>>>>>>> upstream/master
   },
   computed: {
     numberOverLimit() {

@@ -39,6 +39,7 @@ function generateEntries() {
   }
 
   pageEntries.forEach(( path ) => generateAutoEntries(path));
+<<<<<<< HEAD
 
   // EE-specific auto entries
   const eePageEntries = glob.sync('pages/**/index.js', {
@@ -48,6 +49,8 @@ function generateEntries() {
   watchAutoEntries.concat(
     path.join(ROOT_PATH, 'ee/app/assets/javascripts/pages/'),
   );
+=======
+>>>>>>> upstream/master
 
   autoEntriesCount = Object.keys(autoEntries).length;
 
@@ -218,9 +221,6 @@ const config = {
       names: ['main', 'common', 'webpack_runtime'],
     }),
 
-    // enable scope hoisting
-    new webpack.optimize.ModuleConcatenationPlugin(),
-
     // copy pre-compiled vendor libraries verbatim
     new CopyWebpackPlugin([
       {
@@ -253,12 +253,15 @@ const config = {
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
       'vue$':           'vue/dist/vue.esm.js',
       'spec':           path.join(ROOT_PATH, 'spec/javascripts'),
+<<<<<<< HEAD
 
       // EE-only
       ee: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
       ee_empty_states: path.join(ROOT_PATH, 'ee/app/views/shared/empty_states'),
       ee_icons: path.join(ROOT_PATH, 'ee/app/views/shared/icons'),
       ee_images: path.join(ROOT_PATH, 'ee/app/assets/images'),
+=======
+>>>>>>> upstream/master
     }
   },
 
@@ -276,6 +279,7 @@ if (IS_PRODUCTION) {
       minimize: true,
       debug: false
     }),
+    new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       sourceMap: true
     }),

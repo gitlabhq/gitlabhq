@@ -73,7 +73,7 @@ module Ci
       project.pipelines
         .where(ref: pipeline.ref)
         .where.not(id: pipeline.id)
-        .where.not(sha: project.repository.sha_from_ref(pipeline.ref))
+        .where.not(sha: project.commit(pipeline.ref).try(:id))
         .created_or_pending
     end
 
