@@ -63,7 +63,6 @@ screen.
 
 See `Gitlab::Geo.enabled?` and `Gitlab::Geo.license_allows?`.
 
-
 ## Communication
 
 The communication channel has changed since first iteration, you can check here
@@ -127,6 +126,16 @@ that records which objects it needs to transfer.
 Files are copied via HTTP(s) and initiated via the
 `/api/v4/geo/transfers/:type/:id` endpoint.
 
+
+## Repository transfers
+
+Secondary Geo Nodes fetch the repositories when they are updated. If you just
+enabled a secondary node and connected it to the primary, the initial backfill
+will be initialized.
+
+When we fail to fetch a repository on the secondary several times, we try to do
+a clone again into the `@geo-temporary` directory in the root of the storage.
+When it's successful, we replace the main repo with the newly cloned one.
 
 ### Authentication
 
