@@ -18,25 +18,14 @@
         %span.label.label-info.has-tooltip{ title: s_('Branches|Merged into %{default_branch}') % { default_branch: @repository.root_ref } }
           = s_('Branches|merged')
 
-<<<<<<< HEAD
-    - if protected_branch?(@project, branch)
-      %span.label.label-success
-        = s_('Branches|protected')
-
-    - if @project.mirror_ever_updated_successfully? && @repository.diverged_from_upstream?(branch.name)
-      %span.label.label-danger.has-tooltip{ data: { html: "true", title: branch_diverged_tooltip_message } }
-        = icon('exclamation-triangle')
-        = s_('Branches|diverged from upstream')
-
-    .controls.hidden-xs<
-      - if merge_project && create_mr_button?(@repository.root_ref, branch.name)
-        = link_to create_mr_path(@repository.root_ref, branch.name), class: 'btn btn-default' do
-          = _('Merge request')
-=======
       - if protected_branch?(@project, branch)
         %span.label.label-success
           = s_('Branches|protected')
->>>>>>> upstream/master
+
+      - if @project.mirror_ever_updated_successfully? && @repository.diverged_from_upstream?(branch.name)
+        %span.label.label-danger.has-tooltip{ data: { html: "true", title: branch_diverged_tooltip_message } }
+          = icon('exclamation-triangle')
+          = s_('Branches|diverged from upstream')
 
     .block-truncated
       - if commit
