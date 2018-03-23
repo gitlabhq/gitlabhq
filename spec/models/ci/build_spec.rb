@@ -1989,13 +1989,33 @@ describe Ci::Build do
         )
       end
 
+      it 'returns static predefined variables' do
+        expect(build.variables.size).to be >= 28
+        expect(build.variables)
+          .to include(key: 'CI_COMMIT_REF_NAME', value: 'feature', public: true)
+        expect(build).not_to be_persisted
+      end
+    end
+  end
+
+  describe '#evaluable_variables' do
+    context 'when build has not been persisted yet' do
+      let(:build) do
+        described_class.new(
+          name: 'rspec',
+          stage: 'test',
+          ref: 'feature',
+          project: project,
+          pipeline: pipeline
+        )
+      end
+
       it 'does not persist the build' do
         expect(build).to be_valid
         expect(build).not_to be_persisted
 
-        variables = build.variables
+        variables = build.evaluable_variables
 
-        expect(variables.size).to be >= 28
         expect(build).not_to be_persisted
       end
 
@@ -2006,13 +2026,14 @@ describe Ci::Build do
                   CI_COMMIT_REF_SLUG
                   CI_JOB_STAGE]
 
-        build.variables.map { |var| var.fetch(:key) }.tap do |names|
+        variables = build.evaluable_variables
+
+        variables.map { |env| env[:key] }.tap do |names|
           expect(names).to include(*keys)
         end
 
-        expect(build.variables).to include(key: 'CI_COMMIT_REF_NAME',
-                                           value: 'feature',
-                                           public: true)
+        expect(variables)
+          .to include(key: 'CI_COMMIT_REF_NAME', value: 'feature', public: true)
       end
 
       it 'does not return prohibited variables' do
@@ -2025,7 +2046,7 @@ describe Ci::Build do
                   CI_REPOSITORY_URL
                   CI_ENVIRONMENT_URL]
 
-        build.variables.map { |var| var.fetch(:key) }.tap do |names|
+        build.evaluable_variables.map { |env| env[:key] }.tap do |names|
           expect(names).not_to include(*keys)
         end
       end

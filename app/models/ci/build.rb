@@ -244,13 +244,24 @@ module Ci
       Gitlab::Utils.slugify(ref.to_s)
     end
 
+    ##
     # Variables whose value does not depend on environment
+    #
     def simple_variables
       variables(environment: nil)
     end
 
-    # All variables, including those dependent on environment, which could
-    # contain unexpanded variables.
+    ##
+    # Variables that are available for evaluation using variables policy.
+    #
+    def evaluable_variables
+      Gitlab::Ci::Variables::Collection.new
+        .concat(simple_variables)
+    end
+
+    ## All variables, including those dependent on environment, which could
+    #  contain unexpanded variables.
+    #
     def variables(environment: persisted_environment)
       collection = Gitlab::Ci::Variables::Collection.new.tap do |variables|
         variables.concat(predefined_variables)
