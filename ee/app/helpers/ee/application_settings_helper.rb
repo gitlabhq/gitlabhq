@@ -19,6 +19,22 @@ module EE
         "external authorization checks.")
     end
 
+    def external_authorization_client_certificate_help_text
+      _("The X509 Certificate to use when mutual TLS is required to communicate "\
+        "with the external authorization service. If left blank, the server "\
+        "certificate is still validated when accessing over HTTPS.")
+    end
+
+    def external_authorization_client_key_help_text
+      _("The private key to use when a client certificate is provided. This value "\
+        "is encrypted at rest.")
+    end
+
+    def external_authorization_client_pass_help_text
+      _("The passphrase required to decrypt the private key. This is optional "\
+        "and the value is encrypted at rest.")
+    end
+
     override :visible_attributes
     def visible_attributes
       super + [

@@ -3847,6 +3847,9 @@ msgstr ""
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project. You can register or sign in to create issues for this project."
 msgstr ""
 
+msgid "The X509 Certificate to use when mutual TLS is required to communicate with the external authorization service. If left blank, the server certificate is still validated when accessing over HTTPS."
+msgstr ""
+
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
 msgstr ""
 
@@ -3874,10 +3877,16 @@ msgstr ""
 msgid "The number of failures of after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
 msgstr ""
 
+msgid "The passphrase required to decrypt the private key. This is optional and the value is encrypted at rest."
+msgstr ""
+
 msgid "The phase of the development lifecycle."
 msgstr ""
 
 msgid "The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit."
+msgstr ""
+
+msgid "The private key to use when a client certificate is provided. This value is encrypted at rest."
 msgstr ""
 
 msgid "The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
@@ -4688,6 +4697,9 @@ msgstr ""
 msgid "connecting"
 msgstr ""
 
+msgid "could not read private key, is the passphrase correct?"
+msgstr ""
+
 msgid "day"
 msgid_plural "days"
 msgstr[0] ""
@@ -4706,6 +4718,9 @@ msgid "is invalid because there is downstream lock"
 msgstr ""
 
 msgid "is invalid because there is upstream lock"
+msgstr ""
+
+msgid "is not a valid X509 certificate."
 msgstr ""
 
 msgid "locked by %{path_lock_user_name} %{created_at}"
@@ -4914,6 +4929,9 @@ msgid "password"
 msgstr ""
 
 msgid "personal access token"
+msgstr ""
+
+msgid "private key does not match certificate."
 msgstr ""
 
 msgid "remove due date"
