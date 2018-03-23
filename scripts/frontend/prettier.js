@@ -1,4 +1,3 @@
-/* eslint import/no-commonjs: "off", import/no-extraneous-dependencies: "off", no-console: "off" */
 const glob = require('glob');
 const prettier = require('prettier');
 const fs = require('fs');
