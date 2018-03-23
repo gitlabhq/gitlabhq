@@ -20,8 +20,18 @@ module Geo
         return
       end
 
+      unflag_disabled_wiki(registry)
+
       Geo::RepositorySyncService.new(project).execute if registry.repository_sync_due?(scheduled_time)
       Geo::WikiSyncService.new(project).execute if registry.wiki_sync_due?(scheduled_time)
+    end
+
+    private
+
+    def unflag_disabled_wiki(registry)
+      return unless registry.resync_wiki?
+
+      registry.update!(resync_wiki: false) unless registry.project.wiki_enabled?
     end
   end
 end

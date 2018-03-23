@@ -117,6 +117,10 @@ RSpec.describe Geo::ProjectSyncWorker do
       it 'does not sync the project wiki' do
         expect(wiki_sync_service).not_to have_received(:execute)
       end
+
+      it 'unflags wiki for sync, to remove it from Geo wiki queries' do
+        expect(registry.reload.resync_wiki).to be_falsey
+      end
     end
 
     context 'when project repository was synced after the time the job was scheduled in' do
