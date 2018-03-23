@@ -39,14 +39,6 @@ module Gitlab
         params
       end
 
-      def lfs_upload_ok(oid, size)
-        {
-          StoreLFSPath: LfsObjectUploader.workhorse_upload_path,
-          LfsOid: oid,
-          LfsSize: size
-        }
-      end
-
       def artifact_upload_ok
         { TempPath: JobArtifactUploader.workhorse_upload_path }
       end

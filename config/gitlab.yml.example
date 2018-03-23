@@ -701,7 +701,7 @@ test:
         provider: AWS # Only AWS supported at the moment
         aws_access_key_id: AWS_ACCESS_KEY_ID
         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
-        region: eu-central-1
+        region: us-east-1
   artifacts:
     path: tmp/tests/artifacts
     enabled: true
@@ -715,7 +715,7 @@ test:
         provider: AWS # Only AWS supported at the moment
         aws_access_key_id: AWS_ACCESS_KEY_ID
         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
-        region: eu-central-1
+        region: us-east-1
   uploads:
     storage_path: tmp/tests/public
     object_store:
@@ -724,7 +724,7 @@ test:
         provider: AWS # Only AWS supported at the moment
         aws_access_key_id: AWS_ACCESS_KEY_ID
         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
-        region: eu-central-1
+        region: us-east-1
   gitlab:
     host: localhost
     port: 80
