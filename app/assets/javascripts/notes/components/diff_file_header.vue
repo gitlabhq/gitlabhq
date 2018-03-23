@@ -56,7 +56,6 @@ export default {
         this.$emit('toggleFile');
       }
     },
-    noop() {},
     truncate(sha) {
       return sha.slice(0, 8);
     }

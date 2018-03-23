@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import Vuex, { mapActions, mapGetters } from 'vuex';
+import Vuex, { mapActions, mapState } from 'vuex';
 import notesApp from '../notes/components/notes_app.vue';
 import diffsApp from '../diffs/components/app.vue';
 import discussionCounter from '../notes/components/discussion_counter.vue';
@@ -20,7 +20,8 @@ const store = new Vuex.Store({
 
 export default function initMrNotes() {
   const mrShowNode = document.querySelector('.merge-request');
-  window.mergeRequest = new MergeRequest({
+  // eslint-disable-next-line no-new
+  new MergeRequest({
     action: mrShowNode.dataset.mrAction,
   });
 
@@ -43,7 +44,9 @@ export default function initMrNotes() {
       };
     },
     computed: {
-      ...mapGetters(['activeTab']),
+      ...mapState({
+        activeTab: state => state.page.activeTab,
+      }),
     },
     mounted() {
       this.setActiveTab(window.mrTabs.getCurrentAction());
@@ -96,7 +99,9 @@ export default function initMrNotes() {
       };
     },
     computed: {
-      ...mapGetters(['activeTab']),
+      ...mapState({
+        activeTab: state => state.page.activeTab,
+      }),
     },
     render(createElement) {
       return createElement('diffs-app', {

@@ -140,6 +140,7 @@ export const toggleIssueLocalState = ({ commit }, newState) => {
 };
 
 export const saveNote = ({ commit, dispatch }, noteData) => {
+  // For MR discussuions we need to post as `note[note]` and issue we use `note.note`.
   const note = noteData.data['note[note]'] || noteData.data.note.note;
   let placeholderText = note;
   const hasQuickActions = utils.hasQuickActions(placeholderText);

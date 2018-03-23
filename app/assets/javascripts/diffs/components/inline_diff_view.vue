@@ -1,6 +1,11 @@
 <script>
 import diffContentMixin from '../mixins/diff_content';
-import { MATCH_LINE_TYPE, LINE_HOVER_CLASS_NAME } from '../constants';
+import {
+  MATCH_LINE_TYPE,
+  CONTEXT_LINE_TYPE,
+  LINE_HOVER_CLASS_NAME,
+  LINE_UNFOLD_CLASS_NAME,
+} from '../constants';
 
 export default {
   mixins: [diffContentMixin],
@@ -11,10 +16,13 @@ export default {
     getLineClass(line) {
       const isSameLine = this.hoveredLineCode === line.lineCode;
       const isMatchLine = line.type === MATCH_LINE_TYPE;
+      const isContextLine = line.type === CONTEXT_LINE_TYPE;
 
       return {
-        [line.type]: true,
-        [LINE_HOVER_CLASS_NAME]: isSameLine && !isMatchLine,
+        [line.type]: line.type,
+        [LINE_HOVER_CLASS_NAME]:
+          this.isLoggedIn && isSameLine && !isMatchLine && !isContextLine,
+        [LINE_UNFOLD_CLASS_NAME]: this.isLoggedIn && isMatchLine,
       };
     },
   },
@@ -32,7 +40,7 @@ export default {
         <tr
           :id="line.lineCode"
           :key="line.lineCode"
-          :class="line.type"
+          :class="getRowClass(line)"
           class="line_holder"
           @mouseover="handleMouse(line.lineCode, true)"
           @mouseout="handleMouse(line.lineCode, false)"
@@ -42,10 +50,14 @@ export default {
             class="diff-line-num old_line"
           >
             <diff-line-gutter-content
+              :file-hash="fileHash"
               :line-type="line.type"
               :line-code="line.lineCode"
               :line-number="line.oldLine"
+              :meta-data="line.metaData"
               :show-comment-button="true"
+              :context-lines-path="diffFile.contextLinesPath"
+              :is-bottom="index + 1 === diffLinesLength"
               @showCommentForm="handleShowCommentForm"
             />
           </td>
@@ -54,9 +66,13 @@ export default {
             class="diff-line-num new_line"
           >
             <diff-line-gutter-content
+              :file-hash="fileHash"
               :line-type="line.type"
               :line-code="line.lineCode"
               :line-number="line.newLine"
+              :meta-data="line.metaData"
+              :is-bottom="index + 1 === diffLinesLength"
+              :context-lines-path="diffFile.contextLinesPath"
             />
           </td>
           <td

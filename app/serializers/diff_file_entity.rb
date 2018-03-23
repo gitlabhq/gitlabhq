@@ -71,7 +71,7 @@ class DiffFileEntity < Grape::Entity
   end
 
   expose :context_lines_path, if: -> (diff_file, _) { diff_file.text? } do |diff_file|
-    project_blob_diff_path(diff_file.repository.project, tree_join(diff_file.file_path, diff_file.content_sha))
+    project_blob_diff_path(diff_file.repository.project, tree_join(diff_file.content_sha, diff_file.file_path))
   end
 
   # Used for inline diffs

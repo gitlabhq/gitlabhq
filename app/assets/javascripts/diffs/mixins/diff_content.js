@@ -2,6 +2,7 @@ import { mapGetters, mapActions } from 'vuex';
 import diffDiscussions from '../components/diff_discussions.vue';
 import diffLineGutterContent from '../components/diff_line_gutter_content.vue';
 import diffLineNoteForm from '../components/diff_line_note_form.vue';
+import { CONTEXT_LINE_TYPE, CONTEXT_LINE_CLASS_NAME } from '../constants';
 
 export default {
   props: {
@@ -26,7 +27,7 @@ export default {
     diffLineGutterContent,
   },
   computed: {
-    ...mapGetters(['discussionsByLineCode']),
+    ...mapGetters(['discussionsByLineCode', 'isLoggedIn']),
     userColorScheme() {
       return window.gon.user_color_scheme;
     },
@@ -47,9 +48,25 @@ export default {
         return line;
       });
     },
+    diffLinesLength() {
+      return this.normalizedDiffLines.length;
+    },
+    fileHash() {
+      return this.diffFile.fileHash;
+    },
   },
   methods: {
     ...mapActions(['showCommentForm', 'cancelCommentForm']),
+    getRowClass(line) {
+      const isContextLine = line.left
+        ? line.left.type === CONTEXT_LINE_TYPE
+        : line.type === CONTEXT_LINE_TYPE;
+
+      return {
+        [line.type]: line.type,
+        [CONTEXT_LINE_CLASS_NAME]: isContextLine,
+      };
+    },
     trimFirstChar(line) {
       if (!line.richText) {
         return line;

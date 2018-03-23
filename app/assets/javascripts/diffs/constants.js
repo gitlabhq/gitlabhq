@@ -1,9 +1,12 @@
 export const INLINE_DIFF_VIEW_TYPE = 'inline';
 export const PARALLEL_DIFF_VIEW_TYPE = 'parallel';
 export const MATCH_LINE_TYPE = 'match';
+export const CONTEXT_LINE_TYPE = 'context';
 export const DIFF_VIEW_COOKIE_NAME = 'diff_view';
 export const EMPTY_CELL_TYPE = 'empty-cell';
 export const LINE_HOVER_CLASS_NAME = 'is-over';
+export const LINE_UNFOLD_CLASS_NAME = 'unfold js-unfold';
+export const CONTEXT_LINE_CLASS_NAME = 'diff-expanded';
 export const COMMENT_FORM_TYPE = 'commentForm';
 export const LINE_POSITION_LEFT = 'left';
 export const LINE_POSITION_RIGHT = 'right';
@@ -11,3 +14,4 @@ export const TEXT_DIFF_POSITION_TYPE = 'text';
 export const DIFF_NOTE_TYPE = 'DiffNote';
 export const NEW_LINE_TYPE = 'new';
 export const OLD_LINE_TYPE = 'old';
+export const UNFOLD_COUNT = 20;

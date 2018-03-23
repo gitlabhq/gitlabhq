@@ -3,7 +3,9 @@ import diffContentMixin from '../mixins/diff_content';
 import {
   EMPTY_CELL_TYPE,
   MATCH_LINE_TYPE,
+  CONTEXT_LINE_TYPE,
   LINE_HOVER_CLASS_NAME,
+  LINE_UNFOLD_CLASS_NAME,
 } from '../constants';
 
 export default {
@@ -31,14 +33,17 @@ export default {
     },
     getClassName(line, position) {
       const { type, lineCode } = line[position];
+      const isMatchLine = type === MATCH_LINE_TYPE;
       const isContextLine =
-        type !== MATCH_LINE_TYPE && type !== EMPTY_CELL_TYPE;
+        !isMatchLine && type !== EMPTY_CELL_TYPE && type !== CONTEXT_LINE_TYPE;
       const isSameLine = this.hoveredLineCode === lineCode;
       const isSameSection = position === this.hoveredSection;
 
       return {
         [type]: type,
-        [LINE_HOVER_CLASS_NAME]: isContextLine && isSameLine && isSameSection,
+        [LINE_HOVER_CLASS_NAME]:
+          this.isLoggedIn && isContextLine && isSameLine && isSameSection,
+        [LINE_UNFOLD_CLASS_NAME]: this.isLoggedIn && isMatchLine,
       };
     },
     handleMouse(e, line, isHover) {
@@ -72,6 +77,7 @@ export default {
         >
           <tr
             :key="index"
+            :class="getRowClass(line)"
             class="line_holder parallel"
             @mouseover="handleMouse($event, line, true)"
             @mouseout="handleMouse($event, line, false)"
@@ -82,10 +88,14 @@ export default {
               class="diff-line-num old_line"
             >
               <diff-line-gutter-content
+                :file-hash="fileHash"
                 :line-type="line.left.type"
                 :line-code="line.left.lineCode"
                 :line-number="line.left.oldLine"
+                :meta-data="line.left.metaData"
                 :show-comment-button="true"
+                :context-lines-path="diffFile.contextLinesPath"
+                :is-bottom="index + 1 === diffLinesLength"
                 line-position="left"
                 @showCommentForm="handleShowCommentForm"
               />
@@ -103,10 +113,14 @@ export default {
               class="diff-line-num new_line"
             >
               <diff-line-gutter-content
+                :file-hash="fileHash"
                 :line-type="line.right.type"
                 :line-code="line.right.lineCode"
                 :line-number="line.right.newLine"
+                :meta-data="line.right.metaData"
                 :show-comment-button="true"
+                :context-lines-path="diffFile.contextLinesPath"
+                :is-bottom="index + 1 === diffLinesLength"
                 line-position="right"
                 @showCommentForm="handleShowCommentForm"
               />

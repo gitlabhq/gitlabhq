@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import VueResource from 'vue-resource';
+import axios from '~/lib/utils/axios_utils';
 import Cookies from 'js-cookie';
 import { handleLocationHash } from '~/lib/utils/common_utils';
 import * as types from './mutation_types';
@@ -8,8 +8,6 @@ import {
   INLINE_DIFF_VIEW_TYPE,
   DIFF_VIEW_COOKIE_NAME,
 } from '../constants';
-
-Vue.use(VueResource);
 
 export const setEndpoint = ({ commit }, endpoint) => {
   commit(types.SET_ENDPOINT, endpoint);
@@ -22,12 +20,11 @@ export const setLoadingState = ({ commit }, state) => {
 export const fetchDiffFiles = ({ state, commit }) => {
   commit(types.SET_LOADING, true);
 
-  return Vue.http
+  return axios
     .get(state.endpoint)
-    .then(res => res.json())
     .then(res => {
       commit(types.SET_LOADING, false);
-      commit(types.SET_DIFF_FILES, res.diff_files);
+      commit(types.SET_DIFF_FILES, res.data.diff_files);
       return Vue.nextTick();
     })
     .then(handleLocationHash);
@@ -46,4 +43,19 @@ export const showCommentForm = ({ commit }, params) => {
 
 export const cancelCommentForm = ({ commit }, params) => {
   commit(types.REMOVE_COMMENT_FORM_LINE, params);
+};
+
+export const loadMoreLines = ({ commit }, options) => {
+  const { endpoint, params, lineNumbers, fileHash } = options;
+
+  return axios.get(endpoint, { params }).then(res => {
+    const contextLines = res.data || [];
+
+    commit(types.ADD_CONTEXT_LINES, {
+      lineNumbers,
+      contextLines,
+      params,
+      fileHash,
+    });
+  });
 };

@@ -75,6 +75,7 @@ export default class MergeRequestTabs {
     const navbar = document.querySelector('.navbar-gitlab');
     const peek = document.getElementById('peek');
     const paddingTop = 16;
+    this.commitsTab = document.querySelector('.tab-content .commits.tab-pane');
 
     this.diffsLoaded = false;
     this.pipelinesLoaded = false;
@@ -172,7 +173,7 @@ export default class MergeRequestTabs {
         this.expandViewContainer();
       }
       this.destroyPipelinesView();
-      $('.tab-content .commits.tab-pane').removeClass('active');
+      this.commitsTab.classList.remove('active');
     } else if (action === 'pipelines') {
       this.resetViewContainer();
       this.mountPipelinesView();
