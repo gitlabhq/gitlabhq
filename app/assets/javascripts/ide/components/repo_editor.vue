@@ -36,7 +36,7 @@ export default {
       this.editor.updateDimensions();
     },
     viewer() {
-      // this.createEditorInstance();
+      this.createEditorInstance();
     },
   },
   beforeDestroy() {

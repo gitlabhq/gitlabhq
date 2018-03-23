@@ -44,7 +44,7 @@ export default class DirtyDiffController {
 
   computeDiff(model) {
     this.dirtyDiffWorker.postMessage({
-      key: model.key,
+      key: model.path,
       originalContent: model.getOriginalModel().getValue(),
       newContent: model.getModel().getValue(),
     });

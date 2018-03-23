@@ -23,7 +23,7 @@ export default class ModelManager {
     }
 
     const model = new Model(this.monaco, file);
-    this.models.set(model.key, model);
+    this.models.set(model.path, model);
     this.disposable.add(model);
 
     eventHub.$on(

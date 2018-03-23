@@ -8,29 +8,29 @@ import { setPageTitle } from '../utils';
 
 export const closeFile = ({ commit, state, getters, dispatch }, file) => {
   const path = file.path;
+  const indexOfClosedFile = getters.tabs.findIndex(f => f.key === file.key);
+  const fileWasActive = file.active;
 
   if (file.pending) {
     commit(types.REMOVE_PENDING_TAB, file);
   } else {
-    const indexOfClosedFile = getters.tabs.findIndex(f => f.path === path);
-    const fileWasActive = file.active;
-
     commit(types.TOGGLE_FILE_OPEN, path);
     commit(types.SET_FILE_ACTIVE, { path, active: false });
+  }
 
-    if (getters.tabs.length > 0 && fileWasActive) {
-      const nextIndexToOpen =
-        indexOfClosedFile === 0 ? 0 : indexOfClosedFile - 1;
-      const nextFileToOpen = getters.tabs[nextIndexToOpen];
+  if (getters.tabs.length > 0 && fileWasActive) {
+    const nextIndexToOpen = indexOfClosedFile === 0 ? 0 : indexOfClosedFile - 1;
+    const nextFileToOpen = getters.tabs[nextIndexToOpen];
 
-      if (nextFileToOpen.pending) {
-        dispatch('openPendingTab', nextFileToOpen);
-      } else {
-        router.push(`/project${nextFileToOpen.url}`);
-      }
-    } else if (!state.openFiles.length) {
-      router.push(`/project/${file.projectId}/tree/${file.branchId}/`);
+    if (nextFileToOpen.pending) {
+      dispatch('updateViewer', 'diff');
+      dispatch('openPendingTab', nextFileToOpen);
+    } else {
+      dispatch('updateDelayViewerUpdated', true);
+      router.push(`/project${nextFileToOpen.url}`);
     }
+  } else if (!getters.tabs.length) {
+    router.push(`/project/${file.projectId}/tree/${file.branchId}/`);
   }
 
   eventHub.$emit(`editor.update.model.dispose.${file.key}`);

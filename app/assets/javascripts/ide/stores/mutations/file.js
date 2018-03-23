@@ -6,12 +6,14 @@ export default {
       active,
     });
 
-    Object.assign(state, {
-      pendingTabs: state.pendingTabs.map(f => ({
-        ...f,
-        active: false,
-      })),
-    });
+    if (active) {
+      Object.assign(state, {
+        pendingTabs: state.pendingTabs.map(f => ({
+          ...f,
+          active: false,
+        })),
+      });
+    }
   },
   [types.TOGGLE_FILE_OPEN](state, path) {
     Object.assign(state.entries[path], {
@@ -105,10 +107,11 @@ export default {
           pending: true,
           key: `pending-${file.key}`,
         }),
-        openFiles: state.openFiles.map(f => ({
-          ...f,
-          active: false,
-        })),
+        openFiles: state.openFiles.map(f =>
+          Object.assign(f, {
+            active: false,
+          }),
+        ),
       });
     }
   },
