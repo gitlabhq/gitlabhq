@@ -3,7 +3,7 @@
 /* global BoardService */
 
 import Flash from '~/flash';
-import modal from '~/vue_shared/components/modal.vue';
+import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import BoardLabelsSelect from '~/vue_shared/components/sidebar/labels_select/base.vue';
 import { visitUrl } from '~/lib/utils/url_utility';
 import BoardMilestoneSelect from './milestone_select.vue';
@@ -30,7 +30,7 @@ export default {
     BoardLabelsSelect,
     BoardMilestoneSelect,
     BoardWeightSelect,
-    modal,
+    DeprecatedModal,
   },
   props: {
     canAdminBoard: {
@@ -148,12 +148,14 @@ export default {
       if (label.isAny) {
         this.board.labels = [];
       } else if (!this.board.labels.find(l => l.id === label.id)) {
-        this.board.labels.push(new ListLabel({
-          id: label.id,
-          title: label.title,
-          color: label.color[0],
-          textColor: label.text_color,
-        }));
+        this.board.labels.push(
+          new ListLabel({
+            id: label.id,
+            title: label.title,
+            color: label.color[0],
+            textColor: label.text_color,
+          }),
+        );
       } else {
         let labels = this.board.labels;
         labels = labels.filter(selected => selected.id !== label.id);
@@ -164,7 +166,8 @@ export default {
       if (this.board.name.length === 0) return;
       this.isLoading = true;
       if (this.isDeleteForm) {
-        gl.boardService.deleteBoard(this.currentBoard)
+        gl.boardService
+          .deleteBoard(this.currentBoard)
           .then(() => {
             visitUrl(Store.rootPath);
           })
@@ -173,9 +176,10 @@ export default {
             this.isLoading = false;
           });
       } else {
-        gl.boardService.createBoard(this.board)
+        gl.boardService
+          .createBoard(this.board)
           .then(resp => resp.data)
-          .then((data) => {
+          .then(data => {
             visitUrl(data.board_path);
           })
           .catch(() => {
@@ -200,7 +204,7 @@ export default {
 </script>
 
 <template>
-  <modal
+  <deprecated-modal
     v-show="isVisible"
     modal-dialog-class="board-config-modal"
     :hide-footer="readonly"
@@ -300,5 +304,5 @@ export default {
         </div>
       </form>
     </template>
-  </modal>
+  </deprecated-modal>
 </template>
