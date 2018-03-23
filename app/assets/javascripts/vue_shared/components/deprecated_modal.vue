@@ -1,7 +1,7 @@
 <script>
   /* eslint-disable vue/require-default-prop */
   export default {
-    name: 'Modal',
+    name: 'DeprecatedModal', // use GlModal instead
 
     props: {
       id: {
