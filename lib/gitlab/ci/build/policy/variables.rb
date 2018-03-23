@@ -7,9 +7,9 @@ module Gitlab
             @expressions = Array(expressions)
           end
 
-          def satisfied_by?(pipeline, build)
+          def satisfied_by?(pipeline, seed)
             variables = Gitlab::Ci::Variables::Collection
-              .new(build.simple_variables)
+              .new(seed.to_resource.simple_variables)
               .to_hash
 
             statements = @expressions.map do |statement|

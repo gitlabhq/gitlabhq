@@ -11,21 +11,24 @@ module Gitlab
             @pipeline = pipeline
             @attributes = attributes
 
-            @only = attributes.delete(:only)
-            @except = attributes.delete(:except)
+            @only = Gitlab::Ci::Build::Policy
+              .fabricate(attributes.delete(:only))
+            @except = Gitlab::Ci::Build::Policy
+              .fabricate(attributes.delete(:except))
           end
 
+          # TODO, use pipeline.user ?
+          #
           def user=(current_user)
             @attributes.merge!(user: current_user)
           end
 
           def included?
+            # TODO specs for passing a seed object for lazy resource evaluation
+            #
             strong_memoize(:inclusion) do
-              only_specs = Gitlab::Ci::Build::Policy.fabricate(@only)
-              except_specs = Gitlab::Ci::Build::Policy.fabricate(@except)
-
-              only_specs.all? { |spec| spec.satisfied_by?(@pipeline) } &&
-                except_specs.none? { |spec| spec.satisfied_by?(@pipeline) }
+              @only.all? { |spec| spec.satisfied_by?(@pipeline, self) } &&
+                @except.none? { |spec| spec.satisfied_by?(@pipeline, self) }
             end
           end
 
