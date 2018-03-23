@@ -849,6 +849,185 @@ The `stop_review_app` job is **required** to have the following keywords defined
 - `stage` should be the same as the `review_app` in order for the environment
   to stop automatically when the branch is deleted
 
+### Dynamic environments
+
+>
+**Notes:**
+- [Introduced][ce-6323] in GitLab 8.12 and GitLab Runner 1.6.
+- The `$CI_ENVIRONMENT_SLUG` was [introduced][ce-7983] in GitLab 8.15.
+- The `name` and `url` parameters can use any of the defined CI variables,
+  including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
+  You however cannot use variables defined under `script`.
+
+For example:
+
+```yaml
+deploy as review app:
+  stage: deploy
+  script: make deploy
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    url: https://$CI_ENVIRONMENT_SLUG.example.com/
+```
+
+The `deploy as review app` job will be marked as deployment to dynamically
+create the `review/$CI_COMMIT_REF_NAME` environment, where `$CI_COMMIT_REF_NAME`
+is an [environment variable][variables] set by the Runner. The
+`$CI_ENVIRONMENT_SLUG` variable is based on the environment name, but suitable
+for inclusion in URLs. In this case, if the `deploy as review app` job was run
+in a branch named `pow`, this environment would be accessible with an URL like
+`https://review-pow.example.com/`.
+
+This of course implies that the underlying server which hosts the application
+is properly configured.
+
+The common use case is to create dynamic environments for branches and use them
+as Review Apps. You can see a simple example using Review Apps at
+<https://gitlab.com/gitlab-examples/review-apps-nginx/>.
+
+## `cache`
+
+>
+**Notes:**
+- Introduced in GitLab Runner v0.7.0.
+- `cache` can be set globally and per-job.
+- From GitLab 9.0, caching is enabled and shared between pipelines and jobs
+  by default.
+- From GitLab 9.2, caches are restored before [artifacts](#artifacts).
+
+TIP: **Learn more:**
+Read how caching works and find out some good practices in the
+[caching dependencies documentation](../caching/index.md).
+
+`cache` is used to specify a list of files and directories which should be
+cached between jobs. You can only use paths that are within the project
+workspace.
+
+If `cache` is defined outside the scope of jobs, it means it is set
+globally and all jobs will use that definition.
+
+### `cache:paths`
+
+Use the `paths` directive to choose which files or directories will be cached.
+Wildcards can be used as well.
+
+Cache all files in `binaries` that end in `.apk` and the `.config` file:
+
+```yaml
+rspec:
+  script: test
+  cache:
+    paths:
+    - binaries/*.apk
+    - .config
+```
+
+Locally defined cache overrides globally defined options. The following `rspec`
+job will cache only `binaries/`:
+
+```yaml
+cache:
+  paths:
+  - my/files
+
+rspec:
+  script: test
+  cache:
+    paths:
+    - binaries/
+```
+
+### `cache:key`
+
+> Introduced in GitLab Runner v1.0.0.
+
+Since the cache is shared between jobs, if you're using different
+paths for different jobs, you should also set a different `cache:key`
+otherwise cache content can be overwritten.
+
+The `key` directive allows you to define the affinity of caching between jobs,
+allowing to have a single cache for all jobs, cache per-job, cache per-branch
+or any other way that fits your workflow. This way, you can fine tune caching,
+allowing you to cache data between different jobs or even different branches.
+
+The `cache:key` variable can use any of the
+[predefined variables](../variables/README.md), and the default key, if not set,
+is `$CI_JOB_NAME-$CI_COMMIT_REF_NAME` which translates as "per-job and
+per-branch". It is the default across the project, therefore everything is
+shared between pipelines and jobs running on the same branch by default.
+
+NOTE: **Note:**
+The `cache:key` variable cannot contain the `/` character, or the equivalent
+URI-encoded `%2F`; a value made only of dots (`.`, `%2E`) is also forbidden.
+
+For example, to enable per-branch caching:
+
+```yaml
+cache:
+  key: "$CI_COMMIT_REF_SLUG"
+  paths:
+  - binaries/
+```
+
+If you use **Windows Batch** to run your shell scripts you need to replace
+`$` with `%`:
+
+```yaml
+cache:
+  key: "%CI_JOB_STAGE%-%CI_COMMIT_REF_SLUG%"
+  paths:
+  - binaries/
+```
+
+If you use **Windows PowerShell** to run your shell scripts you need to replace
+`$` with `$env:`:
+
+```yaml
+cache:
+  key: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_SLUG"
+  paths:
+  - binaries/
+```
+
+### `cache:untracked`
+
+Set `untracked: true` to cache all files that are untracked in your Git
+repository:
+
+```yaml
+rspec:
+  script: test
+  cache:
+    untracked: true
+```
+
+Cache all Git untracked files and files in `binaries`:
+
+```yaml
+rspec:
+  script: test
+  cache:
+    untracked: true
+    paths:
+    - binaries/
+>>>>>>> 03bbd847deb... Merge branch 'docs/ci-caching' into 'master'
+```
+
+In the above example we set up the `review_app` job to deploy to the `review`
+environment, and we also defined a new `stop_review_app` job under `on_stop`.
+Once the `review_app` job is successfully finished, it will trigger the
+`stop_review_app` job based on what is defined under `when`. In this case we
+set it up to `manual` so it will need a [manual action](#manual-actions) via
+GitLab's web interface in order to run.
+
+The `stop_review_app` job is **required** to have the following keywords defined:
+
+- `when` - [reference](#when)
+- `environment:name`
+- `environment:action`
+- `stage` should be the same as the `review_app` in order for the environment
+  to stop automatically when the branch is deleted
+
 #### dynamic environments
 
 >
