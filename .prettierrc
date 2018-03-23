@@ -1,5 +1,13 @@
 {
   "printWidth": 100,
   "singleQuote": true,
-  "trailingComma": "all"
+  "trailingComma": "es5",
+  "overrides": [
+    {
+      "files": ["app/assets/javascripts/*", "spec/javascripts/*"],
+      "options": {
+        "trailingComma": "all"
+      }
+    }
+  ]
 }
