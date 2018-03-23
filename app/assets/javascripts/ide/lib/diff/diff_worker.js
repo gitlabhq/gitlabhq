@@ -1,10 +1,10 @@
 import { computeDiff } from './diff';
 
-self.addEventListener('message', (e) => {
+self.addEventListener('message', e => {
   const data = e.data;
 
   self.postMessage({
-    path: data.path,
+    key: data.key,
     changes: computeDiff(data.originalContent, data.newContent),
   });
 });

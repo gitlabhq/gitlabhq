@@ -25,7 +25,7 @@ export default {
   },
   watch: {
     file(oldVal, newVal) {
-      if (newVal.path !== this.file.path) {
+      if (newVal.key !== this.file.key) {
         this.initMonaco();
       }
     },
@@ -36,7 +36,7 @@ export default {
       this.editor.updateDimensions();
     },
     viewer() {
-      this.createEditorInstance();
+      // this.createEditorInstance();
     },
   },
   beforeDestroy() {
@@ -70,7 +70,9 @@ export default {
 
       this.getRawFileData(this.file)
         .then(() => {
-          const viewerPromise = this.delayViewerUpdated ? this.updateViewer('editor') : Promise.resolve();
+          const viewerPromise = this.delayViewerUpdated
+            ? this.updateViewer('editor')
+            : Promise.resolve();
 
           return viewerPromise;
         })
@@ -78,8 +80,15 @@ export default {
           this.updateDelayViewerUpdated(false);
           this.createEditorInstance();
         })
-        .catch((err) => {
-          flash('Error setting up monaco. Please try again.', 'alert', document, null, false, true);
+        .catch(err => {
+          flash(
+            'Error setting up monaco. Please try again.',
+            'alert',
+            document,
+            null,
+            false,
+            true,
+          );
           throw err;
         });
     },
@@ -103,7 +112,7 @@ export default {
 
       this.editor.attachModel(this.model);
 
-      this.model.onChange((model) => {
+      this.model.onChange(model => {
         const { file } = model;
 
         if (file.active) {

@@ -3,7 +3,7 @@ import { throttle } from 'underscore';
 import DirtyDiffWorker from './diff_worker';
 import Disposable from '../common/disposable';
 
-export const getDiffChangeType = (change) => {
+export const getDiffChangeType = change => {
   if (change.modified) {
     return 'modified';
   } else if (change.added) {
@@ -16,15 +16,12 @@ export const getDiffChangeType = (change) => {
 };
 
 export const getDecorator = change => ({
-  range: new monaco.Range(
-    change.lineNumber,
-    1,
-    change.endLineNumber,
-    1,
-  ),
+  range: new monaco.Range(change.lineNumber, 1, change.endLineNumber, 1),
   options: {
     isWholeLine: true,
-    linesDecorationsClassName: `dirty-diff dirty-diff-${getDiffChangeType(change)}`,
+    linesDecorationsClassName: `dirty-diff dirty-diff-${getDiffChangeType(
+      change,
+    )}`,
   },
 });
 
@@ -47,7 +44,7 @@ export default class DirtyDiffController {
 
   computeDiff(model) {
     this.dirtyDiffWorker.postMessage({
-      path: model.path,
+      key: model.key,
       originalContent: model.getOriginalModel().getValue(),
       newContent: model.getModel().getValue(),
     });
@@ -59,7 +56,7 @@ export default class DirtyDiffController {
 
   decorate({ data }) {
     const decorations = data.changes.map(change => getDecorator(change));
-    const model = this.modelManager.getModel(data.path);
+    const model = this.modelManager.getModel(data.key);
     this.decorationsController.addDecorations(model, 'dirtyDiff', decorations);
   }
 

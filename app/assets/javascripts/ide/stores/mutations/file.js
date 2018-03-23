@@ -93,6 +93,7 @@ export default {
         ...file,
         active: true,
         pending: true,
+        key: `pending-${file.key}`,
       }),
     });
   },

@@ -19,7 +19,8 @@ export const closeFile = ({ commit, state, getters, dispatch }, file) => {
     commit(types.SET_FILE_ACTIVE, { path, active: false });
 
     if (getters.tabs.length > 0 && fileWasActive) {
-      const nextIndexToOpen = indexOfClosedFile === 0 ? 0 : indexOfClosedFile - 1;
+      const nextIndexToOpen =
+        indexOfClosedFile === 0 ? 0 : indexOfClosedFile - 1;
       const nextFileToOpen = state.openFiles[nextIndexToOpen];
 
       router.push(`/project${nextFileToOpen.url}`);
@@ -28,7 +29,7 @@ export const closeFile = ({ commit, state, getters, dispatch }, file) => {
     }
   }
 
-  eventHub.$emit(`editor.update.model.dispose.${file.path}`);
+  eventHub.$emit(`editor.update.model.dispose.${file.key}`);
 };
 
 export const setFileActive = ({ commit, state, getters, dispatch }, path) => {
@@ -71,7 +72,14 @@ export const getFileData = ({ state, commit, dispatch }, file) => {
     })
     .catch(() => {
       commit(types.TOGGLE_LOADING, { entry: file });
-      flash('Error loading file data. Please try again.', 'alert', document, null, false, true);
+      flash(
+        'Error loading file data. Please try again.',
+        'alert',
+        document,
+        null,
+        false,
+        true,
+      );
     });
 };
 
@@ -82,7 +90,14 @@ export const getRawFileData = ({ commit, dispatch }, file) =>
       commit(types.SET_FILE_RAW_DATA, { file, raw });
     })
     .catch(() =>
-      flash('Error loading file content. Please try again.', 'alert', document, null, false, true),
+      flash(
+        'Error loading file content. Please try again.',
+        'alert',
+        document,
+        null,
+        false,
+        true,
+      ),
     );
 
 export const changeFileContent = ({ state, commit }, { path, content }) => {
@@ -110,7 +125,10 @@ export const setFileEOL = ({ getters, commit }, { eol }) => {
   }
 };
 
-export const setEditorPosition = ({ getters, commit }, { editorRow, editorColumn }) => {
+export const setEditorPosition = (
+  { getters, commit },
+  { editorRow, editorColumn },
+) => {
   if (getters.activeFile) {
     commit(types.SET_FILE_POSITION, {
       file: getters.activeFile,
@@ -141,4 +159,6 @@ export const openPendingTab = ({ commit, state }, file) => {
 
 export const removePendingTab = ({ commit }, file) => {
   commit(types.REMOVE_PENDING_TAB, file);
+
+  eventHub.$emit(`editor.update.model.dispose.${file.key}`);
 };
