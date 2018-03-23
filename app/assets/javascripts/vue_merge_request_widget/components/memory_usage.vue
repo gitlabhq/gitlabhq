@@ -1,4 +1,5 @@
 <script>
+import { sprintf, s__ } from '~/locale';
 import statusCodes from '../../lib/utils/http_status';
 import { bytesToMiB } from '../../lib/utils/number_utils';
 import { backOff } from '../../lib/utils/common_utils';
@@ -45,17 +46,28 @@ export default {
     shouldShowMetricsUnavailable() {
       return !this.loadingMetrics && !this.hasMetrics && !this.loadFailed;
     },
-    memoryChangeType() {
+    memoryChangeMessage() {
+      const messageProps = {
+        memoryFrom: this.memoryFrom,
+        memoryTo: this.memoryTo,
+        metricsLinkStart: `<a href="${this.metricsMonitoringUrl}">`,
+        metricsLinkEnd: '</a>',
+        emphasisStart: '<b>',
+        emphasisEnd: '</b>',
+      };
       const memoryTo = Number(this.memoryTo);
       const memoryFrom = Number(this.memoryFrom);
+      let memoryUsageMsg = '';
 
       if (memoryTo > memoryFrom) {
-        return 'increased';
+        memoryUsageMsg = sprintf(s__('mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage %{emphasisStart} increased %{emphasisEnd} from %{memoryFrom}MB to %{memoryTo}MB'), messageProps, false);
       } else if (memoryTo < memoryFrom) {
-        return 'decreased';
+        memoryUsageMsg = sprintf(s__('mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage %{emphasisStart} decreased %{emphasisEnd} from %{memoryFrom}MB to %{memoryTo}MB'), messageProps, false);
+      } else {
+        memoryUsageMsg = sprintf(s__('mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage is %{emphasisStart} unchanged %{emphasisEnd} at %{memoryFrom}MB'), messageProps, false);
       }
 
-      return 'unchanged';
+      return memoryUsageMsg;
     },
   },
   mounted() {
@@ -130,24 +142,22 @@ export default {
       <i
         class="fa fa-spinner fa-spin usage-info-load-spinner"
         aria-hidden="true">
-      </i>Loading deployment statistics
+      </i>{{ s__('mrWidget|Loading deployment statistics') }}
     </p>
     <p
       v-if="shouldShowMemoryGraph"
       class="usage-info js-usage-info">
-      <a
-        :href="metricsMonitoringUrl"
-      >Memory</a> usage <b>{{ memoryChangeType }}</b> from {{ memoryFrom }}MB to {{ memoryTo }}MB
+      {{ memoryChangeMessage }}
     </p>
     <p
       v-if="shouldShowLoadFailure"
       class="usage-info js-usage-info usage-info-failed">
-      Failed to load deployment statistics
+      {{ s__('mrWidget|Failed to load deployment statistics') }}
     </p>
     <p
       v-if="shouldShowMetricsUnavailable"
       class="usage-info js-usage-info usage-info-unavailable">
-      Deployment statistics are not available currently
+      {{ s__('mrWidget|Deployment statistics are not available currently') }}
     </p>
     <memory-graph
       v-if="shouldShowMemoryGraph"
