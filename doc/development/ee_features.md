@@ -352,8 +352,8 @@ EE-specific LDAP classes in `ee/lib/ee/gitlab/ldap`.
 
 ### Code in `lib/api/`
 
-It could be very tricky to extend EE features by a single line of `prepend`,
-and for each different [Grape](https://github.com/ruby-grape/grape) features,
+It can be very tricky to extend EE features by a single line of `prepend`,
+and for each different [Grape](https://github.com/ruby-grape/grape) feature,
 we might need different strategies to extend it. To apply different strategies
 easily, we would use `extend ActiveSupport::Concern` in the EE module.
 
@@ -361,7 +361,7 @@ Put the EE module files following the same rule with other EE modules.
 
 #### EE API routes
 
-For EE API routes, we could just put them in `prepended` block like:
+For EE API routes, we put them in a `prepended` block:
 
 ``` ruby
 module EE
@@ -382,18 +382,17 @@ module EE
 end
 ```
 
-Note that due to namespace difference, we need to use full qualifier for some
-constants. If this is annoying, we could also consider include some namespace
-so that we could use shorter name. This is especially true for Grape
-data type like: `Grape::API::Boolean`.
+Note that due to namespace differences, we need to use the full qualifier for some
+constants.
 
 #### EE params
 
-We could define `params` and use `use` in another params to include EE defined
-params. However we need to define the "interface" first in CE in order for
-EE to override it. We don't have to do this in other places due to `prepend`,
-but Grape is complex internally and we couldn't easily do that, so we'll just
-follow regular object-oriented practice that we define interface first here.
+We can define `params` and utilize `use` in another `params` definition  to
+include params defined in EE. However, we need to define the "interface" first
+in CE in order for EE to override it. We don't have to do this in other places
+due to `prepend`, but Grape is complex internally and we couldn't easily do
+that, so we'll follow regular object-oriented practices that we define the
+interface first here.
 
 For example, suppose we have a few more optional params for EE, given this CE
 API code:
@@ -438,14 +437,14 @@ module EE
 end
 ```
 
-This way, the only difference in CE and EE for that API file, would be:
-`prepend EE::API::MergeRequests` and everything else should be the same.
+This way, the only difference between CE and EE for that API file would be
+`prepend EE::API::MergeRequests`.
 
 #### EE helpers
 
-To make it easy for EE module to override the CE helpers, we need to define
-those helpers we want to extend first. Try to do that just after class
-definition to make it easy and clear:
+To make it easy for an EE module to override the CE helpers, we need to define
+those helpers we want to extend first. Try to do that immediately after the
+class definition to make it easy and clear:
 
 ``` ruby
 module API
@@ -462,7 +461,7 @@ module API
 end
 ```
 
-And then we could just follow regular object-oriented practice to override it:
+And then we can follow regular object-oriented practices to override it:
 
 ``` ruby
 module EE
@@ -483,13 +482,13 @@ module EE
 end
 ```
 
-#### EE specific behaviour
+#### EE-specific behaviour
 
-Sometimes we need EE specific behaviour in some of the APIs. Normally we could
-use EE methods to override CE methods, however API routes are not methods
-therefore we can't simply override them. We would need to extract them into a
-standalone method, or just introduce some "hooks" where we could inject
-behaviour in CE route. Something like:
+Sometimes we need EE-specific behaviour in some of the APIs. Normally we could
+use EE methods to override CE methods, however API routes are not methods and
+therefore can't be simply overridden. We need to extract them into a standalone
+method, or introduce some "hooks" where we could inject behavior in the CE
+route. Something like this:
 
 ``` ruby
 module API
@@ -515,7 +514,7 @@ module API
 end
 ```
 
-See that above `update_merge_request_ee` doesn't do anything in CE, but
+Note that `update_merge_request_ee` doesn't do anything in CE, but
 then we could override it in EE:
 
 ``` ruby
@@ -536,25 +535,25 @@ module EE
 end
 ```
 
-#### EE route_setting
+#### EE `route_setting`
 
-It's very hard to extend this by the EE module, and this is simply storing
+It's very hard to extend this in an EE module, and this is simply storing
 some meta-data for a particular route. Given that, we could simply leave the
 EE `route_setting` in CE as it won't hurt and we are just not going to use
 those meta-data in CE.
 
-We could revisit this policy when we're using `route_setting` more and if
-we might really need to extend it from EE. For now we're not using it so much.
+We could revisit this policy when we're using `route_setting` more and whether
+or not we really need to extend it from EE. For now we're not using it much.
 
-#### Utilizing class methods for setting up EE specific data
+#### Utilizing class methods for setting up EE-specific data
 
-Sometimes we need to use different arguments for a particular API route, and
-we can't easily extend it with EE module because Grape has different context
-in different blocks. In order to overcome this, we could just use class
-methods from the API class.
+Sometimes we need to use different arguments for a particular API route, and we
+can't easily extend it with an EE module because Grape has different context in
+different blocks. In order to overcome this, we could use class methods from the
+API class.
 
 For example, in one place we need to pass an extra argument to
-`at_least_one_of` so that the API could consider an EE only argument as the
+`at_least_one_of` so that the API could consider an EE-only argument as the
 least argument. This is not quite beautiful but it's working:
 
 ``` ruby
@@ -576,7 +575,7 @@ module API
 end
 ```
 
-And then we could easily extend that arguments in EE class method:
+And then we could easily extend that argument in the EE class method:
 
 ``` ruby
 module EE
