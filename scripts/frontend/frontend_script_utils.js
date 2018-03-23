@@ -18,12 +18,7 @@ const execGitCmd = args =>
 
 module.exports = {
   getStagedFiles: fileExtensionFilter => {
-    const gitOptions = [
-      'diff',
-      '--name-only',
-      '--cached',
-      '--diff-filter=ACMRTUB',
-    ];
+    const gitOptions = ['diff', '--name-only', '--cached', '--diff-filter=ACMRTUB'];
     if (fileExtensionFilter) gitOptions.push(...fileExtensionFilter);
     return execGitCmd(gitOptions);
   },
