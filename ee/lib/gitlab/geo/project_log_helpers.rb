@@ -9,8 +9,9 @@ module Gitlab
           project_id: project.id,
           project_path: project.full_path,
           storage_version: project.storage_version,
-          message: message
-        }
+          message: message,
+          job_id: get_sidekiq_job_id
+        }.compact
       end
     end
   end
