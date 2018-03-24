@@ -21,6 +21,10 @@ describe Gitlab::Ci::Status::Skipped do
     it { expect(subject.favicon).to eq 'favicon_status_skipped' }
   end
 
+  describe '#illustration' do
+    it { expect(subject.illustration).to eq 'skipped-job_empty' }
+  end
+
   describe '#group' do
     it { expect(subject.group).to eq 'skipped' }
   end

@@ -17,6 +17,10 @@ module Gitlab
         def favicon
           'favicon_status_canceled'
         end
+
+        def illustration
+          'canceled-job_empty'
+        end
       end
     end
   end

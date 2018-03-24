@@ -22,6 +22,10 @@ module Gitlab
           raise NotImplementedError
         end
 
+        def illustration
+          raise NotImplementedError
+        end
+
         def label
           raise NotImplementedError
         end

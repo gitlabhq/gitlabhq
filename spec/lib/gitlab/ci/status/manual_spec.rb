@@ -21,6 +21,10 @@ describe Gitlab::Ci::Status::Manual do
     it { expect(subject.favicon).to eq 'favicon_status_manual' }
   end
 
+  describe '#illustration' do
+    it { expect(subject.illustration).to eq 'manual_action' }
+  end
+
   describe '#group' do
     it { expect(subject.group).to eq 'manual' }
   end

@@ -21,6 +21,10 @@ describe Gitlab::Ci::Status::Created do
     it { expect(subject.favicon).to eq 'favicon_status_created' }
   end
 
+  describe '#illustration' do
+    it { expect(subject.illustration).to eq 'job_not_triggered' }
+  end
+
   describe '#group' do
     it { expect(subject.group).to eq 'created' }
   end

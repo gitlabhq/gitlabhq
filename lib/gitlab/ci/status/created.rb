@@ -17,6 +17,10 @@ module Gitlab
         def favicon
           'favicon_status_created'
         end
+
+        def illustration
+          'job_not_triggered'
+        end
       end
     end
   end

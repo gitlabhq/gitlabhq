@@ -17,6 +17,10 @@ module Gitlab
         def favicon
           'favicon_status_pending'
         end
+
+        def illustration
+          'pending_job_empty'
+        end
       end
     end
   end

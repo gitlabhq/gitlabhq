@@ -17,6 +17,10 @@ module Gitlab
         def favicon
           'favicon_status_skipped'
         end
+
+        def illustration
+          'skipped-job_empty'
+        end
       end
     end
   end
