@@ -97,11 +97,7 @@ module ApplicationSettingsHelper
 
   def repository_storages_options_for_select(selected)
     options = Gitlab.config.repositories.storages.map do |name, storage|
-<<<<<<< HEAD
-      ["#{name} - #{storage.legacy_disk_path}", name]
-=======
       ["#{name} - #{storage['gitaly_address']}", name]
->>>>>>> upstream/master
     end
 
     options_for_select(options, selected)
