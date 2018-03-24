@@ -107,26 +107,6 @@ describe '6_validations' do
     end
   end
 
-  context 'with incomplete settings' do
-    before do
-      mock_storages('foo' => {})
-    end
-
-    it 'throws an error suggesting the user to update its settings' do
-      expect { validate_storages_config }.to raise_error('foo is not a valid storage, because it has no `path` key. Refer to gitlab.yml.example for an updated example. Please fix this in your gitlab.yml before starting GitLab.')
-    end
-  end
-
-  context 'with deprecated settings structure' do
-    before do
-      mock_storages('foo' => 'tmp/tests/paths/a/b/c')
-    end
-
-    it 'throws an error suggesting the user to update its settings' do
-      expect { validate_storages_config }.to raise_error("foo is not a valid storage, because it has no `path` key. It may be configured as:\n\nfoo:\n  path: tmp/tests/paths/a/b/c\n\nFor source installations, update your config/gitlab.yml Refer to gitlab.yml.example for an updated example.\n\nIf you're using the Gitlab Development Kit, you can update your configuration running `gdk reconfigure`.\n")
-    end
-  end
-
   def mock_storages(storages)
     allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
   end
