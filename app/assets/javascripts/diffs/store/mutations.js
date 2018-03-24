@@ -8,8 +8,8 @@ export default {
     Object.assign(state, { endpoint });
   },
 
-  [types.SET_LOADING](state, loadingState) {
-    Object.assign(state, { isLoading: loadingState });
+  [types.SET_LOADING](state, isLoading) {
+    Object.assign(state, { isLoading });
   },
 
   [types.SET_DIFF_FILES](state, diffFiles) {
@@ -20,8 +20,8 @@ export default {
     });
   },
 
-  [types.SET_DIFF_VIEW_TYPE](state, type) {
-    Object.assign(state, { diffViewType: type });
+  [types.SET_DIFF_VIEW_TYPE](state, diffViewType) {
+    Object.assign(state, { diffViewType });
   },
 
   [types.ADD_COMMENT_FORM_LINE](state, { diffLines, lineCode, linePosition }) {

@@ -55,7 +55,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions(['setDiffViewType']),
+    ...mapActions(['setInlineDiffViewType', 'setParallelDiffViewType']),
     handleScroll() {
       if (!this.$refs.stickyBar) return;
 
@@ -123,7 +123,7 @@ export default {
         </a>
         <div class="btn-group">
           <a
-            @click.prevent="setDiffViewType()"
+            @click.prevent="setInlineDiffViewType"
             :class="{ active: isInlineView }"
             id="inline-diff-btn"
             class="btn"
@@ -133,7 +133,7 @@ export default {
             {{ __('Inline') }}
           </a>
           <a
-            @click.prevent="setDiffViewType(true)"
+            @click.prevent="setParallelDiffViewType"
             :class="{ active: isParallelView }"
             id="parallel-diff-btn"
             class="btn"

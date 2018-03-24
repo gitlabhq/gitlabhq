@@ -164,8 +164,6 @@ export default class MergeRequestTabs {
       this.resetViewContainer();
       this.destroyPipelinesView();
     } else if (this.isDiffAction(action)) {
-      debugger;
-
       if (bp.getBreakpointSize() !== 'lg') {
         this.shrinkView();
       }

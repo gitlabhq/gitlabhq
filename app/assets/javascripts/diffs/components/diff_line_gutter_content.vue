@@ -1,5 +1,6 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
+import Icon from '~/vue_shared/components/icon.vue';
 import { MATCH_LINE_TYPE, UNFOLD_COUNT, CONTEXT_LINE_TYPE } from '../constants';
 import * as utils from '../store/utils';
 
@@ -48,6 +49,9 @@ export default {
       required: false,
       default: false,
     },
+  },
+  components: {
+    Icon,
   },
   computed: {
     ...mapState({
@@ -138,11 +142,10 @@ export default {
         class="add-diff-note js-add-diff-note-button"
         title="Add a comment to this line"
       >
-        <i
-          aria-hidden="true"
-          class="fa fa-comment-o"
-        >
-        </i>
+        <icon
+          name="comment"
+          :size="12"
+        />
       </button>
       <a
         v-if="lineNumber"

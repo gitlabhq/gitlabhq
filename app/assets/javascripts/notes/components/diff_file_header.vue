@@ -43,8 +43,8 @@ export default {
       return !this.diffFile.text;
     },
     replacedFile() {
-      return !(this.diffFile.newFile || this.diffFile.deletedFile)
-    }
+      return !(this.diffFile.newFile || this.diffFile.deletedFile);
+    },
   },
   methods: {
     handleToggle(e, checkTarget) {
@@ -58,7 +58,7 @@ export default {
     },
     truncate(sha) {
       return sha.slice(0, 8);
-    }
+    },
   },
 };
 </script>
@@ -69,11 +69,14 @@ export default {
     ref="header"
     class="file-header-content"
   >
-    <i
+    <icon
       v-if="collapsible"
       @click.stop="handleToggle"
-      class="fa diff-toggle-caret fa-fw fa-caret-down"
-    ></i>
+      name="chevron-down"
+      aria-hidden="true"
+      :size="16"
+      class="diff-toggle-caret"
+    />
     <div
       v-if="diffFile.submodule"
     >

@@ -3,9 +3,15 @@
  */
 
 @-webkit-keyframes targe3-note {
-  from { background: $note-targe3-outside; }
-  50% { background: $note-targe3-inside; }
-  to { background: $note-targe3-outside; }
+  from {
+    background: $note-targe3-outside;
+  }
+  50% {
+    background: $note-targe3-inside;
+  }
+  to {
+    background: $note-targe3-outside;
+  }
 }
 
 ul.notes {
@@ -36,7 +42,8 @@ ul.notes {
     }
   }
 
-  > li { // .timeline-entry
+  > li {
+    // .timeline-entry
     padding: 0;
     display: block;
     position: relative;
@@ -159,7 +166,6 @@ ul.notes {
     }
 
     .note-header {
-
       @include notes-media('max', $screen-xs-min) {
         .inline {
           display: block;
@@ -288,7 +294,10 @@ ul.notes {
             position: absolute;
             left: 0;
             bottom: 0;
-            background: linear-gradient(rgba($white-light, 0.1) -100px, $white-light 100%);
+            background: linear-gradient(
+              rgba($white-light, 0.1) -100px,
+              $white-light 100%
+            );
           }
         }
       }
@@ -672,7 +681,6 @@ ul.notes {
     background-color: $white-light;
   }
 
-
   a {
     color: $gl-link-color;
   }
@@ -751,7 +759,8 @@ ul.notes {
   border: 0;
   outline: 0;
   color: $gray-darkest;
-  transition: color $general-hover-transition-duration $general-hover-transition-curve;
+  transition: color $general-hover-transition-duration
+    $general-hover-transition-curve;
 
   &.is-disabled {
     cursor: default;
@@ -812,5 +821,9 @@ ul.notes {
 
   .diff-comment-form {
     display: block;
+  }
+
+  .add-diff-note svg {
+    margin-top: 4px;
   }
 }
