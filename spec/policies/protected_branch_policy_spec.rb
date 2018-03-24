@@ -29,7 +29,7 @@ describe ProtectedBranchPolicy do
 
     context 'and unprotection is limited to admins' do #TODO: remove this is temporary exploration
       before do
-        stub_ee_application_setting(only_admins_can_unprotect_master_branch: true)
+        stub_application_setting(only_admins_can_unprotect_master_branch: true)
       end
 
       context 'and the protection is for master' do
