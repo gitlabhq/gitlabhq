@@ -12,22 +12,14 @@ describe '6_validations' do
     FileUtils.rm_rf('tmp/tests/paths')
   end
 
-  context 'with correct settings' do
-    before do
-      mock_storages('foo' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c'), 'bar' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/d'))
-    end
-
-    context 'when one of the settings is incorrect' do
+  describe 'validate_storages_config' do
+    context 'with correct settings' do
       before do
-<<<<<<< HEAD
-        mock_storages('foo' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c', 'failure_count_threshold' => 'not a number'))
-=======
         mock_storages('foo' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c'), 'bar' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/d'))
->>>>>>> upstream/master
       end
 
-      it 'throws an error' do
-        expect { validate_storages_config }.to raise_error(/failure_count_threshold/)
+      it 'passes through' do
+        expect { validate_storages_config }.not_to raise_error
       end
     end
 
