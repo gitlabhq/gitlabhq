@@ -509,6 +509,14 @@ ProtectedBranch::PushAccessLevel:
 - updated_at
 - user_id
 - group_id
+ProtectedBranch::UnprotectAccessLevel:
+- id
+- protected_branch_id
+- access_level
+- created_at
+- updated_at
+- user_id
+- group_id
 ProtectedTag::CreateAccessLevel:
 - id
 - protected_tag_id
