@@ -111,7 +111,7 @@ export default class Editor {
 
   attachMergeRequestModel(model) {
     this.instance.setModel({
-      original: model.getTargetModel(),
+      original: model.getBaseModel(),
       modified: model.getModel(),
     });
   }

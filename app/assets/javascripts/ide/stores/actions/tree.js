@@ -19,7 +19,7 @@ export const handleTreeEntryAction = ({ commit, dispatch }, row) => {
 
     dispatch('setFileActive', row.path);
   } else {
-    dispatch('getFileData', row.path);
+    dispatch('getFileData', { path: row.path });
   }
 };
 

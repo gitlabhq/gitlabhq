@@ -123,40 +123,37 @@ router.beforeEach((to, from, next) => {
                       mergeRequestId: to.params.mrid,
                     })
                     .then(mrChanges => {
-                      if (mrChanges.changes.length > 0) {
-                      }
-                      mrChanges.changes.forEach((change, ind) => {
-                        console.log(`CHANGE : ${ind} : `, change);
+                      store
+                        .dispatch('getMergeRequestVersions', {
+                          projectId: fullProjectId,
+                          mergeRequestId: to.params.mrid,
+                        })
+                        .then(() => {
+                          mrChanges.changes.forEach((change, ind) => {
+                            const changeTreeEntry =
+                              store.state.entries[change.new_path];
 
-                        const changeTreeEntry =
-                          store.state.entries[change.new_path];
+                            if (changeTreeEntry) {
+                              store.dispatch('setFileMrDiff', {
+                                file: changeTreeEntry,
+                                mrDiff: change.diff,
+                              });
 
-                        console.log(
-                          'Tree Entry for the change ',
-                          changeTreeEntry,
-                          change.diff,
-                        );
-
-                        if (changeTreeEntry) {
-                          store.dispatch('setFileMrDiff', {
-                            file: changeTreeEntry,
-                            mrDiff: change.diff,
+                              if (ind < 5) {
+                                store.dispatch('getFileData', {
+                                  path: change.new_path,
+                                  makeFileActive: ind === 0,
+                                });
+                              }
+                            }
                           });
-                          store.dispatch('setFileTargetBranch', {
-                            file: changeTreeEntry,
-                            targetBranch: mrChanges.target_branch,
-                          });
-
-                          if (ind === 0) {
-                            store.dispatch('getFileData', change.new_path);
-                          } else {
-                            // TODO : Implement Tab reloading
-                            store.dispatch('preloadFileTab', changeTreeEntry);
-                          }
-                        } else {
-                          console.warn(`No Tree Entry for ${change.new_path}`);
-                        }
-                      });
+                        })
+                        .catch(e => {
+                          flash(
+                            'Error while loading the merge request versions. Please try again.',
+                          );
+                          throw e;
+                        });
                     })
                     .catch(e => {
                       flash(

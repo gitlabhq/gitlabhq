@@ -28,6 +28,8 @@ export default {
       rawPath: data.raw_path,
       binary: data.binary,
       renderError: data.render_error,
+      raw: null,
+      baseRaw: null,
     });
   },
   [types.SET_FILE_RAW_DATA](state, { file, raw }) {
@@ -35,9 +37,9 @@ export default {
       raw,
     });
   },
-  [types.SET_FILE_TARGET_RAW_DATA](state, { file, raw }) {
-    Object.assign(file, {
-      targetRaw: raw,
+  [types.SET_FILE_BASE_RAW_DATA](state, { file, baseRaw }) {
+    Object.assign(state.entries[file.path], {
+      baseRaw,
     });
   },
   [types.UPDATE_FILE_CONTENT](state, { path, content }) {
@@ -67,11 +69,6 @@ export default {
   [types.SET_FILE_MR_DIFF](state, { file, mrDiff }) {
     Object.assign(file, {
       mrDiff,
-    });
-  },
-  [types.SET_FILE_TARGET_BRANCH](state, { file, targetBranch }) {
-    Object.assign(file, {
-      targetBranch,
     });
   },
   [types.DISCARD_FILE_CHANGES](state, path) {

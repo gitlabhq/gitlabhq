@@ -22,10 +22,10 @@ export default class Model {
       )),
     );
 
-    if (this.file.targetBranch) {
+    if (this.file.baseRaw) {
       this.disposable.add(
-        (this.targetModel = this.monaco.editor.createModel(
-          this.file.targetRaw,
+        (this.baseModel = this.monaco.editor.createModel(
+          this.file.baseRaw,
           undefined,
           new this.monaco.Uri(null, null, `target/${this.file.path}`),
         )),
@@ -68,8 +68,8 @@ export default class Model {
     return this.originalModel;
   }
 
-  getTargetModel() {
-    return this.targetModel;
+  getBaseModel() {
+    return this.baseModel;
   }
 
   setValue(value) {

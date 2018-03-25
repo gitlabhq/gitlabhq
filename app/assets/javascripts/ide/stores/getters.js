@@ -23,6 +23,11 @@ export const projectsWithTrees = state =>
     };
   });
 
+export const currentMergeRequest = state =>
+  state.projects[state.currentProjectId].mergeRequests[
+    state.currentMergeRequestId
+  ];
+
 // eslint-disable-next-line no-confusing-arrow
 export const currentIcon = state =>
   state.rightPanelCollapsed ? 'angle-double-left' : 'angle-double-right';

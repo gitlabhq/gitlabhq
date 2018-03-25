@@ -104,7 +104,7 @@ export default {
         </span>
         <changed-file-icon
           :file="file"
-          v-if="file.changed || file.tempFile"
+          v-if="file.changed || file.tempFile || file.mrDiff"
           class="prepend-top-5 pull-right"
         />
         <new-dropdown

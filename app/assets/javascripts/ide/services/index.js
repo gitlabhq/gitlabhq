@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 import Api from '~/api';
+import { version } from 'punycode';
 
 Vue.use(VueResource);
 
@@ -24,6 +25,21 @@ export default {
       .get(file.rawPath, { params: { format: 'json' } })
       .then(res => res.text());
   },
+  getBaseRawFileData(file, sha) {
+    if (file.tempFile) {
+      return Promise.resolve(file.baseRaw);
+    }
+
+    if (file.baseRaw) {
+      return Promise.resolve(file.baseRaw);
+    }
+
+    return Vue.http
+      .get(file.rawPath.replace(file.branchId, sha), {
+        params: { format: 'json' },
+      })
+      .then(res => res.text());
+  },
   getProjectData(namespace, project) {
     return Api.project(`${namespace}/${project}`);
   },
@@ -32,6 +48,12 @@ export default {
   },
   getProjectMergeRequestChanges(projectId, mergeRequestId) {
     return Api.mergeRequestChanges(projectId, mergeRequestId);
+  },
+  getProjectMergeRequestVersions(projectId, mergeRequestId) {
+    return Api.mergeRequestVersions(projectId, mergeRequestId);
+  },
+  getProjectMergeRequestVersion(projectId, mergeRequestId, versionId) {
+    return Api.mergeRequestVersion(projectId, mergeRequestId, versionId);
   },
   getBranchData(projectId, currentBranchId) {
     return Api.branchSingle(projectId, currentBranchId);

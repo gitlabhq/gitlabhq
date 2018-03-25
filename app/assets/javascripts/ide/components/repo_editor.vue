@@ -1,6 +1,6 @@
 <script>
 /* global monaco */
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import flash from '~/flash';
 import monacoLoader from '../monaco_loader';
 import Editor from '../lib/editor';
@@ -19,6 +19,7 @@ export default {
       'viewer',
       'delayViewerUpdated',
     ]),
+    ...mapGetters(['currentMergeRequest']),
     shouldHideEditor() {
       return this.file && this.file.binary && !this.file.raw;
     },
@@ -68,7 +69,12 @@ export default {
 
       this.editor.clearEditor();
 
-      this.getRawFileData(this.file)
+      this.getRawFileData({
+        path: this.file.path,
+        baseSha: this.currentMergeRequest
+          ? this.currentMergeRequest.baseCommitSha
+          : '',
+      })
         .then(() => {
           const viewerPromise = this.delayViewerUpdated
             ? this.updateViewer('editor')
