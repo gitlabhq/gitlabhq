@@ -1,53 +1,53 @@
 <script>
-import tooltip from '~/vue_shared/directives/tooltip';
-import { n__ } from '~/locale';
-import icon from '~/vue_shared/components/icon.vue';
-import clipboardButton from '~/vue_shared/components/clipboard_button.vue';
+  import tooltip from '~/vue_shared/directives/tooltip';
+  import { n__ } from '~/locale';
+  import icon from '~/vue_shared/components/icon.vue';
+  import clipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
-export default {
-  name: 'MRWidgetHeader',
-  directives: {
-    tooltip,
-  },
-  components: {
-    icon,
-    clipboardButton,
-  },
-  props: {
-    mr: {
-      type: Object,
-      required: true,
+  export default {
+    name: 'MRWidgetHeader',
+    directives: {
+      tooltip,
     },
-  },
-  computed: {
-    shouldShowCommitsBehindText() {
-      return this.mr.divergedCommitsCount > 0;
+    components: {
+      icon,
+      clipboardButton,
     },
-    commitsText() {
-      return n__('%d commit behind', '%d commits behind', this.mr.divergedCommitsCount);
+    props: {
+      mr: {
+        type: Object,
+        required: true,
+      },
     },
-    branchNameClipboardData() {
-      // This supports code in app/assets/javascripts/copy_to_clipboard.js that
-      // works around ClipboardJS limitations to allow the context-specific
-      // copy/pasting of plain text or GFM.
-      return JSON.stringify({
-        text: this.mr.sourceBranch,
-        gfm: `\`${this.mr.sourceBranch}\``,
-      });
+    computed: {
+      shouldShowCommitsBehindText() {
+        return this.mr.divergedCommitsCount > 0;
+      },
+      commitsText() {
+        return n__('%d commit behind', '%d commits behind', this.mr.divergedCommitsCount);
+      },
+      branchNameClipboardData() {
+        // This supports code in app/assets/javascripts/copy_to_clipboard.js that
+        // works around ClipboardJS limitations to allow the context-specific
+        // copy/pasting of plain text or GFM.
+        return JSON.stringify({
+          text: this.mr.sourceBranch,
+          gfm: `\`${this.mr.sourceBranch}\``,
+        });
+      },
+      isSourceBranchLong() {
+        return this.isBranchTitleLong(this.mr.sourceBranch);
+      },
+      isTargetBranchLong() {
+        return this.isBranchTitleLong(this.mr.targetBranch);
+      },
     },
-    isSourceBranchLong() {
-      return this.isBranchTitleLong(this.mr.sourceBranch);
+    methods: {
+      isBranchTitleLong(branchTitle) {
+        return branchTitle.length > 32;
+      },
     },
-    isTargetBranchLong() {
-      return this.isBranchTitleLong(this.mr.targetBranch);
-    },
-  },
-  methods: {
-    isBranchTitleLong(branchTitle) {
-      return branchTitle.length > 32;
-    },
-  },
-};
+  };
 </script>
 <template>
   <div class="mr-source-target">
