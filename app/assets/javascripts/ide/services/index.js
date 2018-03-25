@@ -49,9 +49,6 @@ export default {
   getProjectMergeRequestVersions(projectId, mergeRequestId) {
     return Api.mergeRequestVersions(projectId, mergeRequestId);
   },
-  getProjectMergeRequestVersion(projectId, mergeRequestId, versionId) {
-    return Api.mergeRequestVersion(projectId, mergeRequestId, versionId);
-  },
   getBranchData(projectId, currentBranchId) {
     return Api.branchSingle(projectId, currentBranchId);
   },

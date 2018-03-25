@@ -2,7 +2,6 @@ import flash from '~/flash';
 import service from '../../services';
 import * as types from '../mutation_types';
 
-// eslint-disable-next-line import/prefer-default-export
 export const getMergeRequestData = (
   { commit, state, dispatch },
   { projectId, mergeRequestId, force = false } = {},
@@ -32,16 +31,12 @@ export const getMergeRequestData = (
     }
   });
 
-// eslint-disable-next-line import/prefer-default-export
 export const getMergeRequestChanges = (
   { commit, state, dispatch },
   { projectId, mergeRequestId, force = false } = {},
 ) =>
   new Promise((resolve, reject) => {
-    if (
-      !state.projects[projectId].mergeRequests[mergeRequestId].changes.length ||
-      force
-    ) {
+    if (!state.projects[projectId].mergeRequests[mergeRequestId].changes.length || force) {
       service
         .getProjectMergeRequestChanges(projectId, mergeRequestId)
         .then(res => res.data)
@@ -67,11 +62,7 @@ export const getMergeRequestVersions = (
   { projectId, mergeRequestId, force = false } = {},
 ) =>
   new Promise((resolve, reject) => {
-    if (
-      !state.projects[projectId].mergeRequests[mergeRequestId].versions
-        .length ||
-      force
-    ) {
+    if (!state.projects[projectId].mergeRequests[mergeRequestId].versions.length || force) {
       service
         .getProjectMergeRequestVersions(projectId, mergeRequestId)
         .then(res => res.data)
@@ -89,35 +80,5 @@ export const getMergeRequestVersions = (
         });
     } else {
       resolve(state.projects[projectId].mergeRequests[mergeRequestId].versions);
-    }
-  });
-
-// eslint-disable-next-line import/prefer-default-export
-export const getMergeRequestNotes = (
-  { commit, state, dispatch },
-  { projectId, mergeRequestId, force = false } = {},
-) =>
-  new Promise((resolve, reject) => {
-    if (
-      !state.projects[projectId].mergeRequests[mergeRequestId].notes ||
-      force
-    ) {
-      service
-        .getProjectMergeRequestNotes(projectId, mergeRequestId)
-        .then(res => res.data)
-        .then(data => {
-          commit(types.SET_MERGE_REQUEST_NOTES, {
-            projectPath: projectId,
-            mergeRequestId,
-            notes: data,
-          });
-          resolve(data);
-        })
-        .catch(() => {
-          flash('Error loading merge request notes. Please try again.');
-          reject(new Error(`Merge Request Notes not loaded ${projectId}`));
-        });
-    } else {
-      resolve(state.projects[projectId].mergeRequests[mergeRequestId].notes);
     }
   });

@@ -121,10 +121,7 @@ export default class Editor {
   }
 
   setupMonacoTheme() {
-    this.monaco.editor.defineTheme(
-      gitlabTheme.themeName,
-      gitlabTheme.monacoTheme,
-    );
+    this.monaco.editor.defineTheme(gitlabTheme.themeName, gitlabTheme.monacoTheme);
 
     this.monaco.editor.setTheme('gitlab');
   }
@@ -172,8 +169,6 @@ export default class Editor {
   onPositionChange(cb) {
     if (!this.instance.onDidChangeCursorPosition) return;
 
-    this.disposable.add(
-      this.instance.onDidChangeCursorPosition(e => cb(this.instance, e)),
-    );
+    this.disposable.add(this.instance.onDidChangeCursorPosition(e => cb(this.instance, e)));
   }
 }

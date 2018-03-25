@@ -12,10 +12,7 @@ export default {
   [types.TOGGLE_LOADING](state, { entry, forceValue = undefined }) {
     if (entry.path) {
       Object.assign(state.entries[entry.path], {
-        loading:
-          forceValue !== undefined
-            ? forceValue
-            : !state.entries[entry.path].loading,
+        loading: forceValue !== undefined ? forceValue : !state.entries[entry.path].loading,
       });
     } else {
       Object.assign(entry, {
@@ -84,9 +81,7 @@ export default {
 
     if (!foundEntry) {
       Object.assign(state.trees[`${projectId}/${branchId}`], {
-        tree: state.trees[`${projectId}/${branchId}`].tree.concat(
-          data.treeList,
-        ),
+        tree: state.trees[`${projectId}/${branchId}`].tree.concat(data.treeList),
       });
     }
   },

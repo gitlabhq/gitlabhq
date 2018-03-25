@@ -13,12 +13,7 @@ export default {
     },
   },
   computed: {
-    ...mapState([
-      'leftPanelCollapsed',
-      'rightPanelCollapsed',
-      'viewer',
-      'delayViewerUpdated',
-    ]),
+    ...mapState(['leftPanelCollapsed', 'rightPanelCollapsed', 'viewer', 'delayViewerUpdated']),
     ...mapGetters(['currentMergeRequest']),
     shouldHideEditor() {
       return this.file && this.file.binary && !this.file.raw;
@@ -71,9 +66,7 @@ export default {
 
       this.getRawFileData({
         path: this.file.path,
-        baseSha: this.currentMergeRequest
-          ? this.currentMergeRequest.baseCommitSha
-          : '',
+        baseSha: this.currentMergeRequest ? this.currentMergeRequest.baseCommitSha : '',
       })
         .then(() => {
           const viewerPromise = this.delayViewerUpdated
@@ -87,14 +80,7 @@ export default {
           this.createEditorInstance();
         })
         .catch(err => {
-          flash(
-            'Error setting up monaco. Please try again.',
-            'alert',
-            document,
-            null,
-            false,
-            true,
-          );
+          flash('Error setting up monaco. Please try again.', 'alert', document, null, false, true);
           throw err;
         });
     },

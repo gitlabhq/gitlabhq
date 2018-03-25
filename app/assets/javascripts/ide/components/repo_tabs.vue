@@ -35,8 +35,7 @@ export default {
   updated() {
     if (!this.$refs.tabsScroller) return;
 
-    this.showShadow =
-      this.$refs.tabsScroller.scrollWidth > this.$refs.tabsScroller.offsetWidth;
+    this.showShadow = this.$refs.tabsScroller.scrollWidth > this.$refs.tabsScroller.offsetWidth;
   },
   methods: {
     ...mapActions(['updateViewer']),

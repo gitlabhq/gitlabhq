@@ -23,17 +23,13 @@ export const handleTreeEntryAction = ({ commit, dispatch }, row) => {
   }
 };
 
-export const getLastCommitData = (
-  { state, commit, dispatch, getters },
-  tree = state,
-) => {
+export const getLastCommitData = ({ state, commit, dispatch, getters }, tree = state) => {
   if (!tree || tree.lastCommitPath === null || !tree.lastCommitPath) return;
 
   service
     .getTreeLastCommit(tree.lastCommitPath)
     .then(res => {
-      const lastCommitPath =
-        normalizeHeaders(res.headers)['MORE-LOGS-URL'] || null;
+      const lastCommitPath = normalizeHeaders(res.headers)['MORE-LOGS-URL'] || null;
 
       commit(types.SET_LAST_COMMIT_URL, { tree, url: lastCommitPath });
 
@@ -41,11 +37,7 @@ export const getLastCommitData = (
     })
     .then(data => {
       data.forEach(lastCommit => {
-        const entry = findEntry(
-          tree.tree,
-          lastCommit.type,
-          lastCommit.file_name,
-        );
+        const entry = findEntry(tree.tree, lastCommit.type, lastCommit.file_name);
 
         if (entry) {
           commit(types.SET_LAST_COMMIT_DATA, { entry, lastCommit });
@@ -54,15 +46,10 @@ export const getLastCommitData = (
 
       dispatch('getLastCommitData', tree);
     })
-    .catch(() =>
-      flash('Error fetching log data.', 'alert', document, null, false, true),
-    );
+    .catch(() => flash('Error fetching log data.', 'alert', document, null, false, true));
 };
 
-export const getFiles = (
-  { state, commit, dispatch },
-  { projectId, branchId } = {},
-) =>
+export const getFiles = ({ state, commit, dispatch }, { projectId, branchId } = {}) =>
   new Promise((resolve, reject) => {
     if (!state.trees[`${projectId}/${branchId}`]) {
       const selectedProject = state.projects[projectId];
@@ -99,14 +86,7 @@ export const getFiles = (
           });
         })
         .catch(e => {
-          flash(
-            'Error loading tree data. Please try again.',
-            'alert',
-            document,
-            null,
-            false,
-            true,
-          );
+          flash('Error loading tree data. Please try again.', 'alert', document, null, false, true);
           reject(e);
         });
     } else {

@@ -11,12 +11,8 @@ const Api = {
   projectPath: '/api/:version/projects/:id',
   projectLabelsPath: '/:namespace_path/:project_path/labels',
   mergeRequestPath: '/api/:version/projects/:id/merge_requests/:mrid',
-  mergeRequestChangesPath:
-    '/api/:version/projects/:id/merge_requests/:mrid/changes',
-  mergeRequestVersionsPath:
-    '/api/:version/projects/:id/merge_requests/:mrid/versions',
-  mergeRequestVersionPath:
-    '/api/:version/projects/:id/merge_requests/:mrid/version/:versionid',
+  mergeRequestChangesPath: '/api/:version/projects/:id/merge_requests/:mrid/changes',
+  mergeRequestVersionsPath: '/api/:version/projects/:id/merge_requests/:mrid/versions',
   groupLabelsPath: '/groups/:namespace_path/-/labels',
   licensePath: '/api/:version/templates/licenses/:key',
   gitignorePath: '/api/:version/templates/gitignores/:key',
@@ -96,10 +92,7 @@ const Api = {
 
   // Return single project
   project(projectPath) {
-    const url = Api.buildUrl(Api.projectPath).replace(
-      ':id',
-      encodeURIComponent(projectPath),
-    );
+    const url = Api.buildUrl(Api.projectPath).replace(':id', encodeURIComponent(projectPath));
 
     return axios.get(url);
   },
@@ -129,15 +122,6 @@ const Api = {
     return axios.get(url);
   },
 
-  mergeRequestVersion(projectPath, mergeRequestId, versionId) {
-    const url = Api.buildUrl(Api.mergeRequestVersionPath)
-      .replace(':id', encodeURIComponent(projectPath))
-      .replace(':mrid', mergeRequestId)
-      .replace(':versionid', versionId);
-
-    return axios.get(url);
-  },
-
   newLabel(namespacePath, projectPath, data, callback) {
     let url;
 
@@ -146,10 +130,7 @@ const Api = {
         .replace(':namespace_path', namespacePath)
         .replace(':project_path', projectPath);
     } else {
-      url = Api.buildUrl(Api.groupLabelsPath).replace(
-        ':namespace_path',
-        namespacePath,
-      );
+      url = Api.buildUrl(Api.groupLabelsPath).replace(':namespace_path', namespacePath);
     }
 
     return axios
@@ -175,10 +156,7 @@ const Api = {
 
   commitMultiple(id, data) {
     // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
-    const url = Api.buildUrl(Api.commitPath).replace(
-      ':id',
-      encodeURIComponent(id),
-    );
+    const url = Api.buildUrl(Api.commitPath).replace(':id', encodeURIComponent(id));
     return axios.post(url, JSON.stringify(data), {
       headers: {
         'Content-Type': 'application/json; charset=utf-8',

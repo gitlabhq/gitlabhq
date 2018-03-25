@@ -56,10 +56,7 @@ export default {
     ...mapActions(['toggleTreeOpen', 'updateDelayViewerUpdated']),
     clickFile() {
       // Manual Action if a tree is selected/opened
-      if (
-        this.isTree &&
-        this.$router.currentRoute.path === `/project${this.file.url}`
-      ) {
+      if (this.isTree && this.$router.currentRoute.path === `/project${this.file.url}`) {
         this.toggleTreeOpen(this.file.path);
       }
 

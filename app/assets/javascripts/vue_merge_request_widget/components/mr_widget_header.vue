@@ -24,11 +24,7 @@ export default {
       return this.mr.divergedCommitsCount > 0;
     },
     commitsText() {
-      return n__(
-        '%d commit behind',
-        '%d commits behind',
-        this.mr.divergedCommitsCount,
-      );
+      return n__('%d commit behind', '%d commits behind', this.mr.divergedCommitsCount);
     },
     branchNameClipboardData() {
       // This supports code in app/assets/javascripts/copy_to_clipboard.js that
@@ -44,11 +40,6 @@ export default {
     },
     isTargetBranchLong() {
       return this.isBranchTitleLong(this.mr.targetBranch);
-    },
-    webIdePath() {
-      return `${
-        gon.relative_url_root
-      }/-/ide/project${this.mr.statusPath.replace('.json', '')}`;
     },
   },
   methods: {
@@ -105,14 +96,6 @@ export default {
     </div>
 
     <div v-if="mr.isOpen">
-      <a
-        :disabled="mr.sourceBranchRemoved"
-        :href="webIdePath"
-        class="btn btn-sm btn-default inline js-web-ide"
-        type="button"
-      >
-        {{ s__("mrWidget|Open in Web IDE") }}
-      </a>
       <button
         data-target="#modal_merge_info"
         data-toggle="modal"
