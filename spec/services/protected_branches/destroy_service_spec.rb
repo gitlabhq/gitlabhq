@@ -13,5 +13,18 @@ describe ProtectedBranches::DestroyService do
 
       expect(protected_branch).to be_destroyed
     end
+
+    context 'when a policy restricts rule deletion' do
+      before do
+        policy = instance_double(ProtectedBranchPolicy, can?: false)
+        expect(ProtectedBranchPolicy).to receive(:new).and_return(policy)
+      end
+
+      it "prevents deletion of the protected branch rule" do
+        expect do
+          service.execute(protected_branch)
+        end.to raise_error(Gitlab::Access::AccessDeniedError)
+      end
+    end
   end
 end

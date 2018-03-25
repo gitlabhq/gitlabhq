@@ -6,10 +6,14 @@ class ProtectedBranchPolicy < BasePolicy
   end
 
   rule { can?(:admin_project) }.policy do
+    enable :create_protected_branch
     enable :update_protected_branch
+    enable :destroy_protected_branch
   end
 
   rule { requires_admin_to_unprotect? & ~admin }.policy do
+    prevent :create_protected_branch
     prevent :update_protected_branch
+    prevent :destroy_protected_branch
   end
 end
