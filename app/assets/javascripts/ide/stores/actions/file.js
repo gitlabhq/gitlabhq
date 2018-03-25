@@ -48,29 +48,26 @@ export const setFileActive = ({ commit, state, getters, dispatch }, path) => {
 
 export const getFileData = ({ state, commit, dispatch }, { path, makeFileActive = true }) => {
   const file = state.entries[path];
-  return new Promise((resolve, reject) => {
-    commit(types.TOGGLE_LOADING, { entry: file });
-    service
-      .getFileData(file.url)
-      .then(res => {
-        const pageTitle = decodeURI(normalizeHeaders(res.headers)['PAGE-TITLE']);
+  commit(types.TOGGLE_LOADING, { entry: file });
+  return service
+    .getFileData(file.url)
+    .then(res => {
+      const pageTitle = decodeURI(normalizeHeaders(res.headers)['PAGE-TITLE']);
 
-        setPageTitle(pageTitle);
+      setPageTitle(pageTitle);
 
-        return res.json();
-      })
-      .then(data => {
-        commit(types.SET_FILE_DATA, { data, file });
-        commit(types.TOGGLE_FILE_OPEN, path);
-        if (makeFileActive) dispatch('setFileActive', file.path);
-        commit(types.TOGGLE_LOADING, { entry: file });
-      })
-      .catch(err => {
-        commit(types.TOGGLE_LOADING, { entry: file });
-        flash('Error loading file data. Please try again.', 'alert', document, null, false, true);
-        reject(err);
-      });
-  });
+      return res.json();
+    })
+    .then(data => {
+      commit(types.SET_FILE_DATA, { data, file });
+      commit(types.TOGGLE_FILE_OPEN, path);
+      if (makeFileActive) dispatch('setFileActive', file.path);
+      commit(types.TOGGLE_LOADING, { entry: file });
+    })
+    .catch(() => {
+      commit(types.TOGGLE_LOADING, { entry: file });
+      flash('Error loading file data. Please try again.', 'alert', document, null, false, true);
+    });
 };
 
 export const setFileMrChange = ({ state, commit }, { file, mrChange }) => {
