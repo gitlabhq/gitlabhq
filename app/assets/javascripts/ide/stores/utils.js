@@ -82,40 +82,10 @@ export const decorateData = entity => {
   };
 };
 
-/*
-  Takes the multi-dimensional tree and returns a flattened array.
-  This allows for the table to recursively render the table rows but keeps the data
-  structure nested to make it easier to add new files/directories.
-*/
-export const treeList = (state, treeId) => {
-  const baseTree = state.trees[treeId];
-  if (baseTree) {
-    const mapTree = arr =>
-      !arr.tree || !arr.tree.length
-        ? []
-        : _.map(arr.tree, a => [a, mapTree(a)]);
-
-    return _.chain(baseTree.tree)
-      .map(arr => [arr, mapTree(arr)])
-      .flatten()
-      .value();
-  }
-  return [];
-};
-
-export const getTree = state => (namespace, projectId, branch) =>
-  state.trees[`${namespace}/${projectId}/${branch}`];
-
-export const getTreeEntry = (store, treeId, path) => {
-  const fileList = treeList(store.state, treeId);
-  return fileList ? fileList.find(file => file.path === path) : null;
-};
-
 export const findEntry = (tree, type, name, prop = 'name') =>
   tree.find(f => f.type === type && f[prop] === name);
 
-export const findIndexOfFile = (state, file) =>
-  state.findIndex(f => f.path === file.path);
+export const findIndexOfFile = (state, file) => state.findIndex(f => f.path === file.path);
 
 export const setPageTitle = title => {
   document.title = title;

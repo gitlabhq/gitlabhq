@@ -2,7 +2,6 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import flash from '~/flash';
 import store from './stores';
-import { getTreeEntry } from './stores/utils';
 
 Vue.use(VueRouter);
 
@@ -77,9 +76,7 @@ router.beforeEach((to, from, next) => {
             .then(() => {
               if (to.params[0]) {
                 const path =
-                  to.params[0].slice(-1) === '/'
-                    ? to.params[0].slice(0, -1)
-                    : to.params[0];
+                  to.params[0].slice(-1) === '/' ? to.params[0].slice(0, -1) : to.params[0];
                 const treeEntry = store.state.entries[path];
                 if (treeEntry) {
                   store.dispatch('handleTreeEntryAction', treeEntry);
@@ -130,8 +127,7 @@ router.beforeEach((to, from, next) => {
                         })
                         .then(() => {
                           mrChanges.changes.forEach((change, ind) => {
-                            const changeTreeEntry =
-                              store.state.entries[change.new_path];
+                            const changeTreeEntry = store.state.entries[change.new_path];
 
                             if (changeTreeEntry) {
                               store.dispatch('setFileMrChange', {
@@ -156,16 +152,12 @@ router.beforeEach((to, from, next) => {
                         });
                     })
                     .catch(e => {
-                      flash(
-                        'Error while loading the merge request changes. Please try again.',
-                      );
+                      flash('Error while loading the merge request changes. Please try again.');
                       throw e;
                     });
                 })
                 .catch(e => {
-                  flash(
-                    'Error while loading the branch files. Please try again.',
-                  );
+                  flash('Error while loading the branch files. Please try again.');
                   throw e;
                 });
             })

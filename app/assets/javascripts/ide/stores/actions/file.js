@@ -1,11 +1,10 @@
 import { normalizeHeaders } from '~/lib/utils/common_utils';
-import { parsePatch, applyPatches } from 'diff';
 import flash from '~/flash';
 import eventHub from '../../eventhub';
 import service from '../../services';
 import * as types from '../mutation_types';
 import router from '../../ide_router';
-import { setPageTitle, createTemp, findIndexOfFile } from '../utils';
+import { setPageTitle } from '../utils';
 
 export const closeFile = ({ commit, state, getters, dispatch }, path) => {
   const indexOfClosedFile = state.openFiles.findIndex(f => f.path === path);
@@ -47,19 +46,14 @@ export const setFileActive = ({ commit, state, getters, dispatch }, path) => {
   commit(types.SET_CURRENT_BRANCH, file.branchId);
 };
 
-export const getFileData = (
-  { state, commit, dispatch },
-  { path, makeFileActive = true },
-) => {
+export const getFileData = ({ state, commit, dispatch }, { path, makeFileActive = true }) => {
   const file = state.entries[path];
   return new Promise((resolve, reject) => {
     commit(types.TOGGLE_LOADING, { entry: file });
     service
       .getFileData(file.url)
       .then(res => {
-        const pageTitle = decodeURI(
-          normalizeHeaders(res.headers)['PAGE-TITLE'],
-        );
+        const pageTitle = decodeURI(normalizeHeaders(res.headers)['PAGE-TITLE']);
 
         setPageTitle(pageTitle);
 
@@ -72,16 +66,8 @@ export const getFileData = (
         commit(types.TOGGLE_LOADING, { entry: file });
       })
       .catch(err => {
-        console.log('Error : ', err);
         commit(types.TOGGLE_LOADING, { entry: file });
-        flash(
-          'Error loading file data. Please try again.',
-          'alert',
-          document,
-          null,
-          false,
-          true,
-        );
+        flash('Error loading file data. Please try again.', 'alert', document, null, false, true);
         reject(err);
       });
   });
@@ -91,10 +77,7 @@ export const setFileMrChange = ({ state, commit }, { file, mrChange }) => {
   commit(types.SET_FILE_MR_CHANGE, { file, mrChange });
 };
 
-export const getRawFileData = (
-  { state, commit, dispatch },
-  { path, baseSha },
-) => {
+export const getRawFileData = ({ state, commit, dispatch }, { path, baseSha }) => {
   const file = state.entries[path];
   return new Promise((resolve, reject) => {
     service
@@ -150,10 +133,7 @@ export const setFileEOL = ({ getters, commit }, { eol }) => {
   }
 };
 
-export const setEditorPosition = (
-  { getters, commit },
-  { editorRow, editorColumn },
-) => {
+export const setEditorPosition = ({ getters, commit }, { editorRow, editorColumn }) => {
   if (getters.activeFile) {
     commit(types.SET_FILE_POSITION, {
       file: getters.activeFile,

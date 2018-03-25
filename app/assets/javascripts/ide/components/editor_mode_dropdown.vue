@@ -79,7 +79,12 @@ export default {
             </span>
           </a>
         </li>
-        <li v-if="hasMergeRequest" role="separator" class="divider"></li>
+        <li
+          v-if="hasMergeRequest"
+          role="separator"
+          class="divider"
+        >
+        </li>
         <li>
           <a
             href="#"

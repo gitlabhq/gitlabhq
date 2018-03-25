@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 import Api from '~/api';
-import { version } from 'punycode';
 
 Vue.use(VueResource);
 
@@ -21,9 +20,7 @@ export default {
       return Promise.resolve(file.raw);
     }
 
-    return Vue.http
-      .get(file.rawPath, { params: { format: 'json' } })
-      .then(res => res.text());
+    return Vue.http.get(file.rawPath, { params: { format: 'json' } }).then(res => res.text());
   },
   getBaseRawFileData(file, sha) {
     if (file.tempFile) {
