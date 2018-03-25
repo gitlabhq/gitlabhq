@@ -22,7 +22,7 @@ export default class Model {
       )),
     );
 
-    if (this.file.baseRaw) {
+    if (this.file.mrChange) {
       this.disposable.add(
         (this.baseModel = this.monaco.editor.createModel(
           this.file.baseRaw,

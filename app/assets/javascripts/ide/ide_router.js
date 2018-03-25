@@ -134,12 +134,12 @@ router.beforeEach((to, from, next) => {
                               store.state.entries[change.new_path];
 
                             if (changeTreeEntry) {
-                              store.dispatch('setFileMrDiff', {
+                              store.dispatch('setFileMrChange', {
                                 file: changeTreeEntry,
-                                mrDiff: change.diff,
+                                mrChange: change,
                               });
 
-                              if (ind < 5) {
+                              if (ind < 10) {
                                 store.dispatch('getFileData', {
                                   path: change.new_path,
                                   makeFileActive: ind === 0,

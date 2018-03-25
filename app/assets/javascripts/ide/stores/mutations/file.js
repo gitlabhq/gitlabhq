@@ -66,9 +66,9 @@ export default {
       editorColumn,
     });
   },
-  [types.SET_FILE_MR_DIFF](state, { file, mrDiff }) {
+  [types.SET_FILE_MR_CHANGE](state, { file, mrChange }) {
     Object.assign(file, {
-      mrDiff,
+      mrChange,
     });
   },
   [types.DISCARD_FILE_CHANGES](state, path) {

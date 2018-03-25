@@ -114,6 +114,10 @@ export default class Editor {
       original: model.getBaseModel(),
       modified: model.getModel(),
     });
+
+    this.monaco.editor.createDiffNavigator(this.instance, {
+      alwaysRevealFirst: true,
+    });
   }
 
   setupMonacoTheme() {

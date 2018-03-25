@@ -87,8 +87,8 @@ export const getFileData = (
   });
 };
 
-export const setFileMrDiff = ({ state, commit }, { file, mrDiff }) => {
-  commit(types.SET_FILE_MR_DIFF, { file, mrDiff });
+export const setFileMrChange = ({ state, commit }, { file, mrChange }) => {
+  commit(types.SET_FILE_MR_CHANGE, { file, mrChange });
 };
 
 export const getRawFileData = (
@@ -101,7 +101,7 @@ export const getRawFileData = (
       .getRawFileData(file)
       .then(raw => {
         commit(types.SET_FILE_RAW_DATA, { file, raw });
-        if (file.mrDiff) {
+        if (file.mrChange && file.mrChange.new_file === false) {
           service
             .getBaseRawFileData(file, baseSha)
             .then(baseRaw => {
