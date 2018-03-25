@@ -90,7 +90,7 @@ module Gitlab
     end
 
     def clean(message)
-      message.encode("UTF-16BE", undef: :replace, invalid: :replace, replace: "")
+      message.encode("UTF-16BE", undef: :replace, invalid: :replace, replace: "".encode("UTF-16BE"))
         .encode("UTF-8")
         .gsub("\0".encode("UTF-8"), "")
     end

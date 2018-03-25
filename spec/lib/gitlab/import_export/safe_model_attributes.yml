@@ -476,6 +476,7 @@ Project:
 - jobs_cache_index
 - external_authorization_classification_label
 - external_webhook_token
+- pages_https_only
 Author:
 - name
 ProjectFeature:

@@ -19,6 +19,18 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
   end
 
+  # Extend the standard implementation to also increment
+  # the number of failed sign in attempts
+  def failure
+    if params[:username].present? && AuthHelper.form_based_provider?(failed_strategy.name)
+      user = User.by_login(params[:username])
+
+      user&.increment_failed_attempts!
+    end
+
+    super
+  end
+
   # Extend the standard message generation to accept our custom exception
   def failure_message
     exception = env["omniauth.error"]
