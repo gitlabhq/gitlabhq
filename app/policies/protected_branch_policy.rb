@@ -1,4 +1,6 @@
 class ProtectedBranchPolicy < BasePolicy
+  prepend EE::ProtectedBranchPolicy
+
   delegate { @subject.project }
 
   rule { can?(:admin_project) }.policy do
