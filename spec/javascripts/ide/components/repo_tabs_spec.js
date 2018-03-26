@@ -57,6 +57,7 @@ describe('RepoTabs', () => {
           files: [],
           viewer: 'editor',
           hasChanges: false,
+          hasMergeRequest: false,
         },
         '#test-app',
       );

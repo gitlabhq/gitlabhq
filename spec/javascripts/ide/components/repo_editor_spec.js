@@ -89,6 +89,20 @@ describe('RepoEditor', () => {
         done();
       });
     });
+
+    it('calls createDiffInstance when viewer is a merge request diff', done => {
+      vm.$store.state.viewer = 'mrdiff';
+
+      spyOn(vm.editor, 'createDiffInstance');
+
+      vm.createEditorInstance();
+
+      vm.$nextTick(() => {
+        expect(vm.editor.createDiffInstance).toHaveBeenCalled();
+
+        done();
+      });
+    });
   });
 
   describe('setupEditor', () => {
@@ -132,6 +146,50 @@ describe('RepoEditor', () => {
 
         done();
       });
+    });
+  });
+
+  describe('setup editor for merge request viewing', () => {
+    beforeEach(done => {
+      vm.$destroy();
+
+      resetStore(vm.$store);
+
+      Editor.editorInstance.modelManager.dispose();
+
+      const f = file();
+      const RepoEditor = Vue.extend(repoEditor);
+
+      vm = createComponentWithStore(RepoEditor, store, {
+        file: f,
+      });
+
+      f.active = true;
+      f.tempFile = true;
+      f.html = 'testing';
+      f.mrChange = { diff: 'ABC' };
+      f.baseRaw = 'testing';
+      f.content = 'test';
+      vm.$store.state.openFiles.push(f);
+      vm.$store.state.entries[f.path] = f;
+
+      vm.$store.state.viewer = 'mrdiff';
+
+      vm.monaco = true;
+
+      vm.$mount();
+
+      monacoLoader(['vs/editor/editor.main'], () => {
+        setTimeout(done, 0);
+      });
+    });
+
+    it('attaches merge request model to editor when merge request diff', () => {
+      spyOn(vm.editor, 'attachMergeRequestModel').and.callThrough();
+
+      vm.setupEditor();
+
+      expect(vm.editor.attachMergeRequestModel).toHaveBeenCalledWith(vm.model);
     });
   });
 });
