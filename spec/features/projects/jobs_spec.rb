@@ -379,6 +379,7 @@ feature 'Jobs' do
       end
 
       it 'shows manual action empty state' do
+        expect(page).to have_content(job.detailed_status(user).illustration[:title])
         expect(page).to have_content('This job requires a manual action')
         expect(page).to have_content('This job depends on a user to trigger its process. Often they are used to deploy code to production environments')
         expect(page).to have_link('Trigger this manual action')
@@ -402,6 +403,7 @@ feature 'Jobs' do
       end
 
       it 'shows empty state' do
+        expect(page).to have_content(job.detailed_status(user).illustration[:title])
         expect(page).to have_content('This job has not been triggered yet')
         expect(page).to have_content('This job depends on upstream jobs that need to succeed in order for this job to be triggered')
       end
@@ -415,6 +417,7 @@ feature 'Jobs' do
       end
 
       it 'shows pending empty state' do
+        expect(page).to have_content(job.detailed_status(user).illustration[:title])
         expect(page).to have_content('This job has not started yet')
         expect(page).to have_content('This job is in pending state and is waiting to be picked by a runner')
       end
@@ -441,9 +444,24 @@ feature 'Jobs' do
         end
 
         it 'renders empty state' do
+          expect(page).to have_content(job.detailed_status(user).illustration[:title])
           expect(page).not_to have_selector('.js-build-output')
           expect(page).to have_content('This job has been canceled')
         end
+      end
+    end
+
+    context 'Skipped job' do
+      let(:job) { create(:ci_build, :skipped, pipeline: pipeline) }
+
+      before do
+        visit project_job_path(project, job)
+      end
+
+      it 'renders empty state' do
+        expect(page).to have_content(job.detailed_status(user).illustration[:title])
+        expect(page).not_to have_selector('.js-build-output')
+        expect(page).to have_content('This job has been skipped')
       end
     end
   end

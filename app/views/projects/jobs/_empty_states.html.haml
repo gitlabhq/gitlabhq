@@ -1,29 +1,9 @@
-- if @build.playable?
-  = render 'empty_state',
-    illustration: 'illustrations/manual_action.svg',
-    illustration_size: 'svg-394',
-    title: _('This job requires a manual action'),
-    content: _('This job depends on a user to trigger its process. Often they are used to deploy code to production environments'),
-    action: ( link_to _('Trigger this manual action'), play_project_job_path(@project, @build), method: :post, class: 'btn btn-primary', title: _('Trigger this manual action') )
-- elsif @build.created?
-  = render 'empty_state',
-    illustration: 'illustrations/job_not_triggered.svg',
-    illustration_size: 'svg-306',
-    title: _('This job has not been triggered yet'),
-    content: _('This job depends on upstream jobs that need to succeed in order for this job to be triggered')
-- elsif @build.canceled?
-  = render 'empty_state',
-    illustration: 'illustrations/canceled-job_empty.svg',
-    illustration_size: 'svg-430',
-    title: _('This job has been canceled')
-- elsif @build.skipped?
-  = render 'empty_state',
-    illustration: 'illustrations/skipped-job_empty.svg',
-    illustration_size: 'svg-430',
-    title: _('This job has been skipped')
-- else
-  = render 'empty_state',
-    illustration: 'illustrations/pending_job_empty.svg',
-    illustration_size: 'svg-430',
-    title: _('This job has not started yet'),
-    content: _('This job is in pending state and is waiting to be picked by a runner')
+- detailed_status = @build.detailed_status(current_user)
+- illustration = detailed_status.illustration
+
+= render 'empty_state',
+    illustration: illustration[:image],
+    illustration_size: illustration[:size],
+    title: illustration[:title],
+    content: illustration[:content],
+    action: @build.playable? ? link_to(_("Trigger this manual action"), detailed_status.action_path, method: detailed_status.action_method, class: 'btn btn-primary', title: _("Trigger this manual action")) : nil
