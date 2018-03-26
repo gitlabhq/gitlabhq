@@ -57,7 +57,7 @@ module Projects
           project.ensure_repository
           project.repository.fetch_as_mirror(project.import_url, refmap: refmap)
         else
-          gitlab_shell.import_repository(project.repository_storage_path, project.disk_path, project.import_url)
+          gitlab_shell.import_repository(project.repository_storage, project.disk_path, project.import_url)
         end
       rescue Gitlab::Shell::Error, Gitlab::Git::RepositoryMirroring::RemoteError => e
         # Expire cache to prevent scenarios such as:

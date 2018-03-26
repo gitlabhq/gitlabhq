@@ -9,7 +9,7 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
       :project,
       import_url: 'foo.git',
       import_source: 'foo/bar',
-      repository_storage_path: 'foo',
+      repository_storage: 'foo',
       disk_path: 'foo',
       repository: repository,
       create_wiki: true

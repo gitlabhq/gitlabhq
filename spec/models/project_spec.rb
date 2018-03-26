@@ -1617,7 +1617,7 @@ describe Project do
 
     before do
       allow_any_instance_of(Gitlab::Shell).to receive(:import_repository)
-        .with(project.repository_storage_path, project.disk_path, project.import_url)
+        .with(project.repository_storage, project.disk_path, project.import_url)
         .and_return(true)
 
       expect_any_instance_of(Repository).to receive(:after_import)
@@ -1770,10 +1770,7 @@ describe Project do
       let(:project) { forked_project_link.forked_to_project }
 
       it 'schedules a RepositoryForkWorker job' do
-        expect(RepositoryForkWorker).to receive(:perform_async).with(
-          project.id,
-          forked_from_project.repository_storage_path,
-          forked_from_project.disk_path).and_return(import_jid)
+        expect(RepositoryForkWorker).to receive(:perform_async).with(project.id).and_return(import_jid)
 
         expect(project.add_import_job).to eq(import_jid)
       end

@@ -93,12 +93,12 @@ module Gitlab
 
     # Import repository
     #
-    # storage - project's storage path
+    # storage - project's storage name
     # name - project disk path
     # url - URL to import from
     #
     # Ex.
-    #   import_repository("/path/to/storage", "gitlab/gitlab-ci", "https://gitlab.com/gitlab-org/gitlab-test.git")
+    #   import_repository("nfs-file06", "gitlab/gitlab-ci", "https://gitlab.com/gitlab-org/gitlab-test.git")
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/874
     def import_repository(storage, name, url)
@@ -131,8 +131,7 @@ module Gitlab
         if is_enabled
           repository.gitaly_repository_client.fetch_remote(remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, timeout: git_timeout, prune: prune)
         else
-          storage_path = Gitlab.config.repositories.storages[repository.storage].legacy_disk_path
-          local_fetch_remote(storage_path, repository.relative_path, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, prune: prune)
+          local_fetch_remote(repository.storage, repository.relative_path, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, prune: prune)
         end
       end
     end
@@ -156,13 +155,13 @@ module Gitlab
     end
 
     # Fork repository to new path
-    # forked_from_storage - forked-from project's storage path
-    # forked_from_disk_path - project disk path
-    # forked_to_storage - forked-to project's storage path
-    # forked_to_disk_path - forked project disk path
+    # forked_from_storage - forked-from project's storage name
+    # forked_from_disk_path - project disk relative path
+    # forked_to_storage - forked-to project's storage name
+    # forked_to_disk_path - forked project disk relative path
     #
     # Ex.
-    #  fork_repository("/path/to/forked_from/storage", "gitlab/gitlab-ci", "/path/to/forked_to/storage", "new-namespace/gitlab-ci")
+    #  fork_repository("nfs-file06", "gitlab/gitlab-ci", "nfs-file07", "new-namespace/gitlab-ci")
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/817
     def fork_repository(forked_from_storage, forked_from_disk_path, forked_to_storage, forked_to_disk_path)
@@ -420,16 +419,16 @@ module Gitlab
 
     private
 
-    def gitlab_projects(shard_path, disk_path)
+    def gitlab_projects(shard_name, disk_path)
       Gitlab::Git::GitlabProjects.new(
-        shard_path,
+        shard_name,
         disk_path,
         global_hooks_path: Gitlab.config.gitlab_shell.hooks_path,
         logger: Rails.logger
       )
     end
 
-    def local_fetch_remote(storage_path, repository_relative_path, remote, ssh_auth: nil, forced: false, no_tags: false, prune: true)
+    def local_fetch_remote(storage_name, repository_relative_path, remote, ssh_auth: nil, forced: false, no_tags: false, prune: true)
       vars = { force: forced, tags: !no_tags, prune: prune }
 
       if ssh_auth&.ssh_import?
@@ -442,7 +441,7 @@ module Gitlab
         end
       end
 
-      cmd = gitlab_projects(storage_path, repository_relative_path)
+      cmd = gitlab_projects(storage_name, repository_relative_path)
 
       success = cmd.fetch_remote(remote, git_timeout, vars)
 
