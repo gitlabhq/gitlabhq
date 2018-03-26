@@ -1,5 +1,5 @@
 !!! 5
-%html.devise-layout-html
+%html.devise-layout-html{ class: system_message_class }
   = render "layouts/head"
   %body.ui_indigo.login-page.application.navless{ data: { page: body_data_page } }
     = header_message(@appearance)
