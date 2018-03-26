@@ -52,12 +52,7 @@ module API
           conflict!("Protected branch '#{params[:name]}' already exists")
         end
 
-        # Replace with `declared(params)` after updating to grape v1.0.2
-        # See https://github.com/ruby-grape/grape/pull/1710
-        # and https://gitlab.com/gitlab-org/gitlab-ce/issues/40843
-        declared_params = params.slice("name", "push_access_level", "merge_access_level", "allowed_to_push", "allowed_to_merge")
-
-        api_service = ::ProtectedBranches::ApiService.new(user_project, current_user, declared_params)
+        api_service = ::ProtectedBranches::ApiService.new(user_project, current_user, declared(params))
         protected_branch = api_service.create
 
         if protected_branch.persisted?
