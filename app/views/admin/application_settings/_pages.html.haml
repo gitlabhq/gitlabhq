@@ -1,19 +1,22 @@
 = form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
   = form_errors(@application_setting)
-  .form-group
-    = f.label :max_pages_size, 'Maximum size of pages (MB)', class: 'control-label col-sm-2'
-    .col-sm-10
-      = f.number_field :max_pages_size, class: 'form-control'
-      .help-block 0 for unlimited
-  .form-group
-    .col-sm-offset-2.col-sm-10
-      .checkbox
-        = f.label :pages_domain_verification_enabled do
-          = f.check_box :pages_domain_verification_enabled
-          Require users to prove ownership of custom domains
-      .help-block
-        Domain verification is an essential security measure for public GitLab
-        sites. Users are required to demonstrate they control a domain before
-        it is enabled
-        = link_to icon('question-circle'), help_page_path('user/project/pages/getting_started_part_three.md', anchor: 'dns-txt-record')
+
+  %fieldset
+    .form-group
+      = f.label :max_pages_size, 'Maximum size of pages (MB)', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :max_pages_size, class: 'form-control'
+        .help-block 0 for unlimited
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :pages_domain_verification_enabled do
+            = f.check_box :pages_domain_verification_enabled
+            Require users to prove ownership of custom domains
+        .help-block
+          Domain verification is an essential security measure for public GitLab
+          sites. Users are required to demonstrate they control a domain before
+          it is enabled
+          = link_to icon('question-circle'), help_page_path('user/project/pages/getting_started_part_three.md', anchor: 'dns-txt-record')
+
   = f.submit 'Save changes', class: "btn btn-success"
