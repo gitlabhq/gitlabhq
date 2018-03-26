@@ -61,6 +61,8 @@ module Gitlab
         stream = Gitlab::Ci::Trace::Stream.new do
           if trace_artifact
             trace_artifact.open
+          elsif LiveIO.exists?(job.id)
+            LiveIO.new(job.id)
           elsif current_path
             File.open(current_path, "rb")
           elsif old_trace
@@ -75,7 +77,7 @@ module Gitlab
 
       def write
         stream = Gitlab::Ci::Trace::Stream.new do
-          File.open(ensure_path, "a+b")
+          LiveIO.new(job.id)
         end
 
         yield(stream).tap do
@@ -139,19 +141,6 @@ module Gitlab
             file_type: :trace,
             file: stream,
             file_sha256: Digest::SHA256.file(path).hexdigest)
-        end
-      end
-
-      def ensure_path
-        return current_path if current_path
-
-        ensure_directory
-        default_path
-      end
-
-      def ensure_directory
-        unless Dir.exist?(default_directory)
-          FileUtils.mkdir_p(default_directory)
         end
       end
 
