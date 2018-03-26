@@ -113,7 +113,7 @@ feature 'Jobs' do
 
   describe "GET /:project/jobs/:id" do
     context "Job from project" do
-      let(:job) { create(:ci_build, :success, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :success, :trace_live, pipeline: pipeline) }
 
       before do
         visit project_job_path(project, job)
@@ -136,7 +136,7 @@ feature 'Jobs' do
     end
 
     context 'when job is not running', :js do
-      let(:job) { create(:ci_build, :success, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :success, :trace_artifact, pipeline: pipeline) }
 
       before do
         visit project_job_path(project, job)
@@ -153,7 +153,7 @@ feature 'Jobs' do
       end
 
       context 'if job failed' do
-        let(:job) { create(:ci_build, :failed, pipeline: pipeline) }
+        let(:job) { create(:ci_build, :failed, :trace_artifact, pipeline: pipeline) }
 
         before do
           visit project_job_path(project, job)
@@ -339,7 +339,7 @@ feature 'Jobs' do
 
       context 'job is successfull and has deployment' do
         let(:deployment) { create(:deployment) }
-        let(:job) { create(:ci_build, :success, environment: environment.name, deployments: [deployment], pipeline: pipeline) }
+        let(:job) { create(:ci_build, :success, :trace_artifact, environment: environment.name, deployments: [deployment], pipeline: pipeline) }
 
         it 'shows a link for the job' do
           visit project_job_path(project, job)
@@ -349,7 +349,7 @@ feature 'Jobs' do
       end
 
       context 'job is complete and not successful' do
-        let(:job) { create(:ci_build, :failed, environment: environment.name, pipeline: pipeline) }
+        let(:job) { create(:ci_build, :failed, :trace_artifact, environment: environment.name, pipeline: pipeline) }
 
         it 'shows a link for the job' do
           visit project_job_path(project, job)
@@ -360,7 +360,7 @@ feature 'Jobs' do
 
       context 'job creates a new deployment' do
         let!(:deployment) { create(:deployment, environment: environment, sha: project.commit.id) }
-        let(:job) { create(:ci_build, :success, environment: environment.name, pipeline: pipeline) }
+        let(:job) { create(:ci_build, :success, :trace_artifact, environment: environment.name, pipeline: pipeline) }
 
         it 'shows a link to latest deployment' do
           visit project_job_path(project, job)
