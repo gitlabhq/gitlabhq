@@ -383,7 +383,7 @@ GEM
       signet (~> 0.7)
     gpgme (2.0.13)
       mini_portile2 (~> 2.1)
-    grape (1.0.0)
+    grape (1.0.2)
       activesupport
       builder
       mustermann-grape (~> 1.0.0)
@@ -536,7 +536,7 @@ GEM
     multi_json (1.13.1)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
-    mustermann (1.0.0)
+    mustermann (1.0.2)
     mustermann-grape (1.0.0)
       mustermann (~> 1.0.0)
     mysql2 (0.4.10)

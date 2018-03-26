@@ -1,6 +1,8 @@
 const glob = require('glob');
 const prettier = require('prettier');
 const fs = require('fs');
+const path = require('path');
+const prettierIgnore = require('ignore')();
 
 const getStagedFiles = require('./frontend_script_utils').getStagedFiles;
 
@@ -10,6 +12,10 @@ const allFiles = mode === 'check-all' || mode === 'save-all';
 
 const config = {
   patterns: ['**/*.js', '**/*.vue', '**/*.scss'],
+  /*
+   * The ignore patterns below are just to reduce search time with glob, as it includes the
+   * folders with the most ignored assets, the actual `.prettierignore` will be used later on
+   */
   ignore: ['**/node_modules/**', '**/vendor/**', '**/public/**'],
   parsers: {
     js: 'babylon',
@@ -17,6 +23,20 @@ const config = {
     scss: 'css',
   },
 };
+
+/*
+ * Unfortunately the prettier API does not expose support for `.prettierignore` files, they however
+ * use the ignore package, so we do the same. We simply cannot use the glob package, because
+ * gitignore style is not compatible with globs ignore style.
+ */
+prettierIgnore.add(
+  fs
+    .readFileSync(path.join(__dirname, '../../', '.prettierignore'))
+    .toString()
+    .trim()
+    .split(/\r?\n/)
+);
+
 const availableExtensions = Object.keys(config.parsers);
 
 console.log(`Loading ${allFiles ? 'All' : 'Staged'} Files ...`);
@@ -43,6 +63,8 @@ if (allFiles) {
 } else {
   files = stagedFiles.filter(f => availableExtensions.includes(f.split('.').pop()));
 }
+
+files = prettierIgnore.filter(files);
 
 if (!files.length) {
   console.log('No Files found to process with Prettier');
