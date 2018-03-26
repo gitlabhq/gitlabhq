@@ -17,12 +17,23 @@
         type: Object,
         required: true,
       },
+      hasDependencyScanning: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+      hasSast: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
     },
   };
 </script>
 <template>
   <div class="pipeline-tab-content">
     <report-section
+      v-if="hasSast"
       class="js-sast-widget"
       :type="$options.sast"
       :status="checkReportStatus(securityReports.sast.isLoading, securityReports.sast.hasError)"
@@ -32,7 +43,26 @@
       :unresolved-issues="securityReports.sast.newIssues"
       :resolved-issues="securityReports.sast.resolvedIssues"
       :all-issues="securityReports.sast.allIssues"
-      :is-collapsible="false"
+    />
+
+    <report-section
+      v-if="hasDependencyScanning"
+      class="js-dependency-scanning-widget"
+      :class="{ 'prepend-top-20': hasSast }"
+      :type="$options.sast"
+      :status="checkReportStatus(
+        securityReports.dependencyScanning.isLoading,
+        securityReports.dependencyScanning.hasError
+      )"
+      :loading-text="translateText('dependency scanning').loading"
+      :error-text="translateText('dependency scanning').error"
+      :success-text="depedencyScanningText(
+        securityReports.dependencyScanning.newIssues,
+        securityReports.dependencyScanning.resolvedIssues
+      )"
+      :unresolved-issues="securityReports.dependencyScanning.newIssues"
+      :resolved-issues="securityReports.dependencyScanning.resolvedIssues"
+      :all-issues="securityReports.dependencyScanning.allIssues"
     />
   </div>
 </template>

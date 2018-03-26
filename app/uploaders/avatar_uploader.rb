@@ -8,11 +8,11 @@ class AvatarUploader < GitlabUploader
     model.avatar.file && model.avatar.file.present?
   end
 
-  def move_to_cache
+  def move_to_store
     false
   end
 
-  def move_to_store
+  def move_to_cache
     false
   end
 

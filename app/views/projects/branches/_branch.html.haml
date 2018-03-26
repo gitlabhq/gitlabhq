@@ -5,87 +5,87 @@
 - number_commits_behind = diverging_commit_counts[:behind]
 - number_commits_ahead = diverging_commit_counts[:ahead]
 - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
-%li{ class: "js-branch-#{branch.name}" }
-  %div
-    = link_to project_tree_path(@project, branch.name), class: 'item-title str-truncated ref-name' do
-      = sprite_icon('fork', size: 12)
-      = branch.name
-    &nbsp;
-    - if branch.name == @repository.root_ref
-      %span.label.label-primary default
-    - elsif merged
-      %span.label.label-info.has-tooltip{ title: s_('Branches|Merged into %{default_branch}') % { default_branch: @repository.root_ref } }
-        = s_('Branches|merged')
+%li{ class: "branch-item js-branch-#{branch.name}" }
+  .branch-info
+    .branch-title
+      = link_to project_tree_path(@project, branch.name), class: 'item-title str-truncated-100 ref-name' do
+        = sprite_icon('fork', size: 12)
+        = branch.name
+      &nbsp;
+      - if branch.name == @repository.root_ref
+        %span.label.label-primary default
+      - elsif merged
+        %span.label.label-info.has-tooltip{ title: s_('Branches|Merged into %{default_branch}') % { default_branch: @repository.root_ref } }
+          = s_('Branches|merged')
 
-    - if protected_branch?(@project, branch)
-      %span.label.label-success
-        = s_('Branches|protected')
+      - if protected_branch?(@project, branch)
+        %span.label.label-success
+          = s_('Branches|protected')
 
-    - if @project.mirror_ever_updated_successfully? && @repository.diverged_from_upstream?(branch.name)
-      %span.label.label-danger.has-tooltip{ data: { html: "true", title: branch_diverged_tooltip_message } }
-        = icon('exclamation-triangle')
-        = s_('Branches|diverged from upstream')
+      - if @project.mirror_ever_updated_successfully? && @repository.diverged_from_upstream?(branch.name)
+        %span.label.label-danger.has-tooltip{ data: { html: "true", title: branch_diverged_tooltip_message } }
+          = icon('exclamation-triangle')
+          = s_('Branches|diverged from upstream')
 
-    .controls.hidden-xs<
-      - if merge_project && create_mr_button?(@repository.root_ref, branch.name)
-        = link_to create_mr_path(@repository.root_ref, branch.name), class: 'btn btn-default' do
-          = _('Merge request')
+    .block-truncated
+      - if commit
+        = render 'projects/branches/commit', commit: commit, project: @project
+      - else
+        = s_('Branches|Cant find HEAD commit for this branch')
 
-      - if branch.name != @repository.root_ref
-        = link_to project_compare_index_path(@project, from: @repository.root_ref, to: branch.name),
-          class: "btn btn-default #{'prepend-left-10' unless merge_project}",
-          method: :post,
-          title: s_('Branches|Compare') do
-          = s_('Branches|Compare')
+  - if branch.name != @repository.root_ref
+    .divergence-graph{ title: s_('%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead') % { number_commits_behind: diverging_count_label(number_commits_behind),
+      default_branch: @repository.root_ref,
+      number_commits_ahead: diverging_count_label(number_commits_ahead) } }
+      .graph-side
+        .bar.bar-behind{ style: "width: #{number_commits_behind * bar_graph_width_factor}%" }
+        %span.count.count-behind= diverging_count_label(number_commits_behind)
+      .graph-separator
+      .graph-side
+        .bar.bar-ahead{ style: "width: #{number_commits_ahead * bar_graph_width_factor}%" }
+        %span.count.count-ahead= diverging_count_label(number_commits_ahead)
 
-      = render 'projects/buttons/download', project: @project, ref: branch.name, pipeline: @refs_pipelines[branch.name]
-
-      - if can?(current_user, :push_code, @project)
-        - if branch.name == @project.repository.root_ref
-          %button{ class: "btn btn-remove remove-row js-ajax-loading-spinner has-tooltip disabled",
-            disabled: true,
-            title: s_('Branches|The default branch cannot be deleted') }
-            = icon("trash-o")
-        - elsif protected_branch?(@project, branch)
-          - if can?(current_user, :delete_protected_branch, @project)
-            %button{ class: "btn btn-remove remove-row js-ajax-loading-spinner has-tooltip",
-              title: s_('Branches|Delete protected branch'),
-              data: { toggle: "modal",
-                target: "#modal-delete-branch",
-                delete_path: project_branch_path(@project, branch.name),
-                branch_name: branch.name,
-                is_merged: ("true" if merged) } }
-              = icon("trash-o")
-          - else
-            %button{ class: "btn btn-remove remove-row js-ajax-loading-spinner has-tooltip disabled",
-              disabled: true,
-              title: s_('Branches|Only a project master or owner can delete a protected branch') }
-              = icon("trash-o")
-        - else
-          = link_to project_branch_path(@project, branch.name),
-            class: "btn btn-remove remove-row js-ajax-loading-spinner has-tooltip",
-            title: s_('Branches|Delete branch'),
-            method: :delete,
-            data: { confirm: s_("Branches|Deleting the '%{branch_name}' branch cannot be undone. Are you sure?") % { branch_name: branch.name } },
-            remote: true,
-            'aria-label' => s_('Branches|Delete branch') do
-            = icon("trash-o")
+  .controls.hidden-xs<
+    - if merge_project && create_mr_button?(@repository.root_ref, branch.name)
+      = link_to create_mr_path(@repository.root_ref, branch.name), class: 'btn btn-default' do
+        = _('Merge request')
 
     - if branch.name != @repository.root_ref
-      .divergence-graph{ title: s_('%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead') % { number_commits_behind: diverging_count_label(number_commits_behind),
-        default_branch: @repository.root_ref,
-        number_commits_ahead: diverging_count_label(number_commits_ahead) } }
-        .graph-side
-          .bar.bar-behind{ style: "width: #{number_commits_behind * bar_graph_width_factor}%" }
-          %span.count.count-behind= diverging_count_label(number_commits_behind)
-        .graph-separator
-        .graph-side
-          .bar.bar-ahead{ style: "width: #{number_commits_ahead * bar_graph_width_factor}%" }
-          %span.count.count-ahead= diverging_count_label(number_commits_ahead)
+      = link_to project_compare_index_path(@project, from: @repository.root_ref, to: branch.name),
+        class: "btn btn-default #{'prepend-left-10' unless merge_project}",
+        method: :post,
+        title: s_('Branches|Compare') do
+        = s_('Branches|Compare')
 
+    = render 'projects/buttons/download', project: @project, ref: branch.name, pipeline: @refs_pipelines[branch.name]
 
-  - if commit
-    = render 'projects/branches/commit', commit: commit, project: @project
-  - else
-    %p
-      = s_('Branches|Cant find HEAD commit for this branch')
+    - if can?(current_user, :push_code, @project)
+      - if branch.name == @project.repository.root_ref
+        %button{ class: "btn btn-remove remove-row js-ajax-loading-spinner has-tooltip disabled",
+          disabled: true,
+          title: s_('Branches|The default branch cannot be deleted') }
+          = icon("trash-o")
+      - elsif protected_branch?(@project, branch)
+        - if can?(current_user, :delete_protected_branch, @project)
+          %button{ class: "btn btn-remove remove-row js-ajax-loading-spinner has-tooltip",
+            title: s_('Branches|Delete protected branch'),
+            data: { toggle: "modal",
+              target: "#modal-delete-branch",
+              delete_path: project_branch_path(@project, branch.name),
+              branch_name: branch.name,
+              is_merged: ("true" if merged) } }
+            = icon("trash-o")
+        - else
+          %button{ class: "btn btn-remove remove-row js-ajax-loading-spinner has-tooltip disabled",
+            disabled: true,
+            title: s_('Branches|Only a project master or owner can delete a protected branch') }
+            = icon("trash-o")
+      - else
+        = link_to project_branch_path(@project, branch.name),
+          class: "btn btn-remove remove-row js-ajax-loading-spinner has-tooltip",
+          title: s_('Branches|Delete branch'),
+          method: :delete,
+          data: { confirm: s_("Branches|Deleting the '%{branch_name}' branch cannot be undone. Are you sure?") % { branch_name: branch.name } },
+          remote: true,
+          'aria-label' => s_('Branches|Delete branch') do
+          = icon("trash-o")

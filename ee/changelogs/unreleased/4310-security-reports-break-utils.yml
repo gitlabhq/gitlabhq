@@ -1,0 +1,5 @@
+---
+title: Breaks utils function to parse codeclimate and sast into separate functions
+merge_request:
+author:
+type: other

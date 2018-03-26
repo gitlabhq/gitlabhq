@@ -1,56 +1,49 @@
 import { stripHtml } from '~/lib/utils/text_utility';
 
-/**
- * Parses SAST and Codeclimate Issues into a common and reusable format
- * to reuse the same vue component.
- * [
- *   {
- *     name: String,
- *     priority: String,
- *     fingerprint: String,
- *     path: String,
- *     line: Number,
- *     urlPath: String
- *   }
- * ]
- * @param {array} issues
- * @return {array}
+export const parseCodeclimateMetrics = (issues = [], path = '') =>
+  issues.map(issue => {
+    const parsedIssue = {
+      ...issue,
+      name: issue.description,
+    };
+
+    if (issue.location) {
+      let parseCodeQualityUrl;
+
+      if (issue.location.path) {
+        parseCodeQualityUrl = `${path}/${issue.location.path}`;
+        parsedIssue.path = issue.location.path;
+
+        if (issue.location.lines && issue.location.lines.begin) {
+          parsedIssue.line = issue.location.lines.begin;
+          parseCodeQualityUrl += `#L${issue.location.lines.begin}`;
+        }
+        parsedIssue.urlPath = parseCodeQualityUrl;
+      }
+    }
+
+    return parsedIssue;
+  });
+
+  /**
+ * Maps SAST & Dependency scanning issues:
+ * { tool: String, message: String, url: String , cve: String ,
+ * file: String , solution: String, priority: String }
+ * to contain:
+ * { name: String, path: String, line: String, urlPath: String, priority: String }
+ * @param {Array} issues
+ * @param {String} path
  */
-export const parseIssues = (issues = [], path = '') => issues.map((issue) => {
-  const parsedIssue = {
-    name: issue.description || issue.message,
-    ...issue,
-  };
-
-  // code quality
-  if (issue.location) {
-    let parseCodeQualityUrl;
-
-    if (issue.location.path) {
-      parseCodeQualityUrl = `${path}/${issue.location.path}`;
-      parsedIssue.path = issue.location.path;
-    }
-
-    if (issue.location.lines && issue.location.lines.begin) {
-      parsedIssue.line = issue.location.lines.begin;
-      parseCodeQualityUrl += `#L${issue.location.lines.begin}`;
-    }
-
-    parsedIssue.urlPath = parseCodeQualityUrl;
-
-  // security
-  } else if (issue.file) {
-    let parsedSecurityUrl = `${path}/${issue.file}`;
-    parsedIssue.path = issue.file;
-
-    if (issue.line) {
-      parsedSecurityUrl += `#L${issue.line}`;
-    }
-    parsedIssue.urlPath = parsedSecurityUrl;
-  }
-
-  return parsedIssue;
-});
+export const parseSastIssues = (issues = [], path = '') =>
+issues.map(issue =>
+  Object.assign({}, issue, {
+    name: issue.message,
+    path: issue.file,
+    urlPath: issue.line
+      ? `${path}/${issue.file}#L${issue.line}`
+      : `${path}/${issue.file}`,
+  }),
+);
 
 /**
  * Compares two arrays by the given key and returns the difference
@@ -105,8 +98,8 @@ export const setSastReport = (data = {}) => {
 
   if (data.base) {
     const filterKey = 'cve';
-    const parsedHead = parseIssues(data.head, data.headBlobPath);
-    const parsedBase = parseIssues(data.base, data.baseBlobPath);
+    const parsedHead = parseSastIssues(data.head, data.headBlobPath);
+    const parsedBase = parseSastIssues(data.base, data.baseBlobPath);
 
     securityReport.newIssues = filterByKey(
       parsedHead,
@@ -126,7 +119,7 @@ export const setSastReport = (data = {}) => {
       filterKey,
     );
   } else {
-    securityReport.newIssues = parseIssues(data.head, data.headBlobPath);
+    securityReport.newIssues = parseSastIssues(data.head, data.headBlobPath);
   }
 
   return securityReport;

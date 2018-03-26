@@ -59,6 +59,36 @@ describe Gitlab::Database::LoadBalancing::Host, :postgresql do
         expect(host).to be_online
       end
     end
+
+    context 'when the replica is not online' do
+      it 'returns false when ActionView::Template::Error is raised' do
+        error = StandardError.new
+
+        allow(host)
+          .to receive(:check_replica_status?)
+          .and_raise(ActionView::Template::Error.new('boom', error))
+
+        expect(host).not_to be_online
+      end
+
+      it 'returns false when ActiveRecord::StatementInvalid is raised' do
+        allow(host)
+          .to receive(:check_replica_status?)
+          .and_raise(ActiveRecord::StatementInvalid.new('foo'))
+
+        expect(host).not_to be_online
+      end
+
+      if Gitlab::Database.postgresql?
+        it 'returns false when PG::Error is raised' do
+          allow(host)
+            .to receive(:check_replica_status?)
+            .and_raise(PG::Error)
+
+          expect(host).not_to be_online
+        end
+      end
+    end
   end
 
   describe '#refresh_status' do

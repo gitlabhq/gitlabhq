@@ -1,6 +1,6 @@
 module Geo
   class LfsObjectRegistryFinder < FileRegistryFinder
-    def count_lfs_objects
+    def count_local_lfs_objects
       local_lfs_objects.count
     end
 
@@ -20,6 +20,10 @@ module Geo
       end
     end
 
+    def count_registry_lfs_objects
+      Geo::FileRegistry.lfs_objects.count
+    end
+
     # Find limited amount of non replicated lfs objects.
     #
     # You can pass a list with `except_file_ids:` so you can exclude items you
@@ -36,6 +40,17 @@ module Geo
           legacy_find_unsynced_lfs_objects(except_file_ids: except_file_ids)
         else
           fdw_find_unsynced_lfs_objects(except_file_ids: except_file_ids)
+        end
+
+      relation.limit(batch_size)
+    end
+
+    def find_migrated_local_lfs_objects(batch_size:, except_file_ids: [])
+      relation =
+        if use_legacy_queries?
+          legacy_find_migrated_local_lfs_objects(except_file_ids: except_file_ids)
+        else
+          fdw_find_migrated_local_lfs_objects(except_file_ids: except_file_ids)
         end
 
       relation.limit(batch_size)
@@ -90,6 +105,13 @@ module Geo
         .where.not(id: except_file_ids)
     end
 
+    def fdw_find_migrated_local_lfs_objects(except_file_ids:)
+      fdw_lfs_objects.joins("INNER JOIN file_registry ON file_registry.file_id = #{fdw_lfs_objects_table}.id")
+        .with_files_stored_remotely
+        .where.not(id: except_file_ids)
+        .merge(Geo::FileRegistry.lfs_objects)
+    end
+
     def fdw_lfs_objects
       if selective_sync?
         Geo::Fdw::LfsObject.joins(:project).where(projects: { id: current_node.projects })
@@ -127,6 +149,16 @@ module Geo
 
       legacy_left_outer_join_registry_ids(
         local_lfs_objects,
+        registry_file_ids,
+        LfsObject
+      )
+    end
+
+    def legacy_find_migrated_local_lfs_objects(except_file_ids:)
+      registry_file_ids = Geo::FileRegistry.lfs_objects.pluck(:file_id) - except_file_ids
+
+      legacy_inner_join_registry_ids(
+        lfs_objects.with_files_stored_remotely,
         registry_file_ids,
         LfsObject
       )

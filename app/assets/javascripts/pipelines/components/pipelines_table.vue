@@ -1,5 +1,5 @@
 <script>
-  import modal from '~/vue_shared/components/modal.vue';
+  import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
   import { s__, sprintf } from '~/locale';
   import pipelinesTableRowComponent from './pipelines_table_row.vue';
   import eventHub from '../event_hub';
@@ -12,7 +12,7 @@
   export default {
     components: {
       pipelinesTableRowComponent,
-      modal,
+      DeprecatedModal,
     },
     props: {
       pipelines: {
@@ -120,7 +120,7 @@
       :auto-devops-help-path="autoDevopsHelpPath"
       :view-type="viewType"
     />
-    <modal
+    <deprecated-modal
       id="confirmation-modal"
       :title="modalTitle"
       :text="modalText"
@@ -134,6 +134,6 @@
       >
         <p v-html="props.text"></p>
       </template>
-    </modal>
+    </deprecated-modal>
   </div>
 </template>

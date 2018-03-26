@@ -1,0 +1,77 @@
+.header-message,
+.footer-message {
+  padding: 0 15px;
+  border: 1px solid transparent;
+  border-radius: 0;
+  position: fixed;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  margin: 0;
+  z-index: 1000;
+
+  p {
+    @include str-truncated(100%);
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.header-message {
+  top: 0;
+  height: $system-header-height;
+  line-height: $system-header-height;
+}
+
+.footer-message {
+  bottom: 0;
+  height: $system-footer-height;
+  line-height: $system-footer-height;
+}
+
+.with-performance-bar {
+  .header-message {
+    top: $performance-bar-height;
+  }
+}
+
+// System Header
+.with-system-header {
+  .navbar-gitlab,
+  .navbar-fixed-top {
+    top: $system-header-height;
+  }
+
+  .nav-sidebar,
+  .right-sidebar {
+    top: $system-header-height + $header-height;
+  }
+}
+
+// System Footer
+.with-system-footer {
+  .nav-sidebar,
+  .right-sidebar,
+  &.devise-layout-html body .footer-container,
+  &.devise-layout-html body hr.footer-fixed.devise-layout-html body .footer-container,
+  &.devise-layout-html body hr.footer-fixed {
+    bottom: $system-footer-height;
+  }
+}
+
+// Performance Bar
+// System Header
+.with-system-header.with-performance-bar {
+  header.navbar-gitlab {
+    top: $performance-bar-height + $system-header-height;
+  }
+
+  .layout-page {
+    margin-top: $header-height + $performance-bar-height + $system-header-height;
+  }
+
+  .nav-sidebar,
+  .right-sidebar {
+    top: $header-height + $performance-bar-height + $system-header-height;
+  }
+}

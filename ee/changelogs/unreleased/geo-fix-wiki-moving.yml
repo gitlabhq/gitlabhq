@@ -1,0 +1,5 @@
+---
+title: "[Geo] Fix project rename when wiki does not exist"
+merge_request:
+author:
+type: fixed

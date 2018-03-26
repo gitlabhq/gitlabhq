@@ -1,48 +1,39 @@
 module EE
   module Gitlab
     module ExternalAuthorization
+      extend Config
+
       RequestFailed = Class.new(StandardError)
 
-      def self.access_allowed?(user, label)
-        return true unless enabled?
+      def self.access_allowed?(user, label, project_path = nil)
+        return true unless perform_check?
         return false unless user
 
-        access_for_user_to_label(user, label).has_access?
+        access_for_user_to_label(user, label, project_path).has_access?
       end
 
       def self.rejection_reason(user, label)
         return nil unless enabled?
         return nil unless user
 
-        access_for_user_to_label(user, label).reason
+        access_for_user_to_label(user, label, nil).reason
       end
 
-      def self.access_for_user_to_label(user, label)
+      def self.access_for_user_to_label(user, label, project_path)
         if RequestStore.active?
           RequestStore.fetch("external_authorisation:user-#{user.id}:label-#{label}") do
-            EE::Gitlab::ExternalAuthorization::Access.new(user, label).load!
+            load_access(user, label, project_path)
           end
         else
-          EE::Gitlab::ExternalAuthorization::Access.new(user, label).load!
+          load_access(user, label, project_path)
         end
       end
 
-      def self.enabled?
-        ::Gitlab::CurrentSettings
-          .current_application_settings
-          .external_authorization_service_enabled?
-      end
+      def self.load_access(user, label, project_path)
+        access = EE::Gitlab::ExternalAuthorization::Access.new(user, label).load!
+        ::EE::Gitlab::ExternalAuthorization::Logger.log_access(access, project_path)
 
-      def self.service_url
-        ::Gitlab::CurrentSettings
-          .current_application_settings
-          .external_authorization_service_url
-      end
-
-      def self.timeout
-        ::Gitlab::CurrentSettings
-          .current_application_settings
-          .external_authorization_service_timeout
+        access
       end
     end
   end

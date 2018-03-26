@@ -1,6 +1,0 @@
----
-title: Ensure mirror can transition out of the started state when last_update_started_at
-  is nil
-merge_request:
-author:
-type: fixed

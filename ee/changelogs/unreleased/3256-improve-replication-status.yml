@@ -1,6 +1,0 @@
----
-title: 'Geo - Improve node status report by adding one more indicator of health: last
-  time when primary pulled the status of the secondary'
-merge_request:
-author:
-type: added

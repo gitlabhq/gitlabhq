@@ -382,4 +382,11 @@ module IssuablesHelper
   def parent
     @project || @group
   end
+
+  def issuable_milestone_tooltip_title(issuable)
+    if issuable.milestone
+      milestone_tooltip = milestone_tooltip_title(issuable.milestone)
+      _('Milestone') + (milestone_tooltip ? ': ' + milestone_tooltip : '')
+    end
+  end
 end

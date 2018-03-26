@@ -23,7 +23,7 @@ describe 'listing forks of a project' do
   end
 
   it 'does not show the commit message when an external authorization service is used' do
-    enable_external_authorization_service
+    enable_external_authorization_service_check
 
     visit project_forks_path(source)
 

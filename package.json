@@ -109,6 +109,7 @@
     "eslint-plugin-jasmine": "^2.1.0",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-vue": "^4.0.1",
+    "ignore": "^3.3.7",
     "istanbul": "^0.4.5",
     "jasmine-core": "^2.9.0",
     "jasmine-jquery": "^2.1.1",

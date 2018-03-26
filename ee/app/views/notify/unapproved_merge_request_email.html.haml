@@ -121,26 +121,23 @@
                                           %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;" }
                                             %a.muted{ href: user_url(@merge_request.author), style: "color:#333333;text-decoration:none;" }
                                               = @merge_request.author.name
-                                %tr
-                                  %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;border-top:1px solid #ededed;" } Assignee
-                                  %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;color:#333333;font-weight:400;width:75%;padding-left:5px;border-top:1px solid #ededed;" }
-                                    %table.img{ border: "0", cellpadding: "0", cellspacing: "0", style: "border-collapse:collapse;" }
-                                      %tbody
-                                        %tr
-                                          %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;padding-right:5px;" }
-                                            %img.avatar{ height: "24", src: avatar_icon_for_user(@merge_request.assignee, 24), style: "display:block;border-radius:12px;margin:-2px 0;", width: "24", alt: "Avatar" }/
-                                          %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;" }
-                                            %a.muted{ href: user_url(@merge_request.assignee), style: "color:#333333;text-decoration:none;" }
-                                              = @merge_request.assignee.name
+                                - if @merge_request.assignee
+                                  %tr
+                                    %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;border-top:1px solid #ededed;" } Assignee
+                                    %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;color:#333333;font-weight:400;width:75%;padding-left:5px;border-top:1px solid #ededed;" }
+                                      %table.img{ border: "0", cellpadding: "0", cellspacing: "0", style: "border-collapse:collapse;" }
+                                        %tbody
+                                          %tr
+                                            %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;padding-right:5px;" }
+                                              %img.avatar{ height: "24", src: avatar_icon_for_user(@merge_request.assignee, 24), style: "display:block;border-radius:12px;margin:-2px 0;", width: "24", alt: "Avatar" }/
+                                            %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;" }
+                                              %a.muted{ href: user_url(@merge_request.assignee), style: "color:#333333;text-decoration:none;" }
+                                                = @merge_request.assignee.name
 
         %tr.footer
           %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:25px 0;font-size:13px;line-height:1.6;color:#5c5c5c;" }
             %img{ alt: "GitLab", height: "33", src: image_url('mailers/ci_pipeline_notif_v1/gitlab-logo-full-horizontal.gif'), style: "display:block;margin:0 auto 1em;", width: "90" }/
             %div
-              %a{ href: profile_notifications_url, style: "color:#3777b0;text-decoration:none;" } Manage all notifications
-              &middot;
-              %a{ href: help_url, style: "color:#3777b0;text-decoration:none;" } Help
-            %div
-              You're receiving this email because of your account on
-              = succeed "." do
-                %a{ href: root_url, style: "color:#3777b0;text-decoration:none;" }= Gitlab.config.gitlab.host
+              - manage_notifications_link = link_to(_("Manage all notifications"), profile_notifications_url, style: "color:#3777b0;text-decoration:none;")
+              - help_link = link_to(_("Help"), help_url, style: "color:#3777b0;text-decoration:none;")
+              = _("You're receiving this email because of your account on %{host}. %{manage_notifications_link} &middot; %{help_link}").html_safe % { host: Gitlab.config.gitlab.host, manage_notifications_link: manage_notifications_link, help_link: help_link }

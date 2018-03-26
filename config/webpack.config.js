@@ -1,5 +1,3 @@
-'use strict';
-
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
@@ -9,14 +7,12 @@ const StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const NameAllModulesPlugin = require('name-all-modules-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
-  .BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 
 const ROOT_PATH = path.resolve(__dirname, '..');
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
-const IS_DEV_SERVER =
-  process.argv.join(' ').indexOf('webpack-dev-server') !== -1;
+const IS_DEV_SERVER = process.argv.join(' ').indexOf('webpack-dev-server') !== -1;
 const DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
 const DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
 const DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
@@ -47,9 +43,7 @@ function generateEntries() {
     cwd: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
   });
   eePageEntries.forEach(path => generateAutoEntries(path, 'ee'));
-  watchAutoEntries.concat(
-    path.join(ROOT_PATH, 'ee/app/assets/javascripts/pages/'),
-  );
+  watchAutoEntries.concat(path.join(ROOT_PATH, 'ee/app/assets/javascripts/pages/'));
 
   autoEntriesCount = Object.keys(autoEntries).length;
 
@@ -72,12 +66,8 @@ const config = {
   output: {
     path: path.join(ROOT_PATH, 'public/assets/webpack'),
     publicPath: '/assets/webpack/',
-    filename: IS_PRODUCTION
-      ? '[name].[chunkhash].bundle.js'
-      : '[name].bundle.js',
-    chunkFilename: IS_PRODUCTION
-      ? '[name].[chunkhash].chunk.js'
-      : '[name].chunk.js',
+    filename: IS_PRODUCTION ? '[name].[chunkhash].bundle.js' : '[name].bundle.js',
+    chunkFilename: IS_PRODUCTION ? '[name].[chunkhash].chunk.js' : '[name].chunk.js',
   },
 
   module: {
@@ -121,7 +111,7 @@ const config = {
         },
       },
       {
-        test: /katex.css$/,
+        test: /katex.min.css$/,
         include: /node_modules\/katex\/dist/,
         use: [
           { loader: 'style-loader' },
@@ -145,10 +135,7 @@ const config = {
         test: /monaco-editor\/\w+\/vs\/loader\.js$/,
         use: [
           { loader: 'exports-loader', options: 'l.global' },
-          {
-            loader: 'imports-loader',
-            options: 'l=>{},this=>l,AMDLoader=>this,module=>undefined',
-          },
+          { loader: 'imports-loader', options: 'l=>{},this=>l,AMDLoader=>this,module=>undefined' },
         ],
       },
     ],
@@ -209,7 +196,7 @@ const config = {
             path
               .relative(pagesBase, m.resource)
               .replace(/\/index\.[a-z]+$/, '')
-              .replace(/\//g, '__'),
+              .replace(/\//g, '__')
           );
         } else {
           moduleNames.push(path.relative(m.context, m.resource));
@@ -231,23 +218,16 @@ const config = {
       names: ['main', 'common', 'webpack_runtime'],
     }),
 
-    // enable scope hoisting
-    new webpack.optimize.ModuleConcatenationPlugin(),
-
     // copy pre-compiled vendor libraries verbatim
     new CopyWebpackPlugin([
       {
         from: path.join(
           ROOT_PATH,
-          `node_modules/monaco-editor/${IS_PRODUCTION ? 'min' : 'dev'}/vs`,
+          `node_modules/monaco-editor/${IS_PRODUCTION ? 'min' : 'dev'}/vs`
         ),
         to: 'monaco-editor/vs',
         transform: function(content, path) {
-          if (
-            /\.js$/.test(path) &&
-            !/worker/i.test(path) &&
-            !/typescript/i.test(path)
-          ) {
+          if (/\.js$/.test(path) && !/worker/i.test(path) && !/typescript/i.test(path)) {
             return (
               '(function(){\n' +
               'var define = this.define, require = this.require;\n' +
@@ -296,12 +276,13 @@ if (IS_PRODUCTION) {
       minimize: true,
       debug: false,
     }),
+    new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       sourceMap: true,
     }),
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify('production') },
-    }),
+    })
   );
 
   // compression can require a lot of compute time and is disabled in CI
@@ -336,13 +317,13 @@ if (IS_DEV_SERVER) {
 
           // report our auto-generated bundle count
           console.log(
-            `${autoEntriesCount} entries from '/pages' automatically added to webpack output.`,
+            `${autoEntriesCount} entries from '/pages' automatically added to webpack output.`
           );
 
           callback();
         });
       },
-    },
+    }
   );
   if (DEV_SERVER_LIVERELOAD) {
     config.plugins.push(new webpack.HotModuleReplacementPlugin());
@@ -357,7 +338,7 @@ if (WEBPACK_REPORT) {
       openAnalyzer: false,
       reportFilename: path.join(ROOT_PATH, 'webpack-report/index.html'),
       statsFilename: path.join(ROOT_PATH, 'webpack-report/stats.json'),
-    }),
+    })
   );
 }
 

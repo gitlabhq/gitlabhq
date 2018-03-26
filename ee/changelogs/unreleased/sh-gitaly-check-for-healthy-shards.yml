@@ -1,5 +1,0 @@
----
-title: 'Geo: Don''t attempt to schedule a repository sync for downed Gitaly shards'
-merge_request:
-author:
-type: changed

@@ -278,6 +278,7 @@ class Service < ActiveRecord::Base
 
   def self.build_from_template(project_id, template)
     service = template.dup
+    service.active = false unless service.valid?
     service.template = false
     service.project_id = project_id
     service

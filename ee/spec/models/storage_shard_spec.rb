@@ -7,7 +7,7 @@ describe StorageShard do
 
       expect(shards.count).to eq(Settings.repositories.storages.count)
       expect(shards.map(&:name)).to match_array(Settings.repositories.storages.keys)
-      expect(shards.map(&:path)).to match_array(Settings.repositories.storages.values.map(&:path))
+      expect(shards.map(&:path)).to match_array(Settings.repositories.storages.values.map(&:legacy_disk_path))
     end
   end
 end

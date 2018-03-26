@@ -48,7 +48,7 @@ class NotificationRecipient
     when :custom
       custom_enabled? || %i[participating mention].include?(@type)
     when :watch, :participating
-      !excluded_watcher_action?
+      !action_excluded?
     when :mention
       @type == :mention
     else
@@ -96,11 +96,20 @@ class NotificationRecipient
     end
   end
 
+  def action_excluded?
+    excluded_watcher_action? || excluded_participating_action?
+  end
+
   def excluded_watcher_action?
-    return false unless @custom_action
-    return false if notification_level == :custom
+    return false unless @custom_action && notification_level == :watch
 
     NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(@custom_action)
+  end
+
+  def excluded_participating_action?
+    return false unless @custom_action && notification_level == :participating
+
+    NotificationSetting::EXCLUDED_PARTICIPATING_EVENTS.include?(@custom_action)
   end
 
   private

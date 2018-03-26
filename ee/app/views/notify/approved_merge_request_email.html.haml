@@ -139,10 +139,6 @@
           %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:25px 0;font-size:13px;line-height:1.6;color:#5c5c5c;" }
             %img{ alt: "GitLab", height: "33", src: image_url('mailers/ci_pipeline_notif_v1/gitlab-logo-full-horizontal.gif'), style: "display:block;margin:0 auto 1em;", width: "90" }/
             %div
-              %a{ href: profile_notifications_url, style: "color:#3777b0;text-decoration:none;" } Manage all notifications
-              &middot;
-              %a{ href: help_url, style: "color:#3777b0;text-decoration:none;" } Help
-            %div
-              You're receiving this email because of your account on
-              = succeed "." do
-                %a{ href: root_url, style: "color:#3777b0;text-decoration:none;" }= Gitlab.config.gitlab.host
+              - manage_notifications_link = link_to(_("Manage all notifications"), profile_notifications_url, style: "color:#3777b0;text-decoration:none;")
+              - help_link = link_to(_("Help"), help_url, style: "color:#3777b0;text-decoration:none;")
+              = _("You're receiving this email because of your account on %{host}. %{manage_notifications_link} &middot; %{help_link}").html_safe % { host: Gitlab.config.gitlab.host, manage_notifications_link: manage_notifications_link, help_link: help_link }

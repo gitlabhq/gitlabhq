@@ -23,7 +23,7 @@ describe EE::NotificationService, :mailer do
 
     context 'when the service is enabled' do
       before do
-        enable_external_authorization_service
+        enable_external_authorization_service_check
       end
 
       it 'does not send an email' do
@@ -141,6 +141,34 @@ describe EE::NotificationService, :mailer do
         expect(Notify).to receive(:mirror_was_hard_failed_email).with(project.id, project.owner.id).and_call_original
 
         subject.mirror_was_hard_failed(project)
+      end
+
+      context 'when owner is blocked' do
+        it 'does not send email' do
+          project = create(:project, :mirror, :import_hard_failed)
+          project.owner.block!
+
+          expect(Notify).not_to receive(:mirror_was_hard_failed_email)
+
+          subject.mirror_was_hard_failed(project)
+        end
+
+        context 'when project belongs to group' do
+          it 'does not send email to the blocked owner' do
+            blocked_user = create(:user, :blocked)
+
+            group = create(:group, :public)
+            group.add_owner(blocked_user)
+            group.add_owner(user)
+
+            project = create(:project, :mirror, :import_hard_failed, namespace: group)
+
+            expect(Notify).not_to receive(:mirror_was_hard_failed_email).with(project.id, blocked_user.id).and_call_original
+            expect(Notify).to receive(:mirror_was_hard_failed_email).with(project.id, user.id).and_call_original
+
+            subject.mirror_was_hard_failed(project)
+          end
+        end
       end
     end
 

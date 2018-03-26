@@ -501,28 +501,6 @@ describe Repository do
     end
   end
 
-  describe '#create_hooks' do
-    let(:hook_path) { File.join(repository.path_to_repo, 'hooks') }
-
-    it 'symlinks the global hooks directory' do
-      repository.create_hooks
-
-      expect(File.symlink?(hook_path)).to be true
-      expect(File.readlink(hook_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
-    end
-
-    it 'replaces existing symlink with the right directory' do
-      FileUtils.mkdir_p(hook_path)
-
-      expect(File.symlink?(hook_path)).to be false
-
-      repository.create_hooks
-
-      expect(File.symlink?(hook_path)).to be true
-      expect(File.readlink(hook_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
-    end
-  end
-
   describe "#create_dir" do
     it "commits a change that creates a new directory" do
       expect do
@@ -927,7 +905,7 @@ describe Repository do
     end
 
     it 'returns nil when the content is not recognizable' do
-      repository.create_file(user, 'LICENSE', 'Copyright!',
+      repository.create_file(user, 'LICENSE', 'Gitlab B.V.',
         message: 'Add LICENSE', branch_name: 'master')
 
       expect(repository.license_key).to be_nil
@@ -971,7 +949,7 @@ describe Repository do
     end
 
     it 'returns nil when the content is not recognizable' do
-      repository.create_file(user, 'LICENSE', 'Copyright!',
+      repository.create_file(user, 'LICENSE', 'Gitlab B.V.',
         message: 'Add LICENSE', branch_name: 'master')
 
       expect(repository.license).to be_nil

@@ -28,6 +28,10 @@ functionality that render cross-project data. That includes:
 This is to prevent performing to many requests at once to the external
 authorization service.
 
+Whenever access is granted or denied this is logged in a logfile called
+`external-policy-access-control.log`.
+Read more about logs GitLab keeps in the [omnibus documentation][omnibus-log-docs].
+
 ## Configuration
 
 The external authorization service can be enabled by an admin on the GitLab's
@@ -37,12 +41,26 @@ admin area under the settings page:
 
 The available required properties are:
 
-- **Service URL**: The URL to make authorization requests to
+- **Service URL**: The URL to make authorization requests to. When leaving the
+  URL blank, cross project features will remain available while still being able
+  to specify classification labels for projects.
 - **External authorization request timeout**: The timeout after which an
   authorization request is aborted. When a request times out, access is denied
   to the user.
+- **Client authentication certificate**: The certificate to use to authenticate
+  with the external authorization service.
+- **Client authentication key**: Private key for the certificate when
+  authentication is required for the external authorization service, this is
+  encrypted when stored.
+- **Client authentication key password**: Passphrase to use for the private key when authenticating with the external service this is encrypted when stored.
 - **Default classification label**: The classification label to use when
   requesting authorization if no specific label is defined on the project
+
+When using TLS Authentication with a self signed certificate, the CA certificate
+needs to be trused by the openssl installation. When using GitLab installed using
+Omnibus, learn to install a custom CA in the
+[omnibus documentation][omnibus-ssl-docs]. Alternatively learn where to install
+custom certificates using `openssl version -d`.
 
 ## How it works
 
@@ -88,3 +106,6 @@ label defined in the [global settings](#configuration) will be used.
 The label will be shown on all project pages in the upper right corner.
 
 ![classification label on project page](img/classification_label_on_project_page.png)
+
+[omnibus-ssl-docs]: https://docs.gitlab.com/omnibus/settings/ssl.html
+[omnibus-log-docs]: https://docs.gitlab.com/omnibus/settings/logs.html

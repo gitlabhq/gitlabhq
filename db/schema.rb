@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180314174825) do
+ActiveRecord::Schema.define(version: 20180327101207) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -191,6 +191,12 @@ ActiveRecord::Schema.define(version: 20180314174825) do
     t.string "external_authorization_service_default_label"
     t.boolean "pages_domain_verification_enabled", default: true, null: false
     t.float "external_authorization_service_timeout", default: 0.5, null: false
+    t.boolean "allow_local_requests_from_hooks_and_services", default: false, null: false
+    t.text "external_auth_client_cert"
+    t.text "encrypted_external_auth_client_key"
+    t.string "encrypted_external_auth_client_key_iv"
+    t.string "encrypted_external_auth_client_key_pass"
+    t.string "encrypted_external_auth_client_key_pass_iv"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -411,6 +417,16 @@ ActiveRecord::Schema.define(version: 20180314174825) do
   add_index "ci_builds", ["updated_at"], name: "index_ci_builds_on_updated_at", using: :btree
   add_index "ci_builds", ["user_id"], name: "index_ci_builds_on_user_id", using: :btree
 
+  create_table "ci_builds_metadata", force: :cascade do |t|
+    t.integer "build_id", null: false
+    t.integer "project_id", null: false
+    t.integer "timeout"
+    t.integer "timeout_source", default: 1, null: false
+  end
+
+  add_index "ci_builds_metadata", ["build_id"], name: "index_ci_builds_metadata_on_build_id", unique: true, using: :btree
+  add_index "ci_builds_metadata", ["project_id"], name: "index_ci_builds_metadata_on_project_id", using: :btree
+
   create_table "ci_group_variables", force: :cascade do |t|
     t.string "key", null: false
     t.text "value"
@@ -549,6 +565,7 @@ ActiveRecord::Schema.define(version: 20180314174825) do
     t.boolean "locked", default: false, null: false
     t.integer "access_level", default: 0, null: false
     t.string "ip_address"
+    t.integer "maximum_timeout"
   end
 
   add_index "ci_runners", ["contacted_at"], name: "index_ci_runners_on_contacted_at", using: :btree
@@ -881,7 +898,7 @@ ActiveRecord::Schema.define(version: 20180314174825) do
   end
 
   add_index "events", ["action"], name: "index_events_on_action", using: :btree
-  add_index "events", ["author_id"], name: "index_events_on_author_id", using: :btree
+  add_index "events", ["author_id", "project_id"], name: "index_events_on_author_id_and_project_id", using: :btree
   add_index "events", ["project_id", "id"], name: "index_events_on_project_id_and_id", using: :btree
   add_index "events", ["target_type", "target_id"], name: "index_events_on_target_type_and_target_id", using: :btree
 
@@ -1712,6 +1729,7 @@ ActiveRecord::Schema.define(version: 20180314174825) do
     t.boolean "merge_merge_request"
     t.boolean "failed_pipeline"
     t.boolean "success_pipeline"
+    t.boolean "push_to_merge_request"
   end
 
   add_index "notification_settings", ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type", using: :btree
@@ -1998,6 +2016,7 @@ ActiveRecord::Schema.define(version: 20180314174825) do
     t.boolean "mirror_overwrites_diverged_branches"
     t.string "external_authorization_classification_label"
     t.string "external_webhook_token"
+    t.boolean "pages_https_only", default: true
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -2130,7 +2149,6 @@ ActiveRecord::Schema.define(version: 20180314174825) do
     t.string "path", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "permanent"
   end
 
   add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
@@ -2430,6 +2448,7 @@ ActiveRecord::Schema.define(version: 20180314174825) do
   end
 
   add_index "user_interacted_projects", ["project_id", "user_id"], name: "index_user_interacted_projects_on_project_id_and_user_id", unique: true, using: :btree
+  add_index "user_interacted_projects", ["user_id"], name: "index_user_interacted_projects_on_user_id", using: :btree
 
   create_table "user_synced_attributes_metadata", force: :cascade do |t|
     t.boolean "name_synced", default: false
@@ -2602,6 +2621,8 @@ ActiveRecord::Schema.define(version: 20180314174825) do
   add_foreign_key "ci_builds", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_a2141b1522", on_delete: :nullify
   add_foreign_key "ci_builds", "ci_stages", column: "stage_id", name: "fk_3a9eaa254d", on_delete: :cascade
   add_foreign_key "ci_builds", "projects", name: "fk_befce0568a", on_delete: :cascade
+  add_foreign_key "ci_builds_metadata", "ci_builds", column: "build_id", on_delete: :cascade
+  add_foreign_key "ci_builds_metadata", "projects", on_delete: :cascade
   add_foreign_key "ci_group_variables", "namespaces", column: "group_id", name: "fk_33ae4d58d8", on_delete: :cascade
   add_foreign_key "ci_job_artifacts", "ci_builds", column: "job_id", on_delete: :cascade
   add_foreign_key "ci_job_artifacts", "projects", on_delete: :cascade

@@ -2,7 +2,11 @@ module EE
   module Gitlab
     module ExternalAuthorization
       class Access
-        attr_reader :access, :reason, :loaded_at
+        attr_reader :user,
+                    :reason,
+                    :loaded_at,
+                    :label,
+                    :load_type
 
         def initialize(user, label)
           @user, @label = user, label
@@ -25,11 +29,13 @@ module EE
         private
 
         def load_from_cache
+          @load_type = :cache
           @access, @reason, @loaded_at = cache.load
         end
 
         def load_from_service
-          response = Client.build(@user, @label).request_access
+          @load_type = :request
+          response = Client.new(@user, @label).request_access
           @access = response.successful?
           @reason = response.reason
           @loaded_at = Time.now

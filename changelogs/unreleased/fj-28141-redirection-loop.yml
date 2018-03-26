@@ -1,5 +1,0 @@
----
-title: Removing the two factor check when the user sets a new password
-merge_request: 17457
-author:
-type: fixed

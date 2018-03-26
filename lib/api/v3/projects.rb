@@ -272,11 +272,7 @@ module API
           namespace_id = fork_params[:namespace]
 
           if namespace_id.present?
-            fork_params[:namespace] = if namespace_id =~ /^\d+$/
-                                        Namespace.find_by(id: namespace_id)
-                                      else
-                                        Namespace.find_by_path_or_name(namespace_id)
-                                      end
+            fork_params[:namespace] = find_namespace(namespace_id)
 
             unless fork_params[:namespace] && can?(current_user, :create_projects, fork_params[:namespace])
               not_found!('Target Namespace')

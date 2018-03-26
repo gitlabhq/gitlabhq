@@ -1,11 +1,11 @@
 # Geo database replication (source)
 
->**Note:**
+NOTE: **Note:**
 This is the documentation for installations from source. For installations
 using the Omnibus GitLab packages, follow the
 [**database replication for Omnibus GitLab**][database] guide.
 
->**Note:**
+NOTE: **Note:**
 The stages of the setup process must be completed in the documented order.
 Before attempting the steps in this stage, [complete all prior stages][toc].
 
@@ -22,7 +22,7 @@ The GitLab primary node where the write operations happen will connect to
 primary database server, and the secondary ones which are read-only will
 connect to secondary database servers (which are read-only too).
 
->**Note:**
+NOTE: **Note:**
 In many databases documentation you will see "primary" being referenced as "master"
 and "secondary" as either "slave" or "standby" server (read-only).
 
@@ -91,10 +91,11 @@ The following guide assumes that:
 
 1. Set up TLS support for the PostgreSQL primary server
 
-    > **Warning**: Only skip this step if you **know** that PostgreSQL traffic
-    > between the primary and secondary will be secured through some other
-    > means, e.g., a known-safe physical network path or a site-to-site VPN that
-    > you have configured.
+    CAUTION: **Warning**: 
+    Only skip this step if you **know** that PostgreSQL traffic
+    between the primary and secondary will be secured through some other
+    means, e.g., a known-safe physical network path or a site-to-site VPN that
+    you have configured.
 
     If you are replicating your database across the open Internet, it is
     **essential** that the connection is TLS-secured. Correctly configured, this
@@ -141,6 +142,7 @@ The following guide assumes that:
     hot_standby = on
     ```
 
+    NOTE: **Note**:
     Be sure to set `max_replication_slots` to the number of Geo secondary
     nodes that you may potentially have (at least 1).
 
@@ -302,7 +304,7 @@ needed files for streaming replication.
 The directories used are the defaults for Debian/Ubuntu. If you have changed
 any defaults, configure it as you see fit replacing the directories and paths.
 
->**Warning:**
+CAUTION: **Warning:**
 Make sure to run this on the **secondary** server as it removes all PostgreSQL's
 data before running `pg_basebackup`.
 

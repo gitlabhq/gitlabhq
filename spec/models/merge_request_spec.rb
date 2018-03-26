@@ -2404,6 +2404,26 @@ describe MergeRequest do
     end
   end
 
+  describe '#base_pipeline' do
+    let(:pipeline_arguments) do
+      {
+        project: project,
+        ref: merge_request.target_branch,
+        sha: merge_request.diff_base_sha
+      }
+    end
+
+    let(:project)       { create(:project, :public, :repository) }
+    let(:merge_request) { create(:merge_request, source_project: project) }
+
+    let!(:first_pipeline) { create(:ci_pipeline_without_jobs, pipeline_arguments) }
+    let!(:last_pipeline) { create(:ci_pipeline_without_jobs, pipeline_arguments) }
+
+    it 'returns latest pipeline' do
+      expect(merge_request.base_pipeline).to eq(last_pipeline)
+    end
+  end
+
   describe '#has_commits?' do
     before do
       allow(subject.merge_request_diff).to receive(:commits_count)
@@ -2442,6 +2462,17 @@ describe MergeRequest do
       it 'returns the diffs' do
         expect(subject.merge_request_diff_for(merge_request_diff3.head_commit_sha)).to eq(merge_request_diff3)
       end
+    end
+
+    it 'runs a single query on the initial call, and none afterwards' do
+      expect { subject.merge_request_diff_for(merge_request_diff1.diff_refs) }
+        .not_to exceed_query_limit(1)
+
+      expect { subject.merge_request_diff_for(merge_request_diff2.diff_refs) }
+        .not_to exceed_query_limit(0)
+
+      expect { subject.merge_request_diff_for(merge_request_diff3.head_commit_sha) }
+        .not_to exceed_query_limit(0)
     end
   end
 

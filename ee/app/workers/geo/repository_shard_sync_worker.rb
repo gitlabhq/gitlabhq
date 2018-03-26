@@ -1,5 +1,5 @@
 module Geo
-  class RepositoryShardSyncWorker < Geo::Scheduler::SecondaryWorker
+  class RepositoryShardSyncWorker < Geo::Scheduler::Secondary::SchedulerWorker
     sidekiq_options retry: false
 
     attr_accessor :shard_name
@@ -39,7 +39,11 @@ module Geo
     def schedule_job(project_id)
       job_id = Geo::ProjectSyncWorker.perform_async(project_id, Time.now)
 
-      { id: project_id, job_id: job_id } if job_id
+      { project_id: project_id, job_id: job_id } if job_id
+    end
+
+    def scheduled_project_ids
+      scheduled_jobs.map { |data| data[:project_id] }
     end
 
     def finder
@@ -59,12 +63,14 @@ module Geo
 
     def find_project_ids_not_synced(batch_size:)
       shard_restriction(finder.find_unsynced_projects(batch_size: batch_size))
+        .where.not(id: scheduled_project_ids)
         .reorder(last_repository_updated_at: :desc)
         .pluck(:id)
     end
 
     def find_project_ids_updated_recently(batch_size:)
       shard_restriction(finder.find_projects_updated_recently(batch_size: batch_size))
+        .where.not(id: scheduled_project_ids)
         .order('project_registry.last_repository_synced_at ASC NULLS FIRST, projects.last_repository_updated_at ASC')
         .pluck(:id)
     end

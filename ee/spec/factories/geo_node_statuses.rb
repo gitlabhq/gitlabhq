@@ -20,6 +20,10 @@ FactoryBot.define do
       wikis_count 9
       wikis_synced_count 4
       wikis_failed_count 1
+      repositories_verified_count 501
+      repositories_verification_failed_count 100
+      wikis_verified_count 499
+      wikis_verification_failed_count 99
       last_event_id 2
       last_event_timestamp { Time.now.to_i }
       cursor_last_event_id 1

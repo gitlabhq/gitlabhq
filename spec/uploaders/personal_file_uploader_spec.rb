@@ -14,7 +14,6 @@ describe PersonalFileUploader do
                   upload_path: IDENTIFIER,
                   absolute_path: %r[#{CarrierWave.root}/uploads/-/system/personal_snippet/\d+/#{IDENTIFIER}]
 
-  # EE-specific
   context "object_store is REMOTE" do
     before do
       stub_uploads_object_storage

@@ -27,6 +27,8 @@ describe Geo::MoveRepositoryService, :geo do
         .with(project.repository_storage_path, old_path, new_path)
         .and_return(false)
 
+      expect(service).to receive(:log_error).with('Repository cannot be moved')
+
       expect(service.execute).to eq false
     end
 
@@ -39,7 +41,27 @@ describe Geo::MoveRepositoryService, :geo do
         .with(project.repository_storage_path, "#{old_path}.wiki", "#{new_path}.wiki")
         .and_return(false)
 
+      expect(service).to receive(:log_error).with('Wiki repository cannot be moved')
+
       expect(service.execute).to eq false
+    end
+
+    context 'wiki disabled' do
+      let(:project) { create(:project, :repository, :wiki_disabled, :legacy_storage) }
+
+      it 'tries to move wiki even if it is not enabled without reporting error' do
+        allow_any_instance_of(Gitlab::Shell).to receive(:mv_repository)
+          .with(project.repository_storage_path, old_path, new_path)
+          .and_return(true)
+
+        allow_any_instance_of(Gitlab::Shell).to receive(:mv_repository)
+          .with(project.repository_storage_path, "#{old_path}.wiki", "#{new_path}.wiki")
+          .and_return(false)
+
+        expect(service).not_to receive(:log_error)
+
+        expect(service.execute).to eq(true)
+      end
     end
   end
 end

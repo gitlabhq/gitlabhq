@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe AvatarUploader do
-  let(:model) { create(:user, :with_avatar) }
+  let(:model) { build_stubbed(:user) }
   let(:uploader) { described_class.new(model, :avatar) }
   let(:upload) { create(:upload, model: model) }
 
@@ -12,7 +12,6 @@ describe AvatarUploader do
                   upload_path: %r[uploads/-/system/user/avatar/],
                   absolute_path: %r[#{CarrierWave.root}/uploads/-/system/user/avatar/]
 
-  # EE-specific
   context "object_store is REMOTE" do
     before do
       stub_uploads_object_storage

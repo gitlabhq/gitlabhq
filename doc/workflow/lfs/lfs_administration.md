@@ -21,7 +21,6 @@ There are various configuration options to help GitLab server administrators:
 
 ### Omnibus packages
 
-
 In `/etc/gitlab/gitlab.rb`:
 
 ```ruby
@@ -48,6 +47,7 @@ In `config/gitlab.yml`:
 ## Setting up S3 compatible object storage
 
 > **Note:** [Introduced][ee-2760] in [GitLab Premium][eep] 10.0.
+> Available in [GitLab CE][ce] 10.7
 
 It is possible to store LFS objects on remote object storage instead of on a local disk.
 

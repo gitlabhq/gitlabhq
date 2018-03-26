@@ -32,6 +32,11 @@
         required: false,
         default: '',
       },
+      canAttachFile: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
       enableAutocomplete: {
         type: Boolean,
         required: false,
@@ -139,6 +144,7 @@
         <markdown-toolbar
           :markdown-docs-path="markdownDocsPath"
           :quick-actions-docs-path="quickActionsDocsPath"
+          :can-attach-file="canAttachFile"
         />
       </div>
     </div>

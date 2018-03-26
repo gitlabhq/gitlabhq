@@ -47,6 +47,10 @@ class Projects::MilestonesController < Projects::ApplicationController
         @project.feature_available?(:issue_weights, current_user)
       @burndown = Burndown.new(@milestone)
     end
+
+    respond_to do |format|
+      format.html
+    end
   end
 
   def create
@@ -75,9 +79,9 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def promote
-    Milestones::PromoteService.new(project, current_user).execute(milestone)
+    promoted_milestone = Milestones::PromoteService.new(project, current_user).execute(milestone)
 
-    flash[:notice] = "#{milestone.title} promoted to group milestone"
+    flash[:notice] = "#{milestone.title} promoted to <a href=\"#{group_milestone_path(project.group, promoted_milestone.iid)}\">group milestone</a>.".html_safe
     respond_to do |format|
       format.html do
         redirect_to project_milestones_path(project)

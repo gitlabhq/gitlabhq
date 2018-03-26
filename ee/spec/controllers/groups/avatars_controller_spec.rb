@@ -12,7 +12,7 @@ describe Groups::AvatarsController do
   end
 
   it 'works when external authorization service is enabled' do
-    enable_external_authorization_service
+    enable_external_authorization_service_check
 
     delete :destroy, group_id: group
 

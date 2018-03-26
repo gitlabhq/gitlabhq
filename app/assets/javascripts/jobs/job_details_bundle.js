@@ -51,6 +51,7 @@ export default () => {
         props: {
           isLoading: this.mediator.state.isLoading,
           job: this.mediator.store.state.job,
+          runnerHelpUrl: dataset.runnerHelpUrl,
         },
       });
     },

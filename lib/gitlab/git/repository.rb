@@ -8,6 +8,7 @@ module Gitlab
     class Repository
       include Gitlab::Git::RepositoryMirroring
       include Gitlab::Git::Popen
+      include Gitlab::EncodingHelper
 
       ALLOWED_OBJECT_DIRECTORIES_VARIABLES = %w[
         GIT_OBJECT_DIRECTORY
@@ -93,7 +94,7 @@ module Gitlab
         @relative_path = relative_path
         @gl_repository = gl_repository
 
-        storage_path = Gitlab.config.repositories.storages[@storage]['path']
+        storage_path = Gitlab.config.repositories.storages[@storage].legacy_disk_path
         @gitlab_projects = Gitlab::Git::GitlabProjects.new(
           storage_path,
           relative_path,
@@ -514,10 +515,6 @@ module Gitlab
             count_commits_by_shelling_out(count_commits_options)
           end
         end
-      end
-
-      def sha_from_ref(ref)
-        rev_parse_target(ref).oid
       end
 
       # Return the object that +revspec+ points to.  If +revspec+ is an
@@ -1432,6 +1429,16 @@ module Gitlab
         output
       end
 
+      def can_be_merged?(source_sha, target_branch)
+        gitaly_migrate(:can_be_merged) do |is_enabled|
+          if is_enabled
+            gitaly_can_be_merged?(source_sha, find_branch(target_branch).target)
+          else
+            rugged_can_be_merged?(source_sha, target_branch)
+          end
+        end
+      end
+
       def last_commit_for_path(sha, path)
         gitaly_migrate(:last_commit_for_path) do |is_enabled|
           if is_enabled
@@ -1487,7 +1494,7 @@ module Gitlab
         names.lines.each do |line|
           next unless line.start_with?(refs_prefix)
 
-          refs << line.rstrip[left_slice_count..-1]
+          refs << encode_utf8(line.rstrip[left_slice_count..-1])
         end
 
         refs
@@ -1752,21 +1759,11 @@ module Gitlab
       end
 
       def alternate_object_directories
-        relative_paths = relative_object_directories
-
-        if relative_paths.any?
-          relative_paths.map { |d| File.join(path, d) }
-        else
-          absolute_object_directories.flat_map { |d| d.split(File::PATH_SEPARATOR) }
-        end
+        relative_object_directories.map { |d| File.join(path, d) }
       end
 
       def relative_object_directories
-        Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES).flatten.compact
-      end
-
-      def absolute_object_directories
-        Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_DIRECTORIES_VARIABLES).flatten.compact
+        Gitlab::Git::HookEnv.all(gl_repository).values_at(*ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES).flatten.compact
       end
 
       # Get the content of a blob for a given commit.  If the blob is a commit
@@ -2385,6 +2382,14 @@ module Gitlab
           .map { |c| commit(c) }
       end
 
+      def gitaly_can_be_merged?(their_commit, our_commit)
+        !gitaly_conflicts_client(our_commit, their_commit).conflicts?
+      end
+
+      def rugged_can_be_merged?(their_commit, our_commit)
+        !rugged.merge_commits(our_commit, their_commit).conflicts?
+      end
+
       def last_commit_for_path_by_gitaly(sha, path)
         gitaly_commit_client.last_commit_for_path(sha, path)
       end
@@ -2412,6 +2417,10 @@ module Gitlab
 
       def rev_list_param(spec)
         spec == :all ? ['--all'] : spec
+      end
+
+      def sha_from_ref(ref)
+        rev_parse_target(ref).oid
       end
     end
   end

@@ -1,6 +1,0 @@
----
-title: Add support within Browser Performance Testing for metrics where smaller is
-  better
-merge_request: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3891
-author: joshlambert
-type: added

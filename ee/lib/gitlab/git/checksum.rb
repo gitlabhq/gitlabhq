@@ -11,7 +11,7 @@ module Gitlab
 
       def initialize(storage, relative_path)
         @storage       = storage
-        @storage_path  = Gitlab.config.repositories.storages[storage]['path']
+        @storage_path  = Gitlab.config.repositories.storages[storage].legacy_disk_path
         @relative_path = "#{relative_path}.git"
         @path          = File.join(storage_path, @relative_path)
       end
@@ -37,15 +37,17 @@ module Gitlab
         if status&.zero?
           refs = output.split("\n")
 
-          refs.inject(nil) do |checksum, ref|
-            value = Digest::SHA1.hexdigest(ref)
+          result = refs.inject(nil) do |checksum, ref|
+            value = Digest::SHA1.hexdigest(ref).hex
 
             if checksum.nil?
               value
             else
-              (checksum.hex ^ value.hex).to_s(16)
+              checksum ^ value
             end
           end
+
+          result.to_s(16)
         else
           # Empty repositories return with a non-zero status and an empty output.
           if output&.empty?

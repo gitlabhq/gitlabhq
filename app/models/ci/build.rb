@@ -3,6 +3,7 @@ module Ci
     prepend ArtifactMigratable
     include TokenAuthenticatable
     include AfterCommitQueue
+    include ObjectStorage::BackgroundMove
     include Presentable
     include Importable
     prepend EE::Ci::Build
@@ -26,6 +27,10 @@ module Ci
     has_one :job_artifacts_metadata, -> { where(file_type: Ci::JobArtifact.file_types[:metadata]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
     has_one :job_artifacts_trace, -> { where(file_type: Ci::JobArtifact.file_types[:trace]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
 
+    has_one :metadata, class_name: 'Ci::BuildMetadata'
+
+    delegate :timeout, to: :metadata, prefix: true, allow_nil: true
+
     # The "environment" field for builds is a String, and is the unexpanded name
     def persisted_environment
       @persisted_environment ||= Environment.find_by(
@@ -48,6 +53,7 @@ module Ci
       where('(artifacts_file IS NOT NULL AND artifacts_file <> ?) OR EXISTS (?)',
         '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').archive)
     end
+    scope :with_artifacts_stored_locally, -> { with_artifacts_archive.where(artifacts_file_store: [nil, LegacyArtifactUploader::Store::LOCAL]) }
     scope :with_artifacts_not_expired, ->() { with_artifacts_archive.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
     scope :with_expired_artifacts, ->() { with_artifacts_archive.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
@@ -154,6 +160,14 @@ module Ci
       before_transition any => [:running] do |build|
         build.validates_dependencies! unless Feature.enabled?('ci_disable_validates_dependencies')
       end
+
+      before_transition pending: :running do |build|
+        build.ensure_metadata.update_timeout_state
+      end
+    end
+
+    def ensure_metadata
+      metadata || build_metadata(project: project)
     end
 
     def detailed_status(current_user)
@@ -230,10 +244,6 @@ module Ci
 
       # Return builds from previous stages
       latest_builds.where('stage_idx < ?', stage_idx)
-    end
-
-    def timeout
-      project.build_timeout
     end
 
     def triggered_by?(current_user)

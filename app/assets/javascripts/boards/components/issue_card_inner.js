@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import Vue from 'vue';
-import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+import IssueCardWeight from 'ee/boards/components/issue_card_weight.vue';
+import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import eventHub from '../eventhub';
 
 const Store = gl.issueBoards.BoardsStore;
@@ -45,7 +46,8 @@ gl.issueBoards.IssueCardInner = Vue.extend({
     };
   },
   components: {
-    userAvatarLink,
+    UserAvatarLink,
+    IssueCardWeight,
   },
   computed: {
     numberOverLimit() {
@@ -161,6 +163,9 @@ gl.issueBoards.IssueCardInner = Vue.extend({
           >
             <template v-if="groupId && issue.project">{{issue.project.path}}</template>{{ issueId }}
           </span>
+          <issue-card-weight 
+            v-if="issue.weight" 
+            :weight="issue.weight" />
         </h4>
         <div class="card-assignee">
           <user-avatar-link

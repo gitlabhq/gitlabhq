@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-14 16:41+0100\n"
-"PO-Revision-Date: 2018-03-14 16:41+0100\n"
+"POT-Creation-Date: 2018-03-27 14:40+0300\n"
+"PO-Revision-Date: 2018-03-27 14:40+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -385,6 +385,9 @@ msgstr ""
 msgid "Assign to"
 msgstr ""
 
+msgid "Assigned to :name"
+msgstr ""
+
 msgid "Assignee"
 msgstr ""
 
@@ -690,7 +693,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-msgid "Cancel edit"
+msgid "Cannot be merged automatically"
 msgstr ""
 
 msgid "Cannot modify managed Kubernetes cluster"
@@ -859,6 +862,15 @@ msgid "Click the button below to begin the install process by navigating to the 
 msgstr ""
 
 msgid "Click to expand text"
+msgstr ""
+
+msgid "Client authentication certificate"
+msgstr ""
+
+msgid "Client authentication key"
+msgstr ""
+
+msgid "Client authentication key password"
 msgstr ""
 
 msgid "Clone repository"
@@ -1249,6 +1261,9 @@ msgstr ""
 msgid "Compare Revisions"
 msgstr ""
 
+msgid "Compare changes with the last commit"
+msgstr ""
+
 msgid "CompareBranches|%{source_branch} and %{target_branch} are the same."
 msgstr ""
 
@@ -1262,6 +1277,9 @@ msgid "CompareBranches|Target"
 msgstr ""
 
 msgid "CompareBranches|There isn't anything to compare."
+msgstr ""
+
+msgid "Confidential"
 msgstr ""
 
 msgid "Confidentiality"
@@ -1393,7 +1411,10 @@ msgstr ""
 msgid "Create directory"
 msgstr ""
 
-msgid "Create empty bare repository"
+msgid "Create empty repository"
+msgstr ""
+
+msgid "Create file"
 msgstr ""
 
 msgid "Create epic"
@@ -1581,6 +1602,9 @@ msgstr ""
 msgid "DownloadSource|Download"
 msgstr ""
 
+msgid "Downvotes"
+msgstr ""
+
 msgid "Due date"
 msgstr ""
 
@@ -1591,6 +1615,9 @@ msgid "Edit Pipeline Schedule %{id}"
 msgstr ""
 
 msgid "Edit files in the editor and commit changes here"
+msgstr ""
+
+msgid "Editing"
 msgstr ""
 
 msgid "Emails"
@@ -1922,6 +1949,9 @@ msgstr ""
 msgid "GeoNodes|Replication slots:"
 msgstr ""
 
+msgid "GroupsTree|Create a project in this group."
+msgstr ""
+
 msgid "GeoNodes|Repositories checksummed:"
 msgstr ""
 
@@ -1966,6 +1996,14 @@ msgstr ""
 
 msgid "GeoNodes|Wiki checksums verified:"
 msgstr ""
+
+msgid "Help"
+msgstr ""
+
+msgid "Hide value"
+msgid_plural "Hide values"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "GeoNodes|Wikis checksummed:"
 msgstr ""
@@ -2090,9 +2128,6 @@ msgstr ""
 msgid "GroupsEmptyState|You can manage your group member’s permissions and access to each project in the group."
 msgstr ""
 
-msgid "GroupsTree|Are you sure you want to leave the \"${group.fullName}\" group?"
-msgstr ""
-
 msgid "GroupsTree|Create a project in this group."
 msgstr ""
 
@@ -2139,6 +2174,9 @@ msgid "HealthCheck|No Health Problems Detected"
 msgstr ""
 
 msgid "HealthCheck|Unhealthy"
+msgstr ""
+
+msgid "Help"
 msgstr ""
 
 msgid "Hide value"
@@ -2406,6 +2444,9 @@ msgid "Login"
 msgstr ""
 
 msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
+msgstr ""
+
+msgid "Manage all notifications"
 msgstr ""
 
 msgid "Manage group labels"
@@ -3319,6 +3360,9 @@ msgstr ""
 msgid "Related Merged Requests"
 msgstr ""
 
+msgid "Related merge requests"
+msgstr ""
+
 msgid "Remind later"
 msgstr ""
 
@@ -3372,10 +3416,16 @@ msgstr ""
 msgid "Revert this merge request"
 msgstr ""
 
+msgid "Reviewing"
+msgstr ""
+
 msgid "Roadmap"
 msgstr ""
 
 msgid "Run CI/CD pipelines for external repositories"
+msgstr ""
+
+msgid "Runners"
 msgstr ""
 
 msgid "Running"
@@ -3533,9 +3583,6 @@ msgstr ""
 msgid "Something went wrong on our end"
 msgstr ""
 
-msgid "Something went wrong on our end."
-msgstr ""
-
 msgid "Something went wrong trying to change the confidentiality of this issue"
 msgstr ""
 
@@ -3545,7 +3592,10 @@ msgstr ""
 msgid "Something went wrong when toggling the button"
 msgstr ""
 
-msgid "Something went wrong while closing the %{issuable}. Please try again later"
+msgid "Something went wrong while fetching Dependency Scanning."
+msgstr ""
+
+msgid "Something went wrong while fetching the projects."
 msgstr ""
 
 msgid "Something went wrong while fetching SAST."
@@ -3555,12 +3605,6 @@ msgid "Something went wrong while fetching the projects."
 msgstr ""
 
 msgid "Something went wrong while fetching the registry list."
-msgstr ""
-
-msgid "Something went wrong while reopening the %{issuable}. Please try again later"
-msgstr ""
-
-msgid "Something went wrong while resolving this discussion. Please try again."
 msgstr ""
 
 msgid "Something went wrong. Please try again."
@@ -3799,6 +3843,9 @@ msgstr ""
 msgid "Target Branch"
 msgstr ""
 
+msgid "Target branch"
+msgstr ""
+
 msgid "Team"
 msgstr ""
 
@@ -3812,6 +3859,9 @@ msgid "The Issue Tracker is the place to add things that need to be improved or 
 msgstr ""
 
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project. You can register or sign in to create issues for this project."
+msgstr ""
+
+msgid "The X509 Certificate to use when mutual TLS is required to communicate with the external authorization service. If left blank, the server certificate is still validated when accessing over HTTPS."
 msgstr ""
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
@@ -3841,10 +3891,16 @@ msgstr ""
 msgid "The number of failures of after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
 msgstr ""
 
+msgid "The passphrase required to decrypt the private key. This is optional and the value is encrypted at rest."
+msgstr ""
+
 msgid "The phase of the development lifecycle."
 msgstr ""
 
 msgid "The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit."
+msgstr ""
+
+msgid "The private key to use when a client certificate is provided. This value is encrypted at rest."
 msgstr ""
 
 msgid "The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
@@ -4211,9 +4267,6 @@ msgstr ""
 msgid "Turn on Service Desk"
 msgstr ""
 
-msgid "Unable to load the diff."
-msgstr ""
-
 msgid "Unknown"
 msgstr ""
 
@@ -4262,6 +4315,9 @@ msgstr ""
 msgid "UploadLink|click to upload"
 msgstr ""
 
+msgid "Upvotes"
+msgstr ""
+
 msgid "Use Service Desk to connect with your users (e.g. to offer customer support) through email right inside GitLab"
 msgstr ""
 
@@ -4272,6 +4328,9 @@ msgid "Use your global notification setting"
 msgstr ""
 
 msgid "Variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. You can use variables for passwords, secret keys, or whatever you want."
+msgstr ""
+
+msgid "View and edit lines"
 msgstr ""
 
 msgid "View epics list"
@@ -4326,6 +4385,9 @@ msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed o
 msgstr ""
 
 msgid "Weight"
+msgstr ""
+
+msgid "When leaving the URL blank, classification labels can still be specified whitout disabling cross project features or performing external authorization checks."
 msgstr ""
 
 msgid "Wiki"
@@ -4457,6 +4519,12 @@ msgstr ""
 msgid "You are going to transfer %{project_full_name} to another owner. Are you ABSOLUTELY sure?"
 msgstr ""
 
+msgid "You are on a read-only GitLab instance."
+msgstr ""
+
+msgid "You are on a secondary (read-only) Geo node. If you want to make any changes, you must visit the %{primary_node}."
+msgstr ""
+
 msgid "You can also create a project from the command line."
 msgstr ""
 
@@ -4529,6 +4597,9 @@ msgstr ""
 msgid "You'll need to use different branch names to get a valid comparison."
 msgstr ""
 
+msgid "You're receiving this email because of your account on %{host}. %{manage_notifications_link} &middot; %{help_link}"
+msgstr ""
+
 msgid "Your Kubernetes cluster information on this page is still editable, but you are advised to disable and reconfigure"
 msgstr ""
 
@@ -4568,6 +4639,18 @@ msgstr ""
 msgid "ciReport|DAST detected no alerts by analyzing the review app"
 msgstr ""
 
+msgid "ciReport|Dependency scanning"
+msgstr ""
+
+msgid "ciReport|Dependency scanning detected"
+msgstr ""
+
+msgid "ciReport|Dependency scanning detected no new security vulnerabilities"
+msgstr ""
+
+msgid "ciReport|Dependency scanning detected no security vulnerabilities"
+msgstr ""
+
 msgid "ciReport|Failed to load %{reportName} report"
 msgstr ""
 
@@ -4595,9 +4678,6 @@ msgstr ""
 msgid "ciReport|SAST"
 msgstr ""
 
-msgid "ciReport|SAST degraded on"
-msgstr ""
-
 msgid "ciReport|SAST detected"
 msgstr ""
 
@@ -4616,13 +4696,10 @@ msgstr ""
 msgid "ciReport|Unapproved vulnerabilities (red) can be marked as approved. %{helpLink}"
 msgstr ""
 
-msgid "ciReport|no security vulnerabilities"
+msgid "ciReport|no vulnerabilities"
 msgstr ""
 
 msgid "command line instructions"
-msgstr ""
-
-msgid "commit"
 msgstr ""
 
 msgid "confidentiality|You are going to turn off the confidentiality. This means <strong>everyone</strong> will be able to see and leave a comment on this issue."
@@ -4632,6 +4709,9 @@ msgid "confidentiality|You are going to turn on the confidentiality. This means 
 msgstr ""
 
 msgid "connecting"
+msgstr ""
+
+msgid "could not read private key, is the passphrase correct?"
 msgstr ""
 
 msgid "day"
@@ -4654,6 +4734,9 @@ msgstr ""
 msgid "is invalid because there is upstream lock"
 msgstr ""
 
+msgid "is not a valid X509 certificate."
+msgstr ""
+
 msgid "locked by %{path_lock_user_name} %{created_at}"
 msgstr ""
 
@@ -4663,6 +4746,15 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "mrWidget| Please restore it or use a different %{missingBranchName} branch"
+msgstr ""
+
+msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage %{emphasisStart} decreased %{emphasisEnd} from %{memoryFrom}MB to %{memoryTo}MB"
+msgstr ""
+
+msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage %{emphasisStart} increased %{emphasisEnd} from %{memoryFrom}MB to %{memoryTo}MB"
+msgstr ""
+
+msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage is %{emphasisStart} unchanged %{emphasisEnd} at %{memoryFrom}MB"
 msgstr ""
 
 msgid "mrWidget|Add approval"
@@ -4710,16 +4802,25 @@ msgstr ""
 msgid "mrWidget|Closes"
 msgstr ""
 
+msgid "mrWidget|Deployment statistics are not available currently"
+msgstr ""
+
 msgid "mrWidget|Did not close"
 msgstr ""
 
 msgid "mrWidget|Email patches"
 msgstr ""
 
+msgid "mrWidget|Failed to load deployment statistics"
+msgstr ""
+
 msgid "mrWidget|If the %{branch} branch exists in your local repository, you can merge this merge request manually using the"
 msgstr ""
 
 msgid "mrWidget|If the %{missingBranchName} branch exists in your local repository, you can merge this merge request manually using the command line"
+msgstr ""
+
+msgid "mrWidget|Loading deployment statistics"
 msgstr ""
 
 msgid "mrWidget|Mentions"
@@ -4842,6 +4943,9 @@ msgid "password"
 msgstr ""
 
 msgid "personal access token"
+msgstr ""
+
+msgid "private key does not match certificate."
 msgstr ""
 
 msgid "remove due date"

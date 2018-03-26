@@ -178,7 +178,7 @@ module Geo
 
       log_info("Created temporary repository")
 
-      repository.clone.tap { |repo| repo.disk_path = disk_path_temp }
+      ::Repository.new(repository.full_path, repository.project, disk_path: disk_path_temp, is_wiki: repository.is_wiki)
     end
 
     def clean_up_temporary_repository
@@ -210,6 +210,8 @@ module Geo
       if repository.exists? && !gitlab_shell.mv_repository(project.repository_storage_path, repository.disk_path, deleted_disk_path_temp)
         raise Gitlab::Shell::Error, 'Can not move original repository out of the way'
       end
+
+      gitlab_shell.add_namespace(project.repository_storage_path, repository.disk_path)
 
       unless gitlab_shell.mv_repository(project.repository_storage_path, disk_path_temp, repository.disk_path)
         raise Gitlab::Shell::Error, 'Can not move temporary repository'

@@ -18,7 +18,7 @@ describe Projects::ClustersController do
       context 'when project has one or more clusters' do
         let(:project) { create(:project) }
         let!(:enabled_cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
-        let!(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, projects: [project]) }
+        let!(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, :production_environment, projects: [project]) }
         it 'lists available clusters' do
           go
 
@@ -32,7 +32,7 @@ describe Projects::ClustersController do
 
           before do
             allow(Clusters::Cluster).to receive(:paginates_per).and_return(1)
-            create_list(:cluster, 2, :provided_by_gcp, projects: [project])
+            create_list(:cluster, 2, :provided_by_gcp, :production_environment, projects: [project])
             get :index, namespace_id: project.namespace, project_id: project, page: last_page
           end
 
@@ -420,7 +420,7 @@ describe Projects::ClustersController do
 
       context 'when cluster is provided by GCP' do
         context 'when cluster is created' do
-          let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+          let!(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, projects: [project]) }
 
           it "destroys and redirects back to clusters list" do
             expect { go }
@@ -434,7 +434,7 @@ describe Projects::ClustersController do
         end
 
         context 'when cluster is being created' do
-          let!(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
+          let!(:cluster) { create(:cluster, :providing_by_gcp, :production_environment, projects: [project]) }
 
           it "destroys and redirects back to clusters list" do
             expect { go }
@@ -448,7 +448,7 @@ describe Projects::ClustersController do
       end
 
       context 'when cluster is provided by user' do
-        let!(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
+        let!(:cluster) { create(:cluster, :provided_by_user, :production_environment, projects: [project]) }
 
         it "destroys and redirects back to clusters list" do
           expect { go }
@@ -463,7 +463,7 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
-      set(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+      set(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, projects: [project]) }
 
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }

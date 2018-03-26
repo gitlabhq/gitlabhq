@@ -60,9 +60,8 @@ future GitLab releases.**
 | **CI_RUNNER_REVISION**          | all    | 10.6   | GitLab Runner revision that is executing the current job |
 | **CI_RUNNER_EXECUTABLE_ARCH**   | all    | 10.6   | The OS/architecture of the GitLab Runner executable (note that this is not necessarily the same as the environment of the executor) |
 | **CI_PIPELINE_ID**              | 8.10   | 0.5    | The unique id of the current pipeline that GitLab CI uses internally |
-| **CI_PIPELINE_SOURCE**          | 9.3    | all    | ([Premium]) The variable indicates how the pipeline was triggered, possible options are: push, web, trigger, schedule, api, pipeline |
 | **CI_PIPELINE_TRIGGERED**       | all    | all    | The flag to indicate that job was [triggered] |
-| **CI_PIPELINE_SOURCE**          | 10.0   | all    | The source for this pipeline, one of: push, web, trigger, schedule, api, external. Pipelines created before 9.5 will have unknown as source |
+| **CI_PIPELINE_SOURCE**          | 9.3    | all    | Indicates how the pipeline was triggered. Possible options are: `push`, `web`, `trigger`, `schedule`, `api`, and `pipeline`. For pipelines created before GitLab 9.5, this will show as `unknown`.
 | **CI_PROJECT_DIR**              | all    | all    | The full path where the repository is cloned and where the job is run |
 | **CI_PROJECT_ID**               | all    | all    | The unique id of the current project that GitLab CI uses internally |
 | **CI_PROJECT_NAME**             | 8.10   | 0.5    | The project name that is currently being built (actually it is project folder name) |
@@ -89,6 +88,8 @@ future GitLab releases.**
 | **GITLAB_USER_NAME**            | 10.0   | all    | The real name of the user who started the job |
 | **GITLAB_FEATURES**             | 10.6   | all    | The comma separated list of licensed features available for your instance and plan |
 | **RESTORE_CACHE_ATTEMPTS**      | 8.15   | 1.9    | Number of attempts to restore the cache running a job |
+| **CHAT_INPUT**                  | 10.6  | all    | Additional arguments passed in the [ChatOps](../chatops/README.md) command. |
+| **CHAT_CHANNEL**                | 10.6  | all    | Source chat channel which triggered the [ChatOps](../chatops/README.md) command. |
 
 ## 9.0 Renaming
 

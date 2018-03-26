@@ -1,0 +1,5 @@
+---
+title: Authenticate using TLS certificate for requests to external authorization service
+merge_request: 5028
+author:
+type: added

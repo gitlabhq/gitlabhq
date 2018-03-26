@@ -1269,7 +1269,7 @@ describe Project do
 
   describe '#external_authorization_classification_label' do
     it 'falls back to the default when none is configured' do
-      enable_external_authorization_service
+      enable_external_authorization_service_check
 
       expect(build(:project).external_authorization_classification_label)
         .to eq('default_label')
@@ -1286,7 +1286,7 @@ describe Project do
     end
 
     it 'returns the classification label if it was configured on the project' do
-      enable_external_authorization_service
+      enable_external_authorization_service_check
 
       project = build(:project,
                       external_authorization_classification_label: 'hello')
@@ -1296,7 +1296,7 @@ describe Project do
     end
 
     it 'does not break when not stubbing the license check' do
-      enable_external_authorization_service
+      enable_external_authorization_service_check
       enable_namespace_license_check!
       project = build(:project)
 

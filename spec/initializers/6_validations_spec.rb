@@ -12,24 +12,20 @@ describe '6_validations' do
     FileUtils.rm_rf('tmp/tests/paths')
   end
 
-  context 'with correct settings' do
-    before do
-      mock_storages('foo' => { 'path' => 'tmp/tests/paths/a/b/c' }, 'bar' => { 'path' => 'tmp/tests/paths/a/b/d' })
-    end
-
-    context 'when one of the settings is incorrect' do
+  describe 'validate_storages_config' do
+    context 'with correct settings' do
       before do
-        mock_storages('foo' => { 'path' => 'tmp/tests/paths/a/b/c', 'failure_count_threshold' => 'not a number' })
+        mock_storages('foo' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c'), 'bar' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/d'))
       end
 
-      it 'throws an error' do
-        expect { validate_storages_config }.to raise_error(/failure_count_threshold/)
+      it 'passes through' do
+        expect { validate_storages_config }.not_to raise_error
       end
     end
 
     context 'when one of the settings is incorrect' do
       before do
-        mock_storages('foo' => { 'path' => 'tmp/tests/paths/a/b/c', 'failure_count_threshold' => 'not a number' })
+        mock_storages('foo' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c', 'failure_count_threshold' => 'not a number'))
       end
 
       it 'throws an error' do
@@ -39,7 +35,7 @@ describe '6_validations' do
 
     context 'with invalid storage names' do
       before do
-        mock_storages('name with spaces' => { 'path' => 'tmp/tests/paths/a/b/c' })
+        mock_storages('name with spaces' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c'))
       end
 
       it 'throws an error' do
@@ -71,7 +67,7 @@ describe '6_validations' do
   describe 'validate_storages_paths' do
     context 'with correct settings' do
       before do
-        mock_storages('foo' => { 'path' => 'tmp/tests/paths/a/b/c' }, 'bar' => { 'path' => 'tmp/tests/paths/a/b/d' })
+        mock_storages('foo' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c'), 'bar' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/d'))
       end
 
       it 'passes through' do
@@ -81,7 +77,7 @@ describe '6_validations' do
 
     context 'with nested storage paths' do
       before do
-        mock_storages('foo' => { 'path' => 'tmp/tests/paths/a/b/c' }, 'bar' => { 'path' => 'tmp/tests/paths/a/b/c/d' })
+        mock_storages('foo' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c'), 'bar' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c/d'))
       end
 
       it 'throws an error' do
@@ -91,7 +87,7 @@ describe '6_validations' do
 
     context 'with similar but un-nested storage paths' do
       before do
-        mock_storages('foo' => { 'path' => 'tmp/tests/paths/a/b/c' }, 'bar' => { 'path' => 'tmp/tests/paths/a/b/c2' })
+        mock_storages('foo' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c'), 'bar' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c2'))
       end
 
       it 'passes through' do
@@ -101,33 +97,13 @@ describe '6_validations' do
 
     describe 'inaccessible storage' do
       before do
-        mock_storages('foo' => { 'path' => 'tmp/tests/a/path/that/does/not/exist' })
+        mock_storages('foo' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/a/path/that/does/not/exist'))
       end
 
       it 'passes through with a warning' do
         expect(Rails.logger).to receive(:error)
         expect { validate_storages_paths }.not_to raise_error
       end
-    end
-  end
-
-  context 'with incomplete settings' do
-    before do
-      mock_storages('foo' => {})
-    end
-
-    it 'throws an error suggesting the user to update its settings' do
-      expect { validate_storages_config }.to raise_error('foo is not a valid storage, because it has no `path` key. Refer to gitlab.yml.example for an updated example. Please fix this in your gitlab.yml before starting GitLab.')
-    end
-  end
-
-  context 'with deprecated settings structure' do
-    before do
-      mock_storages('foo' => 'tmp/tests/paths/a/b/c')
-    end
-
-    it 'throws an error suggesting the user to update its settings' do
-      expect { validate_storages_config }.to raise_error("foo is not a valid storage, because it has no `path` key. It may be configured as:\n\nfoo:\n  path: tmp/tests/paths/a/b/c\n\nFor source installations, update your config/gitlab.yml Refer to gitlab.yml.example for an updated example.\n\nIf you're using the Gitlab Development Kit, you can update your configuration running `gdk reconfigure`.\n")
     end
   end
 

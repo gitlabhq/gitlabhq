@@ -15,6 +15,10 @@
   line-height: $performance-bar-height;
   color: $perf-bar-text;
 
+  select {
+    width: 200px;
+  }
+
   &.disabled {
     display: none;
   }
@@ -41,12 +45,6 @@
     select {
       background: $perf-bar-development;
     }
-  }
-
-  .wrapper {
-    width: 80%;
-    height: $performance-bar-height;
-    margin: 0 auto;
   }
 
   // UI Elements
@@ -108,8 +106,14 @@
     }
   }
 
-  .performance-bar-modal .modal-footer {
-    display: none;
+  .performance-bar-modal {
+    .modal-footer {
+      display: none;
+    }
+
+    .modal-dialog {
+      width: 860px;
+    }
   }
 }
 

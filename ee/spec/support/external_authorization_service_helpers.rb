@@ -1,22 +1,16 @@
 module ExternalAuthorizationServiceHelpers
-  def enable_external_authorization_service
+  def enable_external_authorization_service_check
     stub_licensed_features(external_authorization_service: true)
 
-    # Not using `stub_application_setting` because the method is prepended in
-    # `EE::ApplicationSetting` which breaks when using `any_instance`
-    # https://gitlab.com/gitlab-org/gitlab-ce/issues/33587
-    allow(::Gitlab::CurrentSettings.current_application_settings)
-      .to receive(:external_authorization_service_enabled) { true }
-    allow(::Gitlab::CurrentSettings.current_application_settings)
-      .to receive(:external_authorization_service_enabled?) { true }
+    stub_ee_application_setting(external_authorization_service_enabled: true)
 
-    stub_application_setting(external_authorization_service_url: 'https://authorize.me')
-    stub_application_setting(external_authorization_service_default_label: 'default_label')
+    stub_ee_application_setting(external_authorization_service_url: 'https://authorize.me')
+    stub_ee_application_setting(external_authorization_service_default_label: 'default_label')
     stub_request(:post, "https://authorize.me").to_return(status: 200)
   end
 
   def external_service_set_access(allowed, user, project)
-    enable_external_authorization_service
+    enable_external_authorization_service_check
     classification_label = ::Gitlab::CurrentSettings.current_application_settings
                              .external_authorization_service_default_label
 
@@ -27,7 +21,7 @@ module ExternalAuthorizationServiceHelpers
 
     allow(EE::Gitlab::ExternalAuthorization)
       .to receive(:access_allowed?)
-            .with(user, classification_label)
+            .with(user, classification_label, any_args)
             .and_return(allowed)
   end
 

@@ -1,8 +1,6 @@
 module Gitlab
   module Verify
     class Uploads < BatchVerifier
-      prepend ::EE::Gitlab::Verify::Uploads
-
       def name
         'Uploads'
       end
@@ -14,7 +12,7 @@ module Gitlab
       private
 
       def relation
-        Upload.all
+        Upload.with_files_stored_locally
       end
 
       def expected_checksum(upload)

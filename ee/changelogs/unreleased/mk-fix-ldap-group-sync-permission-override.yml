@@ -1,5 +1,0 @@
----
-title: Fix LDAP group sync permission override UI
-merge_request: 5003
-author:
-type: fixed

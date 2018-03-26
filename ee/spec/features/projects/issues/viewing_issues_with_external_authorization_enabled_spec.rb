@@ -73,12 +73,14 @@ describe 'viewing an issue with cross project references' do
 
   context 'when an external authorization service is enabled' do
     before do
-      enable_external_authorization_service
+      enable_external_authorization_service_check
     end
 
     it 'only hits the external service for the project the user is viewing' do
       expect(EE::Gitlab::ExternalAuthorization)
-        .to receive(:access_allowed?).with(user, 'default_label').at_least(1).and_return(true)
+        .to receive(:access_allowed?).with(user, 'default_label', any_args).at_least(1).and_return(true)
+      expect(EE::Gitlab::ExternalAuthorization)
+        .not_to receive(:access_allowed?).with(user, 'other_label', any_args)
 
       visit project_issue_path(project, issue)
     end

@@ -38,6 +38,6 @@ class Projects::VariablesController < Projects::ApplicationController
   end
 
   def variable_params_attributes
-    %i[id key value protected _destroy]
+    %i[id key secret_value protected _destroy]
   end
 end

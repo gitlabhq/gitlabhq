@@ -377,6 +377,7 @@ ee-files-location-check:
   stage: test
   before_script: []
   cache: {}
+  retry: 0
   script:
     - scripts/ee-files-location-check
   only:
@@ -625,7 +626,7 @@ migration:path-mysql:
 .db-rollback: &db-rollback
   <<: *dedicated-no-docs-pull-cache-job
   script:
-    - bundle exec rake db:rollback STEP=119
+    - bundle exec rake db:migrate VERSION=20170523121229
     - bundle exec rake db:migrate
 
 db:rollback-pg:
@@ -635,6 +636,14 @@ db:rollback-pg:
 db:rollback-mysql:
   <<: *db-rollback
   <<: *use-mysql
+
+db:rollback-pg-geo: &db-rollback
+  <<: *db-rollback
+  <<: *use-pg
+  <<: *except-docs
+  script:
+    - bundle exec rake geo:db:migrate VERSION=20170627195211
+    - bundle exec rake geo:db:migrate
 
 gitlab:setup-pg:
   <<: *gitlab-setup

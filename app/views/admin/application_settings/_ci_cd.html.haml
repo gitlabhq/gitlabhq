@@ -1,0 +1,50 @@
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :auto_devops_enabled do
+            = f.check_box :auto_devops_enabled
+            Enabled Auto DevOps (Beta) for projects by default
+        .help-block
+          It will automatically build, test, and deploy applications based on a predefined CI/CD configuration
+          = link_to icon('question-circle'), help_page_path('topics/autodevops/index.md')
+    .form-group
+      = f.label :auto_devops_domain, class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :auto_devops_domain, class: 'form-control', placeholder: 'domain.com'
+        .help-block
+          = s_("AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages.")
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :shared_runners_enabled do
+            = f.check_box :shared_runners_enabled
+            Enable shared runners for new projects
+
+    = render 'shared_runners_minutes_setting', form: f
+
+    .form-group
+      = f.label :shared_runners_text, class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_area :shared_runners_text, class: 'form-control', rows: 4
+        .help-block Markdown enabled
+    .form-group
+      = f.label :max_artifacts_size, 'Maximum artifacts size (MB)', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :max_artifacts_size, class: 'form-control'
+        .help-block
+          Set the maximum file size for each job's artifacts
+          = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size')
+    .form-group
+      = f.label :default_artifacts_expire_in, 'Default artifacts expiration', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :default_artifacts_expire_in, class: 'form-control'
+        .help-block
+          Set the default expiration time for each job's artifacts.
+          0 for unlimited.
+          = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'default-artifacts-expiration')
+
+  = f.submit 'Save changes', class: "btn btn-success"

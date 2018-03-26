@@ -1,5 +1,106 @@
+- breadcrumb_title "Settings"
 - page_title "Settings"
+- @content_class = "limit-container-width" unless fluid_layout
+- expanded = Rails.env.test?
 
-%h3.page-title Settings
-%hr
-= render 'form'
+%section.settings.as-visibility-access.no-animate#js-visibility-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Visibility and access controls')
+    %button.btn.js-settings-toggle
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Set default and restrict visibility levels. Configure import sources and git access protocol.')
+  .settings-content
+    = render 'visibility_and_access'
+
+%section.settings.as-account-limit.no-animate#js-account-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Account and limit settings')
+    %button.btn.js-settings-toggle
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Session expiration, projects limit and attachment size.')
+  .settings-content
+    = render 'account_and_limit'
+
+%section.settings.as-signup.no-animate#js-signup-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Sign-up restrictions')
+    %button.btn.js-settings-toggle
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Configure the way a user creates a new account.')
+  .settings-content
+    = render 'signup'
+
+%section.settings.as-signin.no-animate#js-signin-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Sign-in restrictions')
+    %button.btn.js-settings-toggle
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Set requirements for a user to sign-in. Enable mandatory two-factor authentication.')
+  .settings-content
+    = render 'signin'
+
+%section.settings.as-help-page.no-animate#js-help-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Help page')
+    %button.btn.js-settings-toggle
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Help page text and support page url.')
+  .settings-content
+    = render 'help_page'
+
+%section.settings.as-pages.no-animate#js-pages-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Pages')
+    %button.btn.js-settings-toggle
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Size and domain settings for static websites')
+  .settings-content
+    = render 'pages'
+
+%section.settings.as-ci-cd.no-animate#js-ci-cd-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Continuous Integration and Deployment')
+    %button.btn.js-settings-toggle
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Auto DevOps, runners amd job artifacts')
+  .settings-content
+    = render 'ci_cd'
+
+%section.settings.as-influx.no-animate#js-influx-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Metrics - Influx')
+    %button.btn.js-settings-toggle
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Enable and configure InfluxDB metrics.')
+  .settings-content
+    = render 'influx'
+
+%section.settings.as-prometheus.no-animate#js-prometheus-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Metrics - Prometheus')
+    %button.btn.js-settings-toggle
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Enable and configure Prometheus metrics.')
+  .settings-content
+    = render 'prometheus'
+
+.prepend-top-20
+  = render 'form'

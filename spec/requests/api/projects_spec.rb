@@ -1784,6 +1784,12 @@ describe API::Projects do
       group
     end
 
+    let(:group3) do
+      group = create(:group, name: 'group3_name', parent: group2)
+      group.add_owner(user2)
+      group
+    end
+
     before do
       project.add_reporter(user2)
     end
@@ -1877,6 +1883,15 @@ describe API::Projects do
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['namespace']['name']).to eq(group2.name)
+      end
+
+      it 'forks to owned subgroup' do
+        full_path = "#{group2.path}/#{group3.path}"
+        post api("/projects/#{project.id}/fork", user2), namespace: full_path
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['namespace']['name']).to eq(group3.name)
+        expect(json_response['namespace']['full_path']).to eq(full_path)
       end
 
       it 'fails to fork to not owned group' do

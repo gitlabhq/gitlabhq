@@ -7,9 +7,11 @@ describe PgReplicationSlot, :postgresql do
         expect(described_class.max_replication_slots).to be >= 0
       end
 
-      skip = PgReplicationSlot.max_replication_slots <= PgReplicationSlot.count
-      context 'with enough slots available', skip: (skip ? 'max_replication_slots too small' : nil) do
+      skip_examples = PgReplicationSlot.max_replication_slots <= PgReplicationSlot.count
+      context 'with enough slots available' do
         before(:all) do
+          skip('max_replication_slots too small') if skip_examples
+
           @current_slot_count =
             ActiveRecord::Base.connection.execute("SELECT COUNT(*) FROM pg_replication_slots;")
             .first.fetch('count').to_i
@@ -21,7 +23,9 @@ describe PgReplicationSlot, :postgresql do
         end
 
         after(:all) do
-          ActiveRecord::Base.connection.execute("SELECT pg_drop_replication_slot('test_slot');")
+          unless skip_examples
+            ActiveRecord::Base.connection.execute("SELECT pg_drop_replication_slot('test_slot');")
+          end
         end
 
         it '#slots_count' do

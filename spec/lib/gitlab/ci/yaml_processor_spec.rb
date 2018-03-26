@@ -18,6 +18,34 @@ module Gitlab
       describe '#build_attributes' do
         subject { described_class.new(config).build_attributes(:rspec) }
 
+        describe 'attributes list' do
+          let(:config) do
+            YAML.dump(
+              before_script: ['pwd'],
+              rspec: { script: 'rspec' }
+            )
+          end
+
+          it 'returns valid build attributes' do
+            expect(subject).to eq({
+              stage: "test",
+              stage_idx: 1,
+              name: "rspec",
+              commands: "pwd\nrspec",
+              coverage_regex: nil,
+              tag_list: [],
+              options: {
+                before_script: ["pwd"],
+                script: ["rspec"]
+              },
+              allow_failure: false,
+              when: "on_success",
+              environment: nil,
+              yaml_variables: []
+            })
+          end
+        end
+
         describe 'coverage entry' do
           describe 'code coverage regexp' do
             let(:config) do
@@ -105,512 +133,118 @@ module Gitlab
         end
       end
 
-      describe '#stage_seeds' do
-        context 'when no refs policy is specified' do
-          let(:config) do
-            YAML.dump(production: { stage: 'deploy', script: 'cap prod' },
-                      rspec: { stage: 'test', script: 'rspec' },
-                      spinach: { stage: 'test', script: 'spinach' })
-          end
-
-          let(:pipeline) { create(:ci_empty_pipeline) }
-
-          it 'correctly fabricates a stage seeds object' do
-            seeds = subject.stage_seeds(pipeline)
-
-            expect(seeds.size).to eq 2
-            expect(seeds.first.stage[:name]).to eq 'test'
-            expect(seeds.second.stage[:name]).to eq 'deploy'
-            expect(seeds.first.builds.dig(0, :name)).to eq 'rspec'
-            expect(seeds.first.builds.dig(1, :name)).to eq 'spinach'
-            expect(seeds.second.builds.dig(0, :name)).to eq 'production'
-          end
+      describe '#stages_attributes' do
+        let(:config) do
+          YAML.dump(
+            rspec: { script: 'rspec', stage: 'test', only: ['branches'] },
+            prod: { script: 'cap prod', stage: 'deploy', only: ['tags'] }
+          )
         end
 
-        context 'when refs policy is specified' do
-          let(:config) do
-            YAML.dump(production: { stage: 'deploy', script: 'cap prod', only: ['master'] },
-                      spinach: { stage: 'test', script: 'spinach', only: ['tags'] })
-          end
-
-          let(:pipeline) do
-            create(:ci_empty_pipeline, ref: 'feature', tag: true)
-          end
-
-          it 'returns stage seeds only assigned to master to master' do
-            seeds = subject.stage_seeds(pipeline)
-
-            expect(seeds.size).to eq 1
-            expect(seeds.first.stage[:name]).to eq 'test'
-            expect(seeds.first.builds.dig(0, :name)).to eq 'spinach'
-          end
+        let(:attributes) do
+          [{ name: "build",
+             index: 0,
+             builds: [] },
+           { name: "test",
+             index: 1,
+             builds:
+               [{ stage_idx: 1,
+                  stage: "test",
+                  commands: "rspec",
+                  tag_list: [],
+                  name: "rspec",
+                  allow_failure: false,
+                  when: "on_success",
+                  environment: nil,
+                  coverage_regex: nil,
+                  yaml_variables: [],
+                  options: { script: ["rspec"] },
+                  only: { refs: ["branches"] },
+                  except: {} }] },
+           { name: "deploy",
+             index: 2,
+             builds:
+               [{ stage_idx: 2,
+                  stage: "deploy",
+                  commands: "cap prod",
+                  tag_list: [],
+                  name: "prod",
+                  allow_failure: false,
+                  when: "on_success",
+                  environment: nil,
+                  coverage_regex: nil,
+                  yaml_variables: [],
+                  options: { script: ["cap prod"] },
+                  only: { refs: ["tags"] },
+                  except: {} }] }]
         end
 
-        context 'when source policy is specified' do
-          let(:config) do
-            YAML.dump(production: { stage: 'deploy', script: 'cap prod', only: ['triggers'] },
-                      spinach: { stage: 'test', script: 'spinach', only: ['schedules'] })
-          end
-
-          let(:pipeline) do
-            create(:ci_empty_pipeline, source: :schedule)
-          end
-
-          it 'returns stage seeds only assigned to schedules' do
-            seeds = subject.stage_seeds(pipeline)
-
-            expect(seeds.size).to eq 1
-            expect(seeds.first.stage[:name]).to eq 'test'
-            expect(seeds.first.builds.dig(0, :name)).to eq 'spinach'
-          end
-        end
-
-        context 'when kubernetes policy is specified' do
-          let(:config) do
-            YAML.dump(
-              spinach: { stage: 'test', script: 'spinach' },
-              production: {
-                stage: 'deploy',
-                script: 'cap',
-                only: { kubernetes: 'active' }
-              }
-            )
-          end
-
-          context 'when kubernetes is active' do
-            shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
-              it 'returns seeds for kubernetes dependent job' do
-                seeds = subject.stage_seeds(pipeline)
-
-                expect(seeds.size).to eq 2
-                expect(seeds.first.builds.dig(0, :name)).to eq 'spinach'
-                expect(seeds.second.builds.dig(0, :name)).to eq 'production'
-              end
-            end
-
-            context 'when user configured kubernetes from Integration > Kubernetes' do
-              let(:project) { create(:kubernetes_project) }
-              let(:pipeline) { create(:ci_empty_pipeline, project: project) }
-
-              it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
-            end
-
-            context 'when user configured kubernetes from CI/CD > Clusters' do
-              let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-              let(:project) { cluster.project }
-              let(:pipeline) { create(:ci_empty_pipeline, project: project) }
-
-              it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
-            end
-          end
-
-          context 'when kubernetes is not active' do
-            it 'does not return seeds for kubernetes dependent job' do
-              seeds = subject.stage_seeds(pipeline)
-
-              expect(seeds.size).to eq 1
-              expect(seeds.first.builds.dig(0, :name)).to eq 'spinach'
-            end
-          end
+        it 'returns stages seed attributes' do
+          expect(subject.stages_attributes).to eq attributes
         end
       end
 
-      describe "#pipeline_stage_builds" do
-        let(:type) { 'test' }
+      describe 'only / except policies validations' do
+        context 'when `only` has an invalid value' do
+          let(:config) { { rspec: { script: "rspec", type: "test", only: only } } }
+          let(:processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
 
-        it "returns builds if no branch specified" do
-          config = YAML.dump({
-            before_script: ["pwd"],
-            rspec: { script: "rspec" }
-          })
+          context 'when it is integer' do
+            let(:only) { 1 }
 
-          config_processor = Gitlab::Ci::YamlProcessor.new(config)
-
-          expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "master")).size).to eq(1)
-          expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "master")).first).to eq({
-            stage: "test",
-            stage_idx: 1,
-            name: "rspec",
-            commands: "pwd\nrspec",
-            coverage_regex: nil,
-            tag_list: [],
-            options: {
-              before_script: ["pwd"],
-              script: ["rspec"]
-            },
-            allow_failure: false,
-            when: "on_success",
-            environment: nil,
-            yaml_variables: []
-          })
-        end
-
-        describe 'only' do
-          it "does not return builds if only has another branch" do
-            config = YAML.dump({
-                                 before_script: ["pwd"],
-                                 rspec: { script: "rspec", only: ["deploy"] }
-                               })
-
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
-
-            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "master")).size).to eq(0)
-          end
-
-          it "does not return builds if only has regexp with another branch" do
-            config = YAML.dump({
-                                 before_script: ["pwd"],
-                                 rspec: { script: "rspec", only: ["/^deploy$/"] }
-                               })
-
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
-
-            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "master")).size).to eq(0)
-          end
-
-          it "returns builds if only has specified this branch" do
-            config = YAML.dump({
-                                 before_script: ["pwd"],
-                                 rspec: { script: "rspec", only: ["master"] }
-                               })
-
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
-
-            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "master")).size).to eq(1)
-          end
-
-          it "returns builds if only has a list of branches including specified" do
-            config = YAML.dump({
-                                 before_script: ["pwd"],
-                                 rspec: { script: "rspec", type: type, only: %w(master deploy) }
-                               })
-
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
-
-            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "deploy")).size).to eq(1)
-          end
-
-          it "returns builds if only has a branches keyword specified" do
-            config = YAML.dump({
-                                 before_script: ["pwd"],
-                                 rspec: { script: "rspec", type: type, only: ["branches"] }
-                               })
-
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
-
-            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "deploy")).size).to eq(1)
-          end
-
-          it "does not return builds if only has a tags keyword" do
-            config = YAML.dump({
-                                 before_script: ["pwd"],
-                                 rspec: { script: "rspec", type: type, only: ["tags"] }
-                               })
-
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
-
-            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "deploy")).size).to eq(0)
-          end
-
-          it "returns builds if only has special keywords specified and source matches" do
-            possibilities = [{ keyword: 'pushes', source: 'push' },
-                             { keyword: 'web', source: 'web' },
-                             { keyword: 'triggers', source: 'trigger' },
-                             { keyword: 'schedules', source: 'schedule' },
-                             { keyword: 'api', source: 'api' },
-                             { keyword: 'external', source: 'external' }]
-
-            possibilities.each do |possibility|
-              config = YAML.dump({
-                                   before_script: ["pwd"],
-                                   rspec: { script: "rspec", type: type, only: [possibility[:keyword]] }
-                                 })
-
-              config_processor = Gitlab::Ci::YamlProcessor.new(config)
-
-              expect(config_processor.pipeline_stage_builds(type, pipeline(ref: 'deploy', tag: false, source: possibility[:source])).size).to eq(1)
+            it do
+              expect { processor }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
+                                                  'jobs:rspec:only has to be either an array of conditions or a hash')
             end
           end
 
-          it "does not return builds if only has special keywords specified and source doesn't match" do
-            possibilities = [{ keyword: 'pushes', source: 'web' },
-                             { keyword: 'web', source: 'push' },
-                             { keyword: 'triggers', source: 'schedule' },
-                             { keyword: 'schedules', source: 'external' },
-                             { keyword: 'api', source: 'trigger' },
-                             { keyword: 'external', source: 'api' }]
+          context 'when it is an array of integers' do
+            let(:only) { [1, 1] }
 
-            possibilities.each do |possibility|
-              config = YAML.dump({
-                                   before_script: ["pwd"],
-                                   rspec: { script: "rspec", type: type, only: [possibility[:keyword]] }
-                                 })
-
-              config_processor = Gitlab::Ci::YamlProcessor.new(config)
-
-              expect(config_processor.pipeline_stage_builds(type, pipeline(ref: 'deploy', tag: false, source: possibility[:source])).size).to eq(0)
+            it do
+              expect { processor }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
+                                                  'jobs:rspec:only config should be an array of strings or regexps')
             end
           end
 
-          it "returns builds if only has current repository path" do
-            seed_pipeline = pipeline(ref: 'deploy')
+          context 'when it is invalid regex' do
+            let(:only) { ["/*invalid/"] }
 
-            config = YAML.dump({
-                                 before_script: ["pwd"],
-                                 rspec: {
-                                   script: "rspec",
-                                   type: type,
-                                   only: ["branches@#{seed_pipeline.project_full_path}"]
-                                 }
-                               })
-
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
-
-            expect(config_processor.pipeline_stage_builds(type, seed_pipeline).size).to eq(1)
-          end
-
-          it "does not return builds if only has different repository path" do
-            config = YAML.dump({
-                                 before_script: ["pwd"],
-                                 rspec: { script: "rspec", type: type, only: ["branches@fork"] }
-                               })
-
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
-
-            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "deploy")).size).to eq(0)
-          end
-
-          it "returns build only for specified type" do
-            config = YAML.dump({
-                                 before_script: ["pwd"],
-                                 rspec: { script: "rspec", type: "test", only: %w(master deploy) },
-                                 staging: { script: "deploy", type: "deploy", only: %w(master deploy) },
-                                 production: { script: "deploy", type: "deploy", only: ["master@path", "deploy"] }
-                               })
-
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
-
-            expect(config_processor.pipeline_stage_builds("deploy", pipeline(ref: "deploy")).size).to eq(2)
-            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "deploy")).size).to eq(1)
-            expect(config_processor.pipeline_stage_builds("deploy", pipeline(ref: "master")).size).to eq(1)
-          end
-
-          context 'for invalid value' do
-            let(:config) { { rspec: { script: "rspec", type: "test", only: only } } }
-            let(:processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
-
-            context 'when it is integer' do
-              let(:only) { 1 }
-
-              it do
-                expect { processor }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
-                                                    'jobs:rspec:only has to be either an array of conditions or a hash')
-              end
-            end
-
-            context 'when it is an array of integers' do
-              let(:only) { [1, 1] }
-
-              it do
-                expect { processor }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
-                                                    'jobs:rspec:only config should be an array of strings or regexps')
-              end
-            end
-
-            context 'when it is invalid regex' do
-              let(:only) { ["/*invalid/"] }
-
-              it do
-                expect { processor }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
-                                                    'jobs:rspec:only config should be an array of strings or regexps')
-              end
+            it do
+              expect { processor }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
+                                                  'jobs:rspec:only config should be an array of strings or regexps')
             end
           end
         end
 
-        describe 'except' do
-          it "returns builds if except has another branch" do
-            config = YAML.dump({
-                                 before_script: ["pwd"],
-                                 rspec: { script: "rspec", except: ["deploy"] }
-                               })
+        context 'when `except` has an invalid value' do
+          let(:config) { { rspec: { script: "rspec", except: except } } }
+          let(:processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
 
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
+          context 'when it is integer' do
+            let(:except) { 1 }
 
-            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "master")).size).to eq(1)
-          end
-
-          it "returns builds if except has regexp with another branch" do
-            config = YAML.dump({
-                                 before_script: ["pwd"],
-                                 rspec: { script: "rspec", except: ["/^deploy$/"] }
-                               })
-
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
-
-            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "master")).size).to eq(1)
-          end
-
-          it "does not return builds if except has specified this branch" do
-            config = YAML.dump({
-                                 before_script: ["pwd"],
-                                 rspec: { script: "rspec", except: ["master"] }
-                               })
-
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
-
-            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "master")).size).to eq(0)
-          end
-
-          it "does not return builds if except has a list of branches including specified" do
-            config = YAML.dump({
-                                 before_script: ["pwd"],
-                                 rspec: { script: "rspec", type: type, except: %w(master deploy) }
-                               })
-
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
-
-            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "deploy")).size).to eq(0)
-          end
-
-          it "does not return builds if except has a branches keyword specified" do
-            config = YAML.dump({
-                                 before_script: ["pwd"],
-                                 rspec: { script: "rspec", type: type, except: ["branches"] }
-                               })
-
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
-
-            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "deploy")).size).to eq(0)
-          end
-
-          it "returns builds if except has a tags keyword" do
-            config = YAML.dump({
-                                 before_script: ["pwd"],
-                                 rspec: { script: "rspec", type: type, except: ["tags"] }
-                               })
-
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
-
-            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "deploy")).size).to eq(1)
-          end
-
-          it "does not return builds if except has special keywords specified and source matches" do
-            possibilities = [{ keyword: 'pushes', source: 'push' },
-                             { keyword: 'web', source: 'web' },
-                             { keyword: 'triggers', source: 'trigger' },
-                             { keyword: 'schedules', source: 'schedule' },
-                             { keyword: 'api', source: 'api' },
-                             { keyword: 'external', source: 'external' }]
-
-            possibilities.each do |possibility|
-              config = YAML.dump({
-                                   before_script: ["pwd"],
-                                   rspec: { script: "rspec", type: type, except: [possibility[:keyword]] }
-                                 })
-
-              config_processor = Gitlab::Ci::YamlProcessor.new(config)
-
-              expect(config_processor.pipeline_stage_builds(type, pipeline(ref: 'deploy', tag: false, source: possibility[:source])).size).to eq(0)
+            it do
+              expect { processor }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
+                                                  'jobs:rspec:except has to be either an array of conditions or a hash')
             end
           end
 
-          it "returns builds if except has special keywords specified and source doesn't match" do
-            possibilities = [{ keyword: 'pushes', source: 'web' },
-                             { keyword: 'web', source: 'push' },
-                             { keyword: 'triggers', source: 'schedule' },
-                             { keyword: 'schedules', source: 'external' },
-                             { keyword: 'api', source: 'trigger' },
-                             { keyword: 'external', source: 'api' }]
+          context 'when it is an array of integers' do
+            let(:except) { [1, 1] }
 
-            possibilities.each do |possibility|
-              config = YAML.dump({
-                                   before_script: ["pwd"],
-                                   rspec: { script: "rspec", type: type, except: [possibility[:keyword]] }
-                                 })
-
-              config_processor = Gitlab::Ci::YamlProcessor.new(config)
-
-              expect(config_processor.pipeline_stage_builds(type, pipeline(ref: 'deploy', tag: false, source: possibility[:source])).size).to eq(1)
+            it do
+              expect { processor }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
+                                                  'jobs:rspec:except config should be an array of strings or regexps')
             end
           end
 
-          it "does not return builds if except has current repository path" do
-            seed_pipeline = pipeline(ref: 'deploy')
+          context 'when it is invalid regex' do
+            let(:except) { ["/*invalid/"] }
 
-            config = YAML.dump({
-                                 before_script: ["pwd"],
-                                 rspec: {
-                                   script: "rspec",
-                                   type: type,
-                                   except: ["branches@#{seed_pipeline.project_full_path}"]
-                                 }
-                               })
-
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
-
-            expect(config_processor.pipeline_stage_builds(type, seed_pipeline).size).to eq(0)
-          end
-
-          it "returns builds if except has different repository path" do
-            config = YAML.dump({
-                                 before_script: ["pwd"],
-                                 rspec: { script: "rspec", type: type, except: ["branches@fork"] }
-                               })
-
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
-
-            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "deploy")).size).to eq(1)
-          end
-
-          it "returns build except specified type" do
-            master_pipeline = pipeline(ref: 'master')
-            test_pipeline = pipeline(ref: 'test')
-            deploy_pipeline = pipeline(ref: 'deploy')
-
-            config = YAML.dump({
-                                 before_script: ["pwd"],
-                                 rspec: { script: "rspec", type: "test", except: ["master", "deploy", "test@#{test_pipeline.project_full_path}"] },
-                                 staging: { script: "deploy", type: "deploy", except: ["master"] },
-                                 production: { script: "deploy", type: "deploy", except: ["master@#{master_pipeline.project_full_path}"] }
-                               })
-
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
-
-            expect(config_processor.pipeline_stage_builds("deploy", deploy_pipeline).size).to eq(2)
-            expect(config_processor.pipeline_stage_builds("test", test_pipeline).size).to eq(0)
-            expect(config_processor.pipeline_stage_builds("deploy", master_pipeline).size).to eq(0)
-          end
-
-          context 'for invalid value' do
-            let(:config) { { rspec: { script: "rspec", except: except } } }
-            let(:processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
-
-            context 'when it is integer' do
-              let(:except) { 1 }
-
-              it do
-                expect { processor }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
-                                                    'jobs:rspec:except has to be either an array of conditions or a hash')
-              end
-            end
-
-            context 'when it is an array of integers' do
-              let(:except) { [1, 1] }
-
-              it do
-                expect { processor }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
-                                                    'jobs:rspec:except config should be an array of strings or regexps')
-              end
-            end
-
-            context 'when it is invalid regex' do
-              let(:except) { ["/*invalid/"] }
-
-              it do
-                expect { processor }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
-                                                    'jobs:rspec:except config should be an array of strings or regexps')
-              end
+            it do
+              expect { processor }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
+                                                  'jobs:rspec:except config should be an array of strings or regexps')
             end
           end
         end
@@ -620,7 +254,7 @@ module Gitlab
         let(:config_data) { YAML.dump(config) }
         let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config_data) }
 
-        subject { config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first }
+        subject { config_processor.stage_builds_attributes('test').first }
 
         describe "before_script" do
           context "in global context" do
@@ -703,8 +337,8 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config)
 
-            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
-            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first).to eq({
+            expect(config_processor.stage_builds_attributes("test").size).to eq(1)
+            expect(config_processor.stage_builds_attributes("test").first).to eq({
               stage: "test",
               stage_idx: 1,
               name: "rspec",
@@ -738,8 +372,8 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config)
 
-            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
-            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first).to eq({
+            expect(config_processor.stage_builds_attributes("test").size).to eq(1)
+            expect(config_processor.stage_builds_attributes("test").first).to eq({
               stage: "test",
               stage_idx: 1,
               name: "rspec",
@@ -771,8 +405,8 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config)
 
-            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
-            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first).to eq({
+            expect(config_processor.stage_builds_attributes("test").size).to eq(1)
+            expect(config_processor.stage_builds_attributes("test").first).to eq({
               stage: "test",
               stage_idx: 1,
               name: "rspec",
@@ -800,8 +434,8 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config)
 
-            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
-            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first).to eq({
+            expect(config_processor.stage_builds_attributes("test").size).to eq(1)
+            expect(config_processor.stage_builds_attributes("test").first).to eq({
               stage: "test",
               stage_idx: 1,
               name: "rspec",
@@ -946,8 +580,8 @@ module Gitlab
                                })
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config)
+            builds = config_processor.stage_builds_attributes("test")
 
-            builds = config_processor.pipeline_stage_builds("test", pipeline(ref: "master"))
             expect(builds.size).to eq(1)
             expect(builds.first[:when]).to eq(when_state)
           end
@@ -978,8 +612,8 @@ module Gitlab
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config)
 
-          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
-          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first[:options][:cache]).to eq(
+          expect(config_processor.stage_builds_attributes("test").size).to eq(1)
+          expect(config_processor.stage_builds_attributes("test").first[:options][:cache]).to eq(
             paths: ["logs/", "binaries/"],
             untracked: true,
             key: 'key',
@@ -997,8 +631,8 @@ module Gitlab
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config)
 
-          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
-          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first[:options][:cache]).to eq(
+          expect(config_processor.stage_builds_attributes("test").size).to eq(1)
+          expect(config_processor.stage_builds_attributes("test").first[:options][:cache]).to eq(
             paths: ["logs/", "binaries/"],
             untracked: true,
             key: 'key',
@@ -1017,8 +651,8 @@ module Gitlab
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config)
 
-          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
-          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first[:options][:cache]).to eq(
+          expect(config_processor.stage_builds_attributes("test").size).to eq(1)
+          expect(config_processor.stage_builds_attributes("test").first[:options][:cache]).to eq(
             paths: ["test/"],
             untracked: false,
             key: 'local',
@@ -1046,8 +680,8 @@ module Gitlab
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config)
 
-          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
-          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first).to eq({
+          expect(config_processor.stage_builds_attributes("test").size).to eq(1)
+          expect(config_processor.stage_builds_attributes("test").first).to eq({
             stage: "test",
             stage_idx: 1,
             name: "rspec",
@@ -1083,8 +717,8 @@ module Gitlab
                                })
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config)
+            builds = config_processor.stage_builds_attributes("test")
 
-            builds = config_processor.pipeline_stage_builds("test", pipeline(ref: "master"))
             expect(builds.size).to eq(1)
             expect(builds.first[:options][:artifacts][:when]).to eq(when_state)
           end
@@ -1099,7 +733,7 @@ module Gitlab
         end
 
         let(:processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
-        let(:builds) { processor.pipeline_stage_builds('deploy', pipeline(ref: 'master')) }
+        let(:builds) { processor.stage_builds_attributes('deploy') }
 
         context 'when a production environment is specified' do
           let(:environment) { 'production' }
@@ -1256,7 +890,7 @@ module Gitlab
 
       describe "Hidden jobs" do
         let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config) }
-        subject { config_processor.pipeline_stage_builds("test", pipeline(ref: "master")) }
+        subject { config_processor.stage_builds_attributes("test") }
 
         shared_examples 'hidden_job_handling' do
           it "doesn't create jobs that start with dot" do
@@ -1304,7 +938,7 @@ module Gitlab
 
       describe "YAML Alias/Anchor" do
         let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config) }
-        subject { config_processor.pipeline_stage_builds("build", pipeline(ref: "master")) }
+        subject { config_processor.stage_builds_attributes("build") }
 
         shared_examples 'job_templates_handling' do
           it "is correctly supported for jobs" do
@@ -1344,13 +978,13 @@ module Gitlab
 
         context 'when template is a job' do
           let(:config) do
-            <<EOT
-job1: &JOBTMPL
-  stage: build
-  script: execute-script-for-job
+            <<~EOT
+            job1: &JOBTMPL
+              stage: build
+              script: execute-script-for-job
 
-job2: *JOBTMPL
-EOT
+            job2: *JOBTMPL
+            EOT
           end
 
           it_behaves_like 'job_templates_handling'
@@ -1358,15 +992,15 @@ EOT
 
         context 'when template is a hidden job' do
           let(:config) do
-            <<EOT
-.template: &JOBTMPL
-  stage: build
-  script: execute-script-for-job
+            <<~EOT
+            .template: &JOBTMPL
+              stage: build
+              script: execute-script-for-job
 
-job1: *JOBTMPL
+            job1: *JOBTMPL
 
-job2: *JOBTMPL
-EOT
+            job2: *JOBTMPL
+            EOT
           end
 
           it_behaves_like 'job_templates_handling'
@@ -1374,18 +1008,18 @@ EOT
 
         context 'when job adds its own keys to a template definition' do
           let(:config) do
-            <<EOT
-.template: &JOBTMPL
-  stage: build
+            <<~EOT
+            .template: &JOBTMPL
+              stage: build
 
-job1:
-  <<: *JOBTMPL
-  script: execute-script-for-job
+            job1:
+              <<: *JOBTMPL
+              script: execute-script-for-job
 
-job2:
-  <<: *JOBTMPL
-  script: execute-script-for-job
-EOT
+            job2:
+              <<: *JOBTMPL
+              script: execute-script-for-job
+            EOT
           end
 
           it_behaves_like 'job_templates_handling'
@@ -1723,10 +1357,6 @@ EOT
 
           it { is_expected.to be_nil }
         end
-      end
-
-      def pipeline(**attributes)
-        build_stubbed(:ci_empty_pipeline, **attributes)
       end
     end
   end

@@ -20,7 +20,8 @@ class PgReplicationSlot
   # http://bdr-project.org/docs/stable/monitoring-peers.html
   def self.slots_retained_bytes
     ActiveRecord::Base.connection.execute(<<-SQL.squish)
-      SELECT slot_name, database, active, pg_xlog_location_diff(pg_current_xlog_insert_location(), restart_lsn)
+      SELECT slot_name, database,
+             active, #{Gitlab::Database.pg_wal_lsn_diff}(#{Gitlab::Database.pg_current_wal_insert_lsn}(), restart_lsn)
         AS retained_bytes
         FROM pg_replication_slots;
     SQL
@@ -30,7 +31,7 @@ class PgReplicationSlot
   # returns the max number WAL space (in bytes) being used across the replication slots
   def self.max_retained_wal
     ActiveRecord::Base.connection.execute(<<-SQL.squish)
-      SELECT COALESCE(MAX(pg_xlog_location_diff(pg_current_xlog_insert_location(), restart_lsn)), 0)
+      SELECT COALESCE(MAX(#{Gitlab::Database.pg_wal_lsn_diff}(#{Gitlab::Database.pg_current_wal_insert_lsn}(), restart_lsn)), 0)
         FROM pg_replication_slots;
     SQL
     .first.fetch('coalesce').to_i

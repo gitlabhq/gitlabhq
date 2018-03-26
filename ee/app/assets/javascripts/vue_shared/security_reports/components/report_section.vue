@@ -155,7 +155,7 @@
         class="media-body space-children"
       >
         <span
-          class="js-code-text"
+          class="js-code-text code-text"
         >
           {{ successText }}
         </span>

@@ -30,12 +30,45 @@ describe ApplicationSetting do
         setting.external_authorization_service_enabled = true
       end
 
-      it { is_expected.not_to allow_value(nil).for(:external_authorization_service_url) }
       it { is_expected.not_to allow_value('not a URL').for(:external_authorization_service_url) }
       it { is_expected.to allow_value('https://example.com').for(:external_authorization_service_url) }
+      it { is_expected.to allow_value('').for(:external_authorization_service_url) }
       it { is_expected.not_to allow_value(nil).for(:external_authorization_service_default_label) }
       it { is_expected.not_to allow_value(11).for(:external_authorization_service_timeout) }
       it { is_expected.not_to allow_value(0).for(:external_authorization_service_timeout) }
+      it { is_expected.not_to allow_value('not a certificate').for(:external_auth_client_cert) }
+      it { is_expected.to allow_value('').for(:external_auth_client_cert) }
+      it { is_expected.to allow_value('').for(:external_auth_client_key) }
+
+      context 'when setting a valid client certificate for external authorization' do
+        let(:certificate_data)  { File.read('ee/spec/fixtures/passphrase_x509_certificate.crt') }
+
+        before do
+          setting.external_auth_client_cert = certificate_data
+        end
+
+        it 'requires a valid client key when a certificate is set' do
+          expect(setting).not_to allow_value('fefefe').for(:external_auth_client_key)
+        end
+
+        it 'requires a matching certificate' do
+          other_private_key = File.read('ee/spec/fixtures/x509_certificate_pk.key')
+
+          expect(setting).not_to allow_value(other_private_key).for(:external_auth_client_key)
+        end
+
+        it 'the credentials are valid when the private key can be read and matches the certificate' do
+          tls_attributes = [:external_auth_client_key_pass,
+                            :external_auth_client_key,
+                            :external_auth_client_cert]
+          setting.external_auth_client_key = File.read('ee/spec/fixtures/passphrase_x509_certificate_pk.key')
+          setting.external_auth_client_key_pass = '5iveL!fe'
+
+          setting.validate
+
+          expect(setting.errors).not_to include(*tls_attributes)
+        end
+      end
     end
   end
 

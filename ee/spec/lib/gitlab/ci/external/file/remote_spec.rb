@@ -35,7 +35,7 @@ describe Gitlab::Ci::External::File::Remote do
 
     context 'with a timeout' do
       before do
-        allow(HTTParty).to receive(:get).and_raise(Timeout::Error)
+        allow(Gitlab::HTTP).to receive(:get).and_raise(Timeout::Error)
       end
 
       it 'should be falsy' do
@@ -65,7 +65,7 @@ describe Gitlab::Ci::External::File::Remote do
 
     context 'with a timeout' do
       before do
-        allow(HTTParty).to receive(:get).and_raise(Timeout::Error)
+        allow(Gitlab::HTTP).to receive(:get).and_raise(Timeout::Error)
       end
 
       it 'should be falsy' do

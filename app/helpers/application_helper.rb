@@ -2,6 +2,8 @@ require 'digest/md5'
 require 'uri'
 
 module ApplicationHelper
+  prepend EE::ApplicationHelper
+
   # Check if a particular controller is the current one
   #
   # args - One or more controller names to check
@@ -281,10 +283,16 @@ module ApplicationHelper
     end
   end
 
+  def appearance
+    @appearance ||= Appearance.current
+  end
+
   def page_class
     class_names = []
     class_names << 'issue-boards-page' if current_controller?(:boards)
     class_names << 'with-performance-bar' if performance_bar_enabled?
+    class_names << 'with-system-header' if appearance.show_header?
+    class_names << 'with-system-footer' if appearance.show_footer?
 
     class_names
   end
@@ -326,5 +334,12 @@ module ApplicationHelper
 
   def locale_path
     asset_path("locale/#{Gitlab::I18n.locale}/app.js")
+  end
+
+  # Overridden in EE
+  def read_only_message
+    return unless Gitlab::Database.read_only?
+
+    _('You are on a read-only GitLab instance.')
   end
 end
