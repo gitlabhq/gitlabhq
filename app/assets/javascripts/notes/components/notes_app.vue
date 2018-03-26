@@ -38,6 +38,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    shouldShow: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -151,7 +156,9 @@ export default {
 </script>
 
 <template>
-  <div id="notes">
+  <div
+    v-if="shouldShow"
+    id="notes">
     <ul
       id="notes-list"
       class="notes main-notes-list timeline">
