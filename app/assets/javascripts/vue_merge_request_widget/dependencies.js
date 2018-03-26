@@ -28,7 +28,7 @@ export { default as NothingToMergeState } from './components/states/nothing_to_m
 export { default as MissingBranchState } from './components/states/mr_widget_missing_branch.vue';
 export { default as NotAllowedState } from './components/states/mr_widget_not_allowed.vue';
 export { default as ReadyToMergeState } from './components/states/mr_widget_ready_to_merge';
-export { default as SHAMismatchState } from './components/states/mr_widget_sha_mismatch';
+export { default as ShaMismatchState } from './components/states/sha_mismatch.vue';
 export { default as UnresolvedDiscussionsState } from './components/states/unresolved_discussions.vue';
 export { default as PipelineBlockedState } from './components/states/mr_widget_pipeline_blocked.vue';
 export { default as PipelineFailedState } from './components/states/mr_widget_pipeline_failed';

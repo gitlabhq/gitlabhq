@@ -1,11 +1,11 @@
 <script>
   import _ from 'underscore';
-  import modal from '~/vue_shared/components/modal.vue';
+  import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
   import { s__, sprintf } from '~/locale';
 
   export default {
     components: {
-      modal,
+      DeprecatedModal,
     },
     props: {
       deleteProjectUrl: {
@@ -79,7 +79,7 @@
 </script>
 
 <template>
-  <modal
+  <deprecated-modal
     id="delete-project-modal"
     :title="title"
     :text="text"
@@ -121,5 +121,5 @@
         />
       </form>
     </template>
-  </modal>
+  </deprecated-modal>
 </template>

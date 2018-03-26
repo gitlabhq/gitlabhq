@@ -105,6 +105,9 @@ export default class Notes {
     this.basePollingInterval = 15000;
     this.maxPollingSteps = 4;
 
+    this.$wrapperEl = hasVueMRDiscussionsCookie()
+      ? $(document).find('.diffs')
+      : $(document);
     this.cleanBinding();
     this.addBinding();
     this.setPollingInterval();
@@ -138,10 +141,6 @@ export default class Notes {
   }
 
   addBinding() {
-    this.$wrapperEl = hasVueMRDiscussionsCookie()
-      ? $(document).find('.diffs')
-      : $(document);
-
     // Edit note link
     this.$wrapperEl.on('click', '.js-note-edit', this.showEditForm.bind(this));
     this.$wrapperEl.on('click', '.note-edit-cancel', this.cancelEdit);
@@ -229,10 +228,6 @@ export default class Notes {
   }
 
   cleanBinding() {
-    if (!this.eventsBound) {
-      return;
-    }
-
     this.$wrapperEl.off('click', '.js-note-edit');
     this.$wrapperEl.off('click', '.note-edit-cancel');
     this.$wrapperEl.off('click', '.js-note-delete');
@@ -1724,6 +1719,7 @@ export default class Notes {
 
     // Get Form metadata
     const $submitBtn = $(e.target);
+    $submitBtn.prop('disabled', true);
     let $form = $submitBtn.parents('form');
     const $closeBtn = $form.find('.js-note-target-close');
     const isDiscussionNote =
@@ -1758,7 +1754,6 @@ export default class Notes {
     // If comment is to resolve discussion, disable submit buttons while
     // comment posting is finished.
     if (isDiscussionResolve) {
-      $submitBtn.disable();
       $form.find('.js-comment-submit-button').disable();
     }
 
@@ -1806,13 +1801,16 @@ export default class Notes {
       }
     }
 
+    $closeBtn.text($closeBtn.data('originalText'));
+
     /* eslint-disable promise/catch-or-return */
     // Make request to submit comment on server
-    axios
+    return axios
       .post(`${formAction}?html=true`, formData)
       .then(res => {
         const note = res.data;
 
+        $submitBtn.prop('disabled', false);
         // Submission successful! remove placeholder
         $notesContainer.find(`#${noteUniqueId}`).remove();
 
@@ -1894,7 +1892,7 @@ export default class Notes {
       .catch(() => {
         // Submission failed, remove placeholder note and show Flash error message
         $notesContainer.find(`#${noteUniqueId}`).remove();
-
+        $submitBtn.prop('disabled', false);
         const blurEvent = new CustomEvent('blur.imageDiff', {
           detail: e,
         });
@@ -1922,8 +1920,6 @@ export default class Notes {
         this.reenableTargetFormSubmitButton(e);
         this.addNoteError($form);
       });
-
-    return $closeBtn.text($closeBtn.data('originalText'));
   }
 
   /**

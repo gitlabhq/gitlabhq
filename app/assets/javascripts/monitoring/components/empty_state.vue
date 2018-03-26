@@ -27,6 +27,10 @@
         type: String,
         required: true,
       },
+      emptyNoDataSvgPath: {
+        type: String,
+        required: true,
+      },
       emptyUnableToConnectSvgPath: {
         type: String,
         required: true,
@@ -54,7 +58,7 @@
             buttonPath: this.documentationPath,
           },
           noData: {
-            svgUrl: this.emptyUnableToConnectSvgPath,
+            svgUrl: this.emptyNoDataSvgPath,
             title: 'No data found',
             description: `You are connected to the Prometheus server, but there is currently
               no data to display.`,

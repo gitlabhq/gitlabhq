@@ -1,6 +1,4 @@
 class AssemblaService < Service
-  include HTTParty
-
   prop_accessor :token, :subdomain
   validates :token, presence: true, if: :activated?
 
@@ -31,6 +29,6 @@ class AssemblaService < Service
     return unless supported_events.include?(data[:object_kind])
 
     url = "https://atlas.assembla.com/spaces/#{subdomain}/github_tool?secret_key=#{token}"
-    AssemblaService.post(url, body: { payload: data }.to_json, headers: { 'Content-Type' => 'application/json' })
+    Gitlab::HTTP.post(url, body: { payload: data }.to_json, headers: { 'Content-Type' => 'application/json' })
   end
 end

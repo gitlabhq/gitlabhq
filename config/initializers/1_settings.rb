@@ -467,12 +467,7 @@ unless Settings.repositories.storages['default']
 end
 
 Settings.repositories.storages.each do |key, storage|
-  storage = Settingslogic.new(storage)
-
-  # Expand relative paths
-  storage['path'] = Settings.absolute(storage['path'])
-
-  Settings.repositories.storages[key] = storage
+  Settings.repositories.storages[key] = Gitlab::GitalyClient::StorageSettings.new(storage)
 end
 
 #
@@ -486,7 +481,7 @@ repositories_storages          = Settings.repositories.storages.values
 repository_downloads_path      = Settings.gitlab['repository_downloads_path'].to_s.gsub(%r{/$}, '')
 repository_downloads_full_path = File.expand_path(repository_downloads_path, Settings.gitlab['user_home'])
 
-if repository_downloads_path.blank? || repositories_storages.any? { |rs| [repository_downloads_path, repository_downloads_full_path].include?(rs['path'].gsub(%r{/$}, '')) }
+if repository_downloads_path.blank? || repositories_storages.any? { |rs| [repository_downloads_path, repository_downloads_full_path].include?(rs.legacy_disk_path.gsub(%r{/$}, '')) }
   Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path'], 'cache/archive')
 end
 

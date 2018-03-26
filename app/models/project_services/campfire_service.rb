@@ -1,6 +1,4 @@
 class CampfireService < Service
-  include HTTParty
-
   prop_accessor :token, :subdomain, :room
   validates :token, presence: true, if: :activated?
 
@@ -31,7 +29,6 @@ class CampfireService < Service
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
 
-    self.class.base_uri base_uri
     message = build_message(data)
     speak(self.room, message, auth)
   end
@@ -69,14 +66,14 @@ class CampfireService < Service
         }
       }
     }
-    res = self.class.post(path, auth.merge(body))
+    res = Gitlab::HTTP.post(path, base_uri: base_uri, **auth.merge(body))
     res.code == 201 ? res : nil
   end
 
   # Returns a list of rooms, or [].
   # https://github.com/basecamp/campfire-api/blob/master/sections/rooms.md#get-rooms
   def rooms(auth)
-    res = self.class.get("/rooms.json", auth)
+    res = Gitlab::HTTP.get("/rooms.json", base_uri: base_uri, **auth)
     res.code == 200 ? res["rooms"] : []
   end
 
