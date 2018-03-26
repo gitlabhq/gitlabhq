@@ -22,7 +22,7 @@ describe Gitlab::Ci::Status::Pending do
   end
 
   describe '#illustration' do
-    it { expect(subject.illustration).to eq 'pending_job_empty' }
+    it { expect(subject.illustration).to include(:image, :size, :title, :content) }
   end
 
   describe '#group' do

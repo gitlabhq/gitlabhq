@@ -22,7 +22,7 @@ describe Gitlab::Ci::Status::Manual do
   end
 
   describe '#illustration' do
-    it { expect(subject.illustration).to eq 'manual_action' }
+    it { expect(subject.illustration).to include(:image, :size, :title, :content) }
   end
 
   describe '#group' do

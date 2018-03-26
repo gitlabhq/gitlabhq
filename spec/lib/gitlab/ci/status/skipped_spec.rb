@@ -22,7 +22,7 @@ describe Gitlab::Ci::Status::Skipped do
   end
 
   describe '#illustration' do
-    it { expect(subject.illustration).to eq 'skipped-job_empty' }
+    it { expect(subject.illustration).to include(:image, :size, :title) }
   end
 
   describe '#group' do

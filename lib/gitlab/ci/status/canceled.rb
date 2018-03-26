@@ -19,7 +19,11 @@ module Gitlab
         end
 
         def illustration
-          'canceled-job_empty'
+          {
+            image: 'illustrations/canceled-job_empty.svg',
+            size: 'svg-430',
+            title: _('This job has been canceled')
+          }
         end
       end
     end

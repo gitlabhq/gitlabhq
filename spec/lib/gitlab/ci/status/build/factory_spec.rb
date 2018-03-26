@@ -115,7 +115,7 @@ describe Gitlab::Ci::Status::Build::Factory do
       expect(status.text).to eq 'canceled'
       expect(status.icon).to eq 'status_canceled'
       expect(status.favicon).to eq 'favicon_status_canceled'
-      expect(status.illustration).to eq 'canceled-job_empty'
+      expect(status.illustration).to include(:image, :size, :title)
       expect(status.label).to eq 'canceled'
       expect(status).to have_details
       expect(status).to have_action
@@ -168,7 +168,7 @@ describe Gitlab::Ci::Status::Build::Factory do
       expect(status.text).to eq 'pending'
       expect(status.icon).to eq 'status_pending'
       expect(status.favicon).to eq 'favicon_status_pending'
-      expect(status.illustration).to eq 'pending_job_empty'
+      expect(status.illustration).to include(:image, :size, :title, :content)
       expect(status.label).to eq 'pending'
       expect(status).to have_details
       expect(status).to have_action
@@ -194,7 +194,7 @@ describe Gitlab::Ci::Status::Build::Factory do
       expect(status.text).to eq 'skipped'
       expect(status.icon).to eq 'status_skipped'
       expect(status.favicon).to eq 'favicon_status_skipped'
-      expect(status.illustration).to eq 'skipped-job_empty'
+      expect(status.illustration).to include(:image, :size, :title)
       expect(status.label).to eq 'skipped'
       expect(status).to have_details
       expect(status).not_to have_action
@@ -224,7 +224,7 @@ describe Gitlab::Ci::Status::Build::Factory do
         expect(status.group).to eq 'manual'
         expect(status.icon).to eq 'status_manual'
         expect(status.favicon).to eq 'favicon_status_manual'
-        expect(status.illustration).to eq 'manual_action'
+        expect(status.illustration).to include(:image, :size, :title, :content)
         expect(status.label).to include 'manual play action'
         expect(status).to have_details
         expect(status.action_path).to include 'play'

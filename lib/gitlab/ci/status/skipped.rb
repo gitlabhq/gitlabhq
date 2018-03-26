@@ -19,7 +19,11 @@ module Gitlab
         end
 
         def illustration
-          'skipped-job_empty'
+          {
+            image: 'illustrations/skipped-job_empty.svg',
+            size: 'svg-430',
+            title: _('This job has been skipped')
+          }
         end
       end
     end

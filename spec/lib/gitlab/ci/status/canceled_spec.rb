@@ -22,7 +22,7 @@ describe Gitlab::Ci::Status::Canceled do
   end
 
   describe '#illustration' do
-    it { expect(subject.illustration).to eq 'canceled-job_empty' }
+    it { expect(subject.illustration).to include(:image, :size, :title) }
   end
 
   describe '#group' do

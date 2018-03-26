@@ -22,7 +22,7 @@ describe Gitlab::Ci::Status::Created do
   end
 
   describe '#illustration' do
-    it { expect(subject.illustration).to eq 'job_not_triggered' }
+    it { expect(subject.illustration).to include(:image, :size, :title, :content) }
   end
 
   describe '#group' do
