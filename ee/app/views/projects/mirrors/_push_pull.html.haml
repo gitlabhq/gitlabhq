@@ -1,4 +1,5 @@
 - expanded = Rails.env.test?
+- import_data = @project.import_data || @project.build_import_data
 
 %section.settings.project-mirror-settings.no-animate{ class: ('expanded' if expanded) }
   .settings-header
@@ -16,44 +17,77 @@
         .panel-heading
           %h3.panel-title Mirror a repository
         .panel-body
-          %div
-            = form_errors(@project)
+          %div= form_errors(@project)
 
-          = f.fields_for :remote_mirrors, @remote_mirror do |rm_form|
+          .form-group.has-feedback
+            = label_tag :url, 'Git repository URL', class: 'label-light'
+            = text_field_tag :url, nil, class: 'form-control js-mirror-url', placeholder: 'Input your repository URL'
+
+          = render 'projects/mirrors/instructions'
+
+          .form-group
+            = label_tag :mirror_direction, 'Mirror direction', class: 'label-light'
+            = select_tag :mirror_direction, options_for_select([['Push', 'push'], ['Pull', 'pull']]), class: 'form-control js-mirror-direction'
+
+          - if true # if direction == push
+            = f.fields_for :remote_mirrors, @remote_mirror do |rm_f|
+              = rm_f.hidden_field :mirror, value: '1'
+              = rm_f.hidden_field :url, class: 'js-mirror-url-hidden'
+              = rm_f.hidden_field :only_protected_branches, class: 'js-mirror-protected-hidden'
+          - if true # if direction == pull
+            = f.hidden_field :mirror, value: '1'
+            = f.hidden_field :username_only_import_url, class: 'js-mirror-url-hidden'
+            = f.hidden_field :only_mirror_protected_branches, class: 'js-mirror-protected-hidden'
+
+            = f.fields_for :import_data, import_data do |import_form|
+              = render partial: 'projects/mirrors/pull/ssh_host_keys', locals: { f: import_form }
+              = render partial: 'projects/mirrors/pull/authentication_method', locals: { f: import_form }
+
             .form-group
-              = rm_form.check_box :enabled, class: "pull-left"
+              = f.label :mirror_user_id, 'Mirror user', class: 'label-light'
+              = select_tag('project[mirror_user_id]', options_for_mirror_user, class: 'select2 lg', required: true)
+              .help-block
+                This user will be the author of all events in the activity feed that are the result of an update,
+                like new branches being created or new commits being pushed to existing branches.
+                You can only assign yourself to be the mirror user.
+
+            .form-group
+              = f.check_box :mirror_overwrites_diverged_branches, class: 'pull-left'
               .prepend-left-20
-                = rm_form.label :enabled, "Remote mirror repository", class: "label-light append-bottom-0"
-                %p.light.append-bottom-0
-                  Automatically update the remote mirror's branches, tags, and commits from this repository every time someone pushes to it.
+                = f.label :mirror_overwrites_diverged_branches, 'Overwrite diverged branches', class: 'label-light'
+                .help-block
+                  If disabled, a diverged local branch will not be automatically updated with commits from its remote counterpart,
+                  to prevent local data loss. If the default branch (#{@project.default_branch}) has diverged and cannot be updated,
+                  mirroring will fail. Other diverged branches are silently ignored.
 
-            .form-group.has-feedback
-              = rm_form.label :url, "Git repository URL", class: "label-light"
-              = rm_form.text_field :url, class: "form-control", placeholder: 'https://username:password@gitlab.company.com/group/project.git'
+            - if @project.builds_enabled?
+              = render 'shared/mirror_trigger_builds_setting', f: f
 
-              = render "projects/mirrors/instructions"
-
-            .form-group
-              = label_tag :mirror_direction, "Mirror direction", class: "label-light"
-              = select_tag :mirror_direction, [['Push', 'push'], ['Pull', 'pull'], ['Push & Pull', 'push-pull']], class: "form-control"
+          .form-group
+            = check_box_tag :only_protected_branches, false, class: 'pull-left js-mirror-protected'
+            .prepend-left-20
+              = label_tag :only_protected_branches, 'Only mirror protected branches', class: 'label-light'
+              = link_to icon('question-circle'), help_page_path('user/project/protected_branches')
 
         .panel-footer
-          = f.submit 'Mirror repository', class: 'btn btn-create', name: 'update_remote_mirror'
+          = f.submit 'Mirror repository', class: 'btn btn-create', name: :update_remote_mirror
 
     .panel.panel-default
       %table.table.table-bordered
         %thead
           %tr
-            %th= "Mirrored repositories (#{@project.remote_mirrors.size})"
+            %th= "Mirrored repositories (#{mirror_repositories_count})"
             %th Direction
             %th Last update
         %tbody
-          %tr
-            %td= @project
-            %td Pull
-            %td= @project
-          - @project.remote_mirrors.each do |mirror|
+          - if @project.username_only_import_url.present?
             %tr
-              %td= mirror.safe_url
-              %td Push
-              %td= mirror.last_update_at
+              %td= @project.username_only_import_url
+              %td Pull
+              %td= @project.mirror_last_update_at || 'Never'
+          - @project.remote_mirrors.each do |mirror|
+            - if mirror.safe_url.present?
+              %tr
+                %td= mirror.safe_url
+                %td Push
+                %td= mirror.last_update_at || 'Never'
