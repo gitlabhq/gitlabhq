@@ -64,12 +64,12 @@ describe Gitlab::UsageData do
         clusters
         clusters_enabled
         clusters_disabled
-        clusters_gke
-        clusters_user
-        clusters_helm
-        clusters_ingress
-        clusters_prometheus
-        clusters_runner
+        clusters_platforms_gke
+        clusters_platforms_user
+        clusters_applications_helm
+        clusters_applications_ingress
+        clusters_applications_prometheus
+        clusters_applications_runner
         in_review_folder
         groups
         issues
