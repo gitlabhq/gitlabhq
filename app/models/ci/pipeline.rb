@@ -6,6 +6,7 @@ module Ci
     include AfterCommitQueue
     include Presentable
     include Gitlab::OptimisticLocking
+    include Gitlab::Utils::StrongMemoize
 
     prepend ::EE::Ci::Pipeline
 
@@ -375,19 +376,21 @@ module Ci
     def stage_seeds
       return [] unless config_processor
 
-      @stage_seeds ||= config_processor.stage_seeds(self)
+      strong_memoize(:stage_seeds) do
+        seeds = config_processor.stages_attributes.map do |attributes|
+          Gitlab::Ci::Pipeline::Seed::Stage.new(self, attributes)
+        end
+
+        seeds.select(&:included?)
+      end
     end
 
     def seeds_size
-      @seeds_size ||= stage_seeds.sum(&:size)
+      stage_seeds.sum(&:size)
     end
 
     def has_kubernetes_active?
       project.deployment_platform&.active?
-    end
-
-    def has_stage_seeds?
-      stage_seeds.any?
     end
 
     def has_warnings?
@@ -402,6 +405,9 @@ module Ci
       end
     end
 
+    ##
+    # TODO, setting yaml_errors should be moved to the pipeline creation chain.
+    #
     def config_processor
       return unless ci_yaml_file
       return @config_processor if defined?(@config_processor)
@@ -488,6 +494,14 @@ module Ci
         when 'manual' then block
         end
       end
+    end
+
+    def protected_ref?
+      strong_memoize(:protected_ref) { project.protected_for?(ref) }
+    end
+
+    def legacy_trigger
+      strong_memoize(:legacy_trigger) { trigger_requests.first }
     end
 
     def predefined_variables
