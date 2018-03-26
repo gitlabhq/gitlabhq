@@ -5,7 +5,7 @@ import {
   togglePopover,
   inserted,
   mouseenter,
-  mouseleave,
+  debouncedMouseleave,
 } from './feature_highlight_helper';
 
 export function setupFeatureHighlightPopover(id, debounceTimeout = 300) {
@@ -13,7 +13,6 @@ export function setupFeatureHighlightPopover(id, debounceTimeout = 300) {
   const $parent = $selector.parent();
   const $popoverContent = $parent.siblings('.feature-highlight-popover-content');
   const hideOnScroll = togglePopover.bind($selector, false);
-  const debouncedMouseleave = _.debounce(mouseleave, debounceTimeout);
 
   $selector
     // Setup popover
@@ -29,7 +28,7 @@ export function setupFeatureHighlightPopover(id, debounceTimeout = 300) {
       `,
     })
     .on('mouseenter', mouseenter)
-    .on('mouseleave', debouncedMouseleave)
+    .on('mouseleave', debouncedMouseleave(debounceTimeout))
     .on('inserted.bs.popover', inserted)
     .on('show.bs.popover', () => {
       window.addEventListener('scroll', hideOnScroll);

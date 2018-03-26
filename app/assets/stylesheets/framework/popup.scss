@@ -6,22 +6,10 @@
     $popup-triangle-border-size
   );
 
+  padding: $gl-padding;
+  background-color: $gray-lighter;
   border: 1px solid $gray-darker;
-  box-shadow: 0 5px 10px $popup-box-shadow-color;
+  border-radius: $border-radius-default;
+  box-shadow: 0 5px 8px $popup-box-shadow-color;
   position: relative;
-
-  .body {
-    background-color: $gray-lighter;
-    padding: $gl-padding;
-    border-top-left-radius: $border-radius-default;
-    border-top-right-radius: $border-radius-default;
-  }
-
-  .footer {
-    background-color: $white-light;
-    padding: $gl-padding;
-    border-bottom-left-radius: $border-radius-default;
-    border-bottom-right-radius: $border-radius-default;
-    border-top: 1px solid $white-dark;
-  }
 }

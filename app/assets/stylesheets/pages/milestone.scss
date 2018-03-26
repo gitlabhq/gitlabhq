@@ -203,18 +203,18 @@
       padding: 0;
     }
 
+    .body {
+      padding: 8px 15px 8px 30px;
+      background-color: $gray-light;
+    }
+
     .footer {
-      background-color: $white-light;
       padding: $gl-padding-8 $gl-padding;
-      border-bottom-left-radius: $border-radius-default;
-      border-bottom-right-radius: $border-radius-default;
       border-top: 1px solid $white-dark;
     }
 
     .instructions-list {
-      list-style-position: inside;
-      padding: $gl-padding-8 20px;
-      background-color: $gray-light;
+      padding: 0;
     }
   }
 

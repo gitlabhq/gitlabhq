@@ -1,88 +1,34 @@
 import $ from 'jquery';
+import { debounce } from 'underscore';
 
-export default class Popover {
-  constructor(trigger, content) {
-    this.isOpen = false;
-
-    this.$popover = $(trigger).popover({
-      content,
-      html: true,
-      placement: 'bottom',
-      trigger: 'manual',
-    });
+export function togglePopover(show) {
+  const isAlreadyShown = this.hasClass('js-popover-show');
+  if ((show && isAlreadyShown) || (!show && !isAlreadyShown)) {
+    return false;
   }
+  this.popover(show ? 'show' : 'hide');
+  this.toggleClass('disable-animation js-popover-show', show);
 
-  init() {
-    this.registerClickOpenListener();
+  return true;
+}
+
+export function mouseleave() {
+  if (!$('.popover:hover').length > 0) {
+    const $popover = $(this);
+    togglePopover.call($popover, false);
   }
+}
 
-  openPopover() {
-    if (this.isOpen) return;
+export function mouseenter() {
+  const $popover = $(this);
 
-    this.$popover.popover('show');
-    this.$popover.one('shown.bs.popover', this.enableClose.bind(this));
-    this.isOpen = true;
+  const showedPopover = togglePopover.call($popover, true);
+  if (showedPopover) {
+    $('.popover')
+      .on('mouseleave', mouseleave.bind($popover));
   }
+}
 
-  closePopover() {
-    if (!this.isOpen) return;
-
-    this.$popover.popover('hide');
-    this.disableClose();
-    this.isOpen = false;
-  }
-
-  closePopoverClick(event) {
-    const $target = $(event.target);
-
-    if ($target.is(this.$popover) ||
-      $target.is('.popover') ||
-      $target.parents('.popover').length > 0) return;
-
-    this.closePopover();
-  }
-
-  closePopoverMouseleave() {
-    if (this.$popover.is(':hover') ||
-      (this.$popover.siblings('.popover').length > 0 &&
-      this.$popover.siblings('.popover').is(':hover'))) return;
-
-    this.closePopover();
-  }
-
-  closePopoverMouseleaveDelayed() {
-    setTimeout(this.closePopoverMouseleave.bind(this), 1500);
-  }
-
-  registerClickOpenListener() {
-    this.$popover.on('click.glPopover.open', this.openPopover.bind(this));
-  }
-
-  registerClickCloseListener() {
-    $(document.body).on('click.glPopover.close', this.closePopoverClick.bind(this));
-  }
-
-  registerMouseleaveCloseListener() {
-    this.$popover.on('mouseleave.glPopover.close', this.closePopoverMouseleaveDelayed.bind(this));
-    this.$popover.siblings('.popover').on('mouseleave.glPopover.close', this.closePopoverMouseleaveDelayed.bind(this));
-  }
-
-  destroyMouseleaveCloseListener() {
-    this.$popover.off('mouseleave.glPopover.close');
-    this.$popover.siblings('.popover').on('mouseleave.glPopover.close');
-  }
-
-  enableClose() {
-    this.registerClickCloseListener();
-    this.registerMouseleaveCloseListener();
-  }
-
-  disableClose() {
-    Popover.destroyClickCloseListener();
-    this.destroyMouseleaveCloseListener();
-  }
-
-  static destroyClickCloseListener() {
-    $(document.body).off('click.glPopover.close');
-  }
+export function debouncedMouseleave(debounceTimeout = 300) {
+  return debounce(mouseleave, debounceTimeout);
 }
