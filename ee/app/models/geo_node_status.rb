@@ -8,6 +8,8 @@ class GeoNodeStatus < ActiveRecord::Base
   attr_writer   :health_status
   attr_accessor :storage_shards
 
+  attr_accessor :repository_verification_enabled
+
   # Prometheus metrics, no need to store them in the database
   attr_accessor :event_log_count, :event_log_max_id,
                 :repository_created_max_id, :repository_updated_max_id,
@@ -163,17 +165,14 @@ class GeoNodeStatus < ActiveRecord::Base
   end
 
   def load_verification_data
-    if Feature.enabled?('geo_repository_verification')
-      finder = Gitlab::Geo.primary? ? repository_verification_finder : projects_finder
+    self.repository_verification_enabled = Feature.enabled?('geo_repository_verification')
+    return unless self.repository_verification_enabled
 
-      self.repositories_verified_count = finder.count_verified_repositories
-      self.repositories_verification_failed_count = finder.count_verification_failed_repositories
-      self.wikis_verified_count = finder.count_verified_wikis
-      self.wikis_verification_failed_count = finder.count_verification_failed_wikis
-    else
-      self.repositories_verified_count = self.repositories_verification_failed_count = nil
-      self.wikis_verified_count = self.wikis_verification_failed_count = nil
-    end
+    finder = Gitlab::Geo.primary? ? repository_verification_finder : projects_finder
+    self.repositories_verified_count = finder.count_verified_repositories
+    self.repositories_verification_failed_count = finder.count_verification_failed_repositories
+    self.wikis_verified_count = finder.count_verified_wikis
+    self.wikis_verification_failed_count = finder.count_verification_failed_wikis
   end
 
   alias_attribute :health, :status_message
