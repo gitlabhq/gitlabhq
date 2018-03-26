@@ -11,6 +11,13 @@ import './empty_state';
 const ModalStore = gl.issueBoards.ModalStore;
 
 gl.issueBoards.IssuesModal = Vue.extend({
+  components: {
+    'modal-header': gl.issueBoards.ModalHeader,
+    'modal-list': gl.issueBoards.ModalList,
+    'modal-footer': gl.issueBoards.ModalFooter,
+    'empty-state': gl.issueBoards.ModalEmptyState,
+    loadingIcon,
+  },
   props: {
     newIssuePath: {
       type: String,
@@ -43,6 +50,22 @@ gl.issueBoards.IssuesModal = Vue.extend({
   },
   data() {
     return ModalStore.store;
+  },
+  computed: {
+    showList() {
+      if (this.activeTab === 'selected') {
+        return this.selectedIssues.length > 0;
+      }
+
+      return this.issuesCount > 0;
+    },
+    showEmptyState() {
+      if (!this.loading && this.issuesCount === 0) {
+        return true;
+      }
+
+      return this.activeTab === 'selected' && this.selectedIssues.length === 0;
+    },
   },
   watch: {
     page() {
@@ -81,6 +104,9 @@ gl.issueBoards.IssuesModal = Vue.extend({
       deep: true,
     },
   },
+  created() {
+    this.page = 1;
+  },
   methods: {
     loadIssues(clearIssues = false) {
       if (!this.showAddIssuesModal) return false;
@@ -112,32 +138,6 @@ gl.issueBoards.IssuesModal = Vue.extend({
         // TODO: handle request error
       });
     },
-  },
-  computed: {
-    showList() {
-      if (this.activeTab === 'selected') {
-        return this.selectedIssues.length > 0;
-      }
-
-      return this.issuesCount > 0;
-    },
-    showEmptyState() {
-      if (!this.loading && this.issuesCount === 0) {
-        return true;
-      }
-
-      return this.activeTab === 'selected' && this.selectedIssues.length === 0;
-    },
-  },
-  created() {
-    this.page = 1;
-  },
-  components: {
-    'modal-header': gl.issueBoards.ModalHeader,
-    'modal-list': gl.issueBoards.ModalList,
-    'modal-footer': gl.issueBoards.ModalFooter,
-    'empty-state': gl.issueBoards.ModalEmptyState,
-    loadingIcon,
   },
   template: `
     <div

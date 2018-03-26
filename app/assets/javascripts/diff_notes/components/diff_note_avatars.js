@@ -7,7 +7,15 @@ import Notes from '../../notes';
 import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
 
 const DiffNoteAvatars = Vue.extend({
-  props: ['discussionId'],
+  components: {
+    userAvatarImage,
+  },
+  props: {
+    discussionId: {
+      type: Number,
+      required: true,
+    },
+  },
   data() {
     return {
       isVisible: false,
@@ -16,77 +24,6 @@ const DiffNoteAvatars = Vue.extend({
       shownAvatars: 3,
       collapseIcon,
     };
-  },
-  components: {
-    userAvatarImage,
-  },
-  template: `
-    <div class="diff-comment-avatar-holders"
-      :class="discussionClassName"
-      v-show="notesCount !== 0">
-      <div v-if="!isVisible">
-        <!-- FIXME: Pass an alt attribute here for accessibility -->
-        <user-avatar-image
-          v-for="note in notesSubset"
-          :key="note.id"
-          class="diff-comment-avatar js-diff-comment-avatar"
-          @click.native="clickedAvatar($event)"
-          :img-src="note.authorAvatar"
-          :tooltip-text="getTooltipText(note)"
-          :data-line-type="lineType"
-          :size="19"
-          data-html="true"
-        />
-        <span v-if="notesCount > shownAvatars"
-          class="diff-comments-more-count has-tooltip js-diff-comment-avatar"
-          data-container="body"
-          data-placement="top"
-          ref="extraComments"
-          role="button"
-          :data-line-type="lineType"
-          :title="extraNotesTitle"
-          @click="clickedAvatar($event)">{{ moreText }}</span>
-      </div>
-      <button class="diff-notes-collapse js-diff-comment-avatar"
-        type="button"
-        aria-label="Show comments"
-        :data-line-type="lineType"
-        @click="clickedAvatar($event)"
-        v-if="isVisible"
-        v-html="collapseIcon">
-      </button>
-    </div>
-  `,
-  mounted() {
-    this.$nextTick(() => {
-      this.addNoCommentClass();
-      this.setDiscussionVisible();
-
-      this.lineType = $(this.$el).closest('.diff-line-num').hasClass('old_line') ? 'old' : 'new';
-    });
-
-    $(document).on('toggle.comments', () => {
-      this.$nextTick(() => {
-        this.setDiscussionVisible();
-      });
-    });
-  },
-  beforeDestroy() {
-    this.addNoCommentClass();
-    $(document).off('toggle.comments');
-  },
-  watch: {
-    storeState: {
-      handler() {
-        this.$nextTick(() => {
-          $('.has-tooltip', this.$el).tooltip('fixTitle');
-
-          // We need to add/remove a class to an element that is outside the Vue instance
-          this.addNoCommentClass();
-        });
-      },
-      deep: true,
-    },
   },
   computed: {
     discussionClassName() {
@@ -128,6 +65,37 @@ const DiffNoteAvatars = Vue.extend({
       return `${plusSign}${this.notesCount - this.shownAvatars}`;
     },
   },
+  watch: {
+    storeState: {
+      handler() {
+        this.$nextTick(() => {
+          $('.has-tooltip', this.$el).tooltip('fixTitle');
+
+          // We need to add/remove a class to an element that is outside the Vue instance
+          this.addNoCommentClass();
+        });
+      },
+      deep: true,
+    },
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.addNoCommentClass();
+      this.setDiscussionVisible();
+
+      this.lineType = $(this.$el).closest('.diff-line-num').hasClass('old_line') ? 'old' : 'new';
+    });
+
+    $(document).on('toggle.comments', () => {
+      this.$nextTick(() => {
+        this.setDiscussionVisible();
+      });
+    });
+  },
+  beforeDestroy() {
+    this.addNoCommentClass();
+    $(document).off('toggle.comments');
+  },
   methods: {
     clickedAvatar(e) {
       Notes.instance.onAddDiffNote(e);
@@ -164,6 +132,43 @@ const DiffNoteAvatars = Vue.extend({
       return `${note.authorName}: ${note.noteTruncated}`;
     },
   },
+  template: `
+    <div class="diff-comment-avatar-holders"
+      :class="discussionClassName"
+      v-show="notesCount !== 0">
+      <div v-if="!isVisible">
+        <!-- FIXME: Pass an alt attribute here for accessibility -->
+        <user-avatar-image
+          v-for="note in notesSubset"
+          :key="note.id"
+          class="diff-comment-avatar js-diff-comment-avatar"
+          @click.native="clickedAvatar($event)"
+          :img-src="note.authorAvatar"
+          :tooltip-text="getTooltipText(note)"
+          :data-line-type="lineType"
+          :size="19"
+          data-html="true"
+        />
+        <span v-if="notesCount > shownAvatars"
+          class="diff-comments-more-count has-tooltip js-diff-comment-avatar"
+          data-container="body"
+          data-placement="top"
+          ref="extraComments"
+          role="button"
+          :data-line-type="lineType"
+          :title="extraNotesTitle"
+          @click="clickedAvatar($event)">{{ moreText }}</span>
+      </div>
+      <button class="diff-notes-collapse js-diff-comment-avatar"
+        type="button"
+        aria-label="Show comments"
+        :data-line-type="lineType"
+        @click="clickedAvatar($event)"
+        v-if="isVisible"
+        v-html="collapseIcon">
+      </button>
+    </div>
+  `,
 });
 
 Vue.component('diff-note-avatars', DiffNoteAvatars);

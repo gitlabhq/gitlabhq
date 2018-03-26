@@ -9,7 +9,10 @@ import '../mixins/discussion';
 window.ResolveCount = Vue.extend({
   mixins: [DiscussionMixins],
   props: {
-    loggedOut: Boolean
+    loggedOut: {
+      type: Boolean,
+      default: false,
+    }
   },
   data: function () {
     return {

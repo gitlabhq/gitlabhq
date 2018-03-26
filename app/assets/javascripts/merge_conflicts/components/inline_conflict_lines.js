@@ -6,9 +6,12 @@ import Vue from 'vue';
   global.mergeConflicts = global.mergeConflicts || {};
 
   global.mergeConflicts.inlineConflictLines = Vue.extend({
-    props: {
-      file: Object
-    },
     mixins: [global.mergeConflicts.utils, global.mergeConflicts.actions],
+    props: {
+      file: {
+        type: Object,
+        required: true,
+      }
+    },
   });
 })(window.gl || (window.gl = {}));

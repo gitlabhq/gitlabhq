@@ -7,6 +7,9 @@ import { pluralize } from '../../../lib/utils/text_utility';
 const ModalStore = gl.issueBoards.ModalStore;
 
 gl.issueBoards.ModalFooter = Vue.extend({
+  components: {
+    'lists-dropdown': gl.issueBoards.ModalFooterListsDropdown,
+  },
   mixins: [gl.issueBoards.ModalMixins],
   data() {
     return {
@@ -51,9 +54,6 @@ gl.issueBoards.ModalFooter = Vue.extend({
 
       this.toggleModal(false);
     },
-  },
-  components: {
-    'lists-dropdown': gl.issueBoards.ModalFooterListsDropdown,
   },
   template: `
     <footer

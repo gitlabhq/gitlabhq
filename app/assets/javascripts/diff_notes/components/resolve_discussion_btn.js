@@ -45,16 +45,16 @@ const ResolveDiscussionBtn = Vue.extend({
       }
     }
   },
+  created: function () {
+    CommentsStore.createDiscussion(this.discussionId, this.canResolve);
+
+    this.discussion = CommentsStore.state[this.discussionId];
+  },
   methods: {
     resolve: function () {
       ResolveService.toggleResolveForDiscussion(this.mergeRequestId, this.discussionId);
     }
   },
-  created: function () {
-    CommentsStore.createDiscussion(this.discussionId, this.canResolve);
-
-    this.discussion = CommentsStore.state[this.discussionId];
-  }
 });
 
 Vue.component('resolve-discussion-btn', ResolveDiscussionBtn);

@@ -23,12 +23,6 @@ const ResolveBtn = Vue.extend({
       loading: false
     };
   },
-  watch: {
-    'discussions': {
-      handler: 'updateTooltip',
-      deep: true
-    }
-  },
   computed: {
     discussion: function () {
       return this.discussions[this.discussionId];
@@ -55,6 +49,17 @@ const ResolveBtn = Vue.extend({
     resolvedByName: function () {
       return this.note.resolved_by;
     },
+  },
+  watch: {
+    'discussions': {
+      handler: 'updateTooltip',
+      deep: true
+    }
+  },
+  mounted: function () {
+    $(this.$refs.button).tooltip({
+      container: 'body'
+    });
   },
   methods: {
     updateTooltip: function () {
@@ -94,11 +99,6 @@ const ResolveBtn = Vue.extend({
         })
         .catch(() => new Flash('An error occurred when trying to resolve a comment. Please try again.'));
     }
-  },
-  mounted: function () {
-    $(this.$refs.button).tooltip({
-      container: 'body'
-    });
   },
   beforeDestroy: function () {
     CommentsStore.delete(this.discussionId, this.noteId);

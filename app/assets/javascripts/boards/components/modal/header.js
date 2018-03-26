@@ -5,6 +5,10 @@ import './tabs';
 const ModalStore = gl.issueBoards.ModalStore;
 
 gl.issueBoards.ModalHeader = Vue.extend({
+  components: {
+    'modal-tabs': gl.issueBoards.ModalTabs,
+    modalFilters,
+  },
   mixins: [gl.issueBoards.ModalMixins],
   props: {
     projectId: {
@@ -41,10 +45,6 @@ gl.issueBoards.ModalHeader = Vue.extend({
 
       ModalStore.toggleAll();
     },
-  },
-  components: {
-    'modal-tabs': gl.issueBoards.ModalTabs,
-    modalFilters,
   },
   template: `
     <div>
