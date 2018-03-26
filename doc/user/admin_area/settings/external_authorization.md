@@ -28,6 +28,10 @@ functionality that render cross-project data. That includes:
 This is to prevent performing to many requests at once to the external
 authorization service.
 
+Whenever access is granted or denied this is logged in a logfile called
+`external-policy-access-control.log`.
+Read more about logs GitLab keeps in the [omnibus documentation][omnibus-log-docs].
+
 ## Configuration
 
 The external authorization service can be enabled by an admin on the GitLab's
@@ -104,3 +108,4 @@ The label will be shown on all project pages in the upper right corner.
 ![classification label on project page](img/classification_label_on_project_page.png)
 
 [omnibus-ssl-docs]: https://docs.gitlab.com/omnibus/settings/ssl.html
+[omnibus-log-docs]: https://docs.gitlab.com/omnibus/settings/logs.html
