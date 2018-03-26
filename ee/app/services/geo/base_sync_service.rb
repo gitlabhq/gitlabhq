@@ -211,6 +211,8 @@ module Geo
         raise Gitlab::Shell::Error, 'Can not move original repository out of the way'
       end
 
+      gitlab_shell.add_namespace(project.repository_storage_path, repository.disk_path)
+
       unless gitlab_shell.mv_repository(project.repository_storage_path, disk_path_temp, repository.disk_path)
         raise Gitlab::Shell::Error, 'Can not move temporary repository'
       end
