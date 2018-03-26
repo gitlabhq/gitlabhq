@@ -11,6 +11,7 @@ module Ci
     belongs_to :build, class_name: 'Ci::Build'
     belongs_to :project
 
+    validates :build, presence: true
     validates :project, presence: true
 
     chronic_duration_attr_reader :timeout_human_readable, :timeout

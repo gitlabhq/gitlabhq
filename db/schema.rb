@@ -329,12 +329,14 @@ ActiveRecord::Schema.define(version: 20180327101207) do
   add_index "ci_builds", ["updated_at"], name: "index_ci_builds_on_updated_at", using: :btree
   add_index "ci_builds", ["user_id"], name: "index_ci_builds_on_user_id", using: :btree
 
-  create_table "ci_builds_metadata", primary_key: "build_id", force: :cascade do |t|
+  create_table "ci_builds_metadata", force: :cascade do |t|
+    t.integer "build_id", null: false
     t.integer "project_id", null: false
     t.integer "timeout"
     t.integer "timeout_source", default: 1, null: false
   end
 
+  add_index "ci_builds_metadata", ["build_id"], name: "index_ci_builds_metadata_on_build_id", unique: true, using: :btree
   add_index "ci_builds_metadata", ["project_id"], name: "index_ci_builds_metadata_on_project_id", using: :btree
 
   create_table "ci_group_variables", force: :cascade do |t|
