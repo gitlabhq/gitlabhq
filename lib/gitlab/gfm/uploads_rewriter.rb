@@ -21,7 +21,7 @@ module Gitlab
 
         @text.gsub(@pattern) do |markdown|
           file = find_file(@source_project, $~[:secret], $~[:file])
-          return markdown unless file.try(:exists?)
+          break markdown unless file.try(:exists?)
 
           new_uploader = FileUploader.new(target_project)
           with_link_in_tmp_dir(file.file) do |open_tmp_file|

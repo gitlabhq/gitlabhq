@@ -6,7 +6,7 @@ module Gitlab
       loop do
         begin
           ActiveRecord::Base.transaction do
-            return yield(subject)
+            return yield(subject) # rubocop:disable Cop/AvoidReturnFromBlocks
           end
         rescue ActiveRecord::StaleObjectError
           retries -= 1

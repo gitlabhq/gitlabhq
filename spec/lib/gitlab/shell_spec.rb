@@ -727,7 +727,7 @@ describe Gitlab::Shell do
 
   def find_in_authorized_keys_file(key_id)
     gitlab_shell.batch_read_key_ids do |ids|
-      return true if ids.include?(key_id)
+      return true if ids.include?(key_id) # rubocop:disable Cop/AvoidReturnFromBlocks
     end
 
     false

@@ -20,14 +20,14 @@ module QA::Page
 
       def running?
         within('.ci-header-container') do
-          return page.has_content?('running')
+          break page.has_content?('running')
         end
       end
 
       def has_build?(name, status: :success)
         within('.pipeline-graph') do
           within('.ci-job-component', text: name) do
-            return has_selector?(".ci-status-icon-#{status}")
+            return has_selector?(".ci-status-icon-#{status}")  # rubocop:disable Cop/AvoidReturnFromBlocks
           end
         end
       end

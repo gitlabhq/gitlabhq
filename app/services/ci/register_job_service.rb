@@ -41,7 +41,7 @@ module Ci
             build.run!
             register_success(build)
 
-            return Result.new(build, true)
+            return Result.new(build, true) # rubocop:disable Cop/AvoidReturnFromBlocks
           rescue Ci::Build::MissingDependenciesError
             build.drop!(:missing_dependency_failure)
           end
