@@ -26,6 +26,8 @@ module Ci
 
     has_one :metadata, class_name: 'Ci::BuildMetadata'
 
+    delegate :timeout, to: :metadata, prefix: true, allow_nil: true
+
     # The "environment" field for builds is a String, and is the unexpanded name
     def persisted_environment
       @persisted_environment ||= Environment.find_by(
@@ -239,10 +241,6 @@ module Ci
 
       # Return builds from previous stages
       latest_builds.where('stage_idx < ?', stage_idx)
-    end
-
-    def timeout
-      ensure_metadata.timeout
     end
 
     def triggered_by?(current_user)

@@ -1271,43 +1271,6 @@ describe Ci::Build do
   end
 
   describe 'project settings' do
-    describe '#timeout' do
-      set(:project2) { create(:project, :repository, group: group, build_timeout: 1000) }
-      set(:pipeline2) { create(:ci_pipeline, project: project2, sha: project2.commit.id, ref: project2.default_branch, status: 'success') }
-
-      let(:build) { create(:ci_build, :pending, pipeline: pipeline2) }
-
-      subject { build.timeout }
-
-      before do
-        build.run!
-      end
-
-      context 'when runner is not assigned' do
-        it 'returns project timeout configuration' do
-          is_expected.to be_nil
-        end
-      end
-
-      context 'when runner sets timeout to bigger value' do
-        let(:runner2) { create(:ci_runner, maximum_timeout: 2000) }
-        let(:build) { create(:ci_build, :pending, pipeline: pipeline2, runner: runner2) }
-
-        it 'returns project timeout configuration' do
-          is_expected.to eq(project2.build_timeout)
-        end
-      end
-
-      context 'when runner sets timeout to smaller value' do
-        let(:runner2) { create(:ci_runner, maximum_timeout: 600) }
-        let(:build) { create(:ci_build, :pending, pipeline: pipeline2, runner: runner2) }
-
-        it 'returns project timeout configuration' do
-          is_expected.to eq(runner2.maximum_timeout)
-        end
-      end
-    end
-
     describe '#allow_git_fetch' do
       it 'return project allow_git_fetch configuration' do
         expect(build.allow_git_fetch).to eq(project.build_allow_git_fetch)

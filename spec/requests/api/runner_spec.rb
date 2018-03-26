@@ -360,12 +360,12 @@ describe API::Runner do
           let(:expected_steps) do
             [{ 'name' => 'script',
                'script' => %w(ls date),
-               'timeout' => job.timeout,
+               'timeout' => job.metadata_timeout,
                'when' => 'on_success',
                'allow_failure' => false },
              { 'name' => 'after_script',
                'script' => %w(ls date),
-               'timeout' => job.timeout,
+               'timeout' => job.metadata_timeout,
                'when' => 'always',
                'allow_failure' => true }]
           end
