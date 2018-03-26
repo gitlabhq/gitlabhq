@@ -11,7 +11,7 @@ module EE
         super
       rescue ::EE::ProtectedBranches::ApiService::GroupsNotAccessibleError,
              ::EE::ProtectedBranches::ApiService::UsersNotAccessibleError
-        ProtectedBranch.new.tap do |protected_branch|
+        ::ProtectedBranch.new.tap do |protected_branch|
           message = 'Cannot add users or groups unless they have access to the project'
           protected_branch.errors.add(:base, message)
         end
