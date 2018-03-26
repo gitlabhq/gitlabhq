@@ -36,12 +36,17 @@ export default {
       }
     },
     scrollUpdate() {
-      const { top, bottom } = this.$el.getBoundingClientRect();
+      const header = document.querySelector('.js-diff-files-changed');
+      if (!header) {
+        this.updating = false;
+        return;
+      }
 
+      const { top, bottom } = this.$el.getBoundingClientRect();
       const {
         top: topOfFixedHeader,
         bottom: bottomOfFixedHeader,
-      } = document.querySelector('.js-diff-files-changed').getBoundingClientRect();
+      } = header.getBoundingClientRect();
 
       const headerOverlapsContent = top < topOfFixedHeader && bottom > bottomOfFixedHeader;
       const fullyAboveHeader = bottom < bottomOfFixedHeader;
