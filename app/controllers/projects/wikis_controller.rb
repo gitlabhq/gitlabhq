@@ -107,7 +107,7 @@ class Projects::WikisController < Projects::ApplicationController
     # Call #wiki to make sure the Wiki Repo is initialized
     @project_wiki.wiki
 
-    @sidebar_page = @project_wiki.find_page('_sidebar', params[:version_id])
+    @sidebar_page = @project_wiki.find_sidebar(params[:version_id])
 
     unless @sidebar_page # Fallback to default sidebar
       @sidebar_wiki_entries = WikiPage.group_by_directory(@project_wiki.pages(limit: 15))

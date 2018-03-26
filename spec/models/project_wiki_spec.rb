@@ -170,6 +170,22 @@ describe ProjectWiki do
     end
   end
 
+  describe '#find_sidebar' do
+    before do
+      create_page(described_class::SIDEBAR, 'This is an awesome Sidebar')
+    end
+
+    after do
+      subject.pages.each { |page| destroy_page(page.page) }
+    end
+
+    it 'finds the page defined as _sidebar' do
+      page = subject.find_page('_sidebar')
+
+      expect(page.content).to eq('This is an awesome Sidebar')
+    end
+  end
+
   describe '#find_file' do
     shared_examples 'finding a wiki file' do
       before do
