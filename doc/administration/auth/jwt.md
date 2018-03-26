@@ -58,7 +58,7 @@ JWT will provide you with a secret key for you to use.
     NOTE: **Note:** For more information on each configuration option refer to
     the [OmniAuth JWT usage documentation](https://github.com/mbleigh/omniauth-jwt#usage).
 
-1.  Change `YOUR_APP_SECRET` to the client secret.
+1.  Change `YOUR_APP_SECRET` to the client secret and set `auth_url` to your redirect URL.
 1.  Save the configuration file.
 1.  [Reconfigure GitLab][] or [restart GitLab][] for the changes to take effect if you
     installed GitLab via Omnibus or from source respectively.
