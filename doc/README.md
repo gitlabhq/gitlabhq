@@ -46,7 +46,6 @@ management tools.
   - [Slack slash commands](user/project/integrations/slack_slash_commands.md)
 - [Discussions](user/discussions/index.md): Threads, comments, and resolvable discussions in issues, commits, and  merge requests.
 - [Issues](user/project/issues/index.md)
-<<<<<<< HEAD
 - [Project Issue Boards](user/project/issue_board.md)
 - [Group Issue Boards](user/project/issue_board.md#group-issue-boards)
 - **(Starter/Premium/Ultimate)** [Related Issues](user/project/issues/related_issues.md): create a relationship between issues
@@ -54,12 +53,6 @@ management tools.
 - [Labels](user/project/labels.md): Categorize your issues or merge requests based on descriptive titles.
 - [Milestones](user/project/milestones/index.md): Organize issues and merge requests into a cohesive group, optionally setting a due date.
   - **(Starter/Premium/Ultimate)** [Burndown Charts](user/project/milestones/burndown_charts.md): Watch your project's progress throughout a specific milestone.
-=======
-- [Project Issue Board](user/project/issue_board.md)
-- [Issues and merge requests templates](user/project/description_templates.md): Create templates for submitting new issues and merge requests.
-- [Labels](user/project/labels.md): Categorize your issues or merge requests based on descriptive titles.
-- [Milestones](user/project/milestones/index.md): Organize issues and merge requests into a cohesive group, optionally setting a due date.
->>>>>>> upstream/master
 - [Todos](workflow/todos.md): A chronological list of to-dos that are waiting for your input, all in a simple dashboard.
 - [GitLab Quick Actions](user/project/quick_actions.md): Textual shortcuts for common actions on issues or merge requests that are usually done by clicking buttons or dropdowns in GitLab's UI.
 
@@ -124,10 +117,7 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
 - [Project Services](user/project/integrations/project_services.md): Integrate a project with external services, such as CI and chat.
 - [GitLab Integration](integration/README.md): Integrate with multiple third-party services with GitLab to allow external issue trackers and external authentication.
 - [Trello Power-Up](integration/trello_power_up.md): Integrate with GitLab's Trello Power-Up
-<<<<<<< HEAD
 - **(Premium/Ultimate)** [JIRA Development Panel](integration/jira_development_panel.md): See GitLab information in the JIRA Development Panel
-=======
->>>>>>> upstream/master
 
 #### Automation
 
@@ -167,13 +157,9 @@ deploying to one server or thousands, build, test, and release your code
 confidently and securely with GitLab’s built-in Continuous Delivery and Deployment.
 
 - [GitLab Pages](user/project/pages/index.md): Build, test, and deploy a static site directly from GitLab.
-<<<<<<< HEAD
 - [Auto Deploy](topics/autodevops/index.md#auto-deploy): Configure GitLab CI/CD for the deployment of your application.
 - **(Premium/Ultimate)** [Deploy Boards](user/project/deploy_boards.md): View of the current health and status of each CI environment running on Kubernetes, displaying the status of the pods in the deployment.
 - **(Premium/Ultimate)** [Canary Deployments](user/project/canary_deployments.md): A popular CI strategy, where a small portion of the fleet is updated to the new version first.
-=======
-- [Auto Deploy](topics/autodevops/index.md#auto-deploy): Configure GitLab CI for the deployment of your application.
->>>>>>> upstream/master
 - [Environments and deployments](ci/environments.md): With environments, you can control the continuous deployment of your software within GitLab.
 
 ### Configure
