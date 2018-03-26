@@ -1,22 +1,10 @@
 import Vue from 'vue';
-import Vuex, { mapActions, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import notesApp from '../notes/components/notes_app.vue';
 import diffsApp from '../diffs/components/app.vue';
 import discussionCounter from '../notes/components/discussion_counter.vue';
-import notesStoreConfig from '../notes/stores';
-import diffsStoreConfig from '../diffs/store';
-import mrPageStoreConfig from './stores';
+import store from './stores';
 import MergeRequest from '../merge_request';
-
-Vue.use(Vuex);
-
-const store = new Vuex.Store({
-  modules: {
-    page: mrPageStoreConfig,
-    notes: notesStoreConfig,
-    diffs: diffsStoreConfig,
-  },
-});
 
 export default function initMrNotes() {
   const mrShowNode = document.querySelector('.merge-request');

@@ -1,17 +1,11 @@
-import Cookies from 'js-cookie';
-import * as actions from './actions';
-import getters from './getters';
-import mutations from './mutations';
-import { INLINE_DIFF_VIEW_TYPE, DIFF_VIEW_COOKIE_NAME } from '../constants';
+import Vue from 'vue';
+import Vuex from 'vuex';
+import diffsModule from './modules';
 
-export default {
-  state: {
-    isLoading: true,
-    endpoint: '',
-    diffFiles: [],
-    diffViewType: Cookies.get(DIFF_VIEW_COOKIE_NAME) || INLINE_DIFF_VIEW_TYPE,
+Vue.use(Vuex);
+
+export default new Vuex.Store({
+  modules: {
+    diffs: diffsModule,
   },
-  getters,
-  actions,
-  mutations,
-};
+});

@@ -1,15 +1,6 @@
 import Vue from 'vue';
-import Vuex from 'vuex';
 import notesApp from './components/notes_app.vue';
-import storeConfig from './stores';
-
-Vue.use(Vuex);
-
-const store = new Vuex.Store({
-  modules: {
-    notes: storeConfig,
-  },
-});
+import store from './stores';
 
 document.addEventListener(
   'DOMContentLoaded',

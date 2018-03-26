@@ -1,12 +1,15 @@
-import actions from './actions';
-import getters from './getters';
-import mutations from './mutations';
+import Vue from 'vue';
+import Vuex from 'vuex';
+import notesModule from '~/notes/stores/modules';
+import diffsModule from '~/diffs/store/modules';
+import mrPageModule from './modules';
 
-export default {
-  state: {
-    activeTab: null,
+Vue.use(Vuex);
+
+export default new Vuex.Store({
+  modules: {
+    page: mrPageModule,
+    notes: notesModule,
+    diffs: diffsModule,
   },
-  actions,
-  getters,
-  mutations,
-};
+});
