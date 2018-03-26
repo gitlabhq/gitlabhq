@@ -107,3 +107,10 @@ On the right sidebar, click on **Clone repository** and follow the on-screen
 instructions.
 
 [permissions]: ../../permissions.md
+
+## Customizing sidebar
+
+By default, the wiki would render a sidebar which lists all the pages for the
+wiki. You could as well provide a `_sidebar` page to replace this default
+sidebar. When this customized sidebar page is provided, the default sidebar
+would not be rendered, but the customized one.
