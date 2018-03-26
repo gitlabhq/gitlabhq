@@ -357,7 +357,8 @@ and for each different [Grape](https://github.com/ruby-grape/grape) feature,
 we might need different strategies to extend it. To apply different strategies
 easily, we would use `extend ActiveSupport::Concern` in the EE module.
 
-Put the EE module files following the same rule with other EE modules.
+Put the EE module files following
+[EE features based on CE features](#ee-features-based-on-ce-features).
 
 #### EE API routes
 
@@ -387,7 +388,7 @@ constants.
 
 #### EE params
 
-We can define `params` and utilize `use` in another `params` definition  to
+We can define `params` and utilize `use` in another `params` definition to
 include params defined in EE. However, we need to define the "interface" first
 in CE in order for EE to override it. We don't have to do this in other places
 due to `prepend`, but Grape is complex internally and we couldn't easily do
