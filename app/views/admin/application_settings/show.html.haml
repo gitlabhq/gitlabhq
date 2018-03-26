@@ -6,66 +6,66 @@
 %section.settings.as-visibility-access.no-animate#js-visibility-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
-      Visibility and access controls
+      = _('Visibility and access controls')
     %button.btn.js-settings-toggle
       = expanded ? 'Collapse' : 'Expand'
     %p
-      Set default and restrict visibility levels. Configure import sources and git access protocol.
+      = _('Set default and restrict visibility levels. Configure import sources and git access protocol.')
   .settings-content
     = render 'visibility_and_access'
 
 %section.settings.as-account-limit.no-animate#js-account-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
-      Account and limit settings
+      = _('Account and limit settings')
     %button.btn.js-settings-toggle
       = expanded ? 'Collapse' : 'Expand'
     %p
-      Session expiration, projects limit and attachment size.
+      = _('Session expiration, projects limit and attachment size.')
   .settings-content
     = render 'account_and_limit'
 
 %section.settings.as-signup.no-animate#js-signup-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
-      Sign-up restrictions
+      = _('Sign-up restrictions')
     %button.btn.js-settings-toggle
       = expanded ? 'Collapse' : 'Expand'
     %p
-      Configure the way a user creates a new account.
+      = _('Configure the way a user creates a new account.')
   .settings-content
     = render 'signup'
 
 %section.settings.as-signin.no-animate#js-signin-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
-      Sign-in restrictions
+      = _('Sign-in restrictions')
     %button.btn.js-settings-toggle
       = expanded ? 'Collapse' : 'Expand'
     %p
-      Set requirements for a user to sign-in. Enable mandatory two-factor authentication.
+      = _('Set requirements for a user to sign-in. Enable mandatory two-factor authentication.')
   .settings-content
     = render 'signin'
 
 %section.settings.as-help-page.no-animate#js-help-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
-      Help page
+      = _('Help page')
     %button.btn.js-settings-toggle
       = expanded ? 'Collapse' : 'Expand'
     %p
-      Help page text and support page url.
+      = _('Help page text and support page url.')
   .settings-content
     = render 'help_page'
 
 %section.settings.as-pages.no-animate#js-pages-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
-      Pages
+      = _('Pages')
     %button.btn.js-settings-toggle
       = expanded ? 'Collapse' : 'Expand'
     %p
-      Size and domain settings for static websites
+      = _('Size and domain settings for static websites')
   .settings-content
     = render 'pages'
 
