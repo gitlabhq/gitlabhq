@@ -1107,7 +1107,9 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def base_pipeline
-    @base_pipeline ||= project.pipelines.find_by(sha: merge_request_diff&.base_commit_sha)
+    @base_pipeline ||= project.pipelines
+      .order(id: :desc)
+      .find_by(sha: diff_base_sha)
   end
 
   def update_project_counter_caches
