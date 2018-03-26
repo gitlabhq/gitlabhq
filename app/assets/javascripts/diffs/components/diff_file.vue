@@ -16,28 +16,47 @@ export default {
   data() {
     return {
       isExpanded: true,
+      isActive: false,
     };
   },
   mounted() {
-    document.addEventListener('scroll', () => {
-      const { top, bottom } = this.$el.getBoundingClientRect();
-
-      const topOfFixedHeader = 100;
-      const bottomOfFixedHeader = 120;
-
-      if (top < topOfFixedHeader && bottom > bottomOfFixedHeader) {
-        this.$emit('setActive');
-      }
-
-      if (top > bottomOfFixedHeader || bottom < bottomOfFixedHeader) {
-        this.$emit('unsetActive');
-      }
-    });
+    document.addEventListener('scroll', this.handleScroll);
+  },
+  beforeDestroy() {
+    document.removeEventListener('scroll', this.handleScroll);
   },
   methods: {
     handleToggle() {
       this.isExpanded = !this.isExpanded;
     },
+    handleScroll() {
+      if (!this.updating) {
+        requestAnimationFrame(this.scrollUpdate);
+        this.updating = true;
+      }
+    },
+    scrollUpdate() {
+      const { top, bottom } = this.$el.getBoundingClientRect();
+
+      const {
+        top: topOfFixedHeader,
+        bottom: bottomOfFixedHeader,
+      } = document.querySelector('.js-diff-files-changed').getBoundingClientRect();
+
+      const headerOverlapsContent = top < topOfFixedHeader && bottom > bottomOfFixedHeader;
+      const fullyAboveHeader = bottom < bottomOfFixedHeader;
+      const fullyBelowHeader = top > topOfFixedHeader;
+
+      if (headerOverlapsContent && !this.isActive) {
+        this.$emit('setActive');
+        this.isActive = true;
+      } else if (this.isActive && (fullyAboveHeader || fullyBelowHeader)) {
+        this.$emit('unsetActive');
+        this.isActive = false;
+      }
+
+      this.updating = false
+    }
   },
 };
 </script>
