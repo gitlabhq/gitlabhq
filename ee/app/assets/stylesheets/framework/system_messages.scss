@@ -37,7 +37,8 @@
 
 // System Header
 .with-system-header {
-  .navbar-gitlab {
+  .navbar-gitlab,
+  .navbar-fixed-top {
     top: $system-header-height;
   }
 
@@ -50,7 +51,10 @@
 // System Footer
 .with-system-footer {
   .nav-sidebar,
-  .right-sidebar {
+  .right-sidebar,
+  &.devise-layout-html body .footer-container,
+  &.devise-layout-html body hr.footer-fixed.devise-layout-html body .footer-container,
+  &.devise-layout-html body hr.footer-fixed {
     bottom: $system-footer-height;
   }
 }
