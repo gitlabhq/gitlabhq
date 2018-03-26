@@ -3,7 +3,7 @@
 - @content_class = "limit-container-width" unless fluid_layout
 - expanded = Rails.env.test?
 
-%section.settings.as-visibility-access.no-animate{ class: ('expanded' if expanded) }
+%section.settings.as-visibility-access.no-animate#js-visibility-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
       Visibility and access controls
@@ -14,7 +14,7 @@
   .settings-content
     = render 'visibility_and_access'
 
-%section.settings.as-account-limit.no-animate{ class: ('expanded' if expanded) }
+%section.settings.as-account-limit.no-animate#js-account-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
       Account and limit settings
@@ -25,7 +25,7 @@
   .settings-content
     = render 'account_and_limit'
 
-%section.settings.as-signup.no-animate{ class: ('expanded' if expanded) }
+%section.settings.as-signup.no-animate#js-signup-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
       Sign-up restrictions
@@ -36,7 +36,7 @@
   .settings-content
     = render 'signup'
 
-%section.settings.as-signin.no-animate{ class: ('expanded' if expanded) }
+%section.settings.as-signin.no-animate#js-signin-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
       Sign-in restrictions
@@ -47,7 +47,7 @@
   .settings-content
     = render 'signin'
 
-%section.settings.as-help-page.no-animate{ class: ('expanded' if expanded) }
+%section.settings.as-help-page.no-animate#js-help-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
       Help page
@@ -58,7 +58,7 @@
   .settings-content
     = render 'help_page'
 
-%section.settings.as-pages.no-animate{ class: ('expanded' if expanded) }
+%section.settings.as-pages.no-animate#js-pages-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
       Pages
