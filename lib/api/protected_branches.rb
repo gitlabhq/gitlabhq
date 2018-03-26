@@ -52,7 +52,8 @@ module API
           conflict!("Protected branch '#{params[:name]}' already exists")
         end
 
-        api_service = ::ProtectedBranches::ApiService.new(user_project, current_user, declared(params))
+        declared_params = declared_params(include_missing: false)
+        api_service = ::ProtectedBranches::ApiService.new(user_project, current_user, declared_params)
         protected_branch = api_service.create
 
         if protected_branch.persisted?
