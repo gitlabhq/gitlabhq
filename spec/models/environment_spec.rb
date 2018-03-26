@@ -378,7 +378,7 @@ describe Environment do
 
       shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
         it 'returns the terminals from the deployment service' do
-          expect(project.deployment_platform)
+          expect(project.deployment_platform(environment: environment))
             .to receive(:terminals).with(environment)
             .and_return(:fake_terminals)
 
@@ -419,7 +419,7 @@ describe Environment do
         end
 
         it 'returns the rollout status from the deployment service' do
-          expect(project.deployment_platform)
+          expect(project.deployment_platform(environment: environment))
             .to receive(:rollout_status).with(environment)
             .and_return(:fake_rollout_status)
 
