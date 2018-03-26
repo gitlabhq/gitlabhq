@@ -1,0 +1,5 @@
+---
+title: Add indexes for user activity queries.
+merge_request: 17890
+author:
+type: performance

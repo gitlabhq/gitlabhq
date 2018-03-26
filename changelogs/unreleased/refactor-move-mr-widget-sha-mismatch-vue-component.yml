@@ -1,0 +1,5 @@
+---
+title: Move ShaMismatch vue component
+merge_request: 17546
+author: George Tsiolis
+type: performance

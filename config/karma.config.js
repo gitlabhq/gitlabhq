@@ -5,7 +5,7 @@ var ROOT_PATH = path.resolve(__dirname, '..');
 
 // remove problematic plugins
 if (webpackConfig.plugins) {
-  webpackConfig.plugins = webpackConfig.plugins.filter(function (plugin) {
+  webpackConfig.plugins = webpackConfig.plugins.filter(function(plugin) {
     return !(
       plugin instanceof webpack.optimize.CommonsChunkPlugin ||
       plugin instanceof webpack.optimize.ModuleConcatenationPlugin ||
@@ -24,7 +24,7 @@ module.exports = function(config) {
 
   var karmaConfig = {
     basePath: ROOT_PATH,
-    browsers:  ['ChromeHeadlessCustom'],
+    browsers: ['ChromeHeadlessCustom'],
     customLaunchers: {
       ChromeHeadlessCustom: {
         base: 'ChromeHeadless',
@@ -34,7 +34,7 @@ module.exports = function(config) {
           // escalated kernel privileges (e.g. docker run --cap-add=CAP_SYS_ADMIN)
           '--no-sandbox',
         ],
-      }
+      },
     },
     frameworks: ['jasmine'],
     files: [
@@ -55,7 +55,7 @@ module.exports = function(config) {
       reports: ['html', 'text-summary'],
       dir: 'coverage-javascript/',
       subdir: '.',
-      fixWebpackSourcePaths: true
+      fixWebpackSourcePaths: true,
     };
     karmaConfig.browserNoActivityTimeout = 60000; // 60 seconds
   }

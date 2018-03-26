@@ -21,11 +21,11 @@ module Gitlab
       result = repo_path
 
       storage = Gitlab.config.repositories.storages.values.find do |params|
-        repo_path.start_with?(params['path'])
+        repo_path.start_with?(params.legacy_disk_path)
       end
 
       if storage
-        result = result.sub(storage['path'], '')
+        result = result.sub(storage.legacy_disk_path, '')
       elsif fail_on_not_found
         raise NotFoundError.new("No known storage path matches #{repo_path.inspect}")
       end

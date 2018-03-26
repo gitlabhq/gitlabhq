@@ -3,8 +3,7 @@ import _ from 'underscore';
 import 'autosize';
 import '~/gl_form';
 import '~/lib/utils/text_utility';
-import '~/render_gfm';
-import '~/render_math';
+import '~/behaviors/markdown/render_gfm';
 import Notes from '~/notes';
 
 const upArrowKeyCode = 38;

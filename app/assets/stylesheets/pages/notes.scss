@@ -147,12 +147,6 @@ ul.notes {
         @include bulleted-list;
         word-wrap: break-word;
 
-        ul.task-list {
-          ul:not(.task-list) {
-            padding-left: 1.3em;
-          }
-        }
-
         table {
           @include markdown-table;
         }
