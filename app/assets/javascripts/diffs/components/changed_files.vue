@@ -1,4 +1,5 @@
 <script>
+import _ from 'underscore';
 import { mapGetters, mapActions } from 'vuex';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -44,15 +45,11 @@ export default {
     },
   },
   mounted() {
-    if (
-      typeof CSS === 'undefined' ||
-      !CSS.supports('(position: -webkit-sticky) or (position: sticky)')
-    )
-      return;
-
-    document.addEventListener('scroll', this.handleScroll.bind(this), {
-      passive: true,
-    });
+    this.throttledHandleScroll = _.throttle(this.handleScroll, 100);
+    document.addEventListener('scroll', this.throttledHandleScroll);
+  },
+  beforeDestroy() {
+    document.removeEventListener('scroll', this.throttledHandleScroll);
   },
   methods: {
     ...mapActions(['setInlineDiffViewType', 'setParallelDiffViewType']),
