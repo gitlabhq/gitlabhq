@@ -1,3 +1,13 @@
+<script>
+import Icon from '~/vue_shared/components/icon.vue';
+
+export default {
+  components: {
+    Icon,
+  },
+};
+</script>
+
 <template>
   <div class="mr-version-controls">
     <div class="mr-version-menus-container content-block">
@@ -11,11 +21,10 @@
           <span>
             latest version
           </span>
-          <i
-            aria-hidden="true"
-            data-hidden="true"
-            class="fa fa-caret-down"
-          ></i>
+          <Icon
+            name="angle-down"
+            size="12"
+          />
         </a>
       </span>
       and
@@ -26,11 +35,10 @@
           aria-expanded="false"
         >
           <span class="ref-name">master</span>
-          <i
-            aria-hidden="true"
-            data-hidden="true"
-            class="fa fa-caret-down"
-          ></i>
+          <Icon
+            name="angle-down"
+            size="12"
+          />
         </a>
       </span>
     </div>
