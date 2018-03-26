@@ -13,7 +13,7 @@ describe BasePolicy do
 
     context 'when an external authorization service is enabled' do
       before do
-        enable_external_authorization_service
+        enable_external_authorization_service_check
       end
 
       it { is_expected.not_to be_allowed(:read_cross_project) }

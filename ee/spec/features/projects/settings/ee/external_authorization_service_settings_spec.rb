@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe 'Project settings > [EE] repository' do
-  include ExternalAuthorizationServiceHelpers
-
   let(:user) { create(:user) }
   let(:project) { create(:project_empty_repo) }
 
@@ -12,7 +10,7 @@ describe 'Project settings > [EE] repository' do
   end
 
   it 'shows the field to set a classification label when the feature is enabled' do
-    external_service_allow_access(user, project)
+    stub_ee_application_setting(external_authorization_service_enabled: true)
 
     visit edit_project_path(project)
 

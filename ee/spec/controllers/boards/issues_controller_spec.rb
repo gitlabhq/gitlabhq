@@ -93,7 +93,7 @@ describe Boards::IssuesController do
     context 'with external authorization' do
       before do
         sign_in(user)
-        enable_external_authorization_service
+        enable_external_authorization_service_check
       end
 
       it 'returns a 404 for group boards' do

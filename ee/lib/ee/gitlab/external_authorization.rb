@@ -4,7 +4,7 @@ module EE
       RequestFailed = Class.new(StandardError)
 
       def self.access_allowed?(user, label)
-        return true unless enabled?
+        return true unless perform_check?
         return false unless user
 
         access_for_user_to_label(user, label).has_access?
@@ -31,6 +31,10 @@ module EE
         ::Gitlab::CurrentSettings
           .current_application_settings
           .external_authorization_service_enabled?
+      end
+
+      def self.perform_check?
+        enabled? && service_url.present?
       end
 
       def self.service_url

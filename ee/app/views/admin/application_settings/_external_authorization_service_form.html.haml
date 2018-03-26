@@ -13,6 +13,8 @@
           = link_to icon('question-circle'), help_page_path('user/admin_area/settings/external_authorization')
     .form-group
       = f.label :external_authorization_service_url, _('Service URL'), class: 'control-label col-sm-2'
+      %span.help-block
+        = external_authorization_url_help_text
       .col-sm-10
         = f.text_field :external_authorization_service_url, class: 'form-control'
     .form-group
