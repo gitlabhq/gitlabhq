@@ -2050,6 +2050,11 @@ describe Ci::Build do
       job.project.update_attribute(:build_timeout, 1800)
     end
 
+    def run_job_without_exception
+      job.run!
+    rescue StateMachines::InvalidTransition
+    end
+
     shared_examples 'saves data on transition' do
       it 'saves timeout' do
         expect { job.run! }.to change { job.reload.ensure_metadata.timeout }.from(nil).to(expected_timeout)
@@ -2057,6 +2062,24 @@ describe Ci::Build do
 
       it 'saves timeout_source' do
         expect { job.run! }.to change { job.reload.ensure_metadata.timeout_source }.from('unknown_timeout_source').to(expected_timeout_source)
+      end
+
+      context 'when Ci::BuildMetadata#update_timeout_state fails update' do
+        before do
+          allow_any_instance_of(Ci::BuildMetadata).to receive(:update_timeout_state).and_return(false)
+        end
+
+        it "doesn't save timeout" do
+          expect { run_job_without_exception }.not_to change { job.reload.ensure_metadata.timeout_source }
+        end
+
+        it "doesn't save timeout_source" do
+          expect { run_job_without_exception }.not_to change { job.reload.ensure_metadata.timeout_source }
+        end
+
+        it 'raises an exception' do
+          expect { job.run! }.to raise_error(StateMachines::InvalidTransition)
+        end
       end
     end
 

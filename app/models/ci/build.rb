@@ -157,7 +157,7 @@ module Ci
       end
 
       before_transition pending: :running do |build|
-        build.ensure_metadata.save_timeout_state!
+        build.ensure_metadata.update_timeout_state
       end
     end
 
