@@ -46,4 +46,12 @@ describe Projects::SlackApplicationInstallService do
     expect_slack_integration_is_created(project)
     expect_chat_name_is_created(project)
   end
+
+  describe '#chat_responder' do
+    it 'returns the chat responder to use' do
+      srv = service
+
+      expect(srv.chat_responder).to eq(Gitlab::Chat::Responder::Slack)
+    end
+  end
 end
