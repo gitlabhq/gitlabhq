@@ -3,6 +3,8 @@ class GeoNodeStatus < ActiveRecord::Base
 
   delegate :selective_sync_type, to: :geo_node
 
+  after_initialize :initialize_feature_flags
+
   # Whether we were successful in reaching this node
   attr_accessor :success
   attr_writer   :health_status
@@ -96,6 +98,10 @@ class GeoNodeStatus < ActiveRecord::Base
     self.column_names - EXCLUDED_PARAMS + EXTRA_PARAMS
   end
 
+  def initialize_feature_flags
+    self.repository_verification_enabled = Feature.enabled?('geo_repository_verification')
+  end
+
   def load_data_from_current_node
     self.status_message =
       begin
@@ -165,7 +171,6 @@ class GeoNodeStatus < ActiveRecord::Base
   end
 
   def load_verification_data
-    self.repository_verification_enabled = Feature.enabled?('geo_repository_verification')
     return unless self.repository_verification_enabled
 
     finder = Gitlab::Geo.primary? ? repository_verification_finder : projects_finder
