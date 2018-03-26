@@ -3,6 +3,7 @@ import _ from 'underscore';
 import { mapGetters, mapActions } from 'vuex';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
+import { pluralize } from '~/lib/utils/text_utility';
 
 export default {
   components: {
@@ -53,6 +54,7 @@ export default {
   },
   methods: {
     ...mapActions(['setInlineDiffViewType', 'setParallelDiffViewType']),
+    pluralize,
     handleScroll() {
       if (!this.$refs.stickyBar) return;
 
@@ -119,26 +121,26 @@ export default {
           {{ __('Hide whitespace changes') }}
         </a>
         <div class="btn-group">
-          <a
-            @click.prevent="setInlineDiffViewType"
+          <button
+            type="button"
+            @click="setInlineDiffViewType"
             :class="{ active: isInlineView }"
             id="inline-diff-btn"
             class="btn"
             data-view-type="inline"
-            href="#"
           >
             {{ __('Inline') }}
-          </a>
-          <a
-            @click.prevent="setParallelDiffViewType"
+          </button>
+          <button
+            type="button"
+            @click="setParallelDiffViewType"
             :class="{ active: isParallelView }"
             id="parallel-diff-btn"
             class="btn"
             data-view-type="parallel"
-            href="#"
           >
             {{ __('Side-by-side') }}
-          </a>
+          </button>
         </div>
       </div>
 
@@ -151,7 +153,7 @@ export default {
           aria-expanded="false"
         >
           <span>
-            {{ n__('%d changed file', '%d changed files', diffFiles.length) }}
+            {{ pluralize(`${diffFiles.length} changed file`, diffFiles.length) }}
           </span>
           <icon
             name="chevron-down"
@@ -244,11 +246,11 @@ export default {
         >
           with
           <strong class="cgreen">
-            {{ n__('%d addition', '%d additions', sumAddedLines) }}
+            {{ pluralize(`${sumAddedLines} addition`, sumAddedLines) }}
           </strong>
           and
           <strong class="cred">
-            {{ n__('%d deletion', '%d deletions', sumRemovedLines) }}
+            {{ pluralize(`${sumRemovedLines} deletion`, sumRemovedLines) }}
           </strong>
         </span>
 
