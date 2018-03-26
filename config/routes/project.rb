@@ -318,6 +318,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             post :keep
           end
         end
+
+        namespace :ci do
+          resource :lint, only: [:show, :create]
+        end
       end
 
       draw :legacy_builds
@@ -479,10 +483,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
 
         resource :repository, only: [:show], controller: :repository
-      end
-
-      namespace :ci do
-        resource :lint, only: [:show, :create]
       end
 
       # Since both wiki and repository routing contains wildcard characters
