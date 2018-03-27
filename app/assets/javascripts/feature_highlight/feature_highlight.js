@@ -1,11 +1,13 @@
 import $ from 'jquery';
 import {
   getSelector,
-  togglePopover,
   inserted,
+} from './feature_highlight_helper';
+import {
+  togglePopover,
   mouseenter,
   debouncedMouseleave,
-} from './feature_highlight_helper';
+} from '../shared/popover';
 
 export function setupFeatureHighlightPopover(id, debounceTimeout = 300) {
   const $selector = $(getSelector(id));

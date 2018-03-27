@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import axios from './lib/utils/axios_utils';
 import flash from './flash';
-import { mouseenter, debouncedMouseleave } from './shared/popover';
+import { mouseenter, debouncedMouseleave, togglePopover } from './shared/popover';
 
 export default class Milestone {
   constructor() {
@@ -52,15 +52,21 @@ export default class Milestone {
     if (!deprecationMesssageContainer) return;
 
     const deprecationMessage = deprecationMesssageContainer.querySelector('.milestone-deprecation-message-template').innerHTML;
-    const popoverLink = deprecationMesssageContainer.querySelector('.popover-link');
+    const $popover = $('.popover-link', deprecationMesssageContainer);
+    const hideOnScroll = togglePopover.bind($popover, false);
 
-    $(popoverLink).popover({
+    $popover.popover({
       content: deprecationMessage,
       html: true,
       placement: 'bottom',
-      trigger: 'manual',
     })
     .on('mouseenter', mouseenter)
-    .on('mouseleave', debouncedMouseleave());
+    .on('mouseleave', debouncedMouseleave())
+    .on('show.bs.popover', () => {
+      window.addEventListener('scroll', hideOnScroll);
+    })
+    .on('hide.bs.popover', () => {
+      window.removeEventListener('scroll', hideOnScroll);
+    });
   }
 }

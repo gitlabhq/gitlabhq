@@ -203,18 +203,21 @@
       padding: 0;
     }
 
-    .body {
-      padding: 8px 15px 8px 30px;
-      background-color: $gray-light;
+    .milestone-popover-body {
+      padding: $gl-padding-8;
     }
 
-    .footer {
+    .milestone-popover-footer {
       padding: $gl-padding-8 $gl-padding;
       border-top: 1px solid $white-dark;
     }
 
-    .instructions-list {
-      padding: 0;
+    .milestone-popover-instructions-list {
+      padding-left: 2em;
+
+      & > li {
+        padding-left: 1em;
+      }
     }
   }
 

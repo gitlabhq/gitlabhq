@@ -3,7 +3,7 @@ import axios from '../lib/utils/axios_utils';
 import { __ } from '../locale';
 import Flash from '../flash';
 import LazyLoader from '../lazy_loader';
-import { togglePopover, mouseenter, debouncedMouseleave } from '../shared/popover';
+import { togglePopover } from '../shared/popover';
 
 export const getSelector = highlightId => `.js-feature-highlight[data-highlight=${highlightId}]`;
 
@@ -31,5 +31,3 @@ export function inserted() {
     LazyLoader.loadImage(lazyImg);
   }
 }
-
-export { togglePopover, mouseenter, debouncedMouseleave };

@@ -24,8 +24,7 @@ export function mouseenter() {
 
   const showedPopover = togglePopover.call($popover, true);
   if (showedPopover) {
-    $('.popover')
-      .on('mouseleave', mouseleave.bind($popover));
+    $('.popover').on('mouseleave', mouseleave.bind($popover));
   }
 }
 
