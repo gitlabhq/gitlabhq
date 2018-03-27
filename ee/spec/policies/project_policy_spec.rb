@@ -139,7 +139,7 @@ describe ProjectPolicy do
 
     context 'with an external authorization service' do
       before do
-        enable_external_authorization_service
+        enable_external_authorization_service_check
       end
 
       it 'allows access when the external service allows it' do

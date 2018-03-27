@@ -36,6 +36,40 @@ export default {
       return text.join('');
     },
 
+    depedencyScanningText(newIssues = [], resolvedIssues = [], allIssues = []) {
+      const text = [];
+
+      if (!newIssues.length && !resolvedIssues.length && !allIssues.length) {
+        text.push(s__('ciReport|Dependency scanning detected no security vulnerabilities'));
+      } else if (!newIssues.length && !resolvedIssues.length && allIssues.length) {
+        text.push(s__('ciReport|Dependency scanning detected no new security vulnerabilities'));
+      } else if (newIssues.length || resolvedIssues.length) {
+        text.push(s__('ciReport|Dependency scanning'));
+      }
+
+      if (resolvedIssues.length) {
+        text.push(n__(
+          ' improved on %d security vulnerability',
+          ' improved on %d security vulnerabilities',
+          resolvedIssues.length,
+        ));
+      }
+
+      if (newIssues.length > 0 && resolvedIssues.length > 0) {
+        text.push(__(' and'));
+      }
+
+      if (newIssues.length) {
+        text.push(n__(
+          ' degraded on %d security vulnerability',
+          ' degraded on %d security vulnerabilities',
+          newIssues.length,
+        ));
+      }
+
+      return text.join('');
+    },
+
     translateText(type) {
       return {
         error: sprintf(s__('ciReport|Failed to load %{reportName} report'), { reportName: type }),

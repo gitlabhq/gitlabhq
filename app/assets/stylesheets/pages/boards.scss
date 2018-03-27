@@ -32,8 +32,12 @@
 .dropdown-menu-issues-board-new {
   width: 320px;
 
+  .open & {
+    max-height: 400px;
+  }
+
   .dropdown-content {
-    max-height: 150px;
+    max-height: 162px;
   }
 }
 

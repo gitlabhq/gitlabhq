@@ -1,10 +1,12 @@
 module EE
   module Gitlab
     module ExternalAuthorization
+      extend Config
+
       RequestFailed = Class.new(StandardError)
 
       def self.access_allowed?(user, label)
-        return true unless enabled?
+        return true unless perform_check?
         return false unless user
 
         access_for_user_to_label(user, label).has_access?
@@ -25,24 +27,6 @@ module EE
         else
           EE::Gitlab::ExternalAuthorization::Access.new(user, label).load!
         end
-      end
-
-      def self.enabled?
-        ::Gitlab::CurrentSettings
-          .current_application_settings
-          .external_authorization_service_enabled?
-      end
-
-      def self.service_url
-        ::Gitlab::CurrentSettings
-          .current_application_settings
-          .external_authorization_service_url
-      end
-
-      def self.timeout
-        ::Gitlab::CurrentSettings
-          .current_application_settings
-          .external_authorization_service_timeout
       end
     end
   end

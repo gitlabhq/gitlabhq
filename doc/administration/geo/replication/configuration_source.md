@@ -1,13 +1,13 @@
 # Geo configuration (source)
 
->**Note:**
+NOTE: **Note:**
 This is the documentation for installations from source. For installations
 using the Omnibus GitLab packages, follow the
 [**Omnibus Geo nodes configuration**][configuration] guide.
 
 ## Configuring a new secondary node
 
->**Note:**
+NOTE: **Note:**
 This is the final step in setting up a secondary Geo node. Stages of the setup
 process must be completed in the documented order. Before attempting the steps
 in this stage, [complete all prior stages][setup-geo-source].
@@ -20,7 +20,7 @@ You are encouraged to first read through all the steps before executing them
 in your testing/production environment.
 
 
->**Notes:**
+NOTE: **Notes:**
 - **Do not** setup any custom authentication in the secondary nodes, this will be
   handled by the primary node.
 - **Do not** add anything in the secondaries Geo nodes admin area

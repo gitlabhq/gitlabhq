@@ -2,6 +2,8 @@ require 'digest/md5'
 require 'uri'
 
 module ApplicationHelper
+  prepend EE::ApplicationHelper
+
   # Check if a particular controller is the current one
   #
   # args - One or more controller names to check
@@ -326,5 +328,12 @@ module ApplicationHelper
 
   def locale_path
     asset_path("locale/#{Gitlab::I18n.locale}/app.js")
+  end
+
+  # Overridden in EE
+  def read_only_message
+    return unless Gitlab::Database.read_only?
+
+    _('You are on a read-only GitLab instance.')
   end
 end

@@ -6,7 +6,7 @@
          profile_url: url_for(params.merge(lineprofiler: 'true')) },
          class: Peek.env }
 
-#peek-view-performance-bar
+#peek-view-performance-bar.hidden
   = render_server_response_time
   %span#serverstats
   %ul.performance-bar

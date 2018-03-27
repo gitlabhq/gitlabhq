@@ -60,16 +60,10 @@ See the [Rails guides] for more info.
 
     As mentioned, the part after `+` is ignored, and this will end up in the mailbox for `gitlab-incoming@gmail.com`.
 
-1. Uncomment the `mail_room` line in your `Procfile`:
-
-    ```yaml
-    mail_room: bundle exec mail_room -q -c config/mail_room.yml
-    ```
-
-1. Restart GitLab:
+1. Run this command in the GitLab root directory to launch `mail_room`:
 
     ```sh
-    bundle exec foreman start
+    bundle exec mail_room -q -c config/mail_room.yml
     ```
 
 1. Verify that everything is configured correctly:

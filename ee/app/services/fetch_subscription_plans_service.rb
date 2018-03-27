@@ -12,7 +12,10 @@ class FetchSubscriptionPlansService
   private
 
   def send_request
-    response = HTTParty.get(URL, query: { plan: @plan }, headers: { 'Accept' => 'application/json' })
+    response = Gitlab::HTTP.get(URL,
+                                allow_local_requests: true,
+                                query: { plan: @plan },
+                                headers: { 'Accept' => 'application/json' })
 
     JSON.parse(response.body).map { |plan| Hashie::Mash.new(plan) }
   rescue => e

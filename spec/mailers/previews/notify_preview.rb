@@ -58,6 +58,12 @@ class NotifyPreview < ActionMailer::Preview
     end
   end
 
+  # EE-specific start
+  def unapproved_merge_request
+    Notify.unapproved_merge_request_email(user.id, merge_request.id, approver.id).message
+  end
+  # EE-specific end
+
   private
 
   def project
@@ -65,7 +71,7 @@ class NotifyPreview < ActionMailer::Preview
   end
 
   def merge_request
-    @merge_request ||= project.merge_requests.find_by(source_branch: 'master', target_branch: 'feature')
+    @merge_request ||= project.merge_requests.first
   end
 
   def user
@@ -104,4 +110,10 @@ class NotifyPreview < ActionMailer::Preview
     pipeline = Ci::Pipeline.last
     Notify.pipeline_failed_email(pipeline, pipeline.user.try(:email))
   end
+
+  # EE-specific start
+  def approver
+    @user ||= User.first
+  end
+  # EE-specific end
 end

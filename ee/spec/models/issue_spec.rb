@@ -66,7 +66,7 @@ describe Issue do
 
   context 'when an external authentication service' do
     before do
-      enable_external_authorization_service
+      enable_external_authorization_service_check
     end
 
     describe '#publicly_visible?' do

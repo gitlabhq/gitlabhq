@@ -19,7 +19,7 @@ describe Gitlab::Chat::Responder::Slack do
 
   describe '#send_response' do
     it 'sends a response back to Slack' do
-      expect(HTTParty).to receive(:post).with(
+      expect(Gitlab::HTTP).to receive(:post).with(
         'http://example.com',
         { headers: { Accept: 'application/json' }, body: 'hello'.to_json }
       )

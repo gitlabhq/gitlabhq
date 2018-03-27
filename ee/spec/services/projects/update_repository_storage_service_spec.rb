@@ -35,7 +35,7 @@ describe Projects::UpdateRepositoryStorageService do
             .with(project.repository.raw).and_return(true)
           expect(GitlabShellWorker).to receive(:perform_async)
             .with(:mv_repository,
-              'tmp/tests/storage_a',
+              File.absolute_path('tmp/tests/storage_a'),
               project.disk_path,
               "#{project.disk_path}+#{project.id}+moved+#{time.to_i}")
 
@@ -88,7 +88,7 @@ describe Projects::UpdateRepositoryStorageService do
             .with(project.repository.raw).and_return(true)
           expect(GitlabShellWorker).to receive(:perform_async)
             .with(:mv_repository,
-              'tmp/tests/storage_a',
+              File.absolute_path('tmp/tests/storage_a'),
               project.disk_path,
               "#{project.disk_path}+#{project.id}+moved+#{time.to_i}")
 
@@ -96,7 +96,7 @@ describe Projects::UpdateRepositoryStorageService do
             .with(project.wiki.repository.raw).and_return(true)
           expect(GitlabShellWorker).to receive(:perform_async)
             .with(:mv_repository,
-              'tmp/tests/storage_a',
+              File.absolute_path('tmp/tests/storage_a'),
               project.wiki.disk_path,
               "#{project.disk_path}+#{project.id}+moved+#{time.to_i}.wiki")
 

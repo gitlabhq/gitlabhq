@@ -20,16 +20,8 @@ describe('detailedMetric', () => {
       });
     });
 
-    it('does not display details', () => {
-      expect(vm.$el.innerText).not.toContain('/');
-    });
-
-    it('does not display the modal', () => {
-      expect(vm.$el.querySelector('.performance-bar-modal')).toBeNull();
-    });
-
-    it('displays the metric name', () => {
-      expect(vm.$el.innerText).toContain('gitaly');
+    it('does not render the element', () => {
+      expect(vm.$el.innerHTML).toEqual(undefined);
     });
   });
 

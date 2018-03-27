@@ -5,6 +5,7 @@ describe 'ci/lints/show' do
 
   describe 'XSS protection' do
     let(:config_processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(content)) }
+
     before do
       assign(:status, true)
       assign(:builds, config_processor.builds)

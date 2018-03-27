@@ -1,6 +1,19 @@
+# --- Special code for migrating to Rails 5.0 ---
+def rails5?
+  %w[1 true].include?(ENV["RAILS5"])
+end
+
+gem_versions = {}
+gem_versions['activerecord_sane_schema_dumper'] = rails5? ? '1.0'      : '0.2'
+gem_versions['default_value_for']               = rails5? ? '~> 3.0.5' : '~> 3.0.0'
+gem_versions['html-pipeline']                   = rails5? ? '~> 2.6.0' : '~> 1.11.0'
+gem_versions['rails']                           = rails5? ? '5.0.6'    : '4.2.10'
+gem_versions['rails-i18n']                      = rails5? ? '~> 5.1'   : '~> 4.0.9'
+# --- The end of special code for migrating to Rails 5.0 ---
+
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.10'
+gem 'rails', gem_versions['rails']
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 
 # Responders respond_to and respond_with
@@ -9,7 +22,7 @@ gem 'responders', '~> 2.0'
 gem 'sprockets', '~> 3.7.0'
 
 # Default values for AR models
-gem 'default_value_for', '~> 3.0.0'
+gem 'default_value_for', gem_versions['default_value_for']
 
 # Supported DBs
 gem 'mysql2', '~> 0.4.10', group: :mysql
@@ -24,8 +37,8 @@ gem 'faraday', '~> 0.12'
 gem 'devise', '~> 4.2'
 gem 'doorkeeper', '~> 4.3'
 gem 'doorkeeper-openid_connect', '~> 1.3'
-gem 'omniauth', '~> 1.4.2'
-gem 'omniauth-auth0', '~> 1.4.1'
+gem 'omniauth', '~> 1.8'
+gem 'omniauth-auth0', '~> 2.0.0'
 gem 'omniauth-azure-oauth2', '~> 0.0.9'
 gem 'omniauth-cas3', '~> 1.1.4'
 gem 'omniauth-facebook', '~> 4.0.0'
@@ -36,7 +49,7 @@ gem 'omniauth-kerberos', '~> 0.3.0', group: :kerberos
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
 gem 'omniauth-saml', '~> 1.10'
 gem 'omniauth-shibboleth', '~> 1.2.0'
-gem 'omniauth-twitter', '~> 1.2.0'
+gem 'omniauth-twitter', '~> 1.4'
 gem 'omniauth_crowd', '~> 2.2.0'
 gem 'omniauth-authentiq', '~> 0.3.1'
 gem 'rack-oauth2', '~> 1.2.1'
@@ -132,7 +145,7 @@ gem 'aws-sdk'
 gem 'faraday_middleware-aws-signers-v4'
 
 # Markdown and HTML processing
-gem 'html-pipeline', '~> 1.11.0'
+gem 'html-pipeline', gem_versions['html-pipeline']
 gem 'deckar01-task_list', '2.0.0'
 gem 'gitlab-markup', '~> 1.6.2'
 gem 'redcarpet', '~> 3.4'
@@ -159,7 +172,7 @@ group :unicorn do
 end
 
 # State machine
-gem 'state_machines-activerecord', '~> 0.4.0'
+gem 'state_machines-activerecord', '~> 0.5.1'
 
 # Issue tags
 gem 'acts-as-taggable-on', '~> 5.0'
@@ -228,10 +241,10 @@ gem 'sanitize', '~> 2.0'
 gem 'babosa', '~> 1.0.2'
 
 # Sanitizes SVG input
-gem 'loofah', '~> 2.0.3'
+gem 'loofah', '~> 2.2'
 
 # Working with license
-gem 'licensee', '~> 8.7.0'
+gem 'licensee', '~> 8.9'
 
 # Protect against bruteforcing
 gem 'rack-attack', '~> 4.4.1'
@@ -278,9 +291,9 @@ gem 'premailer-rails', '~> 1.9.7'
 
 # I18n
 gem 'ruby_parser', '~> 3.8', require: false
-gem 'rails-i18n', '~> 4.0.9'
+gem 'rails-i18n', gem_versions['rails-i18n']
 gem 'gettext_i18n_rails', '~> 1.8.0'
-gem 'gettext_i18n_rails_js', '~> 1.2.0'
+gem 'gettext_i18n_rails_js', '~> 1.3'
 gem 'gettext', '~> 3.2.2', require: false, group: :development
 
 gem 'batch-loader', '~> 1.2.1'
@@ -369,7 +382,7 @@ group :development, :test do
   gem 'license_finder', '~> 3.1', require: false
   gem 'knapsack', '~> 1.16'
 
-  gem 'activerecord_sane_schema_dumper', '0.2'
+  gem 'activerecord_sane_schema_dumper', gem_versions['activerecord_sane_schema_dumper']
 
   gem 'stackprof', '~> 0.2.10', require: false
 

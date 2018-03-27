@@ -26,15 +26,34 @@ describe('Security Report App', () => {
             resolvedIssues: [],
             allIssues: [],
           },
+          dependencyScanning: {
+            isLoading: false,
+            hasError: false,
+            newIssues: parsedSastIssuesHead,
+            resolvedIssues: [],
+            allIssues: [],
+          },
         },
+        hasDependencyScanning: true,
+        hasSast: true,
       });
     });
 
     it('renders the sast report', () => {
-      expect(vm.$el.querySelector('.js-code-text').textContent.trim()).toEqual('SAST degraded on 2 security vulnerabilities');
-      expect(vm.$el.querySelectorAll('.js-mr-code-new-issues li').length).toEqual(parsedSastIssuesHead.length);
+      expect(vm.$el.querySelector('.js-sast-widget .js-code-text').textContent.trim()).toEqual('SAST degraded on 2 security vulnerabilities');
+      expect(vm.$el.querySelectorAll('.js-sast-widget .js-mr-code-new-issues li').length).toEqual(parsedSastIssuesHead.length);
 
-      const issue = vm.$el.querySelector('.js-mr-code-new-issues li').textContent;
+      const issue = vm.$el.querySelector('.js-sast-widget .js-mr-code-new-issues li').textContent;
+
+      expect(issue).toContain(parsedSastIssuesHead[0].message);
+      expect(issue).toContain(parsedSastIssuesHead[0].path);
+    });
+
+    it('renders the dependency scanning report', () => {
+      expect(vm.$el.querySelector('.js-dependency-scanning-widget .js-code-text').textContent.trim()).toEqual('Dependency scanning degraded on 2 security vulnerabilities');
+      expect(vm.$el.querySelectorAll('.js-dependency-scanning-widget .js-mr-code-new-issues li').length).toEqual(parsedSastIssuesHead.length);
+
+      const issue = vm.$el.querySelector('.js-dependency-scanning-widget .js-mr-code-new-issues li').textContent;
 
       expect(issue).toContain(parsedSastIssuesHead[0].message);
       expect(issue).toContain(parsedSastIssuesHead[0].path);

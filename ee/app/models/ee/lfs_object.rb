@@ -7,16 +7,7 @@ module EE
     extend ActiveSupport::Concern
 
     prepended do
-      include ObjectStorage::BackgroundMove
-
       after_destroy :log_geo_event
-
-      scope :with_files_stored_locally, -> { where(file_store: [nil, LfsObjectUploader::Store::LOCAL]) }
-      scope :with_files_stored_remotely, -> { where(file_store: ObjectStorage::Store::REMOTE) }
-    end
-
-    def local_store?
-      [nil, LfsObjectUploader::Store::LOCAL].include?(self.file_store)
     end
 
     private

@@ -1,5 +1,0 @@
----
-title: Hard failing a mirror no longer fails for a blocked user's personal project
-merge_request: 5063
-author:
-type: fixed

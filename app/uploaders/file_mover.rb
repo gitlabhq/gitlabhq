@@ -10,7 +10,11 @@ class FileMover
 
   def execute
     move
-    uploader.record_upload if update_markdown
+
+    if update_markdown
+      uploader.record_upload
+      uploader.schedule_background_upload
+    end
   end
 
   private

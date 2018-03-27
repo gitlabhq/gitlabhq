@@ -10,7 +10,7 @@ shared_examples 'disabled when using an external authorization service' do
   end
 
   it 'renders a 404 with a message when the feature is enabled' do
-    enable_external_authorization_service
+    enable_external_authorization_service_check
 
     subject
 

@@ -1132,6 +1132,36 @@ describe NotificationService, :mailer do
       end
     end
 
+    describe '#push_to_merge_request' do
+      before do
+        update_custom_notification(:push_to_merge_request, @u_guest_custom, resource: project)
+        update_custom_notification(:push_to_merge_request, @u_custom_global)
+      end
+
+      it do
+        notification.push_to_merge_request(merge_request, @u_disabled)
+
+        should_email(merge_request.assignee)
+        should_email(@u_guest_custom)
+        should_email(@u_custom_global)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
+        should_not_email(@u_watcher)
+        should_not_email(@u_guest_watcher)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+        should_not_email(@u_lazy_participant)
+      end
+
+      it_behaves_like 'participating notifications' do
+        let(:participant) { create(:user, username: 'user-participant') }
+        let(:issuable) { merge_request }
+        let(:notification_trigger) { notification.push_to_merge_request(merge_request, @u_disabled) }
+      end
+    end
+
     describe '#relabel_merge_request' do
       let(:group_label_1) { create(:group_label, group: group, title: 'Group Label 1', merge_requests: [merge_request]) }
       let(:group_label_2) { create(:group_label, group: group, title: 'Group Label 2') }

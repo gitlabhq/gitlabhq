@@ -9,7 +9,6 @@
 .new_project,
 .edit-project,
 .import-project {
-
   .help-block {
     margin-bottom: 10px;
   }
@@ -18,26 +17,25 @@
     border-radius: $border-radius-base;
   }
 
-  .input-group > div {
-
-    &:last-child {
-      padding-right: 0;
-    }
-  }
-
-  .load-wrapper {
-    position: absolute;
-    background: $black-transparent;
-    width: 100%;
-    height: 100%;
+  .input-group {
     display: flex;
-    align-items: center;
-    justify-content: center;
+
+    .select2-container {
+      display: unset;
+      max-width: unset;
+      width: unset !important;
+      flex-grow: 1;
+    }
+
+    > div {
+      &:last-child {
+        padding-right: 0;
+      }
+    }
   }
 
   @media (max-width: $screen-xs-max) {
     .input-group > div {
-
       &:last-child {
         margin-bottom: 0;
       }
@@ -49,17 +47,24 @@
   }
 
   .input-group-addon {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: unset;
+    width: unset;
+    max-width: 50%;
+    text-align: left;
 
     &.static-namespace {
       height: 35px;
       border-radius: 3px;
       border: 1px solid $border-color;
+      max-width: 100%;
+      flex-grow: 1;
     }
 
     + .select2 a,
     + .btn-default {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
+      border-radius: 0 $border-radius-base $border-radius-base 0;
     }
   }
 }
@@ -298,7 +303,7 @@
       font-size: 13px;
       font-weight: $gl-font-weight-bold;
       line-height: 13px;
-      letter-spacing: .4px;
+      letter-spacing: 0.4px;
       padding: 6px 14px;
       text-align: center;
       vertical-align: middle;
@@ -451,7 +456,7 @@ a.deploy-project-label {
     text-decoration: none;
 
     &.disabled {
-      opacity: .3;
+      opacity: 0.3;
       cursor: not-allowed;
     }
   }
@@ -561,6 +566,7 @@ a.deploy-project-label {
   }
 
   .import-buttons {
+    padding-left: 0;
     display: -webkit-flex;
     display: flex;
     -webkit-flex-wrap: wrap;
@@ -607,26 +613,26 @@ a.deploy-project-label {
   }
 
   .first-column {
-    @media(min-width: $screen-xs-min) {
+    @media (min-width: $screen-xs-min) {
       max-width: 50%;
       padding-right: 30px;
     }
 
-    @media(max-width: $screen-xs-max) {
+    @media (max-width: $screen-xs-max) {
       max-width: 100%;
       width: 100%;
     }
   }
 
   .second-column {
-    @media(min-width: $screen-xs-min) {
+    @media (min-width: $screen-xs-min) {
       width: 50%;
       flex: 1;
       padding-left: 30px;
       position: relative;
     }
 
-    @media(max-width: $screen-xs-max) {
+    @media (max-width: $screen-xs-max) {
       max-width: 100%;
       width: 100%;
       padding-left: 0;
@@ -639,7 +645,7 @@ a.deploy-project-label {
     }
 
     &::before {
-      content: "OR";
+      content: 'OR';
       position: absolute;
       left: -10px;
       top: 50%;
@@ -663,7 +669,7 @@ a.deploy-project-label {
     }
 
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       background-color: $border-color;
       bottom: 0;
@@ -895,11 +901,6 @@ pre.light-well {
   }
 }
 
-a.allowed-to-merge,
-a.allowed-to-push {
-  cursor: pointer;
-}
-
 .new-protected-branch,
 .new-protected-tag {
   label {
@@ -928,29 +929,19 @@ a.allowed-to-push {
   .table-bordered {
     border-radius: 1px;
 
-    td {
-      vertical-align: top;
-    }
-
     th:not(:last-child),
     td:not(:last-child) {
       border-right: solid 1px transparent;
     }
   }
 
-  .flash-container {
-    padding: 0;
-  }
-}
-
-.disabled-item {
-  @extend .btn.disabled;
-}
-
-.protected-tags-list {
   .dropdown-menu-toggle {
     width: 100%;
     max-width: 300px;
+  }
+
+  .flash-container {
+    padding: 0;
   }
 }
 
@@ -981,22 +972,6 @@ a.allowed-to-push {
 
   a {
     white-space: normal;
-  }
-}
-
-.project-mirror-text {
-  @media (min-width: $screen-sm-min) {
-    float: left;
-    line-height: 35px;
-  }
-}
-
-.project-mirror-button {
-  margin-top: 10px;
-
-  @media (min-width: $screen-sm-min) {
-    float: right;
-    margin-top: 0;
   }
 }
 
@@ -1119,22 +1094,6 @@ a.allowed-to-push {
 
   .variable-menu {
     text-align: right;
-  }
-}
-
-#modal-geo-info .modal-dialog {
-  max-width: 700px;
-
-  .btn-clipboard {
-    @extend .pull-right;
-    margin-right: 20px;
-    margin-top: 5px;
-    position: absolute;
-    right: 0;
-  }
-
-  .dark {
-    margin-right: 40px;
   }
 }
 

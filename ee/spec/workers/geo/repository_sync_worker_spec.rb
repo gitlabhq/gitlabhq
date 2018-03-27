@@ -17,6 +17,10 @@ describe Geo::RepositorySyncWorker, :geo, :clean_gitlab_redis_cache do
     stub_current_geo_node(secondary)
   end
 
+  around do |example|
+    Sidekiq::Testing.inline! { example.run }
+  end
+
   describe '#perform' do
     context 'additional shards' do
       it 'skips backfill for repositories on other shards' do
@@ -31,7 +35,7 @@ describe Geo::RepositorySyncWorker, :geo, :clean_gitlab_redis_cache do
         expect(Geo::RepositoryShardSyncWorker).to receive(:perform_async).with(project_in_synced_group.repository.storage)
         expect(Geo::RepositoryShardSyncWorker).not_to receive(:perform_async).with('broken')
 
-        Sidekiq::Testing.inline! { subject.perform }
+        subject.perform
       end
 
       it 'skips backfill for projects on shards excluded by selective sync' do
@@ -46,7 +50,7 @@ describe Geo::RepositorySyncWorker, :geo, :clean_gitlab_redis_cache do
         expect(Geo::RepositoryShardSyncWorker).to receive(:perform_async).with('default')
         expect(Geo::RepositoryShardSyncWorker).not_to receive(:perform_async).with('broken')
 
-        Sidekiq::Testing.inline! { subject.perform }
+        subject.perform
       end
 
       it 'skips backfill for projects on missing shards' do
@@ -63,7 +67,7 @@ describe Geo::RepositorySyncWorker, :geo, :clean_gitlab_redis_cache do
         expect(Geo::RepositoryShardSyncWorker).to receive(:perform_async).with(project_in_synced_group.repository.storage)
         expect(Geo::RepositoryShardSyncWorker).not_to receive(:perform_async).with('unknown')
 
-        Sidekiq::Testing.inline! { subject.perform }
+        subject.perform
       end
 
       it 'skips backfill for projects with downed Gitaly server' do
@@ -81,7 +85,7 @@ describe Geo::RepositorySyncWorker, :geo, :clean_gitlab_redis_cache do
         expect(Geo::RepositoryShardSyncWorker).to receive(:perform_async).with(healthy_shard)
         expect(Geo::RepositoryShardSyncWorker).not_to receive(:perform_async).with('broken')
 
-        Sidekiq::Testing.inline! { subject.perform }
+        subject.perform
       end
     end
   end

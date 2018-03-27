@@ -1,5 +1,4 @@
 class JenkinsService < CiService
-  include HTTParty
   prop_accessor :jenkins_url, :project_name, :username, :password
 
   before_update :reset_password

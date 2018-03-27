@@ -217,6 +217,7 @@ describe API::Runner do
       let(:user_agent) { 'gitlab-runner 9.0.0 (9-0-stable; go1.7.4; linux/amd64)' }
 
       before do
+        job
         stub_container_registry_config(enabled: false)
       end
 

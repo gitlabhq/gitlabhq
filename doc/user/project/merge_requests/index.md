@@ -35,7 +35,11 @@ With **[GitLab Enterprise Edition][ee]**, you can also:
 - View the deployment process across projects with [Multi-Project Pipeline Graphs](https://docs.gitlab.com/ee/ci/multi_project_pipeline_graphs.html#multi-project-pipeline-graphs) (available only in GitLab Premium)
 - Request [approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your managers (available in GitLab Starter)
 - [Squash and merge](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html) for a cleaner commit history (available in GitLab Starter)
-- Analyze the impact of your changes with [Code Quality reports](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html) (available in GitLab Starter)
+- Analyze the impact of your changes with [Code Quality](#code-quality) (available in GitLab Starter)
+- Analyze your source code for vulnerabilities with [Static Application Security Testing](#static-application-security-testing) (available in GitLab Ultimate)
+- Analyze your dependencies for vulnerabilities with [Dependency Scanning](#dependency-scanning) (available in GitLab Ultimate)
+- Analyze your Docker images for vulnerabilities with [Container Scanning](#container-scanning) (available in GitLab Ultimate)
+- Analyze your running web applications for vulnerabilities with [Dynamic Application Security Testing](#dynamic-application-security-testing) (available in GitLab Ultimate)
 - Determine the performance impact of changes with [Browser Performance Testing](#browser-performance-testing) (available in GitLab Premium)
 
 ## Use cases
@@ -44,7 +48,7 @@ A. Consider you are a software developer working in a team:
 
 1. You checkout a new branch, and submit your changes through a merge request
 1. You gather feedback from your team
-1. You work on the implementation optimizing code with [Code Quality reports](#code-quality-reports)
+1. You work on the implementation optimizing code with [Code Quality](#code-quality)
 1. You build and test your changes with GitLab CI/CD
 1. You request the [approval](#merge-request-approvals) from your manager
 1. Your manager pushes a commit with his final review, [approves the merge request](#merge-request-approvals), and set it to [merge when pipeline succeeds](#merge-when-pipeline-succeeds)
@@ -207,7 +211,7 @@ list of approvers that will need to approve every merge request in a project.
 
 [Read more about merge request approvals.](merge_request_approvals.md)
 
-## Code Quality reports
+## Code Quality
 
 > Introduced in [GitLab Starter][products] 9.3.
 
@@ -227,6 +231,17 @@ Going a step further, GitLab can show the vulnerability report right in the
 merge request widget area.
 
 [Read more about Static Application Security Testing reports.](sast.md)
+
+## Dependency Scanning
+
+> Introduced in [GitLab Ultimate][products] 10.7.
+
+If you are using [GitLab CI/CD][ci], you can analyze your dependencies for known
+vulnerabilities using Dependency Scanning.
+Going a step further, GitLab can show the vulnerability report right in the
+merge request widget area.
+
+[Read more about Dependency Scanning reports.](dependency_scanning.md)
 
 ## Container Scanning
 

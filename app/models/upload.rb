@@ -12,7 +12,6 @@ class Upload < ActiveRecord::Base
   validates :uploader, presence: true
 
   scope :with_files_stored_locally, -> { where(store: [nil, ObjectStorage::Store::LOCAL]) }
-  scope :with_files_stored_remotely, -> { where(store: ObjectStorage::Store::REMOTE) }
 
   before_save  :calculate_checksum!, if: :foreground_checksummable?
   after_commit :schedule_checksum,   if: :checksummable?
@@ -36,7 +35,7 @@ class Upload < ActiveRecord::Base
     self.checksum = nil
     return unless checksummable?
 
-    self.checksum = self.class.hexdigest(absolute_path)
+    self.checksum = Digest::SHA256.file(absolute_path).hexdigest
   end
 
   def build_uploader(mounted_as = nil)

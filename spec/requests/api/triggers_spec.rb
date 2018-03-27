@@ -185,6 +185,12 @@ describe API::Triggers do
             expect(response).to have_http_status(201)
             expect(Ci::Pipeline.last.source).to eq('pipeline')
             expect(Ci::Pipeline.last.triggered_by_pipeline).not_to be_nil
+            expect(Ci::Sources::Pipeline.last).to have_attributes(
+              pipeline_id: (a_value > 0),
+              source_pipeline_id: (a_value > 0),
+              source_job_id: (a_value > 0),
+              source_project_id: (a_value > 0)
+            )
           end
 
           context 'when build is complete' do

@@ -92,8 +92,8 @@ module Gitlab
 
             if type && time
               @load_times_by_model ||= {}
-              @load_times_by_model[type] ||= 0
-              @load_times_by_model[type] += time.to_f
+              @load_times_by_model[type] ||= []
+              @load_times_by_model[type] << time.to_f
             end
 
             super
@@ -135,8 +135,12 @@ module Gitlab
     def self.log_load_times_by_model(logger)
       return unless logger.respond_to?(:load_times_by_model)
 
-      logger.load_times_by_model.to_a.sort_by(&:last).reverse.each do |(model, time)|
-        logger.info("#{model} total: #{time.round(2)}ms")
+      summarised_load_times = logger.load_times_by_model.to_a.map do |(model, times)|
+        [model, times.count, times.sum]
+      end
+
+      summarised_load_times.sort_by(&:last).reverse.each do |(model, query_count, time)|
+        logger.info("#{model} total (#{query_count}): #{time.round(2)}ms")
       end
     end
   end

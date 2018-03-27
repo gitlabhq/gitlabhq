@@ -674,6 +674,10 @@ as Review Apps. You can see a simple example using Review Apps at
   by default.
 - From GitLab 9.2, caches are restored before [artifacts](#artifacts).
 
+TIP: **Learn more:**
+Read how caching works and find out some good practices in the
+[caching dependencies documentation](../caching/index.md).
+
 `cache` is used to specify a list of files and directories which should be
 cached between jobs. You can only use paths that are within the project
 workspace.
@@ -681,18 +685,93 @@ workspace.
 If `cache` is defined outside the scope of jobs, it means it is set
 globally and all jobs will use that definition.
 
-Cache all files in `binaries` and `.config`:
+### `cache:paths`
+
+Use the `paths` directive to choose which files or directories will be cached.
+Wildcards can be used as well.
+
+Cache all files in `binaries` that end in `.apk` and the `.config` file:
 
 ```yaml
 rspec:
   script: test
   cache:
     paths:
-    - binaries/
+    - binaries/*.apk
     - .config
 ```
 
-Cache all Git untracked files:
+Locally defined cache overrides globally defined options. The following `rspec`
+job will cache only `binaries/`:
+
+```yaml
+cache:
+  paths:
+  - my/files
+
+rspec:
+  script: test
+  cache:
+    paths:
+    - binaries/
+```
+
+### `cache:key`
+
+> Introduced in GitLab Runner v1.0.0.
+
+Since the cache is shared between jobs, if you're using different
+paths for different jobs, you should also set a different `cache:key`
+otherwise cache content can be overwritten.
+
+The `key` directive allows you to define the affinity of caching between jobs,
+allowing to have a single cache for all jobs, cache per-job, cache per-branch
+or any other way that fits your workflow. This way, you can fine tune caching,
+allowing you to cache data between different jobs or even different branches.
+
+The `cache:key` variable can use any of the
+[predefined variables](../variables/README.md), and the default key, if not set,
+is `$CI_JOB_NAME-$CI_COMMIT_REF_NAME` which translates as "per-job and
+per-branch". It is the default across the project, therefore everything is
+shared between pipelines and jobs running on the same branch by default.
+
+NOTE: **Note:**
+The `cache:key` variable cannot contain the `/` character, or the equivalent
+URI-encoded `%2F`; a value made only of dots (`.`, `%2E`) is also forbidden.
+
+For example, to enable per-branch caching:
+
+```yaml
+cache:
+  key: "$CI_COMMIT_REF_SLUG"
+  paths:
+  - binaries/
+```
+
+If you use **Windows Batch** to run your shell scripts you need to replace
+`$` with `%`:
+
+```yaml
+cache:
+  key: "%CI_JOB_STAGE%-%CI_COMMIT_REF_SLUG%"
+  paths:
+  - binaries/
+```
+
+If you use **Windows PowerShell** to run your shell scripts you need to replace
+`$` with `$env:`:
+
+```yaml
+cache:
+  key: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_SLUG"
+  paths:
+  - binaries/
+```
+
+### `cache:untracked`
+
+Set `untracked: true` to cache all files that are untracked in your Git
+repository:
 
 ```yaml
 rspec:
@@ -710,103 +789,6 @@ rspec:
     untracked: true
     paths:
     - binaries/
-```
-
-Locally defined cache overrides globally defined options. The following `rspec`
-job will cache only `binaries/`:
-
-```yaml
-cache:
-  paths:
-  - my/files
-
-rspec:
-  script: test
-  cache:
-    key: rspec
-    paths:
-    - binaries/
-```
-
-Note that since cache is shared between jobs, if you're using different
-paths for different jobs, you should also set a different **cache:key**
-otherwise cache content can be overwritten.
-
-NOTE: **Note:**
-The cache is provided on a best-effort basis, so don't expect that the cache
-will be always present.
-
-### `cache:key`
-
-> Introduced in GitLab Runner v1.0.0.
-
-The `key` directive allows you to define the affinity of caching
-between jobs, allowing to have a single cache for all jobs,
-cache per-job, cache per-branch or any other way that fits your needs.
-
-This way, you can fine tune caching, allowing you to cache data between
-different jobs or even different branches.
-
-The `cache:key` variable can use any of the
-[predefined variables](../variables/README.md), and the default key, if not set,
-is set as `$CI_JOB_NAME-$CI_COMMIT_REF_NAME` which translates as "per-job and
-per-branch". It is the default across the project, therefore everything is
-shared between pipelines and jobs running on the same branch by default.
-
-NOTE: **Note:**
-The `cache:key` variable cannot contain the `/` character, or the equivalent
-URI-encoded `%2F`; a value made only of dots (`.`, `%2E`) is also forbidden.
-
-**Example configurations**
-
-To enable per-job caching:
-
-```yaml
-cache:
-  key: "$CI_JOB_NAME"
-  untracked: true
-```
-
-To enable per-branch caching:
-
-```yaml
-cache:
-  key: "$CI_COMMIT_REF_SLUG"
-  untracked: true
-```
-
-To enable per-job and per-branch caching:
-
-```yaml
-cache:
-  key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
-  untracked: true
-```
-
-To enable per-branch and per-stage caching:
-
-```yaml
-cache:
-  key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
-  untracked: true
-```
-
-If you use **Windows Batch** to run your shell scripts you need to replace
-`$` with `%`:
-
-```yaml
-cache:
-  key: "%CI_JOB_STAGE%-%CI_COMMIT_REF_SLUG%"
-  untracked: true
-```
-
-If you use **Windows PowerShell** to run your shell scripts you need to replace
-`$` with `$env:`:
-
-```yaml
-cache:
-  key: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_SLUG"
-  untracked: true
 ```
 
 ### `cache:policy`
@@ -1150,7 +1132,7 @@ job1:
 
 ## `retry`
 
-> [Introduced][ce-3442] in GitLab 9.5.
+> [Introduced][ce-12909] in GitLab 9.5.
 
 `retry` allows you to configure how many times a job is going to be retried in
 case of a failure.
@@ -1706,7 +1688,7 @@ CI with various languages.
 [variables]: ../variables/README.md
 [ce-7983]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7983
 [ce-7447]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7447
-[ce-3442]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3442
+[ce-12909]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12909
 [schedules]: ../../user/project/pipelines/schedules.md
 [ee]: https://about.gitlab.com/gitlab-ee/
 [gitlab-versions]: https://about.gitlab.com/products/

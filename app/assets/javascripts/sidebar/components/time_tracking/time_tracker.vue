@@ -1,6 +1,6 @@
 <script>
 import timeTrackingHelpState from './help_state';
-import timeTrackingCollapsedState from './collapsed_state';
+import TimeTrackingCollapsedState from './collapsed_state.vue';
 import timeTrackingSpentOnlyPane from './spent_only_pane';
 import timeTrackingNoTrackingPane from './no_tracking_pane';
 import timeTrackingEstimateOnlyPane from './estimate_only_pane';
@@ -11,7 +11,7 @@ import eventHub from '../../event_hub';
 export default {
   name: 'IssuableTimeTracker',
   components: {
-    'time-tracking-collapsed-state': timeTrackingCollapsedState,
+    TimeTrackingCollapsedState,
     'time-tracking-estimate-only-pane': timeTrackingEstimateOnlyPane,
     'time-tracking-spent-only-pane': timeTrackingSpentOnlyPane,
     'time-tracking-no-tracking-pane': timeTrackingNoTrackingPane,

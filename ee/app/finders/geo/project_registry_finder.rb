@@ -62,7 +62,7 @@ module Geo
         if use_legacy_queries?
           legacy_find_verified_wikis
         else
-          find_verified_wikis
+          fdw_find_verified_wikis
         end
 
       relation.count
@@ -125,10 +125,6 @@ module Geo
       Geo::ProjectRegistry.verified_repos
     end
 
-    def find_verified_wikis
-      Geo::ProjectRegistry.verified_wikis
-    end
-
     def find_filtered_failed_project_registries(type = nil)
       case type
       when 'repository'
@@ -163,19 +159,7 @@ module Geo
 
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>]
     def fdw_find_enabled_wikis
-      project_id_matcher =
-        Geo::Fdw::ProjectFeature.arel_table[:project_id]
-          .eq(Geo::ProjectRegistry.arel_table[:project_id])
-
-      # Only read the IDs of projects with disabled wikis from the remote database
-      not_exist = Geo::Fdw::ProjectFeature
-        .where(wiki_access_level: [::ProjectFeature::DISABLED, nil])
-        .where(project_id_matcher)
-        .select('1')
-        .exists
-        .not
-
-      Geo::ProjectRegistry.synced_wikis.where(not_exist)
+      Geo::ProjectRegistry.synced_wikis.where(fdw_not_disabled_wikis)
     end
 
     # @return [ActiveRecord::Relation<Geo::Fdw::Project>]
@@ -202,11 +186,30 @@ module Geo
         ).limit(batch_size)
     end
 
+    # @return [ActiveRecord::Relation<Geo::ProjectRegistry>]
+    def fdw_find_verified_wikis
+      Geo::ProjectRegistry.verified_wikis.where(fdw_not_disabled_wikis)
+    end
+
     def fdw_inner_join_repository_state
       local_registry_table
         .join(fdw_repository_state_table, Arel::Nodes::InnerJoin)
         .on(local_registry_table[:project_id].eq(fdw_repository_state_table[:project_id]))
         .join_sources
+    end
+
+    def fdw_not_disabled_wikis
+      project_id_matcher =
+        Geo::Fdw::ProjectFeature.arel_table[:project_id]
+          .eq(Geo::ProjectRegistry.arel_table[:project_id])
+
+      # Only read the IDs of projects with disabled wikis from the remote database
+      Geo::Fdw::ProjectFeature
+        .where(wiki_access_level: [::ProjectFeature::DISABLED, nil])
+        .where(project_id_matcher)
+        .select('1')
+        .exists
+        .not
     end
 
     #
@@ -264,9 +267,13 @@ module Geo
       legacy_find_project_registries(Geo::ProjectRegistry.verified_repos)
     end
 
-    # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of verified projects
+    # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of verified wikis
     def legacy_find_verified_wikis
-      legacy_find_project_registries(Geo::ProjectRegistry.verified_wikis)
+      legacy_inner_join_registry_ids(
+        current_node.projects.with_wiki_enabled,
+          Geo::ProjectRegistry.verified_wikis.pluck(:project_id),
+          Project
+      )
     end
 
     # @return [ActiveRecord::Relation<Project>] list of synced projects

@@ -23,7 +23,7 @@ describe EE::NotificationService, :mailer do
 
     context 'when the service is enabled' do
       before do
-        enable_external_authorization_service
+        enable_external_authorization_service_check
       end
 
       it 'does not send an email' do

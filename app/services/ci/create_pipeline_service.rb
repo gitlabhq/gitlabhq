@@ -9,6 +9,7 @@ module Ci
                 Gitlab::Ci::Pipeline::Chain::Validate::Config,
                 Gitlab::Ci::Pipeline::Chain::Skip,
                 EE::Gitlab::Ci::Pipeline::Chain::Limit::Size,
+                Gitlab::Ci::Pipeline::Chain::Populate,
                 Gitlab::Ci::Pipeline::Chain::Create,
                 EE::Gitlab::Ci::Pipeline::Chain::Limit::Activity].freeze
 
@@ -73,7 +74,7 @@ module Ci
       project.pipelines
         .where(ref: pipeline.ref)
         .where.not(id: pipeline.id)
-        .where.not(sha: project.repository.sha_from_ref(pipeline.ref))
+        .where.not(sha: project.commit(pipeline.ref).try(:id))
         .created_or_pending
     end
 

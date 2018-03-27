@@ -1,8 +1,6 @@
 module Gitlab
   module Verify
     class LfsObjects < BatchVerifier
-      prepend ::EE::Gitlab::Verify::LfsObjects
-
       def name
         'LFS objects'
       end
@@ -14,7 +12,7 @@ module Gitlab
       private
 
       def relation
-        LfsObject.all
+        LfsObject.with_files_stored_locally
       end
 
       def expected_checksum(lfs_object)

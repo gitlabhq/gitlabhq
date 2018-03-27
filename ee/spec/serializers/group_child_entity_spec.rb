@@ -19,7 +19,7 @@ describe GroupChildEntity do
     end
 
     before do
-      enable_external_authorization_service
+      enable_external_authorization_service_check
       object.add_master(user)
     end
 

@@ -158,6 +158,128 @@ describe('ee merge request widget options', () => {
     });
   });
 
+  describe('dependency scanning widget', () => {
+    beforeEach(() => {
+      gl.mrWidgetData = {
+        ...mockData,
+        dependency_scanning: {
+          base_path: 'path.json',
+          head_path: 'head_path.json',
+        },
+      };
+
+      Component.mr = new MRWidgetStore(gl.mrWidgetData);
+      Component.service = new MRWidgetService({});
+    });
+
+    describe('when it is loading', () => {
+      it('should render loading indicator', () => {
+        vm = mountComponent(Component);
+        expect(
+          vm.$el.querySelector('.js-dependency-scanning-widget').textContent.trim(),
+        ).toContain('Loading dependency scanning report');
+      });
+    });
+
+    describe('with successful request', () => {
+      let mock;
+
+      beforeEach(() => {
+        mock = mock = new MockAdapter(axios);
+        mock.onGet('path.json').reply(200, sastIssuesBase);
+        mock.onGet('head_path.json').reply(200, sastIssues);
+        vm = mountComponent(Component);
+      });
+
+      afterEach(() => {
+        mock.restore();
+      });
+
+      it('should render provided data', (done) => {
+        setTimeout(() => {
+          expect(
+            vm.$el.querySelector('.js-dependency-scanning-widget .js-code-text').textContent.trim(),
+          ).toEqual('Dependency scanning improved on 1 security vulnerability and degraded on 2 security vulnerabilities');
+          done();
+        }, 0);
+      });
+    });
+
+    describe('with full report and no added or fixed issues', () => {
+      let mock;
+
+      beforeEach(() => {
+        mock = mock = new MockAdapter(axios);
+        mock.onGet('path.json').reply(200, sastBaseAllIssues);
+        mock.onGet('head_path.json').reply(200, sastHeadAllIssues);
+
+        vm = mountComponent(Component);
+      });
+
+      afterEach(() => {
+        mock.restore();
+      });
+
+      it('renders no new vulnerabilities message', (done) => {
+        setTimeout(() => {
+          expect(
+            vm.$el.querySelector('.js-dependency-scanning-widget .js-code-text').textContent.trim(),
+          ).toEqual('Dependency scanning detected no new security vulnerabilities');
+          done();
+        }, 0);
+      });
+    });
+
+    describe('with empty successful request', () => {
+      let mock;
+
+      beforeEach(() => {
+        mock = mock = new MockAdapter(axios);
+        mock.onGet('path.json').reply(200, []);
+        mock.onGet('head_path.json').reply(200, []);
+
+        vm = mountComponent(Component);
+      });
+
+      afterEach(() => {
+        mock.restore();
+      });
+
+      it('should render provided data', (done) => {
+        setTimeout(() => {
+          expect(
+            vm.$el.querySelector('.js-dependency-scanning-widget .js-code-text').textContent.trim(),
+          ).toEqual('Dependency scanning detected no security vulnerabilities');
+          done();
+        }, 0);
+      });
+    });
+
+    describe('with failed request', () => {
+      let mock;
+
+      beforeEach(() => {
+        mock = mock = new MockAdapter(axios);
+        mock.onGet('path.json').reply(500, []);
+        mock.onGet('head_path.json').reply(500, []);
+        vm = mountComponent(Component);
+      });
+
+      afterEach(() => {
+        mock.restore();
+      });
+
+      it('should render error indicator', (done) => {
+        setTimeout(() => {
+          expect(
+            vm.$el.querySelector('.js-dependency-scanning-widget').textContent.trim(),
+          ).toContain('Failed to load dependency scanning report');
+          done();
+        }, 0);
+      });
+    });
+  });
+
   describe('code quality', () => {
     beforeEach(() => {
       gl.mrWidgetData = {

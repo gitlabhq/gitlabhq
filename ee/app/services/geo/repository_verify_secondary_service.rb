@@ -1,6 +1,6 @@
 module Geo
   class RepositoryVerifySecondaryService
-    include Gitlab::Geo::RepositoryVerificationLogHelpers
+    include Gitlab::Geo::ProjectLogHelpers
 
     delegate :project, to: :registry
 
@@ -66,14 +66,19 @@ module Geo
       }
 
       if failure
-        log_error(failure, exception, type: type, repository_path: repository_path, full_path: path_to_repo)
+        log_error(failure, exception, type: type, repository_full_path: path_to_repo)
       end
 
       registry.update!(attrs)
     end
 
     def repository_path
-      registry.repository_path(type)
+      case type
+      when :repository
+        registry.project.disk_path
+      when :wiki
+        registry.project.wiki.disk_path
+      end
     end
 
     def path_to_repo

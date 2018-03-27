@@ -11,7 +11,7 @@ describe Dashboard::ProjectsController do
     subject { get :index }
 
     it 'it works when the external authorization service is enabled' do
-      enable_external_authorization_service
+      enable_external_authorization_service_check
 
       get :index
 

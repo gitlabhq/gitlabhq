@@ -118,7 +118,7 @@ describe MergeRequestPolicy do
     let(:policies) { described_class.new(user, merge_request) }
 
     before do
-      enable_external_authorization_service
+      enable_external_authorization_service_check
     end
 
     it 'can read the issue iid without accessing the external service' do

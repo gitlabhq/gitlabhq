@@ -137,15 +137,16 @@ describe Ci::Build do
     end
   end
 
-  ARTIFACTS_METHODS = {
+  BUILD_ARTIFACTS_METHODS = {
     has_codeclimate_json?: Ci::Build::CODEQUALITY_FILE,
     has_performance_json?: Ci::Build::PERFORMANCE_FILE,
     has_sast_json?: Ci::Build::SAST_FILE,
+    has_dependency_scanning_json?: Ci::Build::DEPENDENCY_SCANNING_FILE,
     has_sast_container_json?: Ci::Build::SAST_CONTAINER_FILE,
     has_dast_json?: Ci::Build::DAST_FILE
   }.freeze
 
-  ARTIFACTS_METHODS.each do |method, filename|
+  BUILD_ARTIFACTS_METHODS.each do |method, filename|
     describe "##{method}" do
       context 'valid build' do
         let!(:build) do

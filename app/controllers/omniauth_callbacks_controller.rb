@@ -19,6 +19,18 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
   end
 
+  # Extend the standard implementation to also increment
+  # the number of failed sign in attempts
+  def failure
+    if params[:username].present? && AuthHelper.form_based_provider?(failed_strategy.name)
+      user = User.by_login(params[:username])
+
+      user&.increment_failed_attempts!
+    end
+
+    super
+  end
+
   # Extend the standard message generation to accept our custom exception
   def failure_message
     exception = env["omniauth.error"]
@@ -108,6 +120,14 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     handle_omniauth
   end
 
+  def auth0
+    if oauth['uid'].blank?
+      fail_auth0_login
+    else
+      handle_omniauth
+    end
+  end
+
   private
 
   def handle_omniauth
@@ -179,6 +199,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def fail_ldap_login
     flash[:alert] = 'Access denied for your LDAP account.'
+
+    redirect_to new_user_session_path
+  end
+
+  def fail_auth0_login
+    flash[:alert] = 'Wrong extern UID provided. Make sure Auth0 is configured correctly.'
 
     redirect_to new_user_session_path
   end
