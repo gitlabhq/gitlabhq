@@ -4,6 +4,8 @@ import { mapGetters, mapActions } from 'vuex';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import { pluralize } from '~/lib/utils/text_utility';
+import { getParameterValues, mergeUrlParams } from '~/lib/utils/url_utility';
+import { __ } from '~/locale';
 
 export default {
   components: {
@@ -43,6 +45,21 @@ export default {
     },
     stickyClass() {
       return this.isStuck ? 'is-stuck' : '';
+    },
+    whitespaceVisible() {
+      return !getParameterValues('w')[0];
+    },
+    toggleWhitespaceText() {
+      if (this.whitespaceVisible) {
+        return __('Hide whitespace changes');
+      }
+      return __('Show whitespace changes');
+    },
+    toggleWhitespacePath() {
+      if (this.whitespaceVisible) {
+        return mergeUrlParams({w: 1}, window.location.href);
+      }
+      return mergeUrlParams({w: 0}, window.location.href);
     },
   },
   mounted() {
@@ -116,9 +133,9 @@ export default {
       >
         <a
           class="hidden-xs btn btn-default"
-          href="/fatihacet/test/merge_requests/5/diffs?w=1&TODO"
+          :href="toggleWhitespacePath"
         >
-          {{ __('Hide whitespace changes') }}
+          {{ toggleWhitespaceText }}
         </a>
         <div class="btn-group">
           <button
