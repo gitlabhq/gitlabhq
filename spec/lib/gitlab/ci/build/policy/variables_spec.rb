@@ -48,13 +48,21 @@ describe Gitlab::Ci::Build::Policy::Variables do
       expect(policy).to be_satisfied_by(pipeline, seed)
     end
 
+    it 'allows to evaluate regular secret variables' do
+      secret = create(:ci_variable, project: project,
+                                    key: 'SECRET',
+                                    value: 'secret value')
+
+      policy = described_class.new(["$SECRET == 'secret value'"])
+
+      expect(policy).to be_satisfied_by(pipeline, seed)
+    end
+
     it 'does not persist neither pipeline nor build' do
       described_class.new('$VAR').satisfied_by?(pipeline, seed)
 
       expect(pipeline).not_to be_persisted
       expect(seed.to_resource).not_to be_persisted
     end
-
-    pending 'test for secret variables'
   end
 end
