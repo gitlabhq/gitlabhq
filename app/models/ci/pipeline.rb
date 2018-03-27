@@ -7,11 +7,8 @@ module Ci
     include Presentable
     include Gitlab::OptimisticLocking
     include Gitlab::Utils::StrongMemoize
-<<<<<<< HEAD
 
     prepend ::EE::Ci::Pipeline
-=======
->>>>>>> upstream/master
 
     belongs_to :project, inverse_of: :pipelines
     belongs_to :user

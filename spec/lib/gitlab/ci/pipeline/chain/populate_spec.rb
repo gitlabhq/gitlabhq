@@ -1,11 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Pipeline::Chain::Populate do
-<<<<<<< HEAD
   set(:project) { create(:project, :repository) }
-=======
-  set(:project) { create(:project) }
->>>>>>> upstream/master
   set(:user) { create(:user) }
 
   let(:pipeline) do
@@ -143,11 +139,7 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
     end
 
     let(:pipeline) do
-<<<<<<< HEAD
       build(:ci_pipeline, ref: 'master', project: project, config: config)
-=======
-      build(:ci_pipeline, ref: 'master', config: config)
->>>>>>> upstream/master
     end
 
     it 'populates pipeline according to used policies' do
