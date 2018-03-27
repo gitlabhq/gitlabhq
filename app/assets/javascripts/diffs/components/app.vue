@@ -4,6 +4,7 @@ import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import compareVersions from './compare_versions.vue';
 import changedFiles from './changed_files.vue';
 import diffFile from './diff_file.vue';
+import NoChanges from './no_changes.vue';
 
 export default {
   name: 'DiffsApp',
@@ -12,6 +13,7 @@ export default {
     compareVersions,
     changedFiles,
     diffFile,
+    NoChanges,
   },
   props: {
     endpoint: {
@@ -64,20 +66,23 @@ export default {
       id="diffs"
       class="diffs tab-pane"
     >
-      <compare-versions />
-      <changed-files
-        :diff-files="diffFiles"
-        :active-file="activeFile"
-      />
-      <div class="files">
-        <diff-file
-          @setActive="setActive(file.filePath)"
-          @unsetActive="unsetActive(file.filePath)"
-          v-for="file in diffFiles"
-          :key="file.newPath"
-          :file="file"
+      <div v-if="diffFiles.length">
+        <compare-versions />
+        <changed-files
+          :diff-files="diffFiles"
+          :active-file="activeFile"
         />
+        <div class="files">
+          <diff-file
+            @setActive="setActive(file.filePath)"
+            @unsetActive="unsetActive(file.filePath)"
+            v-for="file in diffFiles"
+            :key="file.newPath"
+            :file="file"
+          />
+        </div>
       </div>
+      <no-changes v-else />
     </div>
   </div>
 </template>
