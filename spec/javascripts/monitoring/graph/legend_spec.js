@@ -2,14 +2,9 @@ import Vue from 'vue';
 import GraphLegend from '~/monitoring/components/graph/legend.vue';
 import createTimeSeries from '~/monitoring/utils/multiple_time_series';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import {
-  singleRowMetricsMultipleSeries,
-  convertDatesMultipleSeries,
-} from '../mock_data';
+import { singleRowMetricsMultipleSeries, convertDatesMultipleSeries } from '../mock_data';
 
-const convertedMetrics = convertDatesMultipleSeries(
-  singleRowMetricsMultipleSeries,
-);
+const convertedMetrics = convertDatesMultipleSeries(singleRowMetricsMultipleSeries);
 
 const defaultValuesComponent = {};
 
@@ -77,9 +72,7 @@ describe('Legend Component', () => {
     });
 
     it('should container the same number of rows in the table as time series', () => {
-      expect(vm.$el.querySelectorAll('.prometheus-table tr').length).toEqual(
-        vm.timeSeries.length,
-      );
+      expect(vm.$el.querySelectorAll('.prometheus-table tr').length).toEqual(vm.timeSeries.length);
     });
   });
 });
