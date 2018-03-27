@@ -38,7 +38,7 @@ gem 'devise', '~> 4.2'
 gem 'doorkeeper', '~> 4.3'
 gem 'doorkeeper-openid_connect', '~> 1.3'
 gem 'omniauth', '~> 1.8'
-gem 'omniauth-auth0', '~> 1.4.1'
+gem 'omniauth-auth0', '~> 2.0.0'
 gem 'omniauth-azure-oauth2', '~> 0.0.9'
 gem 'omniauth-cas3', '~> 1.1.4'
 gem 'omniauth-facebook', '~> 4.0.0'
@@ -49,9 +49,10 @@ gem 'omniauth-kerberos', '~> 0.3.0', group: :kerberos
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
 gem 'omniauth-saml', '~> 1.10'
 gem 'omniauth-shibboleth', '~> 1.2.0'
-gem 'omniauth-twitter', '~> 1.2.0'
+gem 'omniauth-twitter', '~> 1.4'
 gem 'omniauth_crowd', '~> 2.2.0'
 gem 'omniauth-authentiq', '~> 0.3.1'
+gem 'omniauth-jwt', '~> 0.0.2'
 gem 'rack-oauth2', '~> 1.2.1'
 gem 'jwt', '~> 1.5.6'
 
@@ -162,7 +163,7 @@ group :unicorn do
 end
 
 # State machine
-gem 'state_machines-activerecord', '~> 0.4.0'
+gem 'state_machines-activerecord', '~> 0.5.1'
 
 # Issue tags
 gem 'acts-as-taggable-on', '~> 5.0'
@@ -231,7 +232,7 @@ gem 'sanitize', '~> 2.0'
 gem 'babosa', '~> 1.0.2'
 
 # Sanitizes SVG input
-gem 'loofah', '~> 2.0.3'
+gem 'loofah', '~> 2.2'
 
 # Working with license
 gem 'licensee', '~> 8.9'

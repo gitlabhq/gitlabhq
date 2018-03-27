@@ -35,7 +35,7 @@
               = link_to download_project_job_artifacts_path(@project, @build), rel: 'nofollow', download: '', class: 'btn btn-sm btn-default' do
                 Download
 
-              - if @build.artifacts_metadata?
+              - if @build.browsable_artifacts?
                 = link_to browse_project_job_artifacts_path(@project, @build), class: 'btn btn-sm btn-default' do
                   Browse
 

@@ -27,7 +27,7 @@ module Gitlab
       end
 
       def build_attributes(name)
-        job = @jobs[name.to_sym] || {}
+        job = @jobs.fetch(name.to_sym, {})
 
         { stage_idx: @stages.index(job[:stage]),
           stage: job[:stage],
@@ -53,30 +53,24 @@ module Gitlab
           }.compact }
       end
 
-      def pipeline_stage_builds(stage, pipeline)
-        selected_jobs = @jobs.select do |_, job|
-          next unless job[:stage] == stage
-
-          only_specs = Gitlab::Ci::Build::Policy
-            .fabricate(job.fetch(:only, {}))
-          except_specs = Gitlab::Ci::Build::Policy
-            .fabricate(job.fetch(:except, {}))
-
-          only_specs.all? { |spec| spec.satisfied_by?(pipeline) } &&
-            except_specs.none? { |spec| spec.satisfied_by?(pipeline) }
-        end
-
-        selected_jobs.map { |_, job| build_attributes(job[:name]) }
+      def stage_builds_attributes(stage)
+        @jobs.values
+          .select { |job| job[:stage] == stage }
+          .map { |job| build_attributes(job[:name]) }
       end
 
-      def stage_seeds(pipeline)
-        seeds = @stages.uniq.map do |stage|
-          builds = pipeline_stage_builds(stage, pipeline)
+      def stages_attributes
+        @stages.uniq.map do |stage|
+          seeds = stage_builds_attributes(stage).map do |attributes|
+            job = @jobs.fetch(attributes[:name].to_sym)
 
-          Gitlab::Ci::Stage::Seed.new(pipeline, stage, builds) if builds.any?
+            attributes
+              .merge(only: job.fetch(:only, {}))
+              .merge(except: job.fetch(:except, {}))
+          end
+
+          { name: stage, index: @stages.index(stage), builds: seeds }
         end
-
-        seeds.compact
       end
 
       def self.validation_message(content)

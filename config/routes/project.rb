@@ -52,7 +52,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      resource :pages, only: [:show, :destroy] do
+      resource :pages, only: [:show, :update, :destroy] do
         resources :domains, except: :index, controller: 'pages_domains', constraints: { id: %r{[^/]+} } do
           member do
             post :verify

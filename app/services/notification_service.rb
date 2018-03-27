@@ -113,6 +113,16 @@ class NotificationService
     new_resource_email(merge_request, :new_merge_request_email)
   end
 
+  def push_to_merge_request(merge_request, current_user, new_commits: [], existing_commits: [])
+    new_commits = new_commits.map { |c| { short_id: c.short_id, title: c.title } }
+    existing_commits = existing_commits.map { |c| { short_id: c.short_id, title: c.title } }
+    recipients = NotificationRecipientService.build_recipients(merge_request, current_user, action: "push_to")
+
+    recipients.each do |recipient|
+      mailer.send(:push_to_merge_request_email, recipient.user.id, merge_request.id, current_user.id, recipient.reason, new_commits: new_commits, existing_commits: existing_commits).deliver_later
+    end
+  end
+
   # When merge request text is updated, we should send an email to:
   #
   #  * newly mentioned project team members with notification level higher than Participating

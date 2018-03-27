@@ -2,7 +2,7 @@
 import { mapState, mapActions, mapGetters } from 'vuex';
 import tooltip from '~/vue_shared/directives/tooltip';
 import icon from '~/vue_shared/components/icon.vue';
-import modal from '~/vue_shared/components/modal.vue';
+import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import commitFilesList from './commit_sidebar/list.vue';
 import EmptyState from './commit_sidebar/empty_state.vue';
@@ -11,7 +11,7 @@ import * as consts from '../stores/modules/commit/constants';
 
 export default {
   components: {
-    modal,
+    DeprecatedModal,
     icon,
     commitFilesList,
     EmptyState,
@@ -34,11 +34,7 @@ export default {
   computed: {
     ...mapState(['changedFiles', 'stagedFiles', 'rightPanelCollapsed']),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
-    ...mapGetters('commit', [
-      'commitButtonDisabled',
-      'discardDraftButtonDisabled',
-      'branchName',
-    ]),
+    ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled', 'branchName']),
   },
   methods: {
     ...mapActions('commit', [
@@ -48,9 +44,7 @@ export default {
       'updateCommitAction',
     ]),
     forceCreateNewBranch() {
-      return this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH).then(() =>
-        this.commitChanges(),
-      );
+      return this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH).then(() => this.commitChanges());
     },
   },
 };
@@ -60,7 +54,7 @@ export default {
   <div
     class="multi-file-commit-panel-section"
   >
-    <modal
+    <deprecated-modal
       id="ide-create-branch-modal"
       :primary-button-label="__('Create new branch')"
       kind="success"
@@ -71,7 +65,7 @@ export default {
         {{ __(`This branch has changed since you started editing.
           Would you like to create a new branch?`) }}
       </template>
-    </modal>
+    </deprecated-modal>
     <template
       v-if="changedFiles.length || stagedFiles.length"
     >

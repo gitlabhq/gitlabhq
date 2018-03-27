@@ -1,6 +1,7 @@
 class Projects::LfsStorageController < Projects::GitHttpClientController
   include LfsRequest
   include WorkhorseRequest
+  include SendFileUpload
 
   skip_before_action :verify_workhorse_api!, only: [:download, :upload_finalize]
 
@@ -11,7 +12,7 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
       return
     end
 
-    send_file lfs_object.file.path, content_type: "application/octet-stream"
+    send_upload(lfs_object.file, send_params: { content_type: "application/octet-stream" })
   end
 
   def upload_authorize
@@ -70,10 +71,7 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
   end
 
   def move_tmp_file_to_storage(object, path)
-    File.open(path) do |f|
-      object.file = f
-    end
-
+    object.file = File.open(path)
     object.file.store!
     object.save
   end

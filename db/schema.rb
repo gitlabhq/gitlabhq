@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180320182229) do
+ActiveRecord::Schema.define(version: 20180323150945) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -157,6 +157,7 @@ ActiveRecord::Schema.define(version: 20180320182229) do
     t.boolean "authorized_keys_enabled", default: true, null: false
     t.string "auto_devops_domain"
     t.boolean "pages_domain_verification_enabled", default: true, null: false
+    t.boolean "allow_local_requests_from_hooks_and_services", default: false, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -306,6 +307,8 @@ ActiveRecord::Schema.define(version: 20180320182229) do
     t.integer "auto_canceled_by_id"
     t.boolean "retried"
     t.integer "stage_id"
+    t.integer "artifacts_file_store"
+    t.integer "artifacts_metadata_store"
     t.boolean "protected"
     t.integer "failure_reason"
   end
@@ -344,6 +347,7 @@ ActiveRecord::Schema.define(version: 20180320182229) do
     t.integer "project_id", null: false
     t.integer "job_id", null: false
     t.integer "file_type", null: false
+    t.integer "file_store"
     t.integer "size", limit: 8
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -1008,6 +1012,7 @@ ActiveRecord::Schema.define(version: 20180320182229) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "file"
+    t.integer "file_store"
   end
 
   add_index "lfs_objects", ["oid"], name: "index_lfs_objects_on_oid", unique: true, using: :btree
@@ -1295,6 +1300,7 @@ ActiveRecord::Schema.define(version: 20180320182229) do
     t.boolean "merge_merge_request"
     t.boolean "failed_pipeline"
     t.boolean "success_pipeline"
+    t.boolean "push_to_merge_request"
   end
 
   add_index "notification_settings", ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type", using: :btree
@@ -1512,6 +1518,7 @@ ActiveRecord::Schema.define(version: 20180320182229) do
     t.boolean "merge_requests_ff_only_enabled", default: false
     t.boolean "merge_requests_rebase_enabled", default: false, null: false
     t.integer "jobs_cache_index"
+    t.boolean "pages_https_only", default: true
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1821,6 +1828,7 @@ ActiveRecord::Schema.define(version: 20180320182229) do
     t.datetime "created_at", null: false
     t.string "mount_point"
     t.string "secret"
+    t.integer "store"
   end
 
   add_index "uploads", ["checksum"], name: "index_uploads_on_checksum", using: :btree
