@@ -6,7 +6,8 @@ module EE
     def find_cluster_platform_kubernetes(environment: nil)
       return super unless environment && feature_available?(:multiple_clusters)
 
-      clusters.enabled.on_environment(environment.name)
+      clusters.enabled
+        .on_environment(environment)
         .last&.platform_kubernetes
     end
   end

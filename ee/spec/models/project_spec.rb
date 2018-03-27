@@ -852,8 +852,8 @@ describe Project do
         default_branch_protection: Gitlab::Access::PROTECTION_NONE)
     end
 
-    context 'when environment is specified' do
-      let(:environment) { create(:environment, name: 'review/name') }
+    context 'when environment name is specified' do
+      let(:environment) { 'review/name' }
 
       subject do
         project.secret_variables_for(ref: 'ref', environment: environment)
@@ -938,11 +938,14 @@ describe Project do
           is_expected.not_to contain_exactly(secret_variable)
         end
 
-        it 'matches literally for _' do
-          secret_variable.update(environment_scope: 'foo_bar/*')
-          environment.update(name: 'foo_bar/test')
+        context 'when environment name contains underscore' do
+          let(:environment) { 'foo_bar/test' }
 
-          is_expected.to contain_exactly(secret_variable)
+          it 'matches literally for _' do
+            secret_variable.update(environment_scope: 'foo_bar/*')
+
+            is_expected.to contain_exactly(secret_variable)
+          end
         end
       end
 
@@ -961,11 +964,14 @@ describe Project do
           is_expected.not_to contain_exactly(secret_variable)
         end
 
-        it 'matches literally for _' do
-          secret_variable.update(environment_scope: 'foo%bar/*')
-          environment.update_attribute(:name, 'foo%bar/test')
+        context 'when environment name contains a percent' do
+          let(:environment) { 'foo%bar/test' }
 
-          is_expected.to contain_exactly(secret_variable)
+          it 'matches literally for _' do
+            secret_variable.update(environment_scope: 'foo%bar/*')
+
+            is_expected.to contain_exactly(secret_variable)
+          end
         end
       end
 

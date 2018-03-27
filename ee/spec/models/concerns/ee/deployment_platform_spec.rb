@@ -51,7 +51,8 @@ describe EE::DeploymentPlatform do
     context 'when environment is specified' do
       let!(:default_cluster) { create(:cluster, :provided_by_user, projects: [project], environment_scope: '*') }
       let!(:cluster) { create(:cluster, :provided_by_user, environment_scope: 'review/*', projects: [project]) }
-      let(:environment) { create(:environment, project: project, name: 'review/name') }
+
+      let(:environment) { 'review/name' }
 
       subject { project.deployment_platform(environment: environment) }
 
@@ -90,11 +91,14 @@ describe EE::DeploymentPlatform do
           is_expected.to eq(default_cluster.platform_kubernetes)
         end
 
-        it 'matches literally for _' do
-          cluster.update!(environment_scope: 'foo_bar/*')
-          environment.update!(name: 'foo_bar/test')
+        context 'when environment name contains an underscore' do
+          let(:environment) { 'foo_bar/test' }
 
-          is_expected.to eq(cluster.platform_kubernetes)
+          it 'matches literally for _' do
+            cluster.update!(environment_scope: 'foo_bar/*')
+
+            is_expected.to eq(cluster.platform_kubernetes)
+          end
         end
       end
 
@@ -113,11 +117,14 @@ describe EE::DeploymentPlatform do
           is_expected.to eq(default_cluster.platform_kubernetes)
         end
 
-        it 'matches literally for %' do
-          cluster.update_attribute(:environment_scope, 'foo%bar/*')
-          environment.update_attribute(:name, 'foo%bar/test')
+        context 'when environment name contains a percent char' do
+          let(:environment) { 'foo%bar/test' }
 
-          is_expected.to eq(cluster.platform_kubernetes)
+          it 'matches literally for %' do
+            cluster.update_attribute(:environment_scope, 'foo%bar/*')
+
+            is_expected.to eq(cluster.platform_kubernetes)
+          end
         end
       end
 
@@ -137,8 +144,9 @@ describe EE::DeploymentPlatform do
     context 'with multiple clusters and multiple environments' do
       let!(:cluster_1) { create(:cluster, :provided_by_user, projects: [project], environment_scope: 'staging/*') }
       let!(:cluster_2) { create(:cluster, :provided_by_user, projects: [project], environment_scope: 'test/*') }
-      let(:environment_1) { create(:environment, project: project, name: 'staging/name') }
-      let(:environment_2) { create(:environment, project: project, name: 'test/name') }
+
+      let(:environment_1) { 'staging/name' }
+      let(:environment_2) { 'test/name' }
 
       before do
         stub_licensed_features(multiple_clusters: true)
